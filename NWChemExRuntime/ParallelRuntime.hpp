@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 
-
 namespace NWChemExRuntime {
 
 class ParallelRuntime {

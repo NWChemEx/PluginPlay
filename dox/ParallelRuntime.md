@@ -56,17 +56,26 @@ computations written down for posterity.
 - Intel's Threading Building Blocks [home](https://www.threadingbuildingblocks.org/)
 - HCLib [home](https://github.com/habanero-rice/hclib)
 - C++ Actor Framework [home](https://github.com/actor-framework/actor-framework)
-- PaRSEC [home](http://icl.utk.edu/parsec/)
 - Madness [home](https://github.com/m-a-d-n-e-s-s/madness)
 - Raja [home](https://github.com/LLNL/RAJA)
 - Thrust [home](https://developer.nvidia.com/thrust) 
 - DARMA [home](https://share-ng.sandia.gov/darma/)
 
+For completeness the following also exist, but have been ruled out:
+- PaRSEC [home](http://icl.utk.edu/parsec/)
+  - Not native C++ (requires an intermediate JDF format)
+- Charmm++ [home](http://charmplusplus.org/)
+  - Not native C++ (requires special compilation steps)
+- Cilk [home](https://www.cilkplus.org/)
+  - Being deprecated by Intel as of 2018 and abandoned by 2020
+
 Running Tasks
 -------------
 
-The following sequence diagram details the procedure that occurs when a user 
-wants to run a task in NWChemEx.
+Initially we will treat the actual mechanism behind the parallel execution 
+(*i.e.* the scheduler, memory movements, *etc.*) as an opaque class `Backend`.  
+Under this assumption, the following sequence diagram details the procedure 
+that occurs when a user wants to run a task in NWChemEx.  
 
 ![](uml/RunTaskNoWait.png)
 
@@ -116,3 +125,39 @@ finished.  As drawn the outer `get` call is blocking because the user calls
 `get` before the inner `Future` is in place.  When the inner `Future`'s `get`
  is invoked the task has already run thus the inner `get` is non-blocking. 
 
+Wrapping the Backends
+---------------------
+
+Now that we have an API we have to worry about wrapping the backends.  In 
+particular this means we need to consider: 
+
+- Not all backends support asynchronous execution
+- Backends may need to move data
+- Only backend knows data's location and must be queried for it 
+
+Making a synchronous library asynchronous is the easiest of these problems 
+and can be handled by spawning a thread that will actually schedule the task 
+with the backend (we in turn loose a thread, which can be mitigated by making 
+the thread sleep).  At least initially we avoid the memory movement problem 
+by requiring all tasks to copy their state and by copying the task results 
+back for the user.  The copy convention allows us to avoid questions of data 
+locality for the moment.
+
+Resource Management
+-------------------
+
+The key to modern supercomputers is hierarchical parallelism.  Within our 
+present API each level of the hierarchy is given its own device.  For the 
+moment we require the user to select the appropriate device.  Long term the 
+runtime needs to be smarter about this as it's the only thing in a position to
+know what level of the hierarchy a task is executing in.  For example 
+consider the difference between running a single SCF computation and a finite
+difference SCF gradient.  In the former you likely will want to distribute 
+your tensors over the processes, whereas in the latter you probably want to 
+distribute the SCF computations themselves over the processes.  Complicating 
+things its reasonable that say the finite-difference alone doesn't saturate 
+the processes, hence we will want to nest that parallelism in order to make 
+sure each process is doing something (say let each finite difference 
+computation distribute its tensors over four processes).  At the moment we 
+assume that the backends are smart enough to handle this as part of their 
+load balancing.

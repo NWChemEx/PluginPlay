@@ -1,77 +1,195 @@
 #pragma once
+#include "NWChemExRuntime/Future.hpp"
+#include <stdexcept> //For std::logic_error
+#include <memory> //For shared_ptr
 
 namespace NWChemExRuntime {
 
 /**
- * @brief The mechanism for a task to provide a result obtained in parallel.
+ * @brief The set part of the Promise/Future abstraction for asynchronous
+ * parallelization.
  *
- * Together the Promise/Future classes abstract the mechanism for asynchronous
- * task-based parallelism.  The Promise is the setting part of that mechanism.
+ * Semantically this class behaves exactly like the STL promise class.  In
+ * particular this includes:
  *
- * When a task is added to a task queue it is given a Promise instance which is
- * essentially a buffer for the result.  When the task is done computing the
- * result it places the result in the buffer.  The value then sits in the buffer
- * until the user asks for it via the associated Future instance.
+ * -Being a single use class (calling set_value more than once is not allowed)
  *
- * @note Once a task sets a Promise the Promise will likely go out of
- * scope. In order to avoid having to explicitly keep the Promise alive we
- * instead require that all Promise instances are managed by shared_ptr
- * instances.  Thus when a Promise makes a Future, the Future gets a shared_ptr
- * to the Promise allowing the Promise to live on in the Future.  If you do not
- * create a Promise instance that lives in a shared_ptr you will likely get a
- * weird error.
+ * For threads the STL provides promise/future classes; however, they have an
+ * annoying "feature" that they assume they are always running in a threaded
+ * environment.  In other words, it's not possible to use a promise in the
+ * same thread that the future lives in.  This class does not provide any such
+ * restrictions.
  *
- * @tparam T The type of the result.  Must be either copyable and/or movable.
+ * This class also serves as a buffer between the user accessing the data and
+ * the backend computing it.  Hence, if need be, its possible to interject
+ * additional abstractions into this class without affecting the user.
+ *
+ * Implementation note.  I didn't feel like seeing how the C++ library does it,
+ * but my current solution is a nested smart pointer.  At the inner most level
+ * we have a unique pointer because the Future/Promise refer to the same object.
+ * Outside that we have a shared pointer to make sure the unique object persists
+ * as long as the Future/Promise pair.
+ *
+ * @tparam T The type of the data we are storing.  Must satisfy the concept of
+ *           moveable and/or copyable.
+ *
+ * @todo All operations need to be atomic
  */
-
 template<typename T>
-class Promise: public std::enable_shared_from_this<Promise<T>> {
+class Promise {
 public:
     /**
-     * @brief Makes a Promise capable of holding a single T instance.
+     * @brief Creates a promise capable of storing an instance of type T.
      *
-     * After default creation a Promise holds only a null pointer to a T
-     * instance.  Memory is allocated (if necessary) when set_value is called.
+     * This constructor makes the address that the Future/Promise pair agree to
+     * use for "message passing", i.e. the outer smart pointer.
      *
-     * @throw None No throw guarantee.
+     * @throw std::bad_alloc if there is insufficient memory to allocate memory
+     *        for a unique_ptr<T> instance.
      */
-    Promise()noexcept=default;
+    Promise():
+        value_(std::make_shared<std::unique_ptr<T>>())
+    {}
+
+    ///Promises can't be satisfied by multiple people
+    Promise(const Promise<T>&)=delete;
+
+    ///Promises can't be assigned to
+    Promise<T>& operator=(const Promise<T>&)=delete;
 
     /**
-     * @brief Takes ownership of another promise.
+     * @brief Takes ownership of another Promise's shared state.
+     *
+     * @param rhs The other Promise instance from which we are taking the state.
+     *        After taking @p rhs's state it remains in a valid, but undefined
+     *        state.
+     * @throw None. No throw guarantee.
      */
+    Promise(Promise<T>&& /*rhs*/)noexcept=default;
 
-    ///Promises are non-copyable
-    Promise(const Promise<T>& /*rhs*/)=delete;
-
-    ///Promises are non-assignable
-    Promise<T>& operator=(const Promise<T>& /*rhs*/)=delete;
-
-    Future<T> get_future() const {
-        return Future<T>(shared_from_this());
+    /**
+     * @brief Takes ownership of another Promise's shared state.
+     *
+     * @param rhs The Promise we are now responsible for fulfilling.  After this
+     *        call @p rhs is in a valid, but undefined state.
+     * @return The current instance with @p rhs's shared state.
+     * @throw None. No throw guarantee.
+     *
+     */
+    Promise<T>& operator=(Promise<T>&& /*rhs*/)noexcept=default;
+    /**
+     * @brief Creates a future which shares this promise's state.
+     *
+     * @note Each Promise can only be affiliated with one Future instance.
+     *
+     * @return A future which has access to this promise's shared state.
+     * @throw std::logic_error if a Future is already affiliated with this
+     *        Promise.
+     */
+    Future<T> get_future()
+    {
+        if(value_.use_count()>1)
+            throw std::logic_error("A future already exists");
+        return Future<T>(value_);
     }
 
     /**
-     * @brief Member function that fulfills the promise.
+     * @brief Fulfills the promise.
      *
-     * After a function finishes computing a value, its last task is to set the
-     * value of the Promise it had to fulfill.
-     *
-     * @tparam T2
-     * @param value
+     * @tparam T2 The type of the value we are setting, must be implicitly
+     *         convertible to an instance of type T.
+     * @param value The actual instance that is fulfilling the promise.
+     * @throw std::logic_error if the Promise has already been satisfied. Strong
+     *        throw guarantee.
      */
-
     template<typename T2>
     void set_value(T2&& value)
     {
-        std::make_unique<T>(std::forward<T2>(value));
+        if(*value_)
+            throw std::logic_error("Promise already set");
+        auto unq_temp=std::make_unique<T>(std::forward<T2>(value));
+        value_->swap(unq_temp);
+    }
+private:
+    ///The value being shared by the Future/Promise pair
+    std::shared_ptr<std::unique_ptr<T>> value_;
+};
+
+/**
+ * @brief Specialization of Promise to Promise<void>
+ *
+ * See Promise<T> for details.
+ *
+ * @todo All operations need to be atomic
+ */
+template<>
+class Promise<void> {
+public:
+    ///@copydoc Promise<T>::Promise()
+    Promise():
+            value_(std::make_shared<bool>(false))
+    {}
+
+    ///Promises can't be satisfied by multiple people
+    Promise(const Promise<void>&)=delete;
+
+    ///Promises can't be assigned to
+    Promise<void>& operator=(const Promise<void>&)=delete;
+
+    /**
+     * @brief Takes ownership of another Promise's shared state.
+     *
+     * @param rhs The other Promise instance from which we are taking the state.
+     *        After taking @p rhs's state it remains in a valid, but undefined
+     *        state.
+     * @throw None. No throw guarantee.
+     */
+    Promise(Promise<void>&& /*rhs*/)noexcept=default;
+
+    /**
+     * @brief Takes ownership of another Promise's shared state.
+     *
+     * @param rhs The Promise we are now responsible for fulfilling.  After this
+     *        call @p rhs is in a valid, but undefined state.
+     * @return The current instance with @p rhs's shared state.
+     * @throw None. No throw guarantee.
+     *
+     */
+    Promise<void>& operator=(Promise<void>&& /*rhs*/)noexcept=default;
+    /**
+     * @brief Creates a future which shares this promise's state.
+     *
+     * @note Each Promise can only be affiliated with one Future instance.
+     *
+     * @return A future which has access to this promise's shared state.
+     * @throw std::logic_error if a Future is already affiliated with this
+     *        Promise.
+     */
+    Future<void> get_future()
+    {
+        if(value_.use_count()>1)
+            throw std::logic_error("A future already exists");
+        return Future<void>(value_);
     }
 
+    /**
+     * @brief Fulfills the promise.
+     *
+     * @throw std::logic_error if the Promise has already been satisfied. Strong
+     *        throw guarantee.
+     */
+    void set_value()
+    {
+        if(*value_)
+            throw std::logic_error("Promise already set");
+        *value_=true;
+    }
 private:
-    
-    ///The value the user wants
-    std::unique_ptr<T> value_;
-};//End Promise
+    ///The value being shared by the Future/Promise pair
+    std::shared_ptr<bool> value_;
+};
+
+
 }
 
 
