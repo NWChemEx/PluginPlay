@@ -1,0 +1,19 @@
+#These are configuration files for QtCreator
+NWChemExRuntime.config
+NWChemExRuntime.files
+NWChemExRuntime.includes
+NWChemExRuntime.creator
+NWChemExRuntime.creator.user
+*.autosave
+
+#These are configuration files for CLion
+.idea/
+
+#This is the documentation build directory
+docs/
+
+#These are common build directory names
+Debug/
+Release/
+cmake-build-debug/
+cmake-build-release/
