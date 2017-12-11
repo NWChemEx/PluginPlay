@@ -5,3 +5,4 @@ include(TargetMacros)
 
 add_cxx_unit_test(TestDevice NWChemExRuntime)
 add_cxx_unit_test(TestFuturePromise NWChemExRuntime)
+
