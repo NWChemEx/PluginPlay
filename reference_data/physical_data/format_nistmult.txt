@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+#Author Ben Pritchard
+import sys
+import re
+import mpmath as mp 
+
+mp.dps=250
+mp.mp.dps = 250
+
+if len(sys.argv) != 2:
+   print("Usage: format_nist.py nistfile")
+   quit(1)
+
+
+path = sys.argv[1]
+
+
+atomre = re.compile(r'^(\d+) +(\w+) +([\[\]\w\d]+) +(\d+)(\w)(°?)([\d\/]+)')
+
+
+# First 5 lines are comments
+filelines = [ x.strip() for x in open(path).readlines() ]
+
+for line in filelines[:5]:
+  print(line)
+
+curatom = None
+
+for line in filelines[5:]:
+    matomre = atomre.match(line)
+    if matomre:
+      print("{:<5} {:<20} {:<5} {:<5}".format(matomre.group(1), matomre.group(3), matomre.group(4), matomre.group(5)))
