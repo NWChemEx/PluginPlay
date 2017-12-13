@@ -291,9 +291,9 @@ with open("TestAtomicInfo.cpp", 'w') as f:
         f.write("{:s}.multiplicity == {:d});\n".format(prefix, v.mult))
         f.write("{:s}.mass == Approx({:16.16f}));\n".format(prefix, v.mass))
         comp_val = "Approx({:16.16f})".format(v.cov_radius)
-        f.write("{:s}.covradius == {:s});\n".format(prefix,comp_val))
+        f.write("{:s}.covradius == {:s});\n".format(prefix, comp_val))
         comp_val = "Approx({:16.16f})".format(v.vdw_radius)
-        f.write("{:s}.vdwradius == {:s});\n".format(prefix,comp_val))
+        f.write("{:s}.vdwradius == {:s});\n".format(prefix, comp_val))
         for ki, vi in sorted(v.isotopes.items()):
             iso_prefix = "{:s}.isotopes.at({:d})".format(prefix, ki)
             f.write("{:s}.isonum == {:d});\n".format(iso_prefix, ki))

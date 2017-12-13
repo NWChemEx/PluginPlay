@@ -4,3 +4,4 @@ find_package(NWChemExRuntime REQUIRED)
 include(TargetMacros)
 
 add_cxx_unit_test(TestAtomicInfo NWChemExRuntime)
+add_cxx_unit_test(TestPhysicalConstants NWChemExRuntime)
