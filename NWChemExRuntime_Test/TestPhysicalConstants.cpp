@@ -1,6 +1,4 @@
 #include <NWChemExRuntime/PhysicalConstants.hpp>
-
-#define CATCH_CONFIG_MAIN
 #include <catch/catch.hpp>
 
 /** @file Tests of fundamental physical constants to be used in

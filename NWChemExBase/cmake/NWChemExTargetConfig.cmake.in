@@ -31,6 +31,7 @@ foreach(__header_i ${__headers})
    get_filename_component(__file_name ${__header_i} NAME_WE)
    #Will be list of where we found header files
    list(APPEND ${__name}_HEADERS ${__file_name}_INCLUDE_DIR)
+   unset(${__file_name}_INCLUDE_DIR CACHE)
    find_path(${__file_name}_INCLUDE_DIR ${__name}/${__header_i}
              PATHS ${INSTALL_ROOT}/include)
    #All header files better result in same include path...

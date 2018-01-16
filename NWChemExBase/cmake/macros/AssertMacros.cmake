@@ -19,5 +19,6 @@ function(assert)
 endfunction()
 
 function(assert_strings_are_equal __lhs __rhs)
+    message(STATUS "${${__lhs}} ${${__rhs}}")
     assert("${__lhs}" STREQUAL "${__rhs}")
 endfunction()

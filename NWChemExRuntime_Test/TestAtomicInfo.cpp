@@ -1,5 +1,4 @@
 #include <NWChemExRuntime/AtomicInfo.hpp>
-#define CATCH_CONFIG_MAIN
 #include <catch/catch.hpp>
 
 using namespace NWXRuntime::detail_;

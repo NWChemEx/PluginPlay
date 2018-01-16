@@ -271,7 +271,6 @@ with open(src_file, 'w') as f:
 
 with open("TestAtomicInfo.cpp", 'w') as f:
     f.write("#include <NWChemExRuntime/AtomicInfo.hpp>\n")
-    f.write("#define CATCH_CONFIG_MAIN\n")
     f.write("#include <catch/catch.hpp>\n\n")
     f.write("using namespace {}::detail_;\n".format(nmspace))
     f.write("TEST_CASE(\"Symbol to Z conversion\")\n")
