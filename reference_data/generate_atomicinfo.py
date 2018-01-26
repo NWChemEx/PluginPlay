@@ -257,6 +257,10 @@ with open(src_file, 'w') as f:
             "\n")
     for k, v in sorted(atomicinfo.items()):
         f.write("  {{ \"{}\" , {} }},\n".format(v.sym, k))
+        f.write("  {{ \"{}\" , {} }},\n".format(v.sym.upper(),k))
+        if len(v.sym) == 2:
+            f.write("  {{ \"{}{}\", {} }},\n".format(v.sym[0].upper(),
+                                                     v.sym[1],k))
     f.write("}; // close sym2Z_\n\n\n")
 
     # Next, full atomic data
