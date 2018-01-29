@@ -4,6 +4,11 @@ import collections
 
 """ Script for generating a list of physical constants in a C++ compilable form.
 
+    For unit conversion-like constants conversions are given as a means from X
+    to the SI base unit.  Thus an arbitrary conversion from X to Y should be 
+    possible by converting from X to the base, and then dividing by the 
+    conversion from Y to the base.
+
     usage: python3 generate_constants.py <output_directory>
     
     args:
@@ -24,10 +29,10 @@ outbase = sys.argv[1]
 mypath = os.path.dirname(os.path.realpath(__file__))
 datadir = os.path.join(mypath, "physical_data")
 
-# Hardcoded constants and conversions (strings to preserve precision)
+# Hardcoded constants (strings to preserve precision)
 hard_code = {"pi" : ("3.14159265358979323846",
                      "Ratio of circle's circumference to it's diameter"),
-             "J2cal" : ("4.184", "Ratio of a Joule to a calorie"),
+             "Cal2J" : ("4.184", "Ratio of a Joule to a calorie"),
              }
 
 # list of constants we want from file (names match file) and our symbol for them
@@ -47,7 +52,7 @@ descs = {"me": "Rest mass of electron in kilograms",
          "alpha": "Fine-structure constant (dimensionless)",
          "c": "Speed of light in vacuum in meters per second",
          "kb": "Boltzmann's constant in Joules per Kelvin",
-         "na": "Avogadro's constant in per mole"
+         "na": "Avogadro's constant in things per mole"
          }
 
 # Derived units symbol to (numerator tuple, denominator tuple description)
@@ -60,6 +65,10 @@ derived["kc"] = ((1.0,), (4.0, "pi", "e0"), "Coulomb's constant Joule meter/ "
 derived["Eh"] = (("alpha", "alpha", "me", "c", "c"), (1.0,),
                  "Hartree constant in Joules")
 derived["a0"] = (("hbar",), ("me", "alpha", 'c'),"Bohr radius in meters")
+derived["R"] = (("kb","na"), (1.0,), "Ideal gas constant Joules per Kelvin "
+                                     "per mole")
+derived["Hz2J"] = (('h'), (1.0,), "Conversion from Hertz to Joules")
+derived["inv_m2J"] = (('h', 'c'), (1.0,), "Conversion from m^-1 to Joules")
 
 
 def extract_constants():
@@ -76,42 +85,28 @@ def extract_constants():
 
 def write_header(cnsts_, hard_code_, derived_):
     # Print the header file
-    with open("PhysicalConstants.hpp", 'w') as f:
+    with open("../NWChemExRuntime/PhysicalConstants.hpp", 'w') as f:
         f.write("#pragma once\n\n")
-        f.write("/** @file Fundamental physical constants for NWChemEx\n")
+        f.write("/**\n")
+        f.write(" *  @file PhysicalConstants.hpp\n")
         f.write(" *\n")
-        f.write(" *  Generally speaking, the idea is to define as few "
-                "constants as\n")
-        f.write(" *  possible and derive all others.  This helps to ")
-        f.write("maintain consistency.\n\n")
-        f.write(" *  @warning Data made by generate_constants.py.\n")
-        f.write(" *           DO NOT EDIT!!!!!!!!\n")
+        f.write(" * Contains enumerations for the recognized physical "
+                "constants\n")
         f.write(" */\n\n")
+        f.write("#include <map>\n")
         f.write("namespace NWXRuntime {\n")
-        f.write("namespace constant {\n")
-        f.write("//Fundamental physical constants\n\n")
+        f.write("enum class Constant{\n")
         for k,v in sorted(hard_code_.items()):
-            f.write("///{:s}\n".format(v[1]))
-            f.write("constexpr double {:s} = {:s};\n\n".format(k, v[0]))
+            f.write("    {:s}, ///< {:s}\n".format(k, v[1]))
         for k, v in sorted(cnsts_.items()):
-            f.write("///{:s}\n".format(descs[k]))
-            f.write("constexpr double {:s} = {:s};\n\n".format(k, v))
-        f.write("//Derived constants\n\n")
+            f.write("    {:s}, ///< {:s}\n".format(k, descs[k]))
         for k, v in derived_.items():
-            f.write("///{:s}\n".format(v[2]))
-            f.write("constexpr double {:s} = (".format(k))
-            for i, num in enumerate(v[0]):  # Print numerator
-                f.write("{:s}".format(str(num)))
-                if not i+1 == len(v[0]):
-                    f.write("*")
-            f.write(")/(")
-            for i, denom in enumerate(v[1]):  # Print denominator
-                f.write("{:s}".format(str(denom)))
-                if not i+1 == len(v[1]):
-                    f.write("*")
-            f.write(");\n\n")
-        f.write("}}//End namespaces\n")
-
+            f.write("    {:s}, ///< {:s}\n".format(k, v[2]))
+        f.write("};\n\n")
+        f.write("namespace detail_ {\n")
+        f.write("extern const std::map<Constant, double> constants;\n")
+        f.write("}\n")
+        f.write("}\n")
 
 def evaluate_variable(formula, cts_, hard_code_, derived_):
     frac = [1.0, 1.0]
@@ -129,12 +124,29 @@ def evaluate_variable(formula, cts_, hard_code_, derived_):
 
     return frac[0]/frac[1]
 
+def write_source(cnsts_, hard_code_, derived_):
+    with open("../NWChemExRuntime/PhysicalConstants.cpp", 'w') as f:
+        f.write("#include \"NWChemExRuntime/PhysicalConstants.hpp\"\n\n")
+        f.write("namespace NWXRuntime {\n")
+        f.write("namespace detail_ {\n")
+        f.write("extern const std::map<Constant, double> constants([]()\n{\n")
+        f.write("    std::map<Constant, double> temp;\n")
+        for k,v in sorted(hard_code_.items()):
+            f.write("    temp[Constant::{:s}] = {:s};\n".format(k,v[0]))
+        for k,v in sorted(cnsts_.items()):
+            f.write("    temp[Constant::{:s}] = {:s};\n".format(k,v))
+        for k,v in derived_.items():
+            f.write("    temp[Constant::{:s}] = ".format(k))
+            f.write("{:16.16e};\n".format(evaluate_variable(v, cnsts_,
+                                                            hard_code_,
+                                                            derived_)))
+        f.write("    return temp;\n}());\n")
+        f.write("}}//End namespaces\n")
 
 def write_tests(cnts_, hard_code_, derived_):
     # Print the tests
-    with open("TestPhysicalConstants.cpp", 'w') as f:
+    with open("../NWChemExRuntime_Test/TestPhysicalConstants.cpp", 'w') as f:
         f.write("#include <NWChemExRuntime/PhysicalConstants.hpp>\n\n")
-        f.write("#define CATCH_CONFIG_MAIN\n")
         f.write("#include <catch/catch.hpp>\n\n")
         f.write("/** @file Tests of fundamental physical constants to be used in\n")
         f.write(" *        NWChemEx\n")
@@ -142,24 +154,27 @@ def write_tests(cnts_, hard_code_, derived_):
         f.write(" *  @warning This file made by generate_constants.py.\n")
         f.write(" *           DO NOT EDIT!!!!!!!!\n")
         f.write(" */\n\n")
-        f.write("using namespace NWXRuntime::constant;\n")
+        f.write("using namespace NWXRuntime;\n")
+        f.write("using namespace NWXRuntime::detail_;\n")
         f.write("TEST_CASE(\"Fundamental Constants\")\n")
         f.write("{\n")
+        prefix = "    REQUIRE(constants.at(Constant::"
         for k, v in sorted(hard_code_.items()):
             val = float(v[0])
-            f.write("    REQUIRE({:s} == Approx({:16.16e}));\n".format(k, val))
+            f.write(prefix + "{:s}) == Approx({:16.16e}));\n".format(k, val))
         for k, v in sorted(cnts_.items()):
             val = float(v)
-            f.write("    REQUIRE({:s} == Approx({:16.16e}));\n".format(k, val))
+            f.write(prefix + "{:s}) == Approx({:16.16e}));\n".format(k, val))
         f.write("}\n")
         f.write("TEST_CASE(\"Derived Constants\")\n")
         f.write("{\n")
         for k, v in derived_.items():
             val = evaluate_variable(v, cnts_, hard_code_, derived_)
-            f.write("    REQUIRE({:s} == Approx({:16.16e}));\n".format(k, val))
+            f.write(prefix + "{:s}) == Approx({:16.16e}));\n".format(k, val))
         f.write("}\n")
 
 
 constants = extract_constants()
 write_header(constants, hard_code, derived)
+write_source(constants, hard_code, derived)
 write_tests(constants, hard_code, derived)

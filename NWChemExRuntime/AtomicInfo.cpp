@@ -3,2814 +3,1637 @@
 
 namespace NWXRuntime {
 namespace detail_ {
-extern const std::unordered_map<std::string, std::size_t> sym2Z_{
+extern const std::map<std::string, std::size_t> sym2Z_{
   { "gho" , 0 },
-  { "GHO" , 0 },
   { "h" , 1 },
-  { "H" , 1 },
   { "he" , 2 },
-  { "HE" , 2 },
-  { "He", 2 },
   { "li" , 3 },
-  { "LI" , 3 },
-  { "Li", 3 },
   { "be" , 4 },
-  { "BE" , 4 },
-  { "Be", 4 },
   { "b" , 5 },
-  { "B" , 5 },
   { "c" , 6 },
-  { "C" , 6 },
   { "n" , 7 },
-  { "N" , 7 },
   { "o" , 8 },
-  { "O" , 8 },
   { "f" , 9 },
-  { "F" , 9 },
   { "ne" , 10 },
-  { "NE" , 10 },
-  { "Ne", 10 },
   { "na" , 11 },
-  { "NA" , 11 },
-  { "Na", 11 },
   { "mg" , 12 },
-  { "MG" , 12 },
-  { "Mg", 12 },
   { "al" , 13 },
-  { "AL" , 13 },
-  { "Al", 13 },
   { "si" , 14 },
-  { "SI" , 14 },
-  { "Si", 14 },
   { "p" , 15 },
-  { "P" , 15 },
   { "s" , 16 },
-  { "S" , 16 },
   { "cl" , 17 },
-  { "CL" , 17 },
-  { "Cl", 17 },
   { "ar" , 18 },
-  { "AR" , 18 },
-  { "Ar", 18 },
   { "k" , 19 },
-  { "K" , 19 },
   { "ca" , 20 },
-  { "CA" , 20 },
-  { "Ca", 20 },
   { "sc" , 21 },
-  { "SC" , 21 },
-  { "Sc", 21 },
   { "ti" , 22 },
-  { "TI" , 22 },
-  { "Ti", 22 },
   { "v" , 23 },
-  { "V" , 23 },
   { "cr" , 24 },
-  { "CR" , 24 },
-  { "Cr", 24 },
   { "mn" , 25 },
-  { "MN" , 25 },
-  { "Mn", 25 },
   { "fe" , 26 },
-  { "FE" , 26 },
-  { "Fe", 26 },
   { "co" , 27 },
-  { "CO" , 27 },
-  { "Co", 27 },
   { "ni" , 28 },
-  { "NI" , 28 },
-  { "Ni", 28 },
   { "cu" , 29 },
-  { "CU" , 29 },
-  { "Cu", 29 },
   { "zn" , 30 },
-  { "ZN" , 30 },
-  { "Zn", 30 },
   { "ga" , 31 },
-  { "GA" , 31 },
-  { "Ga", 31 },
   { "ge" , 32 },
-  { "GE" , 32 },
-  { "Ge", 32 },
   { "as" , 33 },
-  { "AS" , 33 },
-  { "As", 33 },
   { "se" , 34 },
-  { "SE" , 34 },
-  { "Se", 34 },
   { "br" , 35 },
-  { "BR" , 35 },
-  { "Br", 35 },
   { "kr" , 36 },
-  { "KR" , 36 },
-  { "Kr", 36 },
   { "rb" , 37 },
-  { "RB" , 37 },
-  { "Rb", 37 },
   { "sr" , 38 },
-  { "SR" , 38 },
-  { "Sr", 38 },
   { "y" , 39 },
-  { "Y" , 39 },
   { "zr" , 40 },
-  { "ZR" , 40 },
-  { "Zr", 40 },
   { "nb" , 41 },
-  { "NB" , 41 },
-  { "Nb", 41 },
   { "mo" , 42 },
-  { "MO" , 42 },
-  { "Mo", 42 },
   { "tc" , 43 },
-  { "TC" , 43 },
-  { "Tc", 43 },
   { "ru" , 44 },
-  { "RU" , 44 },
-  { "Ru", 44 },
   { "rh" , 45 },
-  { "RH" , 45 },
-  { "Rh", 45 },
   { "pd" , 46 },
-  { "PD" , 46 },
-  { "Pd", 46 },
   { "ag" , 47 },
-  { "AG" , 47 },
-  { "Ag", 47 },
   { "cd" , 48 },
-  { "CD" , 48 },
-  { "Cd", 48 },
   { "in" , 49 },
-  { "IN" , 49 },
-  { "In", 49 },
   { "sn" , 50 },
-  { "SN" , 50 },
-  { "Sn", 50 },
   { "sb" , 51 },
-  { "SB" , 51 },
-  { "Sb", 51 },
   { "te" , 52 },
-  { "TE" , 52 },
-  { "Te", 52 },
   { "i" , 53 },
-  { "I" , 53 },
   { "xe" , 54 },
-  { "XE" , 54 },
-  { "Xe", 54 },
   { "cs" , 55 },
-  { "CS" , 55 },
-  { "Cs", 55 },
   { "ba" , 56 },
-  { "BA" , 56 },
-  { "Ba", 56 },
   { "la" , 57 },
-  { "LA" , 57 },
-  { "La", 57 },
   { "ce" , 58 },
-  { "CE" , 58 },
-  { "Ce", 58 },
   { "pr" , 59 },
-  { "PR" , 59 },
-  { "Pr", 59 },
   { "nd" , 60 },
-  { "ND" , 60 },
-  { "Nd", 60 },
   { "pm" , 61 },
-  { "PM" , 61 },
-  { "Pm", 61 },
   { "sm" , 62 },
-  { "SM" , 62 },
-  { "Sm", 62 },
   { "eu" , 63 },
-  { "EU" , 63 },
-  { "Eu", 63 },
   { "gd" , 64 },
-  { "GD" , 64 },
-  { "Gd", 64 },
   { "tb" , 65 },
-  { "TB" , 65 },
-  { "Tb", 65 },
   { "dy" , 66 },
-  { "DY" , 66 },
-  { "Dy", 66 },
   { "ho" , 67 },
-  { "HO" , 67 },
-  { "Ho", 67 },
   { "er" , 68 },
-  { "ER" , 68 },
-  { "Er", 68 },
   { "tm" , 69 },
-  { "TM" , 69 },
-  { "Tm", 69 },
   { "yb" , 70 },
-  { "YB" , 70 },
-  { "Yb", 70 },
   { "lu" , 71 },
-  { "LU" , 71 },
-  { "Lu", 71 },
   { "hf" , 72 },
-  { "HF" , 72 },
-  { "Hf", 72 },
   { "ta" , 73 },
-  { "TA" , 73 },
-  { "Ta", 73 },
   { "w" , 74 },
-  { "W" , 74 },
   { "re" , 75 },
-  { "RE" , 75 },
-  { "Re", 75 },
   { "os" , 76 },
-  { "OS" , 76 },
-  { "Os", 76 },
   { "ir" , 77 },
-  { "IR" , 77 },
-  { "Ir", 77 },
   { "pt" , 78 },
-  { "PT" , 78 },
-  { "Pt", 78 },
   { "au" , 79 },
-  { "AU" , 79 },
-  { "Au", 79 },
   { "hg" , 80 },
-  { "HG" , 80 },
-  { "Hg", 80 },
   { "tl" , 81 },
-  { "TL" , 81 },
-  { "Tl", 81 },
   { "pb" , 82 },
-  { "PB" , 82 },
-  { "Pb", 82 },
   { "bi" , 83 },
-  { "BI" , 83 },
-  { "Bi", 83 },
   { "po" , 84 },
-  { "PO" , 84 },
-  { "Po", 84 },
   { "at" , 85 },
-  { "AT" , 85 },
-  { "At", 85 },
   { "rn" , 86 },
-  { "RN" , 86 },
-  { "Rn", 86 },
   { "fr" , 87 },
-  { "FR" , 87 },
-  { "Fr", 87 },
   { "ra" , 88 },
-  { "RA" , 88 },
-  { "Ra", 88 },
   { "ac" , 89 },
-  { "AC" , 89 },
-  { "Ac", 89 },
   { "th" , 90 },
-  { "TH" , 90 },
-  { "Th", 90 },
   { "pa" , 91 },
-  { "PA" , 91 },
-  { "Pa", 91 },
   { "u" , 92 },
-  { "U" , 92 },
   { "np" , 93 },
-  { "NP" , 93 },
-  { "Np", 93 },
   { "pu" , 94 },
-  { "PU" , 94 },
-  { "Pu", 94 },
   { "am" , 95 },
-  { "AM" , 95 },
-  { "Am", 95 },
   { "cm" , 96 },
-  { "CM" , 96 },
-  { "Cm", 96 },
   { "bk" , 97 },
-  { "BK" , 97 },
-  { "Bk", 97 },
   { "cf" , 98 },
-  { "CF" , 98 },
-  { "Cf", 98 },
   { "es" , 99 },
-  { "ES" , 99 },
-  { "Es", 99 },
   { "fm" , 100 },
-  { "FM" , 100 },
-  { "Fm", 100 },
   { "md" , 101 },
-  { "MD" , 101 },
-  { "Md", 101 },
   { "no" , 102 },
-  { "NO" , 102 },
-  { "No", 102 },
   { "lr" , 103 },
-  { "LR" , 103 },
-  { "Lr", 103 },
   { "rf" , 104 },
-  { "RF" , 104 },
-  { "Rf", 104 },
   { "db" , 105 },
-  { "DB" , 105 },
-  { "Db", 105 },
   { "sg" , 106 },
-  { "SG" , 106 },
-  { "Sg", 106 },
   { "bh" , 107 },
-  { "BH" , 107 },
-  { "Bh", 107 },
   { "hs" , 108 },
-  { "HS" , 108 },
-  { "Hs", 108 },
   { "mt" , 109 },
-  { "MT" , 109 },
-  { "Mt", 109 },
   { "ds" , 110 },
-  { "DS" , 110 },
-  { "Ds", 110 },
   { "rg" , 111 },
-  { "RG" , 111 },
-  { "Rg", 111 },
   { "cn" , 112 },
-  { "CN" , 112 },
-  { "Cn", 112 },
   { "nh" , 113 },
-  { "NH" , 113 },
-  { "Nh", 113 },
   { "fl" , 114 },
-  { "FL" , 114 },
-  { "Fl", 114 },
   { "mc" , 115 },
-  { "MC" , 115 },
-  { "Mc", 115 },
   { "lv" , 116 },
-  { "LV" , 116 },
-  { "Lv", 116 },
   { "ts" , 117 },
-  { "TS" , 117 },
-  { "Ts", 117 },
   { "og" , 118 },
-  { "OG" , 118 },
-  { "Og", 118 },
   { "chg" , 999 },
-  { "CHG" , 999 },
   { "dum" , 9999 },
-  { "DUM" , 9999 },
 }; // close sym2Z_
 
 
-extern const std::unordered_map<std::size_t, AtomicInfo> atomic_data_{
-  { 0,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    0,//Z
-    "gho",//Atomic symbol
-    "ghost",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            0,{0,0.0000000000000000,0.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 1,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    1,//Z
-    "h",//Atomic symbol
-    "hydrogen",//Full name
-    2,//Multiplicity
-    1.0079750000000001,//Mass
-    0.5858150988919267,//Covalent radius
-    2.2676713505493939,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            1,{1,1.0078250322000000,0.9998550000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            2,{2,2.0141017781000001,0.0001450000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 2,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    2,//Z
-    "he",//Atomic symbol
-    "helium",//Full name
-    1,//Multiplicity
-    4.0026020000000004,//Mass
-    0.5291233151281919,//Covalent radius
-    2.6456165756409593,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            3,{3,3.0160293199999999,0.0000020000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            4,{4,4.0026032541000003,0.9999980000000001}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 3,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    3,//Z
-    "li",//Atomic symbol
-    "lithium",//Full name
-    2,//Multiplicity
-    6.9675000000000002,//Mass
-    2.4188494405860199,//Covalent radius
-    3.4393015483332472,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            6,{6,6.0151228870000004,0.0485000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            7,{7,7.0160034400000004,0.9515000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 4,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    4,//Z
-    "be",//Atomic symbol
-    "beryllium",//Full name
-    1,//Multiplicity
-    9.0121830999999997,//Mass
-    1.8141370804395149,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            9,{9,9.0121830999999997,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 5,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    5,//Z
-    "b",//Atomic symbol
-    "boron",//Full name
-    2,//Multiplicity
-    10.8134999999999994,//Mass
-    1.6062672066391539,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            10,{10,10.0129370000000009,0.1965000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            11,{11,11.0093049999999995,0.8035000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 6,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    6,//Z
-    "c",//Atomic symbol
-    "carbon",//Full name
-    3,//Multiplicity
-    12.0106000000000002,//Mass
-    1.4361918553479494,//Covalent radius
-    3.2125344132783078,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            12,{12,12.0000000000000000,0.9893999999999999}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            13,{13,13.0033548349999997,0.0106000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 7,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    7,//Z
-    "n",//Atomic symbol
-    "nitrogen",//Full name
-    4,//Multiplicity
-    14.0068549999999998,//Mass
-    1.3417055490750580,//Covalent radius
-    2.9290754944596338,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            14,{14,14.0030740040000001,0.9962050000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            15,{15,15.0001088990000007,0.0037950000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 8,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    8,//Z
-    "o",//Atomic symbol
-    "oxygen",//Full name
-    3,//Multiplicity
-    15.9993999999999996,//Mass
-    1.2472192428021665,//Covalent radius
-    2.8723837106958987,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            16,{16,15.9949146199999994,0.9975700000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            17,{17,16.9991317570000007,0.0003835000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            18,{18,17.9991596129999998,0.0020450000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 9,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    9,//Z
-    "f",//Atomic symbol
-    "fluorine",//Full name
-    2,//Multiplicity
-    18.9984031629999990,//Mass
-    1.0771438915109621,//Covalent radius
-    2.7778974044230074,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            19,{19,18.9984031629999990,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 10,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    10,//Z
-    "ne",//Atomic symbol
-    "neon",//Full name
-    1,//Multiplicity
-    20.1797000000000004,//Mass
-    1.0960411527655403,//Covalent radius
-    2.9101782332050554,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            20,{20,19.9924401799999991,0.9048000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            21,{21,20.9938466999999989,0.0027000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            22,{22,21.9913850999999987,0.0925000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 11,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    11,//Z
-    "na",//Atomic symbol
-    "sodium",//Full name
-    2,//Multiplicity
-    22.9897692800000009,//Mass
-    3.1369453682599948,//Covalent radius
-    4.2896783047892697,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            23,{23,22.9897692800000009,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 12,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    12,//Z
-    "mg",//Atomic symbol
-    "magnesium",//Full name
-    1,//Multiplicity
-    24.3054999999999986,//Mass
-    2.6645138368955377,//Covalent radius
-    3.2692261970420424,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            24,{24,23.9850417000000000,0.7896500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            25,{25,24.9858370000000001,0.1001100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            26,{26,25.9825930000000014,0.1102500000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 13,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    13,//Z
-    "al",//Atomic symbol
-    "aluminum",//Full name
-    2,//Multiplicity
-    26.9815384999999992,//Mass
-    2.2865686118039719,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            27,{27,26.9815384999999992,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 14,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    14,//Z
-    "si",//Atomic symbol
-    "silicon",//Full name
-    3,//Multiplicity
-    28.0850000000000009,//Mass
-    2.0975959992581892,//Covalent radius
-    3.9684248634614390,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            28,{28,27.9769265350000005,0.9225449999999999}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            29,{29,28.9764946650000006,0.0467200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            30,{30,29.9737700099999991,0.0307350000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 15,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    15,//Z
-    "p",//Atomic symbol
-    "phosphorus",//Full name
-    4,//Multiplicity
-    30.9737619980000005,//Mass
-    2.0220069542398762,//Covalent radius
-    3.4015070258240905,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            31,{31,30.9737619980000005,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 16,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    16,//Z
-    "s",//Atomic symbol
-    "sulfur",//Full name
-    3,//Multiplicity
-    32.0675000000000026,//Mass
-    1.9842124317307195,//Covalent radius
-    3.4015070258240905,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            32,{32,31.9720711739999999,0.9485000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            33,{33,32.9714589100000026,0.0076300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            34,{34,33.9678669999999983,0.0436500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            36,{36,35.9670810000000003,0.0001580000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 17,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    17,//Z
-    "cl",//Atomic symbol
-    "chlorine",//Full name
-    2,//Multiplicity
-    35.4515000000000029,//Mass
-    1.9275206479669846,//Covalent radius
-    3.3070207195511991,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            35,{35,34.9688526999999993,0.7580000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            37,{37,36.9659025999999997,0.2420000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 18,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    18,//Z
-    "ar",//Atomic symbol
-    "argon",//Full name
-    1,//Multiplicity
-    39.9480000000000004,//Mass
-    2.0031096929852978,//Covalent radius
-    3.5526851158607169,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            36,{36,35.9675451000000024,0.0033360000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            38,{38,37.9627320000000026,0.0006290000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            40,{40,39.9623831199999984,0.9960350000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 19,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    19,//Z
-    "k",//Atomic symbol
-    "potassium",//Full name
-    2,//Multiplicity
-    39.0983000000000018,//Mass
-    3.8361440346793909,//Covalent radius
-    5.1967468450090273,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            39,{39,38.9637064899999999,0.9325810000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            40,{40,39.9639981999999989,0.0001170000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            41,{41,40.9618252599999977,0.0673020000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 20,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    20,//Z
-    "ca",//Atomic symbol
-    "calcium",//Full name
-    1,//Multiplicity
-    40.0780000000000030,//Mass
-    3.3259179808057775,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            40,{40,39.9625909000000021,0.9694100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            42,{42,41.9586180000000013,0.0064700000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            43,{43,42.9587659999999971,0.0013500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            44,{44,43.9554820000000035,0.0208600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            46,{46,45.9536900000000017,0.0000400000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            48,{48,47.9525227999999970,0.0018700000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 21,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    21,//Z
-    "sc",//Atomic symbol
-    "scandium",//Full name
-    2,//Multiplicity
-    44.9559080000000009,//Mass
-    3.2125344132783078,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            45,{45,44.9559080000000009,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 22,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    22,//Z
-    "ti",//Atomic symbol
-    "titanium",//Full name
-    3,//Multiplicity
-    47.8669999999999973,//Mass
-    3.0235618007325251,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            46,{46,45.9526279999999971,0.0825000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            47,{47,46.9517590000000027,0.0744000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            48,{48,47.9479419999999976,0.7372000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            49,{49,48.9478659999999977,0.0541000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            50,{50,49.9447869999999980,0.0518000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 23,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    23,//Z
-    "v",//Atomic symbol
-    "vanadium",//Full name
-    4,//Multiplicity
-    50.9414999999999978,//Mass
-    2.8912809719504771,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            50,{50,49.9471559999999997,0.0025000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            51,{51,50.9439569999999975,0.9975000000000001}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 24,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    24,//Z
-    "cr",//Atomic symbol
-    "chromium",//Full name
-    7,//Multiplicity
-    51.9960999999999984,//Mass
-    2.6267193143863810,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            50,{50,49.9460419999999985,0.0434500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            52,{52,51.9405059999999992,0.8378900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            53,{53,52.9406480000000030,0.0950100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            54,{54,53.9388790000000000,0.0236500000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 25,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    25,//Z
-    "mn",//Atomic symbol
-    "manganese",//Full name
-    6,//Multiplicity
-    54.9380439999999979,//Mass
-    2.6267193143863810,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            55,{55,54.9380439999999979,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 26,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    26,//Z
-    "fe",//Atomic symbol
-    "iron",//Full name
-    5,//Multiplicity
-    55.8449999999999989,//Mass
-    2.4944384856043329,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            54,{54,53.9396089999999973,0.0584500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            56,{56,55.9349360000000004,0.9175400000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            57,{57,56.9353929999999977,0.0211900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            58,{58,57.9332739999999973,0.0028200000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 27,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    27,//Z
-    "co",//Atomic symbol
-    "cobalt",//Full name
-    4,//Multiplicity
-    58.9331940000000003,//Mass
-    2.3810549180768632,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            59,{59,58.9331940000000003,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 28,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    28,//Z
-    "ni",//Atomic symbol
-    "nickel",//Full name
-    3,//Multiplicity
-    58.6933999999999969,//Mass
-    2.3432603955677069,//Covalent radius
-    3.0802535844962597,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            58,{58,57.9353419999999986,0.6807690000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            60,{60,59.9307859999999977,0.2622310000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            61,{61,60.9310559999999981,0.0113990000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            62,{62,61.9283450000000002,0.0363450000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            64,{64,63.9279670000000024,0.0092560000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 29,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    29,//Z
-    "cu",//Atomic symbol
-    "copper",//Full name
-    2,//Multiplicity
-    63.5459999999999994,//Mass
-    2.4944384856043329,//Covalent radius
-    2.6456165756409593,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            63,{63,62.9295979999999986,0.6915000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            65,{65,64.9277900000000017,0.3085000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 30,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    30,//Z
-    "zn",//Atomic symbol
-    "zinc",//Full name
-    1,//Multiplicity
-    65.3799999999999955,//Mass
-    2.3054658730585502,//Covalent radius
-    2.6267193143863810,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            64,{64,63.9291419999999988,0.4917000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            66,{66,65.9260340000000014,0.2773000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            67,{67,66.9271279999999962,0.0404000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            68,{68,67.9248450000000048,0.1845000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            70,{70,69.9253199999999993,0.0061000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 31,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    31,//Z
-    "ga",//Atomic symbol
-    "gallium",//Full name
-    2,//Multiplicity
-    69.7229999999999990,//Mass
-    2.3054658730585502,//Covalent radius
-    3.5337878546061385,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            69,{69,68.9255739999999975,0.6010799999999999}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            71,{71,70.9247029999999938,0.3989200000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 32,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    32,//Z
-    "ge",//Atomic symbol
-    "germanium",//Full name
-    3,//Multiplicity
-    72.6299999999999955,//Mass
-    2.2676713505493939,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            70,{70,69.9242490000000032,0.2052000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            72,{72,71.9220758000000018,0.2745000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            73,{73,72.9234589999999940,0.0776000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            74,{74,73.9211777600000062,0.3652000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            76,{76,75.9214027000000016,0.0775000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 33,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    33,//Z
-    "as",//Atomic symbol
-    "arsenic",//Full name
-    4,//Multiplicity
-    74.9215949999999964,//Mass
-    2.2487740892948156,//Covalent radius
-    3.4959933320969818,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            75,{75,74.9215949999999964,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 34,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    34,//Z
-    "se",//Atomic symbol
-    "selenium",//Full name
-    3,//Multiplicity
-    78.9710000000000036,//Mass
-    2.2676713505493939,//Covalent radius
-    3.5904796383698736,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            74,{74,73.9224758999999949,0.0086000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            76,{76,75.9192137000000002,0.0923000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            77,{77,76.9199141999999938,0.0760000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            78,{78,77.9173090000000030,0.2369000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            80,{80,79.9165220000000005,0.4980000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            82,{82,81.9167000000000058,0.0882000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 35,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    35,//Z
-    "br",//Atomic symbol
-    "bromine",//Full name
-    2,//Multiplicity
-    79.9039999999999964,//Mass
-    2.2676713505493939,//Covalent radius
-    3.4959933320969818,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            79,{79,78.9183380000000056,0.5065000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            81,{81,80.9162900000000036,0.4935000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 36,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    36,//Z
-    "kr",//Atomic symbol
-    "krypton",//Full name
-    1,//Multiplicity
-    83.7980000000000018,//Mass
-    2.1920823055310805,//Covalent radius
-    3.8172467734248130,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            78,{78,77.9203650000000039,0.0035500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            80,{80,79.9163779999999946,0.0228600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            82,{82,81.9134829999999994,0.1159300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            83,{83,82.9141269999999935,0.1150000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            84,{84,83.9114977299999936,0.5698700000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            86,{86,85.9106106299999936,0.1727900000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 37,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    37,//Z
-    "rb",//Atomic symbol
-    "rubidium",//Full name
-    2,//Multiplicity
-    85.4677999999999969,//Mass
-    4.1573974760072216,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            85,{85,84.9117897400000032,0.7217000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            87,{87,86.9091805300000004,0.2783000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 38,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    38,//Z
-    "sr",//Atomic symbol
-    "strontium",//Full name
-    1,//Multiplicity
-    87.6200000000000045,//Mass
-    3.6849659446427649,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            84,{84,83.9134190000000046,0.0056000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            86,{86,85.9092610000000008,0.0986000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            87,{87,86.9088780000000014,0.0700000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            88,{88,87.9056130000000024,0.8258000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 39,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    39,//Z
-    "y",//Atomic symbol
-    "yttrium",//Full name
-    2,//Multiplicity
-    88.9058399999999978,//Mass
-    3.5904796383698736,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            89,{89,88.9058399999999978,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 40,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    40,//Z
-    "zr",//Atomic symbol
-    "zirconium",//Full name
-    3,//Multiplicity
-    91.2240000000000038,//Mass
-    3.3070207195511991,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            90,{90,89.9047000000000054,0.5145000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            91,{91,90.9056400000000053,0.1122000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            92,{92,91.9050299999999964,0.1715000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            94,{94,93.9063100000000048,0.1738000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            96,{96,95.9082700000000017,0.0280000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 41,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    41,//Z
-    "nb",//Atomic symbol
-    "niobium",//Full name
-    6,//Multiplicity
-    92.9063699999999955,//Mass
-    3.0991508457508381,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            93,{93,92.9063699999999955,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 42,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    42,//Z
-    "mo",//Atomic symbol
-    "molybdenum",//Full name
-    7,//Multiplicity
-    95.9500000000000028,//Mass
-    2.9101782332050554,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            92,{92,91.9068079999999981,0.1464900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            94,{94,93.9050849999999997,0.0918700000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            95,{95,94.9058390000000003,0.1587300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            96,{96,95.9046759999999949,0.1667300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            97,{97,96.9060180000000031,0.0958200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            98,{98,97.9054050000000018,0.2429200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            100,{100,99.9074719999999985,0.0974400000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 43,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    43,//Z
-    "tc",//Atomic symbol
-    "technetium",//Full name
-    6,//Multiplicity
-    0.0000000000000000,//Mass
-    2.7778974044230074,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            98,{98,97.9072100000000063,0.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 44,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    44,//Z
-    "ru",//Atomic symbol
-    "ruthenium",//Full name
-    5,//Multiplicity
-    101.0699999999999932,//Mass
-    2.7590001431684290,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            96,{96,95.9075899999999990,0.0554000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            98,{98,97.9052899999999937,0.0187000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            99,{99,98.9059340000000020,0.1276000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            100,{100,99.9042139999999961,0.1260000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            101,{101,100.9055769999999939,0.1706000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            102,{102,101.9043439999999947,0.3155000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            104,{104,103.9054299999999955,0.1862000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 45,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    45,//Z
-    "rh",//Atomic symbol
-    "rhodium",//Full name
-    4,//Multiplicity
-    102.9055000000000035,//Mass
-    2.6834110981501160,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            103,{103,102.9055000000000035,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 46,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    46,//Z
-    "pd",//Atomic symbol
-    "palladium",//Full name
-    1,//Multiplicity
-    106.4200000000000017,//Mass
-    2.6267193143863810,//Covalent radius
-    3.0802535844962597,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            102,{102,101.9056000000000068,0.0102000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            104,{104,103.9040310000000034,0.1114000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            105,{105,104.9050799999999981,0.2233000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            106,{106,105.9034800000000018,0.2733000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            108,{108,107.9038919999999990,0.2646000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            110,{110,109.9051719999999932,0.1172000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 47,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    47,//Z
-    "ag",//Atomic symbol
-    "silver",//Full name
-    2,//Multiplicity
-    107.8682000000000016,//Mass
-    2.7401028819138507,//Covalent radius
-    3.2503289357874645,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            107,{107,106.9050900000000013,0.5183900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            109,{109,108.9047549999999944,0.4816100000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 48,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    48,//Z
-    "cd",//Atomic symbol
-    "cadmium",//Full name
-    1,//Multiplicity
-    112.4140000000000015,//Mass
-    2.7212056206592723,//Covalent radius
-    2.9857672782233684,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            106,{106,105.9064599999999956,0.0124500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            108,{108,107.9041830000000033,0.0088800000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            110,{110,109.9030070000000023,0.1247000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            111,{111,110.9041830000000033,0.1279500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            112,{112,111.9027629999999931,0.2410900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            113,{113,112.9044080000000037,0.1222700000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            114,{114,113.9033649999999938,0.2875400000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            116,{116,115.9047630000000026,0.0751200000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 49,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    49,//Z
-    "in",//Atomic symbol
-    "indium",//Full name
-    2,//Multiplicity
-    114.8179999999999978,//Mass
-    2.6834110981501160,//Covalent radius
-    3.6471714221336082,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            113,{113,112.9040619999999961,0.0428100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            115,{115,114.9038787799999994,0.9571900000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 50,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    50,//Z
-    "sn",//Atomic symbol
-    "tin",//Full name
-    3,//Multiplicity
-    118.7099999999999937,//Mass
-    2.6267193143863810,//Covalent radius
-    4.1007056922434870,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            112,{112,111.9048240000000050,0.0097000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            114,{114,113.9027829999999994,0.0066000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            115,{115,114.9033447000000052,0.0034000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            116,{116,115.9017429999999962,0.1454000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            117,{117,116.9029539999999940,0.0768000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            118,{118,117.9016069999999985,0.2422000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            119,{119,118.9033110000000022,0.0859000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            120,{120,119.9022020000000026,0.3258000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            122,{122,121.9034400000000034,0.0463000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            124,{124,123.9052769999999981,0.0579000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 51,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    51,//Z
-    "sb",//Atomic symbol
-    "antimony",//Full name
-    4,//Multiplicity
-    121.7600000000000051,//Mass
-    2.6267193143863810,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            121,{121,120.9038099999999929,0.5721000000000001}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            123,{123,122.9042100000000062,0.4279000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 52,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    52,//Z
-    "te",//Atomic symbol
-    "tellurium",//Full name
-    3,//Multiplicity
-    127.5999999999999943,//Mass
-    2.6078220531318026,//Covalent radius
-    3.8928358184431260,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            120,{120,119.9040600000000012,0.0009000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            122,{122,121.9030400000000043,0.0255000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            123,{123,122.9042699999999968,0.0089000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            124,{124,123.9028200000000055,0.0474000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            125,{125,124.9044300000000050,0.0707000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            126,{126,125.9033100000000047,0.1884000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            128,{128,127.9044609999999977,0.3174000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            130,{130,129.9062227500000120,0.3408000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 53,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    53,//Z
-    "i",//Atomic symbol
-    "iodine",//Full name
-    2,//Multiplicity
-    126.9044700000000034,//Mass
-    2.6267193143863810,//Covalent radius
-    3.7416577284064996,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            127,{127,126.9044700000000034,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 54,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    54,//Z
-    "xe",//Atomic symbol
-    "xenon",//Full name
-    1,//Multiplicity
-    131.2930000000000064,//Mass
-    2.6456165756409593,//Covalent radius
-    4.0818084309889091,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            124,{124,123.9058899999999994,0.0009500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            126,{126,125.9043000000000063,0.0008900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            128,{128,127.9035310000000010,0.0191000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            129,{129,128.9047808599999883,0.2640100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            130,{130,129.9035093999999901,0.0407100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            131,{131,130.9050839999999880,0.2123200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            132,{132,131.9041550899999891,0.2690900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            134,{134,133.9053949999999986,0.1043600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            136,{136,135.9072144799999933,0.0885700000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 55,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    55,//Z
-    "cs",//Atomic symbol
-    "cesium",//Full name
-    2,//Multiplicity
-    132.9054519599999935,//Mass
-    4.6109317461171004,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            133,{133,132.9054519599999935,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 56,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    56,//Z
-    "ba",//Atomic symbol
-    "barium",//Full name
-    1,//Multiplicity
-    137.3269999999999982,//Mass
-    4.0629111697343303,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            130,{130,129.9063199999999938,0.0011000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            132,{132,131.9050609999999892,0.0010000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            134,{134,133.9045079999999928,0.0242000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            135,{135,134.9056879999999978,0.0659000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            136,{136,135.9045759999999916,0.0785000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            137,{137,136.9058269999999879,0.1123000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            138,{138,137.9052470000000028,0.7170000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 57,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    57,//Z
-    "la",//Atomic symbol
-    "lanthanum",//Full name
-    2,//Multiplicity
-    138.9054700000000082,//Mass
-    3.9117330796977043,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            138,{138,137.9071199999999919,0.0008881000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            139,{139,138.9063600000000065,0.9991119000000001}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 58,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    58,//Z
-    "ce",//Atomic symbol
-    "cerium",//Full name
-    1,//Multiplicity
-    140.1160000000000139,//Mass
-    3.8550412959339693,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            136,{136,135.9071289999999976,0.0018600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            138,{138,137.9059900000000027,0.0025100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            140,{140,139.9054399999999987,0.8844900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            142,{142,141.9092499999999859,0.1111400000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 59,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    59,//Z
-    "pr",//Atomic symbol
-    "praseodymium",//Full name
-    4,//Multiplicity
-    140.9076599999999928,//Mass
-    3.8361440346793909,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            141,{141,140.9076599999999928,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 60,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    60,//Z
-    "nd",//Atomic symbol
-    "neodymium",//Full name
-    5,//Multiplicity
-    144.2419999999999902,//Mass
-    3.7983495121702346,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            142,{142,141.9077299999999866,0.2715300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            143,{143,142.9098199999999963,0.1217300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            144,{144,143.9100899999999967,0.2379800000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            145,{145,144.9125799999999913,0.0829300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            146,{146,145.9131199999999922,0.1718900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            148,{148,147.9168999999999983,0.0575600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            150,{150,149.9208999999999889,0.0563800000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 61,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    61,//Z
-    "pm",//Atomic symbol
-    "promethium",//Full name
-    6,//Multiplicity
-    0.0000000000000000,//Mass
-    3.7605549896610779,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            145,{145,144.9127599999999916,0.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 62,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    62,//Z
-    "sm",//Atomic symbol
-    "samarium",//Full name
-    7,//Multiplicity
-    150.3600000000000136,//Mass
-    3.7416577284064996,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            144,{144,143.9120100000000093,0.0308000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            147,{147,146.9148999999999887,0.1500000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            148,{148,147.9148299999999949,0.1125000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            149,{149,148.9171900000000051,0.1382000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            150,{150,149.9172800000000052,0.0737000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            152,{152,151.9197399999999902,0.2674000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            154,{154,153.9222200000000100,0.2274000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 63,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    63,//Z
-    "eu",//Atomic symbol
-    "europium",//Full name
-    8,//Multiplicity
-    151.9639999999999986,//Mass
-    3.7416577284064996,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            151,{151,150.9198599999999999,0.4781000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            153,{153,152.9212400000000116,0.5219000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 64,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    64,//Z
-    "gd",//Atomic symbol
-    "gadolinium",//Full name
-    9,//Multiplicity
-    157.2500000000000000,//Mass
-    3.7038632058973433,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            152,{152,151.9198000000000093,0.0020000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            154,{154,153.9208700000000078,0.0218000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            155,{155,154.9226299999999981,0.1480000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            156,{156,155.9221300000000099,0.2047000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            157,{157,156.9239699999999971,0.1565000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            158,{158,157.9241100000000131,0.2484000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            160,{160,159.9270600000000115,0.2186000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 65,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    65,//Z
-    "tb",//Atomic symbol
-    "terbium",//Full name
-    6,//Multiplicity
-    158.9253500000000088,//Mass
-    3.6660686833881866,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            159,{159,158.9253500000000088,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 66,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    66,//Z
-    "dy",//Atomic symbol
-    "dysprosium",//Full name
-    5,//Multiplicity
-    162.5000000000000000,//Mass
-    3.6282741608790299,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            156,{156,155.9242800000000102,0.0005600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            158,{158,157.9244199999999978,0.0009500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            160,{160,159.9251999999999896,0.0232900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            161,{161,160.9269400000000019,0.1888900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            162,{162,161.9268099999999890,0.2547500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            163,{163,162.9287400000000048,0.2489600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            164,{164,163.9291800000000023,0.2826000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 67,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    67,//Z
-    "ho",//Atomic symbol
-    "holmium",//Full name
-    4,//Multiplicity
-    164.9303299999999979,//Mass
-    3.6282741608790299,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            165,{165,164.9303299999999979,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 68,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    68,//Z
-    "er",//Atomic symbol
-    "erbium",//Full name
-    3,//Multiplicity
-    167.2589999999999861,//Mass
-    3.5715823771152952,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            162,{162,161.9287899999999922,0.0013900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            164,{164,163.9292100000000119,0.0160100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            166,{166,165.9302999999999884,0.3350300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            167,{167,166.9320500000000038,0.2286900000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            168,{168,167.9323799999999949,0.2697800000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            170,{170,169.9354700000000093,0.1491000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 69,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    69,//Z
-    "tm",//Atomic symbol
-    "thulium",//Full name
-    2,//Multiplicity
-    168.9342200000000105,//Mass
-    3.5904796383698736,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            169,{169,168.9342200000000105,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 70,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    70,//Z
-    "yb",//Atomic symbol
-    "ytterbium",//Full name
-    1,//Multiplicity
-    173.0449999999999875,//Mass
-    3.5337878546061385,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            168,{168,167.9338899999999910,0.0012600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            170,{170,169.9347699999999861,0.0302300000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            171,{171,170.9363299999999981,0.1421600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            172,{172,171.9363899999999887,0.2175400000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            173,{173,172.9382200000000012,0.1609800000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            174,{174,173.9388700000000085,0.3189600000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            176,{176,175.9425799999999924,0.1288700000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 71,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    71,//Z
-    "lu",//Atomic symbol
-    "lutetium",//Full name
-    2,//Multiplicity
-    174.9668000000000063,//Mass
-    3.5337878546061385,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            175,{175,174.9407799999999895,0.9740100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            176,{176,175.9426899999999989,0.0259900000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 72,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    72,//Z
-    "hf",//Atomic symbol
-    "hafnium",//Full name
-    3,//Multiplicity
-    178.4900000000000091,//Mass
-    3.3070207195511991,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            174,{174,173.9400500000000136,0.0016000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            176,{176,175.9414099999999905,0.0526000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            177,{177,176.9432299999999998,0.1860000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            178,{178,177.9437100000000100,0.2728000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            179,{179,178.9458199999999977,0.1362000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            180,{180,179.9465600000000052,0.3508000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 73,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    73,//Z
-    "ta",//Atomic symbol
-    "tantalum",//Full name
-    4,//Multiplicity
-    180.9478799999999978,//Mass
-    3.2125344132783078,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            180,{180,179.9474600000000066,0.0001201000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            181,{181,180.9480000000000075,0.9998799000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 74,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    74,//Z
-    "w",//Atomic symbol
-    "tungsten",//Full name
-    5,//Multiplicity
-    183.8400000000000034,//Mass
-    3.0613563232416814,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            180,{180,179.9467099999999959,0.0012000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            182,{182,181.9482040000000040,0.2650000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            183,{183,182.9502229999999940,0.1431000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            184,{184,183.9509309999999971,0.3064000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            186,{186,185.9543600000000083,0.2843000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 75,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    75,//Z
-    "re",//Atomic symbol
-    "rhenium",//Full name
-    6,//Multiplicity
-    186.2069999999999936,//Mass
-    2.8534864494413203,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            185,{185,184.9529550000000029,0.3740000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            187,{187,186.9557499999999948,0.6260000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 76,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    76,//Z
-    "os",//Atomic symbol
-    "osmium",//Full name
-    5,//Multiplicity
-    190.2299999999999898,//Mass
-    2.7212056206592723,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            184,{184,183.9524890000000141,0.0002000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            186,{186,185.9538400000000138,0.0159000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            187,{187,186.9557499999999948,0.0196000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            188,{188,187.9558399999999949,0.1324000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            189,{189,188.9581399999999860,0.1615000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            190,{190,189.9584399999999960,0.2626000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            192,{192,191.9614799999999946,0.4078000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 77,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    77,//Z
-    "ir",//Atomic symbol
-    "iridium",//Full name
-    4,//Multiplicity
-    192.2170000000000130,//Mass
-    2.6645138368955377,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            191,{191,190.9605899999999963,0.3730000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            193,{193,192.9629199999999969,0.6270000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 78,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    78,//Z
-    "pt",//Atomic symbol
-    "platinum",//Full name
-    3,//Multiplicity
-    195.0840000000000032,//Mass
-    2.5700275306226463,//Covalent radius
-    3.3070207195511991,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            190,{190,189.9599300000000142,0.0001200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            192,{192,191.9610399999999970,0.0078200000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            194,{194,193.9626810000000035,0.3286400000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            195,{195,194.9647919999999885,0.3377500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            196,{196,195.9649520000000109,0.2521100000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            198,{198,197.9678900000000112,0.0735600000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 79,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    79,//Z
-    "au",//Atomic symbol
-    "gold",//Full name
-    2,//Multiplicity
-    196.9665689999999927,//Mass
-    2.5700275306226463,//Covalent radius
-    3.1369453682599948,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            197,{197,196.9665689999999927,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 80,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    80,//Z
-    "hg",//Atomic symbol
-    "mercury",//Full name
-    1,//Multiplicity
-    200.5920000000000130,//Mass
-    2.4944384856043329,//Covalent radius
-    2.9290754944596338,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            196,{196,195.9658300000000111,0.0015000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            198,{198,197.9667689999999993,0.1004000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            199,{199,198.9682809999999904,0.1694000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            200,{200,199.9683269999999879,0.2314000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            201,{201,200.9703030000000012,0.1317000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            202,{202,201.9706429999999955,0.2974000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            204,{204,203.9734939999999881,0.0682000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 81,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    81,//Z
-    "tl",//Atomic symbol
-    "thallium",//Full name
-    2,//Multiplicity
-    204.3834999999999980,//Mass
-    2.7401028819138507,//Covalent radius
-    3.7038632058973433,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            203,{203,202.9723449999999900,0.2951500000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            205,{205,204.9744279999999890,0.7048500000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 82,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    82,//Z
-    "pb",//Atomic symbol
-    "lead",//Full name
-    3,//Multiplicity
-    207.1999999999999886,//Mass
-    2.7590001431684290,//Covalent radius
-    3.8172467734248130,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            204,{204,203.9730439999999874,0.0140000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            206,{206,205.9744660000000067,0.2410000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            207,{207,206.9758970000000033,0.2210000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            208,{208,207.9766529999999989,0.5240000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 83,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    83,//Z
-    "bi",//Atomic symbol
-    "bismuth",//Full name
-    4,//Multiplicity
-    208.9804000000000030,//Mass
-    2.7967946656775857,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            209,{209,208.9804000000000030,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 84,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    84,//Z
-    "po",//Atomic symbol
-    "polonium",//Full name
-    3,//Multiplicity
-    0.0000000000000000,//Mass
-    2.6456165756409593,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 85,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    85,//Z
-    "at",//Atomic symbol
-    "astatine",//Full name
-    2,//Multiplicity
-    0.0000000000000000,//Mass
-    2.8345891881867420,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 86,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    86,//Z
-    "rn",//Atomic symbol
-    "radon",//Full name
-    1,//Multiplicity
-    0.0000000000000000,//Mass
-    2.8345891881867420,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 87,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    87,//Z
-    "fr",//Atomic symbol
-    "francium",//Full name
-    2,//Multiplicity
-    0.0000000000000000,//Mass
-    4.9132879261903533,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 88,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    88,//Z
-    "ra",//Atomic symbol
-    "radium",//Full name
-    1,//Multiplicity
-    0.0000000000000000,//Mass
-    4.1762947372618004,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 89,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    89,//Z
-    "ac",//Atomic symbol
-    "actinium",//Full name
-    2,//Multiplicity
-    0.0000000000000000,//Mass
-    4.0629111697343303,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 90,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    90,//Z
-    "th",//Atomic symbol
-    "thorium",//Full name
-    3,//Multiplicity
-    232.0377000000000010,//Mass
-    3.8928358184431260,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            230,{230,230.0331299999999999,0.0002000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            232,{232,232.0380600000000015,0.9998000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 91,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    91,//Z
-    "pa",//Atomic symbol
-    "protactinium",//Full name
-    4,//Multiplicity
-    231.0358799999999917,//Mass
-    3.7794522509156563,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            231,{231,231.0358799999999917,1.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 92,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    92,//Z
-    "u",//Atomic symbol
-    "uranium",//Full name
-    5,//Multiplicity
-    238.0289099999999962,//Mass
-    3.7038632058973433,//Covalent radius
-    3.5148905933515602,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            233,{233,233.0396399999999915,0.0000000000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            234,{234,234.0409500000000094,0.0000540000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            235,{235,235.0439299999999889,0.0072040000000000}
-        },//End pair<int,IsotopeData
-        {//Start pair<int,IsotopeData
-            238,{238,238.0507900000000063,0.9927420000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 93,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    93,//Z
-    "np",//Atomic symbol
-    "neptunium",//Full name
-    6,//Multiplicity
-    0.0000000000000000,//Mass
-    3.5904796383698736,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 94,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    94,//Z
-    "pu",//Atomic symbol
-    "plutonium",//Full name
-    7,//Multiplicity
-    0.0000000000000000,//Mass
-    3.5337878546061385,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 95,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    95,//Z
-    "am",//Atomic symbol
-    "americium",//Full name
-    8,//Multiplicity
-    0.0000000000000000,//Mass
-    3.4015070258240905,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 96,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    96,//Z
-    "cm",//Atomic symbol
-    "curium",//Full name
-    9,//Multiplicity
-    0.0000000000000000,//Mass
-    3.1936371520237294,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 97,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    97,//Z
-    "bk",//Atomic symbol
-    "berkelium",//Full name
-    6,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 98,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    98,//Z
-    "cf",//Atomic symbol
-    "californium",//Full name
-    5,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 99,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    99,//Z
-    "es",//Atomic symbol
-    "einsteinium",//Full name
-    4,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 100,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    100,//Z
-    "fm",//Atomic symbol
-    "fermium",//Full name
-    3,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 101,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    101,//Z
-    "md",//Atomic symbol
-    "mendelevium",//Full name
-    2,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 102,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    102,//Z
-    "no",//Atomic symbol
-    "nobelium",//Full name
-    1,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 103,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    103,//Z
-    "lr",//Atomic symbol
-    "lawrencium",//Full name
-    2,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 104,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    104,//Z
-    "rf",//Atomic symbol
-    "rutherfordium",//Full name
-    3,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 105,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    105,//Z
-    "db",//Atomic symbol
-    "dubnium",//Full name
-    4,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 106,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    106,//Z
-    "sg",//Atomic symbol
-    "seaborgium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 107,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    107,//Z
-    "bh",//Atomic symbol
-    "bohrium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 108,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    108,//Z
-    "hs",//Atomic symbol
-    "hassium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 109,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    109,//Z
-    "mt",//Atomic symbol
-    "meitnerium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 110,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    110,//Z
-    "ds",//Atomic symbol
-    "darmstadtium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 111,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    111,//Z
-    "rg",//Atomic symbol
-    "roentgenium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 112,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    112,//Z
-    "cn",//Atomic symbol
-    "copernicium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 113,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    113,//Z
-    "nh",//Atomic symbol
-    "nihonium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 114,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    114,//Z
-    "fl",//Atomic symbol
-    "flerovium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 115,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    115,//Z
-    "mc",//Atomic symbol
-    "moscovium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 116,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    116,//Z
-    "lv",//Atomic symbol
-    "livermorium",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 117,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    117,//Z
-    "ts",//Atomic symbol
-    "tennessine",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 118,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    118,//Z
-    "og",//Atomic symbol
-    "oganesson",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 999,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    999,//Z
-    "chg",//Atomic symbol
-    "charge",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            999,{999,0.0000000000000000,0.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-  { 9999,//Start pair<int,AtomicInfo>
-{//Start AtomicInfo instance
-    9999,//Z
-    "dum",//Atomic symbol
-    "dummy",//Full name
-    0,//Multiplicity
-    0.0000000000000000,//Mass
-    0.0000000000000000,//Covalent radius
-    0.0000000000000000,//VDW radius
-    {//Start map<int,IsotopeData>
-        {//Start pair<int,IsotopeData
-            9999,{9999,0.0000000000000000,0.0000000000000000}
-        },//End pair<int,IsotopeData
-    }//End map<int,IsotopeData>
-}//End AtomicInfo
-  },//End pair<int,AtomicInfo>
-};
+extern const std::map<std::size_t, AtomicInfo> atomic_data_(
+    [](){ std::map<std::size_t, AtomicInfo> temp;
+AtomicInfo tmp0;
+tmp0.props[LibChemist::AtomProperty::Z] = 0;
+tmp0.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp0.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp0.props[LibChemist::AtomProperty::nelectrons] = 0.0000000000000000;
+tmp0.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp0.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp0.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp0.isotopes[0] = IsotopeData{0,0.0000000000000000,0.0000000000000000};
+tmp0.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[0] = tmp0;
+AtomicInfo tmp1;
+tmp1.props[LibChemist::AtomProperty::Z] = 1;
+tmp1.props[LibChemist::AtomProperty::mass] = 1.0079750000000001;
+tmp1.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp1.props[LibChemist::AtomProperty::nelectrons] = 1.0000000000000000;
+tmp1.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp1.props[LibChemist::AtomProperty::cov_radius] = 0.5858150988919267;
+tmp1.props[LibChemist::AtomProperty::vdw_radius] = 2.2676713505493939;
+tmp1.isotopes[1] = IsotopeData{1,1.0078250322000000,0.9998550000000000};
+tmp1.isotopes[2] = IsotopeData{2,2.0141017781000001,0.0001450000000000};
+tmp1.props[LibChemist::AtomProperty::isotope_mass] = 1.0078250322000000;
+temp[1] = tmp1;
+AtomicInfo tmp2;
+tmp2.props[LibChemist::AtomProperty::Z] = 2;
+tmp2.props[LibChemist::AtomProperty::mass] = 4.0026020000000004;
+tmp2.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp2.props[LibChemist::AtomProperty::nelectrons] = 2.0000000000000000;
+tmp2.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp2.props[LibChemist::AtomProperty::cov_radius] = 0.5291233151281919;
+tmp2.props[LibChemist::AtomProperty::vdw_radius] = 2.6456165756409593;
+tmp2.isotopes[3] = IsotopeData{3,3.0160293199999999,0.0000020000000000};
+tmp2.isotopes[4] = IsotopeData{4,4.0026032541000003,0.9999980000000001};
+tmp2.props[LibChemist::AtomProperty::isotope_mass] = 4.0026032541000003;
+temp[2] = tmp2;
+AtomicInfo tmp3;
+tmp3.props[LibChemist::AtomProperty::Z] = 3;
+tmp3.props[LibChemist::AtomProperty::mass] = 6.9675000000000002;
+tmp3.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp3.props[LibChemist::AtomProperty::nelectrons] = 3.0000000000000000;
+tmp3.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp3.props[LibChemist::AtomProperty::cov_radius] = 2.4188494405860199;
+tmp3.props[LibChemist::AtomProperty::vdw_radius] = 3.4393015483332472;
+tmp3.isotopes[6] = IsotopeData{6,6.0151228870000004,0.0485000000000000};
+tmp3.isotopes[7] = IsotopeData{7,7.0160034400000004,0.9515000000000000};
+tmp3.props[LibChemist::AtomProperty::isotope_mass] = 7.0160034400000004;
+temp[3] = tmp3;
+AtomicInfo tmp4;
+tmp4.props[LibChemist::AtomProperty::Z] = 4;
+tmp4.props[LibChemist::AtomProperty::mass] = 9.0121830999999997;
+tmp4.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp4.props[LibChemist::AtomProperty::nelectrons] = 4.0000000000000000;
+tmp4.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp4.props[LibChemist::AtomProperty::cov_radius] = 1.8141370804395149;
+tmp4.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp4.isotopes[9] = IsotopeData{9,9.0121830999999997,1.0000000000000000};
+tmp4.props[LibChemist::AtomProperty::isotope_mass] = 9.0121830999999997;
+temp[4] = tmp4;
+AtomicInfo tmp5;
+tmp5.props[LibChemist::AtomProperty::Z] = 5;
+tmp5.props[LibChemist::AtomProperty::mass] = 10.8134999999999994;
+tmp5.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp5.props[LibChemist::AtomProperty::nelectrons] = 5.0000000000000000;
+tmp5.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp5.props[LibChemist::AtomProperty::cov_radius] = 1.6062672066391539;
+tmp5.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp5.isotopes[10] = IsotopeData{10,10.0129370000000009,0.1965000000000000};
+tmp5.isotopes[11] = IsotopeData{11,11.0093049999999995,0.8035000000000000};
+tmp5.props[LibChemist::AtomProperty::isotope_mass] = 11.0093049999999995;
+temp[5] = tmp5;
+AtomicInfo tmp6;
+tmp6.props[LibChemist::AtomProperty::Z] = 6;
+tmp6.props[LibChemist::AtomProperty::mass] = 12.0106000000000002;
+tmp6.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp6.props[LibChemist::AtomProperty::nelectrons] = 6.0000000000000000;
+tmp6.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp6.props[LibChemist::AtomProperty::cov_radius] = 1.4361918553479494;
+tmp6.props[LibChemist::AtomProperty::vdw_radius] = 3.2125344132783078;
+tmp6.isotopes[12] = IsotopeData{12,12.0000000000000000,0.9893999999999999};
+tmp6.isotopes[13] = IsotopeData{13,13.0033548349999997,0.0106000000000000};
+tmp6.props[LibChemist::AtomProperty::isotope_mass] = 12.0000000000000000;
+temp[6] = tmp6;
+AtomicInfo tmp7;
+tmp7.props[LibChemist::AtomProperty::Z] = 7;
+tmp7.props[LibChemist::AtomProperty::mass] = 14.0068549999999998;
+tmp7.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp7.props[LibChemist::AtomProperty::nelectrons] = 7.0000000000000000;
+tmp7.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp7.props[LibChemist::AtomProperty::cov_radius] = 1.3417055490750580;
+tmp7.props[LibChemist::AtomProperty::vdw_radius] = 2.9290754944596338;
+tmp7.isotopes[14] = IsotopeData{14,14.0030740040000001,0.9962050000000000};
+tmp7.isotopes[15] = IsotopeData{15,15.0001088990000007,0.0037950000000000};
+tmp7.props[LibChemist::AtomProperty::isotope_mass] = 14.0030740040000001;
+temp[7] = tmp7;
+AtomicInfo tmp8;
+tmp8.props[LibChemist::AtomProperty::Z] = 8;
+tmp8.props[LibChemist::AtomProperty::mass] = 15.9993999999999996;
+tmp8.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp8.props[LibChemist::AtomProperty::nelectrons] = 8.0000000000000000;
+tmp8.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp8.props[LibChemist::AtomProperty::cov_radius] = 1.2472192428021665;
+tmp8.props[LibChemist::AtomProperty::vdw_radius] = 2.8723837106958987;
+tmp8.isotopes[16] = IsotopeData{16,15.9949146199999994,0.9975700000000000};
+tmp8.isotopes[17] = IsotopeData{17,16.9991317570000007,0.0003835000000000};
+tmp8.isotopes[18] = IsotopeData{18,17.9991596129999998,0.0020450000000000};
+tmp8.props[LibChemist::AtomProperty::isotope_mass] = 15.9949146199999994;
+temp[8] = tmp8;
+AtomicInfo tmp9;
+tmp9.props[LibChemist::AtomProperty::Z] = 9;
+tmp9.props[LibChemist::AtomProperty::mass] = 18.9984031629999990;
+tmp9.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp9.props[LibChemist::AtomProperty::nelectrons] = 9.0000000000000000;
+tmp9.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp9.props[LibChemist::AtomProperty::cov_radius] = 1.0771438915109621;
+tmp9.props[LibChemist::AtomProperty::vdw_radius] = 2.7778974044230074;
+tmp9.isotopes[19] = IsotopeData{19,18.9984031629999990,1.0000000000000000};
+tmp9.props[LibChemist::AtomProperty::isotope_mass] = 18.9984031629999990;
+temp[9] = tmp9;
+AtomicInfo tmp10;
+tmp10.props[LibChemist::AtomProperty::Z] = 10;
+tmp10.props[LibChemist::AtomProperty::mass] = 20.1797000000000004;
+tmp10.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp10.props[LibChemist::AtomProperty::nelectrons] = 10.0000000000000000;
+tmp10.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp10.props[LibChemist::AtomProperty::cov_radius] = 1.0960411527655403;
+tmp10.props[LibChemist::AtomProperty::vdw_radius] = 2.9101782332050554;
+tmp10.isotopes[20] = IsotopeData{20,19.9924401799999991,0.9048000000000000};
+tmp10.isotopes[21] = IsotopeData{21,20.9938466999999989,0.0027000000000000};
+tmp10.isotopes[22] = IsotopeData{22,21.9913850999999987,0.0925000000000000};
+tmp10.props[LibChemist::AtomProperty::isotope_mass] = 19.9924401799999991;
+temp[10] = tmp10;
+AtomicInfo tmp11;
+tmp11.props[LibChemist::AtomProperty::Z] = 11;
+tmp11.props[LibChemist::AtomProperty::mass] = 22.9897692800000009;
+tmp11.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp11.props[LibChemist::AtomProperty::nelectrons] = 11.0000000000000000;
+tmp11.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp11.props[LibChemist::AtomProperty::cov_radius] = 3.1369453682599948;
+tmp11.props[LibChemist::AtomProperty::vdw_radius] = 4.2896783047892697;
+tmp11.isotopes[23] = IsotopeData{23,22.9897692800000009,1.0000000000000000};
+tmp11.props[LibChemist::AtomProperty::isotope_mass] = 22.9897692800000009;
+temp[11] = tmp11;
+AtomicInfo tmp12;
+tmp12.props[LibChemist::AtomProperty::Z] = 12;
+tmp12.props[LibChemist::AtomProperty::mass] = 24.3054999999999986;
+tmp12.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp12.props[LibChemist::AtomProperty::nelectrons] = 12.0000000000000000;
+tmp12.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp12.props[LibChemist::AtomProperty::cov_radius] = 2.6645138368955377;
+tmp12.props[LibChemist::AtomProperty::vdw_radius] = 3.2692261970420424;
+tmp12.isotopes[24] = IsotopeData{24,23.9850417000000000,0.7896500000000000};
+tmp12.isotopes[25] = IsotopeData{25,24.9858370000000001,0.1001100000000000};
+tmp12.isotopes[26] = IsotopeData{26,25.9825930000000014,0.1102500000000000};
+tmp12.props[LibChemist::AtomProperty::isotope_mass] = 23.9850417000000000;
+temp[12] = tmp12;
+AtomicInfo tmp13;
+tmp13.props[LibChemist::AtomProperty::Z] = 13;
+tmp13.props[LibChemist::AtomProperty::mass] = 26.9815384999999992;
+tmp13.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp13.props[LibChemist::AtomProperty::nelectrons] = 13.0000000000000000;
+tmp13.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp13.props[LibChemist::AtomProperty::cov_radius] = 2.2865686118039719;
+tmp13.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp13.isotopes[27] = IsotopeData{27,26.9815384999999992,1.0000000000000000};
+tmp13.props[LibChemist::AtomProperty::isotope_mass] = 26.9815384999999992;
+temp[13] = tmp13;
+AtomicInfo tmp14;
+tmp14.props[LibChemist::AtomProperty::Z] = 14;
+tmp14.props[LibChemist::AtomProperty::mass] = 28.0850000000000009;
+tmp14.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp14.props[LibChemist::AtomProperty::nelectrons] = 14.0000000000000000;
+tmp14.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp14.props[LibChemist::AtomProperty::cov_radius] = 2.0975959992581892;
+tmp14.props[LibChemist::AtomProperty::vdw_radius] = 3.9684248634614390;
+tmp14.isotopes[28] = IsotopeData{28,27.9769265350000005,0.9225449999999999};
+tmp14.isotopes[29] = IsotopeData{29,28.9764946650000006,0.0467200000000000};
+tmp14.isotopes[30] = IsotopeData{30,29.9737700099999991,0.0307350000000000};
+tmp14.props[LibChemist::AtomProperty::isotope_mass] = 27.9769265350000005;
+temp[14] = tmp14;
+AtomicInfo tmp15;
+tmp15.props[LibChemist::AtomProperty::Z] = 15;
+tmp15.props[LibChemist::AtomProperty::mass] = 30.9737619980000005;
+tmp15.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp15.props[LibChemist::AtomProperty::nelectrons] = 15.0000000000000000;
+tmp15.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp15.props[LibChemist::AtomProperty::cov_radius] = 2.0220069542398762;
+tmp15.props[LibChemist::AtomProperty::vdw_radius] = 3.4015070258240905;
+tmp15.isotopes[31] = IsotopeData{31,30.9737619980000005,1.0000000000000000};
+tmp15.props[LibChemist::AtomProperty::isotope_mass] = 30.9737619980000005;
+temp[15] = tmp15;
+AtomicInfo tmp16;
+tmp16.props[LibChemist::AtomProperty::Z] = 16;
+tmp16.props[LibChemist::AtomProperty::mass] = 32.0675000000000026;
+tmp16.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp16.props[LibChemist::AtomProperty::nelectrons] = 16.0000000000000000;
+tmp16.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp16.props[LibChemist::AtomProperty::cov_radius] = 1.9842124317307195;
+tmp16.props[LibChemist::AtomProperty::vdw_radius] = 3.4015070258240905;
+tmp16.isotopes[32] = IsotopeData{32,31.9720711739999999,0.9485000000000000};
+tmp16.isotopes[33] = IsotopeData{33,32.9714589100000026,0.0076300000000000};
+tmp16.isotopes[34] = IsotopeData{34,33.9678669999999983,0.0436500000000000};
+tmp16.isotopes[36] = IsotopeData{36,35.9670810000000003,0.0001580000000000};
+tmp16.props[LibChemist::AtomProperty::isotope_mass] = 31.9720711739999999;
+temp[16] = tmp16;
+AtomicInfo tmp17;
+tmp17.props[LibChemist::AtomProperty::Z] = 17;
+tmp17.props[LibChemist::AtomProperty::mass] = 35.4515000000000029;
+tmp17.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp17.props[LibChemist::AtomProperty::nelectrons] = 17.0000000000000000;
+tmp17.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp17.props[LibChemist::AtomProperty::cov_radius] = 1.9275206479669846;
+tmp17.props[LibChemist::AtomProperty::vdw_radius] = 3.3070207195511991;
+tmp17.isotopes[35] = IsotopeData{35,34.9688526999999993,0.7580000000000000};
+tmp17.isotopes[37] = IsotopeData{37,36.9659025999999997,0.2420000000000000};
+tmp17.props[LibChemist::AtomProperty::isotope_mass] = 34.9688526999999993;
+temp[17] = tmp17;
+AtomicInfo tmp18;
+tmp18.props[LibChemist::AtomProperty::Z] = 18;
+tmp18.props[LibChemist::AtomProperty::mass] = 39.9480000000000004;
+tmp18.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp18.props[LibChemist::AtomProperty::nelectrons] = 18.0000000000000000;
+tmp18.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp18.props[LibChemist::AtomProperty::cov_radius] = 2.0031096929852978;
+tmp18.props[LibChemist::AtomProperty::vdw_radius] = 3.5526851158607169;
+tmp18.isotopes[36] = IsotopeData{36,35.9675451000000024,0.0033360000000000};
+tmp18.isotopes[38] = IsotopeData{38,37.9627320000000026,0.0006290000000000};
+tmp18.isotopes[40] = IsotopeData{40,39.9623831199999984,0.9960350000000000};
+tmp18.props[LibChemist::AtomProperty::isotope_mass] = 39.9623831199999984;
+temp[18] = tmp18;
+AtomicInfo tmp19;
+tmp19.props[LibChemist::AtomProperty::Z] = 19;
+tmp19.props[LibChemist::AtomProperty::mass] = 39.0983000000000018;
+tmp19.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp19.props[LibChemist::AtomProperty::nelectrons] = 19.0000000000000000;
+tmp19.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp19.props[LibChemist::AtomProperty::cov_radius] = 3.8361440346793909;
+tmp19.props[LibChemist::AtomProperty::vdw_radius] = 5.1967468450090273;
+tmp19.isotopes[39] = IsotopeData{39,38.9637064899999999,0.9325810000000000};
+tmp19.isotopes[40] = IsotopeData{40,39.9639981999999989,0.0001170000000000};
+tmp19.isotopes[41] = IsotopeData{41,40.9618252599999977,0.0673020000000000};
+tmp19.props[LibChemist::AtomProperty::isotope_mass] = 38.9637064899999999;
+temp[19] = tmp19;
+AtomicInfo tmp20;
+tmp20.props[LibChemist::AtomProperty::Z] = 20;
+tmp20.props[LibChemist::AtomProperty::mass] = 40.0780000000000030;
+tmp20.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp20.props[LibChemist::AtomProperty::nelectrons] = 20.0000000000000000;
+tmp20.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp20.props[LibChemist::AtomProperty::cov_radius] = 3.3259179808057775;
+tmp20.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp20.isotopes[40] = IsotopeData{40,39.9625909000000021,0.9694100000000000};
+tmp20.isotopes[42] = IsotopeData{42,41.9586180000000013,0.0064700000000000};
+tmp20.isotopes[43] = IsotopeData{43,42.9587659999999971,0.0013500000000000};
+tmp20.isotopes[44] = IsotopeData{44,43.9554820000000035,0.0208600000000000};
+tmp20.isotopes[46] = IsotopeData{46,45.9536900000000017,0.0000400000000000};
+tmp20.isotopes[48] = IsotopeData{48,47.9525227999999970,0.0018700000000000};
+tmp20.props[LibChemist::AtomProperty::isotope_mass] = 39.9625909000000021;
+temp[20] = tmp20;
+AtomicInfo tmp21;
+tmp21.props[LibChemist::AtomProperty::Z] = 21;
+tmp21.props[LibChemist::AtomProperty::mass] = 44.9559080000000009;
+tmp21.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp21.props[LibChemist::AtomProperty::nelectrons] = 21.0000000000000000;
+tmp21.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp21.props[LibChemist::AtomProperty::cov_radius] = 3.2125344132783078;
+tmp21.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp21.isotopes[45] = IsotopeData{45,44.9559080000000009,1.0000000000000000};
+tmp21.props[LibChemist::AtomProperty::isotope_mass] = 44.9559080000000009;
+temp[21] = tmp21;
+AtomicInfo tmp22;
+tmp22.props[LibChemist::AtomProperty::Z] = 22;
+tmp22.props[LibChemist::AtomProperty::mass] = 47.8669999999999973;
+tmp22.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp22.props[LibChemist::AtomProperty::nelectrons] = 22.0000000000000000;
+tmp22.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp22.props[LibChemist::AtomProperty::cov_radius] = 3.0235618007325251;
+tmp22.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp22.isotopes[46] = IsotopeData{46,45.9526279999999971,0.0825000000000000};
+tmp22.isotopes[47] = IsotopeData{47,46.9517590000000027,0.0744000000000000};
+tmp22.isotopes[48] = IsotopeData{48,47.9479419999999976,0.7372000000000000};
+tmp22.isotopes[49] = IsotopeData{49,48.9478659999999977,0.0541000000000000};
+tmp22.isotopes[50] = IsotopeData{50,49.9447869999999980,0.0518000000000000};
+tmp22.props[LibChemist::AtomProperty::isotope_mass] = 47.9479419999999976;
+temp[22] = tmp22;
+AtomicInfo tmp23;
+tmp23.props[LibChemist::AtomProperty::Z] = 23;
+tmp23.props[LibChemist::AtomProperty::mass] = 50.9414999999999978;
+tmp23.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp23.props[LibChemist::AtomProperty::nelectrons] = 23.0000000000000000;
+tmp23.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp23.props[LibChemist::AtomProperty::cov_radius] = 2.8912809719504771;
+tmp23.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp23.isotopes[50] = IsotopeData{50,49.9471559999999997,0.0025000000000000};
+tmp23.isotopes[51] = IsotopeData{51,50.9439569999999975,0.9975000000000001};
+tmp23.props[LibChemist::AtomProperty::isotope_mass] = 50.9439569999999975;
+temp[23] = tmp23;
+AtomicInfo tmp24;
+tmp24.props[LibChemist::AtomProperty::Z] = 24;
+tmp24.props[LibChemist::AtomProperty::mass] = 51.9960999999999984;
+tmp24.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp24.props[LibChemist::AtomProperty::nelectrons] = 24.0000000000000000;
+tmp24.props[LibChemist::AtomProperty::multiplicity] = 7;
+tmp24.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp24.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp24.isotopes[50] = IsotopeData{50,49.9460419999999985,0.0434500000000000};
+tmp24.isotopes[52] = IsotopeData{52,51.9405059999999992,0.8378900000000000};
+tmp24.isotopes[53] = IsotopeData{53,52.9406480000000030,0.0950100000000000};
+tmp24.isotopes[54] = IsotopeData{54,53.9388790000000000,0.0236500000000000};
+tmp24.props[LibChemist::AtomProperty::isotope_mass] = 51.9405059999999992;
+temp[24] = tmp24;
+AtomicInfo tmp25;
+tmp25.props[LibChemist::AtomProperty::Z] = 25;
+tmp25.props[LibChemist::AtomProperty::mass] = 54.9380439999999979;
+tmp25.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp25.props[LibChemist::AtomProperty::nelectrons] = 25.0000000000000000;
+tmp25.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp25.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp25.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp25.isotopes[55] = IsotopeData{55,54.9380439999999979,1.0000000000000000};
+tmp25.props[LibChemist::AtomProperty::isotope_mass] = 54.9380439999999979;
+temp[25] = tmp25;
+AtomicInfo tmp26;
+tmp26.props[LibChemist::AtomProperty::Z] = 26;
+tmp26.props[LibChemist::AtomProperty::mass] = 55.8449999999999989;
+tmp26.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp26.props[LibChemist::AtomProperty::nelectrons] = 26.0000000000000000;
+tmp26.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp26.props[LibChemist::AtomProperty::cov_radius] = 2.4944384856043329;
+tmp26.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp26.isotopes[54] = IsotopeData{54,53.9396089999999973,0.0584500000000000};
+tmp26.isotopes[56] = IsotopeData{56,55.9349360000000004,0.9175400000000000};
+tmp26.isotopes[57] = IsotopeData{57,56.9353929999999977,0.0211900000000000};
+tmp26.isotopes[58] = IsotopeData{58,57.9332739999999973,0.0028200000000000};
+tmp26.props[LibChemist::AtomProperty::isotope_mass] = 55.9349360000000004;
+temp[26] = tmp26;
+AtomicInfo tmp27;
+tmp27.props[LibChemist::AtomProperty::Z] = 27;
+tmp27.props[LibChemist::AtomProperty::mass] = 58.9331940000000003;
+tmp27.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp27.props[LibChemist::AtomProperty::nelectrons] = 27.0000000000000000;
+tmp27.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp27.props[LibChemist::AtomProperty::cov_radius] = 2.3810549180768632;
+tmp27.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp27.isotopes[59] = IsotopeData{59,58.9331940000000003,1.0000000000000000};
+tmp27.props[LibChemist::AtomProperty::isotope_mass] = 58.9331940000000003;
+temp[27] = tmp27;
+AtomicInfo tmp28;
+tmp28.props[LibChemist::AtomProperty::Z] = 28;
+tmp28.props[LibChemist::AtomProperty::mass] = 58.6933999999999969;
+tmp28.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp28.props[LibChemist::AtomProperty::nelectrons] = 28.0000000000000000;
+tmp28.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp28.props[LibChemist::AtomProperty::cov_radius] = 2.3432603955677069;
+tmp28.props[LibChemist::AtomProperty::vdw_radius] = 3.0802535844962597;
+tmp28.isotopes[58] = IsotopeData{58,57.9353419999999986,0.6807690000000000};
+tmp28.isotopes[60] = IsotopeData{60,59.9307859999999977,0.2622310000000000};
+tmp28.isotopes[61] = IsotopeData{61,60.9310559999999981,0.0113990000000000};
+tmp28.isotopes[62] = IsotopeData{62,61.9283450000000002,0.0363450000000000};
+tmp28.isotopes[64] = IsotopeData{64,63.9279670000000024,0.0092560000000000};
+tmp28.props[LibChemist::AtomProperty::isotope_mass] = 57.9353419999999986;
+temp[28] = tmp28;
+AtomicInfo tmp29;
+tmp29.props[LibChemist::AtomProperty::Z] = 29;
+tmp29.props[LibChemist::AtomProperty::mass] = 63.5459999999999994;
+tmp29.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp29.props[LibChemist::AtomProperty::nelectrons] = 29.0000000000000000;
+tmp29.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp29.props[LibChemist::AtomProperty::cov_radius] = 2.4944384856043329;
+tmp29.props[LibChemist::AtomProperty::vdw_radius] = 2.6456165756409593;
+tmp29.isotopes[63] = IsotopeData{63,62.9295979999999986,0.6915000000000000};
+tmp29.isotopes[65] = IsotopeData{65,64.9277900000000017,0.3085000000000000};
+tmp29.props[LibChemist::AtomProperty::isotope_mass] = 62.9295979999999986;
+temp[29] = tmp29;
+AtomicInfo tmp30;
+tmp30.props[LibChemist::AtomProperty::Z] = 30;
+tmp30.props[LibChemist::AtomProperty::mass] = 65.3799999999999955;
+tmp30.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp30.props[LibChemist::AtomProperty::nelectrons] = 30.0000000000000000;
+tmp30.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp30.props[LibChemist::AtomProperty::cov_radius] = 2.3054658730585502;
+tmp30.props[LibChemist::AtomProperty::vdw_radius] = 2.6267193143863810;
+tmp30.isotopes[64] = IsotopeData{64,63.9291419999999988,0.4917000000000000};
+tmp30.isotopes[66] = IsotopeData{66,65.9260340000000014,0.2773000000000000};
+tmp30.isotopes[67] = IsotopeData{67,66.9271279999999962,0.0404000000000000};
+tmp30.isotopes[68] = IsotopeData{68,67.9248450000000048,0.1845000000000000};
+tmp30.isotopes[70] = IsotopeData{70,69.9253199999999993,0.0061000000000000};
+tmp30.props[LibChemist::AtomProperty::isotope_mass] = 63.9291419999999988;
+temp[30] = tmp30;
+AtomicInfo tmp31;
+tmp31.props[LibChemist::AtomProperty::Z] = 31;
+tmp31.props[LibChemist::AtomProperty::mass] = 69.7229999999999990;
+tmp31.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp31.props[LibChemist::AtomProperty::nelectrons] = 31.0000000000000000;
+tmp31.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp31.props[LibChemist::AtomProperty::cov_radius] = 2.3054658730585502;
+tmp31.props[LibChemist::AtomProperty::vdw_radius] = 3.5337878546061385;
+tmp31.isotopes[69] = IsotopeData{69,68.9255739999999975,0.6010799999999999};
+tmp31.isotopes[71] = IsotopeData{71,70.9247029999999938,0.3989200000000000};
+tmp31.props[LibChemist::AtomProperty::isotope_mass] = 68.9255739999999975;
+temp[31] = tmp31;
+AtomicInfo tmp32;
+tmp32.props[LibChemist::AtomProperty::Z] = 32;
+tmp32.props[LibChemist::AtomProperty::mass] = 72.6299999999999955;
+tmp32.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp32.props[LibChemist::AtomProperty::nelectrons] = 32.0000000000000000;
+tmp32.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp32.props[LibChemist::AtomProperty::cov_radius] = 2.2676713505493939;
+tmp32.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp32.isotopes[70] = IsotopeData{70,69.9242490000000032,0.2052000000000000};
+tmp32.isotopes[72] = IsotopeData{72,71.9220758000000018,0.2745000000000000};
+tmp32.isotopes[73] = IsotopeData{73,72.9234589999999940,0.0776000000000000};
+tmp32.isotopes[74] = IsotopeData{74,73.9211777600000062,0.3652000000000000};
+tmp32.isotopes[76] = IsotopeData{76,75.9214027000000016,0.0775000000000000};
+tmp32.props[LibChemist::AtomProperty::isotope_mass] = 73.9211777600000062;
+temp[32] = tmp32;
+AtomicInfo tmp33;
+tmp33.props[LibChemist::AtomProperty::Z] = 33;
+tmp33.props[LibChemist::AtomProperty::mass] = 74.9215949999999964;
+tmp33.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp33.props[LibChemist::AtomProperty::nelectrons] = 33.0000000000000000;
+tmp33.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp33.props[LibChemist::AtomProperty::cov_radius] = 2.2487740892948156;
+tmp33.props[LibChemist::AtomProperty::vdw_radius] = 3.4959933320969818;
+tmp33.isotopes[75] = IsotopeData{75,74.9215949999999964,1.0000000000000000};
+tmp33.props[LibChemist::AtomProperty::isotope_mass] = 74.9215949999999964;
+temp[33] = tmp33;
+AtomicInfo tmp34;
+tmp34.props[LibChemist::AtomProperty::Z] = 34;
+tmp34.props[LibChemist::AtomProperty::mass] = 78.9710000000000036;
+tmp34.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp34.props[LibChemist::AtomProperty::nelectrons] = 34.0000000000000000;
+tmp34.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp34.props[LibChemist::AtomProperty::cov_radius] = 2.2676713505493939;
+tmp34.props[LibChemist::AtomProperty::vdw_radius] = 3.5904796383698736;
+tmp34.isotopes[74] = IsotopeData{74,73.9224758999999949,0.0086000000000000};
+tmp34.isotopes[76] = IsotopeData{76,75.9192137000000002,0.0923000000000000};
+tmp34.isotopes[77] = IsotopeData{77,76.9199141999999938,0.0760000000000000};
+tmp34.isotopes[78] = IsotopeData{78,77.9173090000000030,0.2369000000000000};
+tmp34.isotopes[80] = IsotopeData{80,79.9165220000000005,0.4980000000000000};
+tmp34.isotopes[82] = IsotopeData{82,81.9167000000000058,0.0882000000000000};
+tmp34.props[LibChemist::AtomProperty::isotope_mass] = 79.9165220000000005;
+temp[34] = tmp34;
+AtomicInfo tmp35;
+tmp35.props[LibChemist::AtomProperty::Z] = 35;
+tmp35.props[LibChemist::AtomProperty::mass] = 79.9039999999999964;
+tmp35.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp35.props[LibChemist::AtomProperty::nelectrons] = 35.0000000000000000;
+tmp35.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp35.props[LibChemist::AtomProperty::cov_radius] = 2.2676713505493939;
+tmp35.props[LibChemist::AtomProperty::vdw_radius] = 3.4959933320969818;
+tmp35.isotopes[79] = IsotopeData{79,78.9183380000000056,0.5065000000000000};
+tmp35.isotopes[81] = IsotopeData{81,80.9162900000000036,0.4935000000000000};
+tmp35.props[LibChemist::AtomProperty::isotope_mass] = 78.9183380000000056;
+temp[35] = tmp35;
+AtomicInfo tmp36;
+tmp36.props[LibChemist::AtomProperty::Z] = 36;
+tmp36.props[LibChemist::AtomProperty::mass] = 83.7980000000000018;
+tmp36.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp36.props[LibChemist::AtomProperty::nelectrons] = 36.0000000000000000;
+tmp36.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp36.props[LibChemist::AtomProperty::cov_radius] = 2.1920823055310805;
+tmp36.props[LibChemist::AtomProperty::vdw_radius] = 3.8172467734248130;
+tmp36.isotopes[78] = IsotopeData{78,77.9203650000000039,0.0035500000000000};
+tmp36.isotopes[80] = IsotopeData{80,79.9163779999999946,0.0228600000000000};
+tmp36.isotopes[82] = IsotopeData{82,81.9134829999999994,0.1159300000000000};
+tmp36.isotopes[83] = IsotopeData{83,82.9141269999999935,0.1150000000000000};
+tmp36.isotopes[84] = IsotopeData{84,83.9114977299999936,0.5698700000000000};
+tmp36.isotopes[86] = IsotopeData{86,85.9106106299999936,0.1727900000000000};
+tmp36.props[LibChemist::AtomProperty::isotope_mass] = 83.9114977299999936;
+temp[36] = tmp36;
+AtomicInfo tmp37;
+tmp37.props[LibChemist::AtomProperty::Z] = 37;
+tmp37.props[LibChemist::AtomProperty::mass] = 85.4677999999999969;
+tmp37.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp37.props[LibChemist::AtomProperty::nelectrons] = 37.0000000000000000;
+tmp37.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp37.props[LibChemist::AtomProperty::cov_radius] = 4.1573974760072216;
+tmp37.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp37.isotopes[85] = IsotopeData{85,84.9117897400000032,0.7217000000000000};
+tmp37.isotopes[87] = IsotopeData{87,86.9091805300000004,0.2783000000000000};
+tmp37.props[LibChemist::AtomProperty::isotope_mass] = 84.9117897400000032;
+temp[37] = tmp37;
+AtomicInfo tmp38;
+tmp38.props[LibChemist::AtomProperty::Z] = 38;
+tmp38.props[LibChemist::AtomProperty::mass] = 87.6200000000000045;
+tmp38.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp38.props[LibChemist::AtomProperty::nelectrons] = 38.0000000000000000;
+tmp38.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp38.props[LibChemist::AtomProperty::cov_radius] = 3.6849659446427649;
+tmp38.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp38.isotopes[84] = IsotopeData{84,83.9134190000000046,0.0056000000000000};
+tmp38.isotopes[86] = IsotopeData{86,85.9092610000000008,0.0986000000000000};
+tmp38.isotopes[87] = IsotopeData{87,86.9088780000000014,0.0700000000000000};
+tmp38.isotopes[88] = IsotopeData{88,87.9056130000000024,0.8258000000000000};
+tmp38.props[LibChemist::AtomProperty::isotope_mass] = 87.9056130000000024;
+temp[38] = tmp38;
+AtomicInfo tmp39;
+tmp39.props[LibChemist::AtomProperty::Z] = 39;
+tmp39.props[LibChemist::AtomProperty::mass] = 88.9058399999999978;
+tmp39.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp39.props[LibChemist::AtomProperty::nelectrons] = 39.0000000000000000;
+tmp39.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp39.props[LibChemist::AtomProperty::cov_radius] = 3.5904796383698736;
+tmp39.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp39.isotopes[89] = IsotopeData{89,88.9058399999999978,1.0000000000000000};
+tmp39.props[LibChemist::AtomProperty::isotope_mass] = 88.9058399999999978;
+temp[39] = tmp39;
+AtomicInfo tmp40;
+tmp40.props[LibChemist::AtomProperty::Z] = 40;
+tmp40.props[LibChemist::AtomProperty::mass] = 91.2240000000000038;
+tmp40.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp40.props[LibChemist::AtomProperty::nelectrons] = 40.0000000000000000;
+tmp40.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp40.props[LibChemist::AtomProperty::cov_radius] = 3.3070207195511991;
+tmp40.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp40.isotopes[90] = IsotopeData{90,89.9047000000000054,0.5145000000000000};
+tmp40.isotopes[91] = IsotopeData{91,90.9056400000000053,0.1122000000000000};
+tmp40.isotopes[92] = IsotopeData{92,91.9050299999999964,0.1715000000000000};
+tmp40.isotopes[94] = IsotopeData{94,93.9063100000000048,0.1738000000000000};
+tmp40.isotopes[96] = IsotopeData{96,95.9082700000000017,0.0280000000000000};
+tmp40.props[LibChemist::AtomProperty::isotope_mass] = 89.9047000000000054;
+temp[40] = tmp40;
+AtomicInfo tmp41;
+tmp41.props[LibChemist::AtomProperty::Z] = 41;
+tmp41.props[LibChemist::AtomProperty::mass] = 92.9063699999999955;
+tmp41.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp41.props[LibChemist::AtomProperty::nelectrons] = 41.0000000000000000;
+tmp41.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp41.props[LibChemist::AtomProperty::cov_radius] = 3.0991508457508381;
+tmp41.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp41.isotopes[93] = IsotopeData{93,92.9063699999999955,1.0000000000000000};
+tmp41.props[LibChemist::AtomProperty::isotope_mass] = 92.9063699999999955;
+temp[41] = tmp41;
+AtomicInfo tmp42;
+tmp42.props[LibChemist::AtomProperty::Z] = 42;
+tmp42.props[LibChemist::AtomProperty::mass] = 95.9500000000000028;
+tmp42.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp42.props[LibChemist::AtomProperty::nelectrons] = 42.0000000000000000;
+tmp42.props[LibChemist::AtomProperty::multiplicity] = 7;
+tmp42.props[LibChemist::AtomProperty::cov_radius] = 2.9101782332050554;
+tmp42.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp42.isotopes[92] = IsotopeData{92,91.9068079999999981,0.1464900000000000};
+tmp42.isotopes[94] = IsotopeData{94,93.9050849999999997,0.0918700000000000};
+tmp42.isotopes[95] = IsotopeData{95,94.9058390000000003,0.1587300000000000};
+tmp42.isotopes[96] = IsotopeData{96,95.9046759999999949,0.1667300000000000};
+tmp42.isotopes[97] = IsotopeData{97,96.9060180000000031,0.0958200000000000};
+tmp42.isotopes[98] = IsotopeData{98,97.9054050000000018,0.2429200000000000};
+tmp42.isotopes[100] = IsotopeData{100,99.9074719999999985,0.0974400000000000};
+tmp42.props[LibChemist::AtomProperty::isotope_mass] = 97.9054050000000018;
+temp[42] = tmp42;
+AtomicInfo tmp43;
+tmp43.props[LibChemist::AtomProperty::Z] = 43;
+tmp43.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp43.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp43.props[LibChemist::AtomProperty::nelectrons] = 43.0000000000000000;
+tmp43.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp43.props[LibChemist::AtomProperty::cov_radius] = 2.7778974044230074;
+tmp43.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp43.isotopes[98] = IsotopeData{98,97.9072100000000063,0.0000000000000000};
+tmp43.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[43] = tmp43;
+AtomicInfo tmp44;
+tmp44.props[LibChemist::AtomProperty::Z] = 44;
+tmp44.props[LibChemist::AtomProperty::mass] = 101.0699999999999932;
+tmp44.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp44.props[LibChemist::AtomProperty::nelectrons] = 44.0000000000000000;
+tmp44.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp44.props[LibChemist::AtomProperty::cov_radius] = 2.7590001431684290;
+tmp44.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp44.isotopes[96] = IsotopeData{96,95.9075899999999990,0.0554000000000000};
+tmp44.isotopes[98] = IsotopeData{98,97.9052899999999937,0.0187000000000000};
+tmp44.isotopes[99] = IsotopeData{99,98.9059340000000020,0.1276000000000000};
+tmp44.isotopes[100] = IsotopeData{100,99.9042139999999961,0.1260000000000000};
+tmp44.isotopes[101] = IsotopeData{101,100.9055769999999939,0.1706000000000000};
+tmp44.isotopes[102] = IsotopeData{102,101.9043439999999947,0.3155000000000000};
+tmp44.isotopes[104] = IsotopeData{104,103.9054299999999955,0.1862000000000000};
+tmp44.props[LibChemist::AtomProperty::isotope_mass] = 101.9043439999999947;
+temp[44] = tmp44;
+AtomicInfo tmp45;
+tmp45.props[LibChemist::AtomProperty::Z] = 45;
+tmp45.props[LibChemist::AtomProperty::mass] = 102.9055000000000035;
+tmp45.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp45.props[LibChemist::AtomProperty::nelectrons] = 45.0000000000000000;
+tmp45.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp45.props[LibChemist::AtomProperty::cov_radius] = 2.6834110981501160;
+tmp45.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp45.isotopes[103] = IsotopeData{103,102.9055000000000035,1.0000000000000000};
+tmp45.props[LibChemist::AtomProperty::isotope_mass] = 102.9055000000000035;
+temp[45] = tmp45;
+AtomicInfo tmp46;
+tmp46.props[LibChemist::AtomProperty::Z] = 46;
+tmp46.props[LibChemist::AtomProperty::mass] = 106.4200000000000017;
+tmp46.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp46.props[LibChemist::AtomProperty::nelectrons] = 46.0000000000000000;
+tmp46.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp46.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp46.props[LibChemist::AtomProperty::vdw_radius] = 3.0802535844962597;
+tmp46.isotopes[102] = IsotopeData{102,101.9056000000000068,0.0102000000000000};
+tmp46.isotopes[104] = IsotopeData{104,103.9040310000000034,0.1114000000000000};
+tmp46.isotopes[105] = IsotopeData{105,104.9050799999999981,0.2233000000000000};
+tmp46.isotopes[106] = IsotopeData{106,105.9034800000000018,0.2733000000000000};
+tmp46.isotopes[108] = IsotopeData{108,107.9038919999999990,0.2646000000000000};
+tmp46.isotopes[110] = IsotopeData{110,109.9051719999999932,0.1172000000000000};
+tmp46.props[LibChemist::AtomProperty::isotope_mass] = 105.9034800000000018;
+temp[46] = tmp46;
+AtomicInfo tmp47;
+tmp47.props[LibChemist::AtomProperty::Z] = 47;
+tmp47.props[LibChemist::AtomProperty::mass] = 107.8682000000000016;
+tmp47.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp47.props[LibChemist::AtomProperty::nelectrons] = 47.0000000000000000;
+tmp47.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp47.props[LibChemist::AtomProperty::cov_radius] = 2.7401028819138507;
+tmp47.props[LibChemist::AtomProperty::vdw_radius] = 3.2503289357874645;
+tmp47.isotopes[107] = IsotopeData{107,106.9050900000000013,0.5183900000000000};
+tmp47.isotopes[109] = IsotopeData{109,108.9047549999999944,0.4816100000000000};
+tmp47.props[LibChemist::AtomProperty::isotope_mass] = 106.9050900000000013;
+temp[47] = tmp47;
+AtomicInfo tmp48;
+tmp48.props[LibChemist::AtomProperty::Z] = 48;
+tmp48.props[LibChemist::AtomProperty::mass] = 112.4140000000000015;
+tmp48.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp48.props[LibChemist::AtomProperty::nelectrons] = 48.0000000000000000;
+tmp48.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp48.props[LibChemist::AtomProperty::cov_radius] = 2.7212056206592723;
+tmp48.props[LibChemist::AtomProperty::vdw_radius] = 2.9857672782233684;
+tmp48.isotopes[106] = IsotopeData{106,105.9064599999999956,0.0124500000000000};
+tmp48.isotopes[108] = IsotopeData{108,107.9041830000000033,0.0088800000000000};
+tmp48.isotopes[110] = IsotopeData{110,109.9030070000000023,0.1247000000000000};
+tmp48.isotopes[111] = IsotopeData{111,110.9041830000000033,0.1279500000000000};
+tmp48.isotopes[112] = IsotopeData{112,111.9027629999999931,0.2410900000000000};
+tmp48.isotopes[113] = IsotopeData{113,112.9044080000000037,0.1222700000000000};
+tmp48.isotopes[114] = IsotopeData{114,113.9033649999999938,0.2875400000000000};
+tmp48.isotopes[116] = IsotopeData{116,115.9047630000000026,0.0751200000000000};
+tmp48.props[LibChemist::AtomProperty::isotope_mass] = 113.9033649999999938;
+temp[48] = tmp48;
+AtomicInfo tmp49;
+tmp49.props[LibChemist::AtomProperty::Z] = 49;
+tmp49.props[LibChemist::AtomProperty::mass] = 114.8179999999999978;
+tmp49.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp49.props[LibChemist::AtomProperty::nelectrons] = 49.0000000000000000;
+tmp49.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp49.props[LibChemist::AtomProperty::cov_radius] = 2.6834110981501160;
+tmp49.props[LibChemist::AtomProperty::vdw_radius] = 3.6471714221336082;
+tmp49.isotopes[113] = IsotopeData{113,112.9040619999999961,0.0428100000000000};
+tmp49.isotopes[115] = IsotopeData{115,114.9038787799999994,0.9571900000000000};
+tmp49.props[LibChemist::AtomProperty::isotope_mass] = 114.9038787799999994;
+temp[49] = tmp49;
+AtomicInfo tmp50;
+tmp50.props[LibChemist::AtomProperty::Z] = 50;
+tmp50.props[LibChemist::AtomProperty::mass] = 118.7099999999999937;
+tmp50.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp50.props[LibChemist::AtomProperty::nelectrons] = 50.0000000000000000;
+tmp50.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp50.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp50.props[LibChemist::AtomProperty::vdw_radius] = 4.1007056922434870;
+tmp50.isotopes[112] = IsotopeData{112,111.9048240000000050,0.0097000000000000};
+tmp50.isotopes[114] = IsotopeData{114,113.9027829999999994,0.0066000000000000};
+tmp50.isotopes[115] = IsotopeData{115,114.9033447000000052,0.0034000000000000};
+tmp50.isotopes[116] = IsotopeData{116,115.9017429999999962,0.1454000000000000};
+tmp50.isotopes[117] = IsotopeData{117,116.9029539999999940,0.0768000000000000};
+tmp50.isotopes[118] = IsotopeData{118,117.9016069999999985,0.2422000000000000};
+tmp50.isotopes[119] = IsotopeData{119,118.9033110000000022,0.0859000000000000};
+tmp50.isotopes[120] = IsotopeData{120,119.9022020000000026,0.3258000000000000};
+tmp50.isotopes[122] = IsotopeData{122,121.9034400000000034,0.0463000000000000};
+tmp50.isotopes[124] = IsotopeData{124,123.9052769999999981,0.0579000000000000};
+tmp50.props[LibChemist::AtomProperty::isotope_mass] = 119.9022020000000026;
+temp[50] = tmp50;
+AtomicInfo tmp51;
+tmp51.props[LibChemist::AtomProperty::Z] = 51;
+tmp51.props[LibChemist::AtomProperty::mass] = 121.7600000000000051;
+tmp51.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp51.props[LibChemist::AtomProperty::nelectrons] = 51.0000000000000000;
+tmp51.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp51.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp51.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp51.isotopes[121] = IsotopeData{121,120.9038099999999929,0.5721000000000001};
+tmp51.isotopes[123] = IsotopeData{123,122.9042100000000062,0.4279000000000000};
+tmp51.props[LibChemist::AtomProperty::isotope_mass] = 120.9038099999999929;
+temp[51] = tmp51;
+AtomicInfo tmp52;
+tmp52.props[LibChemist::AtomProperty::Z] = 52;
+tmp52.props[LibChemist::AtomProperty::mass] = 127.5999999999999943;
+tmp52.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp52.props[LibChemist::AtomProperty::nelectrons] = 52.0000000000000000;
+tmp52.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp52.props[LibChemist::AtomProperty::cov_radius] = 2.6078220531318026;
+tmp52.props[LibChemist::AtomProperty::vdw_radius] = 3.8928358184431260;
+tmp52.isotopes[120] = IsotopeData{120,119.9040600000000012,0.0009000000000000};
+tmp52.isotopes[122] = IsotopeData{122,121.9030400000000043,0.0255000000000000};
+tmp52.isotopes[123] = IsotopeData{123,122.9042699999999968,0.0089000000000000};
+tmp52.isotopes[124] = IsotopeData{124,123.9028200000000055,0.0474000000000000};
+tmp52.isotopes[125] = IsotopeData{125,124.9044300000000050,0.0707000000000000};
+tmp52.isotopes[126] = IsotopeData{126,125.9033100000000047,0.1884000000000000};
+tmp52.isotopes[128] = IsotopeData{128,127.9044609999999977,0.3174000000000000};
+tmp52.isotopes[130] = IsotopeData{130,129.9062227500000120,0.3408000000000000};
+tmp52.props[LibChemist::AtomProperty::isotope_mass] = 129.9062227500000120;
+temp[52] = tmp52;
+AtomicInfo tmp53;
+tmp53.props[LibChemist::AtomProperty::Z] = 53;
+tmp53.props[LibChemist::AtomProperty::mass] = 126.9044700000000034;
+tmp53.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp53.props[LibChemist::AtomProperty::nelectrons] = 53.0000000000000000;
+tmp53.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp53.props[LibChemist::AtomProperty::cov_radius] = 2.6267193143863810;
+tmp53.props[LibChemist::AtomProperty::vdw_radius] = 3.7416577284064996;
+tmp53.isotopes[127] = IsotopeData{127,126.9044700000000034,1.0000000000000000};
+tmp53.props[LibChemist::AtomProperty::isotope_mass] = 126.9044700000000034;
+temp[53] = tmp53;
+AtomicInfo tmp54;
+tmp54.props[LibChemist::AtomProperty::Z] = 54;
+tmp54.props[LibChemist::AtomProperty::mass] = 131.2930000000000064;
+tmp54.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp54.props[LibChemist::AtomProperty::nelectrons] = 54.0000000000000000;
+tmp54.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp54.props[LibChemist::AtomProperty::cov_radius] = 2.6456165756409593;
+tmp54.props[LibChemist::AtomProperty::vdw_radius] = 4.0818084309889091;
+tmp54.isotopes[124] = IsotopeData{124,123.9058899999999994,0.0009500000000000};
+tmp54.isotopes[126] = IsotopeData{126,125.9043000000000063,0.0008900000000000};
+tmp54.isotopes[128] = IsotopeData{128,127.9035310000000010,0.0191000000000000};
+tmp54.isotopes[129] = IsotopeData{129,128.9047808599999883,0.2640100000000000};
+tmp54.isotopes[130] = IsotopeData{130,129.9035093999999901,0.0407100000000000};
+tmp54.isotopes[131] = IsotopeData{131,130.9050839999999880,0.2123200000000000};
+tmp54.isotopes[132] = IsotopeData{132,131.9041550899999891,0.2690900000000000};
+tmp54.isotopes[134] = IsotopeData{134,133.9053949999999986,0.1043600000000000};
+tmp54.isotopes[136] = IsotopeData{136,135.9072144799999933,0.0885700000000000};
+tmp54.props[LibChemist::AtomProperty::isotope_mass] = 131.9041550899999891;
+temp[54] = tmp54;
+AtomicInfo tmp55;
+tmp55.props[LibChemist::AtomProperty::Z] = 55;
+tmp55.props[LibChemist::AtomProperty::mass] = 132.9054519599999935;
+tmp55.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp55.props[LibChemist::AtomProperty::nelectrons] = 55.0000000000000000;
+tmp55.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp55.props[LibChemist::AtomProperty::cov_radius] = 4.6109317461171004;
+tmp55.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp55.isotopes[133] = IsotopeData{133,132.9054519599999935,1.0000000000000000};
+tmp55.props[LibChemist::AtomProperty::isotope_mass] = 132.9054519599999935;
+temp[55] = tmp55;
+AtomicInfo tmp56;
+tmp56.props[LibChemist::AtomProperty::Z] = 56;
+tmp56.props[LibChemist::AtomProperty::mass] = 137.3269999999999982;
+tmp56.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp56.props[LibChemist::AtomProperty::nelectrons] = 56.0000000000000000;
+tmp56.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp56.props[LibChemist::AtomProperty::cov_radius] = 4.0629111697343303;
+tmp56.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp56.isotopes[130] = IsotopeData{130,129.9063199999999938,0.0011000000000000};
+tmp56.isotopes[132] = IsotopeData{132,131.9050609999999892,0.0010000000000000};
+tmp56.isotopes[134] = IsotopeData{134,133.9045079999999928,0.0242000000000000};
+tmp56.isotopes[135] = IsotopeData{135,134.9056879999999978,0.0659000000000000};
+tmp56.isotopes[136] = IsotopeData{136,135.9045759999999916,0.0785000000000000};
+tmp56.isotopes[137] = IsotopeData{137,136.9058269999999879,0.1123000000000000};
+tmp56.isotopes[138] = IsotopeData{138,137.9052470000000028,0.7170000000000000};
+tmp56.props[LibChemist::AtomProperty::isotope_mass] = 137.9052470000000028;
+temp[56] = tmp56;
+AtomicInfo tmp57;
+tmp57.props[LibChemist::AtomProperty::Z] = 57;
+tmp57.props[LibChemist::AtomProperty::mass] = 138.9054700000000082;
+tmp57.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp57.props[LibChemist::AtomProperty::nelectrons] = 57.0000000000000000;
+tmp57.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp57.props[LibChemist::AtomProperty::cov_radius] = 3.9117330796977043;
+tmp57.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp57.isotopes[138] = IsotopeData{138,137.9071199999999919,0.0008881000000000};
+tmp57.isotopes[139] = IsotopeData{139,138.9063600000000065,0.9991119000000001};
+tmp57.props[LibChemist::AtomProperty::isotope_mass] = 138.9063600000000065;
+temp[57] = tmp57;
+AtomicInfo tmp58;
+tmp58.props[LibChemist::AtomProperty::Z] = 58;
+tmp58.props[LibChemist::AtomProperty::mass] = 140.1160000000000139;
+tmp58.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp58.props[LibChemist::AtomProperty::nelectrons] = 58.0000000000000000;
+tmp58.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp58.props[LibChemist::AtomProperty::cov_radius] = 3.8550412959339693;
+tmp58.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp58.isotopes[136] = IsotopeData{136,135.9071289999999976,0.0018600000000000};
+tmp58.isotopes[138] = IsotopeData{138,137.9059900000000027,0.0025100000000000};
+tmp58.isotopes[140] = IsotopeData{140,139.9054399999999987,0.8844900000000000};
+tmp58.isotopes[142] = IsotopeData{142,141.9092499999999859,0.1111400000000000};
+tmp58.props[LibChemist::AtomProperty::isotope_mass] = 139.9054399999999987;
+temp[58] = tmp58;
+AtomicInfo tmp59;
+tmp59.props[LibChemist::AtomProperty::Z] = 59;
+tmp59.props[LibChemist::AtomProperty::mass] = 140.9076599999999928;
+tmp59.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp59.props[LibChemist::AtomProperty::nelectrons] = 59.0000000000000000;
+tmp59.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp59.props[LibChemist::AtomProperty::cov_radius] = 3.8361440346793909;
+tmp59.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp59.isotopes[141] = IsotopeData{141,140.9076599999999928,1.0000000000000000};
+tmp59.props[LibChemist::AtomProperty::isotope_mass] = 140.9076599999999928;
+temp[59] = tmp59;
+AtomicInfo tmp60;
+tmp60.props[LibChemist::AtomProperty::Z] = 60;
+tmp60.props[LibChemist::AtomProperty::mass] = 144.2419999999999902;
+tmp60.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp60.props[LibChemist::AtomProperty::nelectrons] = 60.0000000000000000;
+tmp60.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp60.props[LibChemist::AtomProperty::cov_radius] = 3.7983495121702346;
+tmp60.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp60.isotopes[142] = IsotopeData{142,141.9077299999999866,0.2715300000000000};
+tmp60.isotopes[143] = IsotopeData{143,142.9098199999999963,0.1217300000000000};
+tmp60.isotopes[144] = IsotopeData{144,143.9100899999999967,0.2379800000000000};
+tmp60.isotopes[145] = IsotopeData{145,144.9125799999999913,0.0829300000000000};
+tmp60.isotopes[146] = IsotopeData{146,145.9131199999999922,0.1718900000000000};
+tmp60.isotopes[148] = IsotopeData{148,147.9168999999999983,0.0575600000000000};
+tmp60.isotopes[150] = IsotopeData{150,149.9208999999999889,0.0563800000000000};
+tmp60.props[LibChemist::AtomProperty::isotope_mass] = 141.9077299999999866;
+temp[60] = tmp60;
+AtomicInfo tmp61;
+tmp61.props[LibChemist::AtomProperty::Z] = 61;
+tmp61.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp61.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp61.props[LibChemist::AtomProperty::nelectrons] = 61.0000000000000000;
+tmp61.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp61.props[LibChemist::AtomProperty::cov_radius] = 3.7605549896610779;
+tmp61.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp61.isotopes[145] = IsotopeData{145,144.9127599999999916,0.0000000000000000};
+tmp61.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[61] = tmp61;
+AtomicInfo tmp62;
+tmp62.props[LibChemist::AtomProperty::Z] = 62;
+tmp62.props[LibChemist::AtomProperty::mass] = 150.3600000000000136;
+tmp62.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp62.props[LibChemist::AtomProperty::nelectrons] = 62.0000000000000000;
+tmp62.props[LibChemist::AtomProperty::multiplicity] = 7;
+tmp62.props[LibChemist::AtomProperty::cov_radius] = 3.7416577284064996;
+tmp62.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp62.isotopes[144] = IsotopeData{144,143.9120100000000093,0.0308000000000000};
+tmp62.isotopes[147] = IsotopeData{147,146.9148999999999887,0.1500000000000000};
+tmp62.isotopes[148] = IsotopeData{148,147.9148299999999949,0.1125000000000000};
+tmp62.isotopes[149] = IsotopeData{149,148.9171900000000051,0.1382000000000000};
+tmp62.isotopes[150] = IsotopeData{150,149.9172800000000052,0.0737000000000000};
+tmp62.isotopes[152] = IsotopeData{152,151.9197399999999902,0.2674000000000000};
+tmp62.isotopes[154] = IsotopeData{154,153.9222200000000100,0.2274000000000000};
+tmp62.props[LibChemist::AtomProperty::isotope_mass] = 151.9197399999999902;
+temp[62] = tmp62;
+AtomicInfo tmp63;
+tmp63.props[LibChemist::AtomProperty::Z] = 63;
+tmp63.props[LibChemist::AtomProperty::mass] = 151.9639999999999986;
+tmp63.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp63.props[LibChemist::AtomProperty::nelectrons] = 63.0000000000000000;
+tmp63.props[LibChemist::AtomProperty::multiplicity] = 8;
+tmp63.props[LibChemist::AtomProperty::cov_radius] = 3.7416577284064996;
+tmp63.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp63.isotopes[151] = IsotopeData{151,150.9198599999999999,0.4781000000000000};
+tmp63.isotopes[153] = IsotopeData{153,152.9212400000000116,0.5219000000000000};
+tmp63.props[LibChemist::AtomProperty::isotope_mass] = 152.9212400000000116;
+temp[63] = tmp63;
+AtomicInfo tmp64;
+tmp64.props[LibChemist::AtomProperty::Z] = 64;
+tmp64.props[LibChemist::AtomProperty::mass] = 157.2500000000000000;
+tmp64.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp64.props[LibChemist::AtomProperty::nelectrons] = 64.0000000000000000;
+tmp64.props[LibChemist::AtomProperty::multiplicity] = 9;
+tmp64.props[LibChemist::AtomProperty::cov_radius] = 3.7038632058973433;
+tmp64.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp64.isotopes[152] = IsotopeData{152,151.9198000000000093,0.0020000000000000};
+tmp64.isotopes[154] = IsotopeData{154,153.9208700000000078,0.0218000000000000};
+tmp64.isotopes[155] = IsotopeData{155,154.9226299999999981,0.1480000000000000};
+tmp64.isotopes[156] = IsotopeData{156,155.9221300000000099,0.2047000000000000};
+tmp64.isotopes[157] = IsotopeData{157,156.9239699999999971,0.1565000000000000};
+tmp64.isotopes[158] = IsotopeData{158,157.9241100000000131,0.2484000000000000};
+tmp64.isotopes[160] = IsotopeData{160,159.9270600000000115,0.2186000000000000};
+tmp64.props[LibChemist::AtomProperty::isotope_mass] = 157.9241100000000131;
+temp[64] = tmp64;
+AtomicInfo tmp65;
+tmp65.props[LibChemist::AtomProperty::Z] = 65;
+tmp65.props[LibChemist::AtomProperty::mass] = 158.9253500000000088;
+tmp65.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp65.props[LibChemist::AtomProperty::nelectrons] = 65.0000000000000000;
+tmp65.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp65.props[LibChemist::AtomProperty::cov_radius] = 3.6660686833881866;
+tmp65.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp65.isotopes[159] = IsotopeData{159,158.9253500000000088,1.0000000000000000};
+tmp65.props[LibChemist::AtomProperty::isotope_mass] = 158.9253500000000088;
+temp[65] = tmp65;
+AtomicInfo tmp66;
+tmp66.props[LibChemist::AtomProperty::Z] = 66;
+tmp66.props[LibChemist::AtomProperty::mass] = 162.5000000000000000;
+tmp66.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp66.props[LibChemist::AtomProperty::nelectrons] = 66.0000000000000000;
+tmp66.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp66.props[LibChemist::AtomProperty::cov_radius] = 3.6282741608790299;
+tmp66.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp66.isotopes[156] = IsotopeData{156,155.9242800000000102,0.0005600000000000};
+tmp66.isotopes[158] = IsotopeData{158,157.9244199999999978,0.0009500000000000};
+tmp66.isotopes[160] = IsotopeData{160,159.9251999999999896,0.0232900000000000};
+tmp66.isotopes[161] = IsotopeData{161,160.9269400000000019,0.1888900000000000};
+tmp66.isotopes[162] = IsotopeData{162,161.9268099999999890,0.2547500000000000};
+tmp66.isotopes[163] = IsotopeData{163,162.9287400000000048,0.2489600000000000};
+tmp66.isotopes[164] = IsotopeData{164,163.9291800000000023,0.2826000000000000};
+tmp66.props[LibChemist::AtomProperty::isotope_mass] = 163.9291800000000023;
+temp[66] = tmp66;
+AtomicInfo tmp67;
+tmp67.props[LibChemist::AtomProperty::Z] = 67;
+tmp67.props[LibChemist::AtomProperty::mass] = 164.9303299999999979;
+tmp67.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp67.props[LibChemist::AtomProperty::nelectrons] = 67.0000000000000000;
+tmp67.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp67.props[LibChemist::AtomProperty::cov_radius] = 3.6282741608790299;
+tmp67.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp67.isotopes[165] = IsotopeData{165,164.9303299999999979,1.0000000000000000};
+tmp67.props[LibChemist::AtomProperty::isotope_mass] = 164.9303299999999979;
+temp[67] = tmp67;
+AtomicInfo tmp68;
+tmp68.props[LibChemist::AtomProperty::Z] = 68;
+tmp68.props[LibChemist::AtomProperty::mass] = 167.2589999999999861;
+tmp68.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp68.props[LibChemist::AtomProperty::nelectrons] = 68.0000000000000000;
+tmp68.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp68.props[LibChemist::AtomProperty::cov_radius] = 3.5715823771152952;
+tmp68.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp68.isotopes[162] = IsotopeData{162,161.9287899999999922,0.0013900000000000};
+tmp68.isotopes[164] = IsotopeData{164,163.9292100000000119,0.0160100000000000};
+tmp68.isotopes[166] = IsotopeData{166,165.9302999999999884,0.3350300000000000};
+tmp68.isotopes[167] = IsotopeData{167,166.9320500000000038,0.2286900000000000};
+tmp68.isotopes[168] = IsotopeData{168,167.9323799999999949,0.2697800000000000};
+tmp68.isotopes[170] = IsotopeData{170,169.9354700000000093,0.1491000000000000};
+tmp68.props[LibChemist::AtomProperty::isotope_mass] = 165.9302999999999884;
+temp[68] = tmp68;
+AtomicInfo tmp69;
+tmp69.props[LibChemist::AtomProperty::Z] = 69;
+tmp69.props[LibChemist::AtomProperty::mass] = 168.9342200000000105;
+tmp69.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp69.props[LibChemist::AtomProperty::nelectrons] = 69.0000000000000000;
+tmp69.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp69.props[LibChemist::AtomProperty::cov_radius] = 3.5904796383698736;
+tmp69.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp69.isotopes[169] = IsotopeData{169,168.9342200000000105,1.0000000000000000};
+tmp69.props[LibChemist::AtomProperty::isotope_mass] = 168.9342200000000105;
+temp[69] = tmp69;
+AtomicInfo tmp70;
+tmp70.props[LibChemist::AtomProperty::Z] = 70;
+tmp70.props[LibChemist::AtomProperty::mass] = 173.0449999999999875;
+tmp70.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp70.props[LibChemist::AtomProperty::nelectrons] = 70.0000000000000000;
+tmp70.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp70.props[LibChemist::AtomProperty::cov_radius] = 3.5337878546061385;
+tmp70.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp70.isotopes[168] = IsotopeData{168,167.9338899999999910,0.0012600000000000};
+tmp70.isotopes[170] = IsotopeData{170,169.9347699999999861,0.0302300000000000};
+tmp70.isotopes[171] = IsotopeData{171,170.9363299999999981,0.1421600000000000};
+tmp70.isotopes[172] = IsotopeData{172,171.9363899999999887,0.2175400000000000};
+tmp70.isotopes[173] = IsotopeData{173,172.9382200000000012,0.1609800000000000};
+tmp70.isotopes[174] = IsotopeData{174,173.9388700000000085,0.3189600000000000};
+tmp70.isotopes[176] = IsotopeData{176,175.9425799999999924,0.1288700000000000};
+tmp70.props[LibChemist::AtomProperty::isotope_mass] = 173.9388700000000085;
+temp[70] = tmp70;
+AtomicInfo tmp71;
+tmp71.props[LibChemist::AtomProperty::Z] = 71;
+tmp71.props[LibChemist::AtomProperty::mass] = 174.9668000000000063;
+tmp71.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp71.props[LibChemist::AtomProperty::nelectrons] = 71.0000000000000000;
+tmp71.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp71.props[LibChemist::AtomProperty::cov_radius] = 3.5337878546061385;
+tmp71.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp71.isotopes[175] = IsotopeData{175,174.9407799999999895,0.9740100000000000};
+tmp71.isotopes[176] = IsotopeData{176,175.9426899999999989,0.0259900000000000};
+tmp71.props[LibChemist::AtomProperty::isotope_mass] = 174.9407799999999895;
+temp[71] = tmp71;
+AtomicInfo tmp72;
+tmp72.props[LibChemist::AtomProperty::Z] = 72;
+tmp72.props[LibChemist::AtomProperty::mass] = 178.4900000000000091;
+tmp72.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp72.props[LibChemist::AtomProperty::nelectrons] = 72.0000000000000000;
+tmp72.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp72.props[LibChemist::AtomProperty::cov_radius] = 3.3070207195511991;
+tmp72.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp72.isotopes[174] = IsotopeData{174,173.9400500000000136,0.0016000000000000};
+tmp72.isotopes[176] = IsotopeData{176,175.9414099999999905,0.0526000000000000};
+tmp72.isotopes[177] = IsotopeData{177,176.9432299999999998,0.1860000000000000};
+tmp72.isotopes[178] = IsotopeData{178,177.9437100000000100,0.2728000000000000};
+tmp72.isotopes[179] = IsotopeData{179,178.9458199999999977,0.1362000000000000};
+tmp72.isotopes[180] = IsotopeData{180,179.9465600000000052,0.3508000000000000};
+tmp72.props[LibChemist::AtomProperty::isotope_mass] = 179.9465600000000052;
+temp[72] = tmp72;
+AtomicInfo tmp73;
+tmp73.props[LibChemist::AtomProperty::Z] = 73;
+tmp73.props[LibChemist::AtomProperty::mass] = 180.9478799999999978;
+tmp73.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp73.props[LibChemist::AtomProperty::nelectrons] = 73.0000000000000000;
+tmp73.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp73.props[LibChemist::AtomProperty::cov_radius] = 3.2125344132783078;
+tmp73.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp73.isotopes[180] = IsotopeData{180,179.9474600000000066,0.0001201000000000};
+tmp73.isotopes[181] = IsotopeData{181,180.9480000000000075,0.9998799000000000};
+tmp73.props[LibChemist::AtomProperty::isotope_mass] = 180.9480000000000075;
+temp[73] = tmp73;
+AtomicInfo tmp74;
+tmp74.props[LibChemist::AtomProperty::Z] = 74;
+tmp74.props[LibChemist::AtomProperty::mass] = 183.8400000000000034;
+tmp74.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp74.props[LibChemist::AtomProperty::nelectrons] = 74.0000000000000000;
+tmp74.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp74.props[LibChemist::AtomProperty::cov_radius] = 3.0613563232416814;
+tmp74.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp74.isotopes[180] = IsotopeData{180,179.9467099999999959,0.0012000000000000};
+tmp74.isotopes[182] = IsotopeData{182,181.9482040000000040,0.2650000000000000};
+tmp74.isotopes[183] = IsotopeData{183,182.9502229999999940,0.1431000000000000};
+tmp74.isotopes[184] = IsotopeData{184,183.9509309999999971,0.3064000000000000};
+tmp74.isotopes[186] = IsotopeData{186,185.9543600000000083,0.2843000000000000};
+tmp74.props[LibChemist::AtomProperty::isotope_mass] = 183.9509309999999971;
+temp[74] = tmp74;
+AtomicInfo tmp75;
+tmp75.props[LibChemist::AtomProperty::Z] = 75;
+tmp75.props[LibChemist::AtomProperty::mass] = 186.2069999999999936;
+tmp75.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp75.props[LibChemist::AtomProperty::nelectrons] = 75.0000000000000000;
+tmp75.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp75.props[LibChemist::AtomProperty::cov_radius] = 2.8534864494413203;
+tmp75.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp75.isotopes[185] = IsotopeData{185,184.9529550000000029,0.3740000000000000};
+tmp75.isotopes[187] = IsotopeData{187,186.9557499999999948,0.6260000000000000};
+tmp75.props[LibChemist::AtomProperty::isotope_mass] = 186.9557499999999948;
+temp[75] = tmp75;
+AtomicInfo tmp76;
+tmp76.props[LibChemist::AtomProperty::Z] = 76;
+tmp76.props[LibChemist::AtomProperty::mass] = 190.2299999999999898;
+tmp76.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp76.props[LibChemist::AtomProperty::nelectrons] = 76.0000000000000000;
+tmp76.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp76.props[LibChemist::AtomProperty::cov_radius] = 2.7212056206592723;
+tmp76.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp76.isotopes[184] = IsotopeData{184,183.9524890000000141,0.0002000000000000};
+tmp76.isotopes[186] = IsotopeData{186,185.9538400000000138,0.0159000000000000};
+tmp76.isotopes[187] = IsotopeData{187,186.9557499999999948,0.0196000000000000};
+tmp76.isotopes[188] = IsotopeData{188,187.9558399999999949,0.1324000000000000};
+tmp76.isotopes[189] = IsotopeData{189,188.9581399999999860,0.1615000000000000};
+tmp76.isotopes[190] = IsotopeData{190,189.9584399999999960,0.2626000000000000};
+tmp76.isotopes[192] = IsotopeData{192,191.9614799999999946,0.4078000000000000};
+tmp76.props[LibChemist::AtomProperty::isotope_mass] = 191.9614799999999946;
+temp[76] = tmp76;
+AtomicInfo tmp77;
+tmp77.props[LibChemist::AtomProperty::Z] = 77;
+tmp77.props[LibChemist::AtomProperty::mass] = 192.2170000000000130;
+tmp77.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp77.props[LibChemist::AtomProperty::nelectrons] = 77.0000000000000000;
+tmp77.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp77.props[LibChemist::AtomProperty::cov_radius] = 2.6645138368955377;
+tmp77.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp77.isotopes[191] = IsotopeData{191,190.9605899999999963,0.3730000000000000};
+tmp77.isotopes[193] = IsotopeData{193,192.9629199999999969,0.6270000000000000};
+tmp77.props[LibChemist::AtomProperty::isotope_mass] = 192.9629199999999969;
+temp[77] = tmp77;
+AtomicInfo tmp78;
+tmp78.props[LibChemist::AtomProperty::Z] = 78;
+tmp78.props[LibChemist::AtomProperty::mass] = 195.0840000000000032;
+tmp78.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp78.props[LibChemist::AtomProperty::nelectrons] = 78.0000000000000000;
+tmp78.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp78.props[LibChemist::AtomProperty::cov_radius] = 2.5700275306226463;
+tmp78.props[LibChemist::AtomProperty::vdw_radius] = 3.3070207195511991;
+tmp78.isotopes[190] = IsotopeData{190,189.9599300000000142,0.0001200000000000};
+tmp78.isotopes[192] = IsotopeData{192,191.9610399999999970,0.0078200000000000};
+tmp78.isotopes[194] = IsotopeData{194,193.9626810000000035,0.3286400000000000};
+tmp78.isotopes[195] = IsotopeData{195,194.9647919999999885,0.3377500000000000};
+tmp78.isotopes[196] = IsotopeData{196,195.9649520000000109,0.2521100000000000};
+tmp78.isotopes[198] = IsotopeData{198,197.9678900000000112,0.0735600000000000};
+tmp78.props[LibChemist::AtomProperty::isotope_mass] = 194.9647919999999885;
+temp[78] = tmp78;
+AtomicInfo tmp79;
+tmp79.props[LibChemist::AtomProperty::Z] = 79;
+tmp79.props[LibChemist::AtomProperty::mass] = 196.9665689999999927;
+tmp79.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp79.props[LibChemist::AtomProperty::nelectrons] = 79.0000000000000000;
+tmp79.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp79.props[LibChemist::AtomProperty::cov_radius] = 2.5700275306226463;
+tmp79.props[LibChemist::AtomProperty::vdw_radius] = 3.1369453682599948;
+tmp79.isotopes[197] = IsotopeData{197,196.9665689999999927,1.0000000000000000};
+tmp79.props[LibChemist::AtomProperty::isotope_mass] = 196.9665689999999927;
+temp[79] = tmp79;
+AtomicInfo tmp80;
+tmp80.props[LibChemist::AtomProperty::Z] = 80;
+tmp80.props[LibChemist::AtomProperty::mass] = 200.5920000000000130;
+tmp80.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp80.props[LibChemist::AtomProperty::nelectrons] = 80.0000000000000000;
+tmp80.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp80.props[LibChemist::AtomProperty::cov_radius] = 2.4944384856043329;
+tmp80.props[LibChemist::AtomProperty::vdw_radius] = 2.9290754944596338;
+tmp80.isotopes[196] = IsotopeData{196,195.9658300000000111,0.0015000000000000};
+tmp80.isotopes[198] = IsotopeData{198,197.9667689999999993,0.1004000000000000};
+tmp80.isotopes[199] = IsotopeData{199,198.9682809999999904,0.1694000000000000};
+tmp80.isotopes[200] = IsotopeData{200,199.9683269999999879,0.2314000000000000};
+tmp80.isotopes[201] = IsotopeData{201,200.9703030000000012,0.1317000000000000};
+tmp80.isotopes[202] = IsotopeData{202,201.9706429999999955,0.2974000000000000};
+tmp80.isotopes[204] = IsotopeData{204,203.9734939999999881,0.0682000000000000};
+tmp80.props[LibChemist::AtomProperty::isotope_mass] = 201.9706429999999955;
+temp[80] = tmp80;
+AtomicInfo tmp81;
+tmp81.props[LibChemist::AtomProperty::Z] = 81;
+tmp81.props[LibChemist::AtomProperty::mass] = 204.3834999999999980;
+tmp81.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp81.props[LibChemist::AtomProperty::nelectrons] = 81.0000000000000000;
+tmp81.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp81.props[LibChemist::AtomProperty::cov_radius] = 2.7401028819138507;
+tmp81.props[LibChemist::AtomProperty::vdw_radius] = 3.7038632058973433;
+tmp81.isotopes[203] = IsotopeData{203,202.9723449999999900,0.2951500000000000};
+tmp81.isotopes[205] = IsotopeData{205,204.9744279999999890,0.7048500000000000};
+tmp81.props[LibChemist::AtomProperty::isotope_mass] = 204.9744279999999890;
+temp[81] = tmp81;
+AtomicInfo tmp82;
+tmp82.props[LibChemist::AtomProperty::Z] = 82;
+tmp82.props[LibChemist::AtomProperty::mass] = 207.1999999999999886;
+tmp82.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp82.props[LibChemist::AtomProperty::nelectrons] = 82.0000000000000000;
+tmp82.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp82.props[LibChemist::AtomProperty::cov_radius] = 2.7590001431684290;
+tmp82.props[LibChemist::AtomProperty::vdw_radius] = 3.8172467734248130;
+tmp82.isotopes[204] = IsotopeData{204,203.9730439999999874,0.0140000000000000};
+tmp82.isotopes[206] = IsotopeData{206,205.9744660000000067,0.2410000000000000};
+tmp82.isotopes[207] = IsotopeData{207,206.9758970000000033,0.2210000000000000};
+tmp82.isotopes[208] = IsotopeData{208,207.9766529999999989,0.5240000000000000};
+tmp82.props[LibChemist::AtomProperty::isotope_mass] = 207.9766529999999989;
+temp[82] = tmp82;
+AtomicInfo tmp83;
+tmp83.props[LibChemist::AtomProperty::Z] = 83;
+tmp83.props[LibChemist::AtomProperty::mass] = 208.9804000000000030;
+tmp83.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp83.props[LibChemist::AtomProperty::nelectrons] = 83.0000000000000000;
+tmp83.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp83.props[LibChemist::AtomProperty::cov_radius] = 2.7967946656775857;
+tmp83.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp83.isotopes[209] = IsotopeData{209,208.9804000000000030,1.0000000000000000};
+tmp83.props[LibChemist::AtomProperty::isotope_mass] = 208.9804000000000030;
+temp[83] = tmp83;
+AtomicInfo tmp84;
+tmp84.props[LibChemist::AtomProperty::Z] = 84;
+tmp84.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp84.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp84.props[LibChemist::AtomProperty::nelectrons] = 84.0000000000000000;
+tmp84.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp84.props[LibChemist::AtomProperty::cov_radius] = 2.6456165756409593;
+tmp84.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp84.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[84] = tmp84;
+AtomicInfo tmp85;
+tmp85.props[LibChemist::AtomProperty::Z] = 85;
+tmp85.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp85.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp85.props[LibChemist::AtomProperty::nelectrons] = 85.0000000000000000;
+tmp85.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp85.props[LibChemist::AtomProperty::cov_radius] = 2.8345891881867420;
+tmp85.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp85.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[85] = tmp85;
+AtomicInfo tmp86;
+tmp86.props[LibChemist::AtomProperty::Z] = 86;
+tmp86.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp86.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp86.props[LibChemist::AtomProperty::nelectrons] = 86.0000000000000000;
+tmp86.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp86.props[LibChemist::AtomProperty::cov_radius] = 2.8345891881867420;
+tmp86.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp86.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[86] = tmp86;
+AtomicInfo tmp87;
+tmp87.props[LibChemist::AtomProperty::Z] = 87;
+tmp87.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp87.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp87.props[LibChemist::AtomProperty::nelectrons] = 87.0000000000000000;
+tmp87.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp87.props[LibChemist::AtomProperty::cov_radius] = 4.9132879261903533;
+tmp87.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp87.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[87] = tmp87;
+AtomicInfo tmp88;
+tmp88.props[LibChemist::AtomProperty::Z] = 88;
+tmp88.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp88.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp88.props[LibChemist::AtomProperty::nelectrons] = 88.0000000000000000;
+tmp88.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp88.props[LibChemist::AtomProperty::cov_radius] = 4.1762947372618004;
+tmp88.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp88.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[88] = tmp88;
+AtomicInfo tmp89;
+tmp89.props[LibChemist::AtomProperty::Z] = 89;
+tmp89.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp89.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp89.props[LibChemist::AtomProperty::nelectrons] = 89.0000000000000000;
+tmp89.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp89.props[LibChemist::AtomProperty::cov_radius] = 4.0629111697343303;
+tmp89.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp89.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[89] = tmp89;
+AtomicInfo tmp90;
+tmp90.props[LibChemist::AtomProperty::Z] = 90;
+tmp90.props[LibChemist::AtomProperty::mass] = 232.0377000000000010;
+tmp90.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp90.props[LibChemist::AtomProperty::nelectrons] = 90.0000000000000000;
+tmp90.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp90.props[LibChemist::AtomProperty::cov_radius] = 3.8928358184431260;
+tmp90.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp90.isotopes[230] = IsotopeData{230,230.0331299999999999,0.0002000000000000};
+tmp90.isotopes[232] = IsotopeData{232,232.0380600000000015,0.9998000000000000};
+tmp90.props[LibChemist::AtomProperty::isotope_mass] = 232.0380600000000015;
+temp[90] = tmp90;
+AtomicInfo tmp91;
+tmp91.props[LibChemist::AtomProperty::Z] = 91;
+tmp91.props[LibChemist::AtomProperty::mass] = 231.0358799999999917;
+tmp91.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp91.props[LibChemist::AtomProperty::nelectrons] = 91.0000000000000000;
+tmp91.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp91.props[LibChemist::AtomProperty::cov_radius] = 3.7794522509156563;
+tmp91.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp91.isotopes[231] = IsotopeData{231,231.0358799999999917,1.0000000000000000};
+tmp91.props[LibChemist::AtomProperty::isotope_mass] = 231.0358799999999917;
+temp[91] = tmp91;
+AtomicInfo tmp92;
+tmp92.props[LibChemist::AtomProperty::Z] = 92;
+tmp92.props[LibChemist::AtomProperty::mass] = 238.0289099999999962;
+tmp92.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp92.props[LibChemist::AtomProperty::nelectrons] = 92.0000000000000000;
+tmp92.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp92.props[LibChemist::AtomProperty::cov_radius] = 3.7038632058973433;
+tmp92.props[LibChemist::AtomProperty::vdw_radius] = 3.5148905933515602;
+tmp92.isotopes[233] = IsotopeData{233,233.0396399999999915,0.0000000000000000};
+tmp92.isotopes[234] = IsotopeData{234,234.0409500000000094,0.0000540000000000};
+tmp92.isotopes[235] = IsotopeData{235,235.0439299999999889,0.0072040000000000};
+tmp92.isotopes[238] = IsotopeData{238,238.0507900000000063,0.9927420000000000};
+tmp92.props[LibChemist::AtomProperty::isotope_mass] = 238.0507900000000063;
+temp[92] = tmp92;
+AtomicInfo tmp93;
+tmp93.props[LibChemist::AtomProperty::Z] = 93;
+tmp93.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp93.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp93.props[LibChemist::AtomProperty::nelectrons] = 93.0000000000000000;
+tmp93.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp93.props[LibChemist::AtomProperty::cov_radius] = 3.5904796383698736;
+tmp93.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp93.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[93] = tmp93;
+AtomicInfo tmp94;
+tmp94.props[LibChemist::AtomProperty::Z] = 94;
+tmp94.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp94.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp94.props[LibChemist::AtomProperty::nelectrons] = 94.0000000000000000;
+tmp94.props[LibChemist::AtomProperty::multiplicity] = 7;
+tmp94.props[LibChemist::AtomProperty::cov_radius] = 3.5337878546061385;
+tmp94.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp94.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[94] = tmp94;
+AtomicInfo tmp95;
+tmp95.props[LibChemist::AtomProperty::Z] = 95;
+tmp95.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp95.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp95.props[LibChemist::AtomProperty::nelectrons] = 95.0000000000000000;
+tmp95.props[LibChemist::AtomProperty::multiplicity] = 8;
+tmp95.props[LibChemist::AtomProperty::cov_radius] = 3.4015070258240905;
+tmp95.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp95.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[95] = tmp95;
+AtomicInfo tmp96;
+tmp96.props[LibChemist::AtomProperty::Z] = 96;
+tmp96.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp96.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp96.props[LibChemist::AtomProperty::nelectrons] = 96.0000000000000000;
+tmp96.props[LibChemist::AtomProperty::multiplicity] = 9;
+tmp96.props[LibChemist::AtomProperty::cov_radius] = 3.1936371520237294;
+tmp96.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp96.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[96] = tmp96;
+AtomicInfo tmp97;
+tmp97.props[LibChemist::AtomProperty::Z] = 97;
+tmp97.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp97.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp97.props[LibChemist::AtomProperty::nelectrons] = 97.0000000000000000;
+tmp97.props[LibChemist::AtomProperty::multiplicity] = 6;
+tmp97.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp97.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp97.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[97] = tmp97;
+AtomicInfo tmp98;
+tmp98.props[LibChemist::AtomProperty::Z] = 98;
+tmp98.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp98.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp98.props[LibChemist::AtomProperty::nelectrons] = 98.0000000000000000;
+tmp98.props[LibChemist::AtomProperty::multiplicity] = 5;
+tmp98.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp98.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp98.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[98] = tmp98;
+AtomicInfo tmp99;
+tmp99.props[LibChemist::AtomProperty::Z] = 99;
+tmp99.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp99.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp99.props[LibChemist::AtomProperty::nelectrons] = 99.0000000000000000;
+tmp99.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp99.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp99.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp99.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[99] = tmp99;
+AtomicInfo tmp100;
+tmp100.props[LibChemist::AtomProperty::Z] = 100;
+tmp100.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp100.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp100.props[LibChemist::AtomProperty::nelectrons] = 100.0000000000000000;
+tmp100.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp100.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp100.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp100.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[100] = tmp100;
+AtomicInfo tmp101;
+tmp101.props[LibChemist::AtomProperty::Z] = 101;
+tmp101.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp101.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp101.props[LibChemist::AtomProperty::nelectrons] = 101.0000000000000000;
+tmp101.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp101.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp101.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp101.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[101] = tmp101;
+AtomicInfo tmp102;
+tmp102.props[LibChemist::AtomProperty::Z] = 102;
+tmp102.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp102.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp102.props[LibChemist::AtomProperty::nelectrons] = 102.0000000000000000;
+tmp102.props[LibChemist::AtomProperty::multiplicity] = 1;
+tmp102.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp102.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp102.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[102] = tmp102;
+AtomicInfo tmp103;
+tmp103.props[LibChemist::AtomProperty::Z] = 103;
+tmp103.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp103.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp103.props[LibChemist::AtomProperty::nelectrons] = 103.0000000000000000;
+tmp103.props[LibChemist::AtomProperty::multiplicity] = 2;
+tmp103.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp103.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp103.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[103] = tmp103;
+AtomicInfo tmp104;
+tmp104.props[LibChemist::AtomProperty::Z] = 104;
+tmp104.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp104.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp104.props[LibChemist::AtomProperty::nelectrons] = 104.0000000000000000;
+tmp104.props[LibChemist::AtomProperty::multiplicity] = 3;
+tmp104.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp104.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp104.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[104] = tmp104;
+AtomicInfo tmp105;
+tmp105.props[LibChemist::AtomProperty::Z] = 105;
+tmp105.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp105.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp105.props[LibChemist::AtomProperty::nelectrons] = 105.0000000000000000;
+tmp105.props[LibChemist::AtomProperty::multiplicity] = 4;
+tmp105.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp105.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp105.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[105] = tmp105;
+AtomicInfo tmp106;
+tmp106.props[LibChemist::AtomProperty::Z] = 106;
+tmp106.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp106.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp106.props[LibChemist::AtomProperty::nelectrons] = 106.0000000000000000;
+tmp106.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp106.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp106.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp106.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[106] = tmp106;
+AtomicInfo tmp107;
+tmp107.props[LibChemist::AtomProperty::Z] = 107;
+tmp107.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp107.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp107.props[LibChemist::AtomProperty::nelectrons] = 107.0000000000000000;
+tmp107.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp107.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp107.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp107.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[107] = tmp107;
+AtomicInfo tmp108;
+tmp108.props[LibChemist::AtomProperty::Z] = 108;
+tmp108.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp108.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp108.props[LibChemist::AtomProperty::nelectrons] = 108.0000000000000000;
+tmp108.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp108.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp108.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp108.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[108] = tmp108;
+AtomicInfo tmp109;
+tmp109.props[LibChemist::AtomProperty::Z] = 109;
+tmp109.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp109.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp109.props[LibChemist::AtomProperty::nelectrons] = 109.0000000000000000;
+tmp109.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp109.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp109.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp109.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[109] = tmp109;
+AtomicInfo tmp110;
+tmp110.props[LibChemist::AtomProperty::Z] = 110;
+tmp110.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp110.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp110.props[LibChemist::AtomProperty::nelectrons] = 110.0000000000000000;
+tmp110.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp110.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp110.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp110.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[110] = tmp110;
+AtomicInfo tmp111;
+tmp111.props[LibChemist::AtomProperty::Z] = 111;
+tmp111.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp111.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp111.props[LibChemist::AtomProperty::nelectrons] = 111.0000000000000000;
+tmp111.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp111.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp111.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp111.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[111] = tmp111;
+AtomicInfo tmp112;
+tmp112.props[LibChemist::AtomProperty::Z] = 112;
+tmp112.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp112.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp112.props[LibChemist::AtomProperty::nelectrons] = 112.0000000000000000;
+tmp112.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp112.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp112.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp112.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[112] = tmp112;
+AtomicInfo tmp113;
+tmp113.props[LibChemist::AtomProperty::Z] = 113;
+tmp113.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp113.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp113.props[LibChemist::AtomProperty::nelectrons] = 113.0000000000000000;
+tmp113.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp113.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp113.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp113.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[113] = tmp113;
+AtomicInfo tmp114;
+tmp114.props[LibChemist::AtomProperty::Z] = 114;
+tmp114.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp114.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp114.props[LibChemist::AtomProperty::nelectrons] = 114.0000000000000000;
+tmp114.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp114.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp114.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp114.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[114] = tmp114;
+AtomicInfo tmp115;
+tmp115.props[LibChemist::AtomProperty::Z] = 115;
+tmp115.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp115.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp115.props[LibChemist::AtomProperty::nelectrons] = 115.0000000000000000;
+tmp115.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp115.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp115.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp115.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[115] = tmp115;
+AtomicInfo tmp116;
+tmp116.props[LibChemist::AtomProperty::Z] = 116;
+tmp116.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp116.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp116.props[LibChemist::AtomProperty::nelectrons] = 116.0000000000000000;
+tmp116.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp116.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp116.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp116.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[116] = tmp116;
+AtomicInfo tmp117;
+tmp117.props[LibChemist::AtomProperty::Z] = 117;
+tmp117.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp117.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp117.props[LibChemist::AtomProperty::nelectrons] = 117.0000000000000000;
+tmp117.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp117.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp117.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp117.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[117] = tmp117;
+AtomicInfo tmp118;
+tmp118.props[LibChemist::AtomProperty::Z] = 118;
+tmp118.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp118.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp118.props[LibChemist::AtomProperty::nelectrons] = 118.0000000000000000;
+tmp118.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp118.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp118.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp118.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[118] = tmp118;
+AtomicInfo tmp999;
+tmp999.props[LibChemist::AtomProperty::Z] = 999;
+tmp999.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp999.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp999.props[LibChemist::AtomProperty::nelectrons] = 999.0000000000000000;
+tmp999.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp999.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp999.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp999.isotopes[999] = IsotopeData{999,0.0000000000000000,0.0000000000000000};
+tmp999.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[999] = tmp999;
+AtomicInfo tmp9999;
+tmp9999.props[LibChemist::AtomProperty::Z] = 9999;
+tmp9999.props[LibChemist::AtomProperty::mass] = 0.0000000000000000;
+tmp9999.props[LibChemist::AtomProperty::charge] = 0.0;
+tmp9999.props[LibChemist::AtomProperty::nelectrons] = 9999.0000000000000000;
+tmp9999.props[LibChemist::AtomProperty::multiplicity] = 0;
+tmp9999.props[LibChemist::AtomProperty::cov_radius] = 0.0000000000000000;
+tmp9999.props[LibChemist::AtomProperty::vdw_radius] = 0.0000000000000000;
+tmp9999.isotopes[9999] = IsotopeData{9999,0.0000000000000000,0.0000000000000000};
+tmp9999.props[LibChemist::AtomProperty::isotope_mass] = 0.0000000000000000;
+temp[9999] = tmp9999;
+return temp;}());
 }}//End namespaces

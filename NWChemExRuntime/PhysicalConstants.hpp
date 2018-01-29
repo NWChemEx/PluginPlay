@@ -1,60 +1,34 @@
 #pragma once
 
-/** @file Fundamental physical constants for NWChemEx
+/**
+ *  @file PhysicalConstants.hpp
  *
- *  Generally speaking, the idea is to define as few constants as
- *  possible and derive all others.  This helps to maintain consistency.
-
- *  @warning Data made by generate_constants.py.
- *           DO NOT EDIT!!!!!!!!
+ * Contains enumerations for the recognized physical constants
  */
 
+#include <map>
 namespace NWXRuntime {
-namespace constant {
-//Fundamental physical constants
+enum class Constant{
+    Cal2J, ///< Ratio of a Joule to a calorie
+    pi, ///< Ratio of circle's circumference to it's diameter
+    alpha, ///< Fine-structure constant (dimensionless)
+    c, ///< Speed of light in vacuum in meters per second
+    h, ///< Plank's constant in Joule seconds
+    kb, ///< Boltzmann's constant in Joules per Kelvin
+    me, ///< Rest mass of electron in kilograms
+    na, ///< Avogadro's constant in things per mole
+    qe, ///< Charge of electron in Coulombs
+    hbar, ///< Reduced Plank constant Joule seconds
+    e0, ///< Vacuum permittivity Coulomb^2/(Joule Meter)
+    kc, ///< Coulomb's constant Joule meter/ Coulomb^2
+    Eh, ///< Hartree constant in Joules
+    a0, ///< Bohr radius in meters
+    R, ///< Ideal gas constant Joules per Kelvin per mole
+    Hz2J, ///< Conversion from Hertz to Joules
+    inv_m2J, ///< Conversion from m^-1 to Joules
+};
 
-///Ratio of a Joule to a calorie
-constexpr double J2cal = 4.184;
-
-///Ratio of circle's circumference to it's diameter
-constexpr double pi = 3.14159265358979323846;
-
-///Fine-structure constant (dimensionless)
-constexpr double alpha = 7.2973525664e-3;
-
-///Speed of light in vacuum in meters per second
-constexpr double c = 299792458;
-
-///Plank's constant in Joule seconds
-constexpr double h = 6.626070040e-34;
-
-///Boltzmann's constant in Joules per Kelvin
-constexpr double kb = 1.38064852e-23;
-
-///Rest mass of electron in kilograms
-constexpr double me = 9.10938356e-31;
-
-///Avogadro's constant in per mole
-constexpr double na = 6.022140857e23;
-
-///Charge of electron in Coulombs
-constexpr double qe = 1.6021766208e-19;
-
-//Derived constants
-
-///Reduced Plank constant Joule seconds
-constexpr double hbar = (h)/(2.0*pi);
-
-///Vacuum permittivity Coulomb^2/(Joule Meter)
-constexpr double e0 = (qe*qe)/(2.0*alpha*h*c);
-
-///Coulomb's constant Joule meter/ Coulomb^2
-constexpr double kc = (1.0)/(4.0*pi*e0);
-
-///Hartree constant in Joules
-constexpr double Eh = (alpha*alpha*me*c*c)/(1.0);
-
-///Bohr radius in meters
-constexpr double a0 = (hbar)/(me*alpha*c);
-
-}}//End namespaces
+namespace detail_ {
+extern const std::map<Constant, double> constants;
+}
+}

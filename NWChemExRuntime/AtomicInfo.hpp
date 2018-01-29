@@ -1,6 +1,7 @@
 #pragma once
+#include <LibChemist/Atom.hpp>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 /** @file Declares structures containing basic experimental data.
@@ -36,35 +37,16 @@ struct IsotopeData {
  *  NWChemExRuntime/reference_data/physical_data.
  */
 struct AtomicInfo {
-    ///Atomic number (# of protons)
-    std::size_t Z;
-
-    ///Atomic symbol of the element (lowercase)
-    std::string sym;
-
-    ///Full name of the element (lowercase)
-    std::string name;
-
-    ///Ground-state multiplicity of the atom
-    std::size_t multiplicity;
-
-    ///Isotope weighted mass in Daltons
-    double mass;
-
-    ///Covalent radius in a.u.
-    double covradius;
-
-    ///Noncovalent (van der Waals) radius in a.u.
-    double vdwradius;
-
+    ///Map of the default properties of the current atom
+    std::unordered_map<LibChemist::AtomProperty, double> props;
     ///Isotope data for this element
     std::unordered_map<std::size_t,IsotopeData> isotopes;
 };//End AtomicInfo class
 
 ///Convenience converter from atomic symbol to atomic number
-extern const std::unordered_map<std::string, std::size_t> sym2Z_;
+extern const std::map<std::string, std::size_t> sym2Z_;
 
 ///Map from atomic number to known data for element
-extern const std::unordered_map<std::size_t, AtomicInfo> atomic_data_;
+extern const std::map<std::size_t, AtomicInfo> atomic_data_;
 
 }}//End namespaces

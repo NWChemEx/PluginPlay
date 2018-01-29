@@ -95,22 +95,27 @@ class AtomicInfo:
         return rv
 
     def cxxify(self, f_in):
-        f_in.write("{//Start AtomicInfo instance\n")
-        f_in.write("    {0:d},//Z\n".format(self.Z))
-        f_in.write("    \"{0:s}\",//Atomic symbol\n".format(self.sym))
-        f_in.write("    \"{0:s}\",//Full name\n".format(self.name))
-        f_in.write("    {0:d},//Multiplicity\n".format(self.mult))
-        f_in.write("    {0:16.16f},//Mass\n".format(self.mass))
-        f_in.write("    {0:16.16f},//Covalent radius\n".format(self.cov_radius))
-        f_in.write("    {0:16.16f},//VDW radius\n".format(self.vdw_radius))
-        f_in.write("    {//Start map<int,IsotopeData>\n")
+        prop_add = "tmp{:d}.props[LibChemist::AtomProperty::".format(self.Z)
+        f_in.write(prop_add + "Z] = {:d};\n".format(self.Z))
+        f_in.write(prop_add + "mass] = {:16.16f};\n".format(self.mass))
+        f_in.write(prop_add + "charge] = 0.0;\n")
+        f_in.write(prop_add + "nelectrons] = {:16.16f};\n".format(self.Z))
+        f_in.write(prop_add + "multiplicity] = {:d};\n".format(self.mult))
+        f_in.write(prop_add + "cov_radius] = {:16.16f};\n".format(
+            self.cov_radius))
+        f_in.write(prop_add + "vdw_radius] = {:16.16f};\n".format(
+            self.vdw_radius))
+        isotopes = "tmp{:d}.isotopes[".format(self.Z)
+        iso_mass = 0.0
+        iso_abun = 0.0
         for ki, vi in sorted(self.isotopes.items()):
-            f.write("        {//Start pair<int,IsotopeData\n")
-            f.write("            {0:d},".format(ki))
+            if vi.abundance > iso_abun:
+                iso_abun = vi.abundance
+                iso_mass = vi.mass
+            f_in.write(isotopes + "{:d}] = IsotopeData".format(ki))
             vi.cxxify(f)
-            f.write("\n        },//End pair<int,IsotopeData\n")
-        f.write("    }//End map<int,IsotopeData>\n")
-        f.write("}//End AtomicInfo")
+            f_in.write(";\n")
+        f_in.write(prop_add + "isotope_mass] = {:16.16f};\n".format(iso_mass))
 
 
 atomicinfo = {}
@@ -205,21 +210,11 @@ def cxx_atominfo_declaration(f):
                 "and IUPAC data files located in the directory \n"
                 " *  NWChemExRuntime/reference_data/physical_data.\n"
                 " */\n")
+
         f.write("struct AtomicInfo {\n")
-        f.write("    ///Atomic number (# of protons)\n")
-        f.write("    std::size_t Z;\n\n")
-        f.write("    ///Atomic symbol of the element (lowercase)\n")
-        f.write("    std::string sym;\n\n")
-        f.write("    ///Full name of the element (lowercase)\n")
-        f.write("    std::string name;\n\n")
-        f.write("    ///Ground-state multiplicity of the atom\n")
-        f.write("    std::size_t multiplicity;\n\n")
-        f.write("    ///Isotope weighted mass in Daltons\n")
-        f.write("    double mass;\n\n")
-        f.write("    ///Covalent radius in a.u.\n")
-        f.write("    double covradius;\n\n")
-        f.write("    ///Noncovalent (van der Waals) radius in a.u.\n")
-        f.write("    double vdwradius;\n\n")
+        f.write("    ///Map of the default properties of the current atom\n")
+        f.write("    std::unordered_map<LibChemist::AtomProperty, "
+                "double> props;\n")
         f.write("    ///Isotope data for this element\n")
         f.write("    std::unordered_map<std::size_t,IsotopeData> isotopes;\n")
         f.write("};//End AtomicInfo class\n\n")
@@ -229,8 +224,9 @@ header_file = os.path.join(outbase, output_name+".hpp")
 with open(header_file, 'w') as f:
 
     f.write("#pragma once\n")
+    f.write("#include <LibChemist/Atom.hpp>\n")
     f.write("#include <string>\n")
-    f.write("#include <unordered_map>\n")
+    f.write("#include <map>\n")
     f.write("#include <vector>\n")
     f.write(comment+'\n')
     f.write("namespace {0:s} {{\n".format(nmspace))
@@ -238,39 +234,36 @@ with open(header_file, 'w') as f:
     cxx_isotopedata_declaration(f)
     cxx_atominfo_declaration(f)
     f.write("///Convenience converter from atomic symbol to atomic number\n")
-    f.write("extern const std::unordered_map<std::string, std::size_t> "
+    f.write("extern const std::map<std::string, std::size_t> "
             "sym2Z_;\n\n")
     f.write("///Map from atomic number to known data for element\n")
-    f.write("extern const std::unordered_map<std::size_t, AtomicInfo> "
+    f.write("extern const std::map<std::size_t, AtomicInfo> "
             "atomic_data_;\n\n")
     f.write("}}//End namespaces\n")
 
 src_file = os.path.join(outbase, output_name+".cpp")
 with open(src_file, 'w') as f:
+    atom_info_type = "std::map<std::size_t, AtomicInfo>"
     f.write("#include \"NWChemExRuntime/AtomicInfo.hpp\"\n")
     f.write("#include <algorithm>\n\n")
     f.write("namespace {0:s} {{\n".format(nmspace))
     f.write("namespace detail_ {\n")
 
     # Atomic symbol to Z
-    f.write("extern const std::unordered_map<std::string, std::size_t> sym2Z_{"
+    f.write("extern const std::map<std::string, std::size_t> sym2Z_{"
             "\n")
     for k, v in sorted(atomicinfo.items()):
         f.write("  {{ \"{}\" , {} }},\n".format(v.sym, k))
-        f.write("  {{ \"{}\" , {} }},\n".format(v.sym.upper(),k))
-        if len(v.sym) == 2:
-            f.write("  {{ \"{}{}\", {} }},\n".format(v.sym[0].upper(),
-                                                     v.sym[1],k))
     f.write("}; // close sym2Z_\n\n\n")
 
     # Next, full atomic data
-    f.write("extern const std::unordered_map<std::size_t, AtomicInfo> "
-            "atomic_data_{\n")
+    f.write("extern const {} atomic_data_(\n".format(atom_info_type))
+    f.write("    [](){"+" {} temp;\n".format(atom_info_type))
     for k, v in sorted(atomicinfo.items()):
-        f.write("  {{ {:d},//Start pair<int,AtomicInfo>\n".format(k))
+        f.write("AtomicInfo tmp{:d};\n".format(k))
         v.cxxify(f)
-        f.write("\n  },//End pair<int,AtomicInfo>\n")
-    f.write("};\n")
+        f.write("temp[{0:d}] = tmp{0:d};\n".format(k))
+    f.write("return temp;}());\n")
     f.write("}}//End namespaces\n")
 
 with open("TestAtomicInfo.cpp", 'w') as f:
@@ -284,25 +277,35 @@ with open("TestAtomicInfo.cpp", 'w') as f:
     f.write("}\n\n")
     f.write("TEST_CASE(\"Atomic Data\")\n")
     f.write("{\n")
+
     for k, v in sorted(atomicinfo.items()):
         prefix = "        REQUIRE(atomic_data_.at({:d})".format(k)
+        prop_prefix =  prefix + ".props.at(LibChemist::AtomProperty::"
         f.write("    SECTION(\"Atom # {:d}\")\n".format(k))
         f.write("    {\n")
-        f.write("{:s}.Z == {:d});\n".format(prefix, k))
-        f.write("{:s}.sym == \"{:s}\");\n".format(prefix, v.sym))
-        f.write("{:s}.name == \"{:s}\");\n".format(prefix, v.name))
-        f.write("{:s}.multiplicity == {:d});\n".format(prefix, v.mult))
-        f.write("{:s}.mass == Approx({:16.16f}));\n".format(prefix, v.mass))
+        f.write(prop_prefix + "Z) == {:d});\n".format(k))
+        f.write(prop_prefix + "multiplicity) == {:d});\n".format(v.mult))
+        f.write(prop_prefix + "mass) == Approx({:16.16f}));\n".format(v.mass))
+        f.write(prop_prefix + "charge) == Approx(0.0));\n")
+        f.write(prop_prefix + "nelectrons) == Approx({:d}));\n".format(k))
         comp_val = "Approx({:16.16f})".format(v.cov_radius)
-        f.write("{:s}.covradius == {:s});\n".format(prefix, comp_val))
+        f.write(prop_prefix + "cov_radius) == {:s});\n".format(comp_val))
         comp_val = "Approx({:16.16f})".format(v.vdw_radius)
-        f.write("{:s}.vdwradius == {:s});\n".format(prefix, comp_val))
+        f.write(prop_prefix + "vdw_radius) == {:s});\n".format(comp_val))
+        iso_mass = 0.0
+        iso_abun = 0.0
         for ki, vi in sorted(v.isotopes.items()):
-            iso_prefix = "{:s}.isotopes.at({:d})".format(prefix, ki)
+            if vi.abundance > iso_abun:
+                iso_abun = vi.abundance
+                iso_mass = vi.mass
+            iso_prefix = prefix + ".isotopes.at({:d})".format(ki)
             f.write("{:s}.isonum == {:d});\n".format(iso_prefix, ki))
             comp_val = "Approx({:16.16f})".format(vi.mass)
             f.write("{:s}.mass == {:s});\n".format(iso_prefix, comp_val))
             comp_val = "Approx({:16.16f})".format(vi.abundance)
             f.write("{:s}.abundance == {:s});\n".format(iso_prefix, comp_val))
+        f.write(prop_prefix + "isotope_mass) == Approx({:16.16f}));\n".format(
+                iso_mass))
+
         f.write("    }\n")
     f.write("}\n")
