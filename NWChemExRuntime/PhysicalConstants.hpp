@@ -1,13 +1,18 @@
 #pragma once
+#include <map>
 
 /**
  *  @file PhysicalConstants.hpp
  *
- * Contains enumerations for the recognized physical constants
+ * Contains enumerations for the recognized physical constants as well as a
+ * means of accessing
+ *
  */
 
-#include <map>
+
 namespace NWXRuntime {
+
+///List of physical constants and
 enum class Constant{
     Cal2J, ///< Ratio of a Joule to a calorie
     pi, ///< Ratio of circle's circumference to it's diameter
@@ -29,6 +34,10 @@ enum class Constant{
 };
 
 namespace detail_ {
+
+///Map of the NWChem's default values for the various physical constants
 extern const std::map<Constant, double> constants;
-}
-}
+
+} // End detail_
+
+} // End NWXRuntime

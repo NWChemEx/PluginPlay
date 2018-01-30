@@ -6,20 +6,32 @@
 namespace NWXRuntime {
 
 /**
- * @brief As we all know, Wikipedia is your one-stop shop for obtaining physical
- * data.  The Wikipedia class brings that convenience to NWChemEx.
+ * @brief The ReferenceDataRepo class serves as a one-stop shop for obtaining
+ * chemical and physical reference data (atomic masses, physical constants,...).
  *
- * Disclaimer: By default the data internal to the Wikipedia class is from
- * reputable sources (i.e. not actually from Wikipedia).  The name is meant to
- * be cute.
- *
- * The Wikipedia class provides the API for obtaining the physical data in
- * NWChemEx and decouples the act of getting the data from the actual
+ * The ReferenceDataRepo class provides the API for obtaining the physical data
+ * in NWChemEx and decouples the act of getting the data from the actual
  * physical values.  This allows users to use NWChemEx with physical data from
  * another package or more up to date values without having to modify the
  * NWChemEx source code.
+ *
+ * Design philosophy:
+ * The class itself ultimately aggregates three maps:
+ *
+ * 1. atomic symbol to Z
+ * 2. enum of physical constant to value
+ * 3. Z to atomic data
+ *
+ * Typically this would suggest that the class just be a struct with the
+ * maps publicly accessible; however, I also want the data to be easily
+ * obtained regardless of how one wants to look it up (e.g. symbol vs Z). In
+ * order to avoid  storing the data multiple times we make the convention
+ * internally that atomic data is mapped by Z and not sym.  Consequentially as
+ * some look ups will involve some pre-processing that we don't want to expose
+ * to the user of the class we have made the members private.
+ *
  */
-class Wikipedia {
+class ReferenceDataRepo {
 public:
     ///Type of an index
     using size_type = std::size_t;
@@ -31,13 +43,13 @@ public:
     using physical_constants_map_type = std::map<Constant, double>;
 
     /**
-     * @brief Creates an instance of the Wikipedia class that is initialized
+     * @brief Creates an instance of the ReferenceDataRepo class that is initialized
      *        with NWChemEx's default physical reference data.
      *
      * @throw std::bad_alloc if there is insufficient memory to make the
      * internal state of the class.  Strong throw guarantee.
      */
-    Wikipedia();
+    ReferenceDataRepo();
 
     /**
      * @brief Makes a deep copy of the current instance.
@@ -47,32 +59,32 @@ public:
      * @throw std::bad_alloc if there is insufficient memory to make the copy.
      * Strong throw guarantee.
      */
-    Wikipedia(const Wikipedia&)=default;
+    ReferenceDataRepo(const ReferenceDataRepo&)=default;
 
     /**
-     * @brief Takes ownership of another Wikipedia instance.
+     * @brief Takes ownership of another ReferenceDataRepo instance.
      * @param[in] rhs The instance to take ownership of.  After this call @p rhs
      * will be in a valid, but otherwise undefined state.
      * @throw None. No throw guarantee.
      */
-    Wikipedia(Wikipedia&&)noexcept=default;
+    ReferenceDataRepo(ReferenceDataRepo&&)noexcept=default;
 
     /**
-     * @brief Allows a Wikipedia instance to be created with non-default data.
+     * @brief Allows a ReferenceDataRepo instance to be created with non-default data.
      *
      * @param atoms A map between atomic number and AtomicInfo structs for that
      *        atomic number.
      * @throw std::bad_alloc if there is insufficient memory to copy the map
      *        into the class.  Strong throw guarantee.
      */
-    Wikipedia(const atomic_info_map_type& atoms,
+    ReferenceDataRepo(const atomic_info_map_type& atoms,
               const physical_constants_map_type& constants):
         atom_info_(atoms),
         constants_(constants)
     {}
 
-    ///Cleans up the Wikipedia class
-    ~Wikipedia()noexcept=default;
+    ///Cleans up the ReferenceDataRepo class
+    ~ReferenceDataRepo()noexcept=default;
 
     /**
      * @brief Sets the state of the current instance to a deep copy of
@@ -84,7 +96,7 @@ public:
      * @throw std::bad_alloc if there is insufficient memory to copy
      * @p rhs's state.  Strong throw guarantee.
      */
-    Wikipedia& operator=(const Wikipedia& /*rhs*/)=default;
+    ReferenceDataRepo& operator=(const ReferenceDataRepo& /*rhs*/)=default;
 
     /**
      * @brief Causes the current instance to take ownership of an already
@@ -94,7 +106,7 @@ public:
      * @return The current instance containing @p rhs's state.
      * @throw None. No throw guarantee.
      */
-    Wikipedia& operator=(Wikipedia&& /*rhs*/)noexcept=default;
+    ReferenceDataRepo& operator=(ReferenceDataRepo&& /*rhs*/)noexcept=default;
 
     /**
      * @brief Creates an Atom instance initialized with the physical reference

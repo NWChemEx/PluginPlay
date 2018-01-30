@@ -1,5 +1,5 @@
 #include "NWChemExRuntime/BasisSetFileParser.hpp"
-#include "NWChemExRuntime/Wikipedia.hpp"
+#include "NWChemExRuntime/ReferenceDataRepo.hpp"
 #include <LibChemist/ShellTypes.hpp>
 #include <regex>
 
@@ -128,7 +128,7 @@ namespace NWXRuntime {
         {
             std::string symbol;
             tokenizer >> symbol;
-            auto atom = Wikipedia().atomic_info(symbol);
+            auto atom = ReferenceDataRepo().atomic_info(symbol);
             auto Z = atom.property(LibChemist::AtomProperty::Z);
             rv[data_type::Z].push_back(Z);
         }
