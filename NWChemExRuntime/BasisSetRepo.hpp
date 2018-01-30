@@ -1,26 +1,30 @@
 #pragma once
 #include <LibChemist/BasisShell.hpp>
+#include <LibChemist/SetOfAtoms.hpp>
 #include <map>
 
 namespace NWXRuntime {
 
 /**
- * @brief When people need Gaussian basis sets they turn to EMSL's Basis Set
- * exchange.  This class strives to perform a similar service by providing
- * basis sets to the NWChemEx program.
+ * @brief A class holding a list of pre-defined basis sets.
  *
- * Like the Wikipedia class, this class is meant to be the API people go through
- * to get basis sets on their objects.  The details of how one defines a basis
- * set are hidden inside the class and thus decoupled from the act of getting
- * it.
+ * The primary purpose of this class is to decouple the definition of basis sets
+ * from the act of applying them to molecules.  By default this class comes
+ * hard-coded with several popular basis sets.  Users are free to add additional
+ * basis sets at runtime.  In particular, BasisSetParser's output can be fed
+ * more or less into a BasisSetRepo instance (the hiccup being you'll have to
+ * attach a string name to the output of the parser).
  *
- * By default this class will load several popular basis sets and make them
- * available for users.  Users are free to add additional basis sets at runtime.
- * In particular, BasisSetParser's output can be fed more or less into a
- * BasisSetExchange instance (the hiccup being you'll have to attach a string to
- * the output).
+ * Design decision:
+ *
+ * Like the other repo classes this one too is a somewhat dressed-up map.  The
+ * logic here is that eventually this class can be used to automate additional
+ * aspects of the process of applying basis sets to molecules (selection of
+ * auxiliary basis sets, normalization, etc.), while still maintaining a uniform
+ * application process.  It also hides the case-sensitivity convention of the
+ * data.
  */
-class BasisSetExchange {
+class BasisSetRepo {
 public:
     ///The type of a basis set provided to this class as input
     using input_basis_type =
@@ -32,7 +36,7 @@ public:
      * @throw std::bad_alloc if there is insufficient memory to load the
      * initial basis sets.
      */
-    BasisSetExchange();
+    BasisSetRepo();
 
     /**
      * @brief Makes a deep copy of another instance.
@@ -40,7 +44,7 @@ public:
      * @throw std::bad_alloc if there is insufficient memory for the copy. Strong
      *        throw guarantee.
      */
-    BasisSetExchange(const BasisSetExchange& /*rhs*/) = default;
+    BasisSetRepo(const BasisSetRepo& /*rhs*/) = default;
 
     /**
      * @brief Takes ownership of another instance.
@@ -48,10 +52,10 @@ public:
      *            is in a valid, but otherwise undefined state.
      * @throw None. No throw guarantee.
      */
-    BasisSetExchange(BasisSetExchange&& /*rhs*/)noexcept = default;
+    BasisSetRepo(BasisSetRepo&& /*rhs*/)noexcept = default;
 
     /**
-     * @brief Allows a user to initialize a BasisSetExchange instance with their
+     * @brief Allows a user to initialize a BasisSetRepo instance with their
      *        own preferred set of basis sets.
      *
      * @param bases A map of basis sets where the key is a descriptive name of
@@ -62,7 +66,7 @@ public:
      * @throw std::bad_alloc if their is insufficient memory to copy the basis
      * sets over.  Strong throw guarantee.
      */
-    BasisSetExchange(const std::map<std::string, input_basis_type>& bases) :
+    BasisSetRepo(const std::map<std::string, input_basis_type>& bases) :
             bases_(bases)
     { }
 
@@ -71,7 +75,7 @@ public:
      * @throw None. No throw guarantee.
      *
      */
-    ~BasisSetExchange()noexcept = default;
+    ~BasisSetRepo()noexcept = default;
 
     /**
      * @brief Assigns a deep copy of another instance's state to the current
@@ -81,7 +85,7 @@ public:
      * @throw std::bad_alloc if there is insufficient memory for the copy. Strong
      *        throw guarantee.
      */
-    BasisSetExchange& operator=(const BasisSetExchange& /*rhs*/)= default;
+    BasisSetRepo& operator=(const BasisSetRepo& /*rhs*/)= default;
 
     /**
      * @brief Takes ownership of another instance.
@@ -90,7 +94,7 @@ public:
      * @return The current instance containing @p rhs's state.
      * @throw None. No throw guarantee.
      */
-    BasisSetExchange& operator=(BasisSetExchange&& /*rhs*/)noexcept= default;
+    BasisSetRepo& operator=(BasisSetRepo&& /*rhs*/)noexcept= default;
 
     /**
      * @brief Allows a user to add additional basis sets to the instance.
@@ -108,6 +112,23 @@ public:
     {
         bases_[name] = bs;
     }
+
+    /**
+     * @brief Applies a specific basis set to a molecule.
+     *
+     * @note If a particular basis set does not define basis functions for all
+     * atoms in your molecule, no additional functions will be applied to that
+     * atom.
+     *
+     * @param name The name of the basis set to apply.  If no basis set exists
+     *        with the specific key the molecule is returned as is.
+     * @param mol The molecule to apply the basis set to.
+     * @return A copy of @p mol containing
+     * @throw std::bad_alloc If there is insufficient memory to copy @p mol or
+     * to copy the shells over.  Weak throw guarantee.
+     */
+    LibChemist::SetOfAtoms apply_basis(const std::string& name,
+                                       const LibChemist::SetOfAtoms& mol)const;
 
 private:
 

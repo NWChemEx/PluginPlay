@@ -4,6 +4,7 @@ include(TargetMacros)
 
 add_cxx_unit_test(TestAtomicInfo)
 add_cxx_unit_test(TestBasisSetParser)
+add_cxx_unit_test(TestBasisSetRepo)
 add_cxx_unit_test(TestMoleculeRepo)
 add_cxx_unit_test(TestPhysicalConstants)
 add_cxx_unit_test(TestReferenceDataRepo)
