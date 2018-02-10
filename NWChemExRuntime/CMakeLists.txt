@@ -14,7 +14,7 @@ set(NWChemExRuntime_INCLUDES AtomicInfo.hpp
                              PhysicalConstants.hpp
                              ReferenceDataRepo.hpp)
 set(NWChemExRuntime_DEFINITIONS )
-set(NWChemExRuntime_LINK_FLAGS )
+set(NWChemExRuntime_LINK_FLAGS)
 nwchemex_add_library(NWChemExRuntime NWChemExRuntime_SRCS
                                  NWChemExRuntime_INCLUDES
                                  NWChemExRuntime_DEFINTIONS
