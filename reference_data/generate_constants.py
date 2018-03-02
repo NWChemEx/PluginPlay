@@ -67,8 +67,9 @@ derived["Eh"] = (("alpha", "alpha", "me", "c", "c"), (1.0,),
 derived["a0"] = (("hbar",), ("me", "alpha", 'c'),"Bohr radius in meters")
 derived["R"] = (("kb","na"), (1.0,), "Ideal gas constant Joules per Kelvin "
                                      "per mole")
-derived["Hz2J"] = (('h'), (1.0,), "Conversion from Hertz to Joules")
+derived["Hz2J"] = (('h', ), (1.0,), "Conversion from Hertz to Joules")
 derived["inv_m2J"] = (('h', 'c'), (1.0,), "Conversion from m^-1 to Joules")
+derived["eV2J"] = ((1.0,), ("qe",), "Conversion from eV to Joules")
 
 
 def extract_constants():
