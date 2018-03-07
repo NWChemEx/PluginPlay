@@ -1,6 +1,7 @@
 import os
 import sys
 import collections
+from helper_fxns import *
 
 """ Script for generating a list of physical constants in a C++ compilable form.
 
@@ -19,130 +20,111 @@ import collections
 
 """
 
-# Check usage of script before doing anything
-if len(sys.argv) != 2:
-    print("Usage: generate_constants.py <output_directory>")
-    quit(1)
+class Constant:
+    def __init__(self, value, sym, units, desc):
+        self.value = value
+        self.sym = sym
+        self.units = units
+        self.desc = desc
+    def cxxify(self, f):
+        f.write("{}, \"{}\", \"{}\"".format(self.value, self.units, self.desc))
 
-# Get some paths for input and output of files
-outbase = sys.argv[1]
-mypath = os.path.dirname(os.path.realpath(__file__))
-datadir = os.path.join(mypath, "physical_data")
+def hard_coded():
+    return [
+    Constant("3.14159265358979323846", "pi", "",
+                       "Ratio of circle's circumference to it's diameter"),
+    Constant("4.184", "Cal2J", "Joules per calorie",
+                       "Ratio of a Joule to a calorie")
+    ]
 
-# Hardcoded constants (strings to preserve precision)
-hard_code = {"pi" : ("3.14159265358979323846",
-                     "Ratio of circle's circumference to it's diameter"),
-             "Cal2J" : ("4.184", "Ratio of a Joule to a calorie"),
-             }
+def extract_constants(data_dir):
+    cs_we_want = [("electron mass", "me", "kilograms", "Rest mass of electron"),
+                  ("elementary charge", "qe", "Coulombs", "Charge of electron"),
+                  ("Planck constant", "h", "Joule seconds", "Planck constant"),
+                  ("fine-structure constant", "alpha", "", "Fine-structure "
+                                                           "constant"),
+                  ("speed of light in vacuum", "c", "meters per second",
+                   "speed of light in vacuum"),
+                  ("Boltzmann constant", "kb", "Joules per Kelvin",
+                   "Boltzmann's constant"),
+                  ("Avogadro constant", "na", "things per mole", "Avogadro's "
+                                                                 "constant")
+                  ]
 
-# list of constants we want from file (names match file) and our symbol for them
-cs_we_want = [("electron mass", "me"),
-              ("elementary charge", "qe"),
-              ("Planck constant", "h"),
-              ("fine-structure constant", "alpha"),
-              ("speed of light in vacuum", "c"),
-              ("Boltzmann constant", "kb"),
-              ("Avogadro constant", "na")
-              ]
-
-# Mapping from fundamental constants we extract to our descriptions
-descs = {"me": "Rest mass of electron in kilograms",
-         "qe": "Charge of electron in Coulombs",
-         "h": "Plank's constant in Joule seconds",
-         "alpha": "Fine-structure constant (dimensionless)",
-         "c": "Speed of light in vacuum in meters per second",
-         "kb": "Boltzmann's constant in Joules per Kelvin",
-         "na": "Avogadro's constant in things per mole"
-         }
-
-# Derived units symbol to (numerator tuple, denominator tuple description)
-derived = collections.OrderedDict()
-derived["hbar"] = (('h',), (2.0, "pi"),"Reduced Plank constant Joule seconds")
-derived["e0"] = (("qe", "qe"), (2.0, "alpha", 'h', 'c'),
-                 "Vacuum permittivity Coulomb^2/(Joule Meter)")
-derived["kc"] = ((1.0,), (4.0, "pi", "e0"), "Coulomb's constant Joule meter/ "
-                                            "Coulomb^2")
-derived["Eh"] = (("alpha", "alpha", "me", "c", "c"), (1.0,),
-                 "Hartree constant in Joules")
-derived["a0"] = (("hbar",), ("me", "alpha", 'c'),"Bohr radius in meters")
-derived["R"] = (("kb","na"), (1.0,), "Ideal gas constant Joules per Kelvin "
-                                     "per mole")
-derived["Hz2J"] = (('h', ), (1.0,), "Conversion from Hertz to Joules")
-derived["inv_m2J"] = (('h', 'c'), (1.0,), "Conversion from m^-1 to Joules")
-derived["eV2J"] = ((1.0,), ("qe",), "Conversion from eV to Joules")
-
-
-def extract_constants():
-    constants_ = {}
-    constant_file = os.path.join(datadir, "NIST-CODATA-2014.txt")
+    constants_ = []
+    constant_file = os.path.join(data_dir, "NIST-CODATA-2014.txt")
     # File format is: name, value, uncertainty, unit
     for l in open(constant_file).readlines()[10:]:
         line = list(filter(None, l.split("  ")))
         for cs in cs_we_want:
             if line[0] == cs[0]:
-                constants_[cs[1]] = "".join(line[1].split())
+                c = Constant("".join(line[1].split()), cs[1], cs[2], cs[3])
+                constants_.append(c)
     return constants_
 
-
-def write_header(cnsts_, hard_code_, derived_):
-    # Print the header file
-    with open("../NWChemExRuntime/PhysicalConstants.hpp", 'w') as f:
-        f.write("#pragma once\n\n")
-        f.write("/**\n")
-        f.write(" *  @file PhysicalConstants.hpp\n")
-        f.write(" *\n")
-        f.write(" * Contains enumerations for the recognized physical "
-                "constants\n")
-        f.write(" */\n\n")
-        f.write("#include <map>\n")
-        f.write("namespace NWXRuntime {\n")
-        f.write("enum class Constant{\n")
-        for k,v in sorted(hard_code_.items()):
-            f.write("    {:s}, ///< {:s}\n".format(k, v[1]))
-        for k, v in sorted(cnsts_.items()):
-            f.write("    {:s}, ///< {:s}\n".format(k, descs[k]))
-        for k, v in derived_.items():
-            f.write("    {:s}, ///< {:s}\n".format(k, v[2]))
-        f.write("};\n\n")
-        f.write("namespace detail_ {\n")
-        f.write("extern const std::map<Constant, double> constants;\n")
-        f.write("}\n")
-        f.write("}\n")
-
-def evaluate_variable(formula, cts_, hard_code_, derived_):
+def evaluate_variable(formula, cts_):
     frac = [1.0, 1.0]
     for i_ in range(2):
         for val in formula[i_]:
-            if val in cts_:
-                frac[i_] *= float(cts_[val])
-            elif val in hard_code_:
-                frac[i_] *= float(hard_code_[val][0])
-            elif val in derived_:
-                lbl = derived_[val]
-                frac[i_] *= evaluate_variable(lbl, cts_, hard_code_, derived_)
-            else:
-                frac[i_] *= val
-
+            found = False
+            for c in cts_:
+                if c.sym == val :
+                    frac[i_] = float(frac[i_])*float(c.value)
+                    found = True
+                    break
+            if not found:
+                frac[i_] = float(frac[i_])*val
     return frac[0]/frac[1]
 
-def write_source(cnsts_, hard_code_, derived_):
-    with open("../NWChemExRuntime/PhysicalConstants.cpp", 'w') as f:
-        f.write("#include \"NWChemExRuntime/PhysicalConstants.hpp\"\n\n")
-        f.write("namespace NWXRuntime {\n")
-        f.write("namespace detail_ {\n")
-        f.write("extern const std::map<Constant, double> constants([]()\n{\n")
-        f.write("    std::map<Constant, double> temp;\n")
-        for k,v in sorted(hard_code_.items()):
-            f.write("    temp[Constant::{:s}] = {:s};\n".format(k,v[0]))
-        for k,v in sorted(cnsts_.items()):
-            f.write("    temp[Constant::{:s}] = {:s};\n".format(k,v))
-        for k,v in derived_.items():
-            f.write("    temp[Constant::{:s}] = ".format(k))
-            f.write("{:16.16e};\n".format(evaluate_variable(v, cnsts_,
-                                                            hard_code_,
-                                                            derived_)))
-        f.write("    return temp;\n}());\n")
-        f.write("}}//End namespaces\n")
+def get_derived(constants):
+    # Derived units symbol to (numerator tuple, denominator tuple description)
+    derived = collections.OrderedDict()
+    derived["hbar"] = (('h',), (2.0, "pi"),"Joule seconds",
+                       "Reduced Plank constant")
+    derived["e0"] = (("qe", "qe"), (2.0, "alpha", 'h', 'c'),
+                     "Coulomb^2/(Joule Meter)", "Vacuum permittivity")
+    derived["kc"] = ((1.0,), (4.0, "pi", "e0"), "meter/Coulomb^2",
+                     "Coulomb's constant")
+    derived["Eh"] = (("alpha", "alpha", "me", "c", "c"), (1.0,),
+                     "Joules", "Hartree constant")
+    derived["a0"] = (("hbar",), ("me", "alpha", 'c'), "meters",
+                     "Bohr radius")
+    derived["R"] = (("kb","na"), (1.0,), "Joules per Kelvin per mole",
+                    "Ideal gas constant")
+    derived["Hz2J"] = (('h', ), (1.0,), "Joules per Hertz",
+                       "Conversion from Hertz to Joules")
+    derived["inv_m2J"] = (('h', 'c'), (1.0,), "Joule meters",
+                          "Conversion from m^-1 to Joules")
+    derived["eV2J"] = ((1.0,), ("qe",), "Joules per eV",
+                       "Conversion from eV to Joules")
+    for k,v in derived.items():
+        c = Constant(evaluate_variable((v[0], v[1]), constants), k, v[2], v[3])
+        constants.append(c)
+    return constants
+
+def write_source(my_path, cnsts_):
+    file = os.path.join(os.path.dirname(my_path), "NWChemExRuntime","Defaults")
+    with open(os.path.join(file,"PhysicalConstants.cpp"), 'w') as f:
+        write_header(__file__, f)
+        f.write("using const_t = typename ChemistryRuntime::constant_t;\n")
+        f.write("using return_t = typename "
+                "ChemistryRuntime::constant_lut_type\n")
+        f.write("return_t default_constants(){\n")
+        f.write("    return_t rv;\n")
+        for c in cnsts_:
+            f.write("    rv[\"{}\"] = const_t{{".format(c.sym))
+            c.cxxify(f)
+            f.write("};\n")
+        write_footer(f)
+
+def main():
+    my_path = os.path.dirname(os.path.realpath(__file__))
+    data_dir = os.path.join(my_path, "physical_data")
+
+    constants = hard_coded()
+    constants += extract_constants(data_dir)
+    constants = get_derived(constants)
+    write_source(my_path, constants)
 
 def write_tests(cnts_, hard_code_, derived_):
     # Print the tests
@@ -175,7 +157,5 @@ def write_tests(cnts_, hard_code_, derived_):
         f.write("}\n")
 
 
-constants = extract_constants()
-write_header(constants, hard_code, derived)
-write_source(constants, hard_code, derived)
-write_tests(constants, hard_code, derived)
+if __name__ == "__main__":
+    main()

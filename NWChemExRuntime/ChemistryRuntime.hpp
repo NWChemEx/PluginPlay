@@ -118,8 +118,11 @@ struct ChemicalRuntime {
     /// A list of known isotopes for each element
     iso_lut_type isotopes;
 
-    /// Conversion from an atomic number to its atomic symbol
+    /// Conversion from an atomic symbol to the atomic number
     at_sym_lut_type at_sym_2_Z;
+
+    /// Conversion from angular momentum letter to number
+    at_sym_lut_type am_sym_2_l;
 };
 
 }//End namespace

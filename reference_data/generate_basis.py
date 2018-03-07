@@ -5,137 +5,89 @@ the BasisSetExchange class
 """
 import os
 import re
-
-basis_sets = ["cc-pvdz"]
-
-new_atom = re.compile("^\s*\D{1,2}\s*0\s*$")
-new_shell = re.compile("^\s*[a-zA-Z]+\s*\d+\s*1.00\s*$")
-same_shell = re.compile("^\s*(?:-?\d+.\d+\s*)+$")
-
-bases ={}
+from helper_fxns import *
 
 class Shell:
     def __init__(self, l):
-        self.l_ = l
-        self.alpha_ = []
-        self.cs_ = []
-    def add_prim(self, alpha, cs):
-        self.alpha_.append(alpha)
-        for c in cs:
-            self.cs_.append(c)
-    def __repr__(self):
-        rv = "l : {:s} and {:d} primitives\n".format(self.l_, len(self.cs_))
-        return rv
+        self.l = l
+        self.exp=[]
+        self.coefs=[]
+        self.gen = 0
+    def add_prim(self, exp, coefs):
+        self.exp.append(exp)
+        self.coefs.append(coefs)
+        self.gen = max(len(coefs), self.gen)
+    def cxxify(self, f):
+        f.write("    shell_t{\n      ")
+        f.write("LibChemist::ShellType::SphericalGaussian, ")
+        f.write("sym2l({}), {}, \n    {{".format(self.l, self.gen))
+        for a in self.exp:
+            f.write("{}, ".format(a))
+        f.write("}, \n    {")
+        for cs in self.coefs:
+            for c in cs:
+                f.write("{}, ".format(c))
+        f.write("}\n    }")
 
-class Atom:
-    def __init__(self, Z):
-        self.Z_ = Z
-        self.shells_ = []
-    def add_shell(self, shell):
-        self.shells_.append(shell)
-    def __repr__(self):
-        rv = "{:s} and {:d} shells".format(self.Z_, len(self.shells_))
-        return rv
+def write_am(out_dir):
+    with open(os.path.join(out_dir, "DefaultAM.cpp"), 'w') as f:
+        letters = 'spdfghijklmnoqrtuvwxyzabce'
+        write_header(__file__, f)
+        f.write("using return_t = typename "
+                "ChemistryRuntime::at_sym_lut_type;\n")
+        f.write("return_t default_am() {\n")
+        f.write("    return_t rv;\n")
+        for i,l in zip(range(26), letters):
+            f.write("    rv[\"{}\"] = {};\n".format(l, i))
+        write_footer(f)
 
-class BasisSet:
-    def __init__(self):
-        self.atoms_ = []
-    def add_atom(self, atom):
-        self.atoms_.append(atom)
-    def get_atom(self):
-        return self.atoms_[-1]
-    def get_shell(self):
-        return self.get_atom().shells_[-1]
-    def __repr__(self):
-        rv = str(self.atoms_)
-        return rv
+def write_bases(out_dir, bases):
+    with open(os.path.join(out_dir,"DefaultBases.cpp"),'w') as f:
+        write_header(__file__, f)
+        f.write("using indexed_atom_type = typename ")
+        f.write("ChemistryRuntime::indexed_atom_type;\n")
+        f.write("using return_t = typename ChemistryRuntime::basis_lut_type;\n")
+        f.write("using shell_t = LibChemist::BasisShell;\n")
+        f.write("return_t default_bases(){\n")
+        f.write("    auto sym2z = default_symbols();\n")
+        f.write("    auto sym2l = default_am();\n")
+        f.write("    return_t rv;\n")
+        for bs_name, bs in bases.items():
+            for z, atom in bs.items():
+                for s in atom:
+                    f.write("    rv[sym2z.at(\"{}\")]".format(z))
+                    f.write(".add_shell(\"{}\", \n".format(bs_name))
+                    s.cxxify(f)
+                    f.write(");\n")
+        write_footer(f)
 
-for bs in basis_sets:
-    bases[bs] = BasisSet()
-    with open(os.path.join("basis_sets",bs+".gbs"),'r') as f:
-        for line in f:
-            if re.search(new_atom, line):
-                atom = line.split()[0]
-                bases[bs].add_atom(Atom(atom))
-            elif re.search(new_shell, line):
-                bases[bs].get_atom().add_shell(Shell(line.split()[0]))
-            elif re.search(same_shell, line):
-                contents = line.split()
-                bases[bs].get_shell().add_prim(contents[0],contents[1:])
 
-def write_shell(f, shell):
-    f.write("shell_t(")
-    spaces = "                "
-    f.write("LibChemist::ShellType::SphericalGaussian,\n")
-    f.write(spaces + "LibChemist::am_str2int(\"{:s}\"),\n".format(
-        shell.l_.lower()))
-    #all general shells come from shells like "sp" and "spd"
-    f.write(spaces + "{:d},\n".format(len(shell.l_.split())))
-    f.write(spaces +"std::vector<double>({")
-    for alpha_ in shell.alpha_:
-        f.write("{:s},".format(alpha_))
-    f.write("}),\n")
-    f.write(spaces + "std::vector<double>({")
-    for c_ in shell.cs_:
-        f.write("{:s},".format(c_))
-    f.write("}))")
+def main():
+    basis_sets = ["cc-pvdz"]
+    new_atom = re.compile("^\s*\D{1,2}\s*0\s*$")
+    new_shell = re.compile("^\s*[a-zA-Z]+\s*\d+\s*1.00\s*$")
+    same_shell = re.compile("^\s*(?:-?\d+.\d+(?:(E|e|D|d)(\+|-)\d\d)*\s*)+")
+    my_dir = os.path.dirname(os.path.realpath(__file__))
+    out_dir = os.path.join(os.path.dirname(my_dir), "NWChemExRuntime",
+                           "Defaults")
 
-with open(os.path.join("../NWChemExRuntime","BasisSetRepo.cpp"), 'w') as f:
-    f.write("#include \"NWChemExRuntime/BasisSetRepo.hpp\"\n")
-    f.write("#include \"NWChemExRuntime/AtomicInfo.hpp\"\n")
-    f.write("#include <LibChemist/ShellTypes.hpp>\n\n")
-    f.write("/* This file was generated by generate_basis.py. " +
-            " DO NOT EDIT!!!*/\n\n")
-    f.write("using shell_t = LibChemist::BasisShell;\n")
-    f.write("using shell_vector = std::vector<shell_t>;\n")
-    f.write("using atomic_basis = std::map<std::size_t, shell_vector>;\n\n")
-    f.write("using input_basis_type = std::map<std::string, atomic_basis>;\n")
-    f.write("namespace NWXRuntime{\n")
-    f.write("namespace detail_ {\n")
-    f.write("static auto make_basis(){\n")
-    indent4 = "    "
-    indent8 = indent4 + indent4
-    indent12 = indent8 +  indent4
-    f.write(indent4 + "input_basis_type bs;\n")
-    for bs_name, bs in bases.items():
-        bs_elem = "bs[\"{:s}\"]".format(bs_name.lower())
-        f.write(indent4 + "{\n")
-        f.write(indent8 + "atomic_basis ab;\n")
-        for a in bs.atoms_:
-            a_elem = "ab[detail_::sym2Z_.at(\"{:s}\")]".format(a.Z_.lower())
-            f.write(indent8 + "{\n")
-            f.write(indent12 + "shell_vector temp;\n")
-            for s in a.shells_:
-                f.write(indent12 + "temp.push_back(\n"+indent12+indent4)
-                write_shell(f, s)
-                f.write("\n" + indent12 + ");\n")
-            f.write(indent12 + a_elem + " = temp;\n")
-            f.write(indent8 + "}\n")
-        f.write(indent8 + bs_elem + " = ab;\n")
-        f.write(indent4 + "}\n")
-    f.write(indent4 + "return bs;\n")
-    f.write("} //End make_basis\n")
-    f.write("} // End detail_\n")
-    f.write("BasisSetRepo::BasisSetRepo():\n")
-    f.write("  bases_(detail_::make_basis()){}\n\n")
-    f.write("LibChemist::SetOfAtoms BasisSetRepo::apply_basis(")
-    f.write("const std::string& name,\n")
-    f.write(indent4 + "const LibChemist::SetOfAtoms& mol) const\n{\n")
-    f.write(indent4 + "LibChemist::SetOfAtoms rv(mol);\n")
-    f.write(indent4 + "std::string name_lowercase;\n")
-    f.write(indent4 + "std::back_insert_iterator<std::string> itr(")
-    f.write("name_lowercase);\n")
-    f.write(indent4 + "std::transform(name.begin(), name.end(), itr, ")
-    f.write("::tolower);\n")
-    f.write(indent4 + "if(!bases_.count(name_lowercase))return rv;\n")
-    f.write(indent4 + "for(LibChemist::Atom& ai:rv)\n")
-    f.write(indent4 + "{\n")
-    f.write(indent8 + "size_t Z=ai.property(LibChemist::AtomProperty::Z);\n")
-    f.write(indent8 + "const auto& bs = bases_.at(name_lowercase);\n")
-    f.write(indent8 + "if(bs.count(Z))\n")
-    f.write(indent12 + "for(const auto& si: bs.at(Z))\n")
-    f.write(indent12 + indent4 +"ai.add_shell(name_lowercase, si);\n")
-    f.write(indent4 + "}\n")
-    f.write(indent4 + "return rv;\n}\n")
-    f.write("} // End NWXRuntime\n")
+    bases = {}
+    for bs in basis_sets:
+        bases[bs] = {}
+        with open(os.path.join("basis_sets",bs+".gbs"),'r') as f:
+            atom_z = 0
+            for line in f:
+                if re.search(new_atom, line):
+                    atom_z = line.split()[0]
+                    bases[bs][atom_z] = []
+                elif re.search(new_shell, line):
+                    bases[bs][atom_z].append(Shell(line.split()[0]))
+                elif re.search(same_shell, line):
+                    prim = line.split()
+                    bases[bs][atom_z][-1].add_prim(prim[0], prim[1:])
+    write_am(out_dir)
+    write_bases(out_dir, bases)
 
+
+if __name__ == "__main__":
+    main()

@@ -34,10 +34,14 @@ typename  ChemistryRuntime::isotope_lut_type default_isotopes();
 /// Returns a map of symbols to atoms
 typename ChemistryRuntime::at_sym_lut_type default_symbols();
 
+/// Returns a map of angular momentum symbols to number values
+typename ChemistryRuntime::at_sym_lut_type default_am();
+
 ///Convenience function for making a fully defaulted ChemistryRuntime instance
 ChemistryRuntime default_runtime(){
     return {default_constants(), default_molecules(), default_bases(),
-            default_atoms(), default_isotopes(), default_symbols()};
+            default_atoms(), default_isotopes(), default_symbols(),
+            default_am()};
 }
 
 } // End namespace NWXRuntime

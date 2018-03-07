@@ -33,6 +33,29 @@ class IsotopeInfo:
         f_in.write("{}".format(self.abundance))
         f_in.write("}")  # End class
 
+class AtomicInfo:
+    """ Class for storing the information relating to an atom
+
+    """
+    def __init__(self, z_in):
+        self.Z = int(z_in)
+        self.mult = 0
+        self.mass = 0.0
+        self.cov_radius = 0.0
+        self.vdw_radius = 0.0
+        self.isotopes = {}
+
+    def cxxify(self, f_in):
+        prop_add = "      {LibChemist::AtomProperty::"
+        f_in.write("{}Z, {}}},\n".format(prop_add, self.Z))
+        f_in.write("{}mass, {}}},\n".format(prop_add,self.mass))
+        f_in.write("{}charge, 0.0}},\n".format(prop_add))
+        f_in.write("{}nelectrons, {}}},\n".format(prop_add, self.Z))
+        f_in.write("{}multiplicity, {}}},\n".format(prop_add, self.mult))
+        f_in.write("{}cov_radius, {}}},\n".format(prop_add, self.cov_radius))
+        f_in.write("{}vdw_radius, {}}}\n".format(prop_add, self.vdw_radius))
+
+
 def write_symbols(out_dir, nmspace, name_file):
     # File format is: Z, Sym, full name
     with open(os.path.join(out_dir, "DefaultSymbols.cpp"),'w') as f:
@@ -83,6 +106,48 @@ def write_isotopes(out_dir, nmspace, iso_file, iso_ab_file):
         f.write("    return rv;\n}\n")
         f.write("}} // End namespace {}\n".format(nmspace))
 
+def write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file,
+                mult_file, pm2bohr):
+    atomicinfo = {}
+    # File format is: Z, Sym, average mass, lower and upper bounds to mass
+    for l in open(mass_file).readlines()[5:]:
+        z, sym, mid = l.strip().split()[:3]
+        if not z in atomicinfo:
+            atomicinfo[z] = AtomicInfo(z)
+        atomicinfo[z].mass = mid
+
+    # File format is: Z, radius, unit
+    for l in open(cov_file).readlines()[1:]:
+        z, r = l.strip().split()[:2]
+        atomicinfo[z].cov_radius = float(r)/pm2bohr
+
+    # File format is: Z, radius, unit
+    for l in open(vdw_file).readlines()[1:]:
+        z, r = l.strip().split()[:2]
+        atomicinfo[z].vdw_radius = float(r)/pm2bohr
+
+    # File format: Z, configuration, multiplicity, term symbol
+    for l in open(mult_file).readlines()[5:]:
+        z, occ, mult = l.strip().split()[:3]
+        atomicinfo[z].mult = mult
+
+    src_file = os.path.join(out_dir, "DefaultAtoms.cpp")
+    with open(src_file, 'w') as f:
+        f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n")
+        write_warning(__file__, f)
+        f.write("namespace {} {{\n".format(nmspace))
+        f.write("using return_t = typename "
+                "ChemistryRuntime::indexed_atom_type;\n")
+        f.write("return_t default_atoms() {\n")
+        f.write("    return_t rv;\n")
+        for k, v in sorted(atomicinfo.items()):
+            f.write("    rv[{}] ".format(k))
+            f.write("= LibChemist::Atom({0.0, 0.0, 0.0}, {\n")
+            v.cxxify(f)
+            f.write("    });\n")
+        f.write("    return rv;\n")
+        f.write("}\n} // End namespace NWXRuntime\n")
+
 def main():
     # Knobs that you may want to tweak to control settings
     pm2bohr = 52.917721067  # Conversion from picometers to Bohr
@@ -96,9 +161,15 @@ def main():
     name_file = os.path.join(data_dir, "ElementNames.txt")
     iso_file = os.path.join(data_dir, "CIAAW-ISOTOPEMASSES.formatted.txt")
     iso_ab_file = os.path.join(data_dir, "CIAAW-ABUNDANCE.formatted.txt")
+    mass_file = os.path.join(data_dir, "CIAAW-MASSES.formatted.txt")
+    cov_file = os.path.join(data_dir, "CovRadii.txt")
+    vdw_file = os.path.join(data_dir, "VanDerWaalRadius.txt")
+    mult_file = os.path.join(data_dir, "NIST-ATOMICION.formatted.txt")
 
     write_symbols(out_dir, nmspace, name_file)
     write_isotopes(out_dir, nmspace, iso_file, iso_ab_file)
+    write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file, mult_file,
+                pm2bohr)
 
 if __name__ == '__main__' :
     main()
@@ -107,97 +178,9 @@ if __name__ == '__main__' :
 
 #
 #
-# class AtomicInfo:
-#     """ Class for storing the information relating to an atom
-#
-#     """
-#     def __init__(self, z_in, atom_sym, atom_name):
-#         self.Z = int(z_in)
-#         self.sym = atom_sym.lower()
-#         self.name = atom_name.lower()
-#         self.mult = 0
-#         self.mass = 0.0
-#         self.cov_radius = 0.0
-#         self.vdw_radius = 0.0
-#         self.isotopes = {}
-#
-#     def cxxify(self, f_in):
-#         f_in.write("rv[{:d}] = LibChemist::Atom{{}};\n".format(self.Z))
-#         prop_add = "rv[{:d}].property[LibChemist::AtomProperty::".format(self.Z)
-#         f_in.write(prop_add + "Z] = {:d};\n".format(self.Z))
-#         f_in.write(prop_add + "mass] = {:16.16f};\n".format(self.mass))
-#         f_in.write(prop_add + "charge] = 0.0;\n")
-#         f_in.write(prop_add + "nelectrons] = {:16.16f};\n".format(self.Z))
-#         f_in.write(prop_add + "multiplicity] = {:d};\n".format(self.mult))
-#         f_in.write(prop_add + "cov_radius] = {:16.16f};\n".format(
-#             self.cov_radius))
-#         f_in.write(prop_add + "vdw_radius] = {:16.16f};\n".format(
-#             self.vdw_radius))
-#         isotopes = "tmp{:d}.isotopes[".format(self.Z)
-#         iso_mass = 0.0
-#         iso_abun = 0.0
-#         for ki, vi in sorted(self.isotopes.items()):
-#             if vi.abundance > iso_abun:
-#                 iso_abun = vi.abundance
-#                 iso_mass = vi.mass
-#         f_in.write(prop_add + "isotope_mass] = {:16.16f};\n".format(iso_mass))
+
 #
 #
 # atomicinfo = {}
 #
-# # Read in names and make initial entries
-#
-#
-#
-# # Read in experimental masses
-# mass_file = os.path.join(data_dir, "CIAAW-MASSES.formatted.txt")
-# # File format is: Z, Sym, average mass, lower and upper bounds to mass
-# for l in open(mass_file).readlines()[5:]:
-#     z, sym, mid = l.strip().split()[:3]
-#     atomicinfo[int(z)].mass = float(mid)
-#
-# # Read in Covalent Radii
-# cov_file = os.path.join(data_dir, "CovRadii.txt")
-# # File format is: Z, radius, unit
-# for l in open(cov_file).readlines()[1:]:
-#     z, r = l.strip().split()[:2]
-#     atomicinfo[int(z)].cov_radius = float(r)/pm2bohr
-#
-# # Read in van der waal Radii
-# vdw_file = os.path.join(data_dir, "VanDerWaalRadius.txt")
-# # File format is: Z, radius, unit
-# for l in open(vdw_file).readlines()[1:]:
-#     z, r = l.strip().split()[:2]
-#     atomicinfo[int(z)].vdw_radius = float(r)/pm2bohr
-#
-# # Read in multiplicities
-# mult_file = os.path.join(data_dir, "NIST-ATOMICION.formatted.txt")
-# # File format: Z, configuration, multiplicity, term symbol
-# for l in open(mult_file).readlines()[5:]:
-#     z, occ, mult = l.strip().split()[:3]
-#     atomicinfo[int(z)].mult = int(mult)
-#
-# src_file = os.path.join(outbase, output_name+".cpp")
-# with open(src_file, 'w') as f:
-#     atom_info_type = "std::map<std::size_t, AtomicInfo>"
-#     f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n")
-#     f.write("#include <algorithm>\n\n")
-#     f.write("namespace {0:s} {{\n".format(nmspace))
-#     f.write("namespace detail_ {\n")
-#
-#     # Atomic symbol to Z
-#     f.write("extern const std::map<std::string, std::size_t> sym2Z_{"
-#             "\n")
-#     for k, v in sorted(atomicinfo.items()):
-#         f.write("  {{ \"{}\" , {} }},\n".format(v.sym, k))
-#     f.write("}; // close sym2Z_\n\n\n")
-#
-#     # Next, full atomic data
-#     f.write("extern const {} atomic_data_(\n".format(atom_info_type))
-#     f.write("    [](){"+" {} temp;\n".format(atom_info_type))
-#     for k, v in sorted(atomicinfo.items()):
-#         f.write("AtomicInfo tmp{:d};\n".format(k))
-#         v.cxxify(f)
-#         f.write("temp[{0:d}] = tmp{0:d};\n".format(k))
-#     f.write("return temp;}());\n")
-#     f.write("}}//End namespaces\n")
+
