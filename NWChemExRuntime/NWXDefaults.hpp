@@ -20,10 +20,12 @@ namespace NWXRuntime {
 typename ChemistryRuntime::constant_lut_type default_constants();
 
 /// Returns a map of default molecules
-typename ChemistryRuntime::molecule_lut_type default_molecules();
+inline typename ChemistryRuntime::molecule_lut_type default_molecules(){
+    return {};
+}
 
 /// Returns a map of default basis sets
-typename ChemistryRuntime::basis_lut_type default_bases();
+typename ChemistryRuntime::indexed_atom_type default_bases();
 
 /// Returns a map of default elemental properties
 typename ChemistryRuntime::indexed_atom_type default_atoms();
@@ -35,10 +37,10 @@ typename  ChemistryRuntime::isotope_lut_type default_isotopes();
 typename ChemistryRuntime::at_sym_lut_type default_symbols();
 
 /// Returns a map of angular momentum symbols to number values
-typename ChemistryRuntime::at_sym_lut_type default_am();
+typename ChemistryRuntime::am_sym_lut_type default_am();
 
 ///Convenience function for making a fully defaulted ChemistryRuntime instance
-ChemistryRuntime default_runtime(){
+inline ChemistryRuntime default_runtime(){
     return {default_constants(), default_molecules(), default_bases(),
             default_atoms(), default_isotopes(), default_symbols(),
             default_am()};

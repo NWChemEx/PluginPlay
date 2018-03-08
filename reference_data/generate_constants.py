@@ -106,9 +106,9 @@ def write_source(my_path, cnsts_):
     file = os.path.join(os.path.dirname(my_path), "NWChemExRuntime","Defaults")
     with open(os.path.join(file,"PhysicalConstants.cpp"), 'w') as f:
         write_header(__file__, f)
-        f.write("using const_t = typename ChemistryRuntime::constant_t;\n")
+        f.write("using const_t = typename ChemistryRuntime::constant_type;\n")
         f.write("using return_t = typename "
-                "ChemistryRuntime::constant_lut_type\n")
+                "ChemistryRuntime::constant_lut_type;\n")
         f.write("return_t default_constants(){\n")
         f.write("    return_t rv;\n")
         for c in cnsts_:

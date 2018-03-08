@@ -51,7 +51,6 @@ struct IsotopeData{
     double abundance;
 };
 
-
 /** @brief Collects constants, conversion factors, atomic data, basis sets, etc.
  *         into a one-stop-shop.
  *
@@ -66,7 +65,7 @@ struct IsotopeData{
  *  - strings are preferred as keys to avoid prohibiting users from adding
  *    constants, molecules, etc. that are not part of the standard NWX sets
  */
-struct ChemicalRuntime {
+struct ChemistryRuntime {
     /// The type of a physical constant or ratio
     using constant_type = PhysicalConstant;
 
@@ -86,7 +85,7 @@ struct ChemicalRuntime {
     using indexed_atom_type = std::map<size_type, atom_type>;
 
     /// The type of a list of isotopes
-    using isotope_list = std::vector<isotope_type>
+    using isotope_list = std::vector<isotope_type>;
 
     /// The type of the object used to look up physical constants
     using constant_lut_type = UtilitiesEx::CaseInsensitiveMap<constant_type>;
@@ -94,14 +93,14 @@ struct ChemicalRuntime {
     /// The type of the object used to look up molecules
     using molecule_lut_type = UtilitiesEx::CaseInsensitiveMap<molecule_type>;
 
-    /// The type of the object used to look up basis sets
-    using basis_lut_type = UtilitiesEx::CaseInsensitiveMap<indexed_atom_type>
-
     /// The type of the object used to look up the atomic number by symbol
     using at_sym_lut_type = UtilitiesEx::CaseInsensitiveMap<size_type>;
 
+    ///The type of the object used to convert angular momentum symbols to values
+    using am_sym_lut_type = UtilitiesEx::CaseInsensitiveMap<int>;
+
     /// The type of the object used to look up isotopes
-    using iso_lut_type = std::map<size_type, isotope_list>;
+    using isotope_lut_type = std::map<size_type, isotope_list>;
 
     /// Wikipedia is a great place to find the value of physical constants
     constant_lut_type wikipedia;
@@ -110,19 +109,19 @@ struct ChemicalRuntime {
     molecule_lut_type pubchem;
 
     /// EMSL's basis set exchange is a great place to find Gaussian basis sets
-    basis_lut_type bse;
+    indexed_atom_type bse;
 
     /// The periodic table houses basic properties about an element
     indexed_atom_type periodic_table;
 
     /// A list of known isotopes for each element
-    iso_lut_type isotopes;
+    isotope_lut_type isotopes;
 
     /// Conversion from an atomic symbol to the atomic number
     at_sym_lut_type at_sym_2_Z;
 
     /// Conversion from angular momentum letter to number
-    at_sym_lut_type am_sym_2_l;
+    am_sym_lut_type am_sym_2_l;
 };
 
 }//End namespace

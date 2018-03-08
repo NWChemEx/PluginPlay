@@ -46,7 +46,8 @@ class AtomicInfo:
         self.isotopes = {}
 
     def cxxify(self, f_in):
-        prop_add = "      {LibChemist::AtomProperty::"
+        prop_add = "      {" \
+                   "LibChemist::AtomProperty::"
         f_in.write("{}Z, {}}},\n".format(prop_add, self.Z))
         f_in.write("{}mass, {}}},\n".format(prop_add,self.mass))
         f_in.write("{}charge, 0.0}},\n".format(prop_add))
@@ -69,7 +70,7 @@ def write_symbols(out_dir, nmspace, name_file):
         f.write("    return_type rv;\n")
         for line in open(name_file).readlines():
             z, sym, name = line.strip().split()
-            f.write("    rv[{:d}] = \"{:s}\";\n".format(int(z), sym))
+            f.write("    rv[\"{}\"] = {};\n".format(sym, z))
         f.write("    return rv;\n}}\n}} // End namespace {}\n".format(nmspace))
 
 def write_isotopes(out_dir, nmspace, iso_file, iso_ab_file):
@@ -93,11 +94,14 @@ def write_isotopes(out_dir, nmspace, iso_file, iso_ab_file):
         f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n")
         write_warning(__file__,f)
         f.write("namespace {} {{\n".format(nmspace))
-        f.write("using return_t = typename ChemistryRuntime::iso_lut_type;\n")
+        f.write("using return_t = typename "
+                "ChemistryRuntime::isotope_lut_type;\n")
+        f.write("using isotope_list = typename "
+                "ChemistryRuntime::isotope_list;\n")
         f.write("return_t default_isotopes(){\n")
         f.write("    return_t rv;\n")
         for z, isotopes in data.items():
-            f.write("    rv[{}] = IsotopeSet{{}};\n".format(z))
+            f.write("    rv[{}] = isotope_list{{}};\n".format(z))
 
             for isonum, iso_data in isotopes.items():
                 f.write("    rv[{}].push_back(".format(z))
@@ -142,7 +146,8 @@ def write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file,
         f.write("    return_t rv;\n")
         for k, v in sorted(atomicinfo.items()):
             f.write("    rv[{}] ".format(k))
-            f.write("= LibChemist::Atom({0.0, 0.0, 0.0}, {\n")
+            f.write("= LibChemist::Atom(std::array<double, 3>{0.0, 0.0, 0.0}, "
+                    "std::map<LibChemist::AtomProperty, double>{\n")
             v.cxxify(f)
             f.write("    });\n")
         f.write("    return rv;\n")

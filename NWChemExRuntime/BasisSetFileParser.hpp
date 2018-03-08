@@ -1,5 +1,5 @@
 #pragma once
-#include <LibChemist/BasisShell.hpp>
+#include "NWChemExRuntime/ChemistryRuntime.hpp"
 #include <string>
 #include <map>
 #include <vector>
@@ -70,12 +70,13 @@ struct BasisSetFileParser
   /**
    * @brief Implemented by derived class to parse the current line.
    * @param line The line to parse
+   * @param crt The definition of atomic data
    * @return A map of the data contained in that line, along with tags detailing
    *         what it is.
    * @throw ??? Same throw guarantee and conditions as derived class.
    */
   virtual std::map<data_type,std::vector<double>>
-  parse(const std::string& line)const=0;
+  parse(const std::string& line, const ChemistryRuntime& crt)const=0;
 };
 
 /** @brief This class implements a BasisSetFileParser for the Gaussian94 format.
@@ -98,7 +99,7 @@ struct G94: public BasisSetFileParser
 {
   action_type worth_parsing(const std::string& line)const override;
   std::map<data_type, std::vector<double> >
-  parse(const std::string& line)const override;
+  parse(const std::string& line, const ChemistryRuntime& crt)const override;
 };
 
 /** @brief The function to call to parse a BasisSetFile.
@@ -117,6 +118,7 @@ struct G94: public BasisSetFileParser
  *  the parser.
  */
 std::map<size_t,std::vector<LibChemist::BasisShell>>
-parse_basis_set_file(std::istream& is, const BasisSetFileParser& parser);
+parse_basis_set_file(std::istream& is, const BasisSetFileParser& parser,
+                     const ChemistryRuntime& crt);
 
 }//End namespace LibChemist

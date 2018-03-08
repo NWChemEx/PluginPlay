@@ -1,4 +1,5 @@
 #include <NWChemExRuntime/BasisSetFileParser.hpp>
+#include <NWChemExRuntime/NWXDefaults.hpp>
 #include <sstream>
 #include <catch/catch.hpp>
 
@@ -75,6 +76,6 @@ g94_corr[6].push_back(
              std::vector<double>({-0.09996723,0.39951283,0.70011547,
                                   0.15591627,0.60768372,0.39195739})));
 std::stringstream ss(g94_example);
-auto rv=parse_basis_set_file(ss,G94());
+auto rv=parse_basis_set_file(ss,G94(), default_runtime());
 REQUIRE(rv==g94_corr);
 }

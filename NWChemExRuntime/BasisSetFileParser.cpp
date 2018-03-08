@@ -1,5 +1,4 @@
 #include "NWChemExRuntime/BasisSetFileParser.hpp"
-#include "NWChemExRuntime/ReferenceDataRepo.hpp"
 #include <LibChemist/ShellTypes.hpp>
 #include <regex>
 
@@ -65,7 +64,8 @@ namespace NWXRuntime {
     } // End namespace detail_
 
     return_type parse_basis_set_file(std::istream& is,
-                                     const BasisSetFileParser& parser)
+                                     const BasisSetFileParser& parser,
+                                     const ChemistryRuntime& crt)
     {
         return_type rv;
         size_t Z = 0;
@@ -83,7 +83,7 @@ namespace NWXRuntime {
                 case(action_type::new_atom): // Implies new shell
                 {
                     detail_::commit_shell(s, Z, rv);
-                    auto data = parser.parse(line);
+                    auto data = parser.parse(line, crt);
                     Z         = data.at(data_type::Z)[0];
                     detail_::parse(data, s);
                     break;
@@ -95,7 +95,7 @@ namespace NWXRuntime {
                 }
                 default:
                 {
-                    auto data = parser.parse(line);
+                    auto data = parser.parse(line, crt);
                     detail_::parse(data, s);
                     break;
                 }
@@ -120,7 +120,8 @@ namespace NWXRuntime {
         return action_type::none;
     }
 
-    parsed_type G94::parse(const std::string& line) const
+    parsed_type G94::parse(const std::string& line,
+                           const ChemistryRuntime& crt) const
     {
         parsed_type rv;
         std::stringstream tokenizer(line);
@@ -128,8 +129,7 @@ namespace NWXRuntime {
         {
             std::string symbol;
             tokenizer >> symbol;
-            auto atom = ReferenceDataRepo().atomic_info(symbol);
-            auto Z = atom.property(LibChemist::AtomProperty::Z);
+            auto Z = crt.at_sym_2_Z.at(symbol);
             rv[data_type::Z].push_back(Z);
         }
         else if(std::regex_search(line, G94_new_shell))
@@ -137,8 +137,8 @@ namespace NWXRuntime {
             std::string am;
             tokenizer >> am;
             std::transform(am.begin(), am.end(), am.begin(), ::tolower);
-            rv[data_type::angular_momentum].push_back(LibChemist::am_str2int
-            (am));
+            rv[data_type::angular_momentum].push_back(
+              crt.am_sym_2_l.at(am));
         }
         else if(std::regex_search(line, G94_same_shell))
         {

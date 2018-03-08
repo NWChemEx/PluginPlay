@@ -20,7 +20,7 @@ class Shell:
     def cxxify(self, f):
         f.write("    shell_t{\n      ")
         f.write("LibChemist::ShellType::SphericalGaussian, ")
-        f.write("sym2l({}), {}, \n    {{".format(self.l, self.gen))
+        f.write("sym2l.at(\"{}\"), {}, \n    {{".format(self.l, self.gen))
         for a in self.exp:
             f.write("{}, ".format(a))
         f.write("}, \n    {")
@@ -34,9 +34,10 @@ def write_am(out_dir):
         letters = 'spdfghijklmnoqrtuvwxyzabce'
         write_header(__file__, f)
         f.write("using return_t = typename "
-                "ChemistryRuntime::at_sym_lut_type;\n")
+                "ChemistryRuntime::am_sym_lut_type;\n")
         f.write("return_t default_am() {\n")
         f.write("    return_t rv;\n")
+        f.write("    rv[\"sp\"] = -1;\n")
         for i,l in zip(range(26), letters):
             f.write("    rv[\"{}\"] = {};\n".format(l, i))
         write_footer(f)
@@ -46,7 +47,8 @@ def write_bases(out_dir, bases):
         write_header(__file__, f)
         f.write("using indexed_atom_type = typename ")
         f.write("ChemistryRuntime::indexed_atom_type;\n")
-        f.write("using return_t = typename ChemistryRuntime::basis_lut_type;\n")
+        f.write("using return_t = typename "
+                "ChemistryRuntime::indexed_atom_type;\n")
         f.write("using shell_t = LibChemist::BasisShell;\n")
         f.write("return_t default_bases(){\n")
         f.write("    auto sym2z = default_symbols();\n")
