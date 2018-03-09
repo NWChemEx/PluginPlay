@@ -103,7 +103,7 @@ def get_derived(constants):
     return constants
 
 def write_source(my_path, cnsts_):
-    file = os.path.join(os.path.dirname(my_path), "NWChemExRuntime","Defaults")
+    file = os.path.join(os.path.dirname(my_path), "SDE","Defaults")
     with open(os.path.join(file,"PhysicalConstants.cpp"), 'w') as f:
         write_header(__file__, f)
         f.write("using const_t = typename ChemistryRuntime::constant_type;\n")
@@ -128,8 +128,8 @@ def main():
 
 def write_tests(cnts_, hard_code_, derived_):
     # Print the tests
-    with open("../NWChemExRuntime_Test/TestPhysicalConstants.cpp", 'w') as f:
-        f.write("#include <NWChemExRuntime/PhysicalConstants.hpp>\n\n")
+    with open("../SDE_Test/TestPhysicalConstants.cpp", 'w') as f:
+        f.write("#include <SDE/PhysicalConstants.hpp>\n\n")
         f.write("#include <catch/catch.hpp>\n\n")
         f.write("/** @file Tests of fundamental physical constants to be used in\n")
         f.write(" *        NWChemEx\n")
@@ -137,8 +137,8 @@ def write_tests(cnts_, hard_code_, derived_):
         f.write(" *  @warning This file made by generate_constants.py.\n")
         f.write(" *           DO NOT EDIT!!!!!!!!\n")
         f.write(" */\n\n")
-        f.write("using namespace NWXRuntime;\n")
-        f.write("using namespace NWXRuntime::detail_;\n")
+        f.write("using namespace SDE;\n")
+        f.write("using namespace SDE::detail_;\n")
         f.write("TEST_CASE(\"Fundamental Constants\")\n")
         f.write("{\n")
         prefix = "    REQUIRE(constants.at(Constant::"

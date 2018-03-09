@@ -1,7 +1,7 @@
-#include "NWChemExRuntime/MoleculeFileParser.hpp"
+#include "SDE/MoleculeFileParser.hpp"
 #include <regex>
 
-namespace NWXRuntime {
+namespace SDE {
 
 using action_type = MoleculeFileParser::action_type;
 using data_type   = MoleculeFileParser::data_type;

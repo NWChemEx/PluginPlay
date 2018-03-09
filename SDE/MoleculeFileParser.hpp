@@ -1,5 +1,5 @@
 #pragma once
-#include "NWChemExRuntime/ChemistryRuntime.hpp"
+#include "SDE/ChemistryRuntime.hpp"
 #include <istream>
 #include <map>
 #include <string>
@@ -37,7 +37,7 @@
  * - SpaceGroup: which space group the unit cell belongs to.
  */
 
-namespace NWXRuntime {
+namespace SDE {
 
 /** \brief This class abstracts away the layout of a string representation of a
  *  SetOfAtoms.

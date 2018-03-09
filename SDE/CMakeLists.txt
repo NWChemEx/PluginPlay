@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(NWChemExRuntime-SRC VERSION 0.0.0 LANGUAGES CXX)
+project(SDE-SRC VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
-set(NWChemExRuntime_SRCS Defaults/DefaultAM.cpp
+set(SDE_SRCS Defaults/DefaultAM.cpp
                          Defaults/DefaultAtoms.cpp
                          Defaults/DefaultBases.cpp
                          Defaults/DefaultIsotopes.cpp
@@ -10,15 +10,15 @@ set(NWChemExRuntime_SRCS Defaults/DefaultAM.cpp
                          BasisSetFileParser.cpp
                          #MoleculeFileParser.cpp
         )
-set(NWChemExRuntime_INCLUDES BasisSetFileParser.hpp
+set(SDE_INCLUDES BasisSetFileParser.hpp
                              ChemistryRuntime.hpp
                              NWXDefaults.hpp
                              #MoleculeFileParser.hpp
         )
-set(NWChemExRuntime_DEFINITIONS )
-set(NWChemExRuntime_LINK_FLAGS)
-nwchemex_add_library(NWChemExRuntime NWChemExRuntime_SRCS
-                                 NWChemExRuntime_INCLUDES
-                                 NWChemExRuntime_DEFINTIONS
-                                 NWChemExRuntime_LINK_FLAGS
+set(SDE_DEFINITIONS )
+set(SDE_LINK_FLAGS)
+nwchemex_add_library(SDE SDE_SRCS
+                                 SDE_INCLUDES
+                                 SDE_DEFINTIONS
+                                 SDE_LINK_FLAGS
 )

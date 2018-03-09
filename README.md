@@ -1,7 +1,7 @@
-NWChemExRuntime
+SDE
 ===============
 
-The NWChemExRuntime repo is the home of classes and infrastructure that are 
+The SDE repo is the home of classes and infrastructure that are 
 designed to abstract away details pertaining to the literal environment that 
 NWChemEx is being run in.  Such details include:
 
@@ -14,6 +14,6 @@ stub for now)
 Building
 --------
 
-NWChemExRuntime relies on NWChemExBase to manage its configuration and build 
+SDE relies on CMakeBuild to manage its configuration and build 
 settings.  More details on how to build this library can be found 
-:link:[here](NWChemExBase/dox/Building.md).
+:link:[here](CMakeBuild/dox/Building.md).

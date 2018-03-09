@@ -1,8 +1,8 @@
 #pragma once
-#include <UtilitiesEx/Containers/CaseInsensitiveMap.hpp> // Includes <string>
+#include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/SetOfAtoms.hpp> // Includes Atom.hpp and BasisShell.hpp
 
-namespace NWXRuntime {
+namespace SDE {
 
 /**
  * @brief Structure for aggregating details pertaining to a physical constant.
@@ -88,16 +88,16 @@ struct ChemistryRuntime {
     using isotope_list = std::vector<isotope_type>;
 
     /// The type of the object used to look up physical constants
-    using constant_lut_type = UtilitiesEx::CaseInsensitiveMap<constant_type>;
+    using constant_lut_type = Utilities::CaseInsensitiveMap<constant_type>;
 
     /// The type of the object used to look up molecules
-    using molecule_lut_type = UtilitiesEx::CaseInsensitiveMap<molecule_type>;
+    using molecule_lut_type = Utilities::CaseInsensitiveMap<molecule_type>;
 
     /// The type of the object used to look up the atomic number by symbol
-    using at_sym_lut_type = UtilitiesEx::CaseInsensitiveMap<size_type>;
+    using at_sym_lut_type = Utilities::CaseInsensitiveMap<size_type>;
 
     ///The type of the object used to convert angular momentum symbols to values
-    using am_sym_lut_type = UtilitiesEx::CaseInsensitiveMap<int>;
+    using am_sym_lut_type = Utilities::CaseInsensitiveMap<int>;
 
     /// The type of the object used to look up isotopes
     using isotope_lut_type = std::map<size_type, isotope_list>;

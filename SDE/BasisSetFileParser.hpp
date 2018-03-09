@@ -1,11 +1,11 @@
 #pragma once
-#include "NWChemExRuntime/ChemistryRuntime.hpp"
+#include "SDE/ChemistryRuntime.hpp"
 #include <string>
 #include <map>
 #include <vector>
 #include <istream>
 
-namespace NWXRuntime {
+namespace SDE {
 
 /** @brief This class abstracts away the layout of the basis set file and the
  *  mechanism by which it's parsed.

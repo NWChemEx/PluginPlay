@@ -60,7 +60,7 @@ class AtomicInfo:
 def write_symbols(out_dir, nmspace, name_file):
     # File format is: Z, Sym, full name
     with open(os.path.join(out_dir, "DefaultSymbols.cpp"),'w') as f:
-        f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n\n")
+        f.write("#include \"SDE/NWXDefaults.hpp\"\n\n")
         write_warning(__file__, f)
         f.write("\nnamespace {} {{\n".format(nmspace))
         f.write("using return_type = typename "
@@ -91,7 +91,7 @@ def write_isotopes(out_dir, nmspace, iso_file, iso_ab_file):
                     else:
                         print("Warning: {} isotope {}".format(sym,isonum))
     with open(os.path.join(out_dir, "DefaultIsotopes.cpp"), 'w') as f:
-        f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n")
+        f.write("#include \"SDE/NWXDefaults.hpp\"\n")
         write_warning(__file__,f)
         f.write("namespace {} {{\n".format(nmspace))
         f.write("using return_t = typename "
@@ -137,7 +137,7 @@ def write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file,
 
     src_file = os.path.join(out_dir, "DefaultAtoms.cpp")
     with open(src_file, 'w') as f:
-        f.write("#include \"NWChemExRuntime/NWXDefaults.hpp\"\n")
+        f.write("#include \"SDE/NWXDefaults.hpp\"\n")
         write_warning(__file__, f)
         f.write("namespace {} {{\n".format(nmspace))
         f.write("using return_t = typename "
@@ -151,13 +151,13 @@ def write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file,
             v.cxxify(f)
             f.write("    });\n")
         f.write("    return rv;\n")
-        f.write("}\n} // End namespace NWXRuntime\n")
+        f.write("}\n} // End namespace SDE\n")
 
 def main():
     # Knobs that you may want to tweak to control settings
     pm2bohr = 52.917721067  # Conversion from picometers to Bohr
-    dest_dir = os.path.join("NWChemExRuntime", "Defaults") #Directory 4 output
-    nmspace = "NWXRuntime"  # Namespace for all C++ classes
+    dest_dir = os.path.join("SDE", "Defaults") #Directory 4 output
+    nmspace = "SDE"  # Namespace for all C++ classes
 
     # Get and set some paths
     my_dir =os.path.dirname(os.path.realpath(__file__))

@@ -1,8 +1,8 @@
-#include "NWChemExRuntime/BasisSetFileParser.hpp"
+#include "SDE/BasisSetFileParser.hpp"
 #include <LibChemist/ShellTypes.hpp>
 #include <regex>
 
-namespace NWXRuntime {
+namespace SDE {
 
     using data_type   = BasisSetFileParser::data_type;
     using action_type = BasisSetFileParser::action_type;

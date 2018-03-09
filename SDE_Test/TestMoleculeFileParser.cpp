@@ -1,10 +1,10 @@
-#include <NWChemExRuntime/MoleculeFileParser.hpp>
-#include <NWChemExRuntime/NWXDefaults.hpp>
+#include <SDE/MoleculeFileParser.hpp>
+#include <SDE/NWXDefaults.hpp>
 #include <catch/catch.hpp>
 #include <sstream>
 
 using namespace LibChemist;
-using namespace NWXRuntime;
+using namespace SDE;
 
 
 // A fake xyz example

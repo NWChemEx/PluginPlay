@@ -70,7 +70,7 @@ def main():
     new_shell = re.compile("^\s*[a-zA-Z]+\s*\d+\s*1.00\s*$")
     same_shell = re.compile("^\s*(?:-?\d+.\d+(?:(E|e|D|d)(\+|-)\d\d)*\s*)+")
     my_dir = os.path.dirname(os.path.realpath(__file__))
-    out_dir = os.path.join(os.path.dirname(my_dir), "NWChemExRuntime",
+    out_dir = os.path.join(os.path.dirname(my_dir), "SDE",
                            "Defaults")
 
     bases = {}

@@ -29,7 +29,7 @@ class molecule:
 def main():
     mols = ["water"]
     my_path = os.path.dirname(os.path.realpath(__file__))
-    data_dir = os.path.join(os.path.dirname(my_path), "NWChemExRuntime",
+    data_dir = os.path.join(os.path.dirname(my_path), "SDE",
                             "Defaults")
     with open(os.path.join(data_dir, "DefaultMols.cpp"),'w') as f:
         write_header(__file__, f)

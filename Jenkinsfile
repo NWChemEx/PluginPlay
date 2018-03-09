@@ -1,5 +1,5 @@
-def repo_name="NWChemExRuntime"
-def depends = ['NWChemExBase', 'LibChemist']
+def repo_name="SDE"
+def depends = ['CMakeBuild', 'LibChemist']
 
 def compile_repo(depend_name, install_root, do_install) {
     sh """
