@@ -22,11 +22,11 @@ class Shell:
         f.write("LibChemist::ShellType::SphericalGaussian, ")
         f.write("sym2l.at(\"{}\"), {}, \n    {{".format(self.l, self.gen))
         for a in self.exp:
-            f.write("{}, ".format(a))
+            f.write("{}, ".format(a.replace('D', 'E').replace('d', 'e')))
         f.write("}, \n    {")
         for cs in self.coefs:
             for c in cs:
-                f.write("{}, ".format(c))
+                f.write("{}, ".format(c.replace('D', 'E').replace('d', 'e')))
         f.write("}\n    }")
 
 def write_am(out_dir):
@@ -83,6 +83,7 @@ def main():
                     atom_z = line.split()[0]
                     bases[bs][atom_z] = []
                 elif re.search(new_shell, line):
+                    print(line)
                     bases[bs][atom_z].append(Shell(line.split()[0]))
                 elif re.search(same_shell, line):
                     prim = line.split()
