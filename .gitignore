@@ -1,9 +1,9 @@
 #These are configuration files for QtCreator
-NWChemExRuntime.config
-NWChemExRuntime.files
-NWChemExRuntime.includes
-NWChemExRuntime.creator
-NWChemExRuntime.creator.user
+SDE.config
+SDE.files
+SDE.includes
+SDE.creator
+SDE.creator.user
 *.autosave
 
 #These are configuration files for CLion
