@@ -83,7 +83,6 @@ def main():
                     atom_z = line.split()[0]
                     bases[bs][atom_z] = []
                 elif re.search(new_shell, line):
-                    print(line)
                     bases[bs][atom_z].append(Shell(line.split()[0]))
                 elif re.search(same_shell, line):
                     prim = line.split()
