@@ -3,4 +3,3 @@ project(SDE VERSION 0.0.0 LANGUAGES CXX)
 set(SDE_DEPENDENCIES LibChemist Utilities)
 find_package(CMakeBuild)
 build_nwchemex_module(${CMAKE_CURRENT_LIST_DIR})
-

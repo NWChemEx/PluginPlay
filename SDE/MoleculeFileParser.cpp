@@ -1,11 +1,16 @@
 #include "SDE/MoleculeFileParser.hpp"
 #include <regex>
+#include <cmath> //For lround
 
 namespace SDE {
 
 using action_type = MoleculeFileParser::action_type;
 using data_type   = MoleculeFileParser::data_type;
 using return_type = std::map<data_type, std::vector<double>>;
+using Molecule = LibChemist::Molecule;
+using MProperty = typename Molecule::property_key;
+using AProperty = typename LibChemist::Atom::property_key;
+
 
 namespace detail_ {
 struct atom {
@@ -13,8 +18,13 @@ struct atom {
     std::array<double, 3> xyz;
 };
 
-void commit_atom(LibChemist::SetOfAtoms& rv, atom& a) {
-    if(a.Z != 0.0) { rv.insert(create_atom(a.xyz, a.Z)); }
+void commit_atom(LibChemist::Molecule& rv, atom& a, const ChemistryRuntime&
+crt) {
+    if(a.Z != 0.0) {
+        auto temp = crt.periodic_table.at(a.Z);
+        temp.coords = a.xyz;
+        rv.atoms.push_back(temp);
+    }
     a = atom();
 }
 
@@ -27,39 +37,54 @@ void parse(const return_type& data, atom& a) {
 
 } // end namespace detail_
 
-SetOfAtoms parse_molecule_file(std::istream& is,
-                                 const SetOfAtomsFileParser& parser,
-                                 const ptable_t& periodic_table) {
-    SetOfAtoms rv;
+Molecule parse_molecule_file(std::istream& is,
+                             const MoleculeFileParser& parser,
+                             const ChemistryRuntime& crt) {
+    Molecule rv;
     detail_::atom a;
+    double charge{0.0};
+    double mult{1.0};
     while(is) {
         std::string line;
         std::getline(is, line);
         switch(parser.worth_parsing(line)) {
-            case(action_type::none): // Junk line
-            {
-                break;
-            }
+            case(action_type::none) : {break;} //Junk line
             case(action_type::new_atom): {
-                detail_::commit_atom(rv, a);
+                detail_::commit_atom(rv, a, crt);
                 // Intentional fall_through
             }
             case(action_type::same_atom): {
-                auto data = parser.parse(line);
+                auto data = parser.parse(line, crt);
                 detail_::parse(data, a);
                 break;
             }
             default: {
-                auto data = parser.parse(line);
+                auto data = parser.parse(line, crt);
                 if(data.count(data_type::charge))
-                    rv.charge = data.at(data_type::charge)[0];
+                    charge = data.at(data_type::charge)[0];
                 if(data.count(data_type::multiplicity))
-                    rv.multiplicity = data.at(data_type::multiplicity)[0];
+                    mult = data.at(data_type::multiplicity)[0];
                 break;
             }
         }
     }
-    detail_::commit_atom(rv, a);
+    detail_::commit_atom(rv, a, crt);
+    rv.properties[MProperty::multiplicity] = mult;
+    long nelectrons = -1 * std::lround(charge);
+    //Can't use nelectrons() because nalpha/nbeta not set yet.
+    for(const auto& ai : rv.atoms)
+        if(LibChemist::is_real_atom(ai))//"Charge" only refers to electrons
+            nelectrons += std::lround(ai.properties.at(AProperty::charge));
+    const long nopen = std::lround(mult) - 1;
+    const long nclosed = nelectrons - nopen;
+    if(!nclosed%2) {
+        auto msg = "Charge: " + std::to_string(charge) + "Multiplicity: " +
+          std::to_string(mult) + "not possible for " +
+          std::to_string(nelectrons) + " system.";
+        throw std::domain_error(msg);
+    }
+    rv.properties[MProperty::nbeta] = nclosed;
+    rv.properties[MProperty::nalpha] = nclosed + nopen;
     return rv;
 }
 
@@ -70,13 +95,13 @@ static const std::regex xyz_atom("^\\s*[a-zA-Z]+\\s*(?:-?\\d*.?\\d*\\s*){3}$");
 action_type XYZParser::worth_parsing(const std::string& line) const {
     if(std::regex_search(line, xyz_cm))
         return action_type::overall_system;
-    else if(std::regex_search(line, xyz_atom)) {
+    else if(std::regex_search(line, xyz_atom))
         return action_type::new_atom;
-    }
     return action_type::none;
 }
 
-return_type XYZParser::parse(const std::string& line) const {
+return_type XYZParser::parse(const std::string& line,
+                             const ChemistryRuntime& crt) const {
     return_type rv;
     std::stringstream tokenizer(line);
     if(std::regex_search(line, xyz_cm)) {
@@ -88,11 +113,7 @@ return_type XYZParser::parse(const std::string& line) const {
     } else if(std::regex_search(line, xyz_atom)) {
         std::string sym;
         tokenizer >> sym;
-        // First letter of atomic symbol
-        std::transform(sym.begin(), sym.begin() + 1, sym.begin(), ::toupper);
-        // second plus letters
-        std::transform(sym.begin() + 1, sym.end(), sym.begin() + 1, ::tolower);
-        double temp = detail_::sym2Z_.at(sym);
+        double temp = crt.at_sym_2_Z.at(sym);
         rv[data_type::AtNum].push_back(temp);
         tokenizer >> temp;
         rv[data_type::x].push_back(temp);

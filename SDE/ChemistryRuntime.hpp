@@ -1,6 +1,6 @@
 #pragma once
 #include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
-#include <LibChemist/SetOfAtoms.hpp> // Includes Atom.hpp and BasisShell.hpp
+#include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
 
 namespace SDE {
 
@@ -73,7 +73,7 @@ struct ChemistryRuntime {
     using isotope_type = IsotopeData;
 
     /// The type of a molecule object
-    using molecule_type = LibChemist::SetOfAtoms;
+    using molecule_type = LibChemist::Molecule;
 
     /// The type of an atom
     using atom_type = LibChemist::Atom;

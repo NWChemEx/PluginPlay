@@ -5,44 +5,52 @@
 
 using namespace LibChemist;
 using namespace SDE;
+using Property = Molecule::Property;
 
-
-// A fake xyz example
-std::string xyz_example = " -6.7 3\n"
-  "         He 0.1 .1 0.0    \n"
-  " HE 1.1 0.1 0.0\n";
-
-std::string h2o_example =
-  "3\n"
+TEST_CASE("Normal XYZ") {
+    std::string h2o_example =
+    "3\n"
     "\n"
     "H    0.000000000000000   1.579252144093028   2.174611055780858\n"
     "O    0.000000000000000   0.000000000000000   0.000000000000000\n"
     "H    0.000000000000000   1.579252144093028  -2.174611055780858\n"
     " \n";
+    auto crt = default_runtime();
+    auto H = crt.periodic_table[1];
+    auto H2{H};
+    auto O = crt.periodic_table[8];
+    H.coords = {0.000000000000000, 1.579252144093028, 2.174611055780858};
+    H2.coords = {0.000000000000000, 1.579252144093028, -2.174611055780858};
+    O.coords = {0.000000000000000, 0.000000000000000, 0.000000000000000};
+    Molecule corr_h2o;
+    corr_h2o.atoms = {H, O, H2};
+    corr_h2o.properties[Property::nalpha] = 5.0;
+    corr_h2o.properties[Property::nbeta] = 5.0;
+    corr_h2o.properties[Property::multiplicity] = 1.0;
+    std::stringstream ss3(h2o_example);
+    Molecule h2o = parse_molecule_file(ss3, XYZParser(), crt);
+    REQUIRE(corr_h2o == h2o);
+}
 
-TEST_CASE("SetOfAtoms parsing") {
-    std::array<double, 3> carts1({0.1, 0.1, 0.0}), carts2({1.1, 0.1, 0.0});
-    std::array<Atom, 2> Hes({create_atom(carts1, 2), create_atom(carts2, 2)});
-    SetOfAtoms corr;
-    corr.insert(Hes[0]);
-    corr.insert(Hes[1]);
-    corr.charge       = -6.7;
-    corr.multiplicity = 3.0;
+
+TEST_CASE("Hardest XYZ parsing") {
+    std::string xyz_example = " -2 3\nHe 0.1 .1 0.0\nHE 1.1 0.1 0.0\n";
+    auto crt = default_runtime();
+    std::array<double, 3> carts1(), carts2();
+    auto He{crt.periodic_table.at(2)};
+    auto He2{He};
+    He.coords = {0.1, 0.1, 0.0};
+    He2.coords = {1.1, 0.1, 0.0};
+    Molecule corr;
+    corr.atoms = {He, He2};
+    corr.properties[Property::nalpha] = 2.0;
+    corr.properties[Property::nbeta] = 0.0;
+    corr.properties[Property::multiplicity] = 3.0;
 
     std::stringstream ss(xyz_example);
-    SetOfAtoms mol = parse_SetOfAtoms_file(ss, XYZParser());
-REQUIRE(corr == mol);
+    Molecule mol = parse_molecule_file(ss, XYZParser(), crt);
+    REQUIRE(corr == mol);
 
-SetOfAtoms corr_h2o;
-corr_h2o.insert(create_atom(
-  {0.000000000000000, 1.579252144093028, 2.174611055780858}, 1));
-corr_h2o.insert(create_atom(
-  {0.000000000000000, 0.000000000000000, 0.000000000000000}, 8));
-corr_h2o.insert(create_atom(
-  {0.000000000000000, 1.579252144093028, -2.174611055780858}, 1));
 
-std::stringstream ss3(h2o_example);
-SetOfAtoms h2o = parse_SetOfAtoms_file(ss3, XYZParser());
-REQUIRE(corr_h2o == h2o);
 
 }

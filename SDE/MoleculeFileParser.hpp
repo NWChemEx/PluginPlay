@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-/** \file This file contains the machinery for parsing a string representation
+/** @file This file contains the machinery for parsing a string representation
  *  of a set of atoms.
  *
  * Unfortunately, like basis sets, there are a plethora of formats for
@@ -27,7 +27,7 @@
  * - charge: the overall system charge
  * - multiplicity: the overall system multiplicity
  *
- * \TODO The following data pieces will be needed eventually, but have not been
+ * @TODO The following data pieces will be needed eventually, but have not been
  * coded up:
  * - q: the charge of a point charge
  * - point: a dummy atom
@@ -39,11 +39,11 @@
 
 namespace SDE {
 
-/** \brief This class abstracts away the layout of a string representation of a
- *  SetOfAtoms.
+/** @brief This class abstracts away the layout of a string representation of a
+ *  Molecule.
  *
  *  This is the base class for all classes specifying the layout of a
- *  SetOfAtoms file.
+ *  Molecule file.
  */
 struct MoleculeFileParser {
     enum class action_type { none, new_atom, same_atom, overall_system };
@@ -53,7 +53,7 @@ struct MoleculeFileParser {
       const std::string& line, const ChemistryRuntime& crt) const = 0;
 };
 
-/** \brief This class implements a SetOfAtomsParser for the xyz format.
+/** @brief This class implements a MoleculeParser for the xyz format.
  *
  */
 struct XYZParser : public MoleculeFileParser {
@@ -62,16 +62,17 @@ struct XYZParser : public MoleculeFileParser {
       const std::string& line, const ChemistryRuntime& crt) const override;
 };
 
-/** \brief The function to call to parse a SetOfAtomsFile.
+/**
+ * @brief The function to call to parse a MoleculeFile.
  *
- * \param[in] is An input stream containing a string representation of a
- *               SetOfAtoms instance in a format the parser understands.
- * \param[in] parser The parser to be used to parse the input stream.
- * \param[in] crt The definition of the chemistry runtime we're using
- * \returns The SetOfAtoms instance represented in the input stream.
+ * @param[in] is An input stream containing a string representation of a
+ *               Molecule instance in a format the parser understands.
+ * @param[in] parser The parser to be used to parse the input stream.
+ * @param[in] crt The definition of the chemistry runtime we're using
+ * @returns The Molecule instance represented in the input stream.
  *
  */
-LibChemist::SetOfAtoms parse_molecule_file(std::istream& is,
+LibChemist::Molecule parse_molecule_file(std::istream& is,
     const MoleculeFileParser& parser, const ChemistryRuntime& crt);
 
 } // namespace LibChemist

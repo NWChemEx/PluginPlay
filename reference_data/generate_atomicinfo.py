@@ -47,12 +47,9 @@ class AtomicInfo:
 
     def cxxify(self, f_in):
         prop_add = "      {" \
-                   "LibChemist::AtomProperty::"
-        f_in.write("{}Z, {}}},\n".format(prop_add, self.Z))
+                   "LibChemist::Atom::Property::"
+        f_in.write("{}charge, {}}},\n".format(prop_add, self.Z))
         f_in.write("{}mass, {}}},\n".format(prop_add,self.mass))
-        f_in.write("{}charge, 0.0}},\n".format(prop_add))
-        f_in.write("{}nelectrons, {}}},\n".format(prop_add, self.Z))
-        f_in.write("{}multiplicity, {}}},\n".format(prop_add, self.mult))
         f_in.write("{}cov_radius, {}}},\n".format(prop_add, self.cov_radius))
         f_in.write("{}vdw_radius, {}}}\n".format(prop_add, self.vdw_radius))
 
@@ -146,10 +143,10 @@ def write_atoms(out_dir, nmspace, mass_file, cov_file, vdw_file,
         f.write("    return_t rv;\n")
         for k, v in sorted(atomicinfo.items()):
             f.write("    rv[{}] ".format(k))
-            f.write("= LibChemist::Atom(std::array<double, 3>{0.0, 0.0, 0.0}, "
-                    "std::map<LibChemist::AtomProperty, double>{\n")
+            f.write("= LibChemist::Atom{std::array<double, 3>{0.0, 0.0, 0.0}, "
+                    "std::map<LibChemist::Atom::Property, double>{\n")
             v.cxxify(f)
-            f.write("    });\n")
+            f.write("    }};\n")
         f.write("    return rv;\n")
         f.write("}\n} // End namespace SDE\n")
 
@@ -178,14 +175,4 @@ def main():
 
 if __name__ == '__main__' :
     main()
-
-#
-
-#
-#
-
-#
-#
-# atomicinfo = {}
-#
 
