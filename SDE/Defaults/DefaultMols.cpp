@@ -12,13 +12,13 @@ return_t default_molecules() {
     return_t rv;
     ChemistryRuntime crt{{}, {}, {}, default_atoms(),  {}, default_symbols(), {}};
     XYZParser xyz;
-    std::stringstream water{
-    "3"
-    "Water molecule RMR stole from somewhere..."
-    "H    0.000000000000000   1.579252144093028   2.174611055780858"
-    "O    0.000000000000000   0.000000000000000   0.000000000000000"
-    "H    0.000000000000000   1.579252144093028  -2.174611055780858"
-    };
+    std::stringstream water(
+    "3\n"
+    "Water molecule RMR stole from somewhere...\n"
+    "H    0.000000000000000   1.579252144093028   2.174611055780858\n"
+    "O    0.000000000000000   0.000000000000000   0.000000000000000\n"
+    "H    0.000000000000000   1.579252144093028  -2.174611055780858\n"
+    );
     rv["water"] = parse_molecule_file(water, xyz, crt);
     return rv;
 }

@@ -21,5 +21,5 @@ TEST_CASE("Workflow") {
     auto water_w_basis = crt.apply_basis("cc-pvdz", water);
 
     //We just spot check a few things
-    REQUIRE(water_w_basis.get_basis("cc-pvdz").size() == 27);
+    REQUIRE(water_w_basis.get_basis("cc-pvdz").size() == 24);
 }

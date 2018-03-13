@@ -77,14 +77,14 @@ Molecule parse_molecule_file(std::istream& is,
             nelectrons += std::lround(ai.properties.at(AProperty::charge));
     const long nopen = std::lround(mult) - 1;
     const long nclosed = nelectrons - nopen;
-    if(!nclosed%2) {
+    if(nclosed%2) {
         auto msg = "Charge: " + std::to_string(charge) + "Multiplicity: " +
           std::to_string(mult) + "not possible for " +
           std::to_string(nelectrons) + " system.";
         throw std::domain_error(msg);
     }
-    rv.properties[MProperty::nbeta] = nclosed;
-    rv.properties[MProperty::nalpha] = nclosed + nopen;
+    rv.properties[MProperty::nbeta] = nclosed/2;
+    rv.properties[MProperty::nalpha] = nclosed/2 + nopen;
     return rv;
 }
 
