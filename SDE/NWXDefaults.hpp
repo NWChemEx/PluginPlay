@@ -20,9 +20,7 @@ namespace SDE {
 typename ChemistryRuntime::constant_lut_type default_constants();
 
 /// Returns a map of default molecules
-inline typename ChemistryRuntime::molecule_lut_type default_molecules(){
-    return {};
-}
+typename ChemistryRuntime::molecule_lut_type default_molecules();
 
 /// Returns a map of default basis sets
 typename ChemistryRuntime::indexed_atom_type default_bases();

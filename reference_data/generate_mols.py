@@ -32,24 +32,27 @@ def main():
     data_dir = os.path.join(os.path.dirname(my_path), "SDE",
                             "Defaults")
     with open(os.path.join(data_dir, "DefaultMols.cpp"),'w') as f:
+        f.write("#include \"SDE/MoleculeFileParser.hpp\"\n")
+        f.write("#include <sstream>\n")
         write_header(__file__, f)
-        f.write("using molecule = typename ChemistryRuntime::molecule_type;\n")
         f.write("using return_t = typename "
                 "ChemistryRuntime::molecule_lut_type;\n")
         f.write("return_t default_molecules() {\n")
         f.write("    return_t rv;\n")
+        f.write("    ChemistryRuntime crt{{}, {}, {}, default_atoms(), "
+                " {}, default_symbols(), {}};\n")
+        f.write("    XYZParser xyz;\n")
         for m in mols:
-            mol = molecule(m)
-            with open("molecules/{:s}.xyz".format(m),'r') as g:
-                for i,l in enumerate(g):
-                if i<2:
-                    continue
-                f.write("")
-                line = l.split()
-                mol.atoms.append(line[0])
-                for j in range(1,4):
-                    mol.carts.append(line[j])
-        mol.cxxify(f)
+            f.write("    std::stringstream {}(\n".format(m))
+            with open(os.path.join(my_path, "molecules","{}.xyz".format(m)),
+                      'r') as g:
+                    for l in g:
+                        f.write("    \"{}\\n\"\n".format(l.rstrip()))
+            f.write("    );\n")
+            f.write("    rv[\"{0}\"] = parse_molecule_file({0}, ".format(m))
+            f.write("xyz, crt);\n")
+        write_footer(f)
 
-
+if __name__ == "__main__" :
+    main()
 

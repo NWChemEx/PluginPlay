@@ -58,7 +58,7 @@ def write_bases(out_dir, bases):
             for z, atom in bs.items():
                 for s in atom:
                     f.write("    rv[sym2z.at(\"{}\")]".format(z))
-                    f.write(".add_shell(\"{}\", \n".format(bs_name))
+                    f.write(".bases[\"{}\"].push_back(\n".format(bs_name))
                     s.cxxify(f)
                     f.write(");\n")
         write_footer(f)
