@@ -43,12 +43,12 @@ def main():
                 " {}, default_symbols(), {}};\n")
         f.write("    XYZParser xyz;\n")
         for m in mols:
-            f.write("    std::stringstream {}{{\n".format(m))
+            f.write("    std::stringstream {}(\n".format(m))
             with open(os.path.join(my_path, "molecules","{}.xyz".format(m)),
                       'r') as g:
                     for l in g:
-                        f.write("    \"{}\"\n".format(l.rstrip()))
-            f.write("    };\n")
+                        f.write("    \"{}\\n\"\n".format(l.rstrip()))
+            f.write("    );\n")
             f.write("    rv[\"{0}\"] = parse_molecule_file({0}, ".format(m))
             f.write("xyz, crt);\n")
         write_footer(f)
