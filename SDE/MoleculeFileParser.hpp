@@ -70,7 +70,12 @@ struct XYZParser : public MoleculeFileParser {
  * @param[in] parser The parser to be used to parse the input stream.
  * @param[in] crt The definition of the chemistry runtime we're using
  * @returns The Molecule instance represented in the input stream.
- *
+ * @throws std::domain_error if the charge and multiplicity of the molecule is
+ * in consistent.  Weak throw guarantee for @p is and strong throw for all other
+ * parameters.
+ * @throws std::bad_alloc if there is insufficient memory to allocate the new
+ * molecule. Weak throw guarantee for @p is and strong throw for all other
+ * parameters.
  */
 LibChemist::Molecule parse_molecule_file(std::istream& is,
     const MoleculeFileParser& parser, const ChemistryRuntime& crt);
