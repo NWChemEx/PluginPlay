@@ -988,10 +988,9 @@ for basis, value in basisSets.items():
     url+="&minimize="+str(int(optGenContractions))
     basisData = requests.get(url)
     str_basisData = basisData.text
-    temp = bs.lower().replace('%20','_').replace('(','').replace('*','s')
-    good_file_name = temp.replace(')','').replace('/','').replace('+','p')
-    print(good_file_name)
-    with open("basis_sets/{}.gbs".format(bs.lower()),'w') as f:
+    temp = bs.lower().replace('%20', '_').replace('*', "_star").replace('/','_')
+    print(temp)
+    with open("basis_sets/{}.gbs".format(temp),'w') as f:
         for l in str_basisData.splitlines():
             line = l.split()
             if len(line) == 0:
