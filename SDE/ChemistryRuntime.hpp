@@ -1,6 +1,7 @@
 #pragma once
 #include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
+#include <cmath> //for lround
 
 namespace SDE {
 
@@ -122,6 +123,34 @@ struct ChemistryRuntime {
 
     /// Conversion from angular momentum letter to number
     am_sym_lut_type am_sym_2_l;
+
+    /**
+     * @brief Convenience function for applying a basis set to a molecule.
+     *
+     * Applying a basis set to a molecule is typically one of the first things
+     * a user does.  This function is meant as a convenience function
+     * for doing this.  In particular it assumes that the molecule it is
+     * adding a basis set to is simply a set of atoms (i.e. no ghost atoms,
+     * point charges, etc.).  It also assumes that the charge of the atoms is
+     * the atomic number, which it will be when an atom is first made.
+     *
+     * @param key The name of the basis set to apply.
+     * @param mol The molecule whose atoms the basis will be applied to.
+     * @return A deep copy of @p mol containing an additional basis set on each
+     * atom with the name @p key.
+     * @throw std::bad_alloc if there is insufficient memory to copy the basis
+     * set over.  Strong throw guarantee.
+     * @throw std::out_of_range if @p key is not known to the runtime.  Strong
+     * throw guarantee.
+     */
+    molecule_type apply_basis(const std::string& key, molecule_type mol) const {
+        auto charge = LibChemist::Atom::Property::charge;
+        for(auto& atomi : mol.atoms) {
+            const size_type Z = std::lround(atomi.properties.at(charge));
+            atomi.bases[key] = bse.at(Z).bases.at(key);
+        }
+        return mol;
+    }
 };
 
 }//End namespace

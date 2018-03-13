@@ -5,6 +5,7 @@ set(SDE_SRCS Defaults/DefaultAM.cpp
                          Defaults/DefaultAtoms.cpp
                          Defaults/DefaultBases.cpp
                          Defaults/DefaultIsotopes.cpp
+                         Defaults/DefaultMols.cpp
                          Defaults/DefaultSymbols.cpp
                          Defaults/PhysicalConstants.cpp
                          BasisSetFileParser.cpp
