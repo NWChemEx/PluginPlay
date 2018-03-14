@@ -1,5 +1,4 @@
 #pragma once
-#include "SDE/BasisSetFileParser.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
 #include <cmath> //for lround
@@ -53,6 +52,8 @@ struct IsotopeData{
     /// The abundance of the isotope
     double abundance;
 };
+
+struct BasisSetFileParser;
 
 /** @brief Collects constants, conversion factors, atomic data, basis sets, etc.
  *         into a one-stop-shop.
@@ -145,21 +146,14 @@ struct ChemistryRuntime {
      * @throw std::out_of_range if @p key is not known to the runtime.  Strong
      * throw guarantee.
      */
-    molecule_type apply_basis(const std::string& key, molecule_type mol) const {
-        auto charge = LibChemist::Atom::Property::charge;
-        for(auto& atomi : mol.atoms) {
-            const size_type Z = std::lround(atomi.properties.at(charge));
-            atomi.bases[key] = bse.at(Z).bases.at(key);
-        }
-        return mol;
-    }
+    molecule_type apply_basis(const std::string& key, molecule_type mol) const;
 
-    load_basis_from_file(const std::string& file_path, const std::string& key, 
-                         const BasisSetFileParser& parser = G94()) {
-        auto bs = parse_basis_set_file(std::ifstream(file_path), parser, *this);
-        for (const auto& x : bs)
-            bse[x.first].bases[key] = x.second;
-    }
+    /**
+     */
+    void load_basis_from_file(const std::string& file_path, const std::string& key, 
+                              const BasisSetFileParser& parser);
+    void load_basis_from_file(const std::string& file_path, 
+                              const BasisSetFileParser& parser);
 };
 
 }//End namespace
