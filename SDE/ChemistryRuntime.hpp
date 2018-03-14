@@ -1,7 +1,9 @@
 #pragma once
+#include "SDE/BasisSetFileParser.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
 #include <cmath> //for lround
+#include <fstream>
 
 namespace SDE {
 
@@ -150,6 +152,13 @@ struct ChemistryRuntime {
             atomi.bases[key] = bse.at(Z).bases.at(key);
         }
         return mol;
+    }
+
+    load_basis_from_file(const std::string& file_path, const std::string& key, 
+                         const BasisSetFileParser& parser = G94()) {
+        auto bs = parse_basis_set_file(std::ifstream(file_path), parser, *this);
+        for (const auto& x : bs)
+            bse[x.first].bases[key] = x.second;
     }
 };
 
