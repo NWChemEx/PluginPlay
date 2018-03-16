@@ -16,23 +16,6 @@ to how most modern devices allow you to choose which app is launched by default
 when you click a URL or want to send an email).  Apps are allowed (and 
 encouraged) to call other apps to perform subtasks for them. 
 
-What is an App?
----------------
-
-In the SDE apps are the fundamental units of code.  Each app can be as coarse
-or fine as the author desires.  For example, it is possible to include an entire
-electronic structure package in a single app (although it is not encouraged) 
-and it is also possible to have an app that simply computes the Coulomb 
-repulsion between charged particles.  Generally speaking apps do one of the 
-following X tasks:
-
-1. Partition a system
-   - Useful for "selecting" subsystems for say QM/MM or fragment based methods
-2. Compute a series of tensors
-   - Range from computing a term of the Fock matrix to the energy of a QM/MM 
-   method
-(Determine how fine-grained we want to go)  
-
 Components of the SDE
 ---------------------
 

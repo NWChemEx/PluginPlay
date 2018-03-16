@@ -4,7 +4,7 @@
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "NWChemEx"
+PROJECT_NAME           = "SDE"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -23,5 +23,5 @@ PROJECT_BRIEF          = "Infrastructure for NWChemEx's runtime components"
 # directories like /usr/src/myproject. Separate the files or directories with
 # spaces.
 # Note: If this tag is empty the current directory is searched.
-
-INPUT                  = dox/ParallelRuntime.md
+EXCLUDE_PATTERNS = dox/README.md
+INPUT                  = dox/ dox/uml/ SDE/

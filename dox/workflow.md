@@ -3,7 +3,7 @@ User Workflow
 
 The current page describes the flow of the SDE as seen by a typical user. It 
 assumes familiarity with the topics covered in the [Overview](dox/overview.md) 
-section.  The workflow it self is summarized by the following diagram and the
+section.  The workflow itself is summarized by the following diagram and the
 remainder of the page explains the diagram in more detail.
 
 ![](uml/ProgramFlow.png)
@@ -28,15 +28,27 @@ one or more components of the SDE to suit their needs.
 Define System
 -------------
 
-Ultimately SDE is designed to provide the framework for a computational 
-chemistry package.  To that end we view the system (the thing we are 
-computing some property of) as the fundamental input to the program and our 
-first task is to make it.  Exactly how one does this is described in more detail
+We view the description of the chemical system as the fundamental input to the 
+program.  Exactly how one does this is described in more detail
 on the page [Building a System](), but for now it suffices to say that this step
 encompasses everything required to specify the total system (*i.e.* things like
 what is QM or MM, *etc.* will be specified later).  The classes used to model
-the system are provided and implemented by LibChemist.
+the system are provided and implemented by LibChemist.  For the simplest cases
+it suffices to use one of the pre-built systems stored in the 
+default `ChemistryRuntime` instance:
 
+```.cpp
+//Get the molecule stored in the default ChemicalRuntime instance as "water"
+auto mol = sde.crt.pubchem["water"];
+```
+
+More generally utility functions (will) exist to turn various standard input 
+forms into working systems, for example from a string xyz representation:
+
+```.cpp
+sstream water("0 1\n\nO 0.0 0.0 0.0\nH0.0 0.0 0.89\n0.0 0.89 0.0");
+auto mol = parse_molecule_file(water, XYZParser(), sde.crt);
+``` 
 
 Compute System Property
 -----------------------
@@ -50,6 +62,11 @@ the MM part) to implement a QM/MM routine as a single app:
 
 ![](uml/qm_mm.png)
 
+Syntactically this will look something like:
+```.cpp
+auto egy = sde.run("APP to run", mol);
+```
+
 Save Results
 ------------
 
@@ -58,3 +75,15 @@ That happens here.  Ultimately, the SDE will have accumulated a lot of data
 over the course of the run and this step focuses on archiving it so that it is 
 accessible for analysis and possibly further calculations.  Presently 
 archiving either as HDF5 or JSON is possible.
+
+```.cpp
+sde.archive("file/to/archive/to");
+```
+
+Putting this all together, the minimal input to run a meaningful calculation is:
+
+```.cpp
+auto sde = SDE::initialize();
+auto egy = sde.run("app 2 run", sde.crt.pubchem["water"]);
+sde.archive("file/to/archive/to");
+``` 
