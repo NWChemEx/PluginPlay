@@ -2,13 +2,8 @@ Advanced App Flow
 =================
 
 The page [App Flow](@ref md_dox_AppFlow) illustrated the basics of an app's 
-lifecycle.  This page covers all of the gritty details.  We attempt to 
-reexamine the steps in the same order; however, sometimes it becomes 
-necessary to refer to a future or past step.  For this reason it is 
-recommended that readers first acclimate themselves with the the app 
-lifecycle before tackling this page.  Throughout this page we refer to the 
-following UML diagram which shows all relevant parts of the SDE having to do 
-with the app lifecycle.
+lifecycle.  This page covers all of the gritty details.  The following UML 
+diagram shows all relevant parts of the SDE having to do with the app lifecycle.
 
 ![](uml/app_store.png)
 
@@ -47,25 +42,40 @@ that app:
    - Estimates the amount of resource (think memory or time) app needs
    - Full list is here (link to enum when written)
    
-The final set of metadata is the settings and the "hooks". Respectively,   
+The final two fields of the `AppInfo` class actually influence the runtime 
+behavior of the app.  First we have its parameters, which one can think of 
+as defining the user-centric api for the app:   
 
 - `AppInfo::parameters`
-  - this is a list of inputs like thresholds, number of iterations, *etc.*
+  - Defines the non-SDE API for your app.
+    - Think of a function:
+    ```.cpp
+    int my_function(int arg1, double arg2);
+    ```
+    becoming:
+    ```.cpp
+    ResultMap [](const SDE& sde, const Parameters& params){
+        auto arg1 = params.at<int>("arg1");
+        auto arg2 = params.at<double>("arg2");
+        ...
+    }
+    ```
   - ideally no part of an algorithm should be hard-coded, but read from here
-- `AppInfo::sub_apps`
-  - A map such that `sde.run(sub_map["property"], sys)` will run the app
-    needed to get the property `"property"`
-  - Apps will generally provide defaults for these, but users can override by
-    pointing to a different app
+  - technically no restriction on what is passed, but objects should generally
+    speaking be POD data types or STL containers of POD data types.
+  - Full details pertaining to Parameters class is [here](dox/parameters.md).
 
-Working with the parameters class involves enough detail that it is 
-covered [here](dox/parameters.md).  The sub apps property will be covered in 
-more detail in step 3.  
+and the subapp hooks:
+- `AppInfo::sub_apps`
+  - `subapps.at("option key")` is the app key to call when the app asks for
+    subapp `"option key"`
+  - goal is for keys to be standardized description of the requested routine
    
 The SDE is designed so that apps can run without an `AppInfo` instance; however,
-the resulting run may be sub-optimal performance-wise.  As added incentive for 
-developer's to do a good job filling out `AppInfo` the SDE provides (well it 
-can be made to) functions which take an SDE instance, loaded with all the apps 
+the resulting app provides the user no means of changing its parameters and 
+its run may be sub-optimal from a performance standpoint.  As added incentive 
+for developers to do a good job filling out `AppInfo` the SDE provides (well it 
+will provide) functions which take an SDE instance, loaded with all the apps 
 in their default states, and generates markdown documentation suitable for 
 inclusion with Doxygen.
 
@@ -89,12 +99,9 @@ The arguments to which are:
 
 - `super_app_name` essentially the namespace to place the app within
 - `app_name` this is the name for the "concept of the" app.  Basically in an 
-  object-oriented analogy it's the equivalent of naming the class the defines
-  the app.  It can be thought of as defining the fields the app has via the
-  `AppInfo` instance.
+  object-oriented analogy it's the equivalent of a class.  
 - `app_key` completing the analogy this is the equivalent of an instance of a
-  class.  Basically it has a particular state which may be different than some
-  other running version of the same app.
+  class.  
 - `app` same as in the basic case, this is the actual callable to use
 - `info` this is the `AppInfo` instance defining the parameters and meta-data
   for the app.  
@@ -102,14 +109,70 @@ The arguments to which are:
 For completeness it's perhaps worth indicating that the shortened version we 
 showed you previously maps to:
 ```.cpp
-void add_app(const std::string& app_key, T&& app, const AppInfo& info={}) {
+void add_app(const std::string& app_key, T&& app) {
     add_app(app_key, app_key, app_key, app, info);
 }
 ```
 and is typically fine for when one wants to write a one-off app, like our 
-simple hello world app.  Basically it defines an app with no meta-data and uses
-its key for the name of the superapp and the name of the app.
+simple hello world app.  Basically it defines an app with no meta-data, that 
+takes no parameters, and assigns it as the only app in its own namespace.  
+For all intents and purposes apps created in this manner are basically 
+singletons.
 
-At this point it's perhaps worth explaining why the three strings are in general
-needed.
+For convenience a superapp may define a function like:
 
+```.cpp
+AppStore superapp_initialize() {
+   AppStore rv;
+   rv.add_app(...);
+   rv.add_app(...);
+   ...
+   return rv;
+}
+```
+
+which creates an AppStore instance and fills it with the apps available in 
+the superapp.  If the superapp is loaded at runtime *via*:
+ 
+```.cpp
+sde.load_superapp("path/to/superapp.so");
+``` 
+
+`dlopen` will be used to find and invoke this function (typically this 
+would be invoked from Python so that the paths can be set at runtime 
+and thus allow the superapp to function like a plugin).  Otherwise, if 
+traditional linking is desired the AppStore instance resulting from manually 
+calling the function can be passed to `load_superapp`:
+
+```.cpp
+    sde.load_superapp(superapp_initialize());
+```  
+
+Step 3: Running An App
+----------------------
+
+For the most part running an app really is as simple from the user-perspective
+as depicted on the simple [App Flow](dox/AppFlow.md) page.  What we really 
+glossed over there are the full details of the innards of the `run` command. 
+The full details of the `run` command are covered [here](dox/RunningAnApp.md), 
+for the purposes of this page it is worth noting that `SDE::run` is 
+essentially a memoized run of `SDE::AppStore::run`.  What this means is that 
+when you call `SDE::run` the SDE will first determine if it has computed the 
+result before.  If it has, it simply returns it.  If not it invokes 
+`AppStore::run`, saves the result, and returns it.  Memoized results are 
+saved in the cache, details of which are (link to page).
+
+Step 4: Deleting An App
+-----------------------
+
+This step proceeds exactly as described in [App Flow](dox/AppFlow.md).  Given
+the more complete description detailed here it's worth stating a few 
+additional points:
+
+1. An app's state is not stored.
+   - If an app computes an expensive intermediate it should be the result of a
+     subapp call.
+2. All parallel resources given to the app will be released back to the program
+   - Apps should not assume that they will be given the same parallel resources
+     on each invocation
+        

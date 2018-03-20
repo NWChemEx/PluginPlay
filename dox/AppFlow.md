@@ -13,23 +13,24 @@ minimal restrictions on what an app must look like.  Ultimately any callable
 object (function, functor, or lambda) defining the API:
 
 ```.cpp
-ResultMap operator()(const System& mol, const SDE& sde, const Options& options); 
+ResultMap operator()(const SDE& sde, const Parameters& params); 
 ```
 
 will work.  Here `ResultMap` is the required return type and is basically a 
 type-erased `std::map` (*i.e.* it's a map from strings to objects of arbitrary
-type), `System` is the `LibChemist` class that describes the chemical system to
-be studied, `SDE` is an instance of the SDE framework, and `Options` is an 
-instance of the Options class which stores parameters your app uses.  For the
-time-being we ignore the intricacies of app creation by using lambdas.
+type), `sde` is an instance of the SDE framework, and `params` is an 
+instance of the Parameters class which stores parameters your app uses.  
 
-Step 2 :AppStore Creation
+For the time-being we will ignore the intricacies of app creation by using 
+lambdas adhering to the above API.
+
+Step 2: AppStore Creation
 -------------------------
 
 Ultimately all parts of the code will look to the SDE, specifically the 
-AppStore, to obtain apps.  Before an app can be used it must be registered with
-the AppStore.  To do this given an instance of the SDE, `sde`,  any of the 
-following suffice. Assuming your app is a lambda:
+AppStore, to obtain apps.  Thus, before an app can be used it must be 
+registered with the AppStore.  To do this given an instance of the SDE, 
+`sde`,  any of the following suffice. Assuming your app is a lambda:
 
 ```.cpp
 sde.add_app("MyApp", [](const System&, const SDE& sde, const Options&){
@@ -62,16 +63,21 @@ sde.add_app("MyApp", my_first_app{});
 ```
 
 At this point our app is registered with the AppStore under the key `"MyApp"`.  
-This means anytime anyone asks for the app `"MyApp"` they will call your app.
-Generally speaking this step can become very verbose as there will be a 
-`add_app` call for literally every app.  For this reason this step is usually
-done by the initialization function.
+This means anytime anyone asks for the app whose key is `"MyApp"` they will 
+call your app.  Generally speaking the process of adding apps can become 
+very verbose as there will be an `add_app` call for literally every app.  For
+this reason this step is usually done by an initialization function.  This point
+is described in more detail in [Advanced App Flow](dox/AdvancedAppFlow.md)
 
 As a slight aside, the astute reader/coder will note that because the apps are 
 being loaded into an object created at runtime (as opposed to being 
 hard-coded calls in a driver-like routine) users are free to modify the list 
 of apps at runtime (by say loading a shared library) without having to modify
-the source code.
+the source code.  This enables people to make apps that are usable by any 
+package supporting the SDE without having to modify that package's source 
+code.
+
+Note `sde.add_app` is just a convenience wrapper around `sde.play.add_app`.
 
 Step 3: Calling an App
 ----------------------
@@ -80,7 +86,7 @@ As alluded to in the previous step we can call any app given its key.  For
 example to call the app we added in step 2:
 
 ```.cpp
-auto result = sde.run("MyApp", sys);
+auto result = sde.run("MyApp");
 ```
 
 This piece of code would do nothing, but print `Hello World` to standard out and
@@ -92,7 +98,8 @@ auto forty_two = result.at<double>("The answer to everything");
 ```
 
 Note you will have to know the type and what the app calls the return (the 
-app should document this).
+app should document this).  In order to facilitate this we provide a list of
+recommended names (write a page for conventions).
 
 Step 4: Destroying the App
 --------------------------
@@ -104,7 +111,7 @@ call `sde.run()` looks internally a little like this:
 run(...) {
     auto app = play.at("MyApp"); // I'm an Android person so internally the app
                                  // store is the play store...
-    auto result = app(sys, *this, Options{}); //Ignore where options comes from
+    auto result = app(sys, *this, Parameters{}); //Ignore Parameters for now
     return result;
 }
 ```  
@@ -113,3 +120,10 @@ What this means memory-wise is that the first line instantiated your app and
 after `sde.run()` returns, the instantiated instance will be deleted.  
 Consequentially, if your app computes a useful quantity then that quantity needs
 to be in the return.
+
+Where to Go from Here
+---------------------
+
+As mentioned this page just scratches the surface of the app flow lifecycle. 
+The full details can be found [here](dox/AdvancedAppFlow.md) including how to
+allow for your app to take parameters.

@@ -64,7 +64,7 @@ the MM part) to implement a QM/MM routine as a single app:
 
 Syntactically this will look something like:
 ```.cpp
-auto egy = sde.run("APP to run", mol);
+auto egy = sde.run("APP to run");
 ```
 
 Save Results
@@ -73,17 +73,16 @@ Save Results
 After the property of interest is computed the results need to be archived.  
 That happens here.  Ultimately, the SDE will have accumulated a lot of data
 over the course of the run and this step focuses on archiving it so that it is 
-accessible for analysis and possibly further calculations.  Presently 
-archiving either as HDF5 or JSON is possible.
+accessible for analysis and possibly further calculations.  This step will be
+invoked automatically when the SDE is deleted.  It is possible to directly 
+call the archiver to save the results at any time and eventually it will be 
+possible to have the archiver automatically save the results on a 
+predefined schedule.
 
-```.cpp
-sde.archive("file/to/archive/to");
-```
 
 Putting this all together, the minimal input to run a meaningful calculation is:
 
 ```.cpp
 auto sde = SDE::initialize();
-auto egy = sde.run("app 2 run", sde.crt.pubchem["water"]);
-sde.archive("file/to/archive/to");
+sde.run("app 2 run", sde.crt.pubchem["water"]);
 ``` 

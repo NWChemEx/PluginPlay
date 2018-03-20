@@ -27,6 +27,7 @@ input:
 2. Transparent parameters: these are parameters that under correct code behavior
    can not influence the result of an app (*e.g.* what to call files, logging
    level).
+  
 
 Adding a Parameter
 ------------------
@@ -34,12 +35,12 @@ Adding a Parameter
 Most computational chemistry codes have a concept of options, where the user can
 specify things like the maximum number of iterations, thresholds for 
 convergence, *etc.*  This tradition carries over to the Parameters class as 
-well.  For example if your app depend on a parameter `"threshold"`, which is a
+well.  For example if your app depends on a parameter `"threshold"`, which is a
 `double`, the simplest syntax for adding this to a Parameters instance is:
 
 ```.cpp
 Parameters params;
-params.insert("threshold", Option<double>{});
+params.insert("threshold", Parameter<double>{});
 ```
 
 This will create an option called threshold, which is a double that can be
@@ -49,45 +50,45 @@ accessed via:
 params.at<double>("threshold");
 ```
 
-Note to retrieve a parameter you'll need to know its type.  The SDE provides a
-number of additional options to make working with these typical parameters 
-easier, for example to also specify the default threshold is "1E-6" we could
+Note to retrieve a parameter you'll need to know its type.  The Parameter 
+class has a number of fields that makes working with typical parameters 
+easier.  For example to also specify the default threshold is "1E-6" we could
 instead do:
 
 ```.cpp
-params.insert("threshold", Option<double>{1E-6});
+params.insert("threshold", Parameter<double>{1E-6});
 ```
 
 For documentation purposes it's nice to have a description of what an option 
 does aside from its key.  This can be specified as the second argument to the 
-`Option` class:
+`Parameter` class:
 
 ```.cpp
 //Please use better descriptions than this...
-params.insert("threshold", Option<double>{1E-6, "The threshold used"});
+params.insert("threshold", Parameter<double>{1E-6, "The threshold used"});
 ```
 
-The third optional parameter to the `Option` class is a list of checks on 
+The third optional parameter to the `Parameter` class is a vector of checks on 
 the instance's value.  For example say our threshold must be between 0 and 1 
 then:
 ```.cpp
 params.insert("threshold", 
-  Option<double>{1E-6, "a better description", {Between{0.0, 1.0}}});
+  Parameter<double>{1E-6, "a better description", {Between{0.0, 1.0}}});
 ``` 
 
-Generally speaking the checks can be any callable object with the signature:
+Generally speaking you don't have to use the checks that come with the SDE as
+they can be any callable object with the signature:
 
 ```.cpp
 //T is that option's type
 bool operator()(T value);
 ```
-The checks provided should be preferred for their descriptive error messages
-and self documenting nature.
 
-The final argument to the `Option` class is a list of traits.  These are things
-like `required` (meaning no default value is specified and the user must set a
-value for the app to work) or `transparent` (signifying that the option 
-should not be considered when hashing input).  Thus the full signature is:
+The final argument to the `Option` class is a vector of traits.  These are 
+things like `required` (meaning no default value is specified and the user 
+must set a value for the app to work) or `transparent` (signifying that the 
+option should not be considered when hashing input). The full list is here 
+(link to enum class when written).  Thus the full signature is:
 
 ```.cpp
 Option<double>{default, description, vector of checks, vector of traits};
@@ -104,35 +105,21 @@ change the options for the app.  To do this the syntax is:
 sde.change_option("app key", "option key", new_value);
 ```
 
-Note however that this will change "option key" for all calls to "app key".  
-This is usually what we want.  Sometimes it is not though.  If we only want to
-change the option for the current call to the app we can do that right in the
-run command:
-
-```.cpp
-auto result sde.play.run("app key", sys, {"option key", new_value});
-```
-
-This will leave all other calls to the app `"app key"` unaffected.  Under the
-hood this is actually short-hand for:
+Note however that this will change `"option key"` for all calls to `"app key"`.  
+This is usually what we want.  Sometimes it is not though.  In those cases we
+can copy the app, modify the copy, and run the copy.
 
 ```.cpp
 auto new_key = sde.play.copy_app("app key");
 sde.play.change_option(new_key, "option key", new_value);
-return sde.play.run(new_key, sys);
+auto result = sde.play.run(new_key, sys);
 ```
-
-That is the command actually copies the app, changes the copy's parameters, and
-runs the copy.  We mention this because in the (hopefully) rare case that you 
-want all apps to use a modified version of "app key" and "app key" has already 
-been instantiated, these steps are your only recourse.
-
-To summarize it is best to set all options prior to instantiating any modules if
-you want those changes to propagate.  If you only want to run the module once
-with the modified settings pass them to `run`.
+This is also what you need to do if an instance of "app key" has already 
+been instantiated.
 
 As a slight aside, regardless of how you change a parameter, the new value will
-be subjected to all checks guaranteeing that the parameter is valid.
+be subjected to all checks guaranteeing that the parameter is valid when your
+app launches.
 
 Advanced Tips and Tricks
 ------------------------
@@ -148,7 +135,7 @@ another floating point parameter `p2`.  To set-up the dependency we first add
 params.insert("p1", Option<double>{0.0, "desc"});
 ``` 
 
-and then `p2`:
+and then `p2` with a custom check:
 
 ```.cpp
 params.insert("p2", 
@@ -157,4 +144,5 @@ params.insert("p2",
 ```
 
 Note that we capture `params` by reference so that we're always using the 
-current value of `p1`.
+current value of `p1` and not comparing against the value in `params` when we
+inserted `"p2"`.
