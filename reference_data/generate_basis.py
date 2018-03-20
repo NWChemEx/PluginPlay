@@ -24,9 +24,9 @@ class Shell:
         for a in self.exp:
             f.write("{}, ".format(a.replace('D', 'E').replace('d', 'e')))
         f.write("}, \n    {")
-        for cs in self.coefs:
-            for c in cs:
-                f.write("{}, ".format(c.replace('D', 'E').replace('d', 'e')))
+        for i in range(self.gen):
+            for cs in self.coefs:
+                f.write("{}, ".format(cs[i].replace('D', 'E').replace('d', 'e')))
         f.write("}\n    }")
 
 def write_am(out_dir):
@@ -65,7 +65,7 @@ def write_bases(out_dir, bases):
 
 
 def main():
-    basis_sets = ["cc-pvdz"]
+    basis_sets = ["cc-pvdz","sto-3g"]
     new_atom = re.compile("^\s*\D{1,2}\s*0\s*$")
     new_shell = re.compile("^\s*[a-zA-Z]+\s*\d+\s*1.00\s*$")
     same_shell = re.compile("^\s*(?:-?\d+.\d+(?:(E|e|D|d)(\+|-)\d\d)*\s*)+")
