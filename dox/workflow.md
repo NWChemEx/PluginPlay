@@ -84,5 +84,5 @@ Putting this all together, the minimal input to run a meaningful calculation is:
 
 ```.cpp
 auto sde = SDE::initialize();
-sde.run("app 2 run", sde.crt.pubchem["water"]);
+sde.run("app 2 run");
 ``` 

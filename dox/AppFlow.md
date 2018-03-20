@@ -33,7 +33,7 @@ registered with the AppStore.  To do this given an instance of the SDE,
 `sde`,  any of the following suffice. Assuming your app is a lambda:
 
 ```.cpp
-sde.add_app("MyApp", [](const System&, const SDE& sde, const Options&){
+sde.add_app("MyApp", [](const SDE& sde, const Parameters&){
     sde.stdout << "Hello World" << std::endl;
     return ResultMap("The answer to everything", 42.0);
     });
@@ -42,7 +42,7 @@ sde.add_app("MyApp", [](const System&, const SDE& sde, const Options&){
 or if it's a function:
 
 ```.cpp
-ResultMap my_first_app(const System&, const SDE& sde, const Options&) {
+ResultMap my_first_app(const SDE& sde, const Parameters&) {
     sde.stdout << "Hello World" << std::endl;
     return ResultMap("The answer to everything", 42.0");
 }
@@ -54,7 +54,7 @@ or if it's a functor:
 
 ```.cpp
 struct my_first_app {
-    ResultMap operator()(const System&, const SDE& sde, const Options&) const {
+    ResultMap operator()(const SDE& sde, const Parameters&) const {
         sde.stdout << "Hello World" << std::endl;
         return ResultMap("The answer to everything", 42.0);
     }
@@ -111,7 +111,7 @@ call `sde.run()` looks internally a little like this:
 run(...) {
     auto app = play.at("MyApp"); // I'm an Android person so internally the app
                                  // store is the play store...
-    auto result = app(sys, *this, Parameters{}); //Ignore Parameters for now
+    auto result = app(*this, Parameters{}); //Ignore Parameters for now
     return result;
 }
 ```  
