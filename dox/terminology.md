@@ -27,7 +27,8 @@ Superapps
 With apps being envisioned as being roughly the granularity of your typical 
 function, we anticipate a typical development team creating many apps.  
 Superapps are simply collections of apps (likely from the same developer) 
-bundled in the same library. 
+distributed together.  Typically they will be distributed as a C++ or Python 
+library.
 
 AppStore
 --------

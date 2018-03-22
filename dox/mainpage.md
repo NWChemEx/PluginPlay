@@ -12,6 +12,8 @@ possibly dynamically influence the control flow.
 - [User Workflow](dox/workflow.md) details a typical workflow
 - [App Workflow](dox/AppFlow.md) details the basics of running an app as well as
   how to write simple "lambda apps"
+- [Common Tasks](dox/CommonTasks.md) explicitly details how to perform common 
+  computational chemistry tasks within an app  
 
 Extending the SDE
 -----------------
@@ -31,6 +33,8 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail.
 
+- [App API](dox/APPAPIConsiderations.md) in depth discussion of how the API came
+  to be
 - [Running an App](dox/RunningAnApp.md) details what happens when a user 
   calls `sde.run`
 - [Cache Workflow]() details how the SDE and apps interact with the cache 
