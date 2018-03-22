@@ -1,4 +1,5 @@
 #include <SDE/NWXDefaults.hpp> // Makes a non-defaulted ChemRuntime instance
+#include <SDE/BasisSetFileParser.hpp>
 #include <catch/catch.hpp>
 
 using namespace SDE;
@@ -18,8 +19,12 @@ TEST_CASE("Workflow") {
     REQUIRE(water.atoms.size() == 3);
 
     //Step 3 is apply a basis set to that molecule
-    auto water_w_basis = crt.apply_basis("cc-pvdz", water);
+    auto water_w_basis = apply_basis("cc-pvdz", crt, water);
 
     //We just spot check a few things
     REQUIRE(water_w_basis.get_basis("cc-pvdz").size() == 24);
+
+    crt = load_basis_from_file("cc-pvdz.gbs", "cc-pvdz-file", G94(), crt);
+    water_w_basis = apply_basis("cc-pvdz-file", crt, water);
+    REQUIRE(water_w_basis.get_basis("cc-pvdz-file").size() == 24);
 }

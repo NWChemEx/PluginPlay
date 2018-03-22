@@ -2,7 +2,6 @@
 #include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
 #include <cmath> //for lround
-#include <fstream>
 
 namespace SDE {
 
@@ -126,7 +125,7 @@ struct ChemistryRuntime {
 
     /// Conversion from angular momentum letter to number
     am_sym_lut_type am_sym_2_l;
-
+};
     /**
      * @brief Convenience function for applying a basis set to a molecule.
      *
@@ -138,6 +137,7 @@ struct ChemistryRuntime {
      * the atomic number, which it will be when an atom is first made.
      *
      * @param key The name of the basis set to apply.
+     * @param crt The @link ChemistryRuntime @endlink to load the basis set from.
      * @param mol The molecule whose atoms the basis will be applied to.
      * @return A deep copy of @p mol containing an additional basis set on each
      * atom with the name @p key.
@@ -146,14 +146,28 @@ struct ChemistryRuntime {
      * @throw std::out_of_range if @p key is not known to the runtime.  Strong
      * throw guarantee.
      */
-    molecule_type apply_basis(const std::string& key, molecule_type mol) const;
+    ChemistryRuntime::molecule_type apply_basis(const std::string& key,
+                                                const ChemistryRuntime& crt,
+                                                ChemistryRuntime::molecule_type mol);
 
     /**
+     * @brief Convenience function to load a basis set from a file into the bse of
+     * a @link ChemistryRuntime @endlink @p crt.
+     *
+     * @param file_path The path to the basis set.
+     * @param key The name to use for the basis set in the bse.
+     * @param parser format used to parse the basis set file.
+     * @param crt ChemistryRuntime to add the basis set to.
      */
-    void load_basis_from_file(const std::string& file_path, const std::string& key, 
-                              const BasisSetFileParser& parser);
-    void load_basis_from_file(const std::string& file_path, 
-                              const BasisSetFileParser& parser);
-};
+    ChemistryRuntime load_basis_from_file(const std::string& file_path, const std::string& key,
+                                          const BasisSetFileParser& parser,
+                                          ChemistryRuntime crt);
+    /**
+     * @copydoc load_basis_from_file(std::string,std::string,ChemistryRuntime,BasisSetFileParser)
+     * @brief This overloaded function just calls the above function using the @p file_path as a key.
+     */
+    ChemistryRuntime load_basis_from_file(const std::string& file_path,
+                                          const BasisSetFileParser& parser,
+                                          ChemistryRuntime crt);
 
 }//End namespace
