@@ -147,7 +147,7 @@ will need to be considered later.
 Ultimately, with qualifiers our app API looks like:
 
 ```.cpp
-ResultMap operator()(SDE&, const LibChemist::System, const Parameters&);
+ResultMap operator()(SDE&, const LibChemist::System&, const Parameters&);
 ``` 
 
 TODO: Is the Parameters class too heavy in some situations?  In particular 
@@ -157,9 +157,11 @@ Access to Information
 ---------------------
 
 The app API so far assumes all input comes from one of three places:
+
 1. the SDE
 2. the molecular system
 3. the parameters
+
 Making every app start from this set of input would be impractical in most 
 cases.  Instead, we expect apps to piggy-back off of other apps.  For example,
 say your app, `A`, needs to compute some quantity `X` and it's easy to 
