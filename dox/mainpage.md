@@ -35,8 +35,10 @@ works in more detail.
 
 - [App API](dox/APPAPIConsiderations.md) in depth discussion of how the API came
   to be
+- [Memoization Considerations](dox/memoization.md) discusses the fine details
+  of memoization  
 - [Running an App](dox/RunningAnApp.md) details what happens when a user 
   calls `sde.run`
-- [Cache Workflow]() details how the SDE and apps interact with the cache 
+- [Cache Workflow]() everything you wanted to know about the cache (and more) 
   
   
