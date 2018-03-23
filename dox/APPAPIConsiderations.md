@@ -180,7 +180,7 @@ will actually compute `Y` all other calls simply return the computed value
 about `Y` getting deleted while someone else is using it).
 
 This raises the question of when does information come from subapps and when
-does it come from the Parameters instance?  The rule of thumb is if it depends
+does it come from the Parameters instance?  The rule-of-thumb is if it depends
 on the molecular system it comes from a sub app.  Otherwise it comes from the
 Parameters instance.  Strictly speaking there's nothing stopping a developer 
 from ignoring this rule and passing whatever they want through the Parameters
@@ -192,6 +192,12 @@ of its way to call an app to get `X` just so it can pass it to your app.
 Likely this means an if/else statement like "If I am calling the app that can't 
 follow directions, compute `X`, otherwise, just call the app.". Such an 
 if/else statement introduces coupling between the apps and should be avoided.
+
+The main exception to the rule-of-thumb is when an app is going to be called in
+a loop and the input that changes is **not** the system or a typical parameter.
+An example is the SCF algorithm, in which the goal is to converge some matrix
+**D**, which depends on the molecular system, in an iterative fashion.  In this 
+case, it makes sense to let **D** be a parameter to the app.
 
 Python
 ------

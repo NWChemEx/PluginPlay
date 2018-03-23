@@ -64,8 +64,9 @@ the MM part) to implement a QM/MM routine as a single app:
 
 Syntactically this will look something like:
 ```.cpp
-auto egy = sde.run("APP to run");
+auto egy = sde.run("APP to run", sys);
 ```
+where `sys` is an instance of the full system.
 
 Save Results
 ------------
@@ -84,5 +85,6 @@ Putting this all together, the minimal input to run a meaningful calculation is:
 
 ```.cpp
 auto sde = SDE::initialize();
-sde.run("app 2 run");
+//The following assumes the molecule you want to run is in the ChemistryRuntime
+sde.run("app 2 run", sde.crt.pubchem.at("molecule to run");
 ``` 
