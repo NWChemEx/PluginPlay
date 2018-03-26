@@ -4,6 +4,7 @@ fill them in.  The format of the resulting basis sets is suitable for use with
 the BasisSetExchange class
 """
 import os
+import fnmatch
 import re
 from helper_fxns import *
 
@@ -24,9 +25,9 @@ class Shell:
         for a in self.exp:
             f.write("{}, ".format(a.replace('D', 'E').replace('d', 'e')))
         f.write("}, \n    {")
-        for cs in self.coefs:
-            for c in cs:
-                f.write("{}, ".format(c.replace('D', 'E').replace('d', 'e')))
+        for i in range(self.gen):
+            for cs in self.coefs:
+                f.write("{}, ".format(cs[i].replace('D', 'E').replace('d', 'e')))
         f.write("}\n    }")
 
 def write_am(out_dir):
@@ -65,7 +66,7 @@ def write_bases(out_dir, bases):
 
 
 def main():
-    basis_sets = ["cc-pvdz"]
+    basis_sets = [f.replace(".gbs","") for f in os.listdir("basis_sets/default") if os.path.isfile(os.path.join("basis_sets","default",f))]
     new_atom = re.compile("^\s*\D{1,2}\s*0\s*$")
     new_shell = re.compile("^\s*[a-zA-Z]+\s*\d+\s*1.00\s*$")
     same_shell = re.compile("^\s*(?:-?\d+.\d+(?:(E|e|D|d)(\+|-)\d\d)*\s*)+")
@@ -76,7 +77,7 @@ def main():
     bases = {}
     for bs in basis_sets:
         bases[bs] = {}
-        with open(os.path.join("basis_sets",bs+".gbs"),'r') as f:
+        with open(os.path.join("basis_sets","default",bs+".gbs"),'r') as f:
             atom_z = 0
             for line in f:
                 if re.search(new_atom, line):

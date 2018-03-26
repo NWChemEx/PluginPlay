@@ -9,6 +9,7 @@ set(SDE_SRCS Defaults/DefaultAM.cpp
                          Defaults/DefaultSymbols.cpp
                          Defaults/PhysicalConstants.cpp
                          BasisSetFileParser.cpp
+                         ChemistryRuntime.cpp
                          MoleculeFileParser.cpp
         )
 set(SDE_INCLUDES BasisSetFileParser.hpp

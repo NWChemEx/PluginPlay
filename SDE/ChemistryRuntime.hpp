@@ -52,6 +52,8 @@ struct IsotopeData{
     double abundance;
 };
 
+struct BasisSetFileParser;
+
 /** @brief Collects constants, conversion factors, atomic data, basis sets, etc.
  *         into a one-stop-shop.
  *
@@ -123,7 +125,7 @@ struct ChemistryRuntime {
 
     /// Conversion from angular momentum letter to number
     am_sym_lut_type am_sym_2_l;
-
+};
     /**
      * @brief Convenience function for applying a basis set to a molecule.
      *
@@ -135,6 +137,7 @@ struct ChemistryRuntime {
      * the atomic number, which it will be when an atom is first made.
      *
      * @param key The name of the basis set to apply.
+     * @param crt The @link ChemistryRuntime @endlink to load the basis set from.
      * @param mol The molecule whose atoms the basis will be applied to.
      * @return A deep copy of @p mol containing an additional basis set on each
      * atom with the name @p key.
@@ -143,14 +146,21 @@ struct ChemistryRuntime {
      * @throw std::out_of_range if @p key is not known to the runtime.  Strong
      * throw guarantee.
      */
-    molecule_type apply_basis(const std::string& key, molecule_type mol) const {
-        auto charge = LibChemist::Atom::Property::charge;
-        for(auto& atomi : mol.atoms) {
-            const size_type Z = std::lround(atomi.properties.at(charge));
-            atomi.bases[key] = bse.at(Z).bases.at(key);
-        }
-        return mol;
-    }
-};
+    ChemistryRuntime::molecule_type apply_basis(const std::string& key,
+                                                const ChemistryRuntime& crt,
+                                                ChemistryRuntime::molecule_type mol);
+
+    /**
+     * @brief Convenience function to load a basis set from a file into the bse of
+     * a @link ChemistryRuntime @endlink @p crt.
+     *
+     * @param file_path The path to the basis set.
+     * @param key The name to use for the basis set in the bse.
+     * @param parser format used to parse the basis set file.
+     * @param crt ChemistryRuntime to add the basis set to.
+     */
+    ChemistryRuntime load_basis(std::istream& is, const std::string& key,
+                                const BasisSetFileParser& parser,
+                                ChemistryRuntime crt);
 
 }//End namespace
