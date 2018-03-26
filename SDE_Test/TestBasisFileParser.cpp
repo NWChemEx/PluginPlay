@@ -23,8 +23,8 @@ std::string g94_example=
     "****\n"
     "C     0 \n"
     "S   8   1.00\n"
-    "   6665.0000000              0.0006920        \n"
-    "   1000.0000000              0.0053290        \n"
+    "   6665.0000000              6.92e-4       \n"
+    "   1E03                      0.0053290        \n"
     "    228.0000000              0.0270770        \n"
     "     64.7100000              0.1017180        \n"
     "     21.0600000              0.2747400        \n"
@@ -77,5 +77,11 @@ g94_corr[6].push_back(
                                   0.15591627,0.60768372,0.39195739})));
 std::stringstream ss(g94_example);
 auto rv=parse_basis_set_file(ss,G94(), default_runtime());
+
+std::cout << rv[6][0].alpha(0) << std::endl;
+std::cout << rv[6][0].alpha(1) << std::endl;
+std::cout << rv[6][0].alpha(2) << std::endl;
+std::cout << rv[6][0].coef(0,0) << std::endl;
+
 REQUIRE(rv==g94_corr);
 }
