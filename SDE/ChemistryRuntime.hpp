@@ -159,15 +159,8 @@ struct ChemistryRuntime {
      * @param parser format used to parse the basis set file.
      * @param crt ChemistryRuntime to add the basis set to.
      */
-    ChemistryRuntime load_basis_from_file(const std::string& file_path, const std::string& key,
-                                          const BasisSetFileParser& parser,
-                                          ChemistryRuntime crt);
-    /**
-     * @copydoc load_basis_from_file(std::string,std::string,ChemistryRuntime,BasisSetFileParser)
-     * @brief This overloaded function just calls the above function using the @p file_path as a key.
-     */
-    ChemistryRuntime load_basis_from_file(const std::string& file_path,
-                                          const BasisSetFileParser& parser,
-                                          ChemistryRuntime crt);
+    ChemistryRuntime load_basis(std::istream& is, const std::string& key,
+                                const BasisSetFileParser& parser,
+                                ChemistryRuntime crt);
 
 }//End namespace
