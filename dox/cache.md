@@ -6,7 +6,7 @@
 Much of the SDE's features rely in some shape or form on the Cache.  The purpose
 of this page is to detail the inner-workings of the Cache in more detail.
 
-@section description Basic Description
+@section cache_description Basic Description
 
 The Cache is at its heart nothing more than an associative array between unique
 result identifications (as determined by hashing the input to an app) and the
@@ -18,7 +18,7 @@ calling the app.  Consequentially combined with the AppInfo instances of
 each app, the Cache is capable of serving as a complete record of what was done
 over the course of a calculation and plays an integral role in data archival.   
 
-@section interactions Interactions with the Cache
+@section cache_interactions Interactions with the Cache
 
 The Cache is a private member variable of the SDE so as to avoid meddling 
 from users and apps in the memoization process.  Thus all interactions with
@@ -39,7 +39,7 @@ available Cache interactions can be summarized as:
 [Advanced App Flow](dox/AdvancedAppFlow.md) shows where these steps occur during
 an invocation of `SDE::run` (for checkpointing and memoization).  
 
-@section memory Memory Management
+@section cache_memory Memory Management
 
 Results are returned from an app via a ResultMap instance.  This is basically a
 type-erased associative array between strings (describing what a result is) and
@@ -81,13 +81,13 @@ turn means only a user is in a position to determine what can and cannot be
 deleted (well theoretically they are at least, this may not apply to users who 
 think there's a flavor of DFT called "the Gaussian DFT"). 
 
-@section parallel Parallel Considerations
+@section cache_parallel Parallel Considerations
 
 On this page so far we have not worried about using the cache in a parallel 
 environment.  When used in a parallel environment things become far more 
 tricky.
 
-@subsection threading Threading
+@subsection cache_threading Threading
 
 Before starting we should point out that reading/writing to the cache are atomic
 operations, *i.e.* it is not possible for the cache to simultaneously be written
@@ -95,7 +95,7 @@ to or read from by multiple threads.  Calls to the SDE behave similarly with the
 notable exception that `SDE::run` releases all mutexes before actually calling
 the app. 
 
-@subsubsection thread_load_save Loading/Saving
+@subsubsection cache_thread_load_save Loading/Saving
 
 Loading a cache is done purely by reading from a Cereal archive.  Cereal only
 supports reading multiple archives with multiple threads and thus it is not 
@@ -127,7 +127,7 @@ or it will not have changed since the last save (in the rare scenario that
 the Cache had changed between the two threads entering `SDE::save_cache()` it
 would simply be saved again).
 
-@subsubsection thread_memoization Memoization
+@subsubsection cache_thread_memoization Memoization
 
 For memoization to be occurring it means we are within `SDE::run()`.  
 `SDE::run()` modifies the SDE instance atomically so we only need to worry 
@@ -165,7 +165,7 @@ app is non-deterministic and has the same inputs only the slowest app's results
 will be saved (adding some unique parameter to the input of each call will 
 cause the outputs to not clobber each other). 
 
-@subsection distributed Distributed
+@subsection cache_distributed Distributed
 
 With the threading scenarios tackled we turn our attention to what happens to
 the cache when apps are being run by different processes in a possibly nested 
@@ -186,7 +186,7 @@ In particular:
 - Objects do not keep subsets of the processes after they've been released
 
 
-@subsubsection dist_memoization Memoization
+@subsubsection cache_dist_memoization Memoization
 
 As a first pass we ignore distributed objects.  To that end, the easiest 
 memoization scenario to cover is what happens when say two processes call the
@@ -280,7 +280,7 @@ distributed.  This is envisioned as being largely accomplished by distributed
 objects and synchronization of said objects falls to the app developer using
 them. 
  
-@subsubsection dist_save_load Saving/Loading
+@subsubsection cache_dist_save_load Saving/Loading
 
 For the most part saving/loading considerations for the Cache under 
 distributed runs fall to the archive implementation.  Ultimately the Cache 
@@ -310,7 +310,7 @@ destructor, where they will infinitely loop around a save call until all
 processes have arrived).  Obviously it is preferred for the checkpointing of 
 each process to be non-blocking.
 
-@subsection hybrid Hybrid Parallelism
+@subsection cache_hybrid Hybrid Parallelism
 
 You thought distributed was complicated?  Now it's time to combine them.  Get
 ready 'cause boy are things going to get....easy?  Yeah, actually the choices 
@@ -328,4 +328,3 @@ about all threads can do here).  Finally because different threads can only
 meaningfully interact with different entries of the Cache and different 
 processes have different instances, saving entries to the Cache for memoization
 should just work too.
-

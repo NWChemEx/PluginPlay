@@ -24,6 +24,8 @@ internals of the SDE more than they need to.
 
 - [Advanced App Workflow](dox/AdvancedAppFlow.md) details the app lifecycle in
   much greater detail to ensure users can get the most out of their apps
+- [AppInfo API](dox/AppInfoAPI.md) details about the available meta-data options
+  for an app  
 - [Setting Parameters](dox/parameters.md) details the types of parameters 
   available and the features provided by the Parameters class
   
