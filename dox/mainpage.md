@@ -39,7 +39,7 @@ works in more detail.
   of memoization  
 - [Running an App](dox/RunningAnApp.md) details what happens when a user 
   calls `sde.run`
-- [Cache Workflow](dox/cache.md) everything you wanted to know about the cache 
-(and more) 
+- [Cache Considerations](dox/cache.md) everything you wanted to know about the 
+  cache (and more) 
   
   
