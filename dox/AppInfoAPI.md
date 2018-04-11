@@ -60,6 +60,7 @@ gauge the amount of a resource your app would use if called.  Currently users of
 your app may request estimates of:
 
 - `time` how long your app would take to run given the specified input
+  - A value of 0 will be returned for you if the result is cached.
 - `memory` how much memory would your app use if it ran
 
 All values computed by your app must be returned in a ReturnMap instance.  The

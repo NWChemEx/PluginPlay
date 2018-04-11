@@ -1,56 +1,39 @@
-Terminology
-===========
+@page terms Terminology
 
 This page contains terms that are used throughout this repo as well as 
 descriptions of what we mean by them.  Many of the terms are also names of 
 classes which represent the software abstractions of these concepts. 
 
-SDE
----
+[TOC]
+
+@section terms_sde SDE
 
 Short for Simulation Development Environment, the SDE is the framework on which
-computational chemistry packages are built.  The `SDE` class is the software 
-abstraction for interacting with the framework.
+computational chemistry packages are built.  
 
-App
----
+@section terms_module Module
 
-Apps are how the SDE's features are expanded and modified.  Each app is a 
-callable piece of code (lambda, functor, or simple function) that adheres to the
-required SDE APIs.  See [App Flow](dox/AppFlow.md) for an introduction to how
-apps interact with and are used with the SDE.  Generally speaking an app will
-typically be the size of one or two functions; however, the app developer is 
-free to include as much or as little in the app as they so choose.
-
-App Instance
-------------
-
-Strictly speaking an app is only the implementation of the app (similar to the
-declaration of a class).  In order to actually run, the app also needs state 
-(currently defined via the AppInfo class).  The pairing of an app and an 
-AppInfo instance define an app instance (similar to how one instantiates a 
-class).  App instances allow the same app to exist with multiple states just 
-like an instance of a class need not have the same state as another instance.  
-
-Superapps
-----------
-With apps being envisioned as being roughly the granularity of your typical 
-function, we anticipate a typical development team creating many apps.  
-Superapps are simply collections of apps (likely from the same developer) 
-distributed together.  Typically they will be distributed as a C++ or Python 
-library.  For the most part the introduction of the superapp concept serves to
-provide a way to namespace apps.  In particular the name of a superapp will 
-typically be derived from the name of the library or the package it's part of.
-
-AppStore
---------
-
-The `AppStore` is the component of the SDE that stores the details pertaining
-to apps and knows how to instantiate a particular app.
+Modules are how the SDE's features are expanded and modified.  Each module is
+at its heart a callable piece of code (lambda, functor, or simple function) that
+adheres to the required SDE APIs.  Modules are relatively coarse-grained in that
+typically they wrap routines which compute useful intermediates and important 
+results. 
 
 
-Cache
------
+@section terms_module_manager Module Manager
 
-A collection of results obtained from apps that is used for archival purposes
-as well as for optimization purposes (usually to avoid recomputing results). 
+
+The `ModuleManager` is the component of the SDE that is charged with managing 
+all things related to modules.  This includes the list of available modules, how
+to instantiate the modules, and meta-data related to those modules. 
+
+@section terms_cache Cache
+
+Ultimately your typical computational chemistry program is little more than a
+series of equations to be solved.  The Cache is the object responsible for 
+remembering the solutions to those equations.  This serves two purposes: 1) it
+is the ultimate record of what was done during the run (what equations were 
+solved and what the answers were) 2) it allows us to avoid evaluating equations
+for which we already know the answer.  The latter point makes it trivial to 
+restart a computation, as all one needs to do is reassemble the equations to be 
+solved and then compare against the cache to see which still remain.

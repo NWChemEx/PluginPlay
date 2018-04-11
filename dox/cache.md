@@ -242,9 +242,10 @@ computation will use the same set of processes.  When partionings of the
 process set happen it looks something like:
 
 ```.cpp
+// Triggers synch from original procs to subset
 auto new_sde = // Split SDE processes API forthcoming
     
-auto result = new_sde.run(); // Triggers synch from original procs to subset
+auto result = new_sde.run(); 
    
 // Release processes back to original set, API forthcoming
 // (Triggers synch from subset back to original set of processes)

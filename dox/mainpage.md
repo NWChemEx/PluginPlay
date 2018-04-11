@@ -7,8 +7,8 @@ Getting Started with the SDE
 Topics in this section are targeted at users who want to run the SDE and 
 possibly dynamically influence the control flow.
 
-- [Terminology](dox/terminology.md) details what SDE specific terms mean
-- [Overview](dox/overview.md) provides a high-level overview of the SDE
+- [Terminology](@ref terms) details what SDE specific terms mean
+- [Overview](@ref sde_overview) provides a high-level overview of the SDE
 - [User Workflow](dox/workflow.md) details a typical workflow
 - [App Workflow](dox/AppFlow.md) details the basics of running an app as well as
   how to write simple "lambda apps"
@@ -35,6 +35,7 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail.
 
+- [Parameters API](@ref parameters_api)
 - [App API](dox/APPAPIConsiderations.md) in depth discussion of how the API came
   to be
 - [Memoization Considerations](dox/memoization.md) discusses the fine details

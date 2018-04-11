@@ -152,7 +152,7 @@ TODO: Is AppInfo::subapps the right place for that array?
 
 It may not be apparent at first, but memoization interacts with iterative 
 procedures in a weird manner.  One of the most common iterative procedures in
-computational chemistry is the SCF procedure.  In esscence the SCF procedure 
+computational chemistry is the SCF procedure.  In essence the SCF procedure 
 takes some input matrix **D**, uses **D** to compute **F**, and then 
 diagonalizes **F** to compute a new **D'**.  The process continues until 
 **D'** differs from **D** to within some tolerance.
