@@ -37,3 +37,13 @@ solved and what the answers were) 2) it allows us to avoid evaluating equations
 for which we already know the answer.  The latter point makes it trivial to 
 restart a computation, as all one needs to do is reassemble the equations to be 
 solved and then compare against the cache to see which still remain.
+
+@section terms_memoization Memoization
+
+The caching procedure described in Section @ref terms_cache is known in computer
+science as memoization.  Basically this technique amounts to storing the output
+of expensive functions (and the input that generated it) so that if that 
+function is called again (with the same input) one can skip the call.  This 
+naturally arises in the SDE as a means of data communication brought about by
+the requirement that module APIs for the same property have the same signature
+even if the underlying algorithms are disparate. 

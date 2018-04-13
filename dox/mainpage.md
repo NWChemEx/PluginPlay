@@ -35,7 +35,8 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail.
 
-- [Parameters API](@ref parameters_api)
+- [Parameters API](@ref parameters_api) in depth discussion of how the 
+  Parameters API came about
 - [App API](dox/APPAPIConsiderations.md) in depth discussion of how the API came
   to be
 - [Memoization Considerations](dox/memoization.md) discusses the fine details
