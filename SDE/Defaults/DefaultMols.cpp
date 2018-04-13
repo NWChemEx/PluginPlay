@@ -10,7 +10,7 @@ namespace SDE {
 using return_t = typename ChemistryRuntime::molecule_lut_type;
 return_t default_molecules() {
     return_t rv;
-    ChemistryRuntime crt{{}, {}, {}, default_atoms(),  {}, default_symbols(), {}};
+    ChemistryRuntime crt{{}, default_atoms(), {}, default_symbols(), {}};
     XYZParser xyz;
     std::stringstream water(
     "3\n"

@@ -52,8 +52,6 @@ struct IsotopeData{
     double abundance;
 };
 
-struct BasisSetFileParser;
-
 /** @brief Collects constants, conversion factors, atomic data, basis sets, etc.
  *         into a one-stop-shop.
  *
@@ -93,6 +91,9 @@ struct ChemistryRuntime {
     /// The type of the object used to look up physical constants
     using constant_lut_type = Utilities::CaseInsensitiveMap<constant_type>;
 
+    /// The type of the object used to look up molecules
+    using molecule_lut_type = Utilities::CaseInsensitiveMap<molecule_type>;
+
     /// The type of the object used to look up the atomic number by symbol
     using at_sym_lut_type = Utilities::CaseInsensitiveMap<size_type>;
 
@@ -117,6 +118,10 @@ struct ChemistryRuntime {
     /// Conversion from angular momentum letter to number
     am_sym_lut_type am_sym_2_l;
 };
+
+    struct BasisSetFileParser;
+    typename ChemistryRuntime::indexed_atom_type default_bases();
+
     /**
      * @brief Convenience function for applying a basis set to a molecule.
      *
@@ -137,9 +142,9 @@ struct ChemistryRuntime {
      * @throw std::out_of_range if @p key is not known to the runtime.  Strong
      * throw guarantee.
      */
-    ChemistryRuntime::molecule_type apply_basis(const std::string& key,
-                                                const ChemistryRuntime& crt,
-                                                ChemistryRuntime::molecule_type mol);
+    ChemistryRuntime::molecule_type apply_basis(ChemistryRuntime::molecule_type mol,
+                                                const std::string& key,
+                                                const ChemistryRuntime::indexed_atom_type& bse = default_bases());
 
     /**
      * @brief Convenience function to load a basis set from a file into the bse of
@@ -150,8 +155,10 @@ struct ChemistryRuntime {
      * @param parser format used to parse the basis set file.
      * @param crt ChemistryRuntime to add the basis set to.
      */
-    ChemistryRuntime load_basis(std::istream& is, const std::string& key,
-                                const BasisSetFileParser& parser,
-                                ChemistryRuntime crt);
+    ChemistryRuntime::molecule_type apply_basis_istream(ChemistryRuntime::molecule_type mol,
+                                                const std::string& key,
+                                                std::istream& is,
+                                                const BasisSetFileParser& parser,
+                                                const ChemistryRuntime& crt);
 
 }//End namespace

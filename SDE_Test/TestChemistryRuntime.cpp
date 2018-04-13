@@ -68,17 +68,17 @@ TEST_CASE("Workflow") {
     auto crt = default_runtime();
 
     //Step 2 is usually somehow get a molecule
-    auto water = crt.pubchem.at("water");
+    auto water = default_molecules().at("water");
     REQUIRE(water.atoms.size() == 3);
 
     //Step 3 is apply a basis set to that molecule
-    auto water_w_basis = apply_basis("cc-pvdz", crt, water);
+    auto water_w_basis = apply_basis(water, "cc-pvdz");
 
     //We just spot check a few things
     REQUIRE(water_w_basis.get_basis("cc-pvdz").size() == 24);
 
+    //Alternatively can read basis from istream
     std::stringstream is(dz_string);
-    crt = load_basis(is, "cc-pvdz-file", G94(), crt);
-    water_w_basis = apply_basis("cc-pvdz-file", crt, water);
+    water_w_basis = apply_basis_istream(water, "cc-pvdz-file", is, G94(), crt);
     REQUIRE(water_w_basis.get_basis("cc-pvdz-file").size() == 24);
 }

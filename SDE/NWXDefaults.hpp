@@ -39,9 +39,8 @@ typename ChemistryRuntime::am_sym_lut_type default_am();
 
 ///Convenience function for making a fully defaulted ChemistryRuntime instance
 inline ChemistryRuntime default_runtime(){
-    return {default_constants(), default_molecules(), default_bases(),
-            default_atoms(), default_isotopes(), default_symbols(),
-            default_am()};
+    return {default_constants(), default_atoms(), default_isotopes(), 
+            default_symbols(), default_am()};
 }
 
 } // End namespace SDE
