@@ -3,9 +3,9 @@
 #include "ChemistryRuntime.hpp"
 
 namespace SDE {
-ChemistryRuntime::molecule_type apply_basis(ChemistryRuntime::molecule_type mol,
-                                            const std::string& key,
-                                            const ChemistryRuntime::indexed_atom_type& bse) {
+LibChemist::Molecule apply_basis(LibChemist::Molecule mol,
+                                 const std::string& key,
+                                 const std::map<std::size_t, LibChemist::Atom>& bse) {
     auto charge = LibChemist::Atom::Property::charge;
     for(auto& atomi : mol.atoms) {
         const ChemistryRuntime::size_type Z = std::lround(atomi.properties.at(charge));
@@ -14,11 +14,11 @@ ChemistryRuntime::molecule_type apply_basis(ChemistryRuntime::molecule_type mol,
     return mol;
 }
 
-ChemistryRuntime::molecule_type apply_basis_istream(ChemistryRuntime::molecule_type mol,
-                                                    const std::string& key,
-                                                    std::istream& is,
-                                                    const BasisSetFileParser& parser,
-                                                    const ChemistryRuntime& crt) {
+LibChemist::Molecule apply_basis_istream(LibChemist::Molecule mol,
+                                         const std::string& key,
+                                         std::istream& is,
+                                         const BasisSetFileParser& parser,
+                                         const ChemistryRuntime& crt) {
     auto bs = parse_basis_set_file(is, parser, crt);
     auto charge = LibChemist::Atom::Property::charge;
     for(auto& atomi : mol.atoms) {

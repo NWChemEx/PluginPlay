@@ -7,7 +7,7 @@
  * generate_mols.py and regenerate this file.
  */
 namespace SDE {
-using return_t = typename ChemistryRuntime::molecule_lut_type;
+using return_t = Utilities::CaseInsensitiveMap<LibChemist::Molecule>;
 return_t default_molecules() {
     return_t rv;
     ChemistryRuntime crt{{}, default_atoms(), {}, default_symbols(), {}};

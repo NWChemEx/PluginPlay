@@ -5,8 +5,7 @@
  * generate_basis.py and regenerate this file.
  */
 namespace SDE {
-using indexed_atom_type = typename ChemistryRuntime::indexed_atom_type;
-using return_t = typename ChemistryRuntime::indexed_atom_type;
+using return_t = std::map<std::size_t, LibChemist::Atom>;
 using shell_t = LibChemist::BasisShell;
 return_t default_bases(){
     auto sym2z = default_symbols();
