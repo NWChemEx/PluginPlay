@@ -93,9 +93,6 @@ struct ChemistryRuntime {
     /// The type of the object used to look up physical constants
     using constant_lut_type = Utilities::CaseInsensitiveMap<constant_type>;
 
-    /// The type of the object used to look up molecules
-    using molecule_lut_type = Utilities::CaseInsensitiveMap<molecule_type>;
-
     /// The type of the object used to look up the atomic number by symbol
     using at_sym_lut_type = Utilities::CaseInsensitiveMap<size_type>;
 
@@ -107,12 +104,6 @@ struct ChemistryRuntime {
 
     /// Wikipedia is a great place to find the value of physical constants
     constant_lut_type wikipedia;
-
-    /// PubChem is a great place to find molecular structures
-    molecule_lut_type pubchem;
-
-    /// EMSL's basis set exchange is a great place to find Gaussian basis sets
-    indexed_atom_type bse;
 
     /// The periodic table houses basic properties about an element
     indexed_atom_type periodic_table;
