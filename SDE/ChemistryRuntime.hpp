@@ -132,9 +132,9 @@ struct ChemistryRuntime {
      * point charges, etc.).  It also assumes that the charge of the atoms is
      * the atomic number, which it will be when an atom is first made.
      *
-     * @param key The name of the basis set to apply.
-     * @param crt The @link ChemistryRuntime @endlink to load the basis set from.
      * @param mol The molecule whose atoms the basis will be applied to.
+     * @param key The name of the basis set to apply.
+     * @param bse A map from atomic number to atoms (which themselves hold basis sets).
      * @return A deep copy of @p mol containing an additional basis set on each
      * atom with the name @p key.
      * @throw std::bad_alloc if there is insufficient memory to copy the basis
@@ -147,18 +147,21 @@ struct ChemistryRuntime {
                                                 const ChemistryRuntime::indexed_atom_type& bse = default_bases());
 
     /**
-     * @brief Convenience function to load a basis set from a file into the bse of
-     * a @link ChemistryRuntime @endlink @p crt.
+     * @brief Convenience function to load a basis set from an istream and apply it
+     * to a Molecule @p mol.
      *
-     * @param file_path The path to the basis set.
-     * @param key The name to use for the basis set in the bse.
+     * @param mol The molecule whose atoms the basis will be applied to.
+     * @param key The name to use for the basis set on the molecule.
+     * @param is the input stream to read the basis set from.
      * @param parser format used to parse the basis set file.
-     * @param crt ChemistryRuntime to add the basis set to.
+     * @param crt ChemistryRuntime required for the parser.
+     * @return A deep copy of @p mol containing an additional basis set on each
+     * atom with the name @p key.
      */
     ChemistryRuntime::molecule_type apply_basis_istream(ChemistryRuntime::molecule_type mol,
-                                                const std::string& key,
-                                                std::istream& is,
-                                                const BasisSetFileParser& parser,
-                                                const ChemistryRuntime& crt);
+                                                        const std::string& key,
+                                                        std::istream& is,
+                                                        const BasisSetFileParser& parser,
+                                                        const ChemistryRuntime& crt);
 
 }//End namespace

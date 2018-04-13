@@ -5,7 +5,7 @@
 namespace SDE {
 ChemistryRuntime::molecule_type apply_basis(ChemistryRuntime::molecule_type mol,
                                             const std::string& key,
-                                            const ChemistryRuntime::indexed_atom_type bse) {
+                                            const ChemistryRuntime::indexed_atom_type& bse) {
     auto charge = LibChemist::Atom::Property::charge;
     for(auto& atomi : mol.atoms) {
         const ChemistryRuntime::size_type Z = std::lround(atomi.properties.at(charge));
