@@ -36,7 +36,7 @@ a computational chemistry package.  This has many facets including:
 - checkpoint/restart of calculation
   - includes intermediates not typically archived
 - printing/log file 
-- pre-tabulated data (*e.g.* constants, basis sets, force fields)
+- providing pre-tabulated data (*e.g.* constants, basis sets, force fields)
 
 Most computational chemistry packages have implemented their own solutions to
 the above and the inclusion of infrastructure for these use cases is not novel,
@@ -46,11 +46,10 @@ but simply a necessity.
 
 Ultimately, NWChemEx is focused on being performant on exascale platforms.  More
 generally we would like the SDE to be peformant on a wide-range of 
-architectures.  For the most part the SDE is not going to be the component that
-achieves this performance.  Rather we expect performance gains to be the results
-of the algorithms added to the SDE by the developer.  Nonetheless it is 
-important that the SDE keep performance in mind so that it does not impede it.
-This implies:
+architectures.  Admittedly achieving performance is more the responsibility 
+of the algorithms utilized with the SDE than the SDE itself.  For its part the 
+SDE is primarily charged with ensuring it does not impede the performance a
+module can obtain.  This implies:
 
 - The SDE must be thread-safe
 - The SDE must be designed so as to not inhibit distributed parallelism
@@ -58,7 +57,10 @@ This implies:
   - Allows algorithm builds to use architectures/build tools not known to SDE
   
 Where possible the SDE should do what it can to aid in parallelism and 
-performance.   
+performance.  This will admittedly always be at a coarse level (parallelizing 
+over modules), but nonetheless such efforts will play a crucial role in 
+acheiving maximum performance on modern machines.  This requires the SDE to be   
+provided with a mechanism for examining the modules it  
     
 @subsection sde_overview_extensibility Extensibility
 

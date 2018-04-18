@@ -37,7 +37,7 @@ works in more detail.
 
 - [Parameters API](@ref parameters_api) in depth discussion of how the 
   Parameters API came about
-- [App API](dox/APPAPIConsiderations.md) in depth discussion of how the API came
+- [Module API](@ref module_api) in depth discussion of how the module API came
   to be
 - [Memoization Considerations](dox/memoization.md) discusses the fine details
   of memoization  
