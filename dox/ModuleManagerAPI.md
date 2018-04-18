@@ -7,8 +7,10 @@ formulation of the ModuleManager class.
 
 @section mm_api_use_cases Use Cases
 
-The ModuleManager class's use cases and users are depicted in the following
-use case diagram.
+The ModuleManager class is conceived as being the automated overlord of the SDE.
+The mechanisms available to it are the same mechanisms available to module 
+developers looking to maximize performance.  To that end, the ModuleManager 
+class's use cases and users are depicted in the following use case diagram.
 
 ![](uml/ModuleManager_use_case.jpg)
 
@@ -34,10 +36,12 @@ possible properties and algorithms that a program may want to compute.  For this
 reason it is essential that it is possible to register new modules without 
 having to modify the source code of the SDE.
 
-In order to do its job efficiently the ModuleManager will need to know 
-additional information about the algorithm and the return types.  For example in
-order to parallelize over a series of modules it will need to know that those
-modules are thread-safe and/or process-safe. 
+Exactly what this entails for the ModuleManager depends a bit on which module
+API one chooses. Assuming one uses one of the multiple inheritance APIs it 
+suffices for the ModuleManager to take modules by the common ModuleBase base
+class.  This will implicitly register the properties it brings to the table too.
+Internally we will want to store the `type_index` of each property  
+
 
 @subsection mm_api_call Calling Modules
 

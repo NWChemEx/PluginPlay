@@ -8,7 +8,10 @@ the API of the Module class and the associated helper classes.
 @section module_api_use_cases Use Cases and Considerations
 
 Modules are envisioned as being the building blocks of a program that utilizes
-the SDE framework.  The following use case diagram details the primary users of
+the SDE framework. This page is primarily focused on how to pass input to a 
+module and on how to get the result back.  Considerations related to module
+introspection are covered on the page [Module Manager API](@ref mm_api).  For 
+our current purposes the following use case diagram details the primary users of
 modules as well as the primary use cases.
 
 ![](uml/ModuleAPI_use_case.jpg)
@@ -419,7 +422,7 @@ alpha or the beta Fock matrix.
 | 5. Harder to call wrong property  |                                     |
 | 6. Simplifies iteration syntax    |                                     |
 
-@section module_api_acyclic Acyclic Visitor API
+@subsection module_api_acyclic Acyclic Visitor API
 
 The property specific API is basically an implementation of the acyclic visitor
 pattern, all that is missing is the "visit".  The following UML diagram shows 
@@ -518,4 +521,3 @@ posterity.
 - Property checking at runtime is a necessary evil if we want to be able to
   dynamically add properties.
   
-   

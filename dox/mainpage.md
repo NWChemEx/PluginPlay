@@ -35,10 +35,12 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail.
 
-- [Parameters API](@ref parameters_api) in depth discussion of how the 
-  Parameters API came about
+- [Parameters API](@ref parameters_api) details regarding choices for the 
+  Parameters API
 - [Module API](@ref module_api) in depth discussion of how the module API came
   to be
+- [Module Manager API](@ref mm_api) use case and API discussion for the 
+  ModuleManager   
 - [Memoization Considerations](dox/memoization.md) discusses the fine details
   of memoization  
 - [Running an App](dox/RunningAnApp.md) details what happens when a user 
