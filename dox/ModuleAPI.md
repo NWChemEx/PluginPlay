@@ -499,6 +499,46 @@ like it did for other APIs.
 | 6. Simplifies iteration syntax    |                                     |
 | 7. Python wrappable               |                                     |
 
+@subsection module_api_acyclic2 Acyclic Visitor API Revisited
+
+There is a modest bit of coupling between the module API and the ModuleManager
+consequentially it was necessary to revisit the acyclic visitor API in light of
+the ModuleManager API.  The following details the result:
+
+![](uml/ModuleAPI_acyclic2.jpg)
+
+Notably we have done away with multiple inheritance.  The motivation for 
+multiple inheritance was that sometimes an algorithm is capable of returning
+more than one property.  By casting to the appropriate base class one can 
+elegantly select which one they want.  However, it is usually not the case 
+that we get two properties simultaneously.  A perfect example of this is
+SCF.  Here we're used to thinking of the SCF algorithm as returning an energy
+and a wavefunction.  In reality we first make the wavefunction and then use
+that to form the energy.  Removing the multiple inheritance makes the entire
+class hierarchy simpler (in particular for the ModuleManager to work there
+would either have to be a single ModuleBase class from which each 
+implementation derives, or a series of ModuleBase classes).
+
+The other big change is the addition of several introspection functions to the
+PropertyImpl class.  Originally these were envisioned as belonging to the 
+ModuleInfo class; however, having them there proved awkward as the APIs to the
+introspection functions need to know the parameters to the derived class.  This
+information is simply not known in the ModuleInfo class.  Ultimately, this API
+is very similar in spirit to the original acyclic visitor API; however, the
+removal of the multiple inheritance actually simplifies returning the 
+properties, in turn allowing us to knock "returning >1 properties" off the
+cons list since this is no longer an issue.
+
+| Pros                              |                                Cons |
+| --------------------------------- | ----------------------------------- |
+| 1. Type checks at compile time    | 1. Callables require adaptor        |   
+| 2. Easy to add more properties    | 2. Properties checked at runtime    |
+| 3. Easy to memoize                |                                     |
+| 4. More object-oriented           |                                     |   
+| 5. Harder to call wrong property  |                                     |
+| 6. Simplifies iteration syntax    |                                     |
+| 7. Python wrappable               |                                     |
+
 @section module_api_general_notes General Notes
 
 This section includes considerations, musings, and notes regarding the design of
