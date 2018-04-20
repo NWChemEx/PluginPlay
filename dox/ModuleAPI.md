@@ -9,10 +9,12 @@ the API of the Module class and the associated helper classes.
 
 Modules are envisioned as being the building blocks of a program that utilizes
 the SDE framework. This page is primarily focused on how to pass input to a 
-module and on how to get the result back.  Considerations related to module
-introspection are covered on the page [Module Manager API](@ref mm_api).  For 
-our current purposes the following use case diagram details the primary users of
-modules as well as the primary use cases.
+module and on how to get the result back.  API Considerations related to module
+creation and introspection are covered on the page 
+[Module Manager API](@ref mm_api).  API Considerations related to 
+memoization, checkpointing/restart are covered on the page 
+[Cache API](@ref cache_api).  For our current purposes the following use case 
+diagram details the primary users of modules as well as the primary use cases.
 
 ![](uml/ModuleAPI_use_case.jpg)
 

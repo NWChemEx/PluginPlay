@@ -35,12 +35,27 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail.
 
-- [Parameters API](@ref parameters_api) details regarding choices for the 
-  Parameters API
-- [Module API](@ref module_api) in depth discussion of how the module API came
-  to be
-- [Module Manager API](@ref mm_api) use case and API discussion for the 
-  ModuleManager   
+## Discussions of How APIs Came to Be
+This subsection of topics is mainly for posterity.  Specifically to remember
+what considerations went into each of the major classes involved in the SDE's
+API.
+
+- [SDEAny API](@ref sdeany_api) SDEAny is used for type-erasure throughout the
+  SDE.
+- [Parameters API](@ref parameters_api) Parameters is used for wrapping 
+  algorithmic parameters to a module.
+- [Module API](@ref module_api) Modules are how the SDE's capabilities are 
+  extended.
+- [Module Manager API](@ref mm_api) The ModuleManager is responsible for 
+  managing the available modules.
+- [Cache API](@ref cache_api) The Cache is responsible for managing the module's
+  state. 
+
+## Discussions of Essential SDE Operations
+This subsection includes topics focused on documenting how some of the key SDE
+features work.
+    
+
 - [Memoization Considerations](dox/memoization.md) discusses the fine details
   of memoization  
 - [Running an App](dox/RunningAnApp.md) details what happens when a user 

@@ -4,18 +4,10 @@
 
 The current page describes the Parameters class and the classes associated 
 directly with its implementation.  The Parameters class is envisioned as being
-used to provide module specific input assuming a module API like:
-
-```.cpp
-return_value MyModule::operator()(explicit_type1 explicit_arg1, 
-                                  explicit_type2 explicit_arg2,
-                                  ...,
-                                  const Parameters& params);
-```  
-
-For the purposes of this page, the distinction between which arguments are 
-explicit to a module call and which are wrapped up in the Parameters instance is
-beyond the scope of this page. 
+used to provide algorithmic parameters.  Many of the 
+[purposed Module APIs](@ref module_api) also take explicit parameters in 
+addition to the parameters hidden within the Parameters class.  For the purposes
+of this page, we do not concern ourselves with the distinction.
 
 @section parameters_api_uses Use Cases
 
@@ -116,10 +108,11 @@ designed around its intended usage.  The first purposed API embraces that.
 ![](uml/ParametersAPI_pythonic.jpg)
 
 In this API the name of the parameter is stored as a string and the value is 
-type-erased.  Clearly such a strategy is suitable for arbitrary options and is
-extendable without needing to rewrite the SDE.  The actual option is stored in a
-little wrapper class that associates with the value the metadata and validity
-checks.  In practice standard usage of this class would be something like:
+type-erased using the SDEAny class.  Clearly such a strategy is suitable for 
+arbitrary options and is extendable without needing to rewrite the SDE.  The 
+actual option is stored in a little wrapper class that associates with the 
+value the metadata and validity checks.  In practice standard usage of this 
+class would be something like:
 
 ```.cpp
 //Declare an instance

@@ -7,9 +7,10 @@ formulation of the ModuleManager class.
 
 @section mm_api_use_cases Use Cases
 
-The ModuleManager class is conceived as being the automated overlord of the SDE.
-The mechanisms available to it are the same mechanisms available to module 
-developers looking to maximize performance.  To that end, the ModuleManager 
+The ModuleManager class is charged with knowing the available modules, handling 
+queries related to the module call hierarchy, and managing the instances of
+modules.  Managing the state of modules is the purpose of the Cache class and
+its API considerations can be found [here](@ref cache_api).  The ModuleManager 
 class's use cases and users are depicted in the following use case diagram.
 
 ![](uml/ModuleManager_use_case.jpg)
@@ -73,8 +74,17 @@ In most computer programs the ability to save and load program state is a given.
 Historically in computational chemistry this has not been the case.  One of the
 use cases of the SDE is to rectify this.  To that end we note that to the extent
 that the program is simply the module call graph, the ModuleManager is in a 
-position to easily save/load the program's state.  We want this process to be as
-automated as possible.  
+position to easily save/load the program's state.  That said the actual we will
+delegate the save/load responsibility to a sub-object within the ModuleManager,
+namely the Cache.  Nonetheless, it is essential that the ModuleManager be 
+designed with the saving/loading in mind.
+
+Ideally users of the ModuleManager class will not need to interact with the 
+cache directly.  The primary motivation behind this decision is to ensure that 
+module developers need only focus on the internals of their module, and not 
+how the results are used (particularly their lifetimes).  Instead the 
+responsibility for managing the lifetime of the results falls to the caller of
+the module and the Cache (*via* the ModuleManager class).
 
 There is at least one other consideration related to saving/loading state and
 that is managing distributed states.  Generally speaking, given a result 
@@ -93,7 +103,8 @@ tell the SDE about itself.  Generally speaking this can be thought of as a means
 of introspection.  Arguably the most important means of introspection is to 
 ascertain the resource cost of calling a module with a particular set of 
 arguments.  Examples of resources of interest are: time, processes, threads, and
-memory.
+memory.  The location of the actual call for the cost is dependent on the 
+module API chosen. 
 
 Given the overarching goal of parallelization, it will fall to the ModuleManager
 to perform coarse grained parallelism over the modules.  Even when 
@@ -125,7 +136,7 @@ needing to call a submodule does so at well defined points.  To each of
 these points the module developer associates a name.  Then the `submodules` 
 member contains a map of keys for submodules such that 
 `submodules["submodule"].second` is the key to provide to the ModuleManager's
-`get_submodule()` routine in order to get the module at point `"submodule"`.
+`get_module()` routine in order to get the module at point `"submodule"`.
 `submodules["submodule"].first` is the `type_index` of the class that should
 implement the algorithm and is used internally for error-checking.
 
@@ -174,14 +185,14 @@ public:
 };            
 ```  
 
-Aside form the ModuleLoader class the rest of the API is largely 
+We note that the `get_module` function takes an SDE instance.  This is the 
+instance that the module will run on.  By comparing to the stored SDE instance
+we can determine if we need to synchronize the cache.  Aside from the 
+ModuleLoader class and the `get_module` function the rest of the API is largely 
 straightforward.  Modules are registered using the `add_module` member function,
-duplicated using the `copy_module` member function, and retrieved with the
-`get_module` member function.  Calling `save_cache` will cause the Cache to be
-saved, whereas calling `load_cache` will allow one to read in another Cache.
-The remaining class, `Synchronizer`, is used for synchronizing the results
-stored in a Cache when the set of processes changes.  More specifically it can
-be specialized for a given type if need be. 
+duplicated using the `copy_module` member function, and the state can be 
+saved by calling `save_cache`.
+
 
 | Pros                        |                                        Cons|
 | --------------------------- | ------------------------------------------ |
