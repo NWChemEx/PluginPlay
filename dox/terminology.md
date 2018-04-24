@@ -40,7 +40,7 @@ solved and then compare against the cache to see which still remain.
 
 @section terms_memoization Memoization
 
-The caching procedure described in Section @ref terms_cache is known in computer
+The caching procedure described in the last section is known in computer
 science as memoization.  Basically this technique amounts to storing the output
 of expensive functions (and the input that generated it) so that if that 
 function is called again (with the same input) one can skip the call.  This 

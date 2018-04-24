@@ -25,8 +25,21 @@ essential that the Cache have some routines for reducing its memory footprint.
 
 @section cache_api_options Purposed Cache API
 
-Ultimately the Cache is just a large hash map holding the state of modules
-that are accessible from the current ModuleManager instance.  Synchronization,
-serialization, etc. is handled by the SDEAny class.  Thus at this point I don't
-see any reason to use anything other than an `std::map` (can't use an 
-`unordered_map` because the hashes can't be derived from the values).
+Ultimately the Cache is little more than a hash map holding the state of a 
+particular module type.  Synchronization, serialization, *etc.* are 
+ultimately implemented by the SDEAny class and at the Cache level amount to 
+looping over entries.  That said, the following UML diagram illustrates our
+purposed Cache API.
+
+![](uml/CacheAPI_api.jpg)
+
+For the most part it is similar to the `std::map` class aside from the fact that
+its `at` member is templated.  Perhaps the notable difference is the 
+machinery to enable automatic saving.  More specifically, when `insert` is 
+called, the time since the last save is compared to the requested save 
+duration.  If the time passed is longer than the requested duration the cache is
+saved.  Each cache instance will ensure this write is done in a thread-safe 
+manner.  It is the responsibility of the Archiver to ensure that the saves do
+not clobber each other when more than one type of module tries to save in a 
+threaded context or if multiple processes try to write simultaneously.
+  

@@ -9,11 +9,7 @@ possibly dynamically influence the control flow.
 
 - [Terminology](@ref terms) details what SDE specific terms mean
 - [Overview](@ref sde_overview) provides a high-level overview of the SDE
-- [User Workflow](dox/workflow.md) details a typical workflow
-- [App Workflow](dox/AppFlow.md) details the basics of running an app as well as
-  how to write simple "lambda apps"
-- [Common Tasks](dox/CommonTasks.md) explicitly details how to perform common 
-  computational chemistry tasks within an app  
+
 
 Extending the SDE
 -----------------
@@ -22,18 +18,12 @@ Topics in this section are meant for users who want to write apps and/or make
 their libraries discoverable/usable with the SDE, but don't care about the 
 internals of the SDE more than they need to. 
 
-- [Advanced App Workflow](dox/AdvancedAppFlow.md) details the app lifecycle in
-  much greater detail to ensure users can get the most out of their apps
-- [AppInfo API](dox/AppInfoAPI.md) details about the available meta-data options
-  for an app  
-- [Setting Parameters](dox/parameters.md) details the types of parameters 
-  available and the features provided by the Parameters class
   
 Understanding the SDE
 ---------------------
 
 Topics in this section are meant for users who want to understand how the SDE
-works in more detail.
+works in more detail and developers new to the SDE.
 
 ## Discussions of How APIs Came to Be
 This subsection of topics is mainly for posterity.  Specifically to remember
@@ -54,13 +44,10 @@ API.
 ## Discussions of Essential SDE Operations
 This subsection includes topics focused on documenting how some of the key SDE
 features work.
-    
 
-- [Memoization Considerations](dox/memoization.md) discusses the fine details
-  of memoization  
-- [Running an App](dox/RunningAnApp.md) details what happens when a user 
-  calls `sde.run`
-- [Cache Considerations](dox/cache.md) everything you wanted to know about the 
-  cache (and more) 
-  
+- [Parallelization](@ref parallelization) Detailed explanation of the 
+  assumptions and considerations regarding parallelization within the SDE.    
+- [Control Flow](@ref control_flow) Provides examples of how control flows 
+  through the SDE in serial and parallel circumstances.
+
   
