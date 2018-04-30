@@ -60,7 +60,7 @@ Where possible the SDE should do what it can to aid in parallelism and
 performance.  This will admittedly always be at a coarse level (parallelizing 
 over modules), but nonetheless such efforts will play a crucial role in 
 acheiving maximum performance on modern machines.  This requires the SDE to be   
-provided with a mechanism for examining the modules it  
+provided with a mechanism for examining the modules it will call. 
     
 @subsection sde_overview_extensibility Extensibility
 
