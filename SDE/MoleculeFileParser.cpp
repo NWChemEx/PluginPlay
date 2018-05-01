@@ -89,8 +89,8 @@ Molecule parse_molecule_file(std::istream& is,
 }
 
 // charge and multiplicity
-static const std::regex xyz_cm("^\\s*-?\\d+.?\\d*\\s*\\d+.?\\d*\\s*$");
-static const std::regex xyz_atom("^\\s*[a-zA-Z]+\\s*(?:-?\\d*.?\\d*\\s*){3}$");
+static const std::regex xyz_cm("^\\s*-?\\d+.?\\d*\\s+\\d+.?\\d*\\s*$");
+static const std::regex xyz_atom("^\\s*[a-zA-Z]+\\s*(?:-?\\d*.\\d+(?:(?:e|E)(?:-|\\+)?\\d+)?\\s*){3}$");
 
 action_type XYZParser::worth_parsing(const std::string& line) const {
     if(std::regex_search(line, xyz_cm))

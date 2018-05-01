@@ -20,10 +20,10 @@ namespace SDE {
 typename ChemistryRuntime::constant_lut_type default_constants();
 
 /// Returns a map of default molecules
-typename ChemistryRuntime::molecule_lut_type default_molecules();
+Utilities::CaseInsensitiveMap<LibChemist::Molecule> default_molecules();
 
 /// Returns a map of default basis sets
-typename ChemistryRuntime::indexed_atom_type default_bases();
+std::map<std::size_t, LibChemist::Atom> default_bases();
 
 /// Returns a map of default elemental properties
 typename ChemistryRuntime::indexed_atom_type default_atoms();
@@ -39,9 +39,8 @@ typename ChemistryRuntime::am_sym_lut_type default_am();
 
 ///Convenience function for making a fully defaulted ChemistryRuntime instance
 inline ChemistryRuntime default_runtime(){
-    return {default_constants(), default_molecules(), default_bases(),
-            default_atoms(), default_isotopes(), default_symbols(),
-            default_am()};
+    return {default_constants(), default_atoms(), default_isotopes(), 
+            default_symbols(), default_am()};
 }
 
 } // End namespace SDE

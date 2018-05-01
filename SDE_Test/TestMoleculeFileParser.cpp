@@ -34,7 +34,7 @@ TEST_CASE("Normal XYZ") {
 
 
 TEST_CASE("Hardest XYZ parsing") {
-    std::string xyz_example = " 2 3\nHe 0.1 .1 0.0\nHE 1.1 0.1 0.0\n";
+    std::string xyz_example = " 2 3\nHe 0.1 .1 0.0\nHE 1.1 1e-1 0.0\n";
     auto crt = default_runtime();
     std::array<double, 3> carts1(), carts2();
     auto He{crt.periodic_table.at(2)};
