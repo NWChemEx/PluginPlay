@@ -16,6 +16,7 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              ChemistryRuntime.hpp
                              NWXDefaults.hpp
                              MoleculeFileParser.hpp
+                             SDEAny.hpp
         )
 set(SDE_DEFINITIONS )
 set(SDE_LINK_FLAGS)
