@@ -25,6 +25,13 @@ Understanding the SDE
 Topics in this section are meant for users who want to understand how the SDE
 works in more detail and developers new to the SDE.
 
+## Detailed 
+This subsection lists tutorials relating to classes used internally within the
+SDE.
+
+- [SDEAny Class](@ref using_sdeany) Class used to store generic data.
+
+
 ## Discussions of How APIs Came to Be
 This subsection of topics is mainly for posterity.  Specifically to remember
 what considerations went into each of the major classes involved in the SDE's

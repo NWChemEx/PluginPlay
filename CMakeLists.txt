@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
 project(SDE VERSION 0.0.0 LANGUAGES CXX)
-set(SDE_DEPENDENCIES LibChemist Utilities)
+set(SDE_DEPENDENCIES LibChemist Utilities bphash cereal)
 find_package(CMakeBuild)
 build_nwchemex_module(${CMAKE_CURRENT_LIST_DIR})

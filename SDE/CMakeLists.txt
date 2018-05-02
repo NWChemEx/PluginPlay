@@ -15,8 +15,10 @@ set(SDE_SRCS Defaults/DefaultAM.cpp
 set(SDE_INCLUDES BasisSetFileParser.hpp
                              ChemistryRuntime.hpp
                              NWXDefaults.hpp
+                             Memoization.hpp
                              MoleculeFileParser.hpp
                              SDEAny.hpp
+                             Serialization.hpp
         )
 set(SDE_DEFINITIONS )
 set(SDE_LINK_FLAGS)

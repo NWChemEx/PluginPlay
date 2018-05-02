@@ -85,4 +85,52 @@ opaque base class `TEBase`.  Note that unlike the C solution, this solution is
 type-safe (`dynamic_cast<T>` will throw `std::bad_cast` if a particular `TEBase`
 instance was not created as a `TE<T>`).
 
-@section SDE
+@section te_sde_any Type-Erasure Applied to SDEAny
+
+The main considerations behind the design of the SDEAny class were discussed at 
+length on the [SDEAny API](@ref sdeany_api) page.  This section mainly focuses 
+on the additional type-erasure considerations specific to the SDEAny class that
+were not covered in the previous section.
+
+The simple `TEBase`/`TE` class hierarchy introduced in the previous section does
+nothing besides hold the instance.  Furthermore, how it holds the instance is a
+bit clunky.  Given the prevalence of type-erasure in generic C++ code a common
+solution is to use `boost::any` (`std::any` in C++17 compliant code).  At its
+core these classes work a lot like `TEBase`/`TE` except they provide a much 
+nicer API.  However, these classes are inadequate for our needs as we want to
+be able to manipulate the wrapped instance, in generic ways, without 
+downcasting.  For example, we'll want to be able to serialize it.  Assuming 
+`TEBase` was instead defined like:
+
+```.cpp
+struct TEBase {
+    virtual ~TEBase(){}
+    
+    virtual void load(Archiver& ar) = 0; 
+    virtual void save(Archiver& ar)const =0;
+};    
+```
+We could implement the `load/save` functions in the derived class like:
+
+```.cpp
+template<typename T>
+struct TE : TEBase {
+    T value;
+    
+    void load(Archiver& ar) override {
+        ar(value); 
+    }
+    
+    void save(Archiver& ar) const override {
+        ar(value);
+     }        
+};
+```
+
+Now when we call `TE::save` or `TE::load` the wrapped instance is serialized for
+us without us having to downcast.  As should be evident, we can't add this 
+functionality to `boost::any` or `std::any` without modifying the source code so
+that the base class contains the necessary virtual functions.  This is why we
+choose to implement SDEAny ourselves.
+
+@section sdeany_examples Example Usage

@@ -1,8 +1,12 @@
 #pragma once
+#include "SDE/Memoization.hpp"
 #include <memory>
 #include <type_traits>
 
 namespace SDE {
+
+/// Namespace for classes not meant to be part of the SDE's public API
+namespace detail_ {
 
 /** @brief The SDEAny class is capable of holding an instance of any type in a
  *  type-safe manner.
@@ -94,7 +98,9 @@ public:
      * @throw ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    SDEAny(const SDEAny& rhs) : ptr_(std::move(rhs.ptr_->clone())) {}
+    SDEAny(const SDEAny& rhs) {
+        if(rhs.ptr_) ptr_ = std::move(rhs.ptr_->clone());
+    }
 
     /**
      * @brief Sets the current instance to a copy of another instance.
@@ -121,7 +127,8 @@ public:
      * guarantee.
      */
     SDEAny& operator=(const SDEAny& rhs) {
-        if(this != &rhs) ptr_ = std::move(rhs.ptr_->clone());
+        if(this != &rhs && rhs.ptr_) ptr_ = std::move(rhs.ptr_->clone());
+        else if(!rhs.ptr_)ptr_.release();
         return *this;
     }
 
@@ -206,7 +213,24 @@ public:
      */
     template<typename T, typename X = disable_if_related<T>>
     explicit SDEAny(T&& value) :
-      ptr_(std::move(wrap_ptr<T>(std::forward<T>(value)))) {}
+      ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
+
+    /**
+     *  @brief Allows the SDEAny instance to be hashed.
+     *
+     *  @param[in, out] h A Hasher instance to use for the hashing.
+     *
+     *  @par Complexity:
+     *  Same as the complexity of hashing the wrapped type.
+     *
+     *  @par Data Races:
+     *  The state of the current instance will be accessed and data races may
+     *  result if it is concurrently modified.
+     *
+     *  @throws ??? if the wrapped instance's hash function throws.  Strong
+     *  throw guarantee.
+     */
+    void hash(Hasher& h) const { h(ptr_);}
 
     /**
      * @brief Returns the type of the wrapped instance.
@@ -226,7 +250,9 @@ public:
      * @return The RTTI of the wrapped type.
      * @throw None. No throw guarantee.
      */
-    const std::type_info& type() const noexcept { return ptr_->type(); }
+    const std::type_info& type() const noexcept {
+        return ptr_ ? ptr_->type() : typeid(nullptr);
+    }
 
     /**
      * @brief Releases the wrapped memory associated with the present SDEAny
@@ -337,9 +363,9 @@ public:
      * as T's constructor.
      */
     template<typename T, typename... Args>
-    std::decay_t<T>& emplace(Args&&... args) {
+    std::decay_t <T>& emplace(Args&& ... args) {
         using no_cv = std::decay_t<T>;
-        ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
+        ptr_ = wrap_ptr<no_cv>(std::forward<Args>(args)...);
         return cast<no_cv>();
     };
 
@@ -351,90 +377,257 @@ private:
     /**
      * @brief Class to hold the type-erased instance.
      *
-
+     * This class will ultimately serve as the opaque API to the wrapped
+     * instance.  If one has read the discussion @ref te_solution then it's
+     * worth noting that SDEAnyBase is the realization of the TEBase class.
      *
-     * Within the SDE we will want to perform various operations on the data
-     * without downcasting.  This can be accomplished by adding virtual
-     * functions to the base class that are implemented in the derived.  For
-     * example,
+     * Note that this class is abstract and can not be instantiated.
      */
     struct SDEAnyBase_ {
-        /// Trivial class does nothing
-        SDEAnyBase_() noexcept = default;
 
-        /// No state to copy
-        SDEAnyBase_(const SDEAnyBase_& /*rhs*/) noexcept = default;
-
-        /// No state to move
-        SDEAnyBase_(SDEAnyBase_&& /*rhs*/) noexcept = default;
-
-        /// No state to copy
-        SDEAnyBase_& operator=(const SDEAnyBase_& /*rhs*/) noexcept = default;
-
-        /// No state to move
-        SDEAnyBase_& operator=(SDEAnyBase_&& /*rhs*/) noexcept = default;
-
-        /// Ensures the data gets deleted correctly
+        /**
+         *  @brief Cleans up an SDEAnyBase_ instance.
+         *
+         *  Since SDEAnyBase_ instances have no state this is a null operation.
+         *  However, it is important to mark this function as virtual to ensure
+         *  that we don't end up with a memory leak caused by the derived class
+         *  not deleting its data when we pass that class around via the base
+         *  class (which is literally all the time).
+         *
+         *  @par Complexity:
+         *  Constant.
+         *
+         *  @par Data Races:
+         *  None.
+         *
+         *  @throws None. No throw guarantee.
+         */
         virtual ~SDEAnyBase_() = default;
-        /// Ensures we can copy without slicing
+
+        /**
+         *  @brief Makes a polymorphic copy of the wrapper.
+         *
+         *  This abstract method should be implemented in the derived class by
+         *  creating a new SDEAnyBase_ on the heap by calling the copy ctor of
+         *  the derived class.  The resulting copy should be returned inside a
+         *  unique_ptr
+         *
+         *  @return A newly allocated copy of the wrapped instance.
+         *
+         */
         virtual std::unique_ptr<SDEAnyBase_> clone() = 0;
+
+        /**
+         * @brief Provides the RTTI of the wrapped class.
+         *
+         * This member should be implemented so that it returns the result of
+         * calling `typeid()` on the wrapped type.
+         *
+         * @return The RTTI of the wrapped class.
+         */
+        virtual const std::type_info& type() const noexcept = 0;
+
+        /**
+         *  @brief Allows the SDEAnyBase_ instance to be hashed.
+         *
+         *  This function simply delegates to the protected hash_ member
+         *  function (following the suggestion on BPHash's website).
+         *
+         *  @param[in, out] h A Hasher instance to use for the hashing.
+         *
+         *  @par Complexity:
+         *  Same as the complexity of hashing the wrapped type.
+         *
+         *  @par Data Races:
+         *  The state of the current instance will be accessed and data races
+         *  may
+         *  result if it is concurrently modified.
+         *
+         *  @throws ??? if the wrapped instance's hash function throws.  Strong
+         *  throw guarantee.
+         */
+        void hash(Hasher& h) const {hash_(h);}
+    protected:
+
+        /// The function that should be implemented by the derived class
+        virtual void hash_(Hasher& h) const = 0;
     };
 
-    /// Implements SDEAnyBase_ for type T
+    /**
+     * @brief The class in the SDEAny hierarchy responsible for holding the
+     * wrapped instance.
+     *
+     * The SDEAnyWrapper_ class holds the wrapped instance for the SDEAnyBase_
+     * class.  It also is responsible for implementing the abstract methods in
+     * the latter.
+     *
+     * @tparam T The type of the instance to wrap.  Must satisfy the concept of
+     * copyable.
+     */
     template<typename T>
-    struct SDEAnyWrapper_ : public SDEAnyBase_ {
-        /// Constructor copies the value
+    struct SDEAnyWrapper_ : SDEAnyBase_ {
+        /**
+         * @brief Creates a new SDEAnyWrapper_ by copying a value.
+         *
+         * @param[in] value_in a copy of the value.
+         *
+         * @par Complexity:
+         * Constant.
+         *
+         * @par Data Race:
+         * None.  Data is copied in and the copied value is wrapped.
+         *
+         * @throw ??? If T's move constructor throws.  Strong throw guarantee.
+         *
+         */
         SDEAnyWrapper_(const T& value_in) : value(value_in) {}
 
-        /// Constructor simply moves the value
+        /**
+         * @brief Creates a new SDEAnyWrapper_ by taking ownership of an
+         * already existing @p T instance.
+         *
+         * @param[in] value_in the instance whose state we are stealing.  After
+         * this call @p value_in will be in a valid, but otherwise undefined
+         * state.
+         *
+         * @par Complexity:
+         * Same as T's move constructor.
+         *
+         * @par Data Race:
+         * @p value_in is modified and data races may occur if it is
+         * concurrently accessed.
+         *
+         * @throw ??? If T's move constructor throws.  Strong throw guarantee.
+         *
+         */
         SDEAnyWrapper_(T&& value_in) : value(std::move(value_in)) {}
 
         /// The actual wrapped value
         T value;
 
-        /** @brief Polymorphic copy function that returns a new instance of the
-         *  wrapped object.
+        /** @brief Polymorphic copy function that returns an SDEAnyBase_
+         * allocated on the heap by copying the current instance.
+         *
+         *  @return A newly allocated SDEAnyBase_ instance.
+         *
+         *  @par Complexity:
+         *  Same as T's copy ctor.
+         *
+         *  @par Data Races:
+         *  The value wrapped by the current instance is accessed and data races
+         *  may occur if it is concurrently modified.
          *
          *  @throw std::bad_alloc if there is insufficient memory to copy.
          *  Strong throw guarantee.
          *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
          *  T's copy constructor.
          */
-        std::unique_ptr<SDEAnyBase_> clone() override {
-            return std::move(std::make_unique<SDEAnyWrapper_<T>>(value));
+        std::unique_ptr <SDEAnyBase_> clone() override {
+            return std::move(std::make_unique<SDEAnyWrapper_<T>>(*this));
+        }
+
+        /**
+         * @brief Returns the RTTI of the wrapped instance.
+         *
+         * @return The RTTI of the wrapped instance.
+         *
+         * @par Complexity:
+         * Constant.
+         *
+         * @par DataRaces:
+         * None.
+         *
+         * @throws None. No throw guarantee.
+         */
+         const std::type_info& type() const noexcept override {
+            return typeid(T);
+        }
+
+    protected:
+        /**
+         *  @brief Implements hashing for the SDEAnyBase_ class.
+         *
+         *  @param[in, out] h A Hasher instance to use for the hashing.
+         *
+         *  @par Complexity:
+         *  Same as the complexity of hashing the wrapped type.
+         *
+         *  @par Data Races:
+         *  The state of the current instance will be accessed and data races
+         *  may
+         *  result if it is concurrently modified.
+         *
+         *  @throws ??? if the wrapped instance's hash function throws.  Strong
+         *  throw guarantee.
+         */
+        virtual void hash_(Hasher& h) const override {
+            h(value);
         }
     };
 
-    /// Code factorization for the internal process of wrapping a value
+    /**
+     * @brief Code factorization for the internal process of wrapping an
+     * instance.
+     *
+     * The actual process of making the wrapped instance requires us to:
+     * 1. Remove decorators (e.g. const) to get at the fundamental type.
+     * 2. Ensure the type is copyable.
+     * 3. Forwarding the input arguments to @p T's ctor.
+     *
+     * This function wraps that procedure.
+     *
+     * @tparam T The fully decorated type of the object we are wrapping.  Must
+     * be copyable.
+     *
+     * @tparam Args The types of the arguments that will be provided to @p T's
+     *         ctor.
+     *
+     * @param args The actual arguments to @p T's ctor.
+     * @return A new SDEAnyBase_ instance allocated on the heap.
+     * @throws std::bad_alloc if there is insufficient memory to allocate a
+     *         new SDEWrapper<T> instance.  Strong throw guarantee.
+     * @throws ??? if T's ctor throws. Strong throw guarantee.
+     */
     template<typename T, typename... Args>
-    std::unique_ptr<SDEAnyBase_> wrap_ptr(Args&&... args) {
+    std::unique_ptr <SDEAnyBase_> wrap_ptr(Args&& ... args) const {
         using no_cv = std::decay_t<T>;
         static_assert(std::is_copy_constructible<no_cv>::value,
                       "Only copy constructable objects may be assigned to "
-                       "SDEAny instances");
+                        "SDEAny instances");
         using result_t = SDEAnyWrapper_<no_cv>;
         return std::move(
           std::make_unique<result_t>(std::forward<Args>(args)...));
     }
 
-    /// Actually implements the cast, private to match STL API
+    /**
+     * @brief The actual upcast.
+     *
+     * @tparam T The type to cast to.
+     * @return The wrapped value.
+     */
     template<typename T>
     T& cast() {
-        return dynamic_cast<SDEAny::SDEAnyWrapper_<T>&>(*ptr_).value;
+        if (typeid(T) != ptr_->type())throw std::bad_cast{};
+        return static_cast<SDEAny::SDEAnyWrapper_<T>&>(*ptr_).value;
     }
 
     /// The actual type-erased value
-    std::unique_ptr<SDEAnyBase_> ptr_;
+    std::unique_ptr <SDEAnyBase_> ptr_;
 };
 
 /**
  * @brief Provides access to the value wrapped in an SDEAny instance.
  * @relates SDEAny
  * @tparam T The type to cast the SDEAny instance to.
- * @param wrapped_value An any instance containing a value.
+ * @param[in] wrapped_value An any instance containing a value.
  * @return The value wrapped by @p wrapped_value.
  * @throw std::bad_cast if the value wrapped by @p wrapped_value is not
  * convertible to type @p T.  Strong throw guarantee.
+ * @par Complexity:
+ * Constant.
+ * @par Data Races:
+ * The state of @p wrapped_value is accessed and data races may occur if
+ * @p wrapped_value is concurrently modified.
  */
 template<typename T>
 T& SDEAnyCast(SDEAny& wrapped_value) {
@@ -444,15 +637,26 @@ T& SDEAnyCast(SDEAny& wrapped_value) {
 /**
  * @brief Provides access to the value wrapped in a read-only SDEAny instance.
  * @relates SDEAny
+ *
+ * Rather than writing two versions of SDEAny::cast (which are the same aside
+ * from their const-ness), we instead opt for a const_cast.  This is justified
+ * because the returned value is provided to the user as const reference.  Thus
+ * the user still interacts with the SDEAny instance in a read-only fashion.
+ *
  * @tparam T The type to cast the SDEAny instance to.
  * @param wrapped_value An any instance containing a value.
  * @return The value, in a read-only state, that is wrapped by @p wrapped_value.
  * @throw std::bad_cast if the value wrapped by @p wrapped_value is not
  * convertible to type @p T.  Strong throw guarantee.
+ * @par Complexity:
+ * Constant.
+ * @par Data Races:
+ * The state of @p wrapped_value is accessed and data races may occur if
+ * @p wrapped_value is concurrently modified.
  */
 template<typename T>
 const T& SDEAnyCast(const SDEAny& wrapped_value) {
-    return const_cast<SDEAny&>(wrapped_value).cast<T>(); // NOLINT
+    return const_cast<SDEAny&>(wrapped_value).cast<T>();
 }
 
 /** @brief Makes an SDEAny instance by forwarding the arguments to the wrapped
@@ -469,14 +673,23 @@ const T& SDEAnyCast(const SDEAny& wrapped_value) {
  *  @tparam Args The types of the arguments that are being forwarded.
  *  @return An any instance constructed with the current arguments.
  *
+ *  @par Complexity:
+ *  Same as T's ctor taking @p args.
+ *
+ *  @par Data Races:
+ *  The values of @p args are forwarded to T's ctor and data races may occur if
+ *  the values of args are concurrently modified.
+ *
  *  @throw std::bad_alloc if there is insufficient memory for the resulting
  *  instance.  Strong throw guarantee.
  *  @throw ??? If @p T's constructor throws.  Same guarantee as T's constructor.
  *
  */
 template<typename T, typename... Args>
-SDEAny make_SDEAny(Args&&... args) {
+SDEAny make_SDEAny(Args&& ... args) {
     return SDEAny(std::move(T(std::forward<Args>(args)...)));
 };
 
+
+} // namespace detail_
 } // namespace SDE

@@ -1,8 +1,9 @@
-#include <Utilities/Any.hpp>
+#include <SDE/SDEAny.hpp>
 #include <catch/catch.hpp>
 #include <vector>
 
-using namespace Utilities;
+using namespace SDE;
+using namespace detail_;
 
 template<typename T>
 void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
@@ -11,82 +12,137 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
 
     REQUIRE(da_any.has_value() == contents.size());
     REQUIRE(const_da_any.has_value() == contents.size());
-
     REQUIRE(da_any.type() == typeid(T));
     REQUIRE(const_da_any.type() == typeid(T));
+
+    Hasher h(bphash::HashType::Hash128);
+    Hasher h2(bphash::HashType::Hash128);
+    h(da_any);
+    h2(const_da_any);
+    auto hv = h.finalize();
+    auto hv2 = h2.finalize();
+    REQUIRE(hv == hv2);
+
+    //Check the wrapped type for non-empty SDEAnys
+    if(contents.size()) {
+        auto right_val = *contents.begin();
+        T& val = SDEAnyCast<T>(da_any);
+        const T& const_val = SDEAnyCast<T>(da_any);
+        REQUIRE(val == right_val);
+        REQUIRE(const_val == right_val);
+    }
 }
 
-TEST_CASE("Constructors") {
-    SDEAny defaulted;
-    check_state(defaulted, {});
+TEST_CASE("Basic SDEAny Usage") {
+    // The "contents" of an empty SDEAny
+    std::initializer_list<decltype(nullptr)> empty;
+    SDEAny defaulted; // An empty instance
 
-    SDEAny copy_default(defaulted);
-    check_state(copy_defaulted, {});
 
-    SDEAny wrap_double(double{3.14});
-    check_state(wrap_double, )
+    double pi{3.14};
+    SDEAny wrap_double(pi); // An instance holding a double
+
+    SECTION("Default Ctor") {
+        check_state(defaulted, empty);
+    }
+
+    SECTION("By value CTor") {
+        check_state(wrap_double, {pi});
+    }
+
+    SECTION("Copy CTor w/ defaulted instance") {
+        SDEAny copy_default(defaulted);
+        check_state(copy_default, empty);
+    }
+
+    SECTION("Move CTor w/ defaulted instance") {
+        SDEAny move_default(std::move(defaulted));
+        check_state(move_default, empty);
+    }
+
+    SECTION("Copy CTor w/ non-defaulted instance") {
+        SDEAny copy_double(wrap_double);
+        check_state(copy_double, {pi});
+    }
+
+    SECTION("Copy Assignment w/ defaulted instance") {
+        wrap_double = defaulted;
+        check_state(wrap_double, empty);
+    }
+
+    SECTION("Copy Assignment w/ non-defaulted instace") {
+        defaulted = wrap_double;
+        check_state(wrap_double, {pi});
+    }
+
+    SECTION("Move CTor w/ non-defaulted instance") {
+        // Get address of wrapped instance in original
+        const double* pval = &(SDEAnyCast<double>(wrap_double));
+        SDEAny move_double(std::move(wrap_double));
+        check_state(move_double, {pi});
+        // Get address of wrapped instance in "new"
+        const double* pnew_val = &(SDEAnyCast<double>(move_double));
+        REQUIRE(pval == pnew_val); //Make sure they're the same
+    }
+
+    SECTION("Move Assignment w/ defaulted instance") {
+        wrap_double = std::move(defaulted);
+        check_state(wrap_double, empty);
+    }
+
+    SECTION("Move Assignment w/ non-defaulted instance") {
+        // Address before move
+        const double* pval = &(SDEAnyCast<double>(wrap_double));
+        defaulted = std::move(wrap_double);
+        check_state(defaulted, {pi});
+        // Address after move
+        const double* pnew_val = &(SDEAnyCast<double>(defaulted));
+        REQUIRE(pval == pnew_val); //Literally same instance check
+    }
+
+    SECTION("Reset"){
+        wrap_double.reset();
+        check_state(wrap_double, empty);
+    }
+
+    SECTION("Swap default and non-default"){
+        // Address before move
+        const double* pval = &(SDEAnyCast<double>(wrap_double));
+        defaulted.swap(wrap_double);
+        check_state(defaulted, {pi});
+        check_state(wrap_double, empty);
+        // Address after move
+        const double* pnew_val = &(SDEAnyCast<double>(defaulted));
+        REQUIRE(pval == pnew_val); //Literally same instance check
+    }
+
+    SECTION("Swap non-default and default"){
+        wrap_double.swap(defaulted);
+        check_state(defaulted, {pi});
+        check_state(wrap_double, empty);
+    }
+
+    SECTION("Emplace"){
+        defaulted.emplace<double>(pi);
+        check_state(defaulted, {pi});
+    }
 }
 
-TEST_CASE("Defaulted Any and Basic operations") {
-Any defaulted{};
-REQUIRE(!defaulted.has_value());
-defaulted.emplace<int>(2);
-REQUIRE(defaulted.has_value());
-REQUIRE(AnyCast<int>(defaulted) == 2);
-REQUIRE_THROWS_AS(AnyCast<std::vector<int>>(defaulted), std::bad_cast);
-defaulted.reset();
-REQUIRE(!defaulted.has_value());
+TEST_CASE("Non-POD Wrapped Types") {
+    std::vector<int> value(1, 6);
+    auto wrapped_vector = make_SDEAny<std::vector<int>>(1, 6);
+
+    SECTION("make_SDEAny") {
+        check_state(wrapped_vector, {value});
+    }
+
+    SECTION("Move value ctor") {
+        int* ptr = value.data();
+        std::vector<int> copy_value(value);
+        SDEAny wrapped_value(std::move(value));
+        check_state(wrapped_value, {copy_value});
+        int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
+        REQUIRE(ptr == new_ptr);
+    }
 }
 
-TEST_CASE("Test non-defaulted Any construction") {
-int two = 2, three = 3;
-Any wrapped_two = MakeAny<int>(2);
-Any wrapped_three(three);
-int* ptr_2_two   = &(AnyCast<int>(wrapped_two));
-int* ptr_2_three = &(AnyCast<int>(wrapped_three));
-
-SECTION("Copy constructor") {
-Any copied_three(wrapped_three);
-int* ptr_2_three2 = &(AnyCast<int>(copied_three));
-REQUIRE(ptr_2_three2 != ptr_2_three);
-REQUIRE(*ptr_2_three2 == 3);
-}
-
-SECTION("Move constructor") {
-Any moved_three(std::move(wrapped_three));
-REQUIRE(&(AnyCast<int>(moved_three)) == ptr_2_three);
-}
-
-SECTION("Copy assignment") {
-Any* ptr = &(wrapped_two = wrapped_three);
-REQUIRE(ptr == &wrapped_two);
-int* ptr_2_three2 = &(AnyCast<int>(wrapped_two));
-REQUIRE(ptr_2_three != ptr_2_three2);
-REQUIRE(*ptr_2_three2 == 3);
-}
-
-SECTION("Move assignment") {
-Any* ptr = &(wrapped_two = std::move(wrapped_three));
-REQUIRE(ptr == &wrapped_two);
-REQUIRE(&(AnyCast<int>(wrapped_two)) == ptr_2_three);
-}
-
-SECTION("Swap") {
-wrapped_two.swap(wrapped_three);
-REQUIRE(&(AnyCast<int>(wrapped_two)) == ptr_2_three);
-REQUIRE(&(AnyCast<int>(wrapped_three)) == ptr_2_two);
-}
-}
-
-TEST_CASE("Wrapping Pointers") {
-std::vector<int> vals({1, 2, 3});
-int* ptr = vals.data();
-Any wrapped_vals(ptr);
-REQUIRE(AnyCast<int*>(wrapped_vals) == ptr);
-}
-
-TEST_CASE("MakeAny function") {
-auto an_any = MakeAny<std::vector<int>>(3, 4);
-std::vector<int> corr(3, 4);
-REQUIRE(AnyCast<std::vector<int>>(an_any) == corr);
-}
