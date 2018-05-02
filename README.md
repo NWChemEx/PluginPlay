@@ -1,19 +1,19 @@
-SDE
-===============
+Simulation Development Environment (SDE)
+=========================================
 
-The SDE repo is the home of classes and infrastructure that are 
-designed to abstract away details pertaining to the literal environment that 
-NWChemEx is being run in.  Such details include:
+The SDE represents a reusable framework for building a computational chemistry
+program.  In particular it is in the SDE one will find:
 
-- hardware considerations such as I/O and other memory management (this is a 
-stub for now) 
-- parallelization considerations not covered by TAMM (also a stub)
-- tabulated scientific data such as basis sets, physical constants, *etc.*
-- calculation state (the in program representation of the call stack)
+- Abstractions of the hardware
+  - APIs for I/O, accessing parallel resources, *etc.*
+- Abstractions for modifying and monitoring the state of the calculation
+  - Current algorithms, calculation state, *etc.*
+- Hooks for extending functionality.
+- Support for scripting
+
 
 Building
 --------
 
-SDE relies on CMakeBuild to manage its configuration and build 
-settings.  More details on how to build this library can be found 
-:link:[here](CMakeBuild/dox/Building.md).
+SDE relies on CMakeBuild to manage its configuration and build settings.  For
+details on how to build SDE see [here](https://github.com/NWChemEx-Project/CMakeBuild/blob/master/dox/Building.md).  
