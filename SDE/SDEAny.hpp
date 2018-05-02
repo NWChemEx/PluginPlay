@@ -348,7 +348,16 @@ private:
     template<typename T>
     friend T& SDEAnyCast(SDEAny&);
 
-    /// Defines API for handling the data
+    /**
+     * @brief Class to hold the type-erased instance.
+     *
+
+     *
+     * Within the SDE we will want to perform various operations on the data
+     * without downcasting.  This can be accomplished by adding virtual
+     * functions to the base class that are implemented in the derived.  For
+     * example,
+     */
     struct SDEAnyBase_ {
         /// Trivial class does nothing
         SDEAnyBase_() noexcept = default;
