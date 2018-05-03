@@ -20,6 +20,11 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              SDEAny.hpp
                              Serialization.hpp
         )
+list(FIND NWX_DEPENDENCIES pybind11 BUILD_PYTHON_BINDINGS)
+if(NOT ${BUILD_PYTHON_BINDINGS} EQUAL -1)
+
+endif()
+
 set(SDE_DEFINITIONS )
 set(SDE_LINK_FLAGS)
 nwchemex_add_library(SDE SDE_SRCS
