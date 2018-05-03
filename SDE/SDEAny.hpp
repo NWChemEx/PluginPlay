@@ -45,7 +45,7 @@ private:
      */
     template<typename T>
     using is_related =
-    std::is_base_of<SDEAny, typename std::remove_reference<T>::type>;
+      std::is_base_of<SDEAny, typename std::remove_reference<T>::type>;
 
     /** @brief Class for disabling a function via SFINAE if the input is derived
      *  from SDEAny.
@@ -58,13 +58,13 @@ private:
      */
     template<typename T>
     using disable_if_related =
-    typename std::enable_if<!is_related<T>::value>::type;
+      typename std::enable_if<!is_related<T>::value>::type;
 
 public:
     /** @brief Makes an empty SDEAny instance.
      *
-     *  The resulting SDEAny instance wraps no object.  An object can be added to
-     *  it by calling the member function emplace.
+     *  The resulting SDEAny instance wraps no object.  An object can be added
+     * to it by calling the member function emplace.
      *
      *  @par Complexity:
      *  Constant.
@@ -127,8 +127,10 @@ public:
      * guarantee.
      */
     SDEAny& operator=(const SDEAny& rhs) {
-        if(this != &rhs && rhs.ptr_) ptr_ = std::move(rhs.ptr_->clone());
-        else if(!rhs.ptr_)ptr_.release();
+        if(this != &rhs && rhs.ptr_)
+            ptr_ = std::move(rhs.ptr_->clone());
+        else if(!rhs.ptr_)
+            ptr_.release();
         return *this;
     }
 
@@ -230,7 +232,7 @@ public:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *  throw guarantee.
      */
-    void hash(Hasher& h) const { h(ptr_);}
+    void hash(Hasher& h) const { h(ptr_); }
 
     /**
      * @brief Returns the type of the wrapped instance.
@@ -291,8 +293,8 @@ public:
     void swap(SDEAny& rhs) noexcept { ptr_.swap(rhs.ptr_); }
 
     /**
-     * @brief Returns true if the current SDEAny instance is presently wrapping a
-     * value.
+     * @brief Returns true if the current SDEAny instance is presently wrapping
+     * a value.
      *
      * @par Complexity:
      * Constant.
@@ -363,9 +365,9 @@ public:
      * as T's constructor.
      */
     template<typename T, typename... Args>
-    std::decay_t <T>& emplace(Args&& ... args) {
+    std::decay_t<T>& emplace(Args&&... args) {
         using no_cv = std::decay_t<T>;
-        ptr_ = wrap_ptr<no_cv>(std::forward<Args>(args)...);
+        ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
         return cast<no_cv>();
     };
 
@@ -384,7 +386,6 @@ private:
      * Note that this class is abstract and can not be instantiated.
      */
     struct SDEAnyBase_ {
-
         /**
          *  @brief Cleans up an SDEAnyBase_ instance.
          *
@@ -446,9 +447,9 @@ private:
          *  @throws ??? if the wrapped instance's hash function throws.  Strong
          *  throw guarantee.
          */
-        void hash(Hasher& h) const {hash_(h);}
-    protected:
+        void hash(Hasher& h) const { hash_(h); }
 
+    protected:
         /// The function that should be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
     };
@@ -522,7 +523,7 @@ private:
          *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
          *  T's copy constructor.
          */
-        std::unique_ptr <SDEAnyBase_> clone() override {
+        std::unique_ptr<SDEAnyBase_> clone() override {
             return std::move(std::make_unique<SDEAnyWrapper_<T>>(*this));
         }
 
@@ -539,7 +540,7 @@ private:
          *
          * @throws None. No throw guarantee.
          */
-         const std::type_info& type() const noexcept override {
+        const std::type_info& type() const noexcept override {
             return typeid(T);
         }
 
@@ -560,9 +561,7 @@ private:
          *  @throws ??? if the wrapped instance's hash function throws.  Strong
          *  throw guarantee.
          */
-        virtual void hash_(Hasher& h) const override {
-            h(value);
-        }
+        virtual void hash_(Hasher& h) const override { h(value); }
     };
 
     /**
@@ -589,11 +588,11 @@ private:
      * @throws ??? if T's ctor throws. Strong throw guarantee.
      */
     template<typename T, typename... Args>
-    std::unique_ptr <SDEAnyBase_> wrap_ptr(Args&& ... args) const {
+    std::unique_ptr<SDEAnyBase_> wrap_ptr(Args&&... args) const {
         using no_cv = std::decay_t<T>;
         static_assert(std::is_copy_constructible<no_cv>::value,
                       "Only copy constructable objects may be assigned to "
-                        "SDEAny instances");
+                      "SDEAny instances");
         using result_t = SDEAnyWrapper_<no_cv>;
         return std::move(
           std::make_unique<result_t>(std::forward<Args>(args)...));
@@ -607,12 +606,12 @@ private:
      */
     template<typename T>
     T& cast() {
-        if (typeid(T) != ptr_->type())throw std::bad_cast{};
+        if(typeid(T) != ptr_->type()) throw std::bad_cast{};
         return static_cast<SDEAny::SDEAnyWrapper_<T>&>(*ptr_).value;
     }
 
     /// The actual type-erased value
-    std::unique_ptr <SDEAnyBase_> ptr_;
+    std::unique_ptr<SDEAnyBase_> ptr_;
 };
 
 /**
@@ -686,10 +685,9 @@ const T& SDEAnyCast(const SDEAny& wrapped_value) {
  *
  */
 template<typename T, typename... Args>
-SDEAny make_SDEAny(Args&& ... args) {
+SDEAny make_SDEAny(Args&&... args) {
     return SDEAny(std::move(T(std::forward<Args>(args)...)));
 };
-
 
 } // namespace detail_
 } // namespace SDE
