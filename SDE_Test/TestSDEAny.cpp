@@ -15,21 +15,17 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
     REQUIRE(da_any.type() == typeid(T));
     REQUIRE(const_da_any.type() == typeid(T));
 
-    Hasher h(bphash::HashType::Hash128);
-    Hasher h2(bphash::HashType::Hash128);
-    h(da_any);
-    h2(const_da_any);
-    auto hv = h.finalize();
-    auto hv2 = h2.finalize();
-    REQUIRE(hv == hv2);
+    //TODO: Check hashing when hash is compiler independent.
 
-    //Check the wrapped type for non-empty SDEAnys
+    //Check the wrapped type (for non-empty SDEAnys)
     if(contents.size()) {
         auto right_val = *contents.begin();
         T& val = SDEAnyCast<T>(da_any);
         const T& const_val = SDEAnyCast<T>(da_any);
         REQUIRE(val == right_val);
         REQUIRE(const_val == right_val);
+        REQUIRE_THROWS_AS(SDEAnyCast<std::string>(da_any), std::bad_cast);
+        REQUIRE_THROWS_AS(SDEAnyCast<std::string>(const_da_any), std::bad_cast);
     }
 }
 
@@ -123,16 +119,18 @@ TEST_CASE("Basic SDEAny Usage") {
     }
 
     SECTION("Emplace"){
-        defaulted.emplace<double>(pi);
+        double& new_pi = defaulted.emplace<double>(pi);
         check_state(defaulted, {pi});
+        double& new_pi2 = SDEAnyCast<double>(defaulted);
+        REQUIRE(&new_pi == &new_pi2); // Ensure emplace returns same instance
     }
 }
 
 TEST_CASE("Non-POD Wrapped Types") {
     std::vector<int> value(1, 6);
-    auto wrapped_vector = make_SDEAny<std::vector<int>>(1, 6);
 
     SECTION("make_SDEAny") {
+        auto wrapped_vector = make_SDEAny<std::vector<int>>(1, 6);
         check_state(wrapped_vector, {value});
     }
 
@@ -142,7 +140,7 @@ TEST_CASE("Non-POD Wrapped Types") {
         SDEAny wrapped_value(std::move(value));
         check_state(wrapped_value, {copy_value});
         int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
-        REQUIRE(ptr == new_ptr);
+        REQUIRE(ptr == new_ptr); //Make sure it's the same instance
     }
 }
 
