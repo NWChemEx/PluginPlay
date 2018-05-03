@@ -1,55 +1,62 @@
-def repo_name="SDE"
-def depends = ['CMakeBuild', 'Utilities', 'LibChemist']
+def repoName= "SDE"
+def depends = ["CMakeBuild", "Utilities", "LibChemist"] as String[]
+def commonModules = "cmake llvm python"
+def buildModuleMatrix = [
+    		   "GCC":(commonModules + "gcc/7.1.0"),
+		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
+		  ]
+def cmakeCommandMatrix = [
+    		   "GCC":"-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++",
+		   "Intel":"-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc"
+		   ]
 
-def compile_repo(depend_name, install_root, do_install) {
-    sh """
-        set +x
-        source /etc/profile
-        module load gcc/7.1.0
-        module load cmake
-        module load python
-        build_tests="True"
-        make_command=""
-        if [ ${do_install} == "True" ];then
-            build_tests="False"
-            make_command="install"
-        fi
-        cmake -H. -Bbuild -DBUILD_TESTS=\${build_tests} \
-                          -DCMAKE_INSTALL_PREFIX=${install_root}\
-                          -DCMAKE_PREFIX_PATH=${install_root}
-        cd build && make \${make_command}
-    """
-}
+def credentialsID = "422b0eed-700d-444d-961c-1e58cc75cda2"
 
-node {
-    def install_root="${WORKSPACE}/install"
-    stage('Set-Up Workspace') {
+/************************************************
+ ************************************************
+    Shouldn't need to modify anything below...
+ ************************************************
+ ************************************************/
+
+def buildTypeList=buildModuleMatrix.keySet() as String[]
+def nwxJenkins
+
+node{
+for (int i=0; i<buildTypeList.size(); i++){
+
+    def buildType = "${buildTypeList[i]}"
+    def cmakeCommand = "${cmakeCommandMatrix[buildType]}"
+
+    stage("${buildType}: Set-Up Workspace"){
         deleteDir()
         checkout scm
     }
-    stage('Build Dependencies') {
-        for(int i=0; i<depends.size(); i++) {
-            dir("${depends[i]}"){
-                git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
-                    url:"https://github.com/NWChemEx-Project/${depends[i]}.git",
-                    branch: 'master'
-                compile_repo("${depends[i]}", "${install_root}", "True")
-            }
-        }
+
+    stage('${buildType}: Import Jenkins Commands'){
+        sh "wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/Jenkins/nwxJenkins.groovy"
+    	nwxJenkins=load("nwxJenkins.groovy")
     }
-    stage('Build Repo') {
-        checkout scm
-        compile_repo("${repo_name}", "${install_root}", "False")
+
+    stage('${buildType}: Export Module List'){
+        def buildModules = "${buildModuleMatrix[buildType]}"
+    nwxJenkins.exportModules(buildModules)
     }
-    stage('Test Repo') {
-        sh """
-        set +x
-        source /etc/profile
-        module load cmake
-        module load python
-        cd build && ctest
-        """
+
+    stage('Check Code Formatting'){
+        nwxJenkins.formatCode()
     }
+
+    stage('Build Dependencies'){
+        nwxJenkins.buildDependencies(depends, cmakeCommand, credentialsID)
+    }
+
+    stage('Build Repo'){
+        nwxJenkins.compileRepo(repoName, "False", cmakeCommand)
+    }
+
+    stage('Test Repo'){
+        nwxJenkins.testRepo()
+    }
+
 }
-
-
+}
