@@ -20,3 +20,6 @@ cmake-build-release/
 
 #This is made when running Python
 __pycache__
+
+#This is pulled by the git hook
+.clang-format
