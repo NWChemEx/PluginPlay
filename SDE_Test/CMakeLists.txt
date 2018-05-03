@@ -4,5 +4,6 @@ include(TargetMacros)
 
 add_cxx_unit_test(TestBasisFileParser)
 add_cxx_unit_test(TestChemistryRuntime)
+add_cxx_unit_test(TestModule)
 add_cxx_unit_test(TestMoleculeFileParser)
 add_cxx_unit_test(TestSDEAny)

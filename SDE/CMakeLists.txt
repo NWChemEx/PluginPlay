@@ -16,6 +16,7 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              ChemistryRuntime.hpp
                              NWXDefaults.hpp
                              Memoization.hpp
+                             Module.hpp
                              MoleculeFileParser.hpp
                              SDEAny.hpp
                              Serialization.hpp
