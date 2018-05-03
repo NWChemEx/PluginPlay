@@ -99,38 +99,112 @@ solution is to use `boost::any` (`std::any` in C++17 compliant code).  At its
 core these classes work a lot like `TEBase`/`TE` except they provide a much 
 nicer API.  However, these classes are inadequate for our needs as we want to
 be able to manipulate the wrapped instance, in generic ways, without 
-downcasting.  For example, we'll want to be able to serialize it.  Assuming 
+downcasting.  For example, we'll want to be able to hash it.  Assuming 
 `TEBase` was instead defined like:
 
 ```.cpp
 struct TEBase {
     virtual ~TEBase(){}
     
-    virtual void load(Archiver& ar) = 0; 
-    virtual void save(Archiver& ar)const =0;
+    virtual void hash(Hasher& h) const = 0; 
 };    
 ```
-We could implement the `load/save` functions in the derived class like:
+We could implement the `hash` functions in the derived class like:
 
 ```.cpp
 template<typename T>
 struct TE : TEBase {
     T value;
     
-    void load(Archiver& ar) override {
-        ar(value); 
+    void hash(Hasher& h) override {
+        h(value); 
     }
-    
-    void save(Archiver& ar) const override {
-        ar(value);
-     }        
+     
 };
 ```
 
-Now when we call `TE::save` or `TE::load` the wrapped instance is serialized for
-us without us having to downcast.  As should be evident, we can't add this 
-functionality to `boost::any` or `std::any` without modifying the source code so
-that the base class contains the necessary virtual functions.  This is why we
-choose to implement SDEAny ourselves.
+Now when we call `TE::hash` the wrapped instance is hashed for us without us 
+having to downcast.  As should be evident, we can't add this functionality to 
+`boost::any` or `std::any` without modifying the source code so that the base
+class contains the necessary virtual functions.  This is why we choose to 
+implement SDEAny ourselves.
 
 @section sdeany_examples Example Usage
+
+This section is designed to provide example usage of the SDEAny class.  Keep in
+mind that the SDEAny class is considered a detail of the SDE library and as such
+will not be used by anyone aside from developers working within the SDE.
+
+By far and away, the number one use case for the SDEAny class is type-erasure.
+This is straightforward:
+
+```.cpp
+// Make some data to erase the type of:
+double x=3.14;
+std::vector<int> v{1, 2, 3, 4, 5};
+
+SDEAny wrapped_double(x); // erases the type of a copy of the double
+SDEAny wrapped_copy_v(v); // erases the type of a copy of v
+SDEAny wrapped_v(std::move(v)); //erases the type of v
+```
+
+In the previous example we first made the instance we wanted to wrap and then
+either copied or moved it into the SDEAny instance.  We also can directly make
+the instance inside the SDEAny:
+
+```.cpp
+SDEAny wrapped_double; //Declare an empty SDEAny
+
+//Fill construct the instance inside the SDEAny
+// N.B. the constructed instance is returned.
+double& value = wrapped_double.emplace<double>(3.14);
+
+//For convenience can use the make_SDEAny wrapper to do this in one step
+//this one wraps a default constructed std::vector<int> instance
+auto wrapped_v = make_SDEAny<std::vector<int>>();
+
+// The above make_SDEAny call in a slightly cleaner fashion to show syntax
+using vector_t = std::vector<int>;
+auto wrapped_v2 = make_SDEAny<vector_t>();
+```
+
+The opposite of the type-erasure use case is retrieval, *i.e.* retrieving the
+type-erased instance in a type-safe manner.  Again, we have tried to make this
+API as simple as possible:
+
+```.cpp
+//Assuming the same wrapped_v instance from the previous example
+auto& the_vector = SDEAnyCast<std::vector<int>>(wrapped_v);
+
+//Assuming the wrapped double from the previous example
+auto& the_double = SDEAnyCast<double>(wrapped_double);
+
+//N.B. this is a type-safe operation, e.g. this will throw std::bad_cast
+try {
+    auto& the_string = SDEAnyCast<std::string>(wrapped_double);
+}
+catch(const std::bad_cast& e) {
+    // handle exception
+}
+```
+
+The final use case for the SDEAny class is interacting with the wrapped instance
+in an opaque manner.  One such example is for the Parameters class, where we 
+will need to hash the wrapped options for memoization.
+
+```.cpp
+// Assume this vector of SDEAny instances was created elsewhere
+std::vector<SDEAny> te_instances;
+
+Hasher h(HashType::Hash128); // our hasher instance
+
+// Loop over elements and add them to the hasher
+for(auto& x : te_instances)
+    h(x);
+
+auto hv = h.finalize(); // get the resulting hash
+
+// Since BPHash knows how to hash std::vector, could have just done:
+h(te_instances);
+``` 
+
