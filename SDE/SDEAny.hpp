@@ -656,7 +656,7 @@ T& SDEAnyCast(SDEAny& wrapped_value) {
  */
 template<typename T>
 const T& SDEAnyCast(const SDEAny& wrapped_value) {
-    return const_cast<SDEAny&>(wrapped_value).cast<T>();
+    return SDEAnyCast<T>(const_cast<SDEAny&>(wrapped_value));
 }
 
 /** @brief Makes an SDEAny instance by forwarding the arguments to the wrapped
