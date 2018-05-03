@@ -7,6 +7,7 @@ def compile_repo(depend_name, install_root, do_install) {
         source /etc/profile
         module load gcc/7.1.0
         module load cmake
+        module load python
         build_tests="True"
         make_command=""
         if [ ${do_install} == "True" ];then
@@ -45,6 +46,7 @@ node {
         set +x
         source /etc/profile
         module load cmake
+        module load python
         cd build && ctest
         """
     }
