@@ -1,6 +1,6 @@
 def repoName= "SDE"
 def depends = ["CMakeBuild", "Utilities", "LibChemist"] as String[]
-def commonModules = "cmake llvm python"
+def commonModules = "cmake llvm python "
 def buildModuleMatrix = [
     		   "GCC":(commonModules + "gcc/7.1.0"),
 		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
