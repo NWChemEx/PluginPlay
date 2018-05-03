@@ -141,6 +141,6 @@ TEST_CASE("Non-POD Wrapped Types") {
         check_state(wrapped_value, {copy_value});
         int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
         REQUIRE(ptr == new_ptr); //Make sure it's the same instance
-    }
+}
 }
 
