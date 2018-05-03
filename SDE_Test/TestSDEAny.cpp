@@ -15,12 +15,12 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
     REQUIRE(da_any.type() == typeid(T));
     REQUIRE(const_da_any.type() == typeid(T));
 
-    //TODO: Check hashing when hash is compiler independent.
+    // TODO: Check hashing when hash is compiler independent.
 
-    //Check the wrapped type (for non-empty SDEAnys)
+    // Check the wrapped type (for non-empty SDEAnys)
     if(contents.size()) {
-        auto right_val = *contents.begin();
-        T& val = SDEAnyCast<T>(da_any);
+        auto right_val     = *contents.begin();
+        T& val             = SDEAnyCast<T>(da_any);
         const T& const_val = SDEAnyCast<T>(da_any);
         REQUIRE(val == right_val);
         REQUIRE(const_val == right_val);
@@ -34,17 +34,12 @@ TEST_CASE("Basic SDEAny Usage") {
     std::initializer_list<decltype(nullptr)> empty;
     SDEAny defaulted; // An empty instance
 
-
     double pi{3.14};
     SDEAny wrap_double(pi); // An instance holding a double
 
-    SECTION("Default Ctor") {
-        check_state(defaulted, empty);
-    }
+    SECTION("Default Ctor") { check_state(defaulted, empty); }
 
-    SECTION("By value CTor") {
-        check_state(wrap_double, {pi});
-    }
+    SECTION("By value CTor") { check_state(wrap_double, {pi}); }
 
     SECTION("Copy CTor w/ defaulted instance") {
         SDEAny copy_default(defaulted);
@@ -78,7 +73,7 @@ TEST_CASE("Basic SDEAny Usage") {
         check_state(move_double, {pi});
         // Get address of wrapped instance in "new"
         const double* pnew_val = &(SDEAnyCast<double>(move_double));
-        REQUIRE(pval == pnew_val); //Make sure they're the same
+        REQUIRE(pval == pnew_val); // Make sure they're the same
     }
 
     SECTION("Move Assignment w/ defaulted instance") {
@@ -89,19 +84,19 @@ TEST_CASE("Basic SDEAny Usage") {
     SECTION("Move Assignment w/ non-defaulted instance") {
         // Address before move
         const double* pval = &(SDEAnyCast<double>(wrap_double));
-        defaulted = std::move(wrap_double);
+        defaulted          = std::move(wrap_double);
         check_state(defaulted, {pi});
         // Address after move
         const double* pnew_val = &(SDEAnyCast<double>(defaulted));
-        REQUIRE(pval == pnew_val); //Literally same instance check
+        REQUIRE(pval == pnew_val); // Literally same instance check
     }
 
-    SECTION("Reset"){
+    SECTION("Reset") {
         wrap_double.reset();
         check_state(wrap_double, empty);
     }
 
-    SECTION("Swap default and non-default"){
+    SECTION("Swap default and non-default") {
         // Address before move
         const double* pval = &(SDEAnyCast<double>(wrap_double));
         defaulted.swap(wrap_double);
@@ -109,16 +104,16 @@ TEST_CASE("Basic SDEAny Usage") {
         check_state(wrap_double, empty);
         // Address after move
         const double* pnew_val = &(SDEAnyCast<double>(defaulted));
-        REQUIRE(pval == pnew_val); //Literally same instance check
+        REQUIRE(pval == pnew_val); // Literally same instance check
     }
 
-    SECTION("Swap non-default and default"){
+    SECTION("Swap non-default and default") {
         wrap_double.swap(defaulted);
         check_state(defaulted, {pi});
         check_state(wrap_double, empty);
     }
 
-    SECTION("Emplace"){
+    SECTION("Emplace") {
         double& new_pi = defaulted.emplace<double>(pi);
         check_state(defaulted, {pi});
         double& new_pi2 = SDEAnyCast<double>(defaulted);
@@ -140,7 +135,6 @@ TEST_CASE("Non-POD Wrapped Types") {
         SDEAny wrapped_value(std::move(value));
         check_state(wrapped_value, {copy_value});
         int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
-        REQUIRE(ptr == new_ptr); //Make sure it's the same instance
+        REQUIRE(ptr == new_ptr); // Make sure it's the same instance
+    }
 }
-}
-
