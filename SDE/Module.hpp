@@ -5,24 +5,28 @@
 namespace SDE {
 namespace detail_ {
 
-/// This function exists solely so we can determine its return type
+/// This function exists solely so we can get the return type of a function
 template<typename ReturnType,typename ClassType, typename...Args>
-auto call_fxn(ReturnType(ClassType::*)(Args...)) {return ReturnType{};}
+ReturnType call_fxn_return(ReturnType(ClassType::*)(Args...)) {}
+
+/// This function exists solely so we can get the arguments of a function
+template<typename ReturnType, typename ClassType, typename...Args>
+std::tuple<Args...> call_fxn_args(ReturnType(ClassType::*)(Args...)){}
+
 
 /**
  * @brief This is a haphazard version of std::result_of that doesn't need the
  * arguments.
  *
  * This class contains a member typedef @p type, which is the type of the value
- * returned from ModuleType::operator().  It assumes that type is copy
- * constructable and that ModuleType does not overload the parenthesis operator.
+ * returned from ModuleType::run_(Args...).  It assumes that ModuleType does not
+ * overload the run_ function.
  *
  * If you want to know how this works:
  * 1. We define a function call_fxn which takes a function pointer and returns a
- *    default constructed version of the return type (which it figures out from
- *    its own signature)
+ *    return type (the type of which it figures out from its own signature)
  * 2. We simulate calling call_fxn when it is given a function pointer to
- *    ModuleType::operator()
+ *    ModuleType::run_()
  * 3. decltype then tells us the return type of this simulated call, which we
  *    know is also the return type of the actual call
  *
@@ -30,8 +34,24 @@ auto call_fxn(ReturnType(ClassType::*)(Args...)) {return ReturnType{};}
  */
 template<typename ModuleType>
 struct ExtractReturnType{
-    /// The type of the result of calling ModuleType::operator().
-    using type = decltype(call_fxn(&ModuleType::operator()));
+    /// The type of the result of calling ModuleType::run_(Args...).
+    using type = decltype(call_fxn_return(&ModuleType::run_));
+};
+
+/**
+ * @brief This struct allows us to get the types of the arguments to the run_
+ * function.
+ *
+ * This class contains a member typedef @p type, which is a tuple filled with
+ * the types of the arguments to ModuleType::run_(Args...).  It assumes that
+ * ModuleType does not overload the run_ function.
+ *
+ * @tparam ModuleType The module type whose arguments we wish to know.
+ */
+template<typename ModuleType>
+struct ExtractArgTypes{
+    /// The type of the arguments to ModuleType::run_(Args...) in a tuple
+    using type = decltype(call_fxn_args(&ModuleType::run_));
 };
 
 } // namespace detail_
@@ -39,16 +59,21 @@ struct ExtractReturnType{
 
 class ModuleBase {
 public:
+
     /**
      * @brief A function that allows us to get the RTTI of the module's type
      *        without having to downcast to it.
+     *
+     * This function is implemented in ModuleImpl<T> so that it returns the RTTI
+     * of T.
+     *
      * @return The RTTI of the module type's type.
      */
-    const std::type_info& type()const noexcept = 0;
+    virtual const std::type_info& type()const noexcept = 0;
 
 protected:
     /// Typedef of a pointer to a module via its base class
-    using ModuleBasePtr = std::uniqe_ptr<ModuleBase>;
+    using ModuleBasePtr = std::unique_ptr<ModuleBase>;
 
     // TODO: Add when SDE is written
     /// A handle to the framework
@@ -63,18 +88,26 @@ protected:
     // std::shared_ptr<const Parameters> params_;
 
     /// Submodules to be called by the module
-    Utilities:CaseInsensitiveMap<ModuleBasePtr> submodules_;
+    Utilities::CaseInsensitiveMap<ModuleBasePtr> submodules_;
 };
 
 template<typename ModuleType>
 class ModuleImpl : public ModuleBase {
 public:
-    /// The return type of calling the module
+    /// The type of the property computed by the module
     using return_type =
       typename detail_::ExtractReturnType<ModuleType>::return_type;
 
+    template<typename...Args>
+    return_type operator()(Args&&...args) {
+
+
+
+        auto result = ModuleType{}.run_(std::forward<Args>(args)...);
+    }
+
     const std::type_info& type() const noexcept override {
-        return decltype(ModuleType);
+        return typeid(ModuleType);
     }
 };
 
@@ -83,6 +116,9 @@ class PropertyBase {
 public:
     /// The type of a pointer to a ModuleBase
     using ModuleBasePtr = std::unique_ptr<ModuleBase>;
+
+    /// The type of the computed property
+    using return_type = typename ModuleType::return_type;
 
     PropertyBase(ModuleBasePtr&& base):
       impl_(std::move(downcast(std::move(base)))) {}
@@ -117,7 +153,7 @@ private:
      * ModuleImplType's move ctor.
      */
     ModuleImplPtr downcast(ModuleBasePtr&& ptr) const {
-        if(ptr->type() != decltype(ModuleType))
+        if(ptr->type() != typeid(ModuleType))
             throw std::bad_cast();
         auto& derived = static_cast<ModuleType&>(std::move(*ptr));
         return std::move(std::make_unique<ModuleType>(derived));
