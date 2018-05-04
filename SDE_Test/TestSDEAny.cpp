@@ -1,9 +1,19 @@
 #include <SDE/SDEAny.hpp>
 #include <catch/catch.hpp>
 #include <vector>
+#include <map>
+#include <typeindex>
 
 using namespace SDE;
 using namespace detail_;
+
+// The correct hashes based on RTTI (assumes all instances of the same type have
+// the same value)
+static std::map<std::type_index, std::string> corr_hvs{
+  {typeid(nullptr), "cbc357ccb763df2852fee8c4fc7d55f2"},
+  {typeid(double), "543c7b6cba068a96954b3c8afdbd193d"},
+  {typeid(std::vector<int>), "1855f488722a9367c0fa5c2c998ee64f"}
+};
 
 template<typename T>
 void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
@@ -15,7 +25,10 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
     REQUIRE(da_any.type() == typeid(T));
     REQUIRE(const_da_any.type() == typeid(T));
 
-    // TODO: Check hashing when hash is compiler independent.
+    Hasher h(bphash::HashType::Hash128);
+    h(da_any);
+    auto hv = h.finalize();
+    REQUIRE(corr_hvs.at(typeid(T)) == bphash::hash_to_string(hv));
 
     // Check the wrapped type (for non-empty SDEAnys)
     if(contents.size()) {
