@@ -172,7 +172,7 @@ public:
      * @throw None. No throw guarantee.
      */
     const std::type_info& type() const noexcept override {
-        return typeid(ModuleType);
+        return  typeid(ModuleType);
     }
 
     /**
