@@ -2,35 +2,41 @@
 #include<catch/catch.hpp>
 
 using namespace SDE;
-using namespace detail_;
 
-// Structs for testing my meta-programming structs
-struct A {bool run_(){return true;}};
-struct B {std::vector<double> run_(int) { return {};}};
-struct C {
-    int x;
-    int & run_(const int&, int) {return x;}
+// Dummy module to test modules taking no arguments
+struct ModuleA : public ModuleImpl<ModuleA, bool> {
+    bool run_() override {return true;}
 };
 
-TEST_CASE("ExtractReturnType") {
+struct ModuleC : public ModuleImpl<ModuleC, bool, const double&, const double*> {
+    bool run_(const double& d, const double* p) override {
+        return &d == p;
+    }
+};
 
-    using type1 = ExtractReturnType<A>;
-    REQUIRE(std::is_same<bool, typename type1::type>::value);
 
-    using type2 = ExtractReturnType<B>;
-    REQUIRE(std::is_same<std::vector<double>, typename type2::type>::value);
+template<typename ModType, typename ReturnType, typename...Args>
+void test_module(ModType& mod, ReturnType corr_result, Args&&...args){
+    // Check typedefs
+    REQUIRE(std::is_same<std::shared_ptr<const ReturnType>, typename
+      ModType::shared_return>::value);
+    REQUIRE(std::is_same<ReturnType, typename ModType::return_type>::value);
+    REQUIRE(typeid(ModType) == mod.type());
+    auto result = mod(std::forward<Args>(args)...);
+    REQUIRE(corr_result == *result);
+}
 
-    using type3 = ExtractReturnType<C>;
-    REQUIRE(std::is_same<int &, typename type3::type>::value);
 
-    using type4 = ExtractArgTypes<A>;
-    REQUIRE(std::is_same<std::tuple<>, typename type4::type>::value);
+TEST_CASE("ModuleImpl") {
 
-    using type5 = ExtractArgTypes<B>;
-    REQUIRE(std::is_same<std::tuple<int>, typename type5::type>::value);
+    SECTION("bool run_(void)") {
+        ModuleA mod;
+        test_module(mod, true);
+    }
 
-    using type6 = ExtractArgTypes<C>;
-    REQUIRE(std::is_same<std::tuple<const int&,int>, typename
-      type6::type>::value);
-
+    SECTION("bool run_(const double&, double*)") {
+        ModuleC mod;
+        double pi{3.14};
+        test_module(mod, true, pi, &pi);
+    }
 }
