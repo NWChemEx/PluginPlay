@@ -11,7 +11,7 @@ namespace SDE {
  *   The Resource enum is largely intended to be used to select which resource
  *   the ModuleBaseImpl::cost returns the cost of.
  */
-enum class Resource { time, memory, disk, processes, threads};
+enum class Resource { time, memory, disk, processes, threads };
 
 /**
  *  @brief This is the class that all modules will be passed around as.
@@ -24,17 +24,16 @@ enum class Resource { time, memory, disk, processes, threads};
  */
 class ModuleBase {
 public:
-
     /**
      * @brief A function that allows us to get the RTTI of the module's type
      *        without having to downcast to it.
      *
-     * This function is implemented in ModuleBaseImpl<T> so that it returns the RTTI
-     * of T.
+     * This function is implemented in ModuleBaseImpl<T> so that it returns the
+     * RTTI of T.
      *
      * @return The RTTI of the module type's type.
      */
-    virtual const std::type_info& type()const noexcept = 0;
+    virtual const std::type_info& type() const noexcept = 0;
 
     /**
      * @brief Provides a hash for the current module's state.
@@ -67,12 +66,9 @@ public:
      * @throw ??? if any of the parameters' or submodules' hash functions throw.
      * Same guarantee as the parameters' and/or submodules' hash functions.
      */
-    void hash(Hasher& h) const {
-        h(submodules_);
-    }
+    void hash(Hasher& h) const { h(submodules_); }
 
 protected:
-
     /// Typedef of a pointer to a module via its base class
     using ModuleBasePtr = std::unique_ptr<ModuleBase>;
 
@@ -105,8 +101,8 @@ protected:
  *         Must satisfy copyable.
  * @tparam Args the types of the arguments to the module's run_ function.
  */
-template<typename ModuleType, typename ReturnType, typename...Args>
-class ModuleBaseImpl :  public ModuleBase {
+template<typename ModuleType, typename ReturnType, typename... Args>
+class ModuleBaseImpl : public ModuleBase {
 public:
     /// The type of the property computed by this module
     using return_type = ReturnType;
@@ -114,7 +110,7 @@ public:
     /// The type of the property computed by the module, as a shared pointer
     using shared_return = std::shared_ptr<const return_type>;
 
-    /// The type of a cost
+    /// The type of a cost as computed by the cost function
     using cost_type = std::size_t;
 
     /**
@@ -139,14 +135,13 @@ public:
      *         module.
      *
      */
-    shared_return operator()(Args...args) {
+    shared_return operator()(Args... args) {
         auto hv = memoize(std::forward<Args>(args)...);
         // check cache for hv
         shared_return result;
         if(true) {
-            result =
-              std::make_shared<return_type>(
-                std::move(run_(std::forward<Args>(args)...)));
+            result = std::make_shared<return_type>(
+              std::move(run_(std::forward<Args>(args)...)));
             // put in cache
         }
         return result;
@@ -172,7 +167,7 @@ public:
      * @throw None. No throw guarantee.
      */
     const std::type_info& type() const noexcept override {
-        return  typeid(ModuleType);
+        return typeid(ModuleType);
     }
 
     /**
@@ -187,12 +182,11 @@ public:
      * @return The cost of calling the module with the provided arguments.  The
      *         units of the returned cost depend on the resource selected.
      */
-    virtual cost_type cost(Resource r, Args...args) {
+    virtual cost_type cost(Resource r, Args... args) {
         return std::numeric_limits<cost_type>::max();
     }
 
 protected:
-
     /**
      * @brief This is the function that should be implemented by the derived
      *        class to provide functionality.
@@ -205,7 +199,7 @@ protected:
      * @param[in] args The input to the module.
      * @return  The result of running this module
      */
-    virtual return_type run_(Args...args) = 0;
+    virtual return_type run_(Args... args) = 0;
 
     /**
      * @brief This function provides the hash value associated with a specific
@@ -233,7 +227,7 @@ protected:
      *      The state of the arguments as well as the module are accessed. Thus
      *      data races may result if either state is concurrently modified.
      */
-    virtual HashValue memoize(Args...args) const {
+    virtual HashValue memoize(Args... args) const {
         Hasher h(HashType::Hash128);
         h(*this, std::forward<Args>(args)...);
         return h.finalize();
@@ -249,11 +243,11 @@ public:
     /// The type of the computed property
     using return_type = typename ModuleType::return_type;
 
-    PropertyBase(ModuleBasePtr&& base):
+    PropertyBase(ModuleBasePtr&& base) :
       impl_(std::move(downcast(std::move(base)))) {}
 
-    template<typename...Args>
-    auto operator()(Args&&...args) {
+    template<typename... Args>
+    auto operator()(Args&&... args) {
         return (*impl_)(std::forward<Args>(args)...);
     }
 
@@ -282,8 +276,7 @@ private:
      * ModuleBaseImplType's move ctor.
      */
     ModuleBaseImplPtr downcast(ModuleBasePtr&& ptr) const {
-        if(ptr->type() != typeid(ModuleType))
-            throw std::bad_cast();
+        if(ptr->type() != typeid(ModuleType)) throw std::bad_cast();
         auto& derived = static_cast<ModuleType&>(std::move(*ptr));
         return std::move(std::make_unique<ModuleType>(derived));
     }
