@@ -3,29 +3,24 @@
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <memory> // for shared_ptr and unique_ptr
 
-/** @file Module.hpp
- *
- *  This file contains the classes necessary for the opqaue manipulations of
- *  modules given only their types.  There's kinda a lot of template
- *  meta-programming going on in the file, the machinery for which is contained
- *  in the detail_ namespace.  If you are using this file to develop a module
- *  you shouldn't need to use any class in the detail_ namespace. Admittedly
- *  reading through heavily templated code is not high on most people's lists of
- *  fun things to do, that's why we have written the page
- *  @ref writing_a_module "Writing a Module", which describes the process in a
- *  much more user-friendly manner.
- */
-
 namespace SDE {
+
+/**
+ *   @brief A list of physical, hardware, and software resources.
+ *
+ *   The Resource enum is largely intended to be used to select which resource
+ *   the ModuleBaseImpl::cost returns the cost of.
+ */
+enum class Resource { time, memory, disk, processes, threads};
 
 /**
  *  @brief This is the class that all modules will be passed around as.
  *
- *  To users the ModuleBase class doesn't do much, aside from allow them to get
- *  the RTTI of the module type.  To module developers, however, the ModuleBase
- *  class provides the state of their module.  The state of this class is
- *  populated by the ModuleManager (who actually owns it)
- *
+ *  To the outside world the ModuleBase class is little more than a type-erased
+ *  handle to the actual module.  To the module itself, the ModuleBase class
+ *  provides the module its state.  Notably, this state includes the Cache
+ *  instance, the algorithmic parameters selected by the user, and the API to
+ *  the framework (and notably the parallel resources).
  */
 class ModuleBase {
 public:
@@ -34,7 +29,7 @@ public:
      * @brief A function that allows us to get the RTTI of the module's type
      *        without having to downcast to it.
      *
-     * This function is implemented in ModuleImpl<T> so that it returns the RTTI
+     * This function is implemented in ModuleBaseImpl<T> so that it returns the RTTI
      * of T.
      *
      * @return The RTTI of the module type's type.
@@ -100,13 +95,18 @@ protected:
 /**
  * @brief The class all module types inherit from.
  *
+ * The ModuleBaseImpl class is primarily responsible for registering the APIs
+ * of modules with the SDE (and doing so in a uniform manner).  Because it is
+ * the most basic class of the module hierarchy with the full signature, it also
+ * is responsible for memoization.
  *
  * @tparam ModuleType the type of the module type.
- * @tparam ReturnType
- * @tparam Args
+ * @tparam ReturnType the type of the object returned by the module.
+ *         Must satisfy copyable.
+ * @tparam Args the types of the arguments to the module's run_ function.
  */
 template<typename ModuleType, typename ReturnType, typename...Args>
-class ModuleImpl :  public ModuleBase {
+class ModuleBaseImpl :  public ModuleBase {
 public:
     /// The type of the property computed by this module
     using return_type = ReturnType;
@@ -114,13 +114,16 @@ public:
     /// The type of the property computed by the module, as a shared pointer
     using shared_return = std::shared_ptr<const return_type>;
 
+    /// The type of a cost
+    using cost_type = std::size_t;
+
     /**
      * @brief The API used to actually call the module.
      *
      * This is the API to the module as seen by users of the SDE.  It wraps the
      * actual call to the module ensuring that memoization occurs.
      *
-     * @param[in] args
+     * @param[in] args the arguments that will be forwarded to the module.
      *
      * @par Complexity:
      * The greater of the cost: to hash this module or to run this module.
@@ -129,9 +132,14 @@ public:
      * The state of this module will be accessed and modified, thus data races
      * may ensue if this module is concurrently modified or accessed.
      *
-     * @return
+     * @return a shared pointer to the result.
+     *
+     * @throws ??? If the module throws. Strong throw guarantee so long as
+     *         @p args is read-only.  Otherwise guarantee depends on the called
+     *         module.
+     *
      */
-    shared_return operator()(Args&& ...args) {
+    shared_return operator()(Args...args) {
         auto hv = memoize(std::forward<Args>(args)...);
         // check cache for hv
         shared_return result;
@@ -150,7 +158,7 @@ public:
      * This function returns the RTTI of the module type **NOT** the type of
      * the implementation.  For example assume you implement `MyGreatAlgorithm`
      * by deriving from `GreatAlgorithm` (which in turn inherited from
-     * `ModuleImpl<GreatAlgorithm>`) this function would return the RTTI of
+     * `ModuleBaseImpl<GreatAlgorithm>`) this function would return the RTTI of
      * `GreatAlgorithm` **NOT* the RTTI of `MyGreatAlgorithm`.
      *
      * @return The RTTI of the module type's type.
@@ -165,6 +173,22 @@ public:
      */
     const std::type_info& type() const noexcept override {
         return typeid(ModuleType);
+    }
+
+    /**
+     * @brief Allow introspection
+     *
+     * The default implementation simply returns the maximum of the type used
+     * for the cost.  Modules are encouraged to override this function so that
+     * the SDE can better manage resources.
+     *
+     * @param[in] r The resource for which we want the cost.
+     * @param[in] args The arguments to pass to the module.
+     * @return The cost of calling the module with the provided arguments.  The
+     *         units of the returned cost depend on the resource selected.
+     */
+    virtual cost_type cost(Resource r, Args...args) {
+        return std::numeric_limits<cost_type>::max();
     }
 
 protected:
@@ -235,7 +259,7 @@ public:
 
 private:
     /// Type of a pointer to the module type's API
-    using ModuleImplPtr = std::unique_ptr<ModuleType>;
+    using ModuleBaseImplPtr = std::unique_ptr<ModuleType>;
 
     /**
      * @brief Code factorization for downcasting from the ModuleBase to the
@@ -253,11 +277,11 @@ private:
      *            passed via the base class.
      * @return  The same instance as @p ptr, downcasted to
      * @throws std::bad_cast if the module implementation pointed to by @p ptr
-     * is not of type @p ModuleImplType.  Strong throw guarantee.
-     * @throws ??? if ModuleImplType's move ctor throws.  Same guarantee as
-     * ModuleImplType's move ctor.
+     * is not of type @p ModuleBaseImplType.  Strong throw guarantee.
+     * @throws ??? if ModuleBaseImplType's move ctor throws.  Same guarantee as
+     * ModuleBaseImplType's move ctor.
      */
-    ModuleImplPtr downcast(ModuleBasePtr&& ptr) const {
+    ModuleBaseImplPtr downcast(ModuleBasePtr&& ptr) const {
         if(ptr->type() != typeid(ModuleType))
             throw std::bad_cast();
         auto& derived = static_cast<ModuleType&>(std::move(*ptr));
@@ -265,7 +289,7 @@ private:
     }
 
     /// The actual implementation to use
-    ModuleImplPtr impl_;
+    ModuleBaseImplPtr impl_;
 };
 
 } // namespace SDE

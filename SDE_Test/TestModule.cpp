@@ -4,12 +4,13 @@
 using namespace SDE;
 
 // Dummy module to test modules taking no arguments
-struct ModuleA : public ModuleImpl<ModuleA, bool> {
+struct ModuleA : public ModuleBaseImpl<ModuleA, bool> {
     bool run_() override {return true;}
 };
 
-struct ModuleC : public ModuleImpl<ModuleC, bool, const double&, const double*> {
-    bool run_(const double& d, const double* p) override {
+// Dummy module to test modules taking references
+struct ModuleC : public ModuleBaseImpl<ModuleC, bool, double&, double*> {
+    bool run_(double& d, double* p) override {
         return &d == p;
     }
 };
@@ -34,7 +35,7 @@ TEST_CASE("ModuleImpl") {
         test_module(mod, true);
     }
 
-    SECTION("bool run_(const double&, double*)") {
+    SECTION("bool run_(double&, double*)") {
         ModuleC mod;
         double pi{3.14};
         test_module(mod, true, pi, &pi);
