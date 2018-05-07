@@ -234,6 +234,12 @@ protected:
     }
 };
 
+/**
+ *  @brief Class responsible for requesting a property be computed.
+ *
+ *  @tparam ModuleType The type of the module
+ *
+ */
 template<typename ModuleType>
 class PropertyBase {
 public:
