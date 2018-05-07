@@ -599,7 +599,7 @@ private:
     }
 
     /**
-     * @brief The actual upcast.
+     * @brief The actual downcast.
      *
      * @tparam T The type to cast to.
      * @return The wrapped value.

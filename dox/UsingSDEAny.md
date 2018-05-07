@@ -37,23 +37,24 @@ a member for each type you want to store.
 
 In C the solution is to use a `void *`.  In C++, we can do much better by using
 the type-erasure pattern.  The pattern works by defining a base class, which 
-we'll call `TEBase` (short for type-erasure base).  `TEBase` is basically a 
-place-holder so an empty class (with a virtual destructor to make it 
-polymorphic) suffices for now:
+we'll call `SDEAnyBase`.  `SDEAnyBase` is basically a place-holder, used as a
+handle, so an empty class (with a virtual destructor to make it polymorphic) 
+suffices for now:
 
 ```.cpp
-struct TEBase {
-    virtual ~TEBase() {}
+struct SDEAnyBase {
+    virtual ~SDEAnyBase() {}
 };
 ``` 
 
-From `TEBase` we derive the class that will hold the actual value.  We'll call
-this class `TE`.  Since `TE` will hold an object of arbitrary type it must be
-templated on that type.  `TE` can be defined something like:
+From `SDEAnyBase` we derive the class that will hold the actual value.  We'll 
+call this class `SDEAnyHolder`.  Since `SDEAnyHolder` will hold an object of 
+arbitrary type it must be templated on that type.  `SDEAnyHolder` can be 
+defined something like:
 
 ```.cpp
 template<typename T>
-struct TE : TEBase {
+struct SDEAnyHolder : SDEAnyBase {
     T value;
 };
 ```
@@ -62,28 +63,33 @@ That's the entire pattern. To see it in action we can store both an integer and
 a double in an `std::vector`:
 
 ```.cpp
-std::vector<TEBase> data;
+std::vector<SDEAnyBase> data;
 
-data.push_back(TE<double>{3.14}); //Works b/c TE<double> inherits from TEBase
-data.push_back(TE<int>{5}); //Works b/c TE<int> inherits from TEBase
+//Works b/c SDEAnyHolder<double> inherits from SDEAnyBase
+data.push_back(SDEAnyHolder<double>{3.14}); 
+//Works b/c SDEAnyHolder<int> inherits from SDEAnyBase
+data.push_back(SDEAnyHolder<int>{5}); 
 
-// double the_double = data[0].value; //doesn't work TEBase has no member value
-// int the_int = data[1].value; //doesn't work TEBase has no member value
+//doesn't work SDEAnyBase has no member value
+// double the_double = data[0].value;
+//doesn't work SDEAnyBase has no member value
+// int the_int = data[1].value; 
 
 // To get the value back, first get the wrapper
-TEBase& wrapped_double = data[0];
+SDEAnyBase& wrapped_double = data[0];
 
 // Next, downcast to the derived type 
-TE<double>& double_holder = dynamic_cast<TE<double>&>(wrapped_double);
+SDEAnyHolder<double>& double_holder = 
+  dynamic_cast<SDEAnyHolder<double>&>(wrapped_double);
 
 // Finally, access the "value" member:
 double the_double = double_holder.value;
 ``` 
 
 The entire thing works because we're passing the wrapped instance around via the
-opaque base class `TEBase`.  Note that unlike the C solution, this solution is 
-type-safe (`dynamic_cast<T>` will throw `std::bad_cast` if a particular `TEBase`
-instance was not created as a `TE<T>`).
+opaque base class `SDEAnyBase`.  Note that unlike the C solution, this solution 
+is type-safe (`dynamic_cast<T>` will throw `std::bad_cast` if a particular 
+`SDEAnyBase` instance was not created as a `SDEAnyHolder<T>`).
 
 @section te_sde_any Type-Erasure Applied to SDEAny
 
@@ -92,19 +98,19 @@ length on the [SDEAny API](@ref sdeany_api) page.  This section mainly focuses
 on the additional type-erasure considerations specific to the SDEAny class that
 were not covered in the previous section.
 
-The simple `TEBase`/`TE` class hierarchy introduced in the previous section does
-nothing besides hold the instance.  Furthermore, how it holds the instance is a
-bit clunky.  Given the prevalence of type-erasure in generic C++ code a common
-solution is to use `boost::any` (`std::any` in C++17 compliant code).  At its
-core these classes work a lot like `TEBase`/`TE` except they provide a much 
-nicer API.  However, these classes are inadequate for our needs as we want to
-be able to manipulate the wrapped instance, in generic ways, without 
-downcasting.  For example, we'll want to be able to hash it.  Assuming 
-`TEBase` was instead defined like:
+The simple `SDEAnyBase`/`SDEAnyHolder` class hierarchy introduced in the 
+previous section does nothing besides hold the instance.  Furthermore, how it
+holds the instance is a bit clunky.  Given the prevalence of type-erasure in 
+generic C++ code a common solution is to use `boost::any` (`std::any` in C++17 
+compliant code).  At its core these classes work a lot like 
+`SDEAnyBase`/`SDEAnyHolder` except they provide a much nicer API.  However, 
+these classes are inadequate for our needs as we want to be able to manipulate 
+the wrapped instance, in generic ways, without downcasting.  For example, we'll 
+want to be able to hash it.  Assuming `SDEAnyBase` was instead defined like:
 
 ```.cpp
-struct TEBase {
-    virtual ~TEBase(){}
+struct SDEAnyBase {
+    virtual ~SDEAnyBase(){}
     
     virtual void hash(Hasher& h) const = 0; 
 };    
@@ -113,7 +119,7 @@ We could implement the `hash` functions in the derived class like:
 
 ```.cpp
 template<typename T>
-struct TE : TEBase {
+struct SDEAnyHolder : SDEAnyBase {
     T value;
     
     void hash(Hasher& h) override {
@@ -123,11 +129,11 @@ struct TE : TEBase {
 };
 ```
 
-Now when we call `TE::hash` the wrapped instance is hashed for us without us 
-having to downcast.  As should be evident, we can't add this functionality to 
-`boost::any` or `std::any` without modifying the source code so that the base
-class contains the necessary virtual functions.  This is why we choose to 
-implement SDEAny ourselves.
+Now when we call `SDEAnyHolder::hash` the wrapped instance is hashed for us 
+without us having to downcast.  As should be evident, we can't add this 
+functionality to `boost::any` or `std::any` without modifying the source code so
+that the base class contains the necessary virtual functions.  This is why we
+choose to implement SDEAny ourselves.
 
 @section sdeany_examples Example Usage
 
