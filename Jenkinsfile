@@ -1,6 +1,6 @@
 def repoName= "SDE"
 def depends = ["CMakeBuild", "Utilities", "LibChemist"] as String[]
-def commonModules = "cmake llvm "
+def commonModules = "cmake llvm python "
 def buildModuleMatrix = [
     		   "GCC":(commonModules + "gcc/7.1.0"),
 		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
@@ -15,10 +15,10 @@ def credentialsID = "422b0eed-700d-444d-961c-1e58cc75cda2"
 /************************************************
  ************************************************
     Shouldn't need to modify anything below...
- ************************************************    
+ ************************************************
  ************************************************/
 
-def buildTypeList=buildModuleMatrix.keySet() as String[]		  
+def buildTypeList=buildModuleMatrix.keySet() as String[]
 def nwxJenkins
 
 node{
