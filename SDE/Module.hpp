@@ -119,6 +119,9 @@ public:
      * This is the API to the module as seen by users of the SDE.  It wraps the
      * actual call to the module ensuring that memoization occurs.
      *
+     * @warning This function is only virtual to facilitate very advanced
+     * workflows.  Generally speaking one should not override this function.
+     *
      * @param[in] args the arguments that will be forwarded to the module.
      *
      * @par Complexity:
@@ -135,7 +138,7 @@ public:
      *         module.
      *
      */
-    shared_return operator()(Args... args) {
+    virtual shared_return operator()(Args... args) {
         auto hv = memoize(std::forward<Args>(args)...);
         // check cache for hv
         shared_return result;
@@ -237,7 +240,20 @@ protected:
 /**
  *  @brief Class responsible for requesting a property be computed.
  *
- *  @tparam ModuleType The type of the module
+ *  Generally speaking we expect the PropertyBase to be used in typedefs,
+ *  for example to define a class capable of returning property "Property"
+ *  by calling a module of type "PropertyImpl" would be something like:
+ *
+ *  @code
+ *  using Property = PropertyBase<PropertyImpl>;
+ *  @endcode
+ *
+ *  Nonethless, it is conceivable that users may want to inherit from this
+ *  class.  For this reason we have made the dtor virtual to ensure
+ *  polymorphism works correctly.
+ *
+ *  @tparam ModuleType The module type which is capable of computing a property.
+ *          Should satisfy the concept of module type.
  *
  */
 template<typename ModuleType>
@@ -249,6 +265,22 @@ public:
     /// The type of the computed property
     using return_type = typename ModuleType::return_type;
 
+    /**
+     * @brief The primary constructor for a property
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     * @par Data Races:
+     * The contents of @p base are modified and data races may occur if the
+     * contents of @p base are concurrently accessed or modified.
+     *
+     * @param base The module implementing the algorithm which will compute the
+     * requested property.
+     *
+     * @throw std::bad_cast if @p ModuleType is not the same as the type of the
+     *        input module.  Strong throw guarantee.
+     */
     PropertyBase(ModuleBasePtr&& base) :
       impl_(std::move(downcast(std::move(base)))) {}
 
@@ -256,6 +288,24 @@ public:
     auto operator()(Args&&... args) {
         return (*impl_)(std::forward<Args>(args)...);
     }
+
+    /**
+     *  @brief Cleans up the PropertyBase instance.
+     *
+     *  Note the dtor is virtual to allow for polymorphism.
+     *
+     *  @par Complexity:
+     *  Constant.  The state of the held module implementation is stored in
+     *  shared_ptr's retained by the SDE.  This deallocation simply decrements
+     *  the reference counts.
+     *
+     *  @par Data Races:
+     *  The state of the current instance is modified and data races may occur
+     *  if it is concurrently modified or accessed.
+     *
+     *  @throw None. No throw guarantee.
+     */
+    virtual ~PropertyBase() = default;
 
 private:
     /// Type of a pointer to the module type's API
@@ -283,8 +333,8 @@ private:
      */
     ModuleBaseImplPtr downcast(ModuleBasePtr&& ptr) const {
         if(ptr->type() != typeid(ModuleType)) throw std::bad_cast();
-        auto& derived = static_cast<ModuleType&>(std::move(*ptr));
-        return std::move(std::make_unique<ModuleType>(derived));
+        auto* derived = static_cast<ModuleType*>(ptr.release());
+        return std::move(std::unique_ptr<ModuleType>(derived));
     }
 
     /// The actual implementation to use
@@ -292,3 +342,25 @@ private:
 };
 
 } // namespace SDE
+
+/**
+ * @brief Macro for declaring a new module type with the correct syntax.
+ *
+ * This macro is intended to cut down on boiler-plate.
+ *
+ * @param[in] type Will become the name of the class defining the module type's
+ *            API
+ * @param[in] return_type The type of the object holding the returned property.
+ * @param[in] ... The types of the arguments to the API
+ *
+ * For example to declare a new module type `A`, which computes a `double` given
+ * and `int` the syntax is:
+ * ```.cpp
+ * SDE_NEW_MODULE_TYPE(A, double, int);
+ * ```
+ */
+
+#define SDE_NEW_MODULE_TYPE(type, return_type, ...)                           \
+    class type : public SDE::ModuleBaseImpl<type, return_type, __VA_ARGS__> { \
+        virtual return_type run_(__VA_ARGS__) = 0;                            \
+    }
