@@ -38,7 +38,7 @@ TEST_CASE("ModuleImpl") {
 
     SECTION("int run_(int)") {
         ModuleB mod;
-        test_module(mod, 3, 3);
+        test_module(static_cast<ModuleBBase&>(mod), 3, 3);
     }
 
     SECTION("bool run_(double&, double*)") {
@@ -63,8 +63,6 @@ void test_property(return_type rv, Args&&... args) {
 
 TEST_CASE("PropertyImpl") {
     SECTION("bool run_(void)") { test_property<ModuleA>(true); }
-
-    SECTION("int run_(int)") { test_property<ModuleB>(3, 3); }
 
     SECTION("bool run_(double&, double*)") {
         double pi{3.14};
