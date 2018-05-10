@@ -20,8 +20,7 @@ namespace SDE {
  *  - citations: Things that should be cited if the module is used.
  *
  */
-DECLARE_SmartEnums(MetaProperty, name, version, description, authors,
-                   citations);
+DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations);
 
 /**
  * @brief Enumerations pertaining to the characteristics of the module.
@@ -35,7 +34,7 @@ DECLARE_SmartEnums(MetaProperty, name, version, description, authors,
  *   algorithmic parameters and the same input may yield different results
  *   (intentionally).  Consequentially memoization should not be performed.
  */
-DECLARE_SmartEnums(ModuleTraits, nondeterministic);
+DECLARE_SmartEnum(ModuleTraits, nondeterministic);
 
 /**
  *  @brief The class used by the ModuleManager to create a new instance of a
@@ -64,16 +63,29 @@ struct ModuleLoader {
     virtual module_pointer get_module() const = 0;
 
     /// The meta data the developer set
-    const std::map<MetaProperty, std::string> meta_data;
+    std::map<MetaProperty, std::string> meta_data;
 
     /// The traits the developer set
-    const std::set<ModuleTraits> traits;
+    std::set<ModuleTraits> traits;
 
     /// Default parameters for this module (implement when Parameters is ready)
     // Parameters params;
 
     /// A map from call-back points to the default submodule key to use
-    const Utilities::CaseInsensitiveMap<module_key_type> submodules;
+    Utilities::CaseInsensitiveMap<module_key_type> submodules;
 }; // class ModuleLoader
 
 } // namespace SDE
+
+/**
+ * @brief Convenience macro for declaring a derived class implementing a
+ *        module's loader
+ *
+ * @param[in] loader_name The name of the resulting class.
+ */
+#define SDE_DECLARE_MODULE_LOADER(loader_name)      \
+    class loader_name : public SDE::ModuleLoader {  \
+    public:                                         \
+        loader_name();                              \
+        module_pointer get_module() const override; \
+    }

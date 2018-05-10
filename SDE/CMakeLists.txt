@@ -17,6 +17,7 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              NWXDefaults.hpp
                              Memoization.hpp
                              Module.hpp
+                             ModuleLoader.hpp
                              MoleculeFileParser.hpp
                              SDEAny.hpp
                              Serialization.hpp
