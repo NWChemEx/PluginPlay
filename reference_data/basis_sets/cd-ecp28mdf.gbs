@@ -185,7 +185,7 @@ G   1   1.00
 ! Cd: D. Figgen, G. Rauhut, M. Dolg, H. Stoll, Chem. Phys. 311, 227 (2005).
 ! 
 CD     0
-CD-ECP     4     28
+CE-ECP     4     28
 g potential
   1
 2      1.0000000              0.0000000        
