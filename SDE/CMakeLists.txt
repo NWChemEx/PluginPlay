@@ -10,6 +10,7 @@ set(SDE_SRCS Defaults/DefaultAM.cpp
                          Defaults/PhysicalConstants.cpp
                          BasisSetFileParser.cpp
                          ChemistryRuntime.cpp
+                         ModuleManager.cpp
                          MoleculeFileParser.cpp
         )
 set(SDE_INCLUDES BasisSetFileParser.hpp
@@ -18,13 +19,14 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              Memoization.hpp
                              Module.hpp
                              ModuleLoader.hpp
+                             ModuleManager.hpp
                              MoleculeFileParser.hpp
                              SDEAny.hpp
                              Serialization.hpp
         )
 list(FIND NWX_DEPENDENCIES pybind11 BUILD_PYTHON_BINDINGS)
 if(NOT ${BUILD_PYTHON_BINDINGS} EQUAL -1)
-
+    #list(APPEND SDE_SRCS PyBindings/)
 endif()
 
 set(SDE_DEFINITIONS )

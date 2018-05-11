@@ -49,18 +49,21 @@ DECLARE_SmartEnum(ModuleTraits, nondeterministic);
  *  Usage of the ModuleLoader class is described in detail on the
  *  @ref using_module_loader "Using the ModuleLoader Class" page.
  */
-struct ModuleLoader {
-    /// The type of the pointer returned by this
+struct ModuleLoaderBase {
+    /// The type of the pointer returned by get_module
     using module_pointer = std::unique_ptr<ModuleBase>;
 
-    /// The type of the module keys
-    using module_key_type = std::string;
+    /// The type of the pointer returned by clone
+    using loader_pointer = std::unique_ptr<ModuleLoaderBase>;
 
     /// Ensures the class is polymorphic
-    virtual ~ModuleLoader() = default;
+    virtual ~ModuleLoaderBase() = default;
 
     /// To be implemented by the developer to return an instance of their module
     virtual module_pointer get_module() const = 0;
+
+    /// Allows a polymorphic copy of the ModuleLoader class
+    virtual loader_pointer clone() const = 0;
 
     /// The meta data the developer set
     std::map<MetaProperty, std::string> meta_data;
@@ -68,24 +71,30 @@ struct ModuleLoader {
     /// The traits the developer set
     std::set<ModuleTraits> traits;
 
-    /// Default parameters for this module (implement when Parameters is ready)
-    // Parameters params;
+    Utilities::CaseInsensitiveMap<std::string> submodules;
 
-    /// A map from call-back points to the default submodule key to use
-    Utilities::CaseInsensitiveMap<module_key_type> submodules;
 }; // class ModuleLoader
 
-} // namespace SDE
-
 /**
- * @brief Convenience macro for declaring a derived class implementing a
- *        module's loader
+ * @brief Class that implements ModuleLoaderBase for a particular module
  *
- * @param[in] loader_name The name of the resulting class.
+ * After deriving from this class the only thing a module developer should have
+ * to do is fill in the meta-data contained in ModuleLoaderBase.
+ *
+ * @tparam ModuleType The class containing the implementation of your module.
+ *         Generally speaking this is **NOT** the module type, but rather the
+ *         class derived from it.
  */
-#define SDE_DECLARE_MODULE_LOADER(loader_name)      \
-    class loader_name : public SDE::ModuleLoader {  \
-    public:                                         \
-        loader_name();                              \
-        module_pointer get_module() const override; \
+template<typename ModuleType>
+class ModuleLoader : public ModuleLoaderBase {
+public:
+    module_pointer get_module() const override {
+        return std::make_unique<ModuleType>();
     }
+
+    loader_pointer clone() const override {
+        return std::make_unique<ModuleLoader<ModuleType>>(*this);
+    }
+};
+
+} // namespace SDE

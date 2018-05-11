@@ -281,7 +281,7 @@ write our SCF energy module in terms of the SCF wavefunction module.
 
 As mentioned at the start of this page the class described here are primarily
 meant as liaisons between the SDE and the base classes for each property.  
-From a user perspective, knowledge of these APIs and how to use, them will only
+From a user perspective, knowledge of these APIs and how to use them, will only
 be needed if one wants to implement their own properties or if one is trying to 
 fine-tune module performance. To that end let us first focus on how to implement
 a new property.

@@ -52,7 +52,7 @@ template<typename T, typename return_type, typename... Args>
 void test_property(return_type rv, Args&&... args) {
     // Typedefs to shorten the next two checks
     using input_t = PropertyBase<T>;
-    using ModPtr  = typename input_t::ModuleBasePtr;
+    using ModPtr  = typename input_t::module_pointer;
 
     REQUIRE(std::is_same<std::unique_ptr<ModuleBase>, ModPtr>::value);
     REQUIRE(std::is_same<return_type, typename input_t::return_type>::value);
