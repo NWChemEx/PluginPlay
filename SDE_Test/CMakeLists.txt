@@ -9,3 +9,5 @@ add_cxx_unit_test(TestModuleLoader)
 add_cxx_unit_test(TestModuleManager)
 add_cxx_unit_test(TestMoleculeFileParser)
 add_cxx_unit_test(TestSDEAny)
+
+add_python_unit_test(TestModuleManager)

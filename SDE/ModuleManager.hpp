@@ -6,6 +6,7 @@ namespace SDE {
 namespace detail_ {
 /// Forward declaration of PIMPL class
 class MMImpl;
+
 } // namespace detail_
 
 class ModuleManager {
@@ -36,8 +37,26 @@ public:
      */
     ModuleManager();
 
-    ModuleManager(ModuleManager&& rhs);
-    ModuleManager& operator=(ModuleManager&& rhs);
+    /**
+     * @brief Takes ownership of another ModuleManager instance.
+     * @param rhs The instance to take ownership of.  After this operation
+     *        @p rhs is a valid, but otherwise unspecified state.
+     * @throw None. No throw guarantee.
+     * @par Complexity:
+     * Constant.
+     */
+    ModuleManager(ModuleManager&& rhs) noexcept;
+
+    /**
+     * @brief Takes ownership of another ModuleManager instance.
+     * @param rhs The instance to take ownership of.  After this operation
+     *        @p rhs is a valid, but otherwise unspecified state.
+     * @return The current instance containing @p rhs's state.
+     * @throw None. No throw guarantee.
+     * @par Complexity:
+     * Constant.
+     */
+    ModuleManager& operator=(ModuleManager&& rhs) noexcept;
 
     /**
      * @brief Frees up all modules managed by this module manager.

@@ -102,10 +102,10 @@ public:
 
 ModuleManager::ModuleManager() : pimpl_(std::make_unique<detail_::MMImpl>()) {}
 
-ModuleManager::ModuleManager(ModuleManager&& mm) :
+ModuleManager::ModuleManager(ModuleManager&& mm) noexcept :
   pimpl_(std::move(mm.pimpl_)) {}
 
-ModuleManager& ModuleManager::operator=(ModuleManager&& mm) {
+ModuleManager& ModuleManager::operator=(ModuleManager&& mm) noexcept {
     pimpl_ = std::move(mm.pimpl_);
     return *this;
 }
