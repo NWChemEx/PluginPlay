@@ -8,9 +8,10 @@ struct ModuleA : public ModuleBaseImpl<ModuleA, bool> {
     bool run_() override { return true; }
 };
 
-SDE_NEW_MODULE_TYPE(ModuleBBase, int, int);
+template<typename Derived>
+using ModuleBBase = ModuleBaseImpl<Derived, int, int>;
 
-struct ModuleB : ModuleBBase {
+struct ModuleB : ModuleBBase<ModuleB> {
     int run_(int x) override { return x; }
 };
 

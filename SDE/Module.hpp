@@ -238,7 +238,7 @@ protected:
      */
     virtual HashValue memoize(Args... args) const {
         Hasher h(HashType::Hash128);
-        h(*this, std::forward<Args>(args)...);
+        // h(*this, std::forward<Args>(args)...);
         return h.finalize();
     }
 };
@@ -348,25 +348,3 @@ private:
 };
 
 } // namespace SDE
-
-/**
- * @brief Macro for declaring a new module type with the correct syntax.
- *
- * This macro is intended to cut down on boiler-plate.
- *
- * @param[in] type Will become the name of the class defining the module type's
- *            API
- * @param[in] return_type The type of the object holding the returned property.
- * @param[in] ... The types of the arguments to the API
- *
- * For example to declare a new module type `A`, which computes a `double` given
- * and `int` the syntax is:
- * ```.cpp
- * SDE_NEW_MODULE_TYPE(A, double, int);
- * ```
- */
-
-#define SDE_NEW_MODULE_TYPE(type, return_type, ...)                           \
-    class type : public SDE::ModuleBaseImpl<type, return_type, __VA_ARGS__> { \
-        virtual return_type run_(__VA_ARGS__) = 0;                            \
-    }
