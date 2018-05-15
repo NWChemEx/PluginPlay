@@ -8,9 +8,10 @@ struct ModuleA : public ModuleBaseImpl<ModuleA, bool> {
     bool run_() override { return true; }
 };
 
-SDE_NEW_MODULE_TYPE(ModuleBBase, int, int);
+template<typename Derived>
+using ModuleBBase = ModuleBaseImpl<Derived, int, int>;
 
-struct ModuleB : ModuleBBase {
+struct ModuleB : ModuleBBase<ModuleB> {
     int run_(int x) override { return x; }
 };
 
@@ -38,7 +39,7 @@ TEST_CASE("ModuleImpl") {
 
     SECTION("int run_(int)") {
         ModuleB mod;
-        test_module(static_cast<ModuleBBase&>(mod), 3, 3);
+        test_module(mod, 3, 3);
     }
 
     SECTION("bool run_(double&, double*)") {
@@ -52,7 +53,7 @@ template<typename T, typename return_type, typename... Args>
 void test_property(return_type rv, Args&&... args) {
     // Typedefs to shorten the next two checks
     using input_t = PropertyBase<T>;
-    using ModPtr  = typename input_t::ModuleBasePtr;
+    using ModPtr  = typename input_t::module_pointer;
 
     REQUIRE(std::is_same<std::unique_ptr<ModuleBase>, ModPtr>::value);
     REQUIRE(std::is_same<return_type, typename input_t::return_type>::value);

@@ -4,6 +4,9 @@
 #include <memory> // for shared_ptr and unique_ptr
 
 namespace SDE {
+namespace detail_ {
+class MMImpl;
+}
 
 /**
  *   @brief A list of physical, hardware, and software resources.
@@ -69,8 +72,11 @@ public:
     void hash(Hasher& h) const { h(submodules_); }
 
 protected:
+    /// Allows ModuleManager to set the state (via its implementation class)
+    friend class detail_::MMImpl;
+
     /// Typedef of a pointer to a module via its base class
-    using ModuleBasePtr = std::unique_ptr<ModuleBase>;
+    using module_pointer = std::unique_ptr<ModuleBase>;
 
     // TODO: Add when SDE is written
     /// A handle to the framework
@@ -82,10 +88,10 @@ protected:
 
     // TODO: Add when Parameters are written
     /// Values for the algorithmic parameters associated with the module
-    // std::shared_ptr<const Parameters> params_;
+    // Parameters params_;
 
     /// Submodules to be called by the module
-    Utilities::CaseInsensitiveMap<ModuleBasePtr> submodules_;
+    Utilities::CaseInsensitiveMap<module_pointer> submodules_;
 };
 
 /**
@@ -232,7 +238,7 @@ protected:
      */
     virtual HashValue memoize(Args... args) const {
         Hasher h(HashType::Hash128);
-        h(*this, std::forward<Args>(args)...);
+        // h(*this, std::forward<Args>(args)...);
         return h.finalize();
     }
 };
@@ -260,7 +266,7 @@ template<typename ModuleType>
 class PropertyBase {
 public:
     /// The type of a pointer to a ModuleBase
-    using ModuleBasePtr = std::unique_ptr<ModuleBase>;
+    using module_pointer = std::unique_ptr<ModuleBase>;
 
     /// The type of the computed property
     using return_type = typename ModuleType::return_type;
@@ -281,7 +287,7 @@ public:
      * @throw std::bad_cast if @p ModuleType is not the same as the type of the
      *        input module.  Strong throw guarantee.
      */
-    PropertyBase(ModuleBasePtr&& base) :
+    PropertyBase(module_pointer&& base) :
       impl_(std::move(downcast(std::move(base)))) {}
 
     template<typename... Args>
@@ -331,7 +337,7 @@ private:
      * @throws ??? if ModuleBaseImplType's move ctor throws.  Same guarantee as
      * ModuleBaseImplType's move ctor.
      */
-    ModuleBaseImplPtr downcast(ModuleBasePtr&& ptr) const {
+    ModuleBaseImplPtr downcast(module_pointer&& ptr) const {
         if(ptr->type() != typeid(ModuleType)) throw std::bad_cast();
         auto* derived = static_cast<ModuleType*>(ptr.release());
         return std::move(std::unique_ptr<ModuleType>(derived));
@@ -342,25 +348,3 @@ private:
 };
 
 } // namespace SDE
-
-/**
- * @brief Macro for declaring a new module type with the correct syntax.
- *
- * This macro is intended to cut down on boiler-plate.
- *
- * @param[in] type Will become the name of the class defining the module type's
- *            API
- * @param[in] return_type The type of the object holding the returned property.
- * @param[in] ... The types of the arguments to the API
- *
- * For example to declare a new module type `A`, which computes a `double` given
- * and `int` the syntax is:
- * ```.cpp
- * SDE_NEW_MODULE_TYPE(A, double, int);
- * ```
- */
-
-#define SDE_NEW_MODULE_TYPE(type, return_type, ...)                           \
-    class type : public SDE::ModuleBaseImpl<type, return_type, __VA_ARGS__> { \
-        virtual return_type run_(__VA_ARGS__) = 0;                            \
-    }

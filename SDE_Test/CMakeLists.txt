@@ -7,3 +7,5 @@ add_cxx_unit_test(TestChemistryRuntime)
 add_cxx_unit_test(TestModule)
 add_cxx_unit_test(TestMoleculeFileParser)
 add_cxx_unit_test(TestSDEAny)
+
+add_python_unit_test(TestModule)
