@@ -3,16 +3,6 @@
 using module_pointer  = typename SDE::ModuleBase::module_pointer;
 using submodules_list = typename SDE::ModuleBase::submodules_list;
 
-inline submodules_list copy_submodules(const submodules_list& rhs) {
-    submodules_list rv;
-    for(const auto& x : rhs) {
-        module_pointer new_ptr = x.second->clone();
-        // Use hint insert b/c they will be in the same order...
-        rv.insert(rv.end(), std::make_pair(x.first, std::move(new_ptr)));
-    }
-    return rv;
-}
-
 namespace SDE {
 namespace detail_ {
 
@@ -31,11 +21,6 @@ struct ModuleBasePIMPL {
     /// Values for the algorithmic parameters associated with the module
     // Parameters params_;
 
-    ModuleBasePIMPL() = default;
-
-    ModuleBasePIMPL(const ModuleBasePIMPL& rhs) :
-      submodules(copy_submodules(rhs.submodules)) {}
-
     void hash(Hasher& h) const { h(submodules); }
 };
 
@@ -43,22 +28,6 @@ struct ModuleBasePIMPL {
 
 ModuleBase::ModuleBase() :
   pimpl_(std::make_unique<detail_::ModuleBasePIMPL>()) {}
-
-ModuleBase::ModuleBase(const ModuleBase& rhs) :
-  pimpl_(std::make_unique<detail_::ModuleBasePIMPL>(*rhs.pimpl_)) {}
-
-ModuleBase& ModuleBase::operator=(const ModuleBase& rhs) {
-    pimpl_ = std::make_unique<detail_::ModuleBasePIMPL>(*rhs.pimpl_);
-    return *this;
-}
-
-ModuleBase::ModuleBase(ModuleBase&& rhs) noexcept :
-  pimpl_(std::move(rhs.pimpl_)) {}
-
-ModuleBase& ModuleBase::operator=(ModuleBase&& rhs) noexcept {
-    pimpl_ = std::move(rhs.pimpl_);
-    return *this;
-}
 
 ModuleBase::~ModuleBase() noexcept {}
 

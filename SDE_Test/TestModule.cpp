@@ -2,68 +2,71 @@
 #include <catch/catch.hpp>
 
 using namespace SDE;
+using module_ptr = typename ModuleBase::module_pointer;
 
-// Dummy module to test modules taking no arguments
-struct ModuleA : ModuleBaseImpl<ModuleA, bool> {
-    bool run_() override { return true; }
+// Declare some Module types
+DEFINE_PROPERTY(TestProperty1, void, );
+DEFINE_PROPERTY(TestProperty2, int, int);
+DEFINE_PROPERTY(TestProperty3, int*, int&);
+
+// Implement those types
+struct MyProp1 : TestProperty1API {
+    void run() {}
+};
+struct MyProp2 : TestProperty2API {
+    int run(int x) { return x + 1; }
+};
+struct MyProp3 : TestProperty3API {
+    int* run(int& x) { return &x; }
 };
 
-struct ModuleB : ModuleBaseImpl<ModuleB, int, int> {
-    int run_(int x) override { return x; }
-};
-
-// Dummy module to test modules taking references
-struct ModuleC : ModuleBaseImpl<ModuleC, bool, double&, double*> {
-    bool run_(double& d, double* p) override { return &d == p; }
-};
-
-template<typename ModType, typename ReturnType, typename... Args>
-void test_module(ModType& mod, ReturnType corr_result, Args&&... args) {
-    // Check typedefs
-    REQUIRE(std::is_same<std::shared_ptr<const ReturnType>,
-                         typename ModType::shared_return>::value);
-    REQUIRE(std::is_same<ReturnType, typename ModType::return_type>::value);
-    REQUIRE(typeid(ModType) == mod.type());
-    auto result = mod(std::forward<Args>(args)...);
-    REQUIRE(corr_result == *result);
+template<typename mod_type, typename corr_type>
+void test_module() {
+    mod_type mod;
+    REQUIRE(mod.type() == typeid(corr_type));
+    REQUIRE(mod.submodules().empty());
+    // Check hash
 }
 
-TEST_CASE("ModuleImpl") {
-    SECTION("bool run_(void)") {
-        ModuleA mod;
-        test_module(mod, true);
-    }
+TEST_CASE("ModuleBaseImpl and ModuleBase") {
+    SECTION("void run()") { test_module<MyProp1, TestProperty1API>(); }
 
-    SECTION("int run_(int)") {
-        ModuleB mod;
-        test_module(mod, 3, 3);
-    }
+    SECTION("int run(int)") { test_module<MyProp2, TestProperty2API>(); }
 
-    SECTION("bool run_(double&, double*)") {
-        ModuleC mod;
-        double pi{3.14};
-        test_module(mod, true, pi, &pi);
-    }
+    SECTION("int* run(int&)") { test_module<MyProp3, TestProperty3API>(); }
 }
 
-template<typename T, typename return_type, typename... Args>
-void test_property(return_type rv, Args&&... args) {
-    // Typedefs to shorten the next two checks
-    using input_t = PropertyBase<T>;
-    using ModPtr  = typename input_t::module_pointer;
-
-    REQUIRE(std::is_same<std::unique_ptr<ModuleBase>, ModPtr>::value);
-    REQUIRE(std::is_same<return_type, typename input_t::return_type>::value);
-
-    input_t prop(std::make_unique<T>());
-    REQUIRE(*prop(std::forward<Args>(args)...) == rv);
+// Simulates getting module from ModuleManager
+module_ptr mm_facade(const std::string& str) {
+    if(str == "Prop1")
+        return std::make_shared<MyProp1>();
+    else if(str == "Prop2")
+        return std::make_shared<MyProp2>();
+    else if(str == "Prop3")
+        return std::make_shared<MyProp3>();
+    return {};
 }
 
-TEST_CASE("PropertyImpl") {
-    SECTION("bool run_(void)") { test_property<ModuleA>(true); }
+TEST_CASE("PropertyBase") {
+    // SECTION("void run()"){
+    // TestProperty1 prop(mm_facade("Prop1"));
+    // auto rv = prop();
+    //}
 
-    SECTION("bool run_(double&, double*)") {
-        double pi{3.14};
-        test_property<ModuleC>(true, pi, &pi);
+    SECTION("int run(int)") {
+        TestProperty2 prop(mm_facade("Prop2"));
+        auto rv = prop(2);
+        REQUIRE(*rv == 3);
+    }
+
+    SECTION("int* run(int&)") {
+        TestProperty3 prop(mm_facade("Prop3"));
+        int two = 2;
+        auto rv = prop(two);
+        REQUIRE(*rv == &two);
+    }
+
+    SECTION("Ctor error checking") {
+        REQUIRE_THROWS_AS(TestProperty1(mm_facade("Prop2")), std::bad_cast);
     }
 }

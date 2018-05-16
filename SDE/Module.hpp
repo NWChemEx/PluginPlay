@@ -1,12 +1,13 @@
 #pragma once
 #include "SDE/Memoization.hpp"
+#include "SDE/ModuleHelpers.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
 
 namespace SDE {
 namespace detail_ {
-// Type that actually implements the ModuleBase
+// Forward declarations of pimpl classes
 class ModuleBasePIMPL;
 } // namespace detail_
 
@@ -40,13 +41,12 @@ DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations);
  *
  *  ModuleBase is the opaque handle to a module that is usable with the SDE.
  *
- *
  *  @nosubgrouping
  */
 class ModuleBase {
 public:
     /// Type of a pointer to this class
-    using module_pointer = std::unique_ptr<ModuleBase>;
+    using module_pointer = std::shared_ptr<ModuleBase>;
 
     /// Type of meta-data stored in this class
     using meta_data_type = std::map<MetaProperty, std::string>;
@@ -54,38 +54,12 @@ public:
     /// Type of the list of submodules stored in this class
     using submodules_list = Utilities::CaseInsensitiveMap<module_pointer>;
 
-    /**
-     * @name Constructors and Destructors
-     *
-     * @brief Constructors and Destructors for the ModuleBase class.
-     *
-     * @param[in] rhs Another ModuleBase instance.
-     *
-     * @throw std::bad_alloc if the default constructor has insufficient
-     *        memory to create a new ModuleBaseImpl.  Strong throw
-     *        guarantee.
-     * @throw std::bad_alloc if the copy constructor/assignment operator has
-     *        insufficient memory to copy. Strong throw guarantee.
-     * @throw None. All other ctors, as well as the dtor, are no throw
-     *        guarantee.
-     *
-     * @par Complexity:
-     * All ctors aside from the copy constructor/assignment operator are
-     * constant complexity.  The copy ctor(assignment operator)/dtor must
-     * copy/destroy the DAG emanating from this module and are thus linear in
-     * the number of submodules (nodes) in that DAG.
-     *
-     */
-    ///@{
     ModuleBase();
-    ModuleBase(const ModuleBase& rhs);
-    ModuleBase& operator=(const ModuleBase& rhs);
-    ModuleBase(ModuleBase&& rhs) noexcept;
-    ModuleBase& operator=(ModuleBase&& rhs) noexcept;
+    ModuleBase(const ModuleBase& rhs) = delete;
+    ModuleBase& operator=(const ModuleBase& rhs) = delete;
+    ModuleBase(ModuleBase&& rhs) noexcept        = delete;
+    ModuleBase& operator=(ModuleBase&& rhs) noexcept = delete;
     virtual ~ModuleBase() noexcept;
-    ///@}
-
-    virtual module_pointer clone() const = 0;
 
     /**
      * @brief Swaps the contents of the current instance with that of @p rhs.
@@ -106,6 +80,14 @@ public:
      */
     void swap(ModuleBase& rhs) noexcept;
 
+    /**
+     * @name Accessors
+     *
+     * @brief The functions in this section allow read-only access to a module's
+     *        state.
+     *
+     *
+     */
     ///@{
     const submodules_list& submodules() const noexcept;
     ///@}
@@ -114,8 +96,6 @@ public:
      * @brief A function that allows us to get the RTTI of the module's type
      *        without having to downcast to it.
      *
-     * This function is implemented in ModuleBaseImpl<T> so that it returns the
-     * RTTI of T.
      *
      * @return The RTTI of the module type's type.
      */
@@ -160,38 +140,79 @@ private:
 };
 
 /**
- * @brief The class all module types inherit from.
+ * @brief Convenience class for code factorization.
  *
- * The ModuleBaseImpl class is primarily responsible for registering the APIs
- * of modules with the SDE (and doing so in a uniform manner).  Because it is
- * the most basic class of the module hierarchy with the full signature, it also
- * is responsible for memoization.
+ * Implementing a module involves a lot of boiler-plate.  This class is
+ * designed in an effort to circumvent some of it.
  *
- * @tparam ModuleType the type of the module type.
- * @tparam ReturnType the type of the object returned by the module.
- *         Must satisfy copyable.
- * @tparam Args the types of the arguments to the module's run_ function.
+ *
+ * @tparam ModuleType the type of the derived module.
  */
-template<typename ModuleType, typename ReturnType, typename... Args>
-class ModuleBaseImpl : public ModuleBase {
-private:
-    /// typedef of current instance for sanity
-    using my_type = ModuleBaseImpl<ModuleType, ReturnType, Args...>;
+template<typename ModuleType>
+struct ModuleBaseImpl : ModuleBase {
+    using module_pointer = typename ModuleBase::module_pointer;
 
+    const std::type_info& type() const noexcept override {
+        return typeid(ModuleType);
+    }
+};
+
+/**
+ *  @brief Class responsible for requesting a property be computed.
+ *
+ *  Generally speaking we expect the PropertyBase to be used in typedefs,
+ *  for example to define a class capable of returning property "Property"
+ *  by calling a module of type "PropertyImpl" would be something like:
+ *
+ *  @code
+ *  using Property = PropertyBase<PropertyImpl>;
+ *  @endcode
+ *
+ *  Nonethless, it is conceivable that users may want to inherit from this
+ *  class.  For this reason we have made the dtor virtual to ensure
+ *  polymorphism works correctly.
+ *
+ *  @tparam ModuleType The module type which is capable of computing a property.
+ *          Should satisfy the concept of module type.
+ *
+ */
+template<typename ModuleType>
+class PropertyBase {
 public:
-    /// The type of the property computed by this module
-    using return_type = ReturnType;
+    /// The type of the module's API
+    using module_type = ModuleType;
 
-    /// The type of the property computed by the module, as a shared pointer
+    /// The type of the computed property
+    using return_type = detail_::RunDetails_return_type<ModuleType>;
+
+    /// The type of a shared_pointer to the computed property
     using shared_return = std::shared_ptr<const return_type>;
+
+    /// The type of the arguments to run_
+    using args_type = detail_::RunDetails_args_type<ModuleType>;
+
+    /// The type of a pointer to a ModuleBase
+    using module_pointer = typename ModuleBase::module_pointer;
 
     /// The type of a cost as computed by the cost function
     using cost_type = std::size_t;
 
-    std::unique_ptr<ModuleBase> clone() const override {
-        return std::make_unique<ModuleType>(
-          static_cast<const ModuleType&>(*this));
-    }
+    /// The type of the hash returned by memoization
+    using hash_type = HashValue;
+
+    /**
+     * @brief Creates a class capable of computing a given property.
+     *
+     * @param mod A module that implements an algorithm capable of computing a
+     *            given property.
+     *
+     * @throws std::bad_cast if @p mod is not derived from @p ModuleType.
+     *         Strong throw guarantee.
+     *
+     * @par Complexity:
+     * Constant.
+     */
+    PropertyBase(module_pointer mod) : impl_(downcast(mod)) {}
 
     /**
      * @brief The API used to actually call the module.
@@ -199,8 +220,6 @@ public:
      * This is the API to the module as seen by users of the SDE.  It wraps the
      * actual call to the module ensuring that memoization occurs.
      *
-     * @warning This function is only virtual to facilitate very advanced
-     * workflows.  Generally speaking one should not override this function.
      *
      * @param[in] args the arguments that will be forwarded to the module.
      *
@@ -218,71 +237,18 @@ public:
      *         module.
      *
      */
-    virtual shared_return operator()(Args... args) {
+    template<typename... Args>
+    shared_return operator()(Args&&... args) {
         auto hv = memoize(std::forward<Args>(args)...);
         // check cache for hv
         shared_return result;
         if(true) {
-            result = std::make_shared<return_type>(
-              std::move(run_(std::forward<Args>(args)...)));
+            auto rv = impl_->run(std::forward<Args>(args)...);
+            result  = std::make_shared<return_type>(std::move(rv));
             // put in cache
         }
         return result;
     }
-
-    /**
-     * @brief Returns the RTTI of the module.
-     *
-     * This function returns the RTTI of the module type **NOT** the type of
-     * the implementation.  For example assume you implement `MyGreatAlgorithm`
-     * by deriving from `GreatAlgorithm` (which in turn inherited from
-     * `ModuleBaseImpl<GreatAlgorithm>`) this function would return the RTTI of
-     * `GreatAlgorithm` **NOT* the RTTI of `MyGreatAlgorithm`.
-     *
-     * @return The RTTI of the module type's type.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * None.
-     *
-     * @throw None. No throw guarantee.
-     */
-    const std::type_info& type() const noexcept override {
-        return typeid(ModuleType);
-    }
-
-    /**
-     * @brief Allow introspection
-     *
-     * The default implementation simply returns the maximum of the type used
-     * for the cost.  Modules are encouraged to override this function so that
-     * the SDE can better manage resources.
-     *
-     * @param[in] r The resource for which we want the cost.
-     * @param[in] args The arguments to pass to the module.
-     * @return The cost of calling the module with the provided arguments.  The
-     *         units of the returned cost depend on the resource selected.
-     */
-    virtual cost_type cost(Resource r, Args... args) {
-        return std::numeric_limits<cost_type>::max();
-    }
-
-protected:
-    /**
-     * @brief This is the function that should be implemented by the derived
-     *        class to provide functionality.
-     *
-     * @note We do not want to put the && after @p Args because the user gave
-     *       us the arguments fully decorated and the && would trigger perfect
-     *       forwarding, which (somewhat ironically) will put additional
-     *       references on the arguments.
-     *
-     * @param[in] args The input to the module.
-     * @return  The result of running this module
-     */
-    virtual return_type run_(Args... args) = 0;
 
     /**
      * @brief This function provides the hash value associated with a specific
@@ -310,63 +276,30 @@ protected:
      *      The state of the arguments as well as the module are accessed. Thus
      *      data races may result if either state is concurrently modified.
      */
-    virtual HashValue memoize(Args... args) const {
+    template<typename... Args>
+    hash_type memoize(Args&&... args) const {
+        // TODO: dispatch to ModuleType if it defines a memoize fxn
         Hasher h(HashType::Hash128);
         // h(*this, std::forward<Args>(args)...);
         return h.finalize();
     }
-};
-
-/**
- *  @brief Class responsible for requesting a property be computed.
- *
- *  Generally speaking we expect the PropertyBase to be used in typedefs,
- *  for example to define a class capable of returning property "Property"
- *  by calling a module of type "PropertyImpl" would be something like:
- *
- *  @code
- *  using Property = PropertyBase<PropertyImpl>;
- *  @endcode
- *
- *  Nonethless, it is conceivable that users may want to inherit from this
- *  class.  For this reason we have made the dtor virtual to ensure
- *  polymorphism works correctly.
- *
- *  @tparam ModuleType The module type which is capable of computing a property.
- *          Should satisfy the concept of module type.
- *
- */
-template<typename ModuleType>
-class PropertyBase {
-public:
-    /// The type of a pointer to a ModuleBase
-    using module_pointer = std::unique_ptr<ModuleBase>;
-
-    /// The type of the computed property
-    using return_type = typename ModuleType::return_type;
 
     /**
-     * @brief The primary constructor for a property
+     * @brief Allow introspection
      *
-     * @par Complexity:
-     * Constant.
+     * The default implementation simply returns the maximum of the type used
+     * for the cost.  Modules are encouraged to override this function so that
+     * the SDE can better manage resources.
      *
-     * @par Data Races:
-     * The contents of @p base are modified and data races may occur if the
-     * contents of @p base are concurrently accessed or modified.
-     *
-     * @param base The module implementing the algorithm which will compute the
-     * requested property.
-     *
-     * @throw std::bad_cast if @p ModuleType is not the same as the type of the
-     *        input module.  Strong throw guarantee.
+     * @param[in] r The resource for which we want the cost.
+     * @param[in] args The arguments to pass to the module.
+     * @return The cost of calling the module with the provided arguments.  The
+     *         units of the returned cost depend on the resource selected.
      */
-    PropertyBase(module_pointer&& base) :
-      impl_(std::move(downcast(std::move(base)))) {}
-
     template<typename... Args>
-    auto operator()(Args&&... args) {
-        return (*impl_)(std::forward<Args>(args)...);
+    cost_type cost(Resource r, Args&&...) {
+        // TODO: dispatch to ModuleType if it defines a cost fxn
+        return std::numeric_limits<cost_type>::max();
     }
 
     /**
@@ -388,37 +321,23 @@ public:
     virtual ~PropertyBase() = default;
 
 private:
-    /// Type of a pointer to the module type's API
-    using ModuleBaseImplPtr = std::unique_ptr<ModuleType>;
+    /// The type of the derived class implementing the module
+    using derived_ptr = std::shared_ptr<ModuleType>;
 
-    /**
-     * @brief Code factorization for downcasting from the ModuleBase to the
-     *        actual implementation.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Race:
-     * This call modifies both the current instance and @p ptr.  Data
-     * races may ensure if either the current instance or @p ptr are
-     * concurrently accessed.
-     *
-     * @param[in] ptr The instance which implements the property algorithm
-     *            passed via the base class.
-     * @return  The same instance as @p ptr, downcasted to
-     * @throws std::bad_cast if the module implementation pointed to by @p ptr
-     * is not of type @p ModuleBaseImplType.  Strong throw guarantee.
-     * @throws ??? if ModuleBaseImplType's move ctor throws.  Same guarantee as
-     * ModuleBaseImplType's move ctor.
-     */
-    ModuleBaseImplPtr downcast(module_pointer&& ptr) const {
-        if(ptr->type() != typeid(ModuleType)) throw std::bad_cast();
-        auto* derived = static_cast<ModuleType*>(ptr.release());
-        return std::move(std::unique_ptr<ModuleType>(derived));
+    /// Wrapper around the cast to ensure it succeeds
+    derived_ptr downcast(module_pointer ptr) {
+        if(ptr->type() != typeid(ModuleType)) throw std::bad_cast{};
+        return std::static_pointer_cast<ModuleType>(ptr);
     }
 
     /// The actual implementation to use
-    ModuleBaseImplPtr impl_;
+    derived_ptr impl_;
 };
 
 } // namespace SDE
+
+#define DEFINE_PROPERTY(prop_name, return_value, ...)             \
+    struct prop_name##API : SDE::ModuleBaseImpl<prop_name##API> { \
+        virtual return_value run(__VA_ARGS__) = 0;                \
+    };                                                            \
+    using prop_name = SDE::PropertyBase<prop_name##API>
