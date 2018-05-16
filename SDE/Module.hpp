@@ -1,12 +1,14 @@
 #pragma once
 #include "SDE/Memoization.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
+#include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
 
 namespace SDE {
 namespace detail_ {
-class MMImpl;
-}
+// Type that actually implements the ModuleBase
+class ModuleBasePIMPL;
+} // namespace detail_
 
 /**
  *   @brief A list of physical, hardware, and software resources.
@@ -14,19 +16,100 @@ class MMImpl;
  *   The Resource enum is largely intended to be used to select which resource
  *   the ModuleBaseImpl::cost returns the cost of.
  */
-enum class Resource { time, memory, disk, processes, threads };
+DECLARE_SmartEnum(Resource, time, memory, disk, processes, threads);
+
+/**
+ *  @brief Enumerations for the various meta data types associated with a
+ *         module.
+ *
+ *  The MetaProperty enumeration is meant as a way to associate important meta
+ *  data with a module.  At the moment, recognized meta data includes:
+ *
+ *  - name: A descriptive name for the module
+ *  - version: Information that can be used to uniquely identify the state of
+ *             the module's source code.
+ *  - description: An informative discourse of what the module is capable of
+ *  - authors: The people who wrote the module
+ *  - citations: Things that should be cited if the module is used.
+ *
+ */
+DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations);
 
 /**
  *  @brief This is the class that all modules will be passed around as.
  *
- *  To the outside world the ModuleBase class is little more than a type-erased
- *  handle to the actual module.  To the module itself, the ModuleBase class
- *  provides the module its state.  Notably, this state includes the Cache
- *  instance, the algorithmic parameters selected by the user, and the API to
- *  the framework (and notably the parallel resources).
+ *  ModuleBase is the opaque handle to a module that is usable with the SDE.
+ *
+ *
+ *  @nosubgrouping
  */
 class ModuleBase {
 public:
+    /// Type of a pointer to this class
+    using module_pointer = std::unique_ptr<ModuleBase>;
+
+    /// Type of meta-data stored in this class
+    using meta_data_type = std::map<MetaProperty, std::string>;
+
+    /// Type of the list of submodules stored in this class
+    using submodules_list = Utilities::CaseInsensitiveMap<module_pointer>;
+
+    /**
+     * @name Constructors and Destructors
+     *
+     * @brief Constructors and Destructors for the ModuleBase class.
+     *
+     * @param[in] rhs Another ModuleBase instance.
+     *
+     * @throw std::bad_alloc if the default constructor has insufficient
+     *        memory to create a new ModuleBaseImpl.  Strong throw
+     *        guarantee.
+     * @throw std::bad_alloc if the copy constructor/assignment operator has
+     *        insufficient memory to copy. Strong throw guarantee.
+     * @throw None. All other ctors, as well as the dtor, are no throw
+     *        guarantee.
+     *
+     * @par Complexity:
+     * All ctors aside from the copy constructor/assignment operator are
+     * constant complexity.  The copy ctor(assignment operator)/dtor must
+     * copy/destroy the DAG emanating from this module and are thus linear in
+     * the number of submodules (nodes) in that DAG.
+     *
+     */
+    ///@{
+    ModuleBase();
+    ModuleBase(const ModuleBase& rhs);
+    ModuleBase& operator=(const ModuleBase& rhs);
+    ModuleBase(ModuleBase&& rhs) noexcept;
+    ModuleBase& operator=(ModuleBase&& rhs) noexcept;
+    virtual ~ModuleBase() noexcept;
+    ///@}
+
+    virtual module_pointer clone() const = 0;
+
+    /**
+     * @brief Swaps the contents of the current instance with that of @p rhs.
+     *
+     * This function only swaps the contents of the ModuleBase class.  Derived
+     * classes will need to additionally add their own swaps to the pool.
+     *
+     * @param rhs The ModuleBase instance to swap with.
+     *
+     * @throw None. No throw guarantee.
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     * @par Data Races:
+     * The state of both this module and @p rhs are modified.  Data races may
+     * occur if either this instance or @p rhs are concurrently modified.
+     */
+    void swap(ModuleBase& rhs) noexcept;
+
+    ///@{
+    const submodules_list& submodules() const noexcept;
+    ///@}
+
     /**
      * @brief A function that allows us to get the RTTI of the module's type
      *        without having to downcast to it.
@@ -69,29 +152,11 @@ public:
      * @throw ??? if any of the parameters' or submodules' hash functions throw.
      * Same guarantee as the parameters' and/or submodules' hash functions.
      */
-    void hash(Hasher& h) const { h(submodules_); }
+    void hash(Hasher& h) const;
 
-protected:
-    /// Allows ModuleManager to set the state (via its implementation class)
-    friend class detail_::MMImpl;
-
-    /// Typedef of a pointer to a module via its base class
-    using module_pointer = std::unique_ptr<ModuleBase>;
-
-    // TODO: Add when SDE is written
-    /// A handle to the framework
-    // std::shared_ptr<SDE> sde_;
-
-    // TODO: Add when Cache is written
-    /// A collection of results previously obtained by this module type
-    // std::shared_ptr<Cache> benjamins_;
-
-    // TODO: Add when Parameters are written
-    /// Values for the algorithmic parameters associated with the module
-    // Parameters params_;
-
-    /// Submodules to be called by the module
-    Utilities::CaseInsensitiveMap<module_pointer> submodules_;
+private:
+    /// The object that actually holds the implementation
+    std::unique_ptr<detail_::ModuleBasePIMPL> pimpl_;
 };
 
 /**
@@ -109,6 +174,10 @@ protected:
  */
 template<typename ModuleType, typename ReturnType, typename... Args>
 class ModuleBaseImpl : public ModuleBase {
+private:
+    /// typedef of current instance for sanity
+    using my_type = ModuleBaseImpl<ModuleType, ReturnType, Args...>;
+
 public:
     /// The type of the property computed by this module
     using return_type = ReturnType;
@@ -118,6 +187,11 @@ public:
 
     /// The type of a cost as computed by the cost function
     using cost_type = std::size_t;
+
+    std::unique_ptr<ModuleBase> clone() const override {
+        return std::make_unique<ModuleType>(
+          static_cast<const ModuleType&>(*this));
+    }
 
     /**
      * @brief The API used to actually call the module.

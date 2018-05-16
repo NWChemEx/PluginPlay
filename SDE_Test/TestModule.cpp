@@ -4,19 +4,16 @@
 using namespace SDE;
 
 // Dummy module to test modules taking no arguments
-struct ModuleA : public ModuleBaseImpl<ModuleA, bool> {
+struct ModuleA : ModuleBaseImpl<ModuleA, bool> {
     bool run_() override { return true; }
 };
 
-template<typename Derived>
-using ModuleBBase = ModuleBaseImpl<Derived, int, int>;
-
-struct ModuleB : ModuleBBase<ModuleB> {
+struct ModuleB : ModuleBaseImpl<ModuleB, int, int> {
     int run_(int x) override { return x; }
 };
 
 // Dummy module to test modules taking references
-struct ModuleC : public ModuleBaseImpl<ModuleC, bool, double&, double*> {
+struct ModuleC : ModuleBaseImpl<ModuleC, bool, double&, double*> {
     bool run_(double& d, double* p) override { return &d == p; }
 };
 

@@ -286,20 +286,19 @@ be needed if one wants to implement their own properties or if one is trying to
 fine-tune module performance. To that end let us first focus on how to implement
 a new property.
 
-Let's say we want to implement a property `EnergyDeriv`.  By convention all 
-modules who want to compute an energy derivative will need to implement the 
-virtual function that is defined in `EnergyDerivAPI`.  Let us assume that this 
-function takes an integer for the derivative order and a `LibChemist::System`
-describing the molecular system.  The implementation then returns an instance of
-type `Tensor`. Under these assumptions we would define `EnergyDerivAPI` as:
+The SDE defines a class `ModuleBaseImpl` whose sole purpose is to make it as 
+painless as possible to create a new module type.  More specifically, let's say
+we want to declare a module type `EnergyDeriv`, which takes an integer (the 
+derivative order) and a `LibChemist::System` object (the system to compute 
+the energy derivative of); the return will be `TAMM::Tensor`.  We can define 
+that module type as:
 
 ```.cpp
-class EnergyDerivAPI : 
-    public ModuleBaseImpl<EnergyDerivAPI, Tensor, LibChemist::System&> {
-    
-    virtual Tensor run_(int order, LibChemist::System& sys) = 0;
-};    
+template<typename Impl_Type>
+using EnergyDeriv = 
+  ModuleBaseImpl<Impl_type, TAMM::Tensor, int, LibChemist::System>; 
 ```
+
 
 By convention the virtual function must be called `run_`.  If one is defining a 
 lot of properties this definition involves a fair amount of boiler plate.  For 
