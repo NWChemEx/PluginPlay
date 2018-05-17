@@ -2,21 +2,16 @@
 #include <SDE/PyBindings/PyModule.hpp>
 using namespace SDE;
 
-struct DummyModuleCPP;
+// Declare some Module types
+// DEFINE_PROPERTY(TestProperty1, void, );
+DEFINE_PROPERTY(TestProperty2, int, int);
 
-// Defines the DummyModule module type
-using DummyModuleAPI = ModuleBaseImpl<DummyModuleCPP, bool, int>;
-
-// The C++ instantiation of a DummyModule
-struct DummyModuleCPP : DummyModuleAPI {
-protected:
-    bool run_(int i) override { return i == 1; }
+// Implement those types
+// struct MyProp1 : TestProperty1API {void run(){}};
+struct MyProp2 : TestProperty2API {
+    int run(int x) { return x + 1; }
 };
 
 PYBIND11_MODULE(DummyModule, m) {
-    // Makes DummyModuleAPI visible to Python for implementation
-    pythonize_module_type<DummyModuleAPI, bool, int>(m, "DummyModuleAPI");
-    pythonize_property<DummyModuleAPI, int>(m, "DummyModuleProp");
-
-    m.def("get_module", []() { return std::make_unique<DummyModuleCPP>(); });
+    DEFINE_PYTHON_PROPERTY(m, TestProperty2API, TestProperty2);
 }

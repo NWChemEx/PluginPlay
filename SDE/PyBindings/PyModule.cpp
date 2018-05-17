@@ -1,27 +1,16 @@
 #include "SDE/Memoization.hpp"
 #include "SDE/Module.hpp"
-#include "SDE/PyBindings/PyModule.hpp"
-namespace py = pybind11;
+#include <pybind11/pybind11.h>
 
-namespace SDE {
-namespace detail_ {
-
-// Trampoline class for ModuleBase
-class PyModuleBase : public ModuleBase {
-public:
-    const std::type_info& type() const noexcept override {
-        return typeid(py::object);
-    }
-
-    module_pointer clone() const override {
-        return std::make_unique<PyModuleBase>(*this);
-    }
-};
-
-} // namespace detail_
-} // namespace SDE
-
-void pythonize_Module(py::module& m) {
-    py::class_<SDE::ModuleBase, SDE::detail_::PyModuleBase>(m, "ModuleBase")
-      .def(py::init<>());
+void pythonize_Module(pybind11::module& m) {
+    pybind11::class_<SDE::ModuleBase, std::shared_ptr<SDE::ModuleBase>>(
+      m, "ModuleBase")
+      .def(pybind11::init<>())
+      .def("submodules", &SDE::ModuleBase::submodules)
+      .def("meta_data", &SDE::ModuleBase::meta_data)
+      //.def("parameters", &SDE::ModuleBase::parameters)
+      .def("change_submodule", &SDE::ModuleBase::change_submodule)
+      //.def("change_parameter", &SDE::ModuleBase::change_parmaeter)
+      .def("locked", &SDE::ModuleBase::locked)
+      .def("lock", &SDE::ModuleBase::lock);
 }

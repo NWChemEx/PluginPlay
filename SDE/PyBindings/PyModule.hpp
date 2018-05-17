@@ -1,19 +1,21 @@
 #pragma once
-#include "SDE/Module.hpp"
+#include "SDE/PropertyBase.hpp"
 #include <pybind11/pybind11.h>
 
 namespace SDE {
 namespace detail_ {
 
+// Primary template used to determine Args for actual instantiation
 template<typename Derived, typename tuple_type>
 struct PyModuleType;
 
-template<typename Derived, typename... Args>
-struct PyModuleType<Derived, std::tuple<Args...>> : Derived {
-    using return_type = typename PropertyBase<Derived>::return_type;
+// Implementation of module type trampoline
+template<typename ModuleAPI, typename... Args>
+struct PyModuleType<ModuleAPI, std::tuple<Args...>> : ModuleAPI {
+    using return_type = typename PropertyBase<ModuleAPI>::return_type;
 
-    return_type run(Args... args) {
-        PYBIND11_OVERLOAD_PURE(return_type, Derived, run, args...);
+    return_type run(Args... args) override {
+        PYBIND11_OVERLOAD_PURE(return_type, ModuleAPI, run, args...);
     }
 };
 
@@ -43,8 +45,8 @@ template<typename ModuleAPI>
 void register_module(pybind11::module& m, std::string name) {
     using args_type  = typename PropertyBase<ModuleAPI>::args_type;
     using trampoline = detail_::PyModuleType<ModuleAPI, args_type>;
-    pybind11::class_<ModuleAPI, std::shared_ptr<ModuleAPI>, trampoline>(
-      m, name.c_str())
+    pybind11::class_<ModuleAPI, std::shared_ptr<ModuleAPI>, trampoline,
+                     ModuleBase>(m, name.c_str())
       .def(pybind11::init<>())
       .def("run", &ModuleAPI::run);
 }
@@ -54,6 +56,7 @@ void register_property(pybind11::module& m, std::string name) {
     using prop_type   = PropertyBase<ModuleAPI>;
     using pyprop_type = detail_::PyPropertyHelper<ModuleAPI>;
     pybind11::class_<prop_type>(m, name.c_str())
+      .def(pybind11::init<std::shared_ptr<ModuleBase>>())
       .def("__call__", &pyprop_type::call);
 }
 
