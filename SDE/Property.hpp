@@ -6,24 +6,13 @@ namespace SDE {
 /**
  *  @brief Class responsible for requesting a property be computed.
  *
- *  Generally speaking we expect the PropertyBase to be used in typedefs,
- *  for example to define a class capable of returning property "Property"
- *  by calling a module of type "PropertyImpl" would be something like:
- *
- *  @code
- *  using Property = PropertyBase<PropertyImpl>;
- *  @endcode
- *
- *  Nonethless, it is conceivable that users may want to inherit from this
- *  class.  For this reason we have made the dtor virtual to ensure
- *  polymorphism works correctly.
  *
  *  @tparam ModuleType The module type which is capable of computing a property.
  *          Should satisfy the concept of module type.
  *
  */
 template<typename ModuleType>
-class PropertyBase {
+class Property {
 public:
     /// The type of the module's API
     using module_type = ModuleType;
@@ -55,10 +44,10 @@ public:
      * @par Complexity:
      * Constant.
      */
-    PropertyBase(module_pointer mod) : impl_(downcast(mod)) {}
+    Property(module_pointer mod) : impl_(downcast(mod)) {}
 
     /**
-     *  @brief Cleans up the PropertyBase instance.
+     *  @brief Cleans up the Property instance.
      *
      *  Note the dtor is virtual to allow for polymorphism.
      *
@@ -73,7 +62,7 @@ public:
      *
      *  @throw None. No throw guarantee.
      */
-    virtual ~PropertyBase() = default;
+    virtual ~Property() = default;
 
     /**
      * @brief The API used to actually call the module.
@@ -179,10 +168,3 @@ private:
 };
 
 } // namespace SDE
-
-// Impl<prop_name##API>
-#define DEFINE_PROPERTY(prop_name, return_value, ...) \
-    struct prop_name##API : SDE::ModuleBase {         \
-        virtual return_value run(__VA_ARGS__) = 0;    \
-    };                                                \
-    using prop_name = SDE::PropertyBase<prop_name##API>

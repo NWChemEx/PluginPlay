@@ -8,6 +8,7 @@ add_cxx_unit_test(TestModuleHelpers)
 add_cxx_unit_test(TestModule)
 #add_cxx_unit_test(TestModuleLoader)
 add_cxx_unit_test(TestMoleculeFileParser)
+add_cxx_unit_test(TestProperty)
 add_cxx_unit_test(TestSDEAny)
 
 set(DM_SRC DummyModule.cpp)
@@ -16,4 +17,5 @@ set(DM_FLAGS)
 set(DM_LFLAGS)
 nwchemex_add_pymodule(DummyModule DM_SRC DM_INC DM_FLAGS DM_LFLAGS __init__.py)
 add_python_unit_test(TestModule)
+add_python_unit_test(TestProperty)
 

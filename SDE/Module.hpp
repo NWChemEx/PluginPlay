@@ -17,11 +17,11 @@ DECLARE_SmartEnum(Resource, time, memory, disk, processes, threads
 );
 
 /**
- *  @brief Enumerations for the various meta data types associated with a
+ *  @brief Enumerations for the various metadata types associated with a
  *         module.
  *
  *  The MetaProperty enumeration is meant as a way to associate important meta
- *  data with a module.  At the moment, recognized meta data includes:
+ *  data with a module.  At the moment, recognized metadata includes:
  *
  *  - name: A descriptive name for the module
  *  - version: Information that can be used to uniquely identify the state of
@@ -56,8 +56,8 @@ public:
     /// Type of a pointer to this class
     using module_pointer = std::shared_ptr<ModuleBase>;
 
-    /// Type of te meta data stored in this class
-    using meta_data_type = std::map<MetaProperty, std::string>;
+    /// Type of te metadata stored in this class
+    using metadata_type = std::map<MetaProperty, std::string>;
 
     /// Type of the submodule call backs
     using submodule_list = Utilities::CaseInsensitiveMap<module_pointer>;
@@ -110,7 +110,7 @@ public:
      * @brief Functions in this section provide read-only access to the
      *        module's state.
      *
-     * @return The requested submodules, meta_data, or parameters objects in a
+     * @return The requested submodules, metadata, or parameters objects in a
      *         read-only state.
      *
      * @throw None. All functions are no-throw guarantee.
@@ -121,7 +121,7 @@ public:
      */
     ///@{
     const submodule_list& submodules() const noexcept { return submodules_; }
-    const meta_data_type& meta_data() const noexcept { return meta_data_; }
+    const metadata_type& metadata() const noexcept { return metadata_; }
     // const Parameters& parameters() const noexcept {return parameters_;}
 
     /**
@@ -189,7 +189,7 @@ public:
      * @throw ??? if any of the parameters' or submodules' hash functions throw.
      * Same guarantee as the parameters' and/or submodules' hash functions.
      */
-    void hash(Hasher& h) const { h(submodules_, meta_data_); }
+    void hash(Hasher& h) const { h(submodules_, metadata_); }
 
     /**
      * @brief Locks the module and all submodules.
@@ -235,7 +235,7 @@ protected:
     submodule_list submodules_;
 
     /// The meta-data associated with this module
-    meta_data_type meta_data_;
+    metadata_type metadata_;
 
 private:
     // True means parameters and submodules can no longer be changed
@@ -243,3 +243,8 @@ private:
 };
 
 } // namespace SDE
+
+#define DEFINE_MODULE_TYPE(prop_name, return_value, ...) \
+    struct prop_name : SDE::ModuleBase {                 \
+        virtual return_value run(__VA_ARGS__) = 0;       \
+    }

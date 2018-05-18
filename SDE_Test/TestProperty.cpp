@@ -1,23 +1,23 @@
-#include <SDE/PropertyBase.hpp>
+#include <SDE/Property.hpp>
 #include <catch/catch.hpp>
 
 using namespace SDE;
 using module_ptr = typename ModuleBase::module_pointer;
 
 // Declare some Module types
-DEFINE_PROPERTY(TestProperty1, void, );
-DEFINE_PROPERTY(TestProperty2, int, int);
-DEFINE_PROPERTY(TestProperty3, int, int&);
+DEFINE_MODULE_TYPE(TestProperty1, void, );
+DEFINE_MODULE_TYPE(TestProperty2, int, int);
+DEFINE_MODULE_TYPE(TestProperty3, int, int);
 
 // Implement those types
-struct MyProp1 : TestProperty1API {
+struct MyProp1 : TestProperty1 {
     void run() {}
 };
-struct MyProp2 : TestProperty2API {
+struct MyProp2 : TestProperty2 {
     int run(int x) { return x + 1; }
 };
-struct MyProp3 : TestProperty3API {
-    int run(int& x) { return x += 1; }
+struct MyProp3 : TestProperty3 {
+    int run(int x) { return x - 1; }
 };
 
 // Simulates getting module from ModuleManager
@@ -32,12 +32,12 @@ module_ptr mm_facade(const std::string& str) {
 }
 
 static std::map<std::string, std::string> memo_vals{
-  {"Prop2", "7340346a82e8f5d165a016ba4a4acd74"},
-  {"Prop3", "1b406e0514b9c5a9ce0caee34a167205"}};
+  {"Prop2", "72a64d40efcea3296563df67e67c15d9"},
+  {"Prop3", "0f00586a9c8ed1663a850e51b0a3dc0e"}};
 
-template<typename PropType, typename ModuleAPI, typename corr_return,
-         typename input_t>
-PropType test_property(std::string propn, input_t inp) {
+template<typename ModuleAPI, typename corr_return, typename input_t>
+Property<ModuleAPI> test_property(std::string propn, input_t inp) {
+    using PropType       = Property<ModuleAPI>;
     using module_type    = typename PropType::module_type;
     using return_type    = typename PropType::return_type;
     using shared_return  = typename PropType::shared_return;
@@ -64,35 +64,32 @@ PropType test_property(std::string propn, input_t inp) {
     REQUIRE(prop.cost(Resource::processes, val) == max_n);
     REQUIRE(prop.cost(Resource::threads, val) == max_n);
     auto hv = bphash::hash_to_string(prop.memoize(val));
+    // std::cout<<hv<<std::endl;
     REQUIRE(hv == memo_vals.at(propn));
 
     return prop;
 }
 
-TEST_CASE("PropertyBase") {
+TEST_CASE("Property") {
     // SECTION("void run()"){
     // TestProperty1 prop(mm_facade("Prop1"));
     // auto rv = prop();
     //}
 
     SECTION("int run(int)") {
-        auto prop =
-          test_property<TestProperty2, TestProperty2API, int, std::tuple<int>>(
-            "Prop2", std::make_tuple(3));
+        auto prop = test_property<TestProperty2, int, std::tuple<int>>(
+          "Prop2", std::make_tuple(3));
         REQUIRE(*prop(2) == 3);
     }
 
-    SECTION("int* run(int&)") {
-        int two = 2;
-        std::tuple<int&> two_tuple(two);
-        auto prop =
-          test_property<TestProperty3, TestProperty3API, int, std::tuple<int&>>(
-            "Prop3", two_tuple);
-        REQUIRE(*prop(two) == 3);
-        REQUIRE(two == 3);
+    SECTION("int run(int)") {
+        auto prop = test_property<TestProperty3, int, std::tuple<int>>(
+          "Prop3", std::make_tuple(1));
+        REQUIRE(*prop(2) == 1);
     }
 
     SECTION("Ctor error checking") {
-        REQUIRE_THROWS_AS(TestProperty1(mm_facade("Prop2")), std::bad_cast);
+        REQUIRE_THROWS_AS(Property<TestProperty1>(mm_facade("Prop2")),
+                          std::bad_cast);
     }
 }
