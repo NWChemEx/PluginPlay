@@ -259,85 +259,114 @@ breaking changes.
 
 @section using_modules_examples Example Usage
 
-Ultimately ModuleBase can't be used by itself as it's just the opaque handle 
-to a module.  To be useful one needs to derive a class from it that computes a 
-property.  For the purposes of this tutorial we'll assume that class is 
-`Energy` and we'll assume it's declared like:
+For the most part only module/SDE developers will ever work directly with the
+ModuleBase class.  This is because ModuleBase is nothing more than the opaque 
+handle to the module.  For the purposes of this tutorial we'll assume that 
+the module computes energies and is derived from a class `Energy` which is 
+declared like:
 ```.cpp
 class Energy : public ModuleBase {
     virtual double run(const LibChemist::System& sys) = 0;
 };
 ```
 Ultimately the only thing to note is that the SDE requires the entry point 
-into all modules to be called `run`.  The arguments `run` takes vary from 
-property to property.  Here we have decided that all modules that compute an
-energy take a molecular system (as described by the `LibChemist::System` 
-class) and return a double (the energy).  All modules which compute an energy
-will ultimately derive from this class.  For example, one would declare an SCF
-module like:
-```.cpp
-class SCF : public Energy {
-    double run(const LibChemist::System& sys)override;
-};
-```
-Generally speaking no one (including the SDE) will be interacting with our 
-hypothetical `SCF` module via any API other than the one ModuleBase provides.
-The only exception to this is `Property<Energy>`, which will interact with it
-*via* the `Energy` API.  Thus it suffices to detail how to work with the 
-ModuleBase class.
+into all modules to be called `run`.  The arguments `run` take may vary among
+properties.  Here we have decided that all modules that compute an energy take a
+molecular system (as described by the `LibChemist::System` class) and return a 
+double (the energy).  The specifics of this API aren't particularly important 
+for the purposes of this tutorial, aside from the literal signature.   
 
-There are two sources of ModuleBase instances: the ModuleManager and the 
-`submodule()` member of ModuleBase.  Both of them will give you the requested
-module by shared_ptr.  Once one has a ModuleBase instance it is possible to do
-basic interactions with the module:
+Generally speaking, there are two sources of ModuleBase instances: the 
+ModuleManager and the `submodule()` member of an already existing ModuleBase.  
+The primary difference between the two sources is that, as the name implies, 
+the modules returned by `submodule()` are the literal submodules that will be
+called by that particular module.  Anyways, once one has a ModuleBase instance 
+it is possible to inspect the module via its accessor functions, for example 
+inquiring into which submodules it will call can be done like:
 ```.cpp
 auto mod = /*get shared_ptr<ModuleBase> from somewhere*/
 
 // Get a read-only list of the module's submodules
 // Note: similar calls exist for parameters and meta data
 auto submods = mod->submodules();
+```
 
+Conversely, we can also change the submodules (or the parameters) for the module
+via the setters:
+```.cpp
 // Change the submodule a module will call:
 mod->change_submodule("key", ptr_2_new_submodule);
 ``` 
-
-Changing the module's parameters, or submodules is only allowed when the module
-is in the un-locked state.  Attempting to change a locked module will cause an
-error.  One can inquire into the locked-ness of their module *via*:
+Whereas inspecting the module's parameters/submodules is always possible, 
+changing the values can only be done when the module is in the un-locked state.
+Attempting to change a locked module will cause an error.  Of course this 
+means we need a way to inquire into the locked-ness of the module:
 
 ```.cpp
 if(!mod->locked()){
     // Change settings
 }
 ```
-
-and one can lock a module by calling:
- 
- ```.cpp
- mod->lock()
- ```
-
-Once a module has been locked it can not be unlocked.  To use that module with
-different parameters or submodules one needs to make a new copy (this is done
-via the ModuleManager) and modify the copy.  Ultimately locking turns a 
-module into a read-only state greatly simplifying memoization.
+It should be noted that in a threaded environment one needs to atomically check
+the lock and modify the settings, otherwise data races may actually cause the
+module to get locked between the check and the change.  This data race is also
+trivially avoided by doing all parameter modifications at the beginning in a 
+serial step.  Once a module has been locked it can not be unlocked.  To use that
+module, with different parameters or submodules, one needs to make a new 
+(unlocked) copy of that module (this is done via the ModuleManager).  Ultimately
+locking turns a module into a read-only state, and greatly simplifies the 
+memoization process in parallel environments.
 
 Now that we know how to use a module, it's time to see how to run one.  This
-is done via the Property class.  To run our `Energy` module:
+is done via the Property class.  To run an `Energy` module:
 
 ```.cpp
-ModuleMaanger mm; // Assume it is set up already
-Property<Energy> prop(mm.get_module("key to desired Energy module");
+std::shared_ptr<Energy> mod = /* get from either ModuleManager or submodules*/
+Property<Energy> prop(mod); //Make the Property instance
 
-LibChemist::System sys; // Make or get from somewhere
+LibChemist::System sys; // Prepare the input somehow
 
-// The actual call to compute the energy
-double egy = prop(sys);
+double egy = prop(sys); // Call the module
 ``` 
+
+In addition to actually performing the computation, the Property class also 
+allows one to perform more fine-grained introspection, such as inquiring into
+how long a module will take to run, how much memory it will require, *etc.*. 
+All of these introspections can be accomplished *via* the Property::cost 
+function.
 
 @subsection using_module_example_python Python Usage
 
-Assuming one has built the Python API for SDE it is possible to implement 
-modules directly from Python.
+Assuming one has built the Python API for SDE it is possible to use modules 
+directly from Python.  Assuming the `Energy` class from the previous section 
+has been exported to Python it is possible to implement new `Energy` modules 
+or call existing ones directly from Python.  Once one has the module, one can
+interact with the module in a manner that is largely identical to C++:
+
+```.py
+mod = # get module from either ModuleManager or submodules
+submods = mod.submodules() # gets submodules in Python dictionary
+
+if not mod.locked():
+    mod.change_submodule("key 2 change", new_submodule)
+    mod.lock()
+    
+    
+``` 
+
+Arguably the biggest difference between the C++ and Python module bindings 
+comes from the fact that Python isn't templated.  More specifically, 
+`Property<T>` must map to a unique Python class for each `T`.  The convention is
+to export `T` as `T` (*e.g.* `Energy` for `T=Energy`) and to export 
+`Property<T>` as `PropertyT` (*e.g.* `PropertyEnergy` for `T=Energy`).  This 
+means that the actual procedure to call a property is slightly different in
+Python:
+
+```.python
+mod = # get from somewhere
+prop = PropertyEnergy(mod)
+sys = # get molecular system somehow
+egy = prop(sys) # compute energy
+``` 
 
 

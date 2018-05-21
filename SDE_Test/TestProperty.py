@@ -18,7 +18,18 @@ class PyProperty2(DummyModule.TestProperty2):
 class TestProperty(unittest.TestCase):
     def setUp(self):
         self.mod = PyProperty2()
-        self.prop = SDE.Property(self.mod)
+        self.prop = DummyModule.PropertyTestProperty2(self.mod)
 
     def test_run(self):
         self.assertEqual(self.prop(1), 2)
+
+class TestCPPProperty(unittest.TestCase):
+    def setUp(self):
+        self.mod = DummyModule.get_cpp_module()
+        self.prop = DummyModule.PropertyTestProperty2(self.mod)
+
+    def test_run(self):
+        self.assertEqual(self.prop(1), 2)
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

@@ -18,7 +18,6 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              Memoization.hpp
                              ModuleHelpers.hpp
                              Module.hpp
-                             #ModuleLoader.hpp
                              MoleculeFileParser.hpp
                              Property.hpp
                              SDEAny.hpp

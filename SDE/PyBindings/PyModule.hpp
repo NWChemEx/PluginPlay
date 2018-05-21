@@ -62,6 +62,6 @@ void register_property(pybind11::module& m, std::string name) {
 
 } // namespace SDE
 
-#define DEFINE_PYTHON_PROPERTY(m, PropertyName)                 \
-    SDE::register_module<PropertyName>(m, #PropertyName "API"); \
-    SDE::register_property<PropertyName>(m, #PropertyName)
+#define DEFINE_PYTHON_PROPERTY(m, PropertyName)           \
+    SDE::register_module<PropertyName>(m, #PropertyName); \
+    SDE::register_property<PropertyName>(m, "Property" #PropertyName)

@@ -12,4 +12,10 @@ struct MyProp2 : TestProperty2 {
     int run(int x) { return x + 1; }
 };
 
-PYBIND11_MODULE(DummyModule, m) { DEFINE_PYTHON_PROPERTY(m, TestProperty2); }
+PYBIND11_MODULE(DummyModule, m) {
+    DEFINE_PYTHON_PROPERTY(m, TestProperty2);
+    m.def("get_cpp_module", []() {
+        auto ptr = std::make_shared<MyProp2>();
+        return std::static_pointer_cast<SDE::ModuleBase>(ptr);
+    });
+}

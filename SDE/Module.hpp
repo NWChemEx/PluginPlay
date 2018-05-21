@@ -5,7 +5,9 @@
 #include <memory> // for shared_ptr and unique_ptr
 
 namespace SDE {
-
+namespace detail_ {
+class PyModuleBase;
+}
 /**
  *   @brief A list of physical, hardware, and software resources.
  *
@@ -36,6 +38,20 @@ DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations
 );
 
 /**
+ * @brief Enumerations pertaining to the characteristics of the module.
+ *
+ * The moduletraits set of enumerations is envisioned as being one of the ways
+ * the SDE, as well as other modules, can obtain information related to the
+ * module, without knowing its contents.
+ *
+ * At the moment the recognized traits include:
+ * - nondeterministic: Signals that runs of the same module with the same
+ *   algorithmic parameters and the same input may yield different results
+ *   (intentionally).  Consequentially memoization should not be performed.
+ */
+DECLARE_SmartEnum(ModuleTraits, nondeterministic);
+
+/**
  *  @brief This is the class that all modules will be passed around as.
  *
  *  ModuleBase is the opaque handle to a module that is usable with the SDE. As
@@ -61,6 +77,9 @@ public:
 
     /// Type of the submodule call backs
     using submodule_list = Utilities::CaseInsensitiveMap<module_pointer>;
+
+    /// Type of the set of traits
+    using traits_type = std::set<ModuleTraits>;
 
     /**
      * @brief Creates a new ModuleBase
@@ -122,6 +141,7 @@ public:
     ///@{
     const submodule_list& submodules() const noexcept { return submodules_; }
     const metadata_type& metadata() const noexcept { return metadata_; }
+    const traits_type& traits() const noexcept { return traits_; }
     // const Parameters& parameters() const noexcept {return parameters_;}
 
     /**
@@ -231,11 +251,17 @@ public:
     bool locked() const noexcept { return locked_; }
 
 protected:
+    /// Allows Python trampoline to get at data
+    friend class detail_::PyModuleBase;
+
     /// The list of submodules this module may call
     submodule_list submodules_;
 
     /// The meta-data associated with this module
     metadata_type metadata_;
+
+    /// The traits associated with the module
+    std::set<ModuleTraits> traits_;
 
 private:
     // True means parameters and submodules can no longer be changed
