@@ -44,7 +44,7 @@ public:
      * @par Complexity:
      * Constant.
      */
-    Property(module_pointer mod) : impl_(downcast(mod)) {}
+    Property(module_pointer mod) : impl_(downcast(mod)) { impl_->lock(); }
 
     /**
      *  @brief Cleans up the Property instance.

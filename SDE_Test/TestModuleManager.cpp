@@ -2,39 +2,37 @@
 #include <catch/catch.hpp>
 
 using namespace SDE;
-using key_set = std::set<std::string>;
+using key_type       = typename ModuleManager::key_type;
+using key_set        = std::set<key_type>;
+using module_pointer = typename ModuleManager::module_pointer;
+using loader_type    = typename ModuleManager::loader_type;
 
-SDE_NEW_MODULE_TYPE(FakeModuleType, bool, int);
+DEFINE_MODULE_TYPE(FakeModuleType, bool, int);
 
 class FakeModule : public FakeModuleType {
-    bool run_(int) { return true; }
+    bool run(int) override { return true; }
 };
 
-using TestLoader = ModuleLoader<FakeModule>;
-
 TEST_CASE("Typedefs") {
-    using key_type = typename ModuleManager::key_type;
-    REQUIRE(std::is_same<key_type, std::string>::value);
-
-    using loader_type = typename ModuleManager::loader_type;
-    REQUIRE(std::is_same<loader_type, ModuleLoaderBase>::value);
-
-    using module_pointer = typename ModuleManager::module_pointer;
-    REQUIRE(std::is_same<module_pointer, std::unique_ptr<ModuleBase>>::value);
+    using corr_key    = std::string;
+    using corr_ptr    = typename ModuleBase::module_pointer;
+    using corr_loader = std::function<module_pointer()>;
+    REQUIRE(std::is_same<key_type, corr_key>::value);
+    REQUIRE(std::is_same<module_pointer, corr_ptr>::value);
+    REQUIRE(std::is_same<loader_type, corr_loader>::value);
 }
 
+module_pointer test_loader() { return std::make_shared<FakeModule>(); }
+
 void check_state(ModuleManager& mm, key_set keys) {
-    REQUIRE_THROWS_AS(mm.insert("", TestLoader{}), std::invalid_argument);
-    REQUIRE_THROWS_AS(mm.is_locked("Not an actual key"), std::out_of_range);
+    REQUIRE_THROWS_AS(mm.insert("", test_loader), std::invalid_argument);
+    REQUIRE_THROWS_AS(mm.at("Not an actual key"), std::out_of_range);
     REQUIRE(!mm.count("Not an actual key"));
     for(const auto& x : keys) {
         REQUIRE(mm.count(x));
-        REQUIRE_THROWS_AS(mm.insert(x, TestLoader{}), std::range_error);
-        auto mod = mm.get_module(x);
-        REQUIRE(mm.is_locked(x));
+        REQUIRE_THROWS_AS(mm.insert(x, test_loader), std::range_error);
         auto new_key = mm.duplicate(x);
         REQUIRE(mm.count(new_key));
-        REQUIRE(!mm.is_locked(new_key));
         REQUIRE_THROWS_AS(mm.duplicate(x, new_key), std::range_error);
     }
 }
@@ -44,7 +42,7 @@ TEST_CASE("ModuleManager") {
     SECTION("Default Ctor") { check_state(mm, key_set{}); }
 
     const std::string a_key{"a key"};
-    mm.insert(a_key, TestLoader{});
+    mm.insert(a_key, test_loader);
 
     SECTION("Filled MM") { check_state(mm, key_set{a_key}); }
 

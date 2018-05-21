@@ -8,13 +8,9 @@ namespace SDE {
 
 // Forward some typedefs from the MM class
 using key_type       = typename ModuleManager::key_type;
-using loader_type    = typename ModuleManager::loader_type;
 using module_pointer = typename ModuleManager::module_pointer;
-
-// Make some internal typedefs
-using submod_map    = CIM<std::string>;
-using shared_loader = std::shared_ptr<loader_type>;
-using module_entry  = std::tuple<bool, shared_loader, submod_map>;
+using loader_type    = typename ModuleManager::loader_type;
+using module_entry   = std::pair<module_pointer, loader_type>;
 
 namespace detail_ {
 
@@ -24,12 +20,6 @@ class MMImpl {
 private:
     // Used as a suffix to generate (hopefully) unique keys
     size_t number = 0;
-
-    // Wraps the process of locking a module
-    void lock_module(const key_type& key) {
-        lock(key) = true; // at throws if not valid key
-        for(const auto& kv : submods(key)) lock_module(kv.second);
-    }
 
     // Wraps the process of generating a valid key
     key_type generate_valid_key() {
@@ -50,30 +40,10 @@ public:
     // The actual modules
     CIM<module_entry> modules;
 
-    // Wrappers to decouple from tuple position
-    //{
-    bool& lock(const key_type& key) { return std::get<0>(modules.at(key)); }
-
-    shared_loader loader(const key_type& key) {
-        return std::get<1>(modules.at(key));
-    }
-
-    module_pointer module(const key_type& key) {
-        return loader(key)->get_module();
-    }
-
-    CIM<std::string>& submods(const key_type& key) {
-        return std::get<2>(modules.at(key));
-    }
-    //}
-
-    void insert(key_type key, const loader_type& loader) {
+    void insert(key_type key, loader_type mod) {
         is_valid(key);
-        shared_loader ploader = std::move(loader.clone());
-        submod_map subs;
-        subs.swap(ploader->submodules);
-        module_entry entry(false, ploader, std::move(subs));
-        modules.insert(std::make_pair(std::move(key), std::move(entry)));
+        auto entry = std::make_pair(mod(), mod);
+        modules.insert(std::make_pair(std::move(key), entry));
     }
 
     key_type duplicate(const key_type& key1, key_type key2) {
@@ -81,20 +51,18 @@ public:
             key2 = generate_valid_key();
         else
             is_valid(key2);
-        module_entry entry(false, loader(key1), submods(key1));
+        auto da_pair     = modules.at(key1);
+        auto loader      = da_pair.second;
+        auto new_mod     = loader();
+        (*new_mod)       = (*da_pair.first);
+        new_mod->locked_ = false;
+        auto entry       = std::make_pair(new_mod, std::move(loader));
         modules.insert(std::make_pair(key2, std::move(entry)));
         return key2;
     }
 
     module_pointer get_module(const key_type& key) {
-        if(!lock(key)) lock_module(key);
-        auto rv = module(key);
-        for(const auto& kv : submods(key)) { // set-up submodules
-            auto modi = get_module(kv.second);
-            auto kvi  = std::make_pair(kv.first, std::move(modi));
-            rv->submodules_.insert(std::move(kvi));
-        }
-        return rv;
+        return modules.at(key).first;
     }
 };
 
@@ -112,8 +80,8 @@ ModuleManager& ModuleManager::operator=(ModuleManager&& mm) noexcept {
 
 ModuleManager::~ModuleManager() noexcept {}
 
-void ModuleManager::insert(key_type key, const loader_type& loader) {
-    pimpl_->insert(std::move(key), loader);
+void ModuleManager::insert(key_type key, loader_type mod) {
+    pimpl_->insert(std::move(key), std::move(mod));
 }
 
 bool ModuleManager::count(const key_type& key) const noexcept {
@@ -124,12 +92,8 @@ key_type ModuleManager::duplicate(const key_type& key1, const key_type& key2) {
     return pimpl_->duplicate(key1, key2);
 }
 
-module_pointer ModuleManager::get_module(const key_type& key) {
+module_pointer ModuleManager::at(const key_type& key) {
     return pimpl_->get_module(key);
-}
-
-bool ModuleManager::is_locked(const key_type& key) const {
-    return pimpl_->lock(key);
 }
 
 } // namespace SDE

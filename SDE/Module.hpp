@@ -7,7 +7,8 @@
 namespace SDE {
 namespace detail_ {
 class PyModuleBase;
-}
+class MMImpl;
+} // namespace detail_
 /**
  *   @brief A list of physical, hardware, and software resources.
  *
@@ -116,8 +117,6 @@ public:
     /// Deleted to avoid slicing, ModuleBase should always be passed as pointers
     ///@{
     ModuleBase(const ModuleBase& rhs) = delete;
-
-    ModuleBase& operator=(const ModuleBase& rhs) = delete;
 
     ModuleBase(ModuleBase&& rhs) noexcept = delete;
 
@@ -264,6 +263,10 @@ protected:
     std::set<ModuleTraits> traits_;
 
 private:
+    friend class detail_::MMImpl;
+    /// Used when making a duplicate module
+    ModuleBase& operator=(const ModuleBase& rhs) = default;
+
     // True means parameters and submodules can no longer be changed
     bool locked_ = false;
 };

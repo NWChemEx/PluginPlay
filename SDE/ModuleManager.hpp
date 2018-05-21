@@ -1,5 +1,6 @@
 #pragma once
-#include "SDE/ModuleLoader.hpp"
+#include "SDE/Module.hpp"
+#include <functional>
 #include <string>
 
 namespace SDE {
@@ -9,16 +10,27 @@ class MMImpl;
 
 } // namespace detail_
 
+/**
+ * @brief The class responsible for handling all of the modules known to the SDE
+ *
+ * On the surface the ModuleManager looks a lot like an std::map, and indeed to
+ * the user it functions largely as if it is.  However, under the hood there is
+ * a lot more going on including: memoization, checkpointing, and (possibly)
+ * dynamic loading of modules.  It is the ModuleManager's responsibility to keep
+ * all that straight.
+ *
+ * @nosubgrouping
+ */
 class ModuleManager {
 public:
     /// The type of the key used to retrieve a module
     using key_type = std::string;
 
-    /// The type of a module loader
-    using loader_type = ModuleLoaderBase;
-
     /// The type of a pointer to a module
-    using module_pointer = typename loader_type::module_pointer;
+    using module_pointer = typename ModuleBase::module_pointer;
+
+    /// Type of the loaders we store internally
+    using loader_type = std::function<module_pointer()>;
 
     /**
      * @brief Constructs a new ModuleManager.
@@ -78,7 +90,10 @@ public:
      *
      * @param key the tag to associate with the module, must be unique and
      *            non-empty.
-     * @param loader An instance capable of creating the module.
+     * @param fxn A function that returns a module, via a shared_ptr to
+     *            ModuleBase.
+     * @tparam FxnType The type of @p fxn.  Must satisfy the concept of
+     *         callable.
      * @throws std::range_error if @p key is already registered.  Strong throw
      *         guarantee.
      * @throws std::invalid_argument if @p key is empty.  Strong throw
@@ -90,7 +105,7 @@ public:
      * The actual insertion is logrithmic in the number of modules present.
      *
      */
-    void insert(key_type key, const loader_type& loader);
+    void insert(key_type key, loader_type loader);
 
     /**
      * @brief Checks whether or not a module is registered under the provided
@@ -104,25 +119,6 @@ public:
      * Logrithmic in the number of modules.
      */
     bool count(const key_type& key) const noexcept;
-
-    /**
-     * @brief Can be used to probe if a module has been locked already.
-     *
-     * Once a user has called ModuleManager::get_module with a particular key
-     * that module, and all of its submodules, are locked.  This means that
-     * attempting to change the submodules or parameters called by any of those
-     * modules will result in an error.  This is to prevent data races which may
-     * lead to invalid Cache states.  This function allows a user to inquire
-     * into the lock state of a module.
-     *
-     * @param[in] key The module whose locked-ness is under question.
-     * @return True if the module registered under and false otherwise.
-     * @throws std::out_of_range if there is no module registered under @p key.
-     *         Strong throw guarantee.
-     * @par Complexity:
-     * Logrithmic in the number of modules.
-     */
-    bool is_locked(const key_type& key) const;
 
     /**
      * @brief Copies the parameters and submodules associated with a particular
@@ -153,10 +149,17 @@ public:
      */
     key_type duplicate(const key_type& old_key,
                        const key_type& new_key = key_type{});
-
-    module_pointer get_module(const key_type& key);
-
-    // std::shared_ptr<Parameters> parameters(const key_type& key);
+    /**
+     * @brief Returns the module with the given key
+     * @param key The tag associated with the requested module
+     * @return The requested module
+     * @throws std::out_of_range if @p key is not associated with a module.
+     *         Strong throw guarantee.
+     * @par Complexity:
+     * Lookup time is logrithmic in the number of modules.
+     *
+     */
+    module_pointer at(const key_type& key);
 
 private:
     /// The actual implementation
