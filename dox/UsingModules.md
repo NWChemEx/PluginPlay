@@ -3,22 +3,23 @@
 [TOC]
 
 The current page focuses on documentation related to the Module Class Hierarchy,
-particularly the ModuleBase, ModuleImpl, and PropertyBase classes.  For the
-most part these classes are not geared at the end-user (aside from actually
-computing the property).  The majority of their state and member functions 
-instead are designed to facilitate interactions between the module and the SDE. 
+particularly the ModuleBase, and PropertyBase classes.  The page is largely
+intended to showcase how they work, and their APIs.  The target audience is
+module and SDE developers.
 
 @section using_modules_acyclic Acyclic Visitor Pattern
 
 One of the overarching goals of the SDE is to be extensible, both in terms of
 what properties it can compute and what algorithms can be used to compute said
 properties.  By "extensible" we in particular mean: users of the SDE should not 
-have to modify its source code to add a property or a new algorithm.  
+have to modify its source code to add a property or a new algorithm. This is
+admittedly easier said then done as the next section tries to illustrate. 
 
 @subsection using_modules_problem The Problem
 
-The simplest and most straight-forward type-safe solution is to simply 
-list the functions for each available property:
+The simplest way to add a new property and/or a new method for computing said
+property is to simply make a function for that method/property combination.  
+This leads to code like:
 
 ```.cpp
 struct Program {
@@ -36,8 +37,9 @@ For the most part this is the way most existing electronic structure packages
 operate.  Somewhere there is a static list of functions that can be called and 
 based on the user's input the package chooses the appropriate function.  This
 design fails to satisfy our extensibility criterion (one has to modify the 
-source code to add new properties or algorithms).  It's also very clumsy to 
-maintain.  We can do better.
+source code to add new properties or algorithms).  Furthermore it tends to 
+encourage spaghetti code as attempts to generically manipulate/call these 
+functions inevitably lead to if/else trees.  We can do better.
 
 As you scan the list of function names in the above code snippet, you see they 
 vary in two "degrees of freedom": the level of theory and the property.  In 
@@ -75,7 +77,7 @@ struct ModuleBase {
 };
 ```
 
-We would then derived from `ModuleBase` our various methods:
+We would then derive from `ModuleBase` our various methods:
 
 ```.cpp
 struct SCF : ModuleBase {
@@ -130,21 +132,21 @@ visits the `e` instance before ultimately running its functions.
 
 Although this cleanly separates the algorithms for computing a property from the
 definition of the property, extending either the set of computable properties or
-the set of methods requires modifying the source code.  In fairness it's not too
-hard to get this down to only requiring modifications to the source code for 
-either the set of properties or the set of modules (the class visiting needs 
-the entire list of visitable classes, whereas the visitable classes interact 
-with the visitor generically), but completely breaking the cycle requires the 
-acyclic visitor pattern described in the next section.
+the set of methods requires modifying the source code (one has to add a 
+function for the new property/method).  In fairness it's not too hard to get 
+this down to only requiring modifications to the source code when one adds a 
+new visitable class (meaning visitors can be added outside the source code), 
+but completely breaking the cycle requires the acyclic visitor pattern described
+in the next section.
 
 @subsection using_module_solution The Solution
 
 As stated at the end of the previous solution the technique to break the cyclic
 dependency in the visitor pattern is called the acyclic visitor pattern.  
 Instead of using the single dispatch technology built into C++ (function 
-overloading) it relies on multiple inheritance and `dynamic_cast`.  In this 
-pattern `ModuleBase` is a place-holder class that serves purely to erase the
-derived class's type:
+overloading) it relies on multiple inheritance and side-casting. In this pattern
+`ModuleBase` is a place-holder class that serves purely to erase the derived 
+class's type:
 
 ```.cpp
 struct ModuleBase{};
@@ -193,7 +195,7 @@ struct SCF : ModuleBase, EnergyComputer {
 More specifically `SCF` would inherit from `ModuleBase` and all algorithmic 
 implementations that it defines.
 
-Usage would be something like:
+To the user, the usage is identical to the normal visitor pattern:
 
 ```.cpp
 Energy e;
@@ -202,19 +204,18 @@ e.accept(scf);
 std::cout << e.egy << std::endl;
 ```
 
-Despite the fact that the resulting code looks the same the actual implementation
-is very different.  Namely:
+However, the way the acyclic visitor pattern works is quite different.  Namely:
 
 1. `e` receives `scf` via its base class `ModuleBase`
 2. `e` side-casts `scf` to its other base class `EnergyComputer`
 3. `scf` receives `e` via its `EnergyComputer` API.
 4. `scf` dispatches to `SCF::EnergyComputer(Energy&)`
 
-Admittedly there is still a coupling, but it is only between the property and
-that property's API (in our example the `Energy` property was coupled to 
-the the `EnergyComputer` API).  Our modules are free to only inherit from some
-properties, and need not know all available properties.  Finally, our properties
-never need to know the set of modules (here things like `SCF`). 
+Admittedly there is still a coupling (here for example `Energy` is coupled 
+to the `EnergyComputer` API).  That said, each module is no required to know 
+each property and each property no longer needs to know each module.  It should
+also be mentioned that this pattern is type-safe (`dynamic_cast` will return a
+null pointer if the conversion is not possible).
  
 @section using_modules_module_hierarchy Acyclic Visitor Pattern Applied to SDE
 
@@ -229,108 +230,143 @@ void accept(ModuleBase& mod) {
 ```
 
 and we instead template `PropertyBase<T>` on the the type it needs to cast to 
-preventing users from having to implement this line every time (this also 
-requires all functions use the same name, which we have chosen as `run_`).  Our 
-`Energy` example from above is nothing more than a typdef now:
+prevent users from having to implement this line every time (this also 
+requires all functions use the same name, which we have chosen as `run`; 
+ensuring that the function always has the same name will allow the SDE to skim 
+its return and arguments in turn automating type-casting of internal 
+type-erased quantities).  Our `Energy` class from above is now nothing more than
+a typdef:
 
 ```.cpp
 using Energy = PropertyBase<EnergyComputer>;
 ```
 
-Similarly, on the `ModuleBase` side of the hierarchy we introduce 
-`ModuleBaseImpl<T>`.  Its main contribution is to wrap the actual call to the
-module of type `T` so that memoization occurs.  Unfortunately, in order to 
-wrap that function we need to know its signature *i.e.* we can't just hide 
-the input/output to the function in the property class.  The initial design in 
-@ref module_api "Module API Considerations" attempted to get around this with 
-meta-template programming.  More specifically I thought I could just strip the 
-return and arguments off a pointer to the derived class; however, C++ is too 
-smart for that trick and won't let you get the type of a pointer to a derived 
-class's member function in the base class (well to define the base class's API 
-anyways; you can do it inside a function so long as that function's signature is
-known).  The point is, `ModuleBaseImpl<T>` also needs to be templated on the 
-return type of the derived module and the types of the arguments to that module.
-This only matters when one defines the module types.  For example, when one 
-defines `EnergyComputer` in our above example.  This does not matter to `SCF`
-which simply inherits from `EnergyComputer`.  More concretely this looks 
-something like:
+Since `PropertyBase` is no longer a proper base class we have opted to drop the
+"Base".  The resulting class is Property and it's templated on the class that
+will actually be implementing the routine which computes the property.  The 
+next change is that ModuleBase is no longer a trivial class, rather it now
+holds meta-information related to the module as well as the module's parameters, 
+and submodule call-back points. Generally speaking, the parameters and meta 
+information may vary depending on the property computed by the module (*i.e.*
+depending on which class our module is side-casted to)
 
-```.cpp
-struct EnergyComputer : ModuleBaseImpl<EnergyComputer, double, int> {
-    virtual double compute_energy(int) = 0;
-};
-
-struct SCF : EnergyComputer, ModuleBase {
-     double compute_energy(int) {
-         // compute energy and return it
-     }
-};   
-```
-
-The last major change from the acyclic visitor pattern shown in the previous
-section is the removal of multiple inheritance.  Multiple inheritance was only
-present to allow each algorithm to compute more than one property.  However,
-the reality is typically when an algorithm in electronic structure is considered
-as computing multiple properties (think SCF, where commonly one assumes you get
-the energy and the wavefunction) one of those properties is computed before the
-other (in SCF one computes the wavefunction first and then uses that to 
-compute the energy).  Because the SDE supports nesting of modules we can simply
-write our SCF energy module in terms of the SCF wavefunction module.
+As an advanced note, multiple inheritance complicates things considerably so as
+a first pass we'll require all modules to compute only one property.  In theory
+this should be readily doable as each property is the result of a different 
+equation.  If the need for multiple inheritance actually manifests it is 
+possible to add it to the existing Property/ModuleBase hierarchy with API 
+breaking changes.
 
 @section using_modules_examples Example Usage
 
-As mentioned at the start of this page the class described here are primarily
-meant as liaisons between the SDE and the base classes for each property.  
-From a user perspective, knowledge of these APIs and how to use them, will only
-be needed if one wants to implement their own properties or if one is trying to 
-fine-tune module performance. To that end let us first focus on how to implement
-a new property.
+For the most part only module/SDE developers will ever work directly with the
+ModuleBase class.  This is because ModuleBase is nothing more than the opaque 
+handle to the module.  For the purposes of this tutorial we'll assume that 
+the module computes energies and is derived from a class `Energy` which is 
+declared like:
+```.cpp
+class Energy : public ModuleBase {
+    virtual double run(const LibChemist::System& sys) = 0;
+};
+```
+Ultimately the only thing to note is that the SDE requires the entry point 
+into all modules to be called `run`.  The arguments `run` take may vary among
+properties.  Here we have decided that all modules that compute an energy take a
+molecular system (as described by the `LibChemist::System` class) and return a 
+double (the energy).  The specifics of this API aren't particularly important 
+for the purposes of this tutorial, aside from the literal signature.   
 
-Let's say we want to implement a property `EnergyDeriv`.  By convention all 
-modules who want to compute an energy derivative will need to implement the 
-virtual function that is defined in `EnergyDerivAPI`.  Let us assume that this 
-function takes an integer for the derivative order and a `LibChemist::System`
-describing the molecular system.  The implementation then returns an instance of
-type `Tensor`. Under these assumptions we would define `EnergyDerivAPI` as:
+Generally speaking, there are two sources of ModuleBase instances: the 
+ModuleManager and the `submodule()` member of an already existing ModuleBase.  
+The primary difference between the two sources is that, as the name implies, 
+the modules returned by `submodule()` are the literal submodules that will be
+called by that particular module.  Anyways, once one has a ModuleBase instance 
+it is possible to inspect the module via its accessor functions, for example 
+inquiring into which submodules it will call can be done like:
+```.cpp
+auto mod = /*get shared_ptr<ModuleBase> from somewhere*/
+
+// Get a read-only list of the module's submodules
+// Note: similar calls exist for parameters and meta data
+auto submods = mod->submodules();
+```
+
+Conversely, we can also change the submodules (or the parameters) for the module
+via the setters:
+```.cpp
+// Change the submodule a module will call:
+mod->change_submodule("key", ptr_2_new_submodule);
+``` 
+Whereas inspecting the module's parameters/submodules is always possible, 
+changing the values can only be done when the module is in the un-locked state.
+Attempting to change a locked module will cause an error.  Of course this 
+means we need a way to inquire into the locked-ness of the module:
 
 ```.cpp
-class EnergyDerivAPI : 
-    public ModuleBaseImpl<EnergyDerivAPI, Tensor, LibChemist::System&> {
+if(!mod->locked()){
+    // Change settings
+}
+```
+It should be noted that in a threaded environment one needs to atomically check
+the lock and modify the settings, otherwise data races may actually cause the
+module to get locked between the check and the change.  This data race is also
+trivially avoided by doing all parameter modifications at the beginning in a 
+serial step.  Once a module has been locked it can not be unlocked.  To use that
+module, with different parameters or submodules, one needs to make a new 
+(unlocked) copy of that module (this is done via the ModuleManager).  Ultimately
+locking turns a module into a read-only state, and greatly simplifies the 
+memoization process in parallel environments.
+
+Now that we know how to use a module, it's time to see how to run one.  This
+is done via the Property class.  To run an `Energy` module:
+
+```.cpp
+std::shared_ptr<Energy> mod = /* get from either ModuleManager or submodules*/
+Property<Energy> prop(mod); //Make the Property instance
+
+LibChemist::System sys; // Prepare the input somehow
+
+double egy = prop(sys); // Call the module
+``` 
+
+In addition to actually performing the computation, the Property class also 
+allows one to perform more fine-grained introspection, such as inquiring into
+how long a module will take to run, how much memory it will require, *etc.*. 
+All of these introspections can be accomplished *via* the Property::cost 
+function.
+
+@subsection using_module_example_python Python Usage
+
+Assuming one has built the Python API for SDE it is possible to use modules 
+directly from Python.  Assuming the `Energy` class from the previous section 
+has been exported to Python it is possible to implement new `Energy` modules 
+or call existing ones directly from Python.  Once one has the module, one can
+interact with the module in a manner that is largely identical to C++:
+
+```.py
+mod = # get module from either ModuleManager or submodules
+submods = mod.submodules() # gets submodules in Python dictionary
+
+if not mod.locked():
+    mod.change_submodule("key 2 change", new_submodule)
+    mod.lock()
     
-    virtual Tensor run_(int order, LibChemist::System& sys) = 0;
-};    
-```
+    
+``` 
 
-By convention the virtual function must be called `run_`.  If one is defining a 
-lot of properties this definition involves a fair amount of boiler plate.  For 
-this reason we have defined the macro `SDE_NEW_MODULE_TYPE` such that 
-`SDE_NEW_MODULE_TYPE(EnergyDerivAPI, Tensor, LibChemist::System&);` will 
-generate the same code as above.  Note that the arguments (and return type) 
-are specified with all of the qualifiers (const, references, pointers, *etc.*).
-Finally we need to declare the class which will request that an `EnergyDeriv` be
-computed:
+Arguably the biggest difference between the C++ and Python module bindings 
+comes from the fact that Python isn't templated.  More specifically, 
+`Property<T>` must map to a unique Python class for each `T`.  The convention is
+to export `T` as `T` (*e.g.* `Energy` for `T=Energy`) and to export 
+`Property<T>` as `PropertyT` (*e.g.* `PropertyEnergy` for `T=Energy`).  This 
+means that the actual procedure to call a property is slightly different in
+Python:
 
-```.cpp
-using EnergyDeriv = PropertyBase<EnergyDerivAPI>; 
-```
+```.python
+mod = # get from somewhere
+prop = PropertyEnergy(mod)
+sys = # get molecular system somehow
+egy = prop(sys) # compute energy
+``` 
 
-That's all there is to implementing a new property.  As mentioned the other use
-case of these APIs is for performance.  More specifically, the `ModuleImpl` 
-class exposes the `cost` function, which allows introspection of the module. 
-For example, say you want to know how long it will take to run a module with a
-given input.  You can request that module from the ModuleManager and inquire:
-```.cpp
-auto mod = //get the module
-auto t = mod.cost(Resource::time, /* input */);
-//Do something with the time
-```  
 
-As a slight aside there is one other notable use case for the `PropertyBase` 
-class, namely to be the public API into the module.  This is done via the 
-`operator()`.  Continuing with our `EnergyDeriv` example above this would occur
-something like:
-```.cpp
-LibChemist::System sys; // get from somewhere
-EnergyDeriv egy(/* get EnergyDerivAPI instance from somewhere*/);
-auto e = egy(0, sys);
-```

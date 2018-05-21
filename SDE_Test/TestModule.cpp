@@ -1,72 +1,102 @@
 #include <SDE/Module.hpp>
+#include <array>
 #include <catch/catch.hpp>
 
 using namespace SDE;
+using module_pointer = typename ModuleBase::module_pointer;
+using metadata_type  = typename ModuleBase::metadata_type;
+using submodule_list = typename ModuleBase::submodule_list;
 
-// Dummy module to test modules taking no arguments
-struct ModuleA : public ModuleBaseImpl<ModuleA, bool> {
-    bool run_() override { return true; }
+// Declare some Module types
+DEFINE_MODULE_TYPE(TestProperty1, void, );
+DEFINE_MODULE_TYPE(TestProperty2, int, int);
+DEFINE_MODULE_TYPE(TestProperty3, int, int);
+
+// Implement those types
+struct MyProp1 : TestProperty1 {
+    void run() {}
+};
+struct MyProp2 : TestProperty2 {
+    MyProp2() { metadata_[MetaProperty::name] = "Prop2"; }
+    int run(int x) { return x + 1; }
 };
 
-template<typename Derived>
-using ModuleBBase = ModuleBaseImpl<Derived, int, int>;
+static const auto prop2 = std::make_shared<MyProp2>();
 
-struct ModuleB : ModuleBBase<ModuleB> {
-    int run_(int x) override { return x; }
+struct MyProp3 : TestProperty3 {
+    MyProp3() { submodules_["Prop2"] = prop2; }
+    int run(int x) { return x - 1; }
 };
 
-// Dummy module to test modules taking references
-struct ModuleC : public ModuleBaseImpl<ModuleC, bool, double&, double*> {
-    bool run_(double& d, double* p) override { return &d == p; }
-};
+static const std::array<std::string, 3> corr_hashes = {
+  "55f9d4398adfa39870952c434dd90bf6", "50770f7844350ad2e59d810ab1d61f06",
+  "55b33b79a5850d2c5f87f6a66c6d5441"};
 
-template<typename ModType, typename ReturnType, typename... Args>
-void test_module(ModType& mod, ReturnType corr_result, Args&&... args) {
-    // Check typedefs
-    REQUIRE(std::is_same<std::shared_ptr<const ReturnType>,
-                         typename ModType::shared_return>::value);
-    REQUIRE(std::is_same<ReturnType, typename ModType::return_type>::value);
-    REQUIRE(typeid(ModType) == mod.type());
-    auto result = mod(std::forward<Args>(args)...);
-    REQUIRE(corr_result == *result);
-}
+template<std::size_t i, typename mod_type, typename other_type>
+void test_module(metadata_type met, submodule_list subs /*,Parameters params*/
+) {
+    mod_type mod;
+    Hasher h(HashType::Hash128);
+    mod.hash(h);
+    auto hv = bphash::hash_to_string(h.finalize());
+    REQUIRE(corr_hashes[i] == hv);
+    REQUIRE(!mod.locked());
+    REQUIRE(mod.submodules() == subs);
+    REQUIRE(mod.metadata() == met);
+    // REQUIRE(mod.parameters() == params);
+    auto new_ptr = std::make_shared<MyProp3>();
+    for(auto x : subs) {
+        mod.change_submodule(x.first, new_ptr);
+        subs[x.first] = new_ptr;
+    }
+    REQUIRE(mod.submodules() == subs);
 
-TEST_CASE("ModuleImpl") {
-    SECTION("bool run_(void)") {
-        ModuleA mod;
-        test_module(mod, true);
+    /*
+    for(auto x : subs) {
+        mod.change_parameter(x.first, <value>);
+        params.change(x.first, <value>);
+     }
+     REQUIRE(mod.parameters() == params);
+     */
+    mod.lock();
+    REQUIRE(mod.locked());
+    for(auto x : subs) {
+        REQUIRE_THROWS_AS(mod.change_submodule(x.first, new_ptr),
+                          std::runtime_error);
     }
 
-    SECTION("int run_(int)") {
-        ModuleB mod;
-        test_module(static_cast<ModuleBBase&>(mod), 3, 3);
-    }
-
-    SECTION("bool run_(double&, double*)") {
-        ModuleC mod;
-        double pi{3.14};
-        test_module(mod, true, pi, &pi);
-    }
+    /*
+    for(auto x : subs)
+    REQUIRE_THROWS_AS(mod.change_parameter(x.first, <value>),
+                      std::runtime_error);
+    */
 }
 
-template<typename T, typename return_type, typename... Args>
-void test_property(return_type rv, Args&&... args) {
-    // Typedefs to shorten the next two checks
-    using input_t = PropertyBase<T>;
-    using ModPtr  = typename input_t::module_pointer;
+TEST_CASE("ModuleBase Typedefs") {
+    using correct_pointer = std::shared_ptr<ModuleBase>;
+    using correct_meta    = std::map<MetaProperty, std::string>;
+    using correct_list    = Utilities::CaseInsensitiveMap<module_pointer>;
 
-    REQUIRE(std::is_same<std::unique_ptr<ModuleBase>, ModPtr>::value);
-    REQUIRE(std::is_same<return_type, typename input_t::return_type>::value);
-
-    input_t prop(std::make_unique<T>());
-    REQUIRE(*prop(std::forward<Args>(args)...) == rv);
+    REQUIRE(std::is_same<correct_pointer, module_pointer>::value);
+    REQUIRE(std::is_same<correct_meta, metadata_type>::value);
+    REQUIRE(std::is_same<correct_list, submodule_list>::value);
 }
 
-TEST_CASE("PropertyImpl") {
-    SECTION("bool run_(void)") { test_property<ModuleA>(true); }
+TEST_CASE("ModuleBase") {
+    metadata_type md_empty{};
+    submodule_list sm_empty{};
 
-    SECTION("bool run_(double&, double*)") {
-        double pi{3.14};
-        test_property<ModuleC>(true, pi, &pi);
+    SECTION("void run()") {
+        test_module<0, MyProp1, TestProperty1>(md_empty, sm_empty);
+    }
+
+    SECTION("int run(int)") {
+        metadata_type md_full{{MetaProperty::name, "Prop2"}};
+        test_module<1, MyProp2, TestProperty2>(md_full, sm_empty);
+    }
+
+    SECTION("int run(int&)") {
+        submodule_list sm_full{{"Prop2", prop2}};
+        test_module<2, MyProp3, TestProperty3>(md_empty, sm_full);
     }
 }

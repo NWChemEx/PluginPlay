@@ -1,65 +1,67 @@
 #pragma once
+#include "SDE/Property.hpp"
 #include <pybind11/pybind11.h>
 
 namespace SDE {
 namespace detail_ {
 
-// Forward declare PyModuleBaseImpl for next typedef
-template<typename ReturnType, typename... Args>
-class PyModuleBaseImpl;
+// Primary template used to determine Args for actual instantiation
+template<typename Derived, typename tuple_type>
+struct PyModuleType;
 
-// This typedef is the class our Python ModuleBaseImpl trampoline inherits from
-template<typename ReturnType, typename... Args>
-using PyModuleBaseImplBase =
-  ModuleBaseImpl<PyModuleBaseImpl<ReturnType, Args...>, ReturnType, Args...>;
+// Implementation of module type trampoline
+template<typename ModuleAPI, typename... Args>
+struct PyModuleType<ModuleAPI, std::tuple<Args...>> : ModuleAPI {
+    using return_type = typename Property<ModuleAPI>::return_type;
 
-// This is the actual trampoline class
-template<typename ReturnType, typename... Args>
-class PyModuleBaseImpl : public PyModuleBaseImplBase<ReturnType, Args...> {
-    // Typedef of this class for brevity
-    using my_type = PyModuleBaseImpl<ReturnType, Args...>;
-    // Typedef of the base class for brevity
-    using base_type = ModuleBaseImpl<my_type, ReturnType, Args...>;
-
-public:
-    //    cost_type cost(py::args args) override{
-    //        PYBIND11_OVERLOAD(
-    //          py::object,
-    //          ModuleBaseImpl<PyModuleBaseImpl, py::object, py::args>,
-    //          run_,
-    //          args
-    //        );
-    //    }
-
-    /// Bindings for the run function
-    ReturnType run_(Args... args) override {
-        PYBIND11_OVERLOAD_PURE(ReturnType, base_type, run_, args...);
+    return_type run(Args... args) override {
+        PYBIND11_OVERLOAD_PURE(return_type, ModuleAPI, run, args...);
     }
 };
 
-/// Class for making run_ public so
-template<typename ReturnType, typename... Args>
-class ModuleBasePublicist : public PyModuleBaseImplBase<ReturnType, Args...> {
-public:
-    using PyModuleBaseImplBase<ReturnType, Args...>::run_;
+template<typename ModuleAPI>
+struct PyPropertyHelper {
+    using base_type     = Property<ModuleAPI>;
+    using return_type   = typename base_type::return_type;
+    using shared_return = typename base_type::shared_return;
+    using args_type     = typename base_type::args_type;
+
+    static return_type call(base_type& prop, pybind11::args args) {
+        constexpr auto nargs = std::tuple_size<args_type>::value;
+        return *call_(prop, args, std::make_index_sequence<nargs>());
+    }
+
+    template<size_t... I>
+    static shared_return call_(base_type& prop, pybind11::args args,
+                               std::index_sequence<I...>) {
+        return prop(
+          args[I].cast<typename std::tuple_element<I, args_type>::type>()...);
+    }
 };
 
 } // namespace detail_
-} // namespace SDE
 
-template<typename ReturnType, typename... Args>
-void pythonize_ModuleBaseImpl(pybind11::module& m, const char* name) {
-    using ModuleType  = SDE::detail_::PyModuleBaseImpl<ReturnType, Args...>;
-    using ModBaseImpl = SDE::ModuleBaseImpl<ModuleType, ReturnType, Args...>;
-    using Publicist   = SDE::detail_::ModuleBasePublicist<ReturnType, Args...>;
-
-    pybind11::class_<ModBaseImpl, ModuleType>(m, name)
+template<typename ModuleAPI>
+void register_module(pybind11::module& m, std::string name) {
+    using args_type  = typename Property<ModuleAPI>::args_type;
+    using trampoline = detail_::PyModuleType<ModuleAPI, args_type>;
+    pybind11::class_<ModuleAPI, std::shared_ptr<ModuleAPI>, trampoline,
+                     ModuleBase>(m, name.c_str())
       .def(pybind11::init<>())
-      .def("__call__",
-           [](ModBaseImpl& mod, Args... args) { return *(mod(args...)); })
-      .def("run_", &Publicist::run_);
+      .def("run", &ModuleAPI::run);
 }
 
-template<typename ModuleType, typename ReturnType, typename... Args>
-void pythonize_module_type(pybind11::module& m,
-                           const char* name){pybind11::class_};
+template<typename ModuleAPI>
+void register_property(pybind11::module& m, std::string name) {
+    using prop_type   = Property<ModuleAPI>;
+    using pyprop_type = detail_::PyPropertyHelper<ModuleAPI>;
+    pybind11::class_<prop_type>(m, name.c_str())
+      .def(pybind11::init<std::shared_ptr<ModuleBase>>())
+      .def("__call__", &pyprop_type::call);
+}
+
+} // namespace SDE
+
+#define DEFINE_PYTHON_PROPERTY(m, PropertyName)           \
+    SDE::register_module<PropertyName>(m, #PropertyName); \
+    SDE::register_property<PropertyName>(m, "Property" #PropertyName)

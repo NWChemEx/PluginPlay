@@ -1,42 +1,181 @@
 #pragma once
 #include "SDE/Memoization.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
+#include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
 
 namespace SDE {
 namespace detail_ {
-class MMImpl;
+class PyModuleBase;
 }
-
 /**
  *   @brief A list of physical, hardware, and software resources.
  *
  *   The Resource enum is largely intended to be used to select which resource
  *   the ModuleBaseImpl::cost returns the cost of.
  */
-enum class Resource { time, memory, disk, processes, threads };
+DECLARE_SmartEnum(Resource, time, memory, disk, processes, threads
+
+);
+
+/**
+ *  @brief Enumerations for the various metadata types associated with a
+ *         module.
+ *
+ *  The MetaProperty enumeration is meant as a way to associate important meta
+ *  data with a module.  At the moment, recognized metadata includes:
+ *
+ *  - name: A descriptive name for the module
+ *  - version: Information that can be used to uniquely identify the state of
+ *             the module's source code.
+ *  - description: An informative discourse of what the module is capable of
+ *  - authors: The people who wrote the module
+ *  - citations: Things that should be cited if the module is used.
+ *
+ */
+DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations
+
+);
+
+/**
+ * @brief Enumerations pertaining to the characteristics of the module.
+ *
+ * The moduletraits set of enumerations is envisioned as being one of the ways
+ * the SDE, as well as other modules, can obtain information related to the
+ * module, without knowing its contents.
+ *
+ * At the moment the recognized traits include:
+ * - nondeterministic: Signals that runs of the same module with the same
+ *   algorithmic parameters and the same input may yield different results
+ *   (intentionally).  Consequentially memoization should not be performed.
+ */
+DECLARE_SmartEnum(ModuleTraits, nondeterministic);
 
 /**
  *  @brief This is the class that all modules will be passed around as.
  *
- *  To the outside world the ModuleBase class is little more than a type-erased
- *  handle to the actual module.  To the module itself, the ModuleBase class
- *  provides the module its state.  Notably, this state includes the Cache
- *  instance, the algorithmic parameters selected by the user, and the API to
- *  the framework (and notably the parallel resources).
+ *  ModuleBase is the opaque handle to a module that is usable with the SDE. As
+ *  a handle much of their functionality revolves around exploiting
+ *  polymorphism.  In an effort to prevent the user from slicing a module, we
+ *  have deleted the copy and move ctors as well as the corresponding assignment
+ *  operators.  We expect modules to always be wrapped in shared pointers (I'd
+ *  prefer unique pointers, but that's not a viable option for modules that go
+ *  round-trip through Python (*i.e.* a C++ module returned into Python, passed
+ *  back into C++) because Python (or at least Pybind11) won't give up
+ *  ownership.
+ *
+ *  @nosubgrouping
+ *
  */
 class ModuleBase {
 public:
+    /// Type of a pointer to this class
+    using module_pointer = std::shared_ptr<ModuleBase>;
+
+    /// Type of te metadata stored in this class
+    using metadata_type = std::map<MetaProperty, std::string>;
+
+    /// Type of the submodule call backs
+    using submodule_list = Utilities::CaseInsensitiveMap<module_pointer>;
+
+    /// Type of the set of traits
+    using traits_type = std::set<ModuleTraits>;
+
     /**
-     * @brief A function that allows us to get the RTTI of the module's type
-     *        without having to downcast to it.
+     * @brief Creates a new ModuleBase
      *
-     * This function is implemented in ModuleBaseImpl<T> so that it returns the
-     * RTTI of T.
+     * The resulting ModuleBase will be default initialized and thus will
+     * contain no parameters, submodules, or meta-data.  Module developers are
+     * encouraged to fill said data in via the derived class's ctor.
      *
-     * @return The RTTI of the module type's type.
+     * @throws std::bad_alloc if there is insufficient memory to create a
+     *         ModuleBasePIMPL instance.  Strong throw guarantee.
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     * @par Data Races:
+     * None.
      */
-    virtual const std::type_info& type() const noexcept = 0;
+    ModuleBase() = default;
+
+    /**
+     * @brief Frees up memory associated with the current module.
+     *
+     * @par Complexity:
+     * Linear in the number of submodules, and parameters.
+     *
+     * @par Data Races:
+     * The contents of the current instance are modified and data races may
+     * result if the instance is concurrently accessed.
+     *
+     * @throws None No throw guarantee.
+     */
+    virtual ~ModuleBase() noexcept = default;
+
+    /// Deleted to avoid slicing, ModuleBase should always be passed as pointers
+    ///@{
+    ModuleBase(const ModuleBase& rhs) = delete;
+
+    ModuleBase& operator=(const ModuleBase& rhs) = delete;
+
+    ModuleBase(ModuleBase&& rhs) noexcept = delete;
+
+    ModuleBase& operator=(ModuleBase&& rhs) noexcept = delete;
+    ///@}
+
+    /**
+     * @name Accessors
+     * @brief Functions in this section provide read-only access to the
+     *        module's state.
+     *
+     * @return The requested submodules, metadata, or parameters objects in a
+     *         read-only state.
+     *
+     * @throw None. All functions are no-throw guarantee.
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     */
+    ///@{
+    const submodule_list& submodules() const noexcept { return submodules_; }
+    const metadata_type& metadata() const noexcept { return metadata_; }
+    const traits_type& traits() const noexcept { return traits_; }
+    // const Parameters& parameters() const noexcept {return parameters_;}
+
+    /**
+     * @name Modifiers
+     *
+     * @brief The functions in this section allow users to modify the parameters
+     *        and submodules so long as the module has not been locked yet.
+     *
+     * @param[in] key The name of the parameter/submodule callback point you
+     *            want to change the value of.
+     * @param[in] value the new parameter/submodule to use.
+     *
+     * @throw std::runtime_error if the module is locked.  Strong throw
+     *        guarantee.
+     * @throw std::range_error if @p key is not a valid key.
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     * @par Data Races:
+     * The content of the module is modified and data races may ensue if the
+     * module is concurrently accessed.
+     */
+    ///@{
+    void change_submodule(const std::string& key, module_pointer value) {
+        if(locked_) throw std::runtime_error("Module is locked!!!");
+        submodules_.at(key) = value;
+    }
+
+    /*template<typename parameter_type>
+    void change_parameter(const std::string& key, parameter_type value) {
+        if(locked_) throw std::runtime_error("Module is locked!!!");
+        parameters_.at(key) = value;
+    }*/
 
     /**
      * @brief Provides a hash for the current module's state.
@@ -51,8 +190,11 @@ public:
      * given input this module and the other module will generate the same
      * result.
      *
-     * @param[in, out] h The hasher to use.  The state of this module will be
-     * hashed into the hasher.
+     * @note It is not straightforward to expose the hasher to Python;
+     *       consequentially, we instead internally perform the hash and return
+     *       the value as a string.
+     *
+     * @return The hash value of the module, as a string.
      *
      * @par Complexity:
      * Linear in both the number of parameters and the number of submodules.
@@ -62,289 +204,73 @@ public:
      * @par Data Races:
      * The state of this module's algorithm, as well as the state of all
      * submodules are accessed.  Data races may result if the states of this
-     * module or any of its submodules are concurrently modified.  The state of
-     * @p h is modified and data races may result if its state is concurrently
-     * accessed or modified.
+     * module or any of its submodules are concurrently modified.
      *
      * @throw ??? if any of the parameters' or submodules' hash functions throw.
      * Same guarantee as the parameters' and/or submodules' hash functions.
      */
-    void hash(Hasher& h) const { h(submodules_); }
-
-protected:
-    /// Allows ModuleManager to set the state (via its implementation class)
-    friend class detail_::MMImpl;
-
-    /// Typedef of a pointer to a module via its base class
-    using module_pointer = std::unique_ptr<ModuleBase>;
-
-    // TODO: Add when SDE is written
-    /// A handle to the framework
-    // std::shared_ptr<SDE> sde_;
-
-    // TODO: Add when Cache is written
-    /// A collection of results previously obtained by this module type
-    // std::shared_ptr<Cache> benjamins_;
-
-    // TODO: Add when Parameters are written
-    /// Values for the algorithmic parameters associated with the module
-    // Parameters params_;
-
-    /// Submodules to be called by the module
-    Utilities::CaseInsensitiveMap<module_pointer> submodules_;
-};
-
-/**
- * @brief The class all module types inherit from.
- *
- * The ModuleBaseImpl class is primarily responsible for registering the APIs
- * of modules with the SDE (and doing so in a uniform manner).  Because it is
- * the most basic class of the module hierarchy with the full signature, it also
- * is responsible for memoization.
- *
- * @tparam ModuleType the type of the module type.
- * @tparam ReturnType the type of the object returned by the module.
- *         Must satisfy copyable.
- * @tparam Args the types of the arguments to the module's run_ function.
- */
-template<typename ModuleType, typename ReturnType, typename... Args>
-class ModuleBaseImpl : public ModuleBase {
-public:
-    /// The type of the property computed by this module
-    using return_type = ReturnType;
-
-    /// The type of the property computed by the module, as a shared pointer
-    using shared_return = std::shared_ptr<const return_type>;
-
-    /// The type of a cost as computed by the cost function
-    using cost_type = std::size_t;
+    void hash(Hasher& h) const { h(submodules_, metadata_); }
 
     /**
-     * @brief The API used to actually call the module.
+     * @brief Locks the module and all submodules.
      *
-     * This is the API to the module as seen by users of the SDE.  It wraps the
-     * actual call to the module ensuring that memoization occurs.
-     *
-     * @warning This function is only virtual to facilitate very advanced
-     * workflows.  Generally speaking one should not override this function.
-     *
-     * @param[in] args the arguments that will be forwarded to the module.
-     *
-     * @par Complexity:
-     * The greater of the cost: to hash this module or to run this module.
-     *
-     * @par Data Races:
-     * The state of this module will be accessed and modified, thus data races
-     * may ensue if this module is concurrently modified or accessed.
-     *
-     * @return a shared pointer to the result.
-     *
-     * @throws ??? If the module throws. Strong throw guarantee so long as
-     *         @p args is read-only.  Otherwise guarantee depends on the called
-     *         module.
-     *
-     */
-    virtual shared_return operator()(Args... args) {
-        auto hv = memoize(std::forward<Args>(args)...);
-        // check cache for hv
-        shared_return result;
-        if(true) {
-            result = std::make_shared<return_type>(
-              std::move(run_(std::forward<Args>(args)...)));
-            // put in cache
-        }
-        return result;
-    }
-
-    /**
-     * @brief Returns the RTTI of the module.
-     *
-     * This function returns the RTTI of the module type **NOT** the type of
-     * the implementation.  For example assume you implement `MyGreatAlgorithm`
-     * by deriving from `GreatAlgorithm` (which in turn inherited from
-     * `ModuleBaseImpl<GreatAlgorithm>`) this function would return the RTTI of
-     * `GreatAlgorithm` **NOT* the RTTI of `MyGreatAlgorithm`.
-     *
-     * @return The RTTI of the module type's type.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * None.
+     * A module that is locked can no longer have its parameters or submodules
+     * changed.
      *
      * @throw None. No throw guarantee.
+     *
+     * @par Complexity:
+     * Linear in the number of submodules. Constant on all subsequent calls.
+     *
+     * @par Data Races:
+     * The state of the current module is modified and data races may occur if
+     * the module is concurrently accessed.
      */
-    const std::type_info& type() const noexcept override {
-        return typeid(ModuleType);
+    void lock() noexcept {
+        if(locked_) return;
+        for(auto& x : submodules_)
+            if(x.second) x.second->lock();
+        locked_ = true;
     }
 
     /**
-     * @brief Allow introspection
+     * @brief Can be used to inquire into whether or not the module is currently
+     *        locked.
      *
-     * The default implementation simply returns the maximum of the type used
-     * for the cost.  Modules are encouraged to override this function so that
-     * the SDE can better manage resources.
+     * @return True if the module is locked and false otherwise.
      *
-     * @param[in] r The resource for which we want the cost.
-     * @param[in] args The arguments to pass to the module.
-     * @return The cost of calling the module with the provided arguments.  The
-     *         units of the returned cost depend on the resource selected.
+     * @throws None. No throw guarantee.
+     *
+     * @par Complexity:
+     * Constant.
+     *
+     * @par Data Races:
+     * The state of the current instance will be accessed and concurrent
+     * modifications may cause a data race.
      */
-    virtual cost_type cost(Resource r, Args... args) {
-        return std::numeric_limits<cost_type>::max();
-    }
+    bool locked() const noexcept { return locked_; }
 
 protected:
-    /**
-     * @brief This is the function that should be implemented by the derived
-     *        class to provide functionality.
-     *
-     * @note We do not want to put the && after @p Args because the user gave
-     *       us the arguments fully decorated and the && would trigger perfect
-     *       forwarding, which (somewhat ironically) will put additional
-     *       references on the arguments.
-     *
-     * @param[in] args The input to the module.
-     * @return  The result of running this module
-     */
-    virtual return_type run_(Args... args) = 0;
+    /// Allows Python trampoline to get at data
+    friend class detail_::PyModuleBase;
 
-    /**
-     * @brief This function provides the hash value associated with a specific
-     *        input for memoization purposes.
-     *
-     * This is a default memoization implementation.  It hashes the algorithm
-     * and the input values.  Module developers are free to override this
-     * behavior to, say, additionally hash the SDE instance or anything else
-     * that may influence the value of the results.
-     *
-     * @note We do not want to put the && after @p Args because the user gave
-     *       us the arguments fully decorated and the && would trigger perfect
-     *       forwarding, which (somewhat ironically) will put additional
-     *       references on the arguments.
-     *
-     * @param[in] args The input to the module.
-     * @return  A hash value that depends on both the current state of the
-     *          algorithm as well as the input.
-     * @throws ??? If hashing any of the input arguments fails.  Strong throw
-     *         guarantee.
-     * @par Complexity:
-     *      The greater of the complexity to hash the algorithm's state or
-     *      linear in the number of arguments.
-     * @par Data Races:
-     *      The state of the arguments as well as the module are accessed. Thus
-     *      data races may result if either state is concurrently modified.
-     */
-    virtual HashValue memoize(Args... args) const {
-        Hasher h(HashType::Hash128);
-        // h(*this, std::forward<Args>(args)...);
-        return h.finalize();
-    }
-};
+    /// The list of submodules this module may call
+    submodule_list submodules_;
 
-/**
- *  @brief Class responsible for requesting a property be computed.
- *
- *  Generally speaking we expect the PropertyBase to be used in typedefs,
- *  for example to define a class capable of returning property "Property"
- *  by calling a module of type "PropertyImpl" would be something like:
- *
- *  @code
- *  using Property = PropertyBase<PropertyImpl>;
- *  @endcode
- *
- *  Nonethless, it is conceivable that users may want to inherit from this
- *  class.  For this reason we have made the dtor virtual to ensure
- *  polymorphism works correctly.
- *
- *  @tparam ModuleType The module type which is capable of computing a property.
- *          Should satisfy the concept of module type.
- *
- */
-template<typename ModuleType>
-class PropertyBase {
-public:
-    /// The type of a pointer to a ModuleBase
-    using module_pointer = std::unique_ptr<ModuleBase>;
+    /// The meta-data associated with this module
+    metadata_type metadata_;
 
-    /// The type of the computed property
-    using return_type = typename ModuleType::return_type;
-
-    /**
-     * @brief The primary constructor for a property
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The contents of @p base are modified and data races may occur if the
-     * contents of @p base are concurrently accessed or modified.
-     *
-     * @param base The module implementing the algorithm which will compute the
-     * requested property.
-     *
-     * @throw std::bad_cast if @p ModuleType is not the same as the type of the
-     *        input module.  Strong throw guarantee.
-     */
-    PropertyBase(module_pointer&& base) :
-      impl_(std::move(downcast(std::move(base)))) {}
-
-    template<typename... Args>
-    auto operator()(Args&&... args) {
-        return (*impl_)(std::forward<Args>(args)...);
-    }
-
-    /**
-     *  @brief Cleans up the PropertyBase instance.
-     *
-     *  Note the dtor is virtual to allow for polymorphism.
-     *
-     *  @par Complexity:
-     *  Constant.  The state of the held module implementation is stored in
-     *  shared_ptr's retained by the SDE.  This deallocation simply decrements
-     *  the reference counts.
-     *
-     *  @par Data Races:
-     *  The state of the current instance is modified and data races may occur
-     *  if it is concurrently modified or accessed.
-     *
-     *  @throw None. No throw guarantee.
-     */
-    virtual ~PropertyBase() = default;
+    /// The traits associated with the module
+    std::set<ModuleTraits> traits_;
 
 private:
-    /// Type of a pointer to the module type's API
-    using ModuleBaseImplPtr = std::unique_ptr<ModuleType>;
-
-    /**
-     * @brief Code factorization for downcasting from the ModuleBase to the
-     *        actual implementation.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Race:
-     * This call modifies both the current instance and @p ptr.  Data
-     * races may ensure if either the current instance or @p ptr are
-     * concurrently accessed.
-     *
-     * @param[in] ptr The instance which implements the property algorithm
-     *            passed via the base class.
-     * @return  The same instance as @p ptr, downcasted to
-     * @throws std::bad_cast if the module implementation pointed to by @p ptr
-     * is not of type @p ModuleBaseImplType.  Strong throw guarantee.
-     * @throws ??? if ModuleBaseImplType's move ctor throws.  Same guarantee as
-     * ModuleBaseImplType's move ctor.
-     */
-    ModuleBaseImplPtr downcast(module_pointer&& ptr) const {
-        if(ptr->type() != typeid(ModuleType)) throw std::bad_cast();
-        auto* derived = static_cast<ModuleType*>(ptr.release());
-        return std::move(std::unique_ptr<ModuleType>(derived));
-    }
-
-    /// The actual implementation to use
-    ModuleBaseImplPtr impl_;
+    // True means parameters and submodules can no longer be changed
+    bool locked_ = false;
 };
 
 } // namespace SDE
+
+#define DEFINE_MODULE_TYPE(prop_name, return_value, ...) \
+    struct prop_name : SDE::ModuleBase {                 \
+        virtual return_value run(__VA_ARGS__) = 0;       \
+    }
