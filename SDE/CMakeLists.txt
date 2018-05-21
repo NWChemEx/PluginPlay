@@ -18,6 +18,7 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              Memoization.hpp
                              MoleculeFileParser.hpp
                              SDEAny.hpp
+                             Parameters.hpp
                              Serialization.hpp
         )
 list(FIND NWX_DEPENDENCIES pybind11 BUILD_PYTHON_BINDINGS)
