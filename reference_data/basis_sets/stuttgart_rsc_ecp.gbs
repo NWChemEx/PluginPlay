@@ -65,7 +65,7 @@ g-ul potential
   1
 2     17.447138000          -22.329488000      
 ND     0
-ND-ECP     5     28
+NE-ECP     5     28
 h-ul potential
   1
 2      1.000000000            0.000000000      
@@ -145,7 +145,7 @@ g-ul potential
   1
 2     21.232458000          -26.748273000      
 GD     0
-GD-ECP     5     28
+GE-ECP     5     28
 h-ul potential
   1
 2      1.000000000            0.000000000      
