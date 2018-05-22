@@ -18,6 +18,7 @@ class PyProperty2(DummyModule.TestProperty2):
     def __init__(self):
         DummyModule.TestProperty2.__init__(self)
         self._set_submodule("Prop1", prop1)
+        self._set_metadata(SDE.MetaProperty.name, "Property 2")
 
     def run(self, i):
         return i + 1
@@ -27,7 +28,7 @@ class TestModuleBase(unittest.TestCase):
     def setUp(self):
         self.mod = PyProperty2()
         self.corr_submods = {"Prop1": prop1}
-        self.corr_metadata = {}
+        self.corr_metadata = {SDE.MetaProperty.name: "Property 2"}
         #self.corr_params = SDE.Parameters
 
     def test_run(self):
