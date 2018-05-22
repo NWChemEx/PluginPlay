@@ -56,7 +56,8 @@ void register_property(pybind11::module& m, std::string name) {
     using prop_type   = Property<ModuleAPI>;
     using pyprop_type = detail_::PyPropertyHelper<ModuleAPI>;
     pybind11::class_<prop_type>(m, name.c_str())
-      .def(pybind11::init<std::shared_ptr<ModuleBase>>())
+      .def(pybind11::init<std::shared_ptr<ModuleBase>>(),
+           pybind11::keep_alive<1, 2>())
       .def("__call__", &pyprop_type::call);
 }
 
@@ -65,3 +66,9 @@ void register_property(pybind11::module& m, std::string name) {
 #define DEFINE_PYTHON_PROPERTY(m, PropertyName)           \
     SDE::register_module<PropertyName>(m, #PropertyName); \
     SDE::register_property<PropertyName>(m, "Property" #PropertyName)
+
+#define EXPORT_MODULE(m, ModuleName, PropertyName)                           \
+    pybind11::class_<ModuleName, PropertyName, std::shared_ptr<ModuleName>>( \
+      m, #ModuleName)                                                        \
+      .def(pybind11::init<>())                                               \
+      .def("run", &ModuleName::run)
