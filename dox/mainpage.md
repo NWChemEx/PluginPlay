@@ -20,10 +20,6 @@ Topics in this section are meant for users who want to write modules and/or make
 their libraries discoverable/usable with the SDE, but don't care about the 
 internals of the SDE more than they need to.
 
-
-- [ModuleLoader](@ref using_module_loader) describes how to write a module 
-  loader for your module. 
-
 - [Using ModuleBase and Property](@ref using_modules) Introduction to the two
   classes representing the bulk of the SDE's module system.
 - [Writing a Module](@ref writing_a_module) short tutorial focusing on the key

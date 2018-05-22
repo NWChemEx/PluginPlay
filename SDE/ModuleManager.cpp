@@ -1,6 +1,6 @@
 #include "SDE/ModuleManager.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
-
+#include <iostream>
 template<typename T>
 using CIM = Utilities::CaseInsensitiveMap<T>;
 
@@ -42,6 +42,7 @@ public:
 
     void insert(key_type key, loader_type mod) {
         is_valid(key);
+        auto mod_i = mod();
         auto entry = std::make_pair(mod(), mod);
         modules.insert(std::make_pair(std::move(key), entry));
     }

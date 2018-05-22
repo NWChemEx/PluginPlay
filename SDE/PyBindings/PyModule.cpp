@@ -32,5 +32,9 @@ void pythonize_Module(pybind11::module& m) {
       .def("_set_submodule",
            [](module_pointer me, std::string key, module_pointer ptr) {
                SDE::detail_::PyModuleBase().set_submodule(me, key, ptr);
-           });
+           })
+      .def("_set_submodule", [](module_pointer me, std::string key,
+                                pybind11::none a_none) {
+          SDE::detail_::PyModuleBase().set_submodule(me, key, module_pointer{});
+      });
 }

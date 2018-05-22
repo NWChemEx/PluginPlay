@@ -23,12 +23,21 @@ class TestProperty(unittest.TestCase):
     def test_run(self):
         self.assertEqual(self.prop(1), 2)
 
+    def test_nesting_run(self):
+        prop = DummyModule.PropertyTestProperty2(PyProperty2())
+        self.assertEqual(prop(1), 2)
+
 class TestCPPProperty(unittest.TestCase):
     def setUp(self):
         self.mod = DummyModule.get_cpp_module()
         self.prop = DummyModule.PropertyTestProperty2(self.mod)
 
     def test_run(self):
+        self.assertEqual(self.prop(1), 2)
+
+    def test_no_loader(self):
+        mod = DummyModule.MyProp2()
+        prop = DummyModule.PropertyTestProperty2(mod)
         self.assertEqual(self.prop(1), 2)
 
 if __name__ == '__main__':

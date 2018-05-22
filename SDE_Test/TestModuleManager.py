@@ -29,16 +29,22 @@ def test_mm(tester, mm, keys):
         tester.assertTrue(new_key in mm)
         tester.assertRaises(ValueError, mm.duplicate, k, new_key)
 
-def make_module():
-    mod = PyProperty2()
-    return mod
+class pymake_module:
+    def __init__(self):
+        self.mods = []
+    def __call__(self):
+        self.mods.append(PyProperty2())
+        return self.mods[-1]
+
+def cpp_make_module():
+    return DummyModule.MyProp2()
 
 class TestModuleManager(unittest.TestCase):
     def setUp(self):
         self.mm = SDE.ModuleManager()
         self.mod = PyProperty2()
         self.key = "a key"
-        self.loader = make_module
+        self.loader = pymake_module()
 
     def test_default_ctor(self):
         test_mm(self, self.mm, [])
@@ -47,10 +53,13 @@ class TestModuleManager(unittest.TestCase):
         self.mm.insert(self.key, DummyModule.get_cpp_module)
         test_mm(self, self.mm, [self.key])
 
+    def test_filled_cpp_from_py(self):
+        self.mm.insert(self.key, cpp_make_module)
+        test_mm(self, self.mm, [self.key])
+
     def test_filled_py_module(self):
         self.mm.insert(self.key, self.loader)
         test_mm(self, self.mm, [self.key])
-
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
