@@ -2,7 +2,8 @@
 #include <pybind11/functional.h>
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
-using namespace SDE;
+
+namespace SDE {
 using module_pointer = typename ModuleManager::module_pointer;
 
 void pythonize_ModuleManager(py::module& m) {
@@ -14,3 +15,4 @@ void pythonize_ModuleManager(py::module& m) {
            py::arg("new_key") = "")
       .def("at", &ModuleManager::at);
 }
+} // namespace SDE
