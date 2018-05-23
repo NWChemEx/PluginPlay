@@ -11,6 +11,7 @@ set(SDE_SRCS Defaults/DefaultAM.cpp
                          BasisSetFileParser.cpp
                          ChemistryRuntime.cpp
                          MoleculeFileParser.cpp
+                         Module.cpp
         )
 set(SDE_INCLUDES BasisSetFileParser.hpp
                              ChemistryRuntime.hpp

@@ -82,6 +82,9 @@ public:
      *
      * @return a shared pointer to the result.
      *
+     * @throws std::runtime_error if the wrapped module is not ready (as
+     *         determined by calling its not_ready member function).  Strong
+     *         throw guarantee.
      * @throws ??? If the module throws. Strong throw guarantee so long as
      *         @p args is read-only.  Otherwise guarantee depends on the called
      *         module.
@@ -89,6 +92,8 @@ public:
      */
     template<typename... Args>
     shared_return operator()(Args&&... args) {
+        if(impl_->not_ready().size())
+            throw std::runtime_error("Module is not ready");
         auto hv = memoize(std::forward<Args>(args)...);
         // check cache for hv
         shared_return result;

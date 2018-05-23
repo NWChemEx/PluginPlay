@@ -27,6 +27,8 @@ void pythonize_Module(pybind11::module& m) {
     DECLARE_PySmartEnum(MetaProperty, name, version, description, authors,
                         citations);
     DECLARE_PySmartEnum(ModuleTraits, nondeterministic);
+    DECLARE_PySmartEnum(ModuleProperty, metadata, parameters, submodules,
+                        traits);
 
     pybind11::class_<ModuleBase, module_pointer>(m, "ModuleBase")
       .def(pybind11::init<>())
@@ -37,6 +39,7 @@ void pythonize_Module(pybind11::module& m) {
       //.def("change_parameter", &ModuleBase::change_parmaeter)
       .def("locked", &ModuleBase::locked)
       .def("lock", &ModuleBase::lock)
+      .def("not_ready", &ModuleBase::not_ready)
       .def("__eq__",
            [](module_pointer lhs, module_pointer rhs) { return lhs == rhs; })
       .def("_set_submodule",
