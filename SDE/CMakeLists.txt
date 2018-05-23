@@ -2,30 +2,31 @@ cmake_minimum_required(VERSION ${CMAKE_VERSION})
 project(SDE-SRC VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
 set(SDE_SRCS Defaults/DefaultAM.cpp
-                         Defaults/DefaultAtoms.cpp
-                         Defaults/DefaultBases.cpp
-                         Defaults/DefaultIsotopes.cpp
-                         Defaults/DefaultMols.cpp
-                         Defaults/DefaultSymbols.cpp
-                         Defaults/PhysicalConstants.cpp
-                         BasisSetFileParser.cpp
-                         ChemistryRuntime.cpp
-                         ModuleManager.cpp
-                         MoleculeFileParser.cpp
-                         Module.cpp
-        )
-set(SDE_INCLUDES BasisSetFileParser.hpp
-                             ChemistryRuntime.hpp
-                             NWXDefaults.hpp
-                             Memoization.hpp
-                             ModuleHelpers.hpp
-                             Module.hpp
-                             ModuleManager.hpp
-                             MoleculeFileParser.hpp
-                             Property.hpp
-                             SDEAny.hpp
-                             Serialization.hpp
-        )
+             Defaults/DefaultAtoms.cpp
+             Defaults/DefaultBases.cpp
+             Defaults/DefaultIsotopes.cpp
+             Defaults/DefaultMols.cpp
+             Defaults/DefaultSymbols.cpp
+             Defaults/PhysicalConstants.cpp
+             BasisSetFileParser.cpp
+             ChemistryRuntime.cpp
+             ModuleManager.cpp
+             MoleculeFileParser.cpp
+             Module.cpp
+)
+set(SDE_INCLUDES Defaults/DefaultModuleTypes.hpp
+                 BasisSetFileParser.hpp
+                 ChemistryRuntime.hpp
+                 NWXDefaults.hpp
+                 Memoization.hpp
+                 ModuleHelpers.hpp
+                 Module.hpp
+                 ModuleManager.hpp
+                 MoleculeFileParser.hpp
+                 Property.hpp
+                 SDEAny.hpp
+                 Serialization.hpp
+)
 set(SDE_DEFINITIONS )
 set(SDE_LINK_FLAGS)
 

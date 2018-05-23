@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(SDE VERSION 0.0.0 LANGUAGES CXX)
-set(SDE_DEPENDENCIES LibChemist Utilities bphash cereal)
+set(SDE_DEPENDENCIES LibChemist Utilities bphash cereal tamm)
 find_package(CMakeBuild)
 include(UtilityMacros)
 include(OptionMacros)
