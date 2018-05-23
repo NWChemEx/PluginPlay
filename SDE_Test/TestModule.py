@@ -9,6 +9,10 @@ sys.path.append(lib_dir)
 import DummyModule
 
 class PyProperty1(DummyModule.TestProperty2):
+    def __init__(self):
+        DummyModule.TestProperty2.__init__(self)
+        self._set_submodule("Prop3", None)
+
     def run(self, i):
         return i + 1
 
@@ -18,6 +22,7 @@ class PyProperty2(DummyModule.TestProperty2):
     def __init__(self):
         DummyModule.TestProperty2.__init__(self)
         self._set_submodule("Prop1", prop1)
+        self._set_metadata(SDE.MetaProperty.name, "Property 2")
 
     def run(self, i):
         return i + 1
@@ -27,7 +32,7 @@ class TestModuleBase(unittest.TestCase):
     def setUp(self):
         self.mod = PyProperty2()
         self.corr_submods = {"Prop1": prop1}
-        self.corr_metadata = {}
+        self.corr_metadata = {SDE.MetaProperty.name: "Property 2"}
         #self.corr_params = SDE.Parameters
 
     def test_run(self):
@@ -74,6 +79,12 @@ class TestModuleBase(unittest.TestCase):
     def test_change_submodule_invalid_key(self):
         self.assertRaises(IndexError, self.mod.change_submodule, "prop 4",
                           self.mod)
+
+    def test_not_ready(self):
+        r1 = self.mod.not_ready()
+        self.assertEqual(r1, [(prop1, SDE.ModuleProperty.submodules)])
+        r2 = prop1.not_ready()
+        self.assertEqual(r2, [(None, SDE.ModuleProperty.submodules)])
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

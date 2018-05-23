@@ -20,6 +20,11 @@ struct MyProp3 : TestProperty3 {
     int run(int x) { return x - 1; }
 };
 
+struct MyProp4 : TestProperty3 {
+    MyProp4() { submodules_["Prop1"] = nullptr; }
+    int run(int x) { return x - 1; }
+};
+
 // Simulates getting module from ModuleManager
 module_ptr mm_facade(const std::string& str) {
     if(str == "Prop1")
@@ -91,5 +96,10 @@ TEST_CASE("Property") {
     SECTION("Ctor error checking") {
         REQUIRE_THROWS_AS(Property<TestProperty1>(mm_facade("Prop2")),
                           std::bad_cast);
+    }
+
+    SECTION("Not ready module throws") {
+        Property<TestProperty3> prop(std::make_shared<MyProp4>());
+        REQUIRE_THROWS_AS(prop(1), std::runtime_error);
     }
 }

@@ -15,6 +15,11 @@ class PyProperty2(DummyModule.TestProperty2):
     def run(self, i):
         return i + 1
 
+class PyProperty3(DummyModule.TestProperty2):
+    def __init__(self):
+        DummyModule.TestProperty2.__init__(self)
+        self._set_submodule("Prop1", None)
+
 class TestProperty(unittest.TestCase):
     def setUp(self):
         self.mod = PyProperty2()
@@ -39,6 +44,11 @@ class TestCPPProperty(unittest.TestCase):
         mod = DummyModule.MyProp2()
         prop = DummyModule.PropertyTestProperty2(mod)
         self.assertEqual(self.prop(1), 2)
+
+    def test_not_ready(self):
+        prop = DummyModule.PropertyTestProperty2(PyProperty3())
+        self.assertRaises(RuntimeError, prop, 1)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

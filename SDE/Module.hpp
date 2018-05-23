@@ -3,6 +3,7 @@
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
+#include <vector>
 
 namespace SDE {
 namespace detail_ {
@@ -53,6 +54,14 @@ DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations
 DECLARE_SmartEnum(ModuleTraits, nondeterministic);
 
 /**
+ * @brief Enumeration of the various types of state held in the Module
+ *
+ * This enumeration is primarily meant to be used with the "not_ready" member of
+ * the ModuleBase class to signal, which members are not ready.
+ */
+DECLARE_SmartEnum(ModuleProperty, metadata, parameters, submodules, traits);
+
+/**
  *  @brief This is the class that all modules will be passed around as.
  *
  *  ModuleBase is the opaque handle to a module that is usable with the SDE. As
@@ -82,6 +91,10 @@ public:
     /// Type of the set of traits
     using traits_type = std::set<ModuleTraits>;
 
+    /// Type returned by not_ready (no support for multimap in Python)
+    using not_ready_return =
+      std::vector<std::pair<module_pointer, ModuleProperty>>;
+
     /**
      * @brief Creates a new ModuleBase
      *
@@ -89,8 +102,7 @@ public:
      * contain no parameters, submodules, or meta-data.  Module developers are
      * encouraged to fill said data in via the derived class's ctor.
      *
-     * @throws std::bad_alloc if there is insufficient memory to create a
-     *         ModuleBasePIMPL instance.  Strong throw guarantee.
+     * @throws None. No throw guarantee.
      *
      * @par Complexity:
      * Constant.
@@ -138,8 +150,8 @@ public:
      *
      */
     ///@{
-    const submodule_list& submodules() const noexcept { return submodules_; }
     const metadata_type& metadata() const noexcept { return metadata_; }
+    const submodule_list& submodules() const noexcept { return submodules_; }
     const traits_type& traits() const noexcept { return traits_; }
     // const Parameters& parameters() const noexcept {return parameters_;}
 
@@ -249,15 +261,39 @@ public:
      */
     bool locked() const noexcept { return locked_; }
 
+    /**
+     * @brief Used to determine if the current module is ready to be run.
+     *
+     * A module is ready to be run if all required parameters are set and all
+     * submodule call back points are assigned a submodule to call (*i.e.*
+     * `submodules_["Some call back point"] != nullptr`).  This check will
+     * proceed recursively to ensure that all submodules are also ready.
+     *
+     * @return A list of pairs such that the first element of the pair is a
+     * pointer to the module that is not ready, and the second element is one of
+     * the ModuleProperty enumerations corresponding to why the module is not
+     * ready.
+     * @note In order to use enable_shared_from_this we need to ensure that
+     * every module is wrapped in shared pointers.  If one is not, we get
+     * undefined behavior.  This is difficult to enforce without hiding all the
+     * ctors, which in turn makes it hard to write loaders.  Point is if it is
+     * the current module that is not ready the key will be a nullptr.
+     * @throw std::bad_alloc if there is insufficient memory to add elements to
+     *        the return structure.  Strong throw guarantee.
+     * @par Complexity:
+     * Linear in the total number of submodules.
+     */
+    not_ready_return not_ready();
+
 protected:
     /// Allows Python trampoline to get at data
     friend class detail_::PyModuleBase;
 
-    /// The list of submodules this module may call
-    submodule_list submodules_;
-
     /// The meta-data associated with this module
     metadata_type metadata_;
+
+    /// The list of submodules this module may call
+    submodule_list submodules_;
 
     /// The traits associated with the module
     std::set<ModuleTraits> traits_;
