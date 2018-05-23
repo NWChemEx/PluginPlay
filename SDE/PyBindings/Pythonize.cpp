@@ -8,4 +8,6 @@ extern void pythonize_ModuleManager(py::module&);
 PYBIND11_MODULE(SDE, m) {
     pythonize_Module(m);
     pythonize_ModuleManager(m);
+}
+
 } // namespace SDE

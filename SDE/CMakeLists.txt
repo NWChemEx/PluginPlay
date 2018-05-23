@@ -33,7 +33,7 @@ list(FIND NWX_DEPENDENCIES pybind11 BUILD_PYTHON_BINDINGS)
 if(NOT ${BUILD_PYTHON_BINDINGS} EQUAL -1)
     list(APPEND SDE_SRCS  PyBindings/Pythonize.cpp
                           PyBindings/PyModule.cpp
-                          Pybindings/PyModuleManager.cpp)
+                          PyBindings/PyModuleManager.cpp)
     list(APPEND SDE_INCLUDES PyBindings/PyModule.hpp
                              PyBindings/PySmartEnums.hpp)
     set(INIT_FILE PyBindings/__init__.py)
