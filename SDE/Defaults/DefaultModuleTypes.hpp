@@ -100,7 +100,8 @@ struct JKMatrices : ModuleBase {
     using basis_set_type = LibChemist::BasisSet;
     using tensor_map     = Utilities::CaseInsensitiveMap<tensor_type>;
 
-    virtual tensor_map run(const molecule_type& mol, const OrbitalSpace& MOs,
+    virtual tensor_map run(const molecule_type& mol,
+                           const OrbitalSpace<element_type>& MOs,
                            const basis_set_type& bra,
                            const basis_set_type& ket) = 0;
 };
@@ -120,7 +121,8 @@ struct FockBuilder : ModuleBase {
     using basis_set_type = LibChemist::BasisSet;
     using tensor_map     = Utilities::CaseInsensitiveMap<tensor_type>;
 
-    virtual tensor_map run(const molecule_type& mol, const OrbitalSpace& MOs,
+    virtual tensor_map run(const molecule_type& mol,
+                           const OrbitalSpace<element_type>& MOs,
                            const basis_set_type& bra,
                            const basis_set_type& ket) = 0;
 };
