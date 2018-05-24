@@ -17,11 +17,14 @@ TEST_CASE("Basic Parameter Usage") {
 
     // Best has description and checks
 
-//    params.insert("Not a negative number", Option<int>{4, "Any positive number",
-//    {GreaterThan<int>{-1}}});
+    params.insert("Not a negative number", Option<int>{4, "Any positive number",
+    {GreaterThan<int>{-1}}});
 
     // See if params contains an option "Hello World"
     bool has_hello_world = params.count("Hello World");
+    std::cout << has_hello_world << std::endl;
+    params.insert("Hello World", Option<std::string>{"Hello world"});
+    std::cout << params.count("Hello World") << std::endl;
     // Be malicious and change the value of pi (the world will never be the same)
     // Note: this would trigger the value checks (if any exist)
     params.change("Pi", 4.14);

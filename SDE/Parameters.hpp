@@ -4,19 +4,28 @@
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <string>
+#include <functional>
 #include <stdexcept>
 
 namespace SDE {
 
+/**
+ * @brief
+ * @tparam T
+ */
 template<typename T>
 struct OptionChecker {
-    virtual ~OptionChecker(){}
-    virtual bool operator()(T& value) = 0;
+    virtual ~OptionChecker(){};
+    virtual bool operator()(const T& value) = 0;
 
     void hash(Hasher& h) const {hash_(h);}
     virtual void hash_(Hasher& h) const = 0;
 };
 
+/**
+ * @brief
+ * @tparam T
+ */
 template<typename T>
 struct GreaterThan : OptionChecker<T> {
     T low;
@@ -24,13 +33,17 @@ struct GreaterThan : OptionChecker<T> {
     GreaterThan(const T thresh) : low(thresh) {};
     ~GreaterThan() = default;
 
-    bool operator()(T& value) override {
+    bool operator()(const T& value) override {
         return value > low;
     }
 
     virtual void hash_(Hasher& h) const override { h(low); }
 };
 
+/**
+ * @brief
+ * @tparam T
+ */
 template<typename T>
 struct LessThan : OptionChecker<T> {
     T high;
@@ -38,13 +51,17 @@ struct LessThan : OptionChecker<T> {
     LessThan(const T thresh) : high(thresh) {};
     ~LessThan() = default;
 
-    bool operator()(T& value) override {
+    bool operator()(const T& value) override {
         return value < high;
     }
 
     virtual void hash_(Hasher& h) const override { h(high); }
 };
 
+/**
+ * @brief
+ * @tparam T
+ */
 template<typename T>
 struct Between : OptionChecker<T> {
     T low;
@@ -53,7 +70,7 @@ struct Between : OptionChecker<T> {
     Between(const T thresh1, const T thresh2) : low(thresh1), high(thresh2) {};
     ~Between() = default;
 
-    bool operator()(T& value) override {
+    bool operator()(const T& value) override {
         return (value > low && value < high);
     }
 
@@ -64,38 +81,38 @@ struct Between : OptionChecker<T> {
  * @brief A list of traits an option can have
  *
  */
-// TODO add hash free function for SmartEnum
 //DECLARE_SmartEnum(OptionTraits, transparent, optional);
 enum class OptionTraits{transparent, optional};
 
+/**
+ * @brief
+ * @tparam T
+ */
 template<typename T>
 class Option {
 public:
 
     T value;
     std::string description;
-    std::vector<std::unique_ptr<OptionChecker<T>>> range_checks;
+    std::vector<std::function<bool(const T&)>> range_checks;
     std::vector<OptionTraits> traits;
 
     Option(T value,
            std::string description = "",
-           std::vector<std::unique_ptr<OptionChecker<T>>> range_checks = {},
+           std::vector<std::function<bool(const T&)>> range_checks = {},
            std::vector<OptionTraits> traits = {}) : value(value),
                                                     description(description),
-                                                    range_checks(std::move(range_checks)),
+                                                    range_checks(range_checks),
                                                     traits(traits) {
         check_option();
     }
-    explicit Option();
-    Option(const Option&) = delete;
-    Option& operator=(const Option&) = delete;
     ~Option() = default;
 
-    void hash(Hasher& h) const { h(value,description,range_checks,traits); }
+    void hash(Hasher& h) const { h(value,description,traits); }
 
     void check_option() {
         for (auto& check : range_checks) {
-            if (!(*check)(value)) throw std::invalid_argument("");
+            if (!check(value)) throw std::invalid_argument("");
         }
     }
 
@@ -107,6 +124,7 @@ public:
 class Parameters {
 
     Utilities::CaseInsensitiveMap<SDE::detail_::SDEAny> options;
+    bool tracking_changes;
 
 public:
 
@@ -137,9 +155,8 @@ public:
         return (SDE::detail_::SDEAnyCast<Option<T>>(options.at(key))).value;
     }
 
-    //void hash(Hasher& h) const {h(options);}
+    void hash(Hasher& h) const {h(options);}
+    void track_changes() {tracking_changes = true;}
 };
 
-
-
-}
+} //end namespace SDE
