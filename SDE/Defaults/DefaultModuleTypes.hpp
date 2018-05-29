@@ -28,10 +28,10 @@ struct OrbitalSpace {
     using basis_type  = LibChemist::BasisSet;
 
     // AO basis set
-    std::shared_ptr<basis_type> basis;
+    std::shared_ptr<const basis_type> basis;
 
     // Overlap of AO basis
-    std::shared_ptr<tensor_type> S;
+    std::shared_ptr<const tensor_type> S;
 
     // Density matrix in the AO basis set
     tensor_type density;
@@ -50,36 +50,35 @@ struct OrbitalSpace {
  * This class is envisioned as wrapping builds of full AO integral tensors.
  *
  * @tparam NBases The total number of AO basis sets involved in the integral.
- * @tparam Deriv What derivative, w.r.t. electron position, should we compute?
  * @tparam element_type The type of the element in the tensor
  */
-template<std::size_t NBases, std::size_t Deriv = 0,
-         typename element_type = double>
+template<std::size_t NBases, typename element_type = double>
 struct AOIntegral : ModuleBase {
     using tensor_type      = tamm::Tensor<element_type>;
     using molecule_type    = LibChemist::Molecule;
     using basis_set_type   = LibChemist::BasisSet;
     using basis_array_type = std::array<basis_set_type, NBases>;
+    using size_type        = std::size_t;
 
     // Multiple tensors for things like dipoles?
-    virtual tensor_type run(const molecule_type&, const basis_array_type&) = 0;
+    virtual tensor_type run(const molecule_type&, const basis_array_type&,
+                            size_type deriv) = 0;
 };
 
 /**
  * @brief The base class for modules that build the core Hamiltonian in the AO
  * basis set.
  *
- * @tparam Deriv What derivative, w.r.t. electron position, should we compute?
- * @tparam element_type The type of the element in the tensor
  */
-template<std::size_t Deriv = 0, typename element_type = double>
 struct CoreHamiltonian : ModuleBase {
-    using tensor_type    = tamm::Tensor<element_type>;
+    using tensor_type    = tamm::Tensor<double>;
     using molecule_type  = LibChemist::Molecule;
     using basis_set_type = LibChemist::BasisSet;
+    using size_type      = std::size_t;
+
     // Is there ever more than one???
     virtual tensor_type run(const molecule_type&, const basis_set_type& bra,
-                            const basis_set_type& ket) = 0;
+                            const basis_set_type& ket, size_type deriv) = 0;
 };
 
 /**
@@ -90,41 +89,47 @@ struct CoreHamiltonian : ModuleBase {
  * together.  This class is designed to build a series of Js and Ks given a
  * series of densities.
  *
- * @tparam Deriv What derivative, w.r.t. electron position, should we compute?
- * @tparam element_type The type of the element in the tensor
  */
-template<std::size_t Deriv = 0, typename element_type = double>
 struct JKMatrices : ModuleBase {
+    using element_type   = double;
     using tensor_type    = tamm::Tensor<element_type>;
     using molecule_type  = LibChemist::Molecule;
+    using orbital_type   = OrbitalSpace<element_type>;
     using basis_set_type = LibChemist::BasisSet;
     using tensor_map     = Utilities::CaseInsensitiveMap<tensor_type>;
+    using size_type      = std::size_t;
 
-    virtual tensor_map run(const molecule_type& mol,
-                           const OrbitalSpace<element_type>& MOs,
-                           const basis_set_type& bra,
-                           const basis_set_type& ket) = 0;
+    virtual tensor_map run(const molecule_type& mol, const orbital_type& MOs,
+                           const basis_set_type& bra, const basis_set_type& ket,
+                           size_type deriv) = 0;
 };
 
 /**
  * @brief The base class for modules that build Fock matrices in the AO
  * basis set.
  *
- *
- * @tparam Deriv What derivative, w.r.t. electron position, should we compute?
- * @tparam element_type The type of the element in the tensor
  */
-template<std::size_t Deriv = 0, typename element_type = double>
 struct FockBuilder : ModuleBase {
+    using element_type   = double;
     using tensor_type    = tamm::Tensor<element_type>;
     using molecule_type  = LibChemist::Molecule;
+    using orbital_type   = OrbitalSpace<element_type>;
     using basis_set_type = LibChemist::BasisSet;
     using tensor_map     = Utilities::CaseInsensitiveMap<tensor_type>;
+    using size_type      = std::size_t;
 
-    virtual tensor_map run(const molecule_type& mol,
-                           const OrbitalSpace<element_type>& MOs,
-                           const basis_set_type& bra,
-                           const basis_set_type& ket) = 0;
+    virtual tensor_map run(const molecule_type& mol, const orbital_type& MOs,
+                           const basis_set_type& bra, const basis_set_type& ket,
+                           size_type deriv) = 0;
+};
+
+struct Energy : ModuleBase {
+    using element_type  = double;
+    using molecule_type = LibChemist::Molecule;
+    using tensor_type   = tamm::Tensor<element_type>;
+    using size_type     = std::size_t;
+
+    virtual tensor_type run(const molecule_type& mol, size_type deriv) = 0;
 };
 
 } // namespace SDE
