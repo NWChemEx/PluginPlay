@@ -11,32 +11,17 @@
 namespace SDE {
 
 /**
- * @brief Interface class for various validity checks on Options
- * @tparam T type of the Option value to check.
- */
-template<typename T>
-struct OptionChecker {
-    virtual ~OptionChecker(){};
-    virtual bool operator()(const T& value) = 0;
-
-    void hash(Hasher& h) const { hash_(h); }
-    virtual void hash_(Hasher& h) const = 0;
-};
-
-/**
  * @brief Class which checks whether a given value is above a threshold
  * @tparam T type of the Option value to check.
  */
 template<typename T>
-struct GreaterThan : OptionChecker<T> {
+struct GreaterThan {
     T low;
 
     GreaterThan(const T thresh) : low(thresh){};
     ~GreaterThan() = default;
 
-    bool operator()(const T& value) override { return value > low; }
-
-    virtual void hash_(Hasher& h) const override { h(low); }
+    bool operator()(const T& value) { return value > low; }
 };
 
 /**
@@ -44,15 +29,13 @@ struct GreaterThan : OptionChecker<T> {
  * @tparam T type of the Option value to check.
  */
 template<typename T>
-struct LessThan : OptionChecker<T> {
+struct LessThan {
     T high;
 
     LessThan(const T thresh) : high(thresh){};
     ~LessThan() = default;
 
-    bool operator()(const T& value) override { return value < high; }
-
-    virtual void hash_(Hasher& h) const override { h(high); }
+    bool operator()(const T& value) { return value < high; }
 };
 
 /**
@@ -60,18 +43,16 @@ struct LessThan : OptionChecker<T> {
  * @tparam T type of the Option value to check.
  */
 template<typename T>
-struct Between : OptionChecker<T> {
+struct Between {
     T low;
     T high;
 
     Between(const T thresh1, const T thresh2) : low(thresh1), high(thresh2){};
     ~Between() = default;
 
-    bool operator()(const T& value) override {
+    bool operator()(const T& value) {
         return (value > low && value < high);
     }
-
-    virtual void hash_(Hasher& h) const override { h(low, high); }
 };
 
 /**
@@ -126,7 +107,7 @@ public:
     /**
      * @brief Runs a value through all the validity checks of an Option
      *
-     * Will only return true if the value passes all the OptionChecks
+     * Will only return true if the value passes all the checks
      * contained in range_checks.
      *
      * @param val the value to check.
