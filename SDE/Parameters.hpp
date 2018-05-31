@@ -19,7 +19,7 @@ struct GreaterThan {
     T low;
 
     GreaterThan(const T thresh) : low(thresh){};
-    ~GreaterThan() = default;
+    ~GreaterThan() noexcept = default;
 
     bool operator()(const T& value) { return value > low; }
 };
@@ -33,7 +33,7 @@ struct LessThan {
     T high;
 
     LessThan(const T thresh) : high(thresh){};
-    ~LessThan() = default;
+    ~LessThan() noexcept = default;
 
     bool operator()(const T& value) { return value < high; }
 };
@@ -48,11 +48,9 @@ struct Between {
     T high;
 
     Between(const T thresh1, const T thresh2) : low(thresh1), high(thresh2){};
-    ~Between() = default;
+    ~Between() noexcept = default;
 
-    bool operator()(const T& value) {
-        return (value > low && value < high);
-    }
+    bool operator()(const T& value) { return (value > low && value < high); }
 };
 
 /**
@@ -96,7 +94,7 @@ public:
         if(!is_valid(value))
             throw std::invalid_argument("Not a valid option value");
     }
-    ~Option() = default;
+    ~Option() noexcept = default;
 
     /**
      * @brief Provides a hash of the Option's state
@@ -122,11 +120,47 @@ public:
     }
 };
 
+namespace detail_ {
+/**
+ * @brief Primary template, called when T for Parameters::at is not Option<U> (U
+ * being any type)
+ *
+ * The next two structs exist so that the function Parameters::at<> can return
+ * either the value of an Option, or the Option itself depending on the template
+ * parameter given to it.
+ *
+ * @tparam T type of the value of the Option
+ */
+template<typename T>
+struct AtHelper {
+    // static so we don't have to make an instance
+    static const T& get(const SDEAny& any) {
+        return SDEAnyCast<Option<T>>(any).value;
+    }
+};
+
+/**
+ * @brief Specialization for Option<U>, called when T for Parameters::at is
+ * Option<U>
+ *
+ * @tparam U type of the value of the Option
+ */
+template<typename U>
+struct AtHelper<Option<U>> {
+    static const Option<U>& get(const SDEAny& any) {
+        return SDEAnyCast<Option<U>>(any);
+    }
+};
+} // namespace detail_
+
 /**
  * @brief Class for holding the parameters to a module
  */
 class Parameters {
 public:
+    Parameters()           = default;
+    ~Parameters() noexcept = default;
+
     /**
      * @brief Change the value of an Option in the Parameters.
      *
@@ -145,7 +179,10 @@ public:
             throw std::invalid_argument("Not a valid option value");
         opt.value = new_value;
 
-        if(tracking_changes) opt.traits.push_back(OptionTraits::non_default);
+        if(tracking_changes &&
+           (std::find(opt.traits.begin(), opt.traits.end(),
+                      OptionTraits::non_default) == opt.traits.end()))
+            opt.traits.push_back(OptionTraits::non_default);
         insert(key, opt);
     }
 
@@ -162,7 +199,7 @@ public:
     void insert(std::string key, Option<T> opt) {
         if(std::find(opt.traits.begin(), opt.traits.end(),
                      OptionTraits::transparent) == opt.traits.end()) {
-            keys_to_hash.push_back(key);
+            keys_to_hash.insert(key);
         }
         options[key] = SDE::detail_::SDEAny(opt);
     }
@@ -185,8 +222,8 @@ public:
      * @return the value of.
      */
     template<typename T>
-    const T& at(std::string key) {
-        return (SDE::detail_::SDEAnyCast<Option<T>>(options.at(key))).value;
+    const T& at(const std::string& key) const {
+        return detail_::AtHelper<T>::get(options.at(key));
     }
 
     /**
@@ -206,7 +243,7 @@ private:
     Utilities::CaseInsensitiveMap<SDE::detail_::SDEAny> options;
     // List of keys to be hashed from the options map, does not include
     // transparent Options
-    std::vector<std::string> keys_to_hash;
+    std::unordered_set<std::string> keys_to_hash;
     // Flag indicating that future changes to Parameters will be tracked.
     bool tracking_changes;
 };
