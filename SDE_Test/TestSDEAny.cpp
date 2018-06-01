@@ -1,8 +1,8 @@
 #include <SDE/SDEAny.hpp>
 #include <catch/catch.hpp>
-#include <vector>
 #include <map>
 #include <typeindex>
+#include <vector>
 
 using namespace SDE;
 using namespace detail_;
@@ -12,8 +12,7 @@ using namespace detail_;
 static std::map<std::type_index, std::string> corr_hvs{
   {typeid(nullptr), "cbc357ccb763df2852fee8c4fc7d55f2"},
   {typeid(double), "543c7b6cba068a96954b3c8afdbd193d"},
-  {typeid(std::vector<int>), "1855f488722a9367c0fa5c2c998ee64f"}
-};
+  {typeid(std::vector<int>), "1855f488722a9367c0fa5c2c998ee64f"}};
 
 template<typename T>
 void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
@@ -37,6 +36,12 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
         const T& const_val = SDEAnyCast<T>(da_any);
         REQUIRE(val == right_val);
         REQUIRE(const_val == right_val);
+
+#ifndef USING_pybind11
+        REQUIRE_THROWS_AS(da_any.pythonize(), std::runtime_error);
+        REQUIRE_THROWS_AS(const_da_any.pythonize(), std::runtime_error);
+#endif
+
         REQUIRE_THROWS_AS(SDEAnyCast<std::string>(da_any), std::bad_cast);
         REQUIRE_THROWS_AS(SDEAnyCast<std::string>(const_da_any), std::bad_cast);
     }
@@ -52,7 +57,14 @@ TEST_CASE("Basic SDEAny Usage") {
 
     SECTION("Default Ctor") { check_state(defaulted, empty); }
 
-    SECTION("By value CTor") { check_state(wrap_double, {pi}); }
+    SECTION("By value CTor") {
+        check_state(wrap_double, {pi});
+#ifdef USING_pybind11
+        auto pyobject = wrap_double.pythonize();
+        double pyval  = pyobject.cast<double>();
+        REQUIRE(pyval == pi);
+#endif
+    }
 
     SECTION("Copy CTor w/ defaulted instance") {
         SDEAny copy_default(defaulted);
@@ -140,6 +152,11 @@ TEST_CASE("Non-POD Wrapped Types") {
     SECTION("make_SDEAny") {
         auto wrapped_vector = make_SDEAny<std::vector<int>>(1, 6);
         check_state(wrapped_vector, {value});
+#ifdef USING_pybind11
+        // auto pyobject = wrapped_vector.pythonize();
+        // pybind11::list pyval = pyobject.cast<pybind11::list>();
+        // REQUIRE(pybind11::len(pyval) == 1);
+#endif
     }
 
     SECTION("Move value ctor") {
