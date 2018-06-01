@@ -41,6 +41,8 @@ struct OrbitalSpace {
 
     // Conversion from AO basis to current basis
     tensor_type C;
+
+    void hash(Hasher& h) const { h(basis); }
 };
 
 /**
