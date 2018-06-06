@@ -21,6 +21,7 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              Module.hpp
                              MoleculeFileParser.hpp
                              Property.hpp
+                             Pythonization.hpp
                              SDEAny.hpp
                              Parameters.hpp
                              Serialization.hpp
