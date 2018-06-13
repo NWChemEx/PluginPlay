@@ -20,7 +20,6 @@ set(SDE_INCLUDES BasisSetFileParser.hpp
                              ModuleHelpers.hpp
                              Module.hpp
                              MoleculeFileParser.hpp
-                             Property.hpp
                              SDEAny.hpp
                              Serialization.hpp
         )

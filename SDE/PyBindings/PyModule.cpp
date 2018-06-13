@@ -40,6 +40,11 @@ void pythonize_Module(pybind11::module& m) {
       .def("locked", &ModuleBase::locked)
       .def("lock", &ModuleBase::lock)
       .def("not_ready", &ModuleBase::not_ready)
+      .def("run_as",
+           [](module_pointer me, pybind11::object obj, pybind11::args args) {
+               auto fxn = obj.attr("run_as_impl");
+               return fxn(me, *args);
+           })
       .def("__eq__",
            [](module_pointer lhs, module_pointer rhs) { return lhs == rhs; })
       .def("_set_submodule",

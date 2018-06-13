@@ -12,7 +12,7 @@ not_ready_return ModuleBase::not_ready() {
         if(!si.second) // Submod isn't set
             rv.push_back(
               std::make_pair(module_pointer{}, ModuleProperty::submodules));
-        else { // Ask submod if it is ready
+        else if(this != si.second.get()) { // Recurse so long as it's not us
             auto submod_r = si.second->not_ready();
             // Join it with our map taking into account submod nullptr's need
             // replaced

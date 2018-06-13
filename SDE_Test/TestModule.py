@@ -27,6 +27,14 @@ class PyProperty2(DummyModule.TestProperty2):
     def run(self, i):
         return i + 1
 
+class PyProperty3(DummyModule.TestProperty2):
+    def __init__(self):
+        DummyModule.TestProperty2.__init__(self)
+        self._set_metadata(SDE.MetaProperty.name, "Property 3")
+
+    def run(self, i):
+        return i + 1
+
 # This fixture tests the member functions of ModuleBase
 class TestModuleBase(unittest.TestCase):
     def setUp(self):
@@ -35,8 +43,10 @@ class TestModuleBase(unittest.TestCase):
         self.corr_metadata = {SDE.MetaProperty.name: "Property 2"}
         #self.corr_params = SDE.Parameters
 
-    def test_run(self):
-        self.assertEqual(self.mod.run(1), 2)
+    def test_run_as(self):
+        self.mod.change_submodule("Prop1", PyProperty3())
+        rv = self.mod.run_as(DummyModule.TestProperty2, 1)
+        self.assertEqual(rv, 2)
 
     def test_submodules(self):
         submods = self.mod.submodules()
