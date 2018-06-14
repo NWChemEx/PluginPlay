@@ -21,7 +21,7 @@ struct GreaterThan {
     GreaterThan(const T thresh) : low(thresh){};
     ~GreaterThan() noexcept = default;
 
-    bool operator()(const T& value) { return value > low; }
+    bool operator()(const detail_::SDEAny& value) { return detail_::SDEAnyCast<T>(value) > low; }
 };
 
 /**
@@ -35,7 +35,7 @@ struct LessThan {
     LessThan(const T thresh) : high(thresh){};
     ~LessThan() noexcept = default;
 
-    bool operator()(const T& value) { return value < high; }
+    bool operator()(const detail_::SDEAny& value) { return detail_::SDEAnyCast<T>(value) < high; }
 };
 
 /**
@@ -50,7 +50,9 @@ struct Between {
     Between(const T thresh1, const T thresh2) : low(thresh1), high(thresh2){};
     ~Between() noexcept = default;
 
-    bool operator()(const T& value) { return (value > low && value < high); }
+    bool operator()(const detail_::SDEAny& value) {
+        return (detail_::SDEAnyCast<T>(value) > low &&
+               detail_::SDEAnyCast<T>(value) < high); }
 };
 
 /**
@@ -68,15 +70,13 @@ DECLARE_SmartEnum(OptionTraits, transparent, optional, non_default);
  * Each Option may hold a value, description of that value, validity checks that
  * value must meet, and various traits.
  *
- * @tparam T type of the value.
  */
-template<typename T>
 class Option {
-    using check_function = std::function<bool(const T&)>;
+    using check_function = std::function<bool(const detail_::SDEAny&)>;
 
 public:
     /// Actual value used by modules
-    T value;
+    detail_::SDEAny value;
     /// A brief description of the value.
     std::string description;
     /// Set of validity checks value must fulfill
@@ -84,23 +84,25 @@ public:
     /// Traits which control hashing, note defaults, etc.
     std::vector<OptionTraits> traits;
 
-    Option(T value, std::string description = "",
+    template<typename T>
+    explicit Option(T&& val, std::string description = "",
            std::vector<check_function> range_checks = {},
            std::vector<OptionTraits> traits         = {}) :
-      value(value),
+      value(val),
       description(description),
       range_checks(range_checks),
       traits(traits) {
         if(!is_valid(value))
             throw std::invalid_argument("Not a valid option value");
     }
+    Option() = default;
     ~Option() noexcept = default;
 
     /**
      * @brief Provides a hash of the Option's state
      *
      */
-    void hash(Hasher& h) const { h(value, traits); }
+    void hash(Hasher& h) const { h(value); h(traits); }
 
     /**
      * @brief Runs a value through all the validity checks of an Option
@@ -111,7 +113,7 @@ public:
      * @param val the value to check.
      * @return a bool indicating whether the value passed all checks.
      */
-    bool is_valid(const T& val) {
+    bool is_valid(const detail_::SDEAny& val) {
         bool rv = true;
         for(const auto& check : range_checks) {
             if(!check(val)) rv = false;
@@ -134,21 +136,20 @@ namespace detail_ {
 template<typename T>
 struct AtHelper {
     // static so we don't have to make an instance
-    static const T& get(const SDEAny& any) {
-        return SDEAnyCast<Option<T>>(any).value;
+    static const T& get(const Option& opt) {
+        return SDEAnyCast<T>(opt.value);
     }
 };
 
 /**
- * @brief Specialization for Option<U>, called when T for Parameters::at is
- * Option<U>
+ * @brief Specialization for Option, called when T for Parameters::at is
+ * Option
  *
- * @tparam U type of the value of the Option
  */
-template<typename U>
-struct AtHelper<Option<U>> {
-    static const Option<U>& get(const SDEAny& any) {
-        return SDEAnyCast<Option<U>>(any);
+template <>
+struct AtHelper<Option> {
+    static const Option& get(const Option& opt) {
+        return opt;
     }
 };
 } // namespace detail_
@@ -173,8 +174,9 @@ public:
      * @param new_value the new value of the Option.
      */
     template<typename T>
-    void change(std::string key, const T new_value) {
-        auto opt = SDE::detail_::SDEAnyCast<Option<T>>(options.at(key));
+    void change(std::string key, const T new_val) {
+        detail_::SDEAny new_value(new_val);
+        auto opt = options.at(key);
         if(!opt.is_valid(new_value))
             throw std::invalid_argument("Not a valid option value");
         opt.value = new_value;
@@ -195,13 +197,12 @@ public:
      * @param key the string being mapped to the Option.
      * @param opt the Option to add to the Parameters.
      */
-    template<typename T>
-    void insert(std::string key, Option<T> opt) {
+    void insert(std::string key, Option opt) {
         if(std::find(opt.traits.begin(), opt.traits.end(),
                      OptionTraits::transparent) == opt.traits.end()) {
             keys_to_hash.insert(key);
         }
-        options[key] = SDE::detail_::SDEAny(opt);
+        options[key] = opt;
     }
 
     /**
@@ -210,7 +211,7 @@ public:
      * @param key the string we are checking for in the options map.
      * @return a bool which is true if the options map contains the key.
      */
-    bool count(std::string key) const noexcept { return options.count(key); }
+    std::size_t count(std::string key) const noexcept { return options.count(key); }
 
     /**
      * @brief Gives the value of the option at a particular key.
@@ -230,7 +231,7 @@ public:
      * @brief Hashes the non-transparent Parameter options.
      */
     void hash(Hasher& h) const {
-        for(const auto& key : keys_to_hash) { h(key, options.at(key)); }
+        for(const auto& key : keys_to_hash) { h(key); h(options.at(key)); }
     }
 
     /**
@@ -240,7 +241,7 @@ public:
 
 private:
     // Map of Options which have been type-erased
-    Utilities::CaseInsensitiveMap<SDE::detail_::SDEAny> options;
+    Utilities::CaseInsensitiveMap<Option> options;
     // List of keys to be hashed from the options map, does not include
     // transparent Options
     std::unordered_set<std::string> keys_to_hash;
