@@ -25,8 +25,8 @@ TEST_CASE("Options and Parameters") {
         Option opt{4, "Any positive number", {GreaterThan<int>{-1}}};
 
         REQUIRE(detail_::SDEAnyCast<int>(opt.value) == 4);
-        REQUIRE(opt.is_valid(detail_::SDEAny(5)) == true);
-        REQUIRE(opt.is_valid(detail_::SDEAny(-1)) == false);
+        REQUIRE(opt.is_valid(5) == true);
+        REQUIRE(opt.is_valid(-1) == false);
 
         Hasher h(HashType::Hash128);
         opt.hash(h);
@@ -53,12 +53,14 @@ TEST_CASE("Options and Parameters") {
         params.change("The number 3", 2);
         REQUIRE(params.at<int>("The number 3") == 2);
 
+        // checking range_checks and change()
         params.insert(
           "Not a negative number",
           Option{4, "Any positive number", {GreaterThan<int>{-1}}});
         REQUIRE_THROWS(params.change("Not a negative number", -1));
         REQUIRE_NOTHROW(params.change("Not a negative number", 6));
 
+        // count()
         REQUIRE(params.count("Hello World") == false);
         params.insert("Hello World", Option{"Hello world"});
         REQUIRE(params.count("Hello World") == true);

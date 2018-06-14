@@ -1,6 +1,7 @@
 #pragma once
 #include "SDE/Memoization.hpp"
 #include "SDE/SDEAny.hpp"
+#include "SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <algorithm>
@@ -92,7 +93,7 @@ public:
       description(description),
       range_checks(range_checks),
       traits(traits) {
-        if(!is_valid(value))
+        if(!is_valid(val))
             throw std::invalid_argument("Not a valid option value");
     }
     Option() = default;
@@ -113,10 +114,12 @@ public:
      * @param val the value to check.
      * @return a bool indicating whether the value passed all checks.
      */
-    bool is_valid(const detail_::SDEAny& val) {
+    template<typename T>
+    bool is_valid(const T& val) {
         bool rv = true;
+        detail_::SDEAny anyval(val);
         for(const auto& check : range_checks) {
-            if(!check(val)) rv = false;
+            if(!check(anyval)) rv = false;
         }
         return rv;
     }
@@ -175,11 +178,10 @@ public:
      */
     template<typename T>
     void change(std::string key, const T new_val) {
-        detail_::SDEAny new_value(new_val);
         auto opt = options.at(key);
-        if(!opt.is_valid(new_value))
+        if(!opt.is_valid(new_val))
             throw std::invalid_argument("Not a valid option value");
-        opt.value = new_value;
+        opt.value = detail_::SDEAny(new_val);
 
         if(tracking_changes &&
            (std::find(opt.traits.begin(), opt.traits.end(),
