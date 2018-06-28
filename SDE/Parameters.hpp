@@ -1,6 +1,8 @@
 #pragma once
+#include "Pythonization.hpp"
 #include "SDE/Memoization.hpp"
 #include "SDE/SDEAny.hpp"
+#include "SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <algorithm>
@@ -16,7 +18,7 @@ namespace SDE {
  * @tparam op function which accepts two Ts and returns a bool
  */
 template<typename T, typename op>
-struct Comparison{
+struct Comparison {
     /// The threshold to compare against
     T rhs;
 
@@ -32,13 +34,15 @@ struct Comparison{
      * @param lhs
      * @return bool from result of op(lhs,rhs)
      */
-    bool operator()(const detail_::SDEAny& lhs)const{return op()(detail_::SDEAnyCast<T>(lhs), rhs);}
+    bool operator()(const detail_::SDEAny& lhs) const {
+        return op()(detail_::SDEAnyCast<T>(lhs), rhs);
+    }
 };
 
-///Comparison using std::greater
+/// Comparison using std::greater
 template<typename T>
 using GreaterThan = Comparison<T, std::greater<T>>;
-///Comparison using std::less
+/// Comparison using std::less
 template<typename T>
 using LessThan = Comparison<T, std::less<T>>;
 
@@ -46,7 +50,8 @@ using LessThan = Comparison<T, std::less<T>>;
  * @brief Possible traits an option can have.
  *
  * transparent options are not hashed.
- * optional options do not have to be set for the module to run (e.g. print levels)
+ * optional options do not have to be set for the module to run (e.g. print
+ * levels)
  * non_default options have been changed from their default values.
  *
  */
@@ -88,13 +93,12 @@ struct Option {
     template<typename T>
     explicit Option(T&& val, std::string description = "",
                     std::vector<check_function> range_checks = {},
-                    std::set<OptionTraits> traits         = {}) :
+                    std::set<OptionTraits> traits            = {}) :
       value(val),
       description(description),
       range_checks(range_checks),
       traits(traits) {
-        if(!is_valid(val))
-            throw std::invalid_argument("Not a valid option value");
+        if(!is_valid()) throw std::invalid_argument("Not a valid option value");
     }
 
     /**
@@ -120,11 +124,9 @@ struct Option {
      * @param val the value to check.
      * @return a bool indicating whether the value passed all checks.
      */
-    template<typename T>
-    bool is_valid(const T& val) {
-        detail_::SDEAny anyval(val);
+    bool is_valid() {
         for(const auto& check : range_checks) {
-            if(!check(anyval)) return false;
+            if(!check(this->value)) return false;
         }
         return true;
     }
@@ -156,6 +158,35 @@ template<>
 struct AtHelper<Option> {
     static const Option& get(const Option& opt) { return opt; }
 };
+
+/**
+ * @brief Specialization for pyobject, called when T for Parameters::at is a
+ * pyobject
+ */
+/*template<>
+struct AtHelper<pyobject> {
+    static const pyobject& get (const Option& opt) { return
+opt.value.pythonize(); }
+};*/
+
+/*
+template<typename T>
+struct ChangeHelper {
+    static void change_opt(Option& opt, const T& new_value) {
+        opt.value = detail_::SDEAny(new_value);
+        if(!opt.is_valid())
+            throw std::invalid_argument("Not a valid option value");
+    }
+};
+
+template<>
+struct ChangeHelper<pyobject> {
+    static void change_opt(Option& opt, pyobject& new_value) {
+        opt.value.insert_python(new_value);
+        if(!opt.is_valid())
+            throw std::invalid_argument("Not a valid option value");
+    }
+};*/
 } // namespace detail_
 
 /**
@@ -180,20 +211,41 @@ public:
      *
      * @tparam T the type of the value of the Option.
      * @param key the string which maps to the Option to be changed.
-     * @param new_value the new value of the Option.
-     * @throw std::invalid_argument if @p new_value does not pass all range_checks
-     *        for the Option at @p key.
+     * @param new_val the new value of the Option.
+     * @throw std::invalid_argument if @p new_value does not pass all
+     * range_checks for the Option at @p key.
      * @throw range_error if @p key is not a valid key
      */
     template<typename T>
-    void change(std::string key, const T new_val) {
-        auto opt = options.at(key);
-        if(!opt.is_valid(new_val))
-            throw std::invalid_argument("Not a valid option value");
+    void change(const std::string& key, const T& new_val) {
+        auto opt  = options.at(key);
         opt.value = detail_::SDEAny(new_val);
+        if(!opt.is_valid())
+            throw std::invalid_argument("Not a valid option value");
 
-        if(tracking_changes)
-            opt.traits.insert(OptionTraits::non_default);
+        if(tracking_changes) opt.traits.insert(OptionTraits::non_default);
+        insert(key, opt);
+    }
+
+    /**
+     * @brief Allows changing the Parameters from Python
+     *
+     *        Takes a pybind11::object and puts it into the SDEAny
+     *        value stored by an Option.
+     *
+     * @param key the string which maps to the Option to be changed.
+     * @param new_val the new value of the Option.
+     * @throw std::invalid_argument if @p new_value does not pass all
+     * range_checks for the Option at @p key.
+     * @throw range_error if @p key is not a valid key
+     */
+    void change_python(const std::string& key, pyobject new_val) {
+        auto opt = options.at(key);
+        opt.value.insert_python(new_val);
+        if(!opt.is_valid())
+            throw std::invalid_argument("Not a valid option value");
+
+        if(tracking_changes) opt.traits.insert(OptionTraits::non_default);
         insert(key, opt);
     }
 
@@ -206,7 +258,7 @@ public:
      * @param key the string being mapped to the Option.
      * @param opt the Option to add to the Parameters.
      */
-    void insert(std::string key, Option opt) {
+    void insert(const std::string& key, Option opt) {
         if(!opt.traits.count(OptionTraits::transparent))
             keys_to_hash.insert(key);
         options[key] = opt;
@@ -218,19 +270,21 @@ public:
      * @param key the string we are checking for in the options map.
      * @return a bool which is true if the options map contains the key.
      */
-    std::size_t count(std::string key) const noexcept {
+    std::size_t count(const std::string& key) const noexcept {
         return options.count(key);
     }
 
     /**
-     * @brief Gives the value of the Option, or the Option itself, at a particular key.
+     * @brief Gives the value of the Option, or the Option itself, at a
+     * particular key.
      *
      * Casts the SDEAny option to the appropriate type and returns the value.
      * Will return the entire Option if T is type Option.
      *
-     * @tparam T the type of the value to return. If T is type Option, return the entire Option.
+     * @tparam T the type of the value to return. If T is type Option, return
+     * the entire Option.
      * @param key the string mapped to the option or value we want.
-     * @return the value of.
+     * @return the value of the Option at @p key, or the Option itself.
      * @throw range_error if @p key is not a valid key
      */
     template<typename T>
@@ -239,11 +293,44 @@ public:
     }
 
     /**
+     * @brief Returns the value of an Option as a pybind::11 object
+     * @param key the string mapped to the value we want.
+     * @return the value of the Option at @p key as a pybind11::object
+     * @throw range_error if @p key is not a valid key
+     */
+    pyobject at_python(const std::string& key) const {
+        return options.at(key).value.pythonize();
+    }
+
+    /**
+     * @brief Convenience function to get the description of an Option
+     *        held in a Parameters object
+     *
+     *
+     * @param key the string mapped to the option we want.
+     * @return the description of the option at @p key
+     * @throw range_error if @p key is not a valid key
+     */
+    const std::string& get_description(const std::string& key) const {
+        return options.at(key).description;
+    }
+
+    /**
+     * @brief Convenience function to get the traits of an Option
+     *        held in a Parameters object
+     * @param key the string mapped to the option we want.
+     * @return the traits of the option at @p key
+     * @throw range_error if @p key is not a valid key
+     */
+    const std::set<OptionTraits>& get_traits(const std::string& key) const {
+        return options.at(key).traits;
+    }
+
+    /**
      * @brief Hashes the non-transparent Parameter options.
      */
     void hash(Hasher& h) const {
-        for(const auto& key : keys_to_hash)
-            h(key, options.at(key));
+        for(const auto& key : keys_to_hash) h(key, options.at(key));
     }
 
     /**

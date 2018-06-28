@@ -18,13 +18,15 @@ TEST_CASE("Options and Parameters") {
         Option opt{4, "Any positive number", {GreaterThan<int>{-1}}};
 
         REQUIRE(detail_::SDEAnyCast<int>(opt.value) == 4);
-        REQUIRE(opt.is_valid(5) == true);
-        REQUIRE(opt.is_valid(-1) == false);
+        opt.value = detail_::SDEAny(5);
+        REQUIRE(opt.is_valid() == true);
+        opt.value = detail_::SDEAny(-1);
+        REQUIRE(opt.is_valid() == false);
 
         Hasher h(HashType::Hash128);
         opt.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "3e3424900a8a80327366153e28e60856");
+        REQUIRE(hv == "a846a3ff8d2a7ef3afd6e51a12b3f3dc");
 
         REQUIRE_THROWS(Option{4, "Any negative number", {LessThan<int>{0}}});
         REQUIRE_NOTHROW(Option{-1, "Any negative number", {LessThan<int>{0}}});
@@ -38,7 +40,8 @@ TEST_CASE("Options and Parameters") {
         params.insert("The number 3", opt);
         REQUIRE(params.at<int>("The number 3") == 3);
         // Using at<Option<T>>()
-        // REQUIRE(params.at<Option>("The number 3").value == 3);
+        REQUIRE(detail_::SDEAnyCast<int>(
+                  params.at<Option>("The number 3").value) == 3);
         // change()
         params.change("The number 3", 2);
         REQUIRE(params.at<int>("The number 3") == 2);
@@ -51,13 +54,13 @@ TEST_CASE("Options and Parameters") {
 
         // count()
         REQUIRE(params.count("Hello World") == false);
-        params.insert("Hello World", Option{"Hello world"});
+        params.insert("Hello World", Option{std::string{"Hello world"}});
         REQUIRE(params.count("Hello World") == true);
 
         Hasher h(HashType::Hash128);
         params.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "0f89d70505dc25585058a3a8f6b59eaf");
+        REQUIRE(hv == "50ae150b0d6435535eb17564abc4cc6e");
 
         // This insertion should not change the hash value
         Hasher h2(HashType::Hash128);
@@ -66,7 +69,7 @@ TEST_CASE("Options and Parameters") {
           Option{2, "Transparent thing", {}, {OptionTraits::transparent}});
         params.hash(h2);
         hv = bphash::hash_to_string(h2.finalize());
-        REQUIRE(hv == "0f89d70505dc25585058a3a8f6b59eaf");
+        REQUIRE(hv == "50ae150b0d6435535eb17564abc4cc6e");
 
         // This insertion should change the hash (i.e. the Option is not
         // transparent)
@@ -74,7 +77,15 @@ TEST_CASE("Options and Parameters") {
         params.insert("Hash modifying", Option{2, "Opaque thing", {}, {}});
         params.hash(h3);
         hv = bphash::hash_to_string(h2.finalize());
-        REQUIRE(hv != "0f89d70505dc25585058a3a8f6b59eaf");
-        REQUIRE(hv == "83f11d1e4fd5e87caa409ac47cb207c7");
+        REQUIRE(hv == "e84f4c078f5b16889fbfda21f528b66c");
+
+        // pybind11 objects
+        params.insert("Double", Option{3.14});
+        pyobject double_obj = params.at_python("Double");
+        REQUIRE(double_obj.cast<double>() == 3.14);
+
+        pyobject new_obj = pybind11::cast(1.57);
+        params.change_python("Double", new_obj);
+        REQUIRE(params.at<double>("Double") == 1.57);
     }
 }

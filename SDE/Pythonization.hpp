@@ -25,6 +25,12 @@ pyobject pycast(T&& value) {
     return pybind11::cast(std::forward<T>(value));
 }
 
+/// Function
+template<typename T>
+T castpy(pyobject& obj) {
+    return obj.cast<T>();
+}
+
 } // namespace SDE
 #else
 
@@ -34,6 +40,11 @@ using pyobject = decltype(nullptr);
 
 template<typename T>
 pyobject pycast(T&&) {
+    throw std::runtime_error("Python Bindings were not enabled!");
+}
+
+template<typename T>
+T castpy(pyobject& obj) {
     throw std::runtime_error("Python Bindings were not enabled!");
 }
 
