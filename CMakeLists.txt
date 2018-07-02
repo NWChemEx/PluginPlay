@@ -14,14 +14,17 @@ project(SDE VERSION 0.0.0 LANGUAGES CXX)
 
 ### Options ###
 option(BUILD_TESTS "Should we build the tests?" ON)
+option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 ### Dependencies ####
-hunter_add_package(Utilities)
-find_package(Utilities CONFIG)
-hunter_add_package(LibChemist)
-find_package(LibChemist CONFIG)
-hunter_add_package(bphash)
-find_package(bphash CONFIG)
+foreach(depend Utilities LibChemist bphash)
+    hunter_add_package(${depend})
+    find_package(${depend} CONFIG)
+endforeach()
+if(BUILD_PYBINDINGS)
+    hunter_add_package(pybind11)
+    find_package(pybind11 CONFIG)
+endif()
 
 ### Target ###
 add_subdirectory(SDE)

@@ -1,4 +1,5 @@
 #pragma once
+#include <SDE/Memoization.hpp>
 
 /** @file Pythonization.hpp File for factoring out ifdefs related to Python
  *        bindings.
@@ -19,13 +20,26 @@ namespace SDE {
 /// The type of the C-side type of the opaque Python base class
 using pyobject = pybind11::object;
 
-/// Function for converting a C++ object into a Python object
+/// Functor for converting a C++ object into a Python object
 template<typename T>
-pyobject pycast(T&& value) {
-    return pybind11::cast(std::forward<T>(value));
-}
+struct pycast {
+    static pyobject cast(const T& value) { return pybind11::cast(value); }
+};
+
+template<>
+struct pycast<pybind11::object> {
+    static pyobject cast(const pybind11::object& value) { return value; }
+};
 
 } // namespace SDE
+
+namespace pybind11 {
+void hash_object(const pybind11::object& cls, SDE::Hasher& h) {
+    auto hash_fxn = cls.attr("__hash__");
+    auto hash     = hash_fxn();
+    h(hash.cast<std::string>());
+}
+} // namespace pybind11
 #else
 
 namespace SDE {
@@ -33,9 +47,13 @@ namespace SDE {
 using pyobject = decltype(nullptr);
 
 template<typename T>
-pyobject pycast(T&&) {
-    throw std::runtime_error("Python Bindings were not enabled!");
-}
+struct pycast {
+    static pyobject cast(const T& value) {
+        throw std::runtime_error("Python Bindings were not enabled!");
+    }
+};
+
+void hash_object(const pybind11::object& cls, SDE::Hasher& h) { h(cls); }
 
 } // namespace SDE
 #endif

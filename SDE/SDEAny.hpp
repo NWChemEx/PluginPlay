@@ -597,7 +597,9 @@ private:
          * @throws std::runtime_error if Python bindings are not enabled.
          * Strong throw guarantee.
          */
-        virtual pyobject pythonize_() const override { return pycast(value); }
+        virtual pyobject pythonize_() const override {
+            return pycast<T>::cast(value);
+        }
     };
 
     /**
