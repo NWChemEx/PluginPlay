@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(SDE-Test VERSION 0.0.0 LANGUAGES CXX)
-include(TargetMacros)
+set(
+    SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
+              TestMoleculeFileParser.cpp TestSDEAny.cpp
+)
 
-add_cxx_unit_test(TestBasisFileParser)
-add_cxx_unit_test(TestChemistryRuntime)
-add_cxx_unit_test(TestMoleculeFileParser)
-add_cxx_unit_test(TestSDEAny)
+add_catch_cxx_tests(test_SDE "${SDE_TESTS}" SDE)
