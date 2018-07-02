@@ -10,9 +10,9 @@ using namespace detail_;
 // The correct hashes based on RTTI (assumes all instances of the same type have
 // the same value)
 static std::map<std::type_index, std::string> corr_hvs{
-  {typeid(nullptr), "cbc357ccb763df2852fee8c4fc7d55f2"},
-  {typeid(double), "543c7b6cba068a96954b3c8afdbd193d"},
-  {typeid(std::vector<int>), "1855f488722a9367c0fa5c2c998ee64f"}
+  {typeid(nullptr), "7b018a8f67b01a9f30105059dc7721af"},
+  {typeid(double), "377cf5b742574a826e0824b9a59bfed0"},
+  {typeid(std::vector<int>), "d73e9ea9861ab9d828d0df4f19735f5a"}
 };
 
 template<typename T>
@@ -42,7 +42,9 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
     }
 }
 
-TEST_CASE("Basic SDEAny Usage") {
+TEST_CASE("SDEAny Class"){
+
+SECTION("Basic SDEAny Usage") {
     // The "contents" of an empty SDEAny
     std::initializer_list<decltype(nullptr)> empty;
     SDEAny defaulted; // An empty instance
@@ -134,7 +136,7 @@ TEST_CASE("Basic SDEAny Usage") {
     }
 }
 
-TEST_CASE("Non-POD Wrapped Types") {
+SECTION("Non-POD Wrapped Types") {
     std::vector<int> value(1, 6);
 
     SECTION("make_SDEAny") {
@@ -150,4 +152,5 @@ TEST_CASE("Non-POD Wrapped Types") {
         int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
         REQUIRE(ptr == new_ptr); // Make sure it's the same instance
     }
+}
 }
