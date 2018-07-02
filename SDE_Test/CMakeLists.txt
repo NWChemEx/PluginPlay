@@ -19,6 +19,5 @@ if(BUILD_PYBINDINGS)
     set_target_properties(py_sde_utils PROPERTIES DEBUG_POSTFIX "")
     set_target_properties(py_sde_utils PROPERTIES RELEASE_POSTFIX "")
 
-
     add_python_test(TestSDEAny)
 endif()
