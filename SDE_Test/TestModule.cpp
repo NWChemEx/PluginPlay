@@ -6,6 +6,7 @@ using namespace SDE;
 using module_pointer   = typename ModuleBase::module_pointer;
 using metadata_type    = typename ModuleBase::metadata_type;
 using submodule_list   = typename ModuleBase::submodule_list;
+using traits_type      = typename ModuleBase::traits_type;
 using not_ready_return = typename ModuleBase::not_ready_return;
 
 // Declare some Module types
@@ -40,11 +41,11 @@ static const auto prop3 = std::make_shared<MyProp3>();
 
 // The correct hashes
 static const std::array<std::string, 2> corr_hashes = {
-  "c7c82f313a73782127326d1bcb2103e1", "bbf4d07c4a21e02e4c4ae4381a66b402"};
+  "e32f337e89481ed70947fa40a4f86e75", "6a12f500f5edc4bfcd41861dace13eef"};
 
 // The correct memoization hashes
 static const std::array<std::string, 2> corr_memo = {
-  "12ab816f03b73343c3d38764e539ed15", "5392ed79e6722269e1f82b7b6c0e2286"};
+  "466f630617f08d6e1fa2f195a3884fd2", "648ddb25b747fae7d2b39d2602a056d3"};
 
 // Function that checks the state of a module
 template<std::size_t i, typename PropertyType>
@@ -55,10 +56,8 @@ void test_module(metadata_type met, submodule_list subs) {
     Hasher h(HashType::Hash128);
     mod.hash(h);
     auto hv = bphash::hash_to_string(h.finalize());
-    // std::cout<< "hash" << hv <<std::endl;
     REQUIRE(corr_hashes[i] == hv);
     hv = bphash::hash_to_string(mod.memoize(2));
-    // std::cout<< hv <<std::endl;
     REQUIRE(corr_memo[i] == hv);
 
     // Check accessors
@@ -88,31 +87,35 @@ void test_module(metadata_type met, submodule_list subs) {
     REQUIRE(*mod.template run_as<PropertyType>(2) == 3);
 }
 
-TEST_CASE("ModuleBase Typedefs") {
-    using correct_pointer = std::shared_ptr<ModuleBase>;
-    using correct_meta    = std::map<MetaProperty, std::string>;
-    using correct_list    = Utilities::CaseInsensitiveMap<module_pointer>;
-    using correct_return =
-      std::vector<std::pair<module_pointer, ModuleProperty>>;
+TEST_CASE("ModuleBase Class") {
+    SECTION("ModuleBase Typedefs") {
+        using correct_pointer = std::shared_ptr<ModuleBase>;
+        using correct_meta    = std::map<MetaProperty, std::string>;
+        using correct_list    = Utilities::CaseInsensitiveMap<module_pointer>;
+        using correct_traits  = std::set<ModuleTraits>;
+        using correct_return =
+          std::vector<std::pair<module_pointer, ModuleProperty>>;
 
-    REQUIRE(std::is_same<correct_pointer, module_pointer>::value);
-    REQUIRE(std::is_same<correct_meta, metadata_type>::value);
-    REQUIRE(std::is_same<correct_list, submodule_list>::value);
-    REQUIRE(std::is_same<correct_return, not_ready_return>::value);
-}
-
-TEST_CASE("ModuleBase") {
-    metadata_type md_empty{};
-    submodule_list sm_empty{};
-
-    SECTION("int run(int)") {
-        metadata_type md_full{{MetaProperty::name, "Prop1"}};
-        submodule_list sm_full{{"Prop1", nullptr}};
-        test_module<0, MyProp1>(md_full, sm_full);
+        REQUIRE(std::is_same<correct_pointer, module_pointer>::value);
+        REQUIRE(std::is_same<correct_meta, metadata_type>::value);
+        REQUIRE(std::is_same<correct_list, submodule_list>::value);
+        REQUIRE(std::is_same<correct_traits, traits_type>::value);
+        REQUIRE(std::is_same<correct_return, not_ready_return>::value);
     }
 
-    SECTION("int run(int)") {
-        submodule_list sm_full{{"Prop1", prop1}};
-        test_module<1, MyProp2>(md_empty, sm_full);
+    SECTION("ModuleBase") {
+        metadata_type md_empty{};
+        submodule_list sm_empty{};
+
+        SECTION("Missing Submodule") {
+            metadata_type md_full{{MetaProperty::name, "Prop1"}};
+            submodule_list sm_full{{"Prop1", nullptr}};
+            test_module<0, MyProp1>(md_full, sm_full);
+        }
+
+        SECTION("Not Ready Submodule") {
+            submodule_list sm_full{{"Prop1", prop1}};
+            test_module<1, MyProp2>(md_empty, sm_full);
+        }
     }
 }

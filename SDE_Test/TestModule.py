@@ -1,100 +1,91 @@
 import unittest
-import os
-import sys
-import SDE
+import SDE.SDE as SDE
+import py_sde_utils as PySDEUtils
 
-lib_dir = os.path.join(os.path.dirname(os.path.abspath(os.path.curdir)), "lib")
-sys.path.append(lib_dir)
+# This set of tests mirrors the C++ TestModule.cpp file as closely as possible
+# to ensure that behavior between C++ and Python is identical.
+#
+# With only C++ there was only one implementation language and usage language.
+# With the pair of C++ and Python we have four possibilities:
+#
+# 1. C++ module used in C++
+#    - Tested in unit test: TestModule.cpp
+# 2. Py module used in Py
+#    - This unit test, members: missing_submodule, not_ready_submodule
+# 3. C++ module used from Python
+#    - This unit test: use_cxx_module
+# 4. Python module used from C++
+#    - This unit test: use_python_module
 
-import DummyModule
 
-class PyProperty1(DummyModule.TestProperty2):
+# Module with missing submodule
+class PyProperty1(PySDEUtils.TestProperty):
     def __init__(self):
-        DummyModule.TestProperty2.__init__(self)
-        self._set_submodule("Prop3", None)
+        PySDEUtils.TestProperty.__init__(self)
+        self._set_submodule("Prop1", None)
+        self._set_metadata(SDE.MetaProperty.name, "Prop1")
 
-    def run(self, i):
-        return i + 1
+    def run(self, x):
+        return x + 1
 
+# Instance of said submodule
 prop1 = PyProperty1()
 
-class PyProperty2(DummyModule.TestProperty2):
+# Module with not ready submodule
+class PyProperty2(PySDEUtils.TestProperty):
     def __init__(self):
-        DummyModule.TestProperty2.__init__(self)
+        PySDEUtils.TestProperty.__init__(self)
         self._set_submodule("Prop1", prop1)
-        self._set_metadata(SDE.MetaProperty.name, "Property 2")
 
-    def run(self, i):
-        return i + 1
+    def run(self, x):
+        return x + 1
 
-class PyProperty3(DummyModule.TestProperty2):
+# Module that is r2g
+class PyProperty3(PySDEUtils.TestProperty):
     def __init__(self):
-        DummyModule.TestProperty2.__init__(self)
-        self._set_metadata(SDE.MetaProperty.name, "Property 3")
+        PySDEUtils.TestProperty.__init__(self)
 
-    def run(self, i):
-        return i + 1
+    def run(self, x):
+        return x + 1
+
+#Instance of said submodule
+prop3 = PyProperty3()
 
 # This fixture tests the member functions of ModuleBase
 class TestModuleBase(unittest.TestCase):
+    def check_module(self, proptype, mod, metadata, submods):
+        self.assertEqual(mod.submodules(), submods)
+        self.assertEqual(mod.metadata(), metadata)
+        self.assertFalse(mod.locked())
+        self.assertEqual(len(mod.not_ready()), 1)
+        mod.change_submodule("Prop1", prop3)
+        submods["Prop1"] = prop3
+        self.assertEqual(mod.submodules(), submods)
+        mod.lock()
+        self.assertTrue(mod.locked())
+        self.assertRaises(RuntimeError, mod.change_submodule, "Prop1", prop1)
+        self.assertEqual(mod.run_as(proptype, 2), 3)
+
     def setUp(self):
-        self.mod = PyProperty2()
-        self.corr_submods = {"Prop1": prop1}
-        self.corr_metadata = {SDE.MetaProperty.name: "Property 2"}
-        #self.corr_params = SDE.Parameters
+        self.prop = PySDEUtils.TestProperty
 
-    def test_run_as(self):
-        self.mod.change_submodule("Prop1", PyProperty3())
-        rv = self.mod.run_as(DummyModule.TestProperty2, 1)
-        self.assertEqual(rv, 2)
+    def test_missing_submodule(self):
+        mod = PyProperty1()
+        md = {SDE.MetaProperty.name: "Prop1"}
+        self.check_module(self.prop, mod, md, {"Prop1" : None})
 
-    def test_submodules(self):
-        submods = self.mod.submodules()
-        self.assertEqual(submods, self.corr_submods)
+    def test_not_ready_submodule(self):
+        mod = PyProperty2()
+        smods = {"Prop1": prop1}
+        self.check_module(self.prop, mod, {}, smods)
 
-    def test_submodules_not_alias(self):
-        submods = self.mod.submodules()
-        submods["prop2"] = self.mod
-        self.assertEqual(self.mod.submodules(), self.corr_submods)
+    def test_use_cxx_module(self):
+        mod = PySDEUtils.get_cpp_module()
+        self.check_module(self.prop, mod, {}, {"Prop1" : None})
 
-    def test_metadata(self):
-        md = self.mod.metadata()
-        self.assertEqual(md, self.corr_metadata)
-
-    def test_metadata_not_alias(self):
-        md = self.mod.metadata()
-        md["prop2"] = self.mod
-        self.assertEqual(self.mod.metadata(), self.corr_metadata)
-
-    #def test_parameters(self):
-    #     params = self.mod.parameters()
-    #     self.assertEqual(params, self.corr_parameters)
-    #
-    #def test_parameters_not_alias(self):
-    #     params = self.mod.parameters()
-    #     params.cange("prop2", <value>)
-    #     #Check it's a deep-copy
-    #     self.assertEqual(self.mod.params(), self.corr_parameters)
-
-    def test_lock(self):
-        self.assertFalse(self.mod.locked())
-        self.mod.lock()
-        self.assertTrue(self.mod.locked())
-
-    def test_change_submodule_locked(self):
-        self.mod.lock()
-        self.assertRaises(RuntimeError, self.mod.change_submodule, "Prop2",
-                          self.mod)
-
-    def test_change_submodule_invalid_key(self):
-        self.assertRaises(IndexError, self.mod.change_submodule, "prop 4",
-                          self.mod)
-
-    def test_not_ready(self):
-        r1 = self.mod.not_ready()
-        self.assertEqual(r1, [(prop1, SDE.ModuleProperty.submodules)])
-        r2 = prop1.not_ready()
-        self.assertEqual(r2, [(None, SDE.ModuleProperty.submodules)])
+    def test_use_python_module(self):
+        mod = PyProperty3()
+        self.assertTrue(PySDEUtils.run_py_mod(mod))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

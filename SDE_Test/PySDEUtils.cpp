@@ -1,6 +1,7 @@
+#include <SDE/Module.hpp>
+#include <SDE/PyBindings/PyModule.hpp>
 #include <SDE/Pythonization.hpp>
 #include <SDE/SDEAny.hpp>
-#include <catch/catch.hpp>
 
 /* This file contains C++ exports for testing various aspects of the SDE from
  * Python.  Generally speaking the contents of this file should not be used to
@@ -13,6 +14,13 @@
 struct SDEAnyWrapper {
     SDEAnyWrapper() = default;
     SDE::detail_::SDEAny my_any;
+};
+
+// Define and implement a dummy property type
+DEFINE_PROPERTY_TYPE(TestProperty, int, int);
+struct MyProp : TestProperty {
+    MyProp() { submodules_["Prop1"] = nullptr; }
+    int run(int x) { return x + 1; }
 };
 
 // Declares the Python module py_sde_utils (name must match .so)
@@ -32,4 +40,18 @@ PYBIND11_MODULE(py_sde_utils, m) {
     m.def("make_any", [](pybind11::object a_list) {
         return SDEAnyWrapper{SDE::detail_::SDEAny(a_list)};
     });
+    // Registers our dummy module with Python
+    SDE::register_property_type<TestProperty>(m, "TestProperty");
+    SDE::register_module<MyProp, TestProperty>(m, "MyProp");
+
+    // Function for returning the C++ implementation to Python
+    m.def("get_cpp_module", []() {
+        auto ptr = std::make_shared<MyProp>();
+        return std::static_pointer_cast<SDE::ModuleBase>(ptr);
+    });
+
+    m.def("run_py_mod", [](std::shared_ptr<SDE::ModuleBase> mod) {
+        return *(mod->run_as<TestProperty>(2)) == 3;
+    });
+
 } // End PYBIND11_MODULE

@@ -83,7 +83,7 @@ public:
     /// Type of a pointer to this class
     using module_pointer = std::shared_ptr<ModuleBase>;
 
-    /// Type of te metadata stored in this class
+    /// Type of the metadata stored in this class
     using metadata_type = std::map<MetaProperty, std::string>;
 
     /// Type of the submodule call backs
@@ -381,7 +381,9 @@ protected:
     }
 
 private:
+    /// Allows ModuleManager to copy the module
     friend class detail_::MMImpl;
+
     /// Used when making a duplicate module
     ModuleBase& operator=(const ModuleBase& rhs) = default;
 
@@ -398,7 +400,12 @@ private:
 
 } // namespace SDE
 
-/// Macro to factor out boilerplat for defining a property type
+/** @brief Macro to factor out boilerplate for defining a property type
+ *
+ *  @param[in] prop_name Name to be used for resulting class
+ *  @param[in] return_value Type of the return
+ *  @param[in] __VA_ARGS__ The types of the inputs to the module.
+ */
 #define DEFINE_PROPERTY_TYPE(prop_name, return_value, ...) \
     struct prop_name : SDE::ModuleBase {                   \
         virtual return_value run(__VA_ARGS__) = 0;         \

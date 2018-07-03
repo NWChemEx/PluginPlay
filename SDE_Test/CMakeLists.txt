@@ -5,12 +5,11 @@ set(
 )
 
 add_catch_cxx_tests(test_SDE "${SDE_TESTS}" SDE)
-
 function(add_python_test __name)
     configure_file(${__name}.py ${__name}.py COPYONLY)
     add_test(NAME Py${__name} COMMAND python3 ${__name}.py)
-endfunction()
 
+endfunction()
 if(BUILD_PYBINDINGS)
     #Builds a Python module containing utilities for testing the SDE
     add_library(py_sde_utils MODULE PySDEUtils.cpp)
@@ -21,4 +20,5 @@ if(BUILD_PYBINDINGS)
     set_target_properties(py_sde_utils PROPERTIES RELEASE_POSTFIX "")
 
     add_python_test(TestSDEAny)
+    add_python_test(TestModule)
 endif()
