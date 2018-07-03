@@ -1,6 +1,5 @@
 def repoName= "SDE"
-def depends = ["CMakeBuild", "Utilities", "LibChemist"] as String[]
-def commonModules = "cmake llvm python "
+def commonModules = "cmake llvm python git "
 def buildModuleMatrix = [
     		   "GCC":(commonModules + "gcc/7.1.0"),
 		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
@@ -44,10 +43,6 @@ for (int i=0; i<buildTypeList.size(); i++){
 
     stage('Check Code Formatting'){
         nwxJenkins.formatCode()
-    }
-
-    stage('Build Dependencies'){
-        nwxJenkins.buildDependencies(depends, cmakeCommand, credentialsID)
     }
 
     stage('Build Repo'){

@@ -1,18 +1,24 @@
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(SDE-Test VERSION 0.0.0 LANGUAGES CXX)
-include(TargetMacros)
+set(
+    SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
+              TestMoleculeFileParser.cpp TestSDEAny.cpp TestModuleHelpers.cpp
+              TestModule.cpp
+)
 
-add_cxx_unit_test(TestBasisFileParser)
-add_cxx_unit_test(TestChemistryRuntime)
-add_cxx_unit_test(TestModuleHelpers)
-add_cxx_unit_test(TestModule)
-add_cxx_unit_test(TestMoleculeFileParser)
-add_cxx_unit_test(TestSDEAny)
+add_catch_cxx_tests(test_SDE "${SDE_TESTS}" SDE)
 
-set(DM_SRC DummyModule.cpp)
-set(DM_INCS)
-set(DM_FLAGS)
-set(DM_LFLAGS)
-nwchemex_add_pymodule(DummyModule DM_SRC DM_INC DM_FLAGS DM_LFLAGS __init__.py)
-add_python_unit_test(TestModule)
+function(add_python_test __name)
+    configure_file(${__name}.py ${__name}.py COPYONLY)
+    add_test(NAME Py${__name} COMMAND python3 ${__name}.py)
+endfunction()
 
+if(BUILD_PYBINDINGS)
+    #Builds a Python module containing utilities for testing the SDE
+    add_library(py_sde_utils MODULE PySDEUtils.cpp)
+    target_link_libraries(py_sde_utils SDE)
+    #Undo Hunter's defaults
+    set_target_properties(py_sde_utils PROPERTIES PREFIX "")
+    set_target_properties(py_sde_utils PROPERTIES DEBUG_POSTFIX "")
+    set_target_properties(py_sde_utils PROPERTIES RELEASE_POSTFIX "")
+
+    add_python_test(TestSDEAny)
+endif()

@@ -1,5 +1,6 @@
 #pragma once
 #include "SDE/Memoization.hpp"
+#include "SDE/Pythonization.hpp"
 #include <memory>
 #include <type_traits>
 
@@ -371,6 +372,23 @@ public:
         return cast<no_cv>();
     };
 
+    /**
+     * @brief Facilitates using SDEAny in classes exposed to Python.
+     *
+     * SDEAny itself is not exposed to Python; however, classes like Parameters
+     * are exposed to Python and contain SDEAny instances.  This function will
+     * transform the type-erased object into an object that can be accessed from
+     * Python without needing to know the wrapped instance's type.
+     *
+     * @return The object wrapped in this instance as a pybind11::object.
+     * @throws pybind11::cast_error if the wrapped type can not be converted to
+     *         a Python type.  Strong throw guarantee.
+     * @throws std::runtime_error if this function is called and Python bindings
+     *         were not enabled.  Strong throw guarantee.
+     *
+     */
+    pyobject pythonize() const { return ptr_->pythonize(); }
+
 private:
     /// Allows SDEAnyCast to return the wrapped value
     template<typename T>
@@ -449,9 +467,15 @@ private:
          */
         void hash(Hasher& h) const { hash_(h); }
 
+        /// Public API for virtual python function
+        pyobject pythonize() { return pythonize_(); }
+
     protected:
-        /// The function that should be implemented by the derived class
+        /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
+
+        /// Function for converting to read-only python object,
+        virtual pyobject pythonize_() const = 0;
     };
 
     /**
@@ -562,6 +586,20 @@ private:
          *  throw guarantee.
          */
         virtual void hash_(Hasher& h) const override { h(value); }
+
+        /**
+         * @brief Allows the wrapped object to be returned as the opaque Python
+         * base class.  The returned instance is read-only.
+         *
+         * @return The object wrapped in an opaque Python base class
+         * @throws pybind11::cast_error if the cast fails.  Strong throw
+         * guarantee.
+         * @throws std::runtime_error if Python bindings are not enabled.
+         * Strong throw guarantee.
+         */
+        virtual pyobject pythonize_() const override {
+            return pycast<T>::cast(value);
+        }
     };
 
     /**
