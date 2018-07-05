@@ -4,6 +4,8 @@
 #include <memory>
 #include <type_traits>
 
+#include <SDE/Serialization.hpp>
+
 namespace SDE {
 
 /// Namespace for classes not meant to be part of the SDE's public API
@@ -234,6 +236,46 @@ public:
      *  throw guarantee.
      */
     void hash(Hasher& h) const { h(ptr_); }
+
+    /**
+     *  @brief Allows the SDEAny instance to be saved to a Cereal output
+     *  archive.
+     *
+     *  @param[in] ar A Cereal output archive instance in which the SDEAny
+     *  instance will be saved.
+     *
+     *  @param[in] key A string label which is used to index the SDEAny
+     *  entry in the Cereal archive. key is typically a unique hash value.
+     */
+    template <class OutputArchive>
+    std::enable_if_t<
+            std::is_same_v<OutputArchive, cereal::HDF5OutputArchive> ||
+            std::is_same_v<OutputArchive, cereal::JSONOutputArchive> ||
+            std::is_same_v<OutputArchive, cereal::XMLOutputArchive> >
+    save(OutputArchive& ar, const std::string& key = "archive_entry") const
+    {
+        ar(cereal::make_nvp(key, ptr_));
+    }
+
+    /**
+     *  @brief Loads the data from an SDEAny instance stored in a Cereal input
+     *  archive, and reconstructs the SDEAny.
+     *
+     *  @param[in] ar A Cereal input archive instance in which the SDEAny
+     *  data is saved.
+     *
+     *  @param[in] key A string label corresponding to the index of the SDEAny
+     *  data stored in the Cereal archive. key is typically a unique hash value.
+     */
+    template <class InputArchive>
+    std::enable_if_t<
+            std::is_same_v<InputArchive, cereal::HDF5InputArchive> ||
+            std::is_same_v<InputArchive, cereal::JSONInputArchive> ||
+            std::is_same_v<InputArchive, cereal::XMLInputArchive> >
+    load(InputArchive& ar, const std::string& key)
+    {
+        ar(cereal::make_nvp(key, ptr_));
+    }
 
     /**
      * @brief Returns the type of the wrapped instance.
@@ -568,6 +610,33 @@ private:
             return typeid(T);
         }
 
+        /**
+         *  @brief Implements hashing for the SDEAnyBase_ class.
+         *
+         *  @param[in, out] h A Hasher instance to use for the hashing.
+         *
+         *  @par Complexity:
+         *  Same as the complexity of hashing the wrapped type.
+         *
+         *  @par Data Races:
+         *  The state of the current instance will be accessed and data races
+         *  may
+         *  result if it is concurrently modified.
+         *
+         *  @throws ??? if the wrapped instance's hash function throws.  Strong
+         *  throw guarantee.
+         */
+        template<class Archive>
+                void serialize(Archive& ar)
+        {
+            // Bind derive and base class relationship to support
+            // polymorphic serialization
+            cereal::base_class_detail::RegisterPolymorphicBaseClass
+            <SDEAnyBase_, SDEAnyWrapper_<T> >::bind();
+
+            ar(value);
+        }
+
     protected:
         /**
          *  @brief Implements hashing for the SDEAnyBase_ class.
@@ -729,3 +798,25 @@ SDEAny make_SDEAny(Args&&... args) {
 
 } // namespace detail_
 } // namespace SDE
+
+
+/** @brief Provides Cereal with an appropriate method to load SDEAny data
+ * from an input archive and reconstruct the SDEAny.
+ */
+template<typename T> struct
+cereal::LoadAndConstruct<SDE::detail_::SDEAny::SDEAnyWrapper_<T> >{
+    template <class Archive>
+    static void load_and_construct(Archive& ar,
+				   cereal::construct<SDE::detail_::SDEAny::SDEAnyWrapper_<T> >& construct){
+        T value;
+        ar(value);
+        construct(value);
+    }
+};
+
+//Register derived class types with Cereal to support polymorphic serialization
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<double>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<int>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::string>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<double>>)/
+
