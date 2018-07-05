@@ -261,8 +261,8 @@ public:
      *  @brief Loads the data from an SDEAny instance stored in a Cereal input
      *  archive, and reconstructs the SDEAny.
      *
-     *  @param[in] ar A Cereal input archive instance in which the SDEAny
-     *  data is saved.
+     *  @param[in] ar A Cereal input archive instance in which SDEAny
+     *  data was previously saved.
      *
      *  @param[in] key A string label corresponding to the index of the SDEAny
      *  data stored in the Cereal archive. key is typically a unique hash value.
@@ -610,33 +610,6 @@ private:
             return typeid(T);
         }
 
-        /**
-         *  @brief Implements hashing for the SDEAnyBase_ class.
-         *
-         *  @param[in, out] h A Hasher instance to use for the hashing.
-         *
-         *  @par Complexity:
-         *  Same as the complexity of hashing the wrapped type.
-         *
-         *  @par Data Races:
-         *  The state of the current instance will be accessed and data races
-         *  may
-         *  result if it is concurrently modified.
-         *
-         *  @throws ??? if the wrapped instance's hash function throws.  Strong
-         *  throw guarantee.
-         */
-        template<class Archive>
-                void serialize(Archive& ar)
-        {
-            // Bind derive and base class relationship to support
-            // polymorphic serialization
-            cereal::base_class_detail::RegisterPolymorphicBaseClass
-            <SDEAnyBase_, SDEAnyWrapper_<T> >::bind();
-
-            ar(value);
-        }
-
     protected:
         /**
          *  @brief Implements hashing for the SDEAnyBase_ class.
@@ -668,6 +641,26 @@ private:
          */
         virtual pyobject pythonize_() const override {
             return pycast<T>::cast(value);
+        }
+
+    private:
+        /**
+         *  @brief Implements the serialization save/load of SDEAnyWrapper_
+         *
+         *  @param[in, out] ar A Cereal input/output archive instance used to
+         *  load/save SDEAny data.
+         */
+        friend class cereal::access;
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            // Registers derive/base class relationship to support
+            // polymorphic serialization
+            cereal::base_class_detail::RegisterPolymorphicBaseClass
+                    <SDEAnyBase_, SDEAnyWrapper_<T> >::bind();
+
+            // The actual save/load
+            ar(value);
         }
     };
 
@@ -814,9 +807,21 @@ cereal::LoadAndConstruct<SDE::detail_::SDEAny::SDEAnyWrapper_<T> >{
     }
 };
 
-//Register derived class types with Cereal to support polymorphic serialization
-CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<double>);
+/* Register derived class types with Cereal to support polymorphic serialization
+ * Just a few types are registered now; automatic registration is on the
+ * TODO list
+ */
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<char>);
 CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<int>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<long>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<float>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<double>);
 CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::string>);
-CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<double>>)/
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<char>>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<int>>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<long>>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<float>>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<double>>);
+CEREAL_REGISTER_TYPE(SDE::detail_::SDEAny::SDEAnyWrapper_<std::vector<std::string>>);
+
 
