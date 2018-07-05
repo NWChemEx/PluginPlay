@@ -1,9 +1,5 @@
 #pragma once
 
-#include "H5Cpp.h"
-
-namespace cereal {
-
 template <class T>
 struct CtoHDF5;
 
@@ -34,6 +30,7 @@ REGISTER_CXX_TO_HDF(long double, H5::PredType::NATIVE_LDOUBLE);
 REGISTER_CXX_TO_HDF(bool, H5::PredType::NATIVE_HBOOL);
 
 REGISTER_CXX_TO_HDF(std::string, H5::PredType::C_S1);
-}
+
+
 
 

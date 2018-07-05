@@ -1,5 +1,7 @@
 #include <SDE/SDEAny.hpp>
+#include <SDE/Serialization.hpp>
 #include <catch/catch.hpp>
+#include <fstream>
 #include <map>
 #include <typeindex>
 #include <vector>
@@ -161,4 +163,31 @@ TEST_CASE("SDEAny Class") {
             REQUIRE(ptr == new_ptr); // Make sure it's the same instance
         }
     }
+
+    SECTION("Serialization") {
+        int ival(123);
+	std::vector<double> dval(1.1, 2.2, 3.3);
+	
+	SECTION("Cereal XML Archive") {
+	  { std::ofstream file("testCereal.log");
+	  cereal::XMLOutputArchive xoa(file);
+	  SDEAny ivalAny(ival);
+	  SDEAny dvalAny(dval);
+	  ivalAny.save(xoa, "ival");
+	  dvalAny.save(xoa, "dval"); }
+	  
+	std::ifstream file("testCereal.log");
+	cereal::XMLInputArchive xia(file);
+	SDEAny _ivalAny;
+	SDEAny _dvalAny;
+	//Out-of-order loading
+	_dvalAny.load(xia, "dval");
+	_ivalAny.load(xia, "ival");
+	auto _dval = SDEAnyCast<std::vector<double> >(_dvalAny);
+	auto _ival = SDEAnyCast<int>(_ivalAny);
+	REQUIRE(_ival == ival);
+	REQUIRE(_dval.at(1) == Approx(dval.at(1)));
+        }
+    }    
+
 }
