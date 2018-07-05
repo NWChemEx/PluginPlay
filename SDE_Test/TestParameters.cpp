@@ -42,9 +42,12 @@ TEST_CASE("Options and Parameters") {
         // Using at<Option<T>>()
         REQUIRE(detail_::SDEAnyCast<int>(
                   params.at<Option>("The number 3").value) == 3);
-        // change()
+        // change() and track_changes()
+        params.track_changes();
         params.change("The number 3", 2);
         REQUIRE(params.at<int>("The number 3") == 2);
+        auto new_traits = params.get_traits("The number 3");
+        REQUIRE(new_traits.count(OptionTraits::non_default));
 
         // checking range_checks and change()
         params.insert("Not a negative number",

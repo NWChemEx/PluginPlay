@@ -344,7 +344,7 @@ private:
     // transparent Options
     std::unordered_set<std::string> keys_to_hash;
     // Flag indicating that future changes to Parameters will be tracked.
-    bool tracking_changes;
+    bool tracking_changes = false;
 };
 
 } // end namespace SDE

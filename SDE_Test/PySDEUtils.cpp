@@ -36,20 +36,6 @@ PYBIND11_MODULE(py_sde_utils, m) {
         return SDEAnyWrapper{detail_::SDEAny(a_list)};
     });
 
-/*    // Returns a filled Parameters object
-    m.def("make_parameters", []() {
-        Parameters params;
-        params.insert("The number 3",
-                      Option{3,
-                             "some description",
-                             {GreaterThan<int>{0}},
-                             {OptionTraits::optional, OptionTraits::transparent}});
-        params.insert("Pi", Option{3.1416});
-        params.insert("A vector", Option{std::vector<int>{1, 2, 3}});
-        params.insert("Hello", Option{std::string{"Hello world"}});
-        return params;
-    }); */
-
     Parameters params;
     params.insert("The number 3",
                   Option{3, "some description",
