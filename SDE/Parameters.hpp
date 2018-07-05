@@ -112,7 +112,7 @@ struct Option {
      * @brief Provides a hash of the Option's state
      *
      */
-    void hash(Hasher& h) const { h(value)/*, traits)*/;}
+    void hash(Hasher& h) const { h(value, traits);}
 
     /**
      * @brief Runs a value through all the validity checks of an Option

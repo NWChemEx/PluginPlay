@@ -26,7 +26,7 @@ TEST_CASE("Options and Parameters") {
         Hasher h(HashType::Hash128);
         opt.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "5fbea728b418418e84bf85fd9b622ad5");
+        REQUIRE(hv == "507d9f3cedf0b4a0aaf0312b8a767d0c");
 
         REQUIRE_THROWS(Option{4, "Any negative number", {LessThan<int>{0}}});
         REQUIRE_NOTHROW(Option{-1, "Any negative number", {LessThan<int>{0}}});
@@ -63,7 +63,7 @@ TEST_CASE("Options and Parameters") {
         Hasher h(HashType::Hash128);
         params.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "8f14f0e8d9d1939a431c4354661e7f2f");
+        REQUIRE(hv == "c2007ca976923cbe8fc6fba066282913");
 
         // This insertion should not change the hash value
         Hasher h2(HashType::Hash128);
@@ -72,7 +72,7 @@ TEST_CASE("Options and Parameters") {
           Option{2, "Transparent thing", {}, {OptionTraits::transparent}});
         params.hash(h2);
         hv = bphash::hash_to_string(h2.finalize());
-        REQUIRE(hv == "8f14f0e8d9d1939a431c4354661e7f2f");
+        REQUIRE(hv == "c2007ca976923cbe8fc6fba066282913");
 
         // This insertion should change the hash (i.e. the Option is not
         // transparent)
@@ -80,7 +80,7 @@ TEST_CASE("Options and Parameters") {
         params.insert("Hash modifying", Option{2, "Opaque thing", {}, {}});
         params.hash(h3);
         hv = bphash::hash_to_string(h2.finalize());
-        REQUIRE(hv == "44e7ee7d549622749000b1714bed002f");
+        REQUIRE(hv == "ca89719299107675e821851b2ec20cba");
 
         // pybind11 objects
         params.insert("Double", Option{3.14});
