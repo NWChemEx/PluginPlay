@@ -16,9 +16,17 @@ if(BUILD_PYBINDINGS)
     list(
          APPEND SDE_INCLUDES PyBindings/PyModule.hpp PyBindings/PySmartEnums.hpp
     )
-    add_python_module(SDE "${SDE_SRCS}" "${SDE_INCLUDES}")
+    add_python_module(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+    )
+    target_compile_definitions(SDE PUBLIC USING_pybind11)
 else()
-    add_nwx_library(SDE "${SDE_SRCS}" "${SDE_INCLUDES}")
+    add_nwx_library(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+    )
 endif()
-target_link_libraries(SDE LibChemist::chemist bphash::bphash cereal::cereal)
-
+install_targets(TARGETS SDE INCLUDES ${SDE_INCLUDES})

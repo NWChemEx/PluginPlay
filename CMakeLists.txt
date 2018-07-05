@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.6)
-file(
-        DOWNLOAD
-        https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
-        ${CMAKE_BINARY_DIR}/cmake.tar.gz)
-execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/cmake.tar.gz
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+#file(
+#        DOWNLOAD
+#        https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
+#        ${CMAKE_BINARY_DIR}/cmake.tar.gz)
+#execute_process(
+#        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/cmake.tar.gz
+#        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#)
 
 include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
 start_hunter(LOCAL) #Must be before project command
@@ -22,10 +22,6 @@ foreach(depend Utilities LibChemist bphash cereal)
     hunter_add_package(${depend})
     find_package(${depend} CONFIG)
 endforeach()
-if(BUILD_PYBINDINGS)
-    hunter_add_package(pybind11)
-    find_package(pybind11 CONFIG)
-endif()
 
 ### Target ###
 add_subdirectory(SDE)

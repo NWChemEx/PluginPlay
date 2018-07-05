@@ -53,7 +53,7 @@ struct pycast {
     }
 };
 
-void hash_object(const pybind11::object& cls, SDE::Hasher& h) { h(cls); }
+void hash_object(const pyobject& cls, SDE::Hasher& h) { h(cls); }
 
 } // namespace SDE
 #endif
