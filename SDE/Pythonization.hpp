@@ -40,7 +40,7 @@ struct pycast<pybind11::object> {
 } // namespace SDE
 
 namespace pybind11 {
-void hash_object(const pybind11::object& cls, SDE::Hasher& h) {
+void inline hash_object(const pybind11::object& cls, SDE::Hasher& h) {
     auto hash_fxn = cls.attr("__hash__");
     auto hash     = hash_fxn();
     h(hash.cast<std::string>());
@@ -63,7 +63,7 @@ struct pycast {
     }
 };
 
-void hash_object(const pybind11::object& cls, SDE::Hasher& h) { h(cls); }
+void inline hash_object(const pybind11::object& cls, SDE::Hasher& h) { h(cls); }
 
 } // namespace SDE
 #endif

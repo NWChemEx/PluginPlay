@@ -1,16 +1,10 @@
+import SDE.SDE as SDE
+import py_sde_utils as PySDEUtils
 import unittest
-import os
-import sys
-import SDE
-
-lib_dir = os.path.join(os.path.dirname(os.path.abspath(os.path.curdir)), "lib")
-sys.path.append(lib_dir)
-
-import DummyParameters
 
 class TestParameters(unittest.TestCase):
     def setUp(self):
-        self.params = DummyParameters.params
+        self.params = PySDEUtils.params
 
     def test_at(self):
         int_opt = self.params.at("The number 3")

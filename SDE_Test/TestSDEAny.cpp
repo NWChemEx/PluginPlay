@@ -145,7 +145,7 @@ TEST_CASE("SDEAny Class") {
         }
 
 #ifdef USING_pybind11
-        SECTION("Pythonize/insert_python) {
+        SECTION("Pythonize/insert_python") {
             auto pyobject = wrap_double.pythonize();
             double pyval  = pyobject.cast<double>();
             REQUIRE(pyval == pi);
