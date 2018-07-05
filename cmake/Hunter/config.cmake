@@ -8,7 +8,7 @@ hunter_config(
         LibChemist
         VERSION 0.0.0
         URL "${gh_repo}/tarball/master?access_token=${token}"
-        SHA1 "0a02b5457db7d87dd00e1a991c530bb027fdff51"
+        SHA1 "96de0f1fa0145d6540562826187e14e552522a15"
         CMAKE_ARGS "BUILD_TESTS=off;BUILD_SHARED_LIBS=${WITH_SHARED}"
 )
 set(gh_repo "https://api.github.com/repos/NWChemEx-Project/Utilities")
@@ -16,7 +16,7 @@ hunter_config(
         Utilities
         VERSION 0.0.0
         URL "${gh_repo}/tarball/master?access_token=${token}"
-        SHA1 "42446742165e643a10778f4a3402a5164728d0bb"
+        SHA1 "c3c7d10c77b7744a70f1423e50e0cd039d2064f5"
         CMAKE_ARGS "BUILD_TESTS=off;BUILD_SHARED_LIBS=${WITH_SHARED}"
 )
 
