@@ -2,7 +2,9 @@
 #include "SDE/Parameters.hpp"
 
 namespace SDE {
-
+/**
+ * @brief Class used for the Python interface to Parameters.
+ */
 struct PyParameters : Parameters {
     /**
      * @brief Allows changing the Parameters from Python

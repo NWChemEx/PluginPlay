@@ -159,36 +159,6 @@ struct AtHelper<Option> {
 };
 
 /**
- * @brief Specialization for pyobject, called when T for Parameters::at is a
- * pyobject
- */
-/*template<>
-struct AtHelper<pyobject> {
-    static const pyobject& get (const Option& opt) { return
-opt.value.pythonize(); }
-};*/
-
-/*
-template<typename T>
-struct ChangeHelper {
-    static void change_opt(Option& opt, const T& new_value) {
-        opt.value = detail_::SDEAny(new_value);
-        if(!opt.is_valid())
-            throw std::invalid_argument("Not a valid option value");
-    }
-};
-
-template<>
-struct ChangeHelper<pyobject> {
-    static void change_opt(Option& opt, pyobject& new_value) {
-        opt.value.insert_python(new_value);
-        if(!opt.is_valid())
-            throw std::invalid_argument("Not a valid option value");
-    }
-};*/
-} // namespace detail_
-
-/**
  * @brief Class for holding the parameters to a module
  */
 class Parameters {
