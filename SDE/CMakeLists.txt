@@ -12,10 +12,11 @@ set(
 )
 
 if(BUILD_PYBINDINGS)
-    list(APPEND SDE_SRCS PyBindings/ExportSDE.cpp PyBindings/PyParameters.cpp)
+    list(   APPEND SDE_SRCS PyBindings/ExportSDE.cpp
+                            PyBindings/PyParameters.cpp
+    )
     list(
             APPEND SDE_INCLUDES PyBindings/PySmartEnums.hpp 
-                                PyBindings/PyParameters.hpp
     )
     add_python_module(
             NAME SDE

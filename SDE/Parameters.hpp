@@ -276,14 +276,15 @@ public:
      */
     void track_changes() { tracking_changes = true; }
 
-protected:
+    // Flag indicating that future changes to Parameters will be tracked.
+    bool tracking_changes = false;
+
+private:
     // Map of Options which have been type-erased
     Utilities::CaseInsensitiveMap<Option> options;
     // List of keys to be hashed from the options map, does not include
     // transparent Options
     std::unordered_set<std::string> keys_to_hash;
-    // Flag indicating that future changes to Parameters will be tracked.
-    bool tracking_changes = false;
 };
 
 } // end namespace SDE

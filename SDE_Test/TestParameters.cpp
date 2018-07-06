@@ -1,4 +1,4 @@
-#include <SDE/PyBindings/PyParameters.hpp>
+#include <SDE/Parameters.hpp>
 #include <catch/catch.hpp>
 
 using namespace SDE;
@@ -82,8 +82,8 @@ TEST_CASE("Parameters") {
     REQUIRE(hv == "ca89719299107675e821851b2ec20cba");
 }
 // pybind11 objects
-TEST_CASE("PyParameters") {
-    PyParameters pyparams;
+/*TEST_CASE("PyParameters") {
+    Parameters pyparams;
     pyparams.insert("Double", Option{3.14});
     pyobject double_obj = pyparams.at_python("Double");
     REQUIRE(double_obj.cast<double>() == 3.14);
@@ -91,4 +91,4 @@ TEST_CASE("PyParameters") {
     pyobject new_obj = pybind11::cast(1.57);
     pyparams.change_python("Double", new_obj);
     REQUIRE(pyparams.at<double>("Double") == 1.57);
-}
+}*/

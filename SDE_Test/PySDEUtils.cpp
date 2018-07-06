@@ -1,6 +1,6 @@
 #include <SDE/Pythonization.hpp>
 #include <SDE/SDEAny.hpp>
-#include <SDE/PyBindings/PyParameters.hpp>
+#include <SDE/Parameters.hpp>
 #include <catch/catch.hpp>
 
 /* This file contains C++ exports for testing various aspects of the SDE from
@@ -36,7 +36,7 @@ PYBIND11_MODULE(py_sde_utils, m) {
         return SDEAnyWrapper{detail_::SDEAny(a_list)};
     });
 
-    PyParameters params;
+    Parameters params;
     params.insert("The number 3",
                   Option{3, "some description",
                          {GreaterThan<int>{0}},
