@@ -1,6 +1,6 @@
 set(
-    SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
-              TestMoleculeFileParser.cpp TestSDEAny.cpp TestModuleHelpers.cpp
+        SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
+        TestMoleculeFileParser.cpp TestParameters.cpp TestSDEAny.cpp TestModuleHelpers.cpp
               TestModule.cpp
 )
 
@@ -16,5 +16,6 @@ if(BUILD_PYBINDINGS)
             DEPENDS SDE
     )
     add_python_test(NAME TestSDEAny)
+    add_python_test(NAME TestParameters)
     add_python_test(NAME TestModule)
 endif()

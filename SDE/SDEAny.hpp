@@ -389,6 +389,16 @@ public:
      */
     pyobject pythonize() const { return ptr_->pythonize(); }
 
+    /**
+     * @brief Puts a pybind11 object into an already existing SDEAny
+     *
+     *
+     * @param obj the pybind11 object to place in the SDEAny
+     * @throws std::runtime_error if Python bindings are not enabled.
+     *         Strong throw guarantee.
+     */
+    void insert_python(pyobject& obj) { return ptr_->insert_python(obj); }
+
 private:
     /// Allows SDEAnyCast to return the wrapped value
     template<typename T>
@@ -470,12 +480,18 @@ private:
         /// Public API for virtual python function
         pyobject pythonize() { return pythonize_(); }
 
+        /// Public API for virtual python function
+        void insert_python(pyobject& obj) { return insert_python_(obj); }
+
     protected:
         /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
 
         /// Function for converting to read-only python object,
         virtual pyobject pythonize_() const = 0;
+
+        /// Function for inserting a python object into an SDEAny
+        virtual void insert_python_(pyobject& obj) = 0;
     };
 
     /**
@@ -599,6 +615,17 @@ private:
          */
         virtual pyobject pythonize_() const override {
             return pycast<T>::cast(value);
+        }
+
+        /**
+         * @brief Allows a pybind11 object to be stored in an existing SDEAny
+         *
+         * @param obj the pybind11 object to replace the current value with
+         * @throws std::runtime_error if Python bindings are not enabled.
+         * Strong throw guarantee.
+         */
+        virtual void insert_python_(pyobject& obj) override {
+            value = castpy<T>(obj);
         }
     };
 

@@ -43,6 +43,7 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
 #ifndef USING_pybind11
         REQUIRE_THROWS_AS(da_any.pythonize(), std::runtime_error);
         REQUIRE_THROWS_AS(const_da_any.pythonize(), std::runtime_error);
+        REQUIRE_THROWS_AS(da_any.insert_python(), std::runtime_error);
 #endif
 
         REQUIRE_THROWS_AS(SDEAnyCast<std::string>(da_any), std::bad_cast);
@@ -142,6 +143,18 @@ TEST_CASE("SDEAny Class") {
             REQUIRE(&new_pi ==
                     &new_pi2); // Ensure emplace returns same instance
         }
+
+#ifdef USING_pybind11
+        SECTION("Pythonize/insert_python") {
+            auto pyobject = wrap_double.pythonize();
+            double pyval  = pyobject.cast<double>();
+            REQUIRE(pyval == pi);
+
+            pybind11::object double_obj = pybind11::cast(3.12);
+            wrap_double.insert_python(double_obj);
+            REQUIRE(SDEAnyCast<double>(wrap_double) == 3.12);
+        }
+#endif
     }
 
     SECTION("Non-POD Wrapped Types") {

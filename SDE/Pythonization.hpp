@@ -20,6 +20,12 @@ namespace SDE {
 /// The type of the C-side type of the opaque Python base class
 using pyobject = pybind11::object;
 
+/// Function for converting a Python object into a C++ object
+template<typename T>
+T castpy(pyobject& obj) {
+    return obj.cast<T>();
+}
+
 /// Functor for converting a C++ object into a Python object
 template<typename T>
 struct pycast {
@@ -34,7 +40,7 @@ struct pycast<pybind11::object> {
 } // namespace SDE
 
 namespace pybind11 {
-void hash_object(const pybind11::object& cls, SDE::Hasher& h) {
+void inline hash_object(const pybind11::object& cls, SDE::Hasher& h) {
     auto hash_fxn = cls.attr("__hash__");
     auto hash     = hash_fxn();
     h(hash.cast<std::string>());
@@ -47,6 +53,10 @@ namespace SDE {
 using pyobject = decltype(nullptr);
 
 template<typename T>
+T castpy(pyobject& obj) {
+    throw std::runtime_error("Python Bindings were not enabled!");
+}
+
 struct pycast {
     static pyobject cast(const T& value) {
         throw std::runtime_error("Python Bindings were not enabled!");

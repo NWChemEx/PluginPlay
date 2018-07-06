@@ -1,4 +1,5 @@
 #include <SDE/Module.hpp>
+#include <SDE/Parameters.hpp>
 #include <SDE/PyBindings/PyModule.hpp>
 #include <SDE/Pythonization.hpp>
 #include <SDE/SDEAny.hpp>
@@ -10,10 +11,12 @@
  * or type-erasure).
  */
 
+using namespace SDE;
+
 // Exposes SDEAny to Python as a default constructable opaque type
 struct SDEAnyWrapper {
     SDEAnyWrapper() = default;
-    SDE::detail_::SDEAny my_any;
+    detail_::SDEAny my_any;
 };
 
 // Define and implement a dummy property type
@@ -33,12 +36,12 @@ PYBIND11_MODULE(py_sde_utils, m) {
     // Returns an SDEAny filled with a vector [1, 2, 3]
     m.def("make_any", []() {
         std::vector<int> v1{1, 2, 3};
-        return SDEAnyWrapper{SDE::detail_::SDEAny(v1)};
+        return SDEAnyWrapper{detail_::SDEAny(v1)};
     });
 
     // Returns an SDEAny filled with a Python object
     m.def("make_any", [](pybind11::object a_list) {
-        return SDEAnyWrapper{SDE::detail_::SDEAny(a_list)};
+        return SDEAnyWrapper{detail_::SDEAny(a_list)};
     });
     // Registers our dummy module with Python
     SDE::register_property_type<TestProperty>(m, "TestProperty");
@@ -53,5 +56,17 @@ PYBIND11_MODULE(py_sde_utils, m) {
     m.def("run_py_mod", [](std::shared_ptr<SDE::ModuleBase> mod) {
         return *(mod->run_as<TestProperty>(2)) == 3;
     });
+
+    Parameters params;
+    params.insert("The number 3",
+                  Option{3,
+                         "some description",
+                         {GreaterThan<int>{0}},
+                         {OptionTraits::optional, OptionTraits::transparent}});
+    params.insert("Pi", Option{3.1416});
+    params.insert("A vector", Option{std::vector<int>{1, 2, 3}});
+    params.insert("Hello", Option{std::string{"Hello world"}});
+
+    m.attr("params") = params;
 
 } // End PYBIND11_MODULE
