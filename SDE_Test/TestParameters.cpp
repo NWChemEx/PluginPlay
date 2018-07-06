@@ -81,14 +81,3 @@ TEST_CASE("Parameters") {
     hv = bphash::hash_to_string(h2.finalize());
     REQUIRE(hv == "ca89719299107675e821851b2ec20cba");
 }
-// pybind11 objects
-/*TEST_CASE("PyParameters") {
-    Parameters pyparams;
-    pyparams.insert("Double", Option{3.14});
-    pyobject double_obj = pyparams.at_python("Double");
-    REQUIRE(double_obj.cast<double>() == 3.14);
-
-    pyobject new_obj = pybind11::cast(1.57);
-    pyparams.change_python("Double", new_obj);
-    REQUIRE(pyparams.at<double>("Double") == 1.57);
-}*/
