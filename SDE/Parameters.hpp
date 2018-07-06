@@ -157,6 +157,7 @@ template<>
 struct AtHelper<Option> {
     static const Option& get(const Option& opt) { return opt; }
 };
+} // namespace detail_
 
 /**
  * @brief Class for holding the parameters to a module
