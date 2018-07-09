@@ -179,7 +179,7 @@ TEST_CASE("SDEAny Class") {
 
     SECTION("Serialization") {
         int ival(123);
-	std::vector<double> dval(1.1, 2.2, 3.3);
+	std::vector<double> dval{1.1, 2.2, 3.3};
 	
 	SECTION("Cereal XML Archive") {
 	  { std::ofstream file("testCereal.log");
