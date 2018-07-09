@@ -11,7 +11,8 @@ execute_process(
 include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
 start_hunter(LOCAL) #Must be before project command
 
-project(SDE VERSION 0.0.0 LANGUAGES CXX)
+#project(SDE VERSION 0.0.0 LANGUAGES CXX)
+project(SDE VERSION 0.0.0 LANGUAGES)
 
 ### Options ###
 option(BUILD_TESTS "Should we build the tests?" ON)
@@ -26,7 +27,7 @@ endforeach()
 hunter_add_package(hdf5)
 find_package(ZLIB CONFIG REQUIRED)
 find_package(szip CONFIG REQUIRED)
-find_package(hdf5 CONFIG REQUIRED)
+find_package(hdf5 CONFIG REQUIRED COMPONENTS CXX)
 
 #find_package(HDF5 COMPONENTS CXX)
 
