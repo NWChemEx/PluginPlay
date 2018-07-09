@@ -24,7 +24,11 @@ foreach(depend Utilities LibChemist bphash cereal)
 endforeach()
 
 hunter_add_package(hdf5)
-find_package(HDF5 COMPONENTS CXX)
+find_package(ZLIB CONFIG REQUIRED)
+find_package(szip CONFIG REQUIRED)
+find_package(hdf5 CONFIG REQUIRED)
+
+#find_package(HDF5 COMPONENTS CXX)
 
 ### Target ###
 add_subdirectory(SDE)
