@@ -21,14 +21,14 @@ if(BUILD_PYBINDINGS)
     add_python_module(
             NAME SDE
             SOURCES ${SDE_SRCS}
-            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal hdf5
     )
     target_compile_definitions(SDE PUBLIC USING_pybind11)
 else()
     add_nwx_library(
             NAME SDE
             SOURCES ${SDE_SRCS}
-            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal hdf5
     )
 endif()
 install_targets(TARGETS SDE INCLUDES ${SDE_INCLUDES})
