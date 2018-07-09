@@ -22,6 +22,3 @@
       .def("__hash__", [](const name& lhs) {                             \
           return pybind11::hash(pybind11::str(std::string(lhs)));        \
       }) CALL_MACRO_X_FOR_EACH1(_ADD_PYSMARTENUM, name, __VA_ARGS__)
-=======
-}) CALL_MACRO_X_FOR_EACH1(_ADD_PYSMARTENUM, name, __VA_ARGS__)
->>>>>>> master

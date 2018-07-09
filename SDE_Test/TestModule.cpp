@@ -12,11 +12,18 @@ using not_ready_return = typename ModuleBase::not_ready_return;
 // Declare some Module types
 DEFINE_PROPERTY_TYPE(TestProperty, int, int);
 
+static Parameters default_params() {
+    Parameters ps;
+    ps.insert("option 1", Option(3.14));
+    return ps;
+}
+
 // A mock up of a module has a missing submodule
 struct MyProp1 : TestProperty {
     MyProp1() {
         submodules_["Prop1"]          = nullptr;
         metadata_[MetaProperty::name] = "Prop1";
+        parameters_                   = default_params();
     }
     int run(int x) { return x + 1; }
 };
@@ -61,7 +68,7 @@ void test_module(metadata_type met, submodule_list subs) {
     REQUIRE(corr_memo[i] == hv);
 
     // Check accessors
-    // REQUIRE(mod.parameters() == params);
+    REQUIRE(mod.parameters() == default_params());
     REQUIRE(mod.submodules() == subs);
     REQUIRE(mod.metadata() == met);
 
@@ -70,10 +77,14 @@ void test_module(metadata_type met, submodule_list subs) {
     REQUIRE(!mod.is_cached(2));
     REQUIRE(mod.not_ready().size() == 1);
 
-    // Change submodule and check it went through
+    // Change submodule (makes it valid)
     mod.change_submodule("Prop1", prop3);
     subs["Prop1"] = prop3;
     REQUIRE(mod.submodules() == subs);
+    mod.change_parameter("option 1", 1.1);
+    auto p2 = default_params();
+    p2.change("option 1", 1.1);
+    REQUIRE(mod.parameters() == p2);
 
     // Repeat for parameters
 
@@ -81,7 +92,8 @@ void test_module(metadata_type met, submodule_list subs) {
     mod.lock();
     REQUIRE(mod.locked());
     REQUIRE_THROWS_AS(mod.change_submodule("Prop1", prop1), std::runtime_error);
-    // check parameters
+    REQUIRE_THROWS_AS(mod.change_parameter("option 1", 7.57),
+                      std::runtime_error);
 
     // Check we can run it
     REQUIRE(*mod.template run_as<PropertyType>(2) == 3);

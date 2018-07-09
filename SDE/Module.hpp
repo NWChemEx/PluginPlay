@@ -1,6 +1,7 @@
 #pragma once
 #include "SDE/Memoization.hpp"
 #include "SDE/ModuleHelpers.hpp"
+#include "SDE/Parameters.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
@@ -154,7 +155,7 @@ public:
     const metadata_type& metadata() const noexcept { return metadata_; }
     const submodule_list& submodules() const noexcept { return submodules_; }
     const traits_type& traits() const noexcept { return traits_; }
-    // const Parameters& parameters() const noexcept {return parameters_;}
+    const Parameters& parameters() const noexcept { return parameters_; }
 
     /**
      * @name Modifiers
@@ -183,11 +184,11 @@ public:
         submodules_.at(key) = value;
     }
 
-    /*template<typename parameter_type>
-    void change_parameter(const std::string& key, parameter_type value) {
+    template<typename T>
+    void change_parameter(const std::string& key, T value) {
         if(locked_) throw std::runtime_error("Module is locked!!!");
-        parameters_.at(key) = value;
-    }*/
+        parameters_.change(key, value);
+    }
 
     /**
      * @brief Provides a hash for the current module's state.
@@ -366,6 +367,9 @@ protected:
 
     /// The traits associated with the module
     std::set<ModuleTraits> traits_;
+
+    /// The parameters associated with this module
+    Parameters parameters_;
 
     /**
      * @brief Convenience function for calling a submodule.

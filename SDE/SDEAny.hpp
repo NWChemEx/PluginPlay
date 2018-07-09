@@ -62,6 +62,8 @@ private:
       typename std::enable_if<!is_related<T>::value>::type;
 
 public:
+    using SDEFunctor = std::function<void(SDEAny&)>;
+
     /** @brief Makes an empty SDEAny instance.
      *
      *  The resulting SDEAny instance wraps no object.  An object can be added
@@ -217,6 +219,8 @@ public:
     template<typename T, typename X = disable_if_related<T>>
     explicit SDEAny(T&& value) :
       ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
+
+    void visit(SDEFunctor fxn) {}
 
     /**
      *  @brief Allows the SDEAny instance to be hashed.
@@ -399,6 +403,14 @@ public:
      */
     void insert_python(pyobject& obj) { return ptr_->insert_python(obj); }
 
+    bool operator==(const SDEAny& rhs) const noexcept {
+        return (*ptr_) == (*rhs.ptr_);
+    }
+
+    bool operator!=(const SDEAny& rhs) const noexcept {
+        return !((*this) == rhs);
+    }
+
 private:
     /// Allows SDEAnyCast to return the wrapped value
     template<typename T>
@@ -483,7 +495,16 @@ private:
         /// Public API for virtual python function
         void insert_python(pyobject& obj) { return insert_python_(obj); }
 
+        virtual bool operator==(const SDEAnyBase_& rhs) const noexcept {
+            return are_equal(rhs);
+        }
+
+        virtual visit(SDEFunctor fxn) { visit_(fxn); }
+
     protected:
+        /// The function for equality, to be implemented by the derived class
+        virtual bool are_equal(const SDEAnyBase_& rhs) const noexcept = 0;
+
         /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
 
@@ -585,6 +606,14 @@ private:
         }
 
     protected:
+        void visit_(SDEAnyFunctor& fxn) { fxn(value); }
+
+        bool are_equal(const SDEAnyBase_& rhs) const noexcept override {
+            if(typeid(T) != rhs.type()) return false; // Wrong types
+
+            return value == static_cast<const SDEAnyWrapper_<T>&>(rhs).value;
+        }
+
         /**
          *  @brief Implements hashing for the SDEAnyBase_ class.
          *
@@ -613,9 +642,7 @@ private:
          * @throws std::runtime_error if Python bindings are not enabled.
          * Strong throw guarantee.
          */
-        virtual pyobject pythonize_() const override {
-            return pycast<T>::cast(value);
-        }
+        virtual pyobject pythonize_() const override { return pycast(value); }
 
         /**
          * @brief Allows a pybind11 object to be stored in an existing SDEAny
@@ -671,7 +698,13 @@ private:
      */
     template<typename T>
     T& cast() {
-        if(typeid(T) != ptr_->type()) throw std::bad_cast{};
+        // If we're wrapping a Python object need to first undo that, then cast
+        // it to the T.
+        if(typeid(pyobject) == ptr_->type())
+            return castpy<T>(
+              static_cast<SDEAnyWrapper_<pyobject>&>(*ptr_).value);
+        else if(typeid(T) != ptr_->type())
+            throw std::bad_cast{};
         return static_cast<SDEAny::SDEAnyWrapper_<T>&>(*ptr_).value;
     }
 
