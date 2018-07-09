@@ -1,6 +1,7 @@
 #include <SDE/SDEAny.hpp>
 #include <SDE/Serialization.hpp>
 #include <catch/catch.hpp>
+#include "H5Cpp.h"
 #include <fstream>
 #include <map>
 #include <typeindex>
