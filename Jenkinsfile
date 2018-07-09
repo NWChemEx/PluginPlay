@@ -1,5 +1,5 @@
 def repoName= "SDE"
-def commonModules = "cmake llvm python git hdf5"
+def commonModules = "cmake llvm python git hdf5 "
 def buildModuleMatrix = [
     		   "GCC":(commonModules + "gcc/7.1.0"),
 		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
