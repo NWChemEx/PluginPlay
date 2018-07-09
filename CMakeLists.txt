@@ -23,7 +23,7 @@ foreach(depend Utilities LibChemist bphash cereal)
     find_package(${depend} CONFIG)
 endforeach()
 
-hunter_add_package(HDF5)
+hunter_add_package(hdf5)
 find_package(HDF5 COMPONENTS CXX)
 
 ### Target ###
