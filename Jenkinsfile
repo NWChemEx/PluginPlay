@@ -27,6 +27,7 @@ for (int i=0; i<buildTypeList.size(); i++){
     def cmakeCommand = "${cmakeCommandMatrix[buildType]}"
 
     stage("${buildType}: Set-Up Workspace"){
+        sh "rm -rf ~/.hunter"
         deleteDir()
         checkout scm
     }
