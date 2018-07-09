@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(
         DOWNLOAD
         https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
@@ -28,8 +29,6 @@ hunter_add_package(hdf5)
 find_package(ZLIB CONFIG REQUIRED)
 find_package(szip CONFIG REQUIRED)
 find_package(hdf5 CONFIG REQUIRED COMPONENTS CXX)
-
-#find_package(HDF5 COMPONENTS CXX)
 
 ### Target ###
 add_subdirectory(SDE)
