@@ -6,7 +6,7 @@ set(
 add_catch_cxx_tests(
         NAME test_SDE
         SOURCES ${SDE_TESTS}
-        DEPENDS SDE
+        DEPENDS SDE hdf5
 )
 if(BUILD_PYBINDINGS)
     add_python_module(
