@@ -11,7 +11,7 @@ execute_process(
 include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
 start_hunter(LOCAL) #Must be before project command
 
-project(SDE VERSION 0.0.0 LANGUAGES)
+project(SDE VERSION 0.0.0)
 
 ### Options ###
 option(BUILD_TESTS "Should we build the tests?" ON)
