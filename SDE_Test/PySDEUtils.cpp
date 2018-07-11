@@ -19,10 +19,22 @@ struct SDEAnyWrapper {
     detail_::SDEAny my_any;
 };
 
+auto make_params() {
+    Option opt1{3, "Positive number", {GreaterThan<int>{-1}}};
+    Option opt2{std::string("Hello World")};
+    std::map<std::string, Option> opts{{"The number 3", opt1},
+                                       {"Hello World", opt2}};
+    return std::make_tuple(
+      Parameters{"The number 3", opt1, "Hello World", opt2}, opts);
+}
+
 // Define and implement a dummy property type
 DEFINE_PROPERTY_TYPE(TestProperty, int, int);
 struct MyProp : TestProperty {
-    MyProp() { submodules_["Prop1"] = nullptr; }
+    MyProp() {
+        submodules_["Prop1"] = nullptr;
+        parameters_          = std::get<0>(make_params());
+    }
     int run(int x) { return x + 1; }
 };
 
@@ -63,14 +75,6 @@ PYBIND11_MODULE(py_sde_utils, m) {
                       {OptionTraits::optional, OptionTraits::transparent}};
     });
 
-    m.def("get_params", []() {
-        Option opt1{3, "Positive number", {GreaterThan<int>{-1}}};
-        Option opt2{std::string("Hello World")};
-        std::map<std::string, Option> opts{{"The number 3", opt1},
-                                           {"Hello World", opt2}};
-        return std::make_tuple(
-          Parameters{"The number 3", opt1, "Hello World", opt2}, opts);
-
-    });
+    m.def("get_params", &make_params);
 
 } // End PYBIND11_MODULE

@@ -19,11 +19,16 @@ struct PyModuleBase {
         me->metadata_[key] = value;
     }
 
+    void set_option(module_pointer me, const std::string& key,
+                    const Option& opt) {
+        me->parameters_.insert(key, opt);
+    }
+
     void change_parameter(module_pointer me, std::string key, pyobject obj) {
         if(me->locked()) throw std::runtime_error("Module is locked!!!");
         pyobject params = pycast(me->parameters_);
-        auto change_fxn = params.attr("change");
-        change_fxn(key, obj);
+        params.attr("change")(key, obj);
+        me->parameters_ = params.cast<Parameters>();
     }
 };
 
@@ -64,6 +69,10 @@ void pythonize_Module(pybind11::module& m) {
       .def("_set_submodule",
            [](module_pointer me, std::string key, pybind11::none a_none) {
                detail_::PyModuleBase().set_submodule(me, key, module_pointer{});
+           })
+      .def("_set_option",
+           [](module_pointer me, const std::string& key, const Option& opt) {
+               detail_::PyModuleBase().set_option(me, key, opt);
            })
       .def("_set_metadata",
            [](module_pointer me, const MetaProperty& key, std::string value) {

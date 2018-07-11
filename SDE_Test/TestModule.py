@@ -24,6 +24,9 @@ class PyProperty1(PySDEUtils.TestProperty):
         PySDEUtils.TestProperty.__init__(self)
         self._set_submodule("Prop1", None)
         self._set_metadata(SDE.MetaProperty.name, "Prop1")
+        ps, opts = PySDEUtils.get_params()
+        for k,v in opts.items():
+            self._set_option(k, v)
 
     def run(self, x):
         return x + 1
@@ -36,6 +39,9 @@ class PyProperty2(PySDEUtils.TestProperty):
     def __init__(self):
         PySDEUtils.TestProperty.__init__(self)
         self._set_submodule("Prop1", prop1)
+        ps, opts = PySDEUtils.get_params()
+        for k,v in opts.items():
+            self._set_option(k, v)
 
     def run(self, x):
         return x + 1
@@ -54,13 +60,34 @@ prop3 = PyProperty3()
 # This fixture tests the member functions of ModuleBase
 class TestModuleBase(unittest.TestCase):
     def check_module(self, proptype, mod, metadata, submods):
+        params, opts = PySDEUtils.get_params()
+
+        # We start by checking the accessors and making sure they're not
+        # aliasing
+        sms = mod.submodules()
+        self.assertEqual(sms, submods)
+        sms["Prop1"] = prop3
         self.assertEqual(mod.submodules(), submods)
+
+        md = mod.metadata()
+        self.assertEqual(md, metadata)
+        md[SDE.MetaProperty.name]="Not my name"
         self.assertEqual(mod.metadata(), metadata)
+
+        ps = mod.parameters()
+        self.assertEqual(ps, params)
+        ps.change("The number 3", 4)
+        self.assertEqual(mod.parameters(), params)
+
         self.assertFalse(mod.locked())
         self.assertEqual(len(mod.not_ready()), 1)
+
         mod.change_submodule("Prop1", prop3)
-        submods["Prop1"] = prop3
-        self.assertEqual(mod.submodules(), submods)
+        self.assertEqual(mod.submodules(), sms)
+
+        mod.change_parameter("The number 3", 4)
+        self.assertEqual(mod.parameters(), ps)
+
         mod.lock()
         self.assertTrue(mod.locked())
         self.assertRaises(RuntimeError, mod.change_submodule, "Prop1", prop1)
