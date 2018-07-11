@@ -356,7 +356,7 @@ public:
     }
 
 protected:
-    /// Allows Python trampoline to get at data
+    /// Allows Python helper class to get at data
     friend class detail_::PyModuleBase;
 
     /// The meta-data associated with this module
