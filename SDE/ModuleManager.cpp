@@ -11,6 +11,7 @@ using key_type       = typename ModuleManager::key_type;
 using module_pointer = typename ModuleManager::module_pointer;
 using loader_type    = typename ModuleManager::loader_type;
 using module_entry   = std::pair<module_pointer, loader_type>;
+using size_type      = typename ModuleManager::size_type;
 
 namespace detail_ {
 
@@ -85,7 +86,7 @@ void ModuleManager::insert(key_type key, loader_type mod) {
     pimpl_->insert(std::move(key), std::move(mod));
 }
 
-bool ModuleManager::count(const key_type& key) const noexcept {
+size_type ModuleManager::count(const key_type& key) const noexcept {
     return pimpl_->modules.count(key);
 }
 
