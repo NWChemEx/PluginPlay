@@ -4,17 +4,20 @@ set(
         Defaults/DefaultMols.cpp Defaults/DefaultSymbols.cpp
         Defaults/PhysicalConstants.cpp BasisSetFileParser.cpp
         ChemistryRuntime.cpp Module.cpp MoleculeFileParser.cpp
+        ModuleManager.cpp
 )
 set(
         SDE_INCLUDES BasisSetFileParser.hpp ChemistryRuntime.hpp NWXDefaults.hpp
         Memoization.hpp MoleculeFileParser.hpp Pythonization.hpp
         Parameters.hpp SDEAny.hpp Serialization.hpp ModuleHelpers.hpp Module.hpp
+        ModuleManager.hpp
 )
 
 if(BUILD_PYBINDINGS)
     list(   APPEND SDE_SRCS PyBindings/ExportSDE.cpp
                             PyBindings/PyParameters.cpp
                             PyBindings/PyModule.cpp
+                            PyBindings/PyModuleManager.cpp
     )
     list(
             APPEND SDE_INCLUDES PyBindings/PyModule.hpp
