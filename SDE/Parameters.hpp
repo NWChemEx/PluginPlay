@@ -228,7 +228,7 @@ public:
     }
     ///@}
 protected:
-    /// Allows Python trampoline to get at data
+    /// Allows Python helper class to get at data
     friend class detail_::PyOption;
 
     /// The actual wrapped value
@@ -456,7 +456,7 @@ public:
     ///@}
 
 protected:
-    /// Allows Python trampoline to get at data
+    /// Allows Python helper class to get at data
     friend class detail_::PyParameters;
     /// Flag indicating that future changes to Parameters will be tracked.
     bool tracking_changes_ = false;

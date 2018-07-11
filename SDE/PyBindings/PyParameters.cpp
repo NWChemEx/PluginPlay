@@ -6,7 +6,7 @@
 
 namespace SDE {
 namespace detail_ {
-struct PyOption : Option {
+struct PyOption {
     pyobject py_get(Option& me) { return me.value_.pythonize(); }
 
     bool py_valid(Option& me, pyobject value) {
@@ -24,7 +24,7 @@ struct PyOption : Option {
     }
 };
 
-struct PyParameters : Parameters {
+struct PyParameters {
     void py_change(Parameters& me, std::string key, pyobject new_val) {
         // Grab option by copy (error checks)
         auto opt = me.at<Option>(key);

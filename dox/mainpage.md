@@ -25,6 +25,11 @@ internals of the SDE more than they need to.
 - [Writing a Module](@ref writing_a_module) short tutorial focusing on the key
   steps required to write a new module.  
 
+- [Using ModuleBase and Property](@ref using_modules) Introduction to the two
+  classes representing the bulk of the SDE's module system.
+- [Writing a Module](@ref writing_a_module) short tutorial focusing on the key
+  steps required to write a new module.  
+
   
 Understanding the SDE
 ---------------------
