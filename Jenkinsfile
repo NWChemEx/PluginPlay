@@ -27,7 +27,7 @@ for (int i=0; i<buildTypeList.size(); i++){
     def cmakeCommand = "${cmakeCommandMatrix[buildType]}"
 
     stage("${buildType}: Set-Up Workspace"){
-        sh "rm -rf ~/.hunter"
+        sh "rm -rf ~/workspace/NWChemEx-Project_SDE_PR-30/*"
         deleteDir()
         checkout scm
     }
