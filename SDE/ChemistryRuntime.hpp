@@ -1,7 +1,7 @@
 #pragma once
-#include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
 #include <LibChemist/Molecule.hpp> // Includes Atom.hpp and BasisShell.hpp
-#include <cmath> //for lround
+#include <Utilities/Containers/CaseInsensitiveMap.hpp> // Includes <string>
+#include <cmath>                                       //for lround
 
 namespace SDE {
 
@@ -9,8 +9,8 @@ namespace SDE {
  * @brief Structure for aggregating details pertaining to a physical constant.
  *
  * Physical constants are for our purposes are both the usual things like pi,
- * Planck's constant, the rest mass of the electron... as well as unit conversion
- * ratios like calories to Joules, Hartrees to Joules...
+ * Planck's constant, the rest mass of the electron... as well as unit
+ * conversion ratios like calories to Joules, Hartrees to Joules...
  *
  * Users wanting to provide their own constants/conversions should define a
  * series of PhysicalConstant instances for each constant/conversion.  Note SI
@@ -23,7 +23,7 @@ namespace SDE {
  * - For now I have decided having the units as a string is sufficient.  If a
  *   full fledged units library is made it should be preferred.
  */
-struct PhysicalConstant{
+struct PhysicalConstant {
     /// The actual value of the constant
     double value;
 
@@ -41,7 +41,7 @@ struct PhysicalConstant{
  *  Users wanting to provide their own isotope data should create instances of
  *  this class.
  */
-struct IsotopeData{
+struct IsotopeData {
     /// The isotope number
     std::size_t isotope_number;
 
@@ -91,7 +91,8 @@ struct ChemistryRuntime {
     /// The type of the object used to look up the atomic number by symbol
     using at_sym_lut_type = Utilities::CaseInsensitiveMap<size_type>;
 
-    ///The type of the object used to convert angular momentum symbols to values
+    /// The type of the object used to convert angular momentum symbols to
+    /// values
     using am_sym_lut_type = Utilities::CaseInsensitiveMap<int>;
 
     /// The type of the object used to look up isotopes
@@ -113,49 +114,50 @@ struct ChemistryRuntime {
     am_sym_lut_type am_sym_2_l;
 };
 
-    struct BasisSetFileParser;
-    std::map<std::size_t, LibChemist::Atom> default_bases();
+struct BasisSetFileParser;
+std::map<std::size_t, LibChemist::Atom> default_bases();
 
-    /**
-     * @brief Convenience function for applying a basis set to a molecule.
-     *
-     * Applying a basis set to a molecule is typically one of the first things
-     * a user does.  This function is meant as a convenience function
-     * for doing this.  In particular it assumes that the molecule it is
-     * adding a basis set to is simply a set of atoms (i.e. no ghost atoms,
-     * point charges, etc.).  It also assumes that the charge of the atoms is
-     * the atomic number, which it will be when an atom is first made.
-     *
-     * @param mol The molecule whose atoms the basis will be applied to.
-     * @param key The name of the basis set to apply.
-     * @param bse A map from atomic number to atoms (which themselves hold basis sets).
-     * @return A deep copy of @p mol containing an additional basis set on each
-     * atom with the name @p key.
-     * @throw std::bad_alloc if there is insufficient memory to copy the basis
-     * set over.  Strong throw guarantee.
-     * @throw std::out_of_range if @p key is not known to the runtime.  Strong
-     * throw guarantee.
-     */
-    LibChemist::Molecule apply_basis(LibChemist::Molecule mol,
-                                     const std::string& key,
-                                     const std::map<std::size_t, LibChemist::Atom>& bse = default_bases());
+/**
+ * @brief Convenience function for applying a basis set to a molecule.
+ *
+ * Applying a basis set to a molecule is typically one of the first things
+ * a user does.  This function is meant as a convenience function
+ * for doing this.  In particular it assumes that the molecule it is
+ * adding a basis set to is simply a set of atoms (i.e. no ghost atoms,
+ * point charges, etc.).  It also assumes that the charge of the atoms is
+ * the atomic number, which it will be when an atom is first made.
+ *
+ * @param mol The molecule whose atoms the basis will be applied to.
+ * @param key The name of the basis set to apply.
+ * @param bse A map from atomic number to atoms (which themselves hold basis
+ * sets).
+ * @return A deep copy of @p mol containing an additional basis set on each
+ * atom with the name @p key.
+ * @throw std::bad_alloc if there is insufficient memory to copy the basis
+ * set over.  Strong throw guarantee.
+ * @throw std::out_of_range if @p key is not known to the runtime.  Strong
+ * throw guarantee.
+ */
+LibChemist::Molecule apply_basis(
+  LibChemist::Molecule mol, const std::string& key,
+  const std::map<std::size_t, LibChemist::Atom>& bse = default_bases());
 
-    /**
-     * @brief Convenience function to load a basis set from an istream and apply it
-     * to a Molecule @p mol.
-     *
-     * @param mol The molecule whose atoms the basis will be applied to.
-     * @param key The name to use for the basis set on the molecule.
-     * @param is the input stream to read the basis set from.
-     * @param parser format used to parse the basis set file.
-     * @param crt ChemistryRuntime required for the parser.
-     * @return A deep copy of @p mol containing an additional basis set on each
-     * atom with the name @p key.
-     */
-    LibChemist::Molecule apply_basis_istream(LibChemist::Molecule mol,
-                                             const std::string& key,
-                                             std::istream& is,
-                                             const BasisSetFileParser& parser,
-                                             const ChemistryRuntime& crt);
+/**
+ * @brief Convenience function to load a basis set from an istream and apply it
+ * to a Molecule @p mol.
+ *
+ * @param mol The molecule whose atoms the basis will be applied to.
+ * @param key The name to use for the basis set on the molecule.
+ * @param is the input stream to read the basis set from.
+ * @param parser format used to parse the basis set file.
+ * @param crt ChemistryRuntime required for the parser.
+ * @return A deep copy of @p mol containing an additional basis set on each
+ * atom with the name @p key.
+ */
+LibChemist::Molecule apply_basis_istream(LibChemist::Molecule mol,
+                                         const std::string& key,
+                                         std::istream& is,
+                                         const BasisSetFileParser& parser,
+                                         const ChemistryRuntime& crt);
 
-}//End namespace
+} // namespace SDE
