@@ -62,8 +62,6 @@ private:
       typename std::enable_if<!is_related<T>::value>::type;
 
 public:
-    using SDEFunctor = std::function<void(SDEAny&)>;
-
     /** @brief Makes an empty SDEAny instance.
      *
      *  The resulting SDEAny instance wraps no object.  An object can be added
@@ -220,8 +218,6 @@ public:
     explicit SDEAny(T&& value) :
       ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
 
-    void visit(SDEFunctor fxn) {}
-
     /**
      *  @brief Allows the SDEAny instance to be hashed.
      *
@@ -373,7 +369,7 @@ public:
     std::decay_t<T>& emplace(Args&&... args) {
         using no_cv = std::decay_t<T>;
         ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
-        return cast<no_cv>();
+        return ptr_->cast<no_cv&>();
     };
 
     /**
@@ -394,15 +390,44 @@ public:
     pyobject pythonize() const { return ptr_->pythonize(); }
 
     /**
-     * @brief Puts a pybind11 object into an already existing SDEAny
+     * @brief Sets the internal value of an SDEAny from a Python object.
      *
+     * Particularly for the Parameters class, we sometimes need to change the
+     * type-erased value held within the SDEAny.  For C++ applications this is
+     * straightforwardly done by making a new SDEAny instance, since the types
+     * of the new value and the old value are known.  However, for Python this
+     * amounts to swapping the contents of one type-erased entity for another.
+     * This function allows us to do that.  As a slight aside, the type of the
+     * held object must always be known by the SDEAny, this in turn means that
+     * one can not use this function on an SDEAny with no wrapped object as
+     * such an entity would have no way of knowing what to cast the Python
+     * object to.
      *
-     * @param obj the pybind11 object to place in the SDEAny
-     * @throws std::runtime_error if Python bindings are not enabled.
-     *         Strong throw guarantee.
+     * @param obj The Python object to hold.
+     * @throw std::runtime_error if this SDEAny instance does not hold a value.
+     *        Strong throw guarantee.
      */
-    void insert_python(pyobject& obj) { return ptr_->insert_python(obj); }
+    void change_python(pyobject& obj) {
+        if(!ptr_) throw std::runtime_error("Can't change empty SDEAny");
+        ptr_->change_python(obj);
+    }
 
+    /**
+     * @brief Comparison operators.
+     *
+     * These comparison operators allow one to compare the type-erased values
+     * without knowing their types.
+     *
+     * Two wrapped instances are equal if they are of the same type and that
+     * type's equality operator declares them equal.  In other words, if this
+     * SDEAny wraps an object `obj1` of type `T1` and @p rhs wraps an object
+     * `obj2` of type `T2` equality demands `T1==T2` and `operator==(obj1,
+     * obj2)` evaluates to true.
+     *
+     * @throw None. All comparisons are no throw guarantee.
+     *
+     */
+    ///@{
     bool operator==(const SDEAny& rhs) const noexcept {
         return (*ptr_) == (*rhs.ptr_);
     }
@@ -410,11 +435,15 @@ public:
     bool operator!=(const SDEAny& rhs) const noexcept {
         return !((*this) == rhs);
     }
+    ///@}
 
 private:
     /// Allows SDEAnyCast to return the wrapped value
     template<typename T>
-    friend T& SDEAnyCast(SDEAny&);
+    friend T SDEAnyCast(SDEAny&);
+
+    template<typename T>
+    friend T SDEAnyCast(const SDEAny&);
 
     /**
      * @brief Class to hold the type-erased instance.
@@ -456,7 +485,7 @@ private:
          *  @return A newly allocated copy of the wrapped instance.
          *
          */
-        virtual std::unique_ptr<SDEAnyBase_> clone() = 0;
+        std::unique_ptr<SDEAnyBase_> clone() { return clone_(); }
 
         /**
          * @brief Provides the RTTI of the wrapped class.
@@ -466,7 +495,7 @@ private:
          *
          * @return The RTTI of the wrapped class.
          */
-        virtual const std::type_info& type() const noexcept = 0;
+        const std::type_info& type() const noexcept { return type_(); };
 
         /**
          *  @brief Allows the SDEAnyBase_ instance to be hashed.
@@ -492,27 +521,55 @@ private:
         /// Public API for virtual python function
         pyobject pythonize() { return pythonize_(); }
 
-        /// Public API for virtual python function
-        void insert_python(pyobject& obj) { return insert_python_(obj); }
+        /// Public API for changing the value from python
+        void change_python(pyobject& obj) { change_python_(obj); }
 
-        virtual bool operator==(const SDEAnyBase_& rhs) const noexcept {
-            return are_equal(rhs);
+        /// Public API for determining equality
+        bool operator==(const SDEAnyBase_& rhs) const noexcept {
+            return are_equal_(rhs);
         }
 
-        virtual visit(SDEFunctor fxn) { visit_(fxn); }
+        /**
+         * @brief Casts the wrapped object back to the readonly type @p T
+         *
+         * @tparam T The type to cast to.  Should be fully cv qualified.
+         * @return The wrapped instance.
+         * @throw std::bad_cast if the wrapped instance is not of type @p T.
+         *        Strong throw guarantee.
+         */
+        template<typename T>
+        T cast() const {
+            using no_ref = std::decay_t<T>;
+            if(type() != typeid(no_ref)) throw std::bad_cast{};
+            return static_cast<const SDEAnyWrapper_<no_ref>&>(*this).value;
+        }
 
-    protected:
+        /// Same as `cast() const`, but allows converting to read/write values
+        template<typename T>
+        T cast() {
+            using no_ref = std::decay_t<T>;
+            if(type() != typeid(no_ref)) throw std::bad_cast{};
+            return static_cast<SDEAnyWrapper_<no_ref>&>(*this).value;
+        }
+
+    private:
         /// The function for equality, to be implemented by the derived class
-        virtual bool are_equal(const SDEAnyBase_& rhs) const noexcept = 0;
+        virtual bool are_equal_(const SDEAnyBase_& rhs) const noexcept = 0;
 
         /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
 
-        /// Function for converting to read-only python object,
+        /// Implemented by derived class to provide read-only python object
         virtual pyobject pythonize_() const = 0;
 
-        /// Function for inserting a python object into an SDEAny
-        virtual void insert_python_(pyobject& obj) = 0;
+        /// To be implemented by the derived class to change the value
+        virtual void change_python_(pyobject& obj) = 0;
+
+        /// Implemented by derived class for polymorphic copy
+        virtual std::unique_ptr<SDEAnyBase_> clone_() const = 0;
+
+        /// Function implementing the retrieval of the RTTI
+        virtual const std::type_info& type_() const noexcept = 0;
     };
 
     /**
@@ -524,10 +581,15 @@ private:
      * the latter.
      *
      * @tparam T The type of the instance to wrap.  Must satisfy the concept of
-     * copyable.
+     * copyable and should have no qualifiers (const, reference, pointer...)
+     *
+     * @note Without the attribute the GCC compiler for some reason tries to
+     * export the symbols for this class and then issues a warning that the
+     * resulting symbol is publically accessible (through the ABI), despite it
+     * being a private class.
      */
     template<typename T>
-    struct SDEAnyWrapper_ : SDEAnyBase_ {
+    struct[[gnu::visibility("hidden")]] SDEAnyWrapper_ : SDEAnyBase_ {
         /**
          * @brief Creates a new SDEAnyWrapper_ by copying a value.
          *
@@ -542,7 +604,10 @@ private:
          * @throw ??? If T's move constructor throws.  Strong throw guarantee.
          *
          */
-        SDEAnyWrapper_(const T& value_in) : value(value_in) {}
+        SDEAnyWrapper_(const T& value_in) : value(value_in) {
+            static_assert(std::is_same<T, std::decay_t<T>>::value,
+                          "Type to wrapper must be unqualified");
+        }
 
         /**
          * @brief Creates a new SDEAnyWrapper_ by taking ownership of an
@@ -562,11 +627,12 @@ private:
          * @throw ??? If T's move constructor throws.  Strong throw guarantee.
          *
          */
-        SDEAnyWrapper_(T&& value_in) : value(std::move(value_in)) {}
+        SDEAnyWrapper_(T && value_in) : value(std::move(value_in)) {}
 
         /// The actual wrapped value
         T value;
 
+    private:
         /** @brief Polymorphic copy function that returns an SDEAnyBase_
          * allocated on the heap by copying the current instance.
          *
@@ -584,7 +650,7 @@ private:
          *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
          *  T's copy constructor.
          */
-        std::unique_ptr<SDEAnyBase_> clone() override {
+        std::unique_ptr<SDEAnyBase_> clone_() const override {
             return std::move(std::make_unique<SDEAnyWrapper_<T>>(*this));
         }
 
@@ -601,17 +667,13 @@ private:
          *
          * @throws None. No throw guarantee.
          */
-        const std::type_info& type() const noexcept override {
+        const std::type_info& type_() const noexcept override {
             return typeid(T);
         }
 
-    protected:
-        void visit_(SDEAnyFunctor& fxn) { fxn(value); }
-
-        bool are_equal(const SDEAnyBase_& rhs) const noexcept override {
-            if(typeid(T) != rhs.type()) return false; // Wrong types
-
-            return value == static_cast<const SDEAnyWrapper_<T>&>(rhs).value;
+        bool are_equal_(const SDEAnyBase_& rhs) const noexcept override {
+            if(type() != rhs.type()) return false; // Wrong types
+            return value == rhs.cast<const T&>();
         }
 
         /**
@@ -630,7 +692,7 @@ private:
          *  @throws ??? if the wrapped instance's hash function throws.  Strong
          *  throw guarantee.
          */
-        virtual void hash_(Hasher& h) const override { h(value); }
+        void hash_(Hasher & h) const override { h(value); }
 
         /**
          * @brief Allows the wrapped object to be returned as the opaque Python
@@ -642,18 +704,9 @@ private:
          * @throws std::runtime_error if Python bindings are not enabled.
          * Strong throw guarantee.
          */
-        virtual pyobject pythonize_() const override { return pycast(value); }
+        pyobject pythonize_() const override { return pycast(value); }
 
-        /**
-         * @brief Allows a pybind11 object to be stored in an existing SDEAny
-         *
-         * @param obj the pybind11 object to replace the current value with
-         * @throws std::runtime_error if Python bindings are not enabled.
-         * Strong throw guarantee.
-         */
-        virtual void insert_python_(pyobject& obj) override {
-            value = castpy<T>(obj);
-        }
+        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
     };
 
     /**
@@ -690,24 +743,6 @@ private:
           std::make_unique<result_t>(std::forward<Args>(args)...));
     }
 
-    /**
-     * @brief The actual downcast.
-     *
-     * @tparam T The type to cast to.
-     * @return The wrapped value.
-     */
-    template<typename T>
-    T& cast() {
-        // If we're wrapping a Python object need to first undo that, then cast
-        // it to the T.
-        if(typeid(pyobject) == ptr_->type())
-            return castpy<T>(
-              static_cast<SDEAnyWrapper_<pyobject>&>(*ptr_).value);
-        else if(typeid(T) != ptr_->type())
-            throw std::bad_cast{};
-        return static_cast<SDEAny::SDEAnyWrapper_<T>&>(*ptr_).value;
-    }
-
     /// The actual type-erased value
     std::unique_ptr<SDEAnyBase_> ptr_;
 };
@@ -727,8 +762,8 @@ private:
  * @p wrapped_value is concurrently modified.
  */
 template<typename T>
-T& SDEAnyCast(SDEAny& wrapped_value) {
-    return wrapped_value.cast<T>();
+T SDEAnyCast(SDEAny& wrapped_value) {
+    return wrapped_value.ptr_->cast<T>();
 }
 
 /**
@@ -752,8 +787,8 @@ T& SDEAnyCast(SDEAny& wrapped_value) {
  * @p wrapped_value is concurrently modified.
  */
 template<typename T>
-const T& SDEAnyCast(const SDEAny& wrapped_value) {
-    return SDEAnyCast<T>(const_cast<SDEAny&>(wrapped_value));
+T SDEAnyCast(const SDEAny& wrapped_value) {
+    return wrapped_value.ptr_->cast<T>();
 }
 
 /** @brief Makes an SDEAny instance by forwarding the arguments to the wrapped

@@ -35,8 +35,8 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
     // Check the wrapped type (for non-empty SDEAnys)
     if(contents.size()) {
         auto right_val     = *contents.begin();
-        T& val             = SDEAnyCast<T>(da_any);
-        const T& const_val = SDEAnyCast<T>(da_any);
+        T& val             = SDEAnyCast<T&>(da_any);
+        const T& const_val = SDEAnyCast<const T&>(da_any);
         REQUIRE(val == right_val);
         REQUIRE(const_val == right_val);
 
@@ -46,8 +46,9 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
         REQUIRE_THROWS_AS(da_any.insert_python(), std::runtime_error);
 #endif
 
-        REQUIRE_THROWS_AS(SDEAnyCast<std::string>(da_any), std::bad_cast);
-        REQUIRE_THROWS_AS(SDEAnyCast<std::string>(const_da_any), std::bad_cast);
+        REQUIRE_THROWS_AS(SDEAnyCast<std::string&>(da_any), std::bad_cast);
+        REQUIRE_THROWS_AS(SDEAnyCast<const std::string&>(const_da_any),
+                          std::bad_cast);
     }
 }
 
@@ -91,11 +92,11 @@ TEST_CASE("SDEAny Class") {
 
         SECTION("Move CTor w/ non-defaulted instance") {
             // Get address of wrapped instance in original
-            const double* pval = &(SDEAnyCast<double>(wrap_double));
+            const double* pval = &(SDEAnyCast<double&>(wrap_double));
             SDEAny move_double(std::move(wrap_double));
             check_state(move_double, {pi});
             // Get address of wrapped instance in "new"
-            const double* pnew_val = &(SDEAnyCast<double>(move_double));
+            const double* pnew_val = &(SDEAnyCast<double&>(move_double));
             REQUIRE(pval == pnew_val); // Make sure they're the same
         }
 
@@ -106,11 +107,11 @@ TEST_CASE("SDEAny Class") {
 
         SECTION("Move Assignment w/ non-defaulted instance") {
             // Address before move
-            const double* pval = &(SDEAnyCast<double>(wrap_double));
+            const double* pval = &(SDEAnyCast<double&>(wrap_double));
             defaulted          = std::move(wrap_double);
             check_state(defaulted, {pi});
             // Address after move
-            const double* pnew_val = &(SDEAnyCast<double>(defaulted));
+            const double* pnew_val = &(SDEAnyCast<double&>(defaulted));
             REQUIRE(pval == pnew_val); // Literally same instance check
         }
 
@@ -121,12 +122,12 @@ TEST_CASE("SDEAny Class") {
 
         SECTION("Swap default and non-default") {
             // Address before move
-            const double* pval = &(SDEAnyCast<double>(wrap_double));
+            const double* pval = &(SDEAnyCast<double&>(wrap_double));
             defaulted.swap(wrap_double);
             check_state(defaulted, {pi});
             check_state(wrap_double, empty);
             // Address after move
-            const double* pnew_val = &(SDEAnyCast<double>(defaulted));
+            const double* pnew_val = &(SDEAnyCast<double&>(defaulted));
             REQUIRE(pval == pnew_val); // Literally same instance check
         }
 
@@ -139,7 +140,7 @@ TEST_CASE("SDEAny Class") {
         SECTION("Emplace") {
             double& new_pi = defaulted.emplace<double>(pi);
             check_state(defaulted, {pi});
-            double& new_pi2 = SDEAnyCast<double>(defaulted);
+            double& new_pi2 = SDEAnyCast<double&>(defaulted);
             REQUIRE(&new_pi ==
                     &new_pi2); // Ensure emplace returns same instance
         }
@@ -151,8 +152,8 @@ TEST_CASE("SDEAny Class") {
             REQUIRE(pyval == pi);
 
             pybind11::object double_obj = pybind11::cast(3.12);
-            wrap_double.insert_python(double_obj);
-            REQUIRE(SDEAnyCast<double>(wrap_double) == 3.12);
+            wrap_double.change_python(double_obj);
+            REQUIRE(SDEAnyCast<double&>(wrap_double) == 3.12);
         }
 #endif
     }
@@ -170,7 +171,7 @@ TEST_CASE("SDEAny Class") {
             std::vector<int> copy_value(value);
             SDEAny wrapped_value(std::move(value));
             check_state(wrapped_value, {copy_value});
-            int* new_ptr = SDEAnyCast<std::vector<int>>(wrapped_value).data();
+            int* new_ptr = SDEAnyCast<std::vector<int>&>(wrapped_value).data();
             REQUIRE(ptr == new_ptr); // Make sure it's the same instance
         }
     }

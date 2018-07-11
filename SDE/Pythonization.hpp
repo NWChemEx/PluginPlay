@@ -30,19 +30,19 @@ namespace detail_ {
 /// Implements guts of function for converting a C++ object into a Python object
 template<typename T>
 struct PyCaster {
-    static pyobject cast(const T& value) { return pybind11::cast(value); }
+    static pyobject cast(T value) { return pybind11::cast(value); }
 };
 
 /// Specialization for when it's already a python object
 template<>
 struct PyCaster<pybind11::object> {
-    static pyobject cast(const pybind11::object& value) { return value; }
+    static pyobject cast(pybind11::object& value) { return value; }
 };
 } // namespace detail_
 
 /// Function used to convert a C++ object to a Python object
 template<typename T>
-pyobject pycast(const T& value) {
+pyobject pycast(T value) {
     return detail_::PyCaster<T>::cast(value);
 }
 

@@ -31,7 +31,10 @@ PYBIND11_MODULE(py_sde_utils, m) {
     // Exposes our SDEAny wrapper
     pybind11::class_<SDEAnyWrapper>(m, "SDEAnyWrapper")
       .def(pybind11::init<>())
-      .def("get", [](SDEAnyWrapper& self) { return self.my_any.pythonize(); });
+      .def("get", [](SDEAnyWrapper& self) { return self.my_any.pythonize(); })
+      .def("change_python", [](SDEAnyWrapper& self, pyobject& obj) {
+          self.my_any.change_python(obj);
+      });
 
     // Returns an SDEAny filled with a vector [1, 2, 3]
     m.def("make_any", []() {
@@ -39,10 +42,6 @@ PYBIND11_MODULE(py_sde_utils, m) {
         return SDEAnyWrapper{detail_::SDEAny(v1)};
     });
 
-    // Returns an SDEAny filled with a Python object
-    m.def("make_any", [](pybind11::object a_list) {
-        return SDEAnyWrapper{detail_::SDEAny(a_list)};
-    });
     // Registers our dummy module with Python
     SDE::register_property_type<TestProperty>(m, "TestProperty");
     SDE::register_module<MyProp, TestProperty>(m, "MyProp");
@@ -57,16 +56,21 @@ PYBIND11_MODULE(py_sde_utils, m) {
         return *(mod->run_as<TestProperty>(2)) == 3;
     });
 
-    Parameters params;
-    params.insert("The number 3",
-                  Option{3,
-                         "some description",
-                         {GreaterThan<int>{0}},
-                         {OptionTraits::optional, OptionTraits::transparent}});
-    params.insert("Pi", Option{3.1416});
-    params.insert("A vector", Option{std::vector<int>{1, 2, 3}});
-    params.insert("Hello", Option{std::string{"Hello world"}});
+    m.def("get_option", []() {
+        return Option{3,
+                      "Any positive number",
+                      {GreaterThan<int>{0}},
+                      {OptionTraits::optional, OptionTraits::transparent}};
+    });
 
-    m.attr("params") = params;
+    m.def("get_params", []() {
+        Option opt1{3, "Positive number", {GreaterThan<int>{-1}}};
+        Option opt2{std::string("Hello World")};
+        std::map<std::string, Option> opts{{"The number 3", opt1},
+                                           {"Hello World", opt2}};
+        return std::make_tuple(
+          Parameters{"The number 3", opt1, "Hello World", opt2}, opts);
+
+    });
 
 } // End PYBIND11_MODULE

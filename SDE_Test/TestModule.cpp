@@ -33,7 +33,10 @@ static const auto prop1 = std::make_shared<MyProp1>();
 
 // Mock up with a default submodule
 struct MyProp2 : TestProperty {
-    MyProp2() { submodules_["Prop1"] = prop1; }
+    MyProp2() {
+        submodules_["Prop1"] = prop1;
+        parameters_          = default_params();
+    }
     int run(int x) { return x + 1; }
 };
 

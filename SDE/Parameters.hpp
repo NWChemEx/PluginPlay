@@ -10,6 +10,10 @@
 #include <string>
 
 namespace SDE {
+namespace detail_ {
+class PyOption;
+class PyParameters;
+} // namespace detail_
 
 /**
  * @brief Class which compares a given value against a threshold
@@ -66,8 +70,22 @@ DECLARE_SmartEnum(OptionTraits, transparent, optional, non_default);
  * meaningfully change the traits, description, and validity checks for an
  * option.
  *
+ * The Option class is responsible for hiding the types of the actual parameter
+ * values.
  */
 class Option {
+    /// Type of the checks as we store them in this Option
+    using type_erased_functors =
+      std::vector<std::function<bool(const detail_::SDEAny&)>>;
+
+    /// Tells us if type @p T is some form of qualified Option type.
+    template<typename T>
+    using is_an_option_t = std::is_same<Option, std::decay_t<T>>;
+
+    /// Uses SFINAE to disable main ctor from being used as copy/move ctor
+    template<typename T>
+    using disable_if_opt = typename std::enable_if_t<!is_an_option_t<T>::value>;
+
 public:
     /// Type of the object holding the set of traits for this option
     using traits_set_type = std::set<OptionTraits>;
@@ -75,6 +93,12 @@ public:
     /**
      * @brief Type of an std::vector filled with functors to be used for
      *        checking an option.
+     *
+     * This is the type of the checks that should be passed to the Options
+     * instance.  Internally the Option class will take care of ensuring the
+     * checks can be used with the appropriate types.
+     *
+     *
      * @tparam T The type of the element held within this instance.
      */
     template<typename T>
@@ -97,14 +121,23 @@ public:
      * @throw std::invalid_argument if @p value does not pass all @p checks.
      *        Strong throw guarantee.
      */
-    template<typename T>
-    Option(T&& value, const std::string& desc = "",
-           const check_function_vector<T>& checks = {},
-           const traits_set_type& ts              = {}) :
+    template<typename T, typename X = disable_if_opt<T>>
+    explicit Option(T&& value, const std::string& desc = "",
+                    const check_function_vector<T>& checks = {},
+                    const traits_set_type& ts              = {}) :
       description(desc),
-      checks_(checks),
+      checks_(),
       traits(ts),
       value_() {
+        // Add a check to make sure the new value is the right type
+        checks_.push_back([=](const detail_::SDEAny& da_any) {
+            return da_any.type() == typeid(std::decay_t<T>);
+        });
+        // Add whatever other checks the developer provided
+        for(auto ci : checks)
+            checks_.push_back([=](const detail_::SDEAny& da_any) {
+                return ci(detail_::SDEAnyCast<const std::decay_t<T>&>(da_any));
+            });
         change(std::forward<T>(value));
     }
 
@@ -127,28 +160,36 @@ public:
         return detail_::SDEAnyCast<T>(value_);
     }
 
-    pyobject pythonize() const { return value_.pythonize(); }
-
     /**
      * @brief Runs a value through all the validity checks of an Option
      *
      * Will only return true if the value passes all the checks
-     * contained within this instance.
+     * contained within this instance.  Note that this function is no throw
+     * guarantee because the first check ensures the type is correct and if it's
+     * not will simply return false, preventing any remaining checks which could
+     * possibly throw.
      *
      * @param[in] new_value the value to check.
      * @return a bool indicating whether the value passed all checks.
-     * @throw std::bad_cast if the value wrapped by this Option is not
-     * actually of type T.  Strong throw guarantee.
+     * @throw none No throw guarantee.
      */
     template<typename T>
-    bool is_valid(T new_value) const {
-        auto temp_checks =
-          detail_::SDEAnyCast<check_function_vector<T>>(checks_);
-        for(auto& ci : temp_checks)
-            if(!ci(new_value)) return false;
+    bool is_valid(T new_value) const noexcept {
+        for(auto& ci : checks_)
+            if(!ci(detail_::SDEAny(new_value))) return false;
         return true;
     }
 
+    /**
+     * @brief Wraps the process of changing an option's value.
+     *
+     * @tparam T The type of the new option.
+     * @param new_value The potential value
+     * @throw std::invalid_argument If @p new_value does not satisfy all
+     *        validity checks.
+     *        std::bad_alloc if there is insufficient memory to wrap the
+     *        new option.  Strong throw guarantee in both cases.
+     */
     template<typename T>
     void change(T&& new_value) {
         if(!is_valid(new_value))
@@ -163,19 +204,23 @@ public:
     traits_set_type traits;
 
     /// Hashes the value state of this option instance
-    void hash(Hasher& h) const { h(value_, description, traits, checks_); }
+    void hash(Hasher& h) const { h(value_, description, traits); }
 
     /**
      * @brief Option comparison operators
      *
      * Two options are defined as equal if they have the same value, the same
      * description, and the same traits.  We do not consider the checks to be
-     * part of the Option's state.
+     * part of the Option's state.  Aside from the practical reason that one
+     * can't compare `std::function` instances, this is motivated by the fact
+     * that the checks can be seen as restricting the domain of possible
+     * parameter values.
+     *
      */
     ///@{
     bool operator==(const Option& rhs) const noexcept {
-        return std::tie(value_, description, traits, checks_) ==
-               std::tie(rhs.value_, rhs.description, rhs.traits, rhs.checks_);
+        return std::tie(value_, description, traits) ==
+               std::tie(rhs.value_, rhs.description, rhs.traits);
     }
 
     bool operator!=(const Option& rhs) const noexcept {
@@ -183,11 +228,14 @@ public:
     }
     ///@}
 protected:
+    /// Allows Python trampoline to get at data
+    friend class detail_::PyOption;
+
     /// The actual wrapped value
     detail_::SDEAny value_;
 
     /// List of checks to run for any new value, stored in type-erased form
-    detail_::SDEAny checks_;
+    type_erased_functors checks_;
 };
 
 namespace detail_ {
@@ -204,7 +252,7 @@ namespace detail_ {
 template<typename T>
 struct AtHelper {
     // static so we don't have to make an instance
-    static const T& get(const Option& opt) { return opt.get<T>(); }
+    static const T get(const Option& opt) { return opt.get<T>(); }
 };
 
 /**
@@ -214,7 +262,7 @@ struct AtHelper {
  */
 template<>
 struct AtHelper<Option> {
-    static const Option& get(const Option& opt) { return opt; }
+    static const Option get(const Option& opt) { return opt; }
 };
 } // namespace detail_
 
@@ -257,7 +305,11 @@ public:
         insert(key, opt1);
     }
 
-    ~Parameters() noexcept = default;
+    /**
+     * @brief Frees up memory associated with this Parameters instance.
+     * @throw None. No throw guarnatee.
+     */
+    ~Parameters() = default;
 
     /**
      * @brief Change the value of an Option in the Parameters.
@@ -271,8 +323,7 @@ public:
      * @param new_val the new value of the Option.
      * @throw std::invalid_argument if @p new_value does not pass all
      * range_checks for the Option at @p key.
-     * @throw std::range_error if @p key is not a valid key.
-     *        std::bad_cast if the wrapped value is not of type @p T.
+     * @throw std::out_of_range if @p key is not a valid key.
      *        std::invalid_argument if @p new_val does not satisfy all
      *        validity checks.  Strong throw guarantee.
      */
@@ -330,12 +381,13 @@ public:
      * the entire Option.
      * @param key the string mapped to the option or value we want.
      * @return the value of the Option at @p key, or the Option itself.
-     * @throw std::range_error if @p key is not a valid key.
-     *        std::bad_cast if the Option is not of type @p T.  Strong throw
+     * @throw std::out_of_range if @p key is not a valid key. Strong throw
      *        guarantee.
      */
     template<typename T>
-    const T& at(const std::string& key) const {
+    T at(const std::string& key) const {
+        static_assert(std::is_same<std::decay_t<T>, T>::value,
+                      "Template parameter should be unqualified");
         return detail_::AtHelper<T>::get(options_.at(key));
     }
 
@@ -403,10 +455,13 @@ public:
     }
     ///@}
 
-private:
+protected:
+    /// Allows Python trampoline to get at data
+    friend class detail_::PyParameters;
     /// Flag indicating that future changes to Parameters will be tracked.
     bool tracking_changes_ = false;
 
+private:
     /// Set of  keys not to hash
     std::unordered_set<std::string> transparent_;
 

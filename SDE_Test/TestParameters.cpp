@@ -19,27 +19,29 @@ TEST_CASE("Range Checks") {
 template<typename T>
 void check_option(Option& opt, T value, std::string desc) {
     REQUIRE(opt.get<T>() == value);
-    REQUIRE_THROWS_AS(opt.get<nullptr_t>(), std::bad_cast);
     REQUIRE(opt.description == desc);
 }
 
+template<typename T>
+using check_function_vector = typename Option::check_function_vector<T>;
+
 TEST_CASE("Options") {
     using traits_set_type = typename Option::traits_set_type;
-    template<typename T>
-    using check_function_vector = typename Option::check_function_vector<T>;
+
     SECTION("Typedefs") {
         REQUIRE(std::is_same<traits_set_type, corr_traits_set>::value);
-        REQUIRE(std::is_same < check_function_vector<double>, corr_vector);
+        REQUIRE(
+          std::is_same<check_function_vector<double>, corr_vector>::value);
     }
 
     const std::string desc = "Any positive number";
     const check_function_vector<int> checks{GreaterThan<int>{-1}};
     SECTION("Invalid Ctor Arguments") {
-        REQUIRE_THROWS_AS(Option{-1, desc, checks}, std::invalid_argument);
+        REQUIRE_THROWS_AS(Option(-1, desc, checks), std::invalid_argument);
     }
 
     Option opt{4, desc, checks};
-    check_option(opt, 4, dsc);
+    check_option(opt, 4, desc);
 
     SECTION("Comparison operators") {
         SECTION("Same option") {
@@ -87,38 +89,39 @@ TEST_CASE("Options") {
     SECTION("is_valid") {
         REQUIRE(opt.is_valid(4) == true);
         REQUIRE(opt.is_valid(-1) == false);
-        REQUIRE_THROWS_AS(opt.is_valid(std::set<int>{}), std::bad_cast);
     }
 
     SECTION("change") {
         opt.change(5);
         check_option(opt, 5, desc);
         REQUIRE_THROWS_AS(opt.change(-1), std::invalid_argument);
-        REQUIRE_THROWS_AS(opt.change(std::set<int>{}), std::bad_cast);
     }
 
     SECTION("hash") {
         Hasher h(HashType::Hash128);
         opt.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "507d9f3cedf0b4a0aaf0312b8a767d0c");
+        REQUIRE(hv == "d7bec09d52a66446f595ab9fc7823d39");
     }
 }
 
 void check_parameters(Parameters& params, std::map<std::string, Option> ops) {
     REQUIRE(params.size() == ops.size());
     REQUIRE(params.count("Not a real key") == 0);
-    REQUIRE_THROWS_AS(params.change("Not a real key", 2), std::range_error);
+    REQUIRE_THROWS_AS(params.change("Not a real key", 2), std::out_of_range);
+    REQUIRE_THROWS_AS(params.at<int>("Not a real key"), std::out_of_range);
+    using not_type = std::set<int>;
     for(const auto& x : ops) {
         REQUIRE(params.count(x.first));
         REQUIRE(params.at<Option>(x.first) == x.second);
         REQUIRE(params.get_description(x.first) == x.second.description);
         REQUIRE(params.get_traits(x.first) == x.second.traits);
-        REQUIRE(params.at<int>(x.first) == x.second.get<int>());
-        REQUIRE_THROWS_AS(params.change(x.first, std::set<int>{}),
-                          std::bad_cast);
+        if(x.first == "The number 3")
+            REQUIRE(params.at<int>(x.first) == x.second.get<int>());
+        else
+            REQUIRE(params.at<std::string>(x.first) ==
+                    x.second.get<std::string>());
     }
-}
 }
 
 TEST_CASE("Parameters") {
@@ -201,7 +204,7 @@ TEST_CASE("Parameters") {
     }
 
     SECTION("Hashing") {
-        auto corr_hv = "c2007ca976923cbe8fc6fba066282913";
+        auto corr_hv = "d619d61b909e9a32011b816138d3c65b";
         SECTION("Before transparent") {
             Hasher h(HashType::Hash128);
             params.hash(h);
