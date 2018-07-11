@@ -8,6 +8,7 @@ SDE.creator.user
 
 #These are configuration files for CLion
 .idea/
+venv/
 
 #This is the documentation build directory
 docs/
