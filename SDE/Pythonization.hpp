@@ -26,16 +26,25 @@ T castpy(pyobject& obj) {
     return obj.cast<T>();
 }
 
-/// Functor for converting a C++ object into a Python object
+namespace detail_ {
+/// Implements guts of function for converting a C++ object into a Python object
 template<typename T>
-struct pycast {
-    static pyobject cast(const T& value) { return pybind11::cast(value); }
+struct PyCaster {
+    static pyobject cast(T value) { return pybind11::cast(value); }
 };
 
+/// Specialization for when it's already a python object
 template<>
-struct pycast<pybind11::object> {
-    static pyobject cast(const pybind11::object& value) { return value; }
+struct PyCaster<pybind11::object> {
+    static pyobject cast(pybind11::object& value) { return value; }
 };
+} // namespace detail_
+
+/// Function used to convert a C++ object to a Python object
+template<typename T>
+pyobject pycast(T value) {
+    return detail_::PyCaster<T>::cast(value);
+}
 
 } // namespace SDE
 
@@ -57,13 +66,12 @@ T castpy(pyobject& obj) {
     throw std::runtime_error("Python Bindings were not enabled!");
 }
 
-struct pycast {
-    static pyobject cast(const T& value) {
-        throw std::runtime_error("Python Bindings were not enabled!");
-    }
-};
+template<typename T>
+pyobject pycast(const T& value) {
+    throw std::runtime_error("Python Bindings were not enabled!");
+}
 
-void inline hash_object(const pybind11::object& cls, SDE::Hasher& h) { h(cls); }
+void hash_object(const pyobject& cls, SDE::Hasher& h) { h(cls); }
 
 } // namespace SDE
 #endif

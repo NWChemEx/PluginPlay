@@ -3,20 +3,22 @@ set(
         Defaults/DefaultBases.cpp Defaults/DefaultIsotopes.cpp
         Defaults/DefaultMols.cpp Defaults/DefaultSymbols.cpp
         Defaults/PhysicalConstants.cpp BasisSetFileParser.cpp
-        ChemistryRuntime.cpp MoleculeFileParser.cpp
+        ChemistryRuntime.cpp Module.cpp MoleculeFileParser.cpp
 )
 set(
         SDE_INCLUDES BasisSetFileParser.hpp ChemistryRuntime.hpp NWXDefaults.hpp
         Memoization.hpp MoleculeFileParser.hpp Pythonization.hpp
-        Parameters.hpp SDEAny.hpp Serialization.hpp
+        Parameters.hpp SDEAny.hpp Serialization.hpp ModuleHelpers.hpp Module.hpp
 )
 
 if(BUILD_PYBINDINGS)
     list(   APPEND SDE_SRCS PyBindings/ExportSDE.cpp
                             PyBindings/PyParameters.cpp
+                            PyBindings/PyModule.cpp
     )
     list(
-            APPEND SDE_INCLUDES PyBindings/PySmartEnums.hpp 
+            APPEND SDE_INCLUDES PyBindings/PyModule.hpp
+            PyBindings/PySmartEnums.hpp
     )
     add_python_module(
             NAME SDE

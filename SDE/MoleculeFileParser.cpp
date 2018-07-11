@@ -1,16 +1,15 @@
 #include "SDE/MoleculeFileParser.hpp"
-#include <regex>
 #include <cmath> //For lround
+#include <regex>
 
 namespace SDE {
 
 using action_type = MoleculeFileParser::action_type;
 using data_type   = MoleculeFileParser::data_type;
 using return_type = std::map<data_type, std::vector<double>>;
-using Molecule = LibChemist::Molecule;
-using MProperty = typename Molecule::property_key;
-using AProperty = typename LibChemist::Atom::property_key;
-
+using Molecule    = LibChemist::Molecule;
+using MProperty   = typename Molecule::property_key;
+using AProperty   = typename LibChemist::Atom::property_key;
 
 namespace detail_ {
 struct atom {
@@ -18,10 +17,10 @@ struct atom {
     std::array<double, 3> xyz;
 };
 
-void commit_atom(LibChemist::Molecule& rv, atom& a, const ChemistryRuntime&
-crt) {
+void commit_atom(LibChemist::Molecule& rv, atom& a,
+                 const ChemistryRuntime& crt) {
     if(a.Z != 0.0) {
-        auto temp = crt.periodic_table.at(a.Z);
+        auto temp   = crt.periodic_table.at(a.Z);
         temp.coords = a.xyz;
         rv.atoms.push_back(temp);
     }
@@ -37,8 +36,7 @@ void parse(const return_type& data, atom& a) {
 
 } // end namespace detail_
 
-Molecule parse_molecule_file(std::istream& is,
-                             const MoleculeFileParser& parser,
+Molecule parse_molecule_file(std::istream& is, const MoleculeFileParser& parser,
                              const ChemistryRuntime& crt) {
     Molecule rv;
     detail_::atom a;
@@ -48,7 +46,9 @@ Molecule parse_molecule_file(std::istream& is,
         std::string line;
         std::getline(is, line);
         switch(parser.worth_parsing(line)) {
-            case(action_type::none) : {break;} //Junk line
+            case(action_type::none): {
+                break;
+            } // Junk line
             case(action_type::new_atom): {
                 detail_::commit_atom(rv, a, crt);
                 // Intentional fall_through
@@ -70,27 +70,29 @@ Molecule parse_molecule_file(std::istream& is,
     }
     detail_::commit_atom(rv, a, crt);
     rv.properties[MProperty::multiplicity] = mult;
-    long nelectrons = -1 * std::lround(charge);
-    //Can't use nelectrons() because nalpha/nbeta not set yet.
+    long nelectrons                        = -1 * std::lround(charge);
+    // Can't use nelectrons() because nalpha/nbeta not set yet.
     for(const auto& ai : rv.atoms)
-        if(LibChemist::is_real_atom(ai))//"Charge" only refers to electrons
+        if(LibChemist::is_real_atom(ai)) //"Charge" only refers to electrons
             nelectrons += std::lround(ai.properties.at(AProperty::charge));
-    const long nopen = std::lround(mult) - 1;
+    const long nopen   = std::lround(mult) - 1;
     const long nclosed = nelectrons - nopen;
-    if(nclosed%2) {
-        auto msg = "Charge: " + std::to_string(charge) + "Multiplicity: " +
-          std::to_string(mult) + "not possible for " +
-          std::to_string(nelectrons) + " system.";
+    if(nclosed % 2) {
+        auto msg = "Charge: " + std::to_string(charge) +
+                   "Multiplicity: " + std::to_string(mult) +
+                   "not possible for " + std::to_string(nelectrons) +
+                   " system.";
         throw std::domain_error(msg);
     }
-    rv.properties[MProperty::nbeta] = nclosed/2;
-    rv.properties[MProperty::nalpha] = nclosed/2 + nopen;
+    rv.properties[MProperty::nbeta]  = nclosed / 2;
+    rv.properties[MProperty::nalpha] = nclosed / 2 + nopen;
     return rv;
 }
 
 // charge and multiplicity
 static const std::regex xyz_cm("^\\s*-?\\d+.?\\d*\\s+\\d+.?\\d*\\s*$");
-static const std::regex xyz_atom("^\\s*[a-zA-Z]+\\s*(?:-?\\d*.\\d+(?:(?:e|E)(?:-|\\+)?\\d+)?\\s*){3}$");
+static const std::regex xyz_atom(
+  "^\\s*[a-zA-Z]+\\s*(?:-?\\d*.\\d+(?:(?:e|E)(?:-|\\+)?\\d+)?\\s*){3}$");
 
 action_type XYZParser::worth_parsing(const std::string& line) const {
     if(std::regex_search(line, xyz_cm))
@@ -125,4 +127,4 @@ return_type XYZParser::parse(const std::string& line,
     return rv;
 }
 
-} // namespace LibChemist
+} // namespace SDE

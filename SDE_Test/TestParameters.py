@@ -2,59 +2,73 @@ import SDE.SDE as SDE
 import py_sde_utils as PySDEUtils
 import unittest
 
-class TestParameters(unittest.TestCase):
+"""
+Note: Right now it's not possible to create and fill new Option or Parameters
+classes from Python.  Thus the specification for what options a module supports
+must be done from C++.  Consequentially, we only need to test accessing and
+modifying C++ instances of the Option and Parameters classes from Python. 
+"""
+
+
+class TestOption(unittest.TestCase):
+    def check_option(self, opt, val, desc, traits):
+        self.assertEqual(opt.get(), val)
+        self.assertEqual(opt.description, desc)
+        self.assertEqual(opt.traits, traits)
+        if val == 3:
+            self.assertTrue(opt == PySDEUtils.get_option())
+        else:
+            self.assertTrue(opt != PySDEUtils.get_option())
+
     def setUp(self):
-        self.params = PySDEUtils.params
+        self.val = 3
+        self.desc = "Any positive number"
+        self.traits = {SDE.OptionTraits.optional,
+                       SDE.OptionTraits.transparent}
 
-    def test_at(self):
-        int_opt = self.params.at("The number 3")
-        self.assertEqual(int_opt,3)
+    def test_cxx_option(self):
+        opt = PySDEUtils.get_option()
+        self.check_option(opt, self.val, self.desc, self.traits)
+        self.assertTrue(opt.is_valid(4))
+        self.assertFalse(opt.is_valid(-1))
+        opt.change(4)
+        self.check_option(opt, 4, self.desc, self.traits)
+        self.assertRaises(ValueError, opt.change, -1)
 
-        double_opt = self.params.at("Pi")
-        self.assertEqual(double_opt,3.1416)
 
-        string_opt = self.params.at("Hello")
-        self.assertEqual(string_opt,"Hello world")
 
-        vector_opt = self.params.at("A vector")
-        self.assertEqual(vector_opt,[1,2,3])
+class TestParameters(unittest.TestCase):
+    def check_params(self, params, opts):
+        self.assertEqual(len(params), len(opts))
+        nrk = "Not a real key"
+        self.assertFalse(nrk in params)
+        self.assertRaises(IndexError, params.change, nrk, 2)
+        self.assertRaises(IndexError, params.get_option, nrk)
+        self.assertRaises(IndexError, params.get_value, nrk)
+        for k,v in opts.items():
+            self.assertTrue(k in params)
+            self.assertTrue(v == params.get_option(k))
+            self.assertTrue(v.description == params.get_description(k))
+            self.assertTrue(v.traits == params.get_traits(k))
+            self.assertEqual(v.get(), params.get_value(k))
 
-    def test_change(self):
-        self.params.change("The number 3", 2)
-        int_opt = self.params.at("The number 3")
-        self.assertEqual(int_opt,2)
+    def setUp(self):
+        self.key = "The number 3"
+        self.non_default = SDE.OptionTraits.non_default
 
-        self.params.change("Pi",1.57)
-        double_opt = self.params.at("Pi")
-        self.assertEqual(double_opt,1.57)
-
-        self.params.change("Hello", "Sup world")
-        string_opt = self.params.at("Hello")
-        self.assertEqual(string_opt,"Sup world")
-
-        self.params.change("A vector", [3, 4, 5])
-        vector_opt = self.params.at("A vector")
-        self.assertEqual(vector_opt,[3,4,5])
-
-    def test_badchange(self):
-        self.assertRaises(ValueError, self.params.change,
-                          "The number 3", -1)
-        self.assertRaises(RuntimeError, self.params.change,
-                          "The number 3", 3.14)
-
-    def test_description(self):
-        self.assertEqual(self.params.get_description("The number 3"), "some description")
-
-    def test_traits_track_changes(self):
-        self.params.change("The number 3", 2)
-        self.assertFalse(SDE.OptionTraits.non_default in self.params.get_traits("The number 3"))
-        self.params.track_changes()
-        self.params.change("The number 3", 1)
-        self.assertTrue(SDE.OptionTraits.non_default in self.params.get_traits("The number 3"))
-
-    def test_count(self):
-        self.assertTrue("The number 3" in self.params)
-        self.assertFalse("Not here" in self.params)
+    def test_cxx_parameters(self):
+        params, opts = PySDEUtils.get_params()
+        self.check_params(params, opts)
+        self.assertRaises(ValueError, params.change, self.key, -1)
+        ps, opts = PySDEUtils.get_params()
+        self.assertTrue(params == ps)
+        params.change(self.key, 4)
+        self.assertTrue(params != ps)
+        params.track_changes()
+        params.change(self.key, 3)
+        self.assertTrue(self.non_default in params.get_traits(self.key))
+        params.change("Hello World", "Goodbye World")
+        self.assertTrue(self.non_default in params.get_traits("Hello World"))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -2,82 +2,235 @@
 #include <catch/catch.hpp>
 
 using namespace SDE;
+using corr_traits_set = std::set<OptionTraits>;
+using corr_vector     = std::vector<std::function<bool(const double&)>>;
+using corr_size       = std::size_t;
 
 TEST_CASE("Range Checks") {
     GreaterThan<int> gt(3);
-    REQUIRE(gt(detail_::SDEAny(4)) == true);
-    REQUIRE(gt(detail_::SDEAny(2)) == false);
+    REQUIRE(gt(4) == true);
+    REQUIRE(gt(2) == false);
 
     LessThan<int> lt(3);
-    REQUIRE(lt(detail_::SDEAny(2)) == true);
-    REQUIRE(lt(detail_::SDEAny(4)) == false);
+    REQUIRE(lt(2) == true);
+    REQUIRE(lt(4) == false);
 }
 
+template<typename T>
+void check_option(Option& opt, T value, std::string desc) {
+    REQUIRE(opt.get<T>() == value);
+    REQUIRE(opt.description == desc);
+}
+
+template<typename T>
+using check_function_vector = typename Option::check_function_vector<T>;
+
 TEST_CASE("Options") {
-    Option opt{4, "Any positive number", {GreaterThan<int>{-1}}};
+    using traits_set_type = typename Option::traits_set_type;
 
-    REQUIRE(detail_::SDEAnyCast<int>(opt.value) == 4);
-    opt.value = detail_::SDEAny(5);
-    REQUIRE(opt.is_valid() == true);
-    opt.value = detail_::SDEAny(-1);
-    REQUIRE(opt.is_valid() == false);
+    SECTION("Typedefs") {
+        REQUIRE(std::is_same<traits_set_type, corr_traits_set>::value);
+        REQUIRE(
+          std::is_same<check_function_vector<double>, corr_vector>::value);
+    }
 
-    Hasher h(HashType::Hash128);
-    opt.hash(h);
-    auto hv = bphash::hash_to_string(h.finalize());
-    REQUIRE(hv == "507d9f3cedf0b4a0aaf0312b8a767d0c");
+    const std::string desc = "Any positive number";
+    const check_function_vector<int> checks{GreaterThan<int>{-1}};
+    SECTION("Invalid Ctor Arguments") {
+        REQUIRE_THROWS_AS(Option(-1, desc, checks), std::invalid_argument);
+    }
 
-    REQUIRE_THROWS(Option{4, "Any negative number", {LessThan<int>{0}}});
-    REQUIRE_NOTHROW(Option{-1, "Any negative number", {LessThan<int>{0}}});
+    Option opt{4, desc, checks};
+    check_option(opt, 4, desc);
+
+    SECTION("Comparison operators") {
+        SECTION("Same option") {
+            Option opt2{4, desc, checks};
+            REQUIRE(opt2 == opt);
+            REQUIRE(!(opt2 != opt));
+        }
+
+        SECTION("Different values") {
+            Option opt2{5, desc, checks};
+            REQUIRE(!(opt2 == opt));
+            REQUIRE(opt2 != opt);
+        }
+
+        SECTION("Different descriptions") {
+            Option opt2{4, "Some other desc", checks};
+            REQUIRE(!(opt2 == opt));
+            REQUIRE(opt2 != opt);
+        }
+    }
+
+    SECTION("Additional Ctors") {
+        SECTION("Copy ctor") {
+            Option opt2(opt);
+            REQUIRE(opt2 == opt);
+        }
+        SECTION("Move ctor") {
+            Option opt2(opt);
+            Option opt3(std::move(opt));
+            REQUIRE(opt3 == opt2);
+        }
+        SECTION("Copy assignment") {
+            Option opt2;
+            opt2 = opt;
+            REQUIRE(opt2 == opt);
+        }
+        SECTION("Move assignment") {
+            Option opt2(opt);
+            Option opt3;
+            opt3 = std::move(opt);
+            REQUIRE(opt3 == opt2);
+        }
+    }
+
+    SECTION("is_valid") {
+        REQUIRE(opt.is_valid(4) == true);
+        REQUIRE(opt.is_valid(-1) == false);
+    }
+
+    SECTION("change") {
+        opt.change(5);
+        check_option(opt, 5, desc);
+        REQUIRE_THROWS_AS(opt.change(-1), std::invalid_argument);
+    }
+
+    SECTION("hash") {
+        Hasher h(HashType::Hash128);
+        opt.hash(h);
+        auto hv = bphash::hash_to_string(h.finalize());
+        REQUIRE(hv == "d7bec09d52a66446f595ab9fc7823d39");
+    }
+}
+
+void check_parameters(Parameters& params, std::map<std::string, Option> ops) {
+    REQUIRE(params.size() == ops.size());
+    REQUIRE(params.count("Not a real key") == 0);
+    REQUIRE_THROWS_AS(params.change("Not a real key", 2), std::out_of_range);
+    REQUIRE_THROWS_AS(params.at<int>("Not a real key"), std::out_of_range);
+    using not_type = std::set<int>;
+    for(const auto& x : ops) {
+        REQUIRE(params.count(x.first));
+        REQUIRE(params.at<Option>(x.first) == x.second);
+        REQUIRE(params.get_description(x.first) == x.second.description);
+        REQUIRE(params.get_traits(x.first) == x.second.traits);
+        if(x.first == "The number 3")
+            REQUIRE(params.at<int>(x.first) == x.second.get<int>());
+        else
+            REQUIRE(params.at<std::string>(x.first) ==
+                    x.second.get<std::string>());
+    }
 }
 
 TEST_CASE("Parameters") {
+    SECTION("Typedefs") {
+        REQUIRE(std::is_same<typename Parameters::size_type, corr_size>::value);
+        REQUIRE(std::is_same<typename Parameters::traits_set_type,
+                             corr_traits_set>::value);
+    }
+
+    Option opt1{3, "Positive number", {GreaterThan<int>{-1}}};
+    Option opt2{std::string("Hello World")};
+    std::map<std::string, Option> opts{{"The number 3", opt1}};
     Parameters params;
+    params.insert("The number 3", opt1);
+    check_parameters(params, opts);
+    REQUIRE_THROWS_AS(params.change("The number 3", -1), std::invalid_argument);
 
-    Option opt(3, "some description");
-    // insert() and at()
-    params.insert("The number 3", opt);
-    REQUIRE(params.at<int>("The number 3") == 3);
-    // Using at<Option<T>>()
-    REQUIRE(detail_::SDEAnyCast<int>(params.at<Option>("The number 3").value) ==
-            3);
-    // change() and track_changes()
-    params.track_changes();
-    params.change("The number 3", 2);
-    REQUIRE(params.at<int>("The number 3") == 2);
-    auto new_traits = params.get_traits("The number 3");
-    REQUIRE(new_traits.count(OptionTraits::non_default));
+    SECTION("Comparisons") {
+        Parameters params2;
+        SECTION("Different") {
+            REQUIRE(params != params2);
+            REQUIRE(!(params == params2));
+        }
 
-    // checking range_checks and change()
-    params.insert("Not a negative number",
-                  Option{4, "Any positive number", {GreaterThan<int>{-1}}});
-    REQUIRE_THROWS(params.change("Not a negative number", -1));
-    REQUIRE_NOTHROW(params.change("Not a negative number", 6));
+        params2.insert("The number 3", opt1);
 
-    // count()
-    REQUIRE(params.count("Hello World") == false);
-    params.insert("Hello World", Option{std::string{"Hello world"}});
-    REQUIRE(params.count("Hello World") == true);
+        SECTION("The same") {
+            REQUIRE(params == params2);
+            REQUIRE(!(params != params2));
+        }
+    }
 
-    Hasher h(HashType::Hash128);
-    params.hash(h);
-    auto hv = bphash::hash_to_string(h.finalize());
-    REQUIRE(hv == "c2007ca976923cbe8fc6fba066282913");
+    params.insert("Hello World", opt2);
+    opts["Hello World"] = opt2;
+    check_parameters(params, opts);
 
-    // This insertion should not change the hash value
-    Hasher h2(HashType::Hash128);
-    params.insert(
-      "Hash blind",
-      Option{2, "Transparent thing", {}, {OptionTraits::transparent}});
-    params.hash(h2);
-    hv = bphash::hash_to_string(h2.finalize());
-    REQUIRE(hv == "c2007ca976923cbe8fc6fba066282913");
+    SECTION("Additional ctors") {
+        SECTION("Explicit options") {
+            Parameters params2("The number 3", opt1, "Hello World", opt2);
+            REQUIRE(params2 == params);
+        }
 
-    // This insertion should change the hash (i.e. the Option is not
-    // transparent)
-    Hasher h3(HashType::Hash128);
-    params.insert("Hash modifying", Option{2, "Opaque thing", {}, {}});
-    params.hash(h3);
-    hv = bphash::hash_to_string(h2.finalize());
-    REQUIRE(hv == "ca89719299107675e821851b2ec20cba");
+        SECTION("Copy ctor") {
+            Parameters params2(params);
+            REQUIRE(params2 == params);
+        }
+
+        SECTION("Move ctor") {
+            Parameters params2(params);
+            Parameters params3(std::move(params));
+            REQUIRE(params2 == params3);
+        }
+
+        SECTION("Copy assignment") {
+            Parameters params2;
+            params2 = params;
+            REQUIRE(params2 == params);
+        }
+
+        SECTION("Move assignment") {
+            Parameters params2(params);
+            Parameters params3;
+            params3 = std::move(params);
+            REQUIRE(params3 == params2);
+        }
+    }
+
+    SECTION("Tracking changes") {
+        params.track_changes();
+        SECTION("Change to same value") {
+            params.change("The number 3", 3);
+            REQUIRE(params.get_traits("The number 3")
+                      .count(OptionTraits::non_default));
+        }
+        SECTION("Change to different value") {
+            params.change("The number 3", 4);
+            REQUIRE(params.get_traits("The number 3")
+                      .count(OptionTraits::non_default));
+        }
+    }
+
+    SECTION("Hashing") {
+        auto corr_hv = "d619d61b909e9a32011b816138d3c65b";
+        SECTION("Before transparent") {
+            Hasher h(HashType::Hash128);
+            params.hash(h);
+            auto hv = bphash::hash_to_string(h.finalize());
+            REQUIRE(hv == corr_hv);
+        }
+
+        SECTION("After transparent") {
+            // This insertion should not change the hash value
+            Hasher h(HashType::Hash128);
+            params.insert(
+              "Hash blind",
+              Option{2, "Transparent thing", {}, {OptionTraits::transparent}});
+            params.hash(h);
+            auto hv = bphash::hash_to_string(h.finalize());
+            REQUIRE(hv == corr_hv);
+        }
+
+        SECTION("Non-transparent") {
+            // This insertion should change the hash (i.e. the Option is not
+            // transparent)
+            Hasher h(HashType::Hash128);
+            params.insert("Hash modifying", Option{2, "Opaque thing", {}, {}});
+            params.hash(h);
+            auto hv = bphash::hash_to_string(h.finalize());
+            REQUIRE(hv != corr_hv);
+        }
+    }
 }

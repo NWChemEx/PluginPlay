@@ -1,6 +1,7 @@
 set(
         SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
-        TestMoleculeFileParser.cpp TestParameters.cpp TestSDEAny.cpp
+        TestMoleculeFileParser.cpp TestParameters.cpp TestSDEAny.cpp TestModuleHelpers.cpp
+              TestModule.cpp
 )
 
 add_catch_cxx_tests(
@@ -16,4 +17,5 @@ if(BUILD_PYBINDINGS)
     )
     add_python_test(NAME TestSDEAny)
     add_python_test(NAME TestParameters)
+    add_python_test(NAME TestModule)
 endif()
