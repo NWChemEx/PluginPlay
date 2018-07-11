@@ -29,7 +29,7 @@ std::map<std::size_t, LibChemist::Atom> default_bases();
 typename ChemistryRuntime::indexed_atom_type default_atoms();
 
 /// Returns a map of known isotopes
-typename  ChemistryRuntime::isotope_lut_type default_isotopes();
+typename ChemistryRuntime::isotope_lut_type default_isotopes();
 
 /// Returns a map of symbols to atoms
 typename ChemistryRuntime::at_sym_lut_type default_symbols();
@@ -37,9 +37,9 @@ typename ChemistryRuntime::at_sym_lut_type default_symbols();
 /// Returns a map of angular momentum symbols to number values
 typename ChemistryRuntime::am_sym_lut_type default_am();
 
-///Convenience function for making a fully defaulted ChemistryRuntime instance
-inline ChemistryRuntime default_runtime(){
-    return {default_constants(), default_atoms(), default_isotopes(), 
+/// Convenience function for making a fully defaulted ChemistryRuntime instance
+inline ChemistryRuntime default_runtime() {
+    return {default_constants(), default_atoms(), default_isotopes(),
             default_symbols(), default_am()};
 }
 

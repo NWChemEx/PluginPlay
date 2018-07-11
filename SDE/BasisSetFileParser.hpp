@@ -1,9 +1,9 @@
 #pragma once
 #include "SDE/ChemistryRuntime.hpp"
-#include <string>
-#include <map>
-#include <vector>
 #include <istream>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace SDE {
 
@@ -37,46 +37,43 @@ namespace SDE {
  * For every parsable line you return an std::map<data_type,double> of the
  * data you obtained from the line.
  */
-struct BasisSetFileParser
-{
-  ///Signals for what to do with a line
-  enum class action_type
-  {
-      none, ///< Line is not worth parsing
-      new_atom,///< Line starts a new atom
-      new_shell,///< Line starts a new shell
-      same_shell///< Line is part of the current shell
-  };
+struct BasisSetFileParser {
+    /// Signals for what to do with a line
+    enum class action_type {
+        none,      ///< Line is not worth parsing
+        new_atom,  ///< Line starts a new atom
+        new_shell, ///< Line starts a new shell
+        same_shell ///< Line is part of the current shell
+    };
 
-  ///Tags for the type of data we're getting back
-  enum class data_type
-  {
-      exponent, ///< The parameter in the exponent of the Gaussian
-      coefficient, ///< The weight of the Gaussian in contraction
-      angular_momentum, ///< The angular momentum of the shell
-      Z                 ///< The atomic number the shell function is for
-  };
+    /// Tags for the type of data we're getting back
+    enum class data_type {
+        exponent,         ///< The parameter in the exponent of the Gaussian
+        coefficient,      ///< The weight of the Gaussian in contraction
+        angular_momentum, ///< The angular momentum of the shell
+        Z                 ///< The atomic number the shell function is for
+    };
 
-  /**
-   * @brief Implemented by derived class to determine if a line is worth parsing
-   * and if it is to tell us what action to take.
-   *
-   * @param line The line the derived class needs to parse.
-   * @return the action that the parser should do
-   * @throw ??? Same throw guarantee and conditions as derived class.
-   */
-  virtual action_type worth_parsing(const std::string& line)const=0;
+    /**
+     * @brief Implemented by derived class to determine if a line is worth
+     * parsing and if it is to tell us what action to take.
+     *
+     * @param line The line the derived class needs to parse.
+     * @return the action that the parser should do
+     * @throw ??? Same throw guarantee and conditions as derived class.
+     */
+    virtual action_type worth_parsing(const std::string& line) const = 0;
 
-  /**
-   * @brief Implemented by derived class to parse the current line.
-   * @param line The line to parse
-   * @param crt The definition of atomic data
-   * @return A map of the data contained in that line, along with tags detailing
-   *         what it is.
-   * @throw ??? Same throw guarantee and conditions as derived class.
-   */
-  virtual std::map<data_type,std::vector<double>>
-  parse(const std::string& line, const ChemistryRuntime& crt)const=0;
+    /**
+     * @brief Implemented by derived class to parse the current line.
+     * @param line The line to parse
+     * @param crt The definition of atomic data
+     * @return A map of the data contained in that line, along with tags
+     * detailing what it is.
+     * @throw ??? Same throw guarantee and conditions as derived class.
+     */
+    virtual std::map<data_type, std::vector<double>> parse(
+      const std::string& line, const ChemistryRuntime& crt) const = 0;
 };
 
 /** @brief This class implements a BasisSetFileParser for the Gaussian94 format.
@@ -95,11 +92,10 @@ struct BasisSetFileParser
  *    - Next are n primitive lines of the form exponent coefficient
  *      - Two or more coefficients appear if the shell is a hybrid shell (sp)
  */
-struct G94: public BasisSetFileParser
-{
-  action_type worth_parsing(const std::string& line)const override;
-  std::map<data_type, std::vector<double> >
-  parse(const std::string& line, const ChemistryRuntime& crt)const override;
+struct G94 : public BasisSetFileParser {
+    action_type worth_parsing(const std::string& line) const override;
+    std::map<data_type, std::vector<double>> parse(
+      const std::string& line, const ChemistryRuntime& crt) const override;
 };
 
 /** @brief The function to call to parse a BasisSetFile.
@@ -117,8 +113,8 @@ struct G94: public BasisSetFileParser
  *  @throw ??? Throws if any of the parser's routines throw.  Same guarantee as
  *  the parser.
  */
-std::map<size_t,std::vector<LibChemist::BasisShell>>
-parse_basis_set_file(std::istream& is, const BasisSetFileParser& parser,
-                     const ChemistryRuntime& crt);
+std::map<size_t, std::vector<LibChemist::BasisShell>> parse_basis_set_file(
+  std::istream& is, const BasisSetFileParser& parser,
+  const ChemistryRuntime& crt);
 
-}//End namespace LibChemist
+} // namespace SDE

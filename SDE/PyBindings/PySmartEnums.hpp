@@ -2,6 +2,9 @@
 #include <Utilities/SmartEnum.hpp>
 #include <pybind11/pybind11.h>
 
+// These macros facilitate registering SmartEnums with Python.  Usage is
+// identical to the declaration of the SmartEnums
+
 #define _ADD_PYSMARTENUM(name, x) \
     .def_property_readonly_static(#x, [](pybind11::object) { return name::x; })
 
