@@ -9,14 +9,21 @@ possibly dynamically influence the control flow.
 
 - [Terminology](@ref terms) details what SDE specific terms mean
 - [Overview](@ref sde_overview) provides a high-level overview of the SDE
-
+- [Parameters](@ref using_parameters) describes how algorithmic details of a
+  module are controlled
+- [Module Manager](@ref using_mm) describes the API for accessing modules.
 
 Extending the SDE
 -----------------
 
-Topics in this section are meant for users who want to write apps and/or make 
+Topics in this section are meant for users who want to write modules and/or make
 their libraries discoverable/usable with the SDE, but don't care about the 
-internals of the SDE more than they need to. 
+internals of the SDE more than they need to.
+
+- [Using ModuleBase and Property](@ref using_modules) Introduction to the two
+  classes representing the bulk of the SDE's module system.
+- [Writing a Module](@ref writing_a_module) short tutorial focusing on the key
+  steps required to write a new module.  
 
 - [Using ModuleBase and Property](@ref using_modules) Introduction to the two
   classes representing the bulk of the SDE's module system.
@@ -35,6 +42,9 @@ This subsection lists tutorials relating to classes used internally within the
 SDE.
 
 - [SDEAny Class](@ref using_sdeany) Class used to store generic data.
+- [ModuleBase and PropertyBase](@ref using_modules) Details the classes which
+  facilitate running modules opaquely.
+  
 
 
 ## Discussions of How APIs Came to Be
