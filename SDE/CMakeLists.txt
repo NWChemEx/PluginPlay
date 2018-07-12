@@ -10,7 +10,7 @@ set(
         SDE_INCLUDES BasisSetFileParser.hpp ChemistryRuntime.hpp NWXDefaults.hpp
         Memoization.hpp MoleculeFileParser.hpp Pythonization.hpp
         Parameters.hpp SDEAny.hpp Serialization.hpp ModuleHelpers.hpp Module.hpp
-        ModuleManager.hpp
+        ModuleManager.hpp Defaults/DefaultPropertyTypes.hpp
 )
 
 if(BUILD_PYBINDINGS)
