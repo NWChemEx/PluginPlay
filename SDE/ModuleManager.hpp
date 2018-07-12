@@ -96,10 +96,8 @@ public:
      *
      * @param key the tag to associate with the module, must be unique and
      *            non-empty.
-     * @param fxn A function that returns a module, via a shared_ptr to
+     * @param loader A function that returns a module, via a shared_ptr to
      *            ModuleBase.
-     * @tparam FxnType The type of @p fxn.  Must satisfy the concept of
-     *         callable.
      * @throws std::range_error if @p key is already registered.  Strong throw
      *         guarantee.
      * @throws std::invalid_argument if @p key is empty.  Strong throw
