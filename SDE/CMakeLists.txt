@@ -1,53 +1,39 @@
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(SDE-SRC VERSION 0.0.0 LANGUAGES CXX)
-include(TargetMacros)
-set(SDE_SRCS Defaults/DefaultAM.cpp
-             Defaults/DefaultAtoms.cpp
-             Defaults/DefaultBases.cpp
-             Defaults/DefaultIsotopes.cpp
-             Defaults/DefaultMols.cpp
-             Defaults/DefaultSymbols.cpp
-             Defaults/PhysicalConstants.cpp
-             BasisSetFileParser.cpp
-             ChemistryRuntime.cpp
-             ModuleManager.cpp
-             MoleculeFileParser.cpp
-             Module.cpp
+set(
+        SDE_SRCS Defaults/DefaultAM.cpp Defaults/DefaultAtoms.cpp
+        Defaults/DefaultBases.cpp Defaults/DefaultIsotopes.cpp
+        Defaults/DefaultMols.cpp Defaults/DefaultSymbols.cpp
+        Defaults/PhysicalConstants.cpp BasisSetFileParser.cpp
+        ChemistryRuntime.cpp Module.cpp MoleculeFileParser.cpp
+        ModuleManager.cpp
 )
-set(SDE_INCLUDES Defaults/DefaultModuleTypes.hpp
-                 BasisSetFileParser.hpp
-                 ChemistryRuntime.hpp
-                 NWXDefaults.hpp
-                 Memoization.hpp
-                 ModuleHelpers.hpp
-                 Module.hpp
-                 ModuleManager.hpp
-                 MoleculeFileParser.hpp
-                 Property.hpp
-                 SDEAny.hpp
-                 Serialization.hpp
+set(
+        SDE_INCLUDES BasisSetFileParser.hpp ChemistryRuntime.hpp NWXDefaults.hpp
+        Memoization.hpp MoleculeFileParser.hpp Pythonization.hpp
+        Parameters.hpp SDEAny.hpp Serialization.hpp ModuleHelpers.hpp Module.hpp
+        ModuleManager.hpp
 )
-set(SDE_DEFINITIONS )
-set(SDE_LINK_FLAGS)
 
-list(FIND NWX_DEPENDENCIES pybind11 BUILD_PYTHON_BINDINGS)
-if(NOT ${BUILD_PYTHON_BINDINGS} EQUAL -1)
-    list(APPEND SDE_SRCS  PyBindings/Pythonize.cpp
-                          PyBindings/PyModule.cpp
-                          PyBindings/PyModuleManager.cpp)
-    list(APPEND SDE_INCLUDES PyBindings/PyModule.hpp
-                             PyBindings/PySmartEnums.hpp)
-    set(INIT_FILE PyBindings/__init__.py)
-    nwchemex_add_pymodule(SDE SDE_SRCS
-            SDE_INCLUDES
-            SDE_DEFINTIONS
-            SDE_LINK_FLAGS
-            ${INIT_FILE}
-            )
+if(BUILD_PYBINDINGS)
+    list(   APPEND SDE_SRCS PyBindings/ExportSDE.cpp
+                            PyBindings/PyParameters.cpp
+                            PyBindings/PyModule.cpp
+                            PyBindings/PyModuleManager.cpp
+    )
+    list(
+            APPEND SDE_INCLUDES PyBindings/PyModule.hpp
+            PyBindings/PySmartEnums.hpp
+    )
+    add_python_module(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+    )
+    target_compile_definitions(SDE PUBLIC USING_pybind11)
 else()
-    nwchemex_add_library(SDE SDE_SRCS
-            SDE_INCLUDES
-            SDE_DEFINTIONS
-            SDE_LINK_FLAGS
-            )
+    add_nwx_library(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+    )
 endif()
+install_targets(TARGETS SDE INCLUDES ${SDE_INCLUDES})

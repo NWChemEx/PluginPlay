@@ -1,5 +1,7 @@
 #pragma once
 #include "SDE/Memoization.hpp"
+#include "SDE/ModuleHelpers.hpp"
+#include "SDE/Parameters.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
 #include <memory> // for shared_ptr and unique_ptr
@@ -82,7 +84,7 @@ public:
     /// Type of a pointer to this class
     using module_pointer = std::shared_ptr<ModuleBase>;
 
-    /// Type of te metadata stored in this class
+    /// Type of the metadata stored in this class
     using metadata_type = std::map<MetaProperty, std::string>;
 
     /// Type of the submodule call backs
@@ -153,7 +155,7 @@ public:
     const metadata_type& metadata() const noexcept { return metadata_; }
     const submodule_list& submodules() const noexcept { return submodules_; }
     const traits_type& traits() const noexcept { return traits_; }
-    // const Parameters& parameters() const noexcept {return parameters_;}
+    const Parameters& parameters() const noexcept { return parameters_; }
 
     /**
      * @name Modifiers
@@ -182,11 +184,11 @@ public:
         submodules_.at(key) = value;
     }
 
-    /*template<typename parameter_type>
-    void change_parameter(const std::string& key, parameter_type value) {
+    template<typename T>
+    void change_parameter(const std::string& key, T value) {
         if(locked_) throw std::runtime_error("Module is locked!!!");
-        parameters_.at(key) = value;
-    }*/
+        parameters_.change(key, value);
+    }
 
     /**
      * @brief Provides a hash for the current module's state.
@@ -285,8 +287,76 @@ public:
      */
     not_ready_return not_ready();
 
+    template<typename PropertyType, typename... Args>
+    auto run_as(Args&&... args) {
+        PropertyType* impl = downcast<PropertyType>();
+        if(impl->not_ready().size())
+            throw std::runtime_error("Module is not ready");
+        lock();
+        auto hv             = memoize(std::forward<Args>(args)...);
+        using return_type   = detail_::RunDetails_return_type<PropertyType>;
+        using shared_return = std::shared_ptr<return_type>;
+        // check cache for hv
+        shared_return result;
+        if(true) {
+            return_type rv = impl->run(std::forward<Args>(args)...);
+            result         = std::make_shared<return_type>(std::move(rv));
+            // put in cache
+        }
+        // Get result from cache and return
+        return result;
+    };
+
+    /**
+     * @brief This function provides the hash value associated with a specific
+     *        input for memoization purposes.
+     *
+     * This is a default memoization implementation.  It hashes the algorithm
+     * and the input values.  Module developers are free to override this
+     * behavior to, say, additionally hash the SDE instance or anything else
+     * that may influence the value of the results.
+     *
+     * @note We do not want to put the && after @p Args because the user gave
+     *       us the arguments fully decorated and the && would trigger perfect
+     *       forwarding, which (somewhat ironically) will put additional
+     *       references on the arguments.
+     *
+     * @param[in] args The input to the module.
+     * @return  A hash value that depends on both the current state of the
+     *          algorithm as well as the input.
+     * @throws ??? If hashing any of the input arguments fails.  Strong throw
+     *         guarantee.
+     * @par Complexity:
+     *      The greater of the complexity to hash the algorithm's state or
+     *      linear in the number of arguments.
+     * @par Data Races:
+     *      The state of the arguments as well as the module are accessed. Thus
+     *      data races may result if either state is concurrently modified.
+     */
+    template<typename... Args>
+    HashValue memoize(Args&&... args) const {
+        Hasher h(HashType::Hash128);
+        hash(h);
+        h(std::forward<Args>(args)...);
+        return h.finalize();
+    }
+
+    /**
+     * @brief Determines if the result of calling the module with the provided
+     * arguments is cached
+
+     * @tparam Args The types of the arguments to memoize.
+     * @param[in] args the arguments to memoize.
+     * @return True if the result is cached and false otherwise.
+     * @throws None. No throw guarantee.
+     */
+    template<typename... Args>
+    bool is_cached(Args&&...) const noexcept {
+        return false;
+    }
+
 protected:
-    /// Allows Python trampoline to get at data
+    /// Allows Python helper class to get at data
     friend class detail_::PyModuleBase;
 
     /// The meta-data associated with this module
@@ -298,18 +368,49 @@ protected:
     /// The traits associated with the module
     std::set<ModuleTraits> traits_;
 
+    /// The parameters associated with this module
+    Parameters parameters_;
+
+    /**
+     * @brief Convenience function for calling a submodule.
+     *
+     * This function wraps the retreival of the module and the forwarding of
+     * the arguments to that module.
+     *
+     */
+    template<typename PropertyType, typename... Args>
+    auto call_submodule(const std::string& key, Args&&... args) {
+        return submodules_.at(key)->run_as<PropertyType>(
+          std::forward<Args>(args)...);
+    }
+
 private:
+    /// Allows ModuleManager to copy the module
     friend class detail_::MMImpl;
+
     /// Used when making a duplicate module
     ModuleBase& operator=(const ModuleBase& rhs) = default;
 
     // True means parameters and submodules can no longer be changed
     bool locked_ = false;
+
+    template<typename PropertyType>
+    PropertyType* downcast() {
+        PropertyType* new_ptr = dynamic_cast<PropertyType*>(this);
+        if(!new_ptr) throw std::bad_cast();
+        return new_ptr;
+    }
 };
 
 } // namespace SDE
 
-#define DEFINE_MODULE_TYPE(prop_name, return_value, ...) \
-    struct prop_name : SDE::ModuleBase {                 \
-        virtual return_value run(__VA_ARGS__) = 0;       \
+/** @brief Macro to factor out boilerplate for defining a property type
+ *
+ *  @param[in] prop_name Name to be used for resulting class
+ *  @param[in] return_value Type of the return
+ *  @param[in] __VA_ARGS__ The types of the inputs to the module.
+ */
+#define DEFINE_PROPERTY_TYPE(prop_name, return_value, ...) \
+    struct prop_name : SDE::ModuleBase {                   \
+        virtual return_value run(__VA_ARGS__) = 0;         \
     }

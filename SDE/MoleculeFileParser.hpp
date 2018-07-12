@@ -78,6 +78,7 @@ struct XYZParser : public MoleculeFileParser {
  * parameters.
  */
 LibChemist::Molecule parse_molecule_file(std::istream& is,
-    const MoleculeFileParser& parser, const ChemistryRuntime& crt);
+                                         const MoleculeFileParser& parser,
+                                         const ChemistryRuntime& crt);
 
-} // namespace LibChemist
+} // namespace SDE

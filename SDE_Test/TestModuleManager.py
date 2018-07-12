@@ -1,16 +1,10 @@
 import unittest
-import os
-import sys
-import SDE
+import SDE.SDE as SDE
+import py_sde_utils as PySDEUtils
 
-lib_dir = os.path.join(os.path.dirname(os.path.abspath(os.path.curdir)), "lib")
-sys.path.append(lib_dir)
-
-import DummyModule
-
-class PyProperty2(DummyModule.TestProperty2):
+class PyProperty2(PySDEUtils.TestProperty):
     def __init__(self):
-        DummyModule.TestProperty2.__init__(self)
+        PySDEUtils.TestProperty.__init__(self)
 
     def run(self, i):
         return i + 1
@@ -23,8 +17,9 @@ def test_mm(tester, mm, keys):
         tester.assertTrue(k in mm)
         tester.assertRaises(ValueError, mm.insert, k, tester.loader)
         mod = mm.at(k)
-        prop = DummyModule.PropertyTestProperty2(mod)
-        tester.assertEqual(prop(1), 2)
+        if mod.not_ready():
+            mod.change_submodule("Prop1", PyProperty2())
+        tester.assertEqual(mod.run_as(PySDEUtils.TestProperty, 1), 2)
         new_key = mm.duplicate(k)
         tester.assertTrue(new_key in mm)
         tester.assertRaises(ValueError, mm.duplicate, k, new_key)
@@ -37,7 +32,7 @@ class pymake_module:
         return self.mods[-1]
 
 def cpp_make_module():
-    return DummyModule.MyProp2()
+    return PySDEUtils.get_cpp_module()
 
 class TestModuleManager(unittest.TestCase):
     def setUp(self):
@@ -50,7 +45,7 @@ class TestModuleManager(unittest.TestCase):
         test_mm(self, self.mm, [])
 
     def test_filled_cpp_module(self):
-        self.mm.insert(self.key, DummyModule.get_cpp_module)
+        self.mm.insert(self.key, PySDEUtils.get_cpp_module)
         test_mm(self, self.mm, [self.key])
 
     def test_filled_cpp_from_py(self):

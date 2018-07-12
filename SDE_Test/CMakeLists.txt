@@ -1,22 +1,22 @@
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(SDE-Test VERSION 0.0.0 LANGUAGES CXX)
-include(TargetMacros)
+set(
+        SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
+        TestMoleculeFileParser.cpp TestParameters.cpp TestSDEAny.cpp
+        TestModuleHelpers.cpp TestModule.cpp TestModuleManager.cpp
+)
 
-add_cxx_unit_test(TestBasisFileParser)
-add_cxx_unit_test(TestChemistryRuntime)
-add_cxx_unit_test(TestModuleHelpers)
-add_cxx_unit_test(TestModule)
-add_cxx_unit_test(TestModuleManager)
-add_cxx_unit_test(TestMoleculeFileParser)
-add_cxx_unit_test(TestProperty)
-add_cxx_unit_test(TestSDEAny)
-
-
-set(DM_SRC DummyModule.cpp)
-set(DM_INCS)
-set(DM_FLAGS)
-set(DM_LFLAGS)
-nwchemex_add_pymodule(DummyModule DM_SRC DM_INC DM_FLAGS DM_LFLAGS __init__.py)
-add_python_unit_test(TestModule)
-add_python_unit_test(TestProperty)
-add_python_unit_test(TestModuleManager)
+add_catch_cxx_tests(
+        NAME test_SDE
+        SOURCES ${SDE_TESTS}
+        DEPENDS SDE
+)
+if(BUILD_PYBINDINGS)
+    add_python_module(
+            NAME py_sde_utils
+            SOURCES PySDEUtils.cpp
+            DEPENDS SDE
+    )
+    add_python_test(NAME TestSDEAny)
+    add_python_test(NAME TestParameters)
+    add_python_test(NAME TestModule)
+    add_python_test(NAME TestModuleManager)
+endif()
