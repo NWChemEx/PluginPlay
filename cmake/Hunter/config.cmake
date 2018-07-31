@@ -4,13 +4,6 @@ set(gh_repo "https://api.github.com/repos/NWChemEx-Project/LibChemist")
 if(BUILD_PYBINDINGS)
     set(WITH_SHARED TRUE)
 endif()
-hunter_config(
-        LibChemist
-        VERSION 0.0.0
-        URL "${gh_repo}/tarball/master?access_token=${token}"
-        SHA1 "96de0f1fa0145d6540562826187e14e552522a15"
-        CMAKE_ARGS "BUILD_TESTS=off;BUILD_SHARED_LIBS=${WITH_SHARED}"
-)
 set(gh_repo "https://api.github.com/repos/NWChemEx-Project/Utilities")
 hunter_config(
         Utilities

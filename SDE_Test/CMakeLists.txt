@@ -1,7 +1,10 @@
 set(
-        SDE_TESTS test_main.cpp TestBasisFileParser.cpp TestChemistryRuntime.cpp
-        TestMoleculeFileParser.cpp TestParameters.cpp TestSDEAny.cpp
-        TestModuleHelpers.cpp TestModule.cpp TestModuleManager.cpp
+    SDE_TESTS test_main.cpp
+              TestParameters.cpp
+              TestSDEAny.cpp
+              TestModuleHelpers.cpp
+              TestModule.cpp
+              TestModuleManager.cpp
 )
 
 add_catch_cxx_tests(

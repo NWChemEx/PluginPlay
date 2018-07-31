@@ -1,16 +1,16 @@
 set(
-        SDE_SRCS Defaults/DefaultAM.cpp Defaults/DefaultAtoms.cpp
-        Defaults/DefaultBases.cpp Defaults/DefaultIsotopes.cpp
-        Defaults/DefaultMols.cpp Defaults/DefaultSymbols.cpp
-        Defaults/PhysicalConstants.cpp BasisSetFileParser.cpp
-        ChemistryRuntime.cpp Module.cpp MoleculeFileParser.cpp
-        ModuleManager.cpp
+        SDE_SRCS Module.cpp
+                 ModuleManager.cpp
 )
 set(
-        SDE_INCLUDES BasisSetFileParser.hpp ChemistryRuntime.hpp NWXDefaults.hpp
-        Memoization.hpp MoleculeFileParser.hpp Pythonization.hpp
-        Parameters.hpp SDEAny.hpp Serialization.hpp ModuleHelpers.hpp Module.hpp
-        ModuleManager.hpp
+        SDE_INCLUDES Memoization.hpp
+                     Pythonization.hpp
+                     Parameters.hpp
+                     SDEAny.hpp
+                     Serialization.hpp
+                     ModuleHelpers.hpp
+                     Module.hpp
+                     ModuleManager.hpp
 )
 
 if(BUILD_PYBINDINGS)
@@ -26,14 +26,14 @@ if(BUILD_PYBINDINGS)
     add_python_module(
             NAME SDE
             SOURCES ${SDE_SRCS}
-            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+            DEPENDS bphash::bphash cereal::cereal
     )
     target_compile_definitions(SDE PUBLIC USING_pybind11)
 else()
     add_nwx_library(
             NAME SDE
             SOURCES ${SDE_SRCS}
-            DEPENDS LibChemist::chemist bphash::bphash cereal::cereal
+            DEPENDS bphash::bphash cereal::cereal
     )
 endif()
 install_targets(TARGETS SDE INCLUDES ${SDE_INCLUDES})
