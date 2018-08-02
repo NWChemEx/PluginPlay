@@ -18,7 +18,7 @@ option(BUILD_TESTS "Should we build the tests?" ON)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 ### Dependencies ####
-foreach(depend Utilities LibChemist bphash cereal)
+foreach(depend Utilities bphash cereal)
     hunter_add_package(${depend})
     find_package(${depend} CONFIG)
 endforeach()
