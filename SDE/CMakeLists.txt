@@ -29,6 +29,9 @@ if(BUILD_PYBINDINGS)
             DEPENDS bphash::bphash cereal::cereal
     )
     target_compile_definitions(SDE PUBLIC USING_pybind11)
+    if(APPLE)
+        set_target_properties(SDE PROPERTIES SUFFIX .so)
+    endif()
 else()
     add_nwx_library(
             NAME SDE

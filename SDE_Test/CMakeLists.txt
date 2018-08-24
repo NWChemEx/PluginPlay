@@ -18,6 +18,9 @@ if(BUILD_PYBINDINGS)
             SOURCES PySDEUtils.cpp
             DEPENDS SDE
     )
+    if(APPLE)
+        set_target_properties(py_sde_utils PROPERTIES SUFFIX .so)
+    endif()
     add_python_test(NAME TestSDEAny)
     add_python_test(NAME TestParameters)
     add_python_test(NAME TestModule)
