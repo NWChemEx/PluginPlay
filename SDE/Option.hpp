@@ -295,6 +295,9 @@ struct OptionHelper<const char(&)[N]>
                                   const Option::check_function_vector<const char(&)[N]>& checks,
                                   const Option::traits_set_type& ts)
     {
+      // Convert string literal input value to std::string
+      std::string value(tmp_value, N);
+      
         // Add a check to make sure the new value is the right type
         opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
             return da_any.type() == typeid(const std::decay_t<std::string>&);
