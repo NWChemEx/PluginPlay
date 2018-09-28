@@ -706,8 +706,13 @@ private:
          */
         pyobject pythonize_() const override { return pycast(value); }
 
-        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
+        void change_python_(pyobject & obj) {
+            value = obj.cast<T>(); }
     };
+
+
+
+
 
     /**
      * @brief Code factorization for the internal process of wrapping an
@@ -746,6 +751,16 @@ private:
     /// The actual type-erased value
     std::unique_ptr<SDEAnyBase_> ptr_;
 };
+
+/**
+ * Specialize change_python to avoid casting a reference to a local variable
+ * when <T> is a C-string.
+ */
+template<>
+void SDEAny::SDEAnyWrapper_<const char*>::change_python_(SDE::pyobject& obj)
+{
+    value = obj.cast<std::string>().c_str();
+}
 
 /**
  * @brief Provides access to the value wrapped in an SDEAny instance.
@@ -821,6 +836,8 @@ template<typename T, typename... Args>
 SDEAny make_SDEAny(Args&&... args) {
     return SDEAny(std::move(T(std::forward<Args>(args)...)));
 };
+
+
 
 } // namespace detail_
 } // namespace SDE
