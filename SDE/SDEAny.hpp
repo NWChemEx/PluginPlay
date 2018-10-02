@@ -218,8 +218,6 @@ public:
     explicit SDEAny(T&& value) :
       ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
 
-
-
     /**
      *  @brief Allows the SDEAny instance to be hashed.
      *
@@ -708,15 +706,8 @@ private:
          */
         pyobject pythonize_() const override { return pycast(value); }
 
-        void change_python_(pyobject & obj)
-	{
-            value = obj.cast<T>();
-	}
+        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
     };
-
-
-
-
 
     /**
      * @brief Code factorization for the internal process of wrapping an
@@ -830,8 +821,6 @@ template<typename T, typename... Args>
 SDEAny make_SDEAny(Args&&... args) {
     return SDEAny(std::move(T(std::forward<Args>(args)...)));
 };
-
-
 
 } // namespace detail_
 } // namespace SDE

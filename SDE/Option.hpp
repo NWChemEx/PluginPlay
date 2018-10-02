@@ -15,7 +15,7 @@ class PyOption;
 } // namespace detail_
 
 // Forward declaration
-template <typename T>
+template<typename T>
 struct OptionHelper;
 
 /**
@@ -61,9 +61,6 @@ using LessThan = Comparison<T, std::less<T>>;
  */
 DECLARE_SmartEnum(OptionTraits, transparent, optional, non_default);
 
-
-
-
 /**
  * @brief Class holding the information about the options used in Parameters.
  *
@@ -79,7 +76,6 @@ DECLARE_SmartEnum(OptionTraits, transparent, optional, non_default);
  * The Option class is responsible for hiding the types of the actual parameter
  * values.
  */
-
 
 class Option {
     template<typename T>
@@ -97,7 +93,6 @@ class Option {
     using disable_if_opt = typename std::enable_if_t<!is_an_option_t<T>::value>;
 
 public:
-
     /// Type of the object holding the set of traits for this option
     using traits_set_type = std::set<OptionTraits>;
 
@@ -113,7 +108,8 @@ public:
      * @tparam T The type of the element held within this instance.
      */
     template<typename T>
-    using check_function_vector = typename OptionHelper<T>::check_function_vector;
+    using check_function_vector =
+      typename OptionHelper<T>::check_function_vector;
 
     Option() = default;
 
@@ -237,39 +233,37 @@ protected:
     /// List of checks to run for any new value, stored in type-erased form
     type_erased_functors checks_;
 };
-  
+
 /**
- * @brief Primary template used to implement Option constructor and Option::change.
+ * @brief Primary template used to implement Option constructor and
+ * Option::change.
  *
  * @tparam T type of the value of the Option
  */
 template<typename T>
-struct OptionHelper{
-
+struct OptionHelper {
     using check_function_vector = std::vector<std::function<bool(const T&)>>;
-    static const void change(Option& opt, T&& new_value)
-    {
-    if(!opt.is_valid(new_value))
-        throw std::invalid_argument("Not a valid option value");
-    detail_::SDEAny(std::forward<T>(new_value)).swap(opt.value_);
+    static const void change(Option& opt, T&& new_value) {
+        if(!opt.is_valid(new_value))
+            throw std::invalid_argument("Not a valid option value");
+        detail_::SDEAny(std::forward<T>(new_value)).swap(opt.value_);
     }
 
-    static const void make_option(Option& opt, T& value, const std::string& desc,
-                            const Option::check_function_vector<T>& checks,
-                            const Option::traits_set_type& ts)
-{
-
-    // Add a check to make sure the new value is the right type
-    opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
-        return da_any.type() == typeid(const std::decay_t<T>&);
-    });
-    // Add whatever other checks the developer provided
-    for(auto ci : checks)
+    static const void make_option(
+      Option& opt, T& value, const std::string& desc,
+      const Option::check_function_vector<T>& checks,
+      const Option::traits_set_type& ts) {
+        // Add a check to make sure the new value is the right type
         opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
-            return ci(detail_::SDEAnyCast<const std::decay_t<T>&>(da_any));
+            return da_any.type() == typeid(const std::decay_t<T>&);
         });
-    OptionHelper::change(opt, std::forward<T>(value));
-}
+        // Add whatever other checks the developer provided
+        for(auto ci : checks)
+            opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
+                return ci(detail_::SDEAnyCast<const std::decay_t<T>&>(da_any));
+            });
+        OptionHelper::change(opt, std::forward<T>(value));
+    }
 };
 
 /**
@@ -277,26 +271,24 @@ struct OptionHelper{
  * is a string literal
  *
  */
-  
-template<std::size_t N>
-struct OptionHelper<const char(&)[N]>
-{
 
-    static const void change(Option& opt, std::string&& new_value)
-    {
+template<std::size_t N>
+struct OptionHelper<const char (&)[N]> {
+    static const void change(Option& opt, std::string&& new_value) {
         if(!opt.is_valid(new_value))
             throw std::invalid_argument("Not a valid option value");
         detail_::SDEAny(std::forward<std::string>(new_value)).swap(opt.value_);
     }
 
-    using check_function_vector=std::vector<std::function<bool(const std::string&)>>;
+    using check_function_vector =
+      std::vector<std::function<bool(const std::string&)>>;
 
-    static const void make_option(Option& opt, const char(&tmp_value)[N], const std::string& desc,
-                                  const Option::check_function_vector<const char(&)[N]>& checks,
-                                  const Option::traits_set_type& ts)
-    {
-        //Make std::string from c-string, minus the null terminator
-             std::string value(tmp_value, N-1);
+    static const void make_option(
+      Option& opt, const char (&tmp_value)[N], const std::string& desc,
+      const Option::check_function_vector<const char (&)[N]>& checks,
+      const Option::traits_set_type& ts) {
+        // Make std::string from c-string, minus the null terminator
+        std::string value(tmp_value, N - 1);
 
         // Add a check to make sure the new value is the right type
         opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
@@ -306,14 +298,13 @@ struct OptionHelper<const char(&)[N]>
         // Add whatever other checks the developer provided
         for(auto ci : checks)
             opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
-                return ci(detail_::SDEAnyCast<const std::decay_t<std::string>&>(da_any));
+                return ci(detail_::SDEAnyCast<const std::decay_t<std::string>&>(
+                  da_any));
             });
 
         OptionHelper::change(opt, std::forward<std::string>(value));
     }
 };
-
-
 
 namespace detail_ {
 /**

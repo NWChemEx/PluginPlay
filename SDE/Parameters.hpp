@@ -1,6 +1,6 @@
 #pragma once
-#include "SDE/Option.hpp"
 #include "SDE/Memoization.hpp"
+#include "SDE/Option.hpp"
 #include "SDE/SDEAny.hpp"
 #include "SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
@@ -217,7 +217,5 @@ private:
     // The set of all the options
     Utilities::CaseInsensitiveMap<Option> options_;
 };
-
-
 
 } // end namespace SDE
