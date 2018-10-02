@@ -159,7 +159,7 @@ public:
      */
     template<typename T>
     T get() const {
-        return OptionHelper<T>::get(*this);
+        return detail_::SDEAnyCast<T>(value_);
     }
 
     /**
@@ -241,10 +241,6 @@ protected:
 template<typename T>
 struct OptionHelper{
 
-    static T get(const Option& opt)  {
-        return detail_::SDEAnyCast<T>(opt.value_);
-    }
-
     using check_function_vector = std::vector<std::function<bool(const T&)>>;
     static const void change(Option& opt, T&& new_value)
     {
@@ -252,11 +248,7 @@ struct OptionHelper{
         throw std::invalid_argument("Not a valid option value");
     detail_::SDEAny(std::forward<T>(new_value)).swap(opt.value_);
     }
-// Exposes SDEAny to Python as a default constructable opaque type
-struct SDEAnyWrapper {
-    SDEAnyWrapper() = default;
-    detail_::SDEAny my_any;
-};
+
     static const void make_option(Option& opt, T& value, const std::string& desc,
                             const Option::check_function_vector<T>& checks,
                             const Option::traits_set_type& ts)
@@ -278,9 +270,6 @@ struct SDEAnyWrapper {
 template<std::size_t N>
 struct OptionHelper<const char(&)[N]>
 {
-    static const char* get(const Option& opt) {
-        return detail_::SDEAnyCast<std::string>(opt.value_).c_str();
-    }
 
     static const void change(Option& opt, std::string&& new_value)
     {
@@ -295,9 +284,9 @@ struct OptionHelper<const char(&)[N]>
                                   const Option::check_function_vector<const char(&)[N]>& checks,
                                   const Option::traits_set_type& ts)
     {
-      // Convert string literal input value to std::string
-      std::string value(tmp_value, N);
-      
+        //Make std::string from c-string, minus the null terminator
+             std::string value(tmp_value, N-1);
+
         // Add a check to make sure the new value is the right type
         opt.checks_.push_back([=](const detail_::SDEAny& da_any) {
             return da_any.type() == typeid(const std::decay_t<std::string>&);
@@ -333,6 +322,17 @@ template<typename T>
 struct AtHelper {
     // static so we don't have to make an instance
     static const T get(const Option& opt) { return opt.get<T>(); }
-};  
+};
+
+/**
+ * @brief Specialization for Option, called when T for Parameters::at is
+ * Option
+ *
+ */
+template<>
+struct AtHelper<Option> {
+    static const Option get(const Option& opt) { return opt; }
+};
+
 } // namespace detail_
 } // namespace SDE
