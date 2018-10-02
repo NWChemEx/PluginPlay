@@ -237,7 +237,12 @@ protected:
     /// List of checks to run for any new value, stored in type-erased form
     type_erased_functors checks_;
 };
-
+  
+/**
+ * @brief Primary template used to implement Option constructor and Option::change.
+ *
+ * @tparam T type of the value of the Option
+ */
 template<typename T>
 struct OptionHelper{
 
@@ -267,6 +272,12 @@ struct OptionHelper{
 }
 };
 
+/**
+ * @brief Specialization for Option constructor and option::get, called when T
+ * is a string literal
+ *
+ */
+  
 template<std::size_t N>
 struct OptionHelper<const char(&)[N]>
 {
@@ -300,9 +311,6 @@ struct OptionHelper<const char(&)[N]>
 
         OptionHelper::change(opt, std::forward<std::string>(value));
     }
-
-
-
 };
 
 
