@@ -218,6 +218,8 @@ public:
     explicit SDEAny(T&& value) :
       ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
 
+
+
     /**
      *  @brief Allows the SDEAny instance to be hashed.
      *
@@ -706,8 +708,10 @@ private:
          */
         pyobject pythonize_() const override { return pycast(value); }
 
-        void change_python_(pyobject & obj) {
-            value = obj.cast<T>(); }
+        void change_python_(pyobject & obj)
+	{
+            value = obj.cast<T>();
+	}
     };
 
 
@@ -751,16 +755,6 @@ private:
     /// The actual type-erased value
     std::unique_ptr<SDEAnyBase_> ptr_;
 };
-
-/**
- * Specialize change_python to avoid casting a reference to a local variable
- * when <T> is a C-string.
- */
-template<>
-void SDEAny::SDEAnyWrapper_<const char*>::change_python_(SDE::pyobject& obj)
-{
-    value = obj.cast<std::string>().c_str();
-}
 
 /**
  * @brief Provides access to the value wrapped in an SDEAny instance.
