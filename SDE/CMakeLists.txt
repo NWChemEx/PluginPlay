@@ -4,6 +4,7 @@ set(
 )
 set(
         SDE_INCLUDES Memoization.hpp
+		     Option.hpp
                      Pythonization.hpp
                      Parameters.hpp
                      SDEAny.hpp
