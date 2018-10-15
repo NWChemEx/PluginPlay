@@ -3,7 +3,8 @@ set(
                  ModuleManager.cpp
 )
 set(
-        SDE_INCLUDES Memoization.hpp
+        SDE_INCLUDES Cache.hpp
+		     Memoization.hpp
 		     Option.hpp
                      Pythonization.hpp
                      Parameters.hpp
