@@ -1,27 +1,31 @@
-cmake_minimum_required(VERSION 3.6)
-file(
-        DOWNLOAD
-        https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
-        ${CMAKE_BINARY_DIR}/cmake.tar.gz)
-execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/cmake.tar.gz
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
-start_hunter(LOCAL) #Must be before project command
-
-project(SDE VERSION 0.0.0 LANGUAGES CXX)
-
+cmake_minimum_required(VERSION 3.8)
+project(SDE VERSION 1.0.0)
+find_package(CPP REQUIRED)
 ### Options ###
 option(BUILD_TESTS "Should we build the tests?" ON)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 ### Dependencies ####
-foreach(depend Utilities bphash cereal)
-    hunter_add_package(${depend})
-    find_package(${depend} CONFIG)
-endforeach()
+cpp_find_or_build_dependency(Catch2 URL github.com/catchorg/Catch2)
+cpp_find_or_build_dependency(bphash URL github.com/bennybp/BPHash)
+find_package(bphash)
+target_include_directories(bphash::bphash SYSTEM
+                           INTERFACE ${bphash_INCLUDE_DIRS})
+cpp_find_or_build_dependency(
+    cereal
+    URL github.com/USCiLab/cereal
+    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+)
+cpp_find_or_build_dependency(
+        utilities
+        PATH /home/ryan/NWChemEx-Project/Utilities
+)
+#cpp_find_or_build_dependency(
+#    utilities
+#    URL github.com/NWChemEx-Project/utilities
+#    PRIVATE
+#)
+
 
 ### Target ###
 add_subdirectory(SDE)

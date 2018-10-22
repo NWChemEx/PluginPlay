@@ -1,6 +1,6 @@
 #include <SDE/Module.hpp>
 #include <array>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace SDE;
 using module_pointer   = typename ModuleBase::module_pointer;

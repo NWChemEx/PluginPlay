@@ -1,5 +1,5 @@
 #include <SDE/ModuleManager.hpp>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace SDE;
 using key_type       = typename ModuleManager::key_type;

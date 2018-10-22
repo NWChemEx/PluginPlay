@@ -1,5 +1,5 @@
 #include <SDE/Parameters.hpp>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace SDE;
 using corr_traits_set = std::set<OptionTraits>;
