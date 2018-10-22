@@ -37,6 +37,9 @@ private:
             throw std::invalid_argument("key can not be empty.");
     }
 
+    // Cache instance that's forwarded to managed modules
+  std::shared_ptr<Cache> cache_ptr = std::make_shared<Cache>();
+
 public:
     // The actual modules
     CIM<module_entry> modules;
@@ -64,6 +67,8 @@ public:
     }
 
     module_pointer get_module(const key_type& key) {
+        // Forward the MM Cache to the module
+        modules.at(key).first->set_cache(cache_ptr);
         return modules.at(key).first;
     }
 };

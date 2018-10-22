@@ -1,4 +1,5 @@
 #pragma once
+#include "SDE/Cache.hpp"
 #include "SDE/Memoization.hpp"
 #include "SDE/ModuleHelpers.hpp"
 #include "SDE/Parameters.hpp"
@@ -293,17 +294,23 @@ public:
         if(impl->not_ready().size())
             throw std::runtime_error("Module is not ready");
         lock();
-        auto hv             = memoize(std::forward<Args>(args)...);
         using return_type   = detail_::RunDetails_return_type<PropertyType>;
         using shared_return = std::shared_ptr<return_type>;
-        // check cache for hv
+        auto key             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
         shared_return result;
-        if(true) {
+        if(cache_ptr_ && cache_ptr_->count(key))
+            result = cache_ptr_->at<return_type>(key);
+        else
+        {
             return_type rv = impl->run(std::forward<Args>(args)...);
+            if(cache_ptr_)
+            {
+                cache_ptr_->insert(key, rv);
+                result = cache_ptr_->at<return_type>(key);
+            }
+            else
             result         = std::make_shared<return_type>(std::move(rv));
-            // put in cache
         }
-        // Get result from cache and return
         return result;
     };
 
@@ -344,16 +351,37 @@ public:
     /**
      * @brief Determines if the result of calling the module with the provided
      * arguments is cached
-
+     *
      * @tparam Args The types of the arguments to memoize.
      * @param[in] args the arguments to memoize.
      * @return True if the result is cached and false otherwise.
      * @throws None. No throw guarantee.
      */
     template<typename... Args>
-    bool is_cached(Args&&...) const noexcept {
-        return false;
+    bool is_cached(Args&&... args) const noexcept {
+        auto key = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
+        return(cache_ptr_ && cache_ptr_->count(key));
     }
+
+    /**
+     * @brief Sets the Cache that will be used by the module for storage and/or
+     * retrieval of computed results
+     *
+     * @param[in] args Shared pointer to the Cache
+     * @throws None. No throw guarantee.
+     */
+    void set_cache(std::shared_ptr<Cache> cp ) {cache_ptr_=cp;}
+
+    /**
+     * @brief Retrieves a shared_ptr to the Cache that is used by the module for
+     * storage and/or retrieval of computed results
+     *
+     * @param[out] args Shared pointer to the Cache
+     * @throws None. No throw guarantee.
+     */
+    std::shared_ptr<Cache> get_cache() {return cache_ptr_;}
+
+
 
 protected:
     /// Allows Python helper class to get at data
@@ -393,6 +421,8 @@ private:
 
     // True means parameters and submodules can no longer be changed
     bool locked_ = false;
+
+    std::shared_ptr<Cache> cache_ptr_;
 
     template<typename PropertyType>
     PropertyType* downcast() {

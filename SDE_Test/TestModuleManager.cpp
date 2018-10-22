@@ -59,4 +59,5 @@ TEST_CASE("ModuleManager Class") {
         mm2 = std::move(mm);
         check_state(mm2, key_set{a_key});
     }
+
 } // end TEST_CASE

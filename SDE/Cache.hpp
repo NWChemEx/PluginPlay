@@ -36,32 +36,32 @@ public:
 
     //Returns a shared_ptr to the value held in an SDEAny instance stored in the result map, index specified by hash key
     template<typename T>
-    std::shared_ptr<const T> at(hash_type& key) const
+    std::shared_ptr<T> at(hash_type& key) const
     {
         auto rv = _results.at(key);
         // Aliasing constructor is used so the returned pointer reference count is
         // linked to the reference count of the _results shared_ptr
-        return std::shared_ptr<const T>(rv, &(SDEAnyCast<const T&>(*rv)));
+        return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
     }
 
     //Returns a shared_ptr to the value held in an SDEAny instance stored in the result map, index specified by iterator
     template<typename T>
-    std::shared_ptr<const T> at(iterator_type it) const
+    std::shared_ptr<T> at(iterator_type it) const
     {
         auto rv = _results.at(it->first);
         // Aliasing constructor is used so the returned pointer reference count is
         // linked to the reference count of the _results shared_ptr
-        return std::shared_ptr<const T>(rv, &(SDEAnyCast<const T&>(*rv)));
+        return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
     }
 
     //Returns a shared_ptr to the value held in an SDEAny instance stored in the result map, index specified by const iterator
     template<typename T>
-    std::shared_ptr<const T> at(const_iterator_type it) const
+    std::shared_ptr<T> at(const_iterator_type it) const
     {
         auto rv = _results.at(it->first);
         // Aliasing constructor is used so the returned pointer reference count is
         // linked to the reference count of the _results shared_ptr
-        return std::shared_ptr<const T>(rv, &(SDEAnyCast<const T&>(*rv)));
+        return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
     }
 
     //Returns the use_count() of the shared_ptr<SDEAny> stored in the result map, index specified by hash key.
@@ -69,7 +69,6 @@ public:
     {
         return _results[key].use_count();
     }
-
 
     //Exposing various iterator member functions
     inline const_iterator_type begin() const noexcept { return _results.begin(); }
