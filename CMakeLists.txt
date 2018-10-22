@@ -17,14 +17,10 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 cpp_find_or_build_dependency(
-        utilities
-        PATH /home/ryan/NWChemEx-Project/Utilities
+    utilities
+    URL github.com/NWChemEx-Project/utilities
+    PRIVATE
 )
-#cpp_find_or_build_dependency(
-#    utilities
-#    URL github.com/NWChemEx-Project/utilities
-#    PRIVATE
-#)
 
 
 ### Target ###
