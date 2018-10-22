@@ -1,48 +1,43 @@
 set(
-    SRCS Module.cpp
-         ModuleManager.cpp
+        SDE_SRCS Module.cpp
+                 ModuleManager.cpp
 )
 set(
-    INCS Memoization.hpp
-         Pythonization.hpp
-         Parameters.hpp
-         SDEAny.hpp
-         Serialization.hpp
-         ModuleHelpers.hpp
-         Module.hpp
-         ModuleManager.hpp
+        SDE_INCLUDES Memoization.hpp
+		     Option.hpp
+                     Pythonization.hpp
+                     Parameters.hpp
+                     SDEAny.hpp
+                     Serialization.hpp
+                     ModuleHelpers.hpp
+                     Module.hpp
+                     ModuleManager.hpp
 )
 
 if(BUILD_PYBINDINGS)
-    cpp_find_or_build_dependency(
-        pybind11
-        URL github.com/pybind/pybind11
-        CMAKE_ARGS PYBIND11_TEST=OFF
+    list(   APPEND SDE_SRCS PyBindings/ExportSDE.cpp
+                            PyBindings/PyParameters.cpp
+                            PyBindings/PyModule.cpp
+                            PyBindings/PyModuleManager.cpp
     )
     list(
-       APPEND SRCS PyBindings/ExportSDE.cpp
-                   PyBindings/PyParameters.cpp
-                   PyBindings/PyModule.cpp
-                   PyBindings/PyModuleManager.cpp
+            APPEND SDE_INCLUDES PyBindings/PyModule.hpp
+            PyBindings/PySmartEnums.hpp
     )
-    list(
-       APPEND INCS PyBindings/PyModule.hpp
-                   PyBindings/PySmartEnums.hpp
+    add_python_module(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS bphash::bphash cereal::cereal
     )
-    cpp_add_library(
-        sde
-        SOURCES ${SRCS}
-        INCLUDES ${INCS}
-        DEPENDS cereal utilities::utilities bphash::bphash
-                pybind11::pybind11 pybind11::embed
-    )
-    target_compile_definitions(sde PUBLIC USING_pybind11)
+    target_compile_definitions(SDE PUBLIC USING_pybind11)
+    if(APPLE)
+        set_target_properties(SDE PROPERTIES SUFFIX .so)
+    endif()
 else()
-    cpp_add_library(
-        sde
-        SOURCES ${SDE_SRCS}
-        INCLUDES ${SDE_INCLUDES}
-        DEPENDS cereal utilities::utilities bphash::bphash
+    add_nwx_library(
+            NAME SDE
+            SOURCES ${SDE_SRCS}
+            DEPENDS bphash::bphash cereal::cereal
     )
 endif()
-cpp_install(TARGETS sde)
+install_targets(TARGETS SDE INCLUDES ${SDE_INCLUDES})

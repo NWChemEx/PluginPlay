@@ -61,6 +61,14 @@ TEST_CASE("Options") {
             REQUIRE(!(opt2 == opt));
             REQUIRE(opt2 != opt);
         }
+
+	SECTION("String literal and std::string") {
+	  const std::string some_desc = "Some description";	  
+	  Option opt_cstr{"A string", some_desc};
+	  Option opt_stdstr{std::string("A string"), some_desc};
+	  REQUIRE(opt_cstr==opt_stdstr);
+	}
+
     }
 
     SECTION("Additional Ctors") {
