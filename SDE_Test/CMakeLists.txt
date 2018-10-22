@@ -3,6 +3,7 @@ set(
               TestCache.cpp
               TestParameters.cpp
               TestSDEAny.cpp
+#	      TestMemoization.cpp
               TestModuleHelpers.cpp
               TestModule.cpp
               TestModuleManager.cpp

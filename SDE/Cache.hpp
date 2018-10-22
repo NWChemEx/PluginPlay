@@ -123,90 +123,49 @@ public:
     }
 
     void add_node(std::string parent_valKey, std::pair<std::string, std::string> submod_node){
-        auto mmap = _graph[parent_valKey];
-        mmap.emplace(submod_node);
+        _graph[parent_valKey].insert(submod_node);
     }
 
+    /**
+     * @brief     Returns a shared_ptr to the value held in an SDEAny instance stored in the result map. This function is used when the
+     * desired value is an intermediate result computed by a submodule, for which the associated input key is unknown.
+     * The result is instead specified by providing the hash value of the parent module, and the hash value of the submodule
+     * state (i.e. the return value of ModuleBase::Memoize() with no arguments).
+     *
+     * This function currently has two major limitations:
+     *  1) It will only search to a nested call depth of one (Module->Submodule).
+     *  2) Will always return the last result computed by the submodule. No option to change this behavior.
+     */
 
-    //Returns a shared_ptr to the value held in an SDEAny instance stored in the result map, index specified by hash key
     template<typename T>
-    std::shared_ptr<T> at_node(hash_type& parent_valKey, hash_type& daughter_modKey) const
+    std::shared_ptr<T> at_path(hash_type& parent_valKey, hash_type& daughter_modKey) const
     {
-//        using graph_type     = std::map<std::string, std::multimap<std::string, std::string> >;
-//valkey, modkey
-        std::vector<hash_type> adj;
+        auto mm = _graph.at(parent_valKey);
+        for(auto i=mm.end(); i!=mm.begin(); i--)
+            if(i->second == daughter_modKey)
+                return this->at<T>(i->first);
+        throw std::out_of_range ("Specified Path Not Found in Module Invocation Graph");
+    }
 
-        bool found=false;
+// For debugging...
+    void print_results()
+    {
+        for(auto i: _results)
+            std::cout << i.first << ' ' << i.second << std::endl;
+    }
 
-        std::vector<std::string> valKeys;
-        valKeys.push_back(parent_valKey);
-
-        std::string index = "";
-
-        std::vector<std::string> newValKeys;
-        std::string target_idx;
-        while(!found)
+    void print_graph()
+    {
+        for(auto i: _graph)
         {
-
-            for(auto i: valKeys)
-            {
-                for(auto j: _graph.at(i))
-                {
-                    if(j.second == daughter_modKey)
-                    {
-                        target_idx = i;
-                        found = true;
-                        break;
-                    }
-                    else
-                    {
-                        newValKeys.push_back(j.first);
-                    }
-
-                }
-            }
-
-            if(newValKeys.size()==0)
-            {
-//                std::cout << "out-of-range error" << std::endl;
-                break;
-            }
-
-            auto uniEnd = std::unique(newValKeys.begin(), newValKeys.end());
-            valKeys.erase(valKeys.begin(), valKeys.end());
-            std::copy(newValKeys.begin(), uniEnd, valKeys);
-            newValKeys.erase(newValKeys.begin(), newValKeys.end());
+            std::cout << i.first << std::endl;
+            for(auto j: i.second)
+                std::cout << j.first << ' ' << j.second << std::endl;
         }
-
-        if(!found)
-            std::cout << "out-of-range error" << std::endl;
-
-        if(found)
-        {
-            auto mm = _graph.at(target_idx);
-            for(auto i=mm.end(); i!= mm.begin(); i--)
-            {
-                if(i->second == daughter_modKey){
-                    hash_type hsh = i->first;
-                    return this->at<T>(hsh);
-                }
-
-            }
-        }
-
-
-
-        //        auto rv = _results.at(key);
-        // Aliasing constructor is used so the returned pointer reference count is
-        // linked to the reference count of the _results shared_ptr
-//        return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
     }
 
 
 private:
-
-
-
     std::map<hash_type, std::shared_ptr<SDEAny> > _results;
     graph_type _graph;
 };
