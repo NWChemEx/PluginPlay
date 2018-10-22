@@ -98,6 +98,8 @@ public:
     using not_ready_return =
       std::vector<std::pair<module_pointer, ModuleProperty>>;
 
+    using hash_type = const std::string;
+
     /**
      * @brief Creates a new ModuleBase
      *
@@ -296,17 +298,18 @@ public:
         lock();
         using return_type   = detail_::RunDetails_return_type<PropertyType>;
         using shared_return = std::shared_ptr<return_type>;
-        auto key             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
+        valKey_             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
         shared_return result;
-        if(cache_ptr_ && cache_ptr_->count(key))
-            result = cache_ptr_->at<return_type>(key);
+        if(cache_ptr_ && cache_ptr_->count(valKey_))
+            result = cache_ptr_->at<return_type>(valKey_);
         else
         {
             return_type rv = impl->run(std::forward<Args>(args)...);
+            //If cache exists, add results
             if(cache_ptr_)
             {
-                cache_ptr_->insert(key, rv);
-                result = cache_ptr_->at<return_type>(key);
+                cache_ptr_->insert(valKey_, rv);
+                result = cache_ptr_->at<return_type>(valKey_);
             }
             else
             result         = std::make_shared<return_type>(std::move(rv));
@@ -381,6 +384,13 @@ public:
      */
     std::shared_ptr<Cache> get_cache() {return cache_ptr_;}
 
+    template<typename... Args>
+    std::pair<std::string, std::string> make_node(Args&&... args) const {
+        auto valKey = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
+        auto modKey = bphash::hash_to_string(memoize());
+        return std::make_pair(valKey, modKey);
+    }
+
 
 
 protected:
@@ -402,12 +412,14 @@ protected:
     /**
      * @brief Convenience function for calling a submodule.
      *
-     * This function wraps the retreival of the module and the forwarding of
+     * This function wraps the retrieval of the module and the forwarding of
      * the arguments to that module.
      *
      */
     template<typename PropertyType, typename... Args>
     auto call_submodule(const std::string& key, Args&&... args) {
+        auto submod_hash = submodules_.at(key)->make_node(std::forward<Args>(args)...);
+        cache_ptr_->add_node(valKey_, submod_hash);
         return submodules_.at(key)->run_as<PropertyType>(
           std::forward<Args>(args)...);
     }
@@ -423,6 +435,10 @@ private:
     bool locked_ = false;
 
     std::shared_ptr<Cache> cache_ptr_;
+
+    // Holds hash of Module state and input. Used to create a module graph
+    // node if submodules are called.
+    std::string valKey_;
 
     template<typename PropertyType>
     PropertyType* downcast() {

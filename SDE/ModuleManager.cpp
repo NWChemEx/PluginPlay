@@ -12,6 +12,7 @@ using module_pointer = typename ModuleManager::module_pointer;
 using loader_type    = typename ModuleManager::loader_type;
 using module_entry   = std::pair<module_pointer, loader_type>;
 using size_type      = typename ModuleManager::size_type;
+using hash_type      = const std::string;
 
 namespace detail_ {
 
@@ -72,6 +73,8 @@ public:
         return modules.at(key).first;
     }
 };
+
+
 
 } // namespace detail_
 

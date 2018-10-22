@@ -1,4 +1,5 @@
 #include <SDE/ModuleManager.hpp>
+#include <SDE/Module.hpp>
 #include <catch/catch.hpp>
 
 using namespace SDE;
@@ -61,3 +62,8 @@ TEST_CASE("ModuleManager Class") {
     }
 
 } // end TEST_CASE
+
+TEST_CASE("Memoization") {
+
+
+}

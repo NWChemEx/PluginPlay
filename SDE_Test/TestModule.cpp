@@ -135,7 +135,6 @@ TEST_CASE("ModuleBase Class") {
         }
 
         SECTION("Cache Module Results") {
-
             struct MyProp3 mp;
             std::shared_ptr<Cache> cp = std::make_shared<Cache>();
             mp.set_cache(cp);

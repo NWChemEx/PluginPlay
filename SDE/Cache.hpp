@@ -13,6 +13,7 @@ public:
     using hash_type = const std::string;
     using iterator_type = std::map<const hash_type, std::shared_ptr<SDEAny> >::iterator;
     using const_iterator_type = std::map<const hash_type,  std::shared_ptr<SDEAny> >::const_iterator;
+    using graph_type     = std::map<hash_type, std::multimap<hash_type, hash_type> >;
 
 
     Cache() = default;
@@ -121,7 +122,92 @@ public:
         return _results != ref._results;
     }
 
+    void add_node(std::string parent_valKey, std::pair<std::string, std::string> submod_node){
+        auto mmap = _graph[parent_valKey];
+        mmap.emplace(submod_node);
+    }
+
+
+    //Returns a shared_ptr to the value held in an SDEAny instance stored in the result map, index specified by hash key
+    template<typename T>
+    std::shared_ptr<T> at_node(hash_type& parent_valKey, hash_type& daughter_modKey) const
+    {
+//        using graph_type     = std::map<std::string, std::multimap<std::string, std::string> >;
+//valkey, modkey
+        std::vector<hash_type> adj;
+
+        bool found=false;
+
+        std::vector<std::string> valKeys;
+        valKeys.push_back(parent_valKey);
+
+        std::string index = "";
+
+        std::vector<std::string> newValKeys;
+        std::string target_idx;
+        while(!found)
+        {
+
+            for(auto i: valKeys)
+            {
+                for(auto j: _graph.at(i))
+                {
+                    if(j.second == daughter_modKey)
+                    {
+                        target_idx = i;
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        newValKeys.push_back(j.first);
+                    }
+
+                }
+            }
+
+            if(newValKeys.size()==0)
+            {
+//                std::cout << "out-of-range error" << std::endl;
+                break;
+            }
+
+            auto uniEnd = std::unique(newValKeys.begin(), newValKeys.end());
+            valKeys.erase(valKeys.begin(), valKeys.end());
+            std::copy(newValKeys.begin(), uniEnd, valKeys);
+            newValKeys.erase(newValKeys.begin(), newValKeys.end());
+        }
+
+        if(!found)
+            std::cout << "out-of-range error" << std::endl;
+
+        if(found)
+        {
+            auto mm = _graph.at(target_idx);
+            for(auto i=mm.end(); i!= mm.begin(); i--)
+            {
+                if(i->second == daughter_modKey){
+                    hash_type hsh = i->first;
+                    return this->at<T>(hsh);
+                }
+
+            }
+        }
+
+
+
+        //        auto rv = _results.at(key);
+        // Aliasing constructor is used so the returned pointer reference count is
+        // linked to the reference count of the _results shared_ptr
+//        return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
+    }
+
+
 private:
+
+
+
     std::map<hash_type, std::shared_ptr<SDEAny> > _results;
+    graph_type _graph;
 };
 } // End namespace SDE
