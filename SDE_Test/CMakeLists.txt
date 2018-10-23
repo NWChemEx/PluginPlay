@@ -8,10 +8,11 @@ set(
 )
 
 cpp_add_executable(
-        test_SDE
+        test_sde
         SOURCES ${SDE_TESTS}
         DEPENDS sde Catch2::Catch2
 )
+add_test(NAME test_sde COMMAND test_sde)
 #if(BUILD_PYBINDINGS)
 #    add_python_module(
 #            NAME py_sde_utils
