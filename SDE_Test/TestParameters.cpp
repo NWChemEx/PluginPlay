@@ -109,7 +109,7 @@ TEST_CASE("Options") {
         Hasher h(HashType::Hash128);
         opt.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "d7bec09d52a66446f595ab9fc7823d39");
+        REQUIRE(hv == "4e45e04d0a266e2c319c9528549312fe");
     }
 }
 
@@ -212,7 +212,7 @@ TEST_CASE("Parameters") {
     }
 
     SECTION("Hashing") {
-        auto corr_hv = "d619d61b909e9a32011b816138d3c65b";
+        auto corr_hv = "e9a79951a3d94e52de405dc0e321e2e8";
         SECTION("Before transparent") {
             Hasher h(HashType::Hash128);
             params.hash(h);

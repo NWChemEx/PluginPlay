@@ -51,11 +51,11 @@ static const auto prop3 = std::make_shared<MyProp3>();
 
 // The correct hashes
 static const std::array<std::string, 2> corr_hashes = {
-  "e32f337e89481ed70947fa40a4f86e75", "6a12f500f5edc4bfcd41861dace13eef"};
+  "c7c82f313a73782127326d1bcb2103e1", "bbf4d07c4a21e02e4c4ae4381a66b402"};
 
 // The correct memoization hashes
 static const std::array<std::string, 2> corr_memo = {
-  "466f630617f08d6e1fa2f195a3884fd2", "648ddb25b747fae7d2b39d2602a056d3"};
+  "12ab816f03b73343c3d38764e539ed15", "5392ed79e6722269e1f82b7b6c0e2286"};
 
 // Function that checks the state of a module
 template<std::size_t i, typename PropertyType>
