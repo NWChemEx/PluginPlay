@@ -8,6 +8,9 @@ option(BUILD_TESTS "Should we build the tests?" ON)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 ### Dependencies ####
+cpp_find_or_build_dependency(Catch2 URL github.com/catchorg/Catch2)
+cpp_find_or_build_dependency(bphash URL github.com/ryanmrichard/BPHash
+                                    BRANCH cmake_patch)
 cpp_find_or_build_dependency(
     NAME cereal
     URL github.com/USCiLab/cereal
