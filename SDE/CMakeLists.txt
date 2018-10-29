@@ -16,7 +16,7 @@ set(
 
 if(BUILD_PYBINDINGS)
     cpp_find_or_build_dependency(
-        pybind11
+        NAME pybind11
         URL github.com/pybind/pybind11
         CMAKE_ARGS PYBIND11_TEST=OFF
     )
