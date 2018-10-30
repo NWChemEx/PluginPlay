@@ -1,5 +1,5 @@
 #include <SDE/ModuleHelpers.hpp>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include <type_traits>
 
 using namespace SDE::detail_;
