@@ -24,3 +24,6 @@ __pycache__
 
 #This is pulled by the git hook
 .clang-format
+
+#This is a typical toolchain file name
+toolchain.cmake
