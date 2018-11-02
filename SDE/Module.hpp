@@ -424,8 +424,6 @@ protected:
 	    {
         // Record adjacency in module invocation graph
         auto hashes = submodules_.at(key)->make_node(std::forward<Args>(args)...);
-        std::cout << "hashes.first: " << hashes.first << std::endl;
-        std::cout << "hashes.second: " << hashes.second << std::endl;
         cache_ptr_->add_node(valKey_, hashes);
 	// Forward our Cache to the submodule. Should probably be handled by ModuleManager.
 	submodules_.at(key)->set_cache(cache_ptr_);
