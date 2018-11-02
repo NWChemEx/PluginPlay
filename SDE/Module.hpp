@@ -1,4 +1,5 @@
 #pragma once
+#include "SDE/Cache.hpp"
 #include "SDE/Memoization.hpp"
 #include "SDE/ModuleHelpers.hpp"
 #include "SDE/Parameters.hpp"
@@ -96,6 +97,8 @@ public:
     /// Type returned by not_ready (no support for multimap in Python)
     using not_ready_return =
       std::vector<std::pair<module_pointer, ModuleProperty>>;
+
+    using hash_type = const std::string;
 
     /**
      * @brief Creates a new ModuleBase
@@ -293,17 +296,26 @@ public:
         if(impl->not_ready().size())
             throw std::runtime_error("Module is not ready");
         lock();
-        auto hv             = memoize(std::forward<Args>(args)...);
         using return_type   = detail_::RunDetails_return_type<PropertyType>;
         using shared_return = std::shared_ptr<return_type>;
-        // check cache for hv
+        valKey_             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
         shared_return result;
-        if(true) {
+	    /* Disable memoization until we have a differentiate hashes based on the module instance
+        if(cache_ptr_ && cache_ptr_->count(valKey_))
+            result = cache_ptr_->at<return_type>(valKey_);
+        else
+        {
+	*/
             return_type rv = impl->run(std::forward<Args>(args)...);
+            //If cache exists, add results
+            if(cache_ptr_)
+            {
+                cache_ptr_->insert(valKey_, rv);
+                result = cache_ptr_->at<return_type>(valKey_);
+            }
+            else
             result         = std::make_shared<return_type>(std::move(rv));
-            // put in cache
-        }
-        // Get result from cache and return
+    //    }
         return result;
     };
 
@@ -344,16 +356,44 @@ public:
     /**
      * @brief Determines if the result of calling the module with the provided
      * arguments is cached
-
+     *
      * @tparam Args The types of the arguments to memoize.
      * @param[in] args the arguments to memoize.
      * @return True if the result is cached and false otherwise.
      * @throws None. No throw guarantee.
      */
     template<typename... Args>
-    bool is_cached(Args&&...) const noexcept {
-        return false;
+    bool is_cached(Args&&... args) const noexcept {
+        auto key = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
+        return(cache_ptr_ && cache_ptr_->count(key));
     }
+
+    /**
+     * @brief Sets the Cache that will be used by the module for storage and/or
+     * retrieval of computed results
+     *
+     * @param[in] args Shared pointer to the Cache
+     * @throws None. No throw guarantee.
+     */
+    void set_cache(std::shared_ptr<Cache> cp ) {cache_ptr_=cp;}
+
+    /**
+     * @brief Retrieves a shared_ptr to the Cache that is used by the module for
+     * storage and/or retrieval of computed results
+     *
+     * @param[out] args Shared pointer to the Cache
+     * @throws None. No throw guarantee.
+     */
+    std::shared_ptr<Cache> get_cache() {return cache_ptr_;}
+
+    template<typename... Args>
+    std::pair<std::string, std::string> make_node(Args&&... args) const {
+        auto valKey = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
+        auto modKey = bphash::hash_to_string(memoize());
+        return std::make_pair(valKey, modKey);
+    }
+
+
 
 protected:
     /// Allows Python helper class to get at data
@@ -374,12 +414,20 @@ protected:
     /**
      * @brief Convenience function for calling a submodule.
      *
-     * This function wraps the retreival of the module and the forwarding of
+     * This function wraps the retrieval of the module and the forwarding of
      * the arguments to that module.
      *
      */
     template<typename PropertyType, typename... Args>
     auto call_submodule(const std::string& key, Args&&... args) {
+	    if(cache_ptr_)
+	    {
+        // Record adjacency in module invocation graph
+        auto hashes = submodules_.at(key)->make_node(std::forward<Args>(args)...);
+        cache_ptr_->add_node(valKey_, hashes);
+	// Forward our Cache to the submodule. Should probably be handled by ModuleManager.
+	submodules_.at(key)->set_cache(cache_ptr_);
+	    }
         return submodules_.at(key)->run_as<PropertyType>(
           std::forward<Args>(args)...);
     }
@@ -393,6 +441,12 @@ private:
 
     // True means parameters and submodules can no longer be changed
     bool locked_ = false;
+
+    std::shared_ptr<Cache> cache_ptr_;
+
+    // Holds hash of Module state and input. Used to create a module graph
+    // node if submodules are called.
+    std::string valKey_;
 
     template<typename PropertyType>
     PropertyType* downcast() {
