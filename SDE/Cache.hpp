@@ -147,23 +147,6 @@ public:
         throw std::out_of_range ("Specified Path Not Found in Module Invocation Graph");
     }
 
-// For debugging...
-    void print_results()
-    {
-        for(auto i: _results)
-            std::cout << i.first << ' ' << i.second << std::endl;
-    }
-
-    void print_graph()
-    {
-        for(auto i: _graph)
-        {
-            std::cout << i.first << std::endl;
-            for(auto j: i.second)
-                std::cout << j.first << ' ' << j.second << std::endl;
-        }
-    }
-
 
 private:
     std::map<hash_type, std::shared_ptr<SDEAny> > _results;
