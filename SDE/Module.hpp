@@ -300,10 +300,12 @@ public:
         using shared_return = std::shared_ptr<return_type>;
         valKey_             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
         shared_return result;
+	    /* Disable memoization until we have a differentiate hashes based on the module instance
         if(cache_ptr_ && cache_ptr_->count(valKey_))
             result = cache_ptr_->at<return_type>(valKey_);
         else
         {
+	*/
             return_type rv = impl->run(std::forward<Args>(args)...);
             //If cache exists, add results
             if(cache_ptr_)
@@ -313,7 +315,7 @@ public:
             }
             else
             result         = std::make_shared<return_type>(std::move(rv));
-        }
+    //    }
         return result;
     };
 
