@@ -1,7 +1,7 @@
 #include <SDE/SDEAny.hpp>
 #include <SDE/Cache.hpp>
 #include <SDE/Memoization.hpp>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 
 const std::string make_hash(double val)
