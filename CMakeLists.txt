@@ -11,9 +11,14 @@ option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 cpp_find_or_build_dependency(
     NAME LEMON
     URL http://lemon.cs.elte.hu/pub/sources/lemon-1.3.1.tar.gz
+    CMAKE_ARGS CMAKE_POSITION_INDEPENDENT_CODE=ON
+               BUILD_SHARED_LIBS=OFF #Lemon assumes static library
 )
-cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
-                                         BRANCH cmake_patch)
+cpp_find_or_build_dependency(
+    NAME bphash
+    URL github.com/ryanmrichard/BPHash
+    BRANCH cmake_patch
+)
 cpp_find_or_build_dependency(
     NAME cereal
     URL github.com/USCiLab/cereal

@@ -14,6 +14,7 @@ set(
          ModuleManager.hpp
          Option.hpp
 )
+set(common_targets cereal utilities::utilities bphash::bphash LEMON)
 
 if(BUILD_PYBINDINGS)
     cpp_find_or_build_dependency(
@@ -35,8 +36,7 @@ if(BUILD_PYBINDINGS)
         sde
         SOURCES ${SRCS}
         INCLUDES ${INCS}
-        DEPENDS cereal utilities::utilities bphash::bphash
-                pybind11::pybind11 pybind11::embed
+        DEPENDS ${common_targets} pybind11::pybind11 pybind11::embed
     )
     target_compile_definitions(sde PUBLIC USING_pybind11)
     if(APPLE)
@@ -47,7 +47,7 @@ else()
         sde
         SOURCES ${SDE_SRCS}
         INCLUDES ${SDE_INCLUDES}
-        DEPENDS cereal utilities::utilities bphash::bphash
+        DEPENDS ${common_targets}
     )
 endif()
 cpp_install(TARGETS sde)
