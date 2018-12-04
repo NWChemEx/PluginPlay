@@ -3,7 +3,8 @@ set(
          ModuleManager.cpp
 )
 set(
-    INCS Memoization.hpp
+    INCS Cache.hpp
+       	Memoization.hpp
          Pythonization.hpp
          Parameters.hpp
          SDEAny.hpp

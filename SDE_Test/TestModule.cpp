@@ -1,3 +1,4 @@
+#include <SDE/Cache.hpp>
 #include <SDE/Module.hpp>
 #include <array>
 #include <catch2/catch.hpp>
@@ -131,6 +132,15 @@ TEST_CASE("ModuleBase Class") {
         SECTION("Not Ready Submodule") {
             submodule_list sm_full{{"Prop1", prop1}};
             test_module<1, MyProp2>(md_empty, sm_full);
+        }
+
+        SECTION("Cache Module Results") {
+            struct MyProp3 mp;
+            std::shared_ptr<Cache> cp = std::make_shared<Cache>();
+            mp.set_cache(cp);
+            REQUIRE(mp.is_cached(10) == 0);
+            mp.run_as<MyProp3>(10);
+            REQUIRE(mp.is_cached(10) == 1);
         }
     }
 }

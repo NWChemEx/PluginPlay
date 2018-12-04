@@ -12,6 +12,7 @@ using module_pointer = typename ModuleManager::module_pointer;
 using loader_type    = typename ModuleManager::loader_type;
 using module_entry   = std::pair<module_pointer, loader_type>;
 using size_type      = typename ModuleManager::size_type;
+using hash_type      = const std::string;
 
 namespace detail_ {
 
@@ -36,6 +37,9 @@ private:
         else if(key == "")
             throw std::invalid_argument("key can not be empty.");
     }
+
+    // Cache instance that's forwarded to managed modules
+  std::shared_ptr<Cache> cache_ptr = std::make_shared<Cache>();
 
 public:
     // The actual modules
@@ -64,9 +68,13 @@ public:
     }
 
     module_pointer get_module(const key_type& key) {
+        // Forward the MM Cache to the module
+        modules.at(key).first->set_cache(cache_ptr);
         return modules.at(key).first;
     }
 };
+
+
 
 } // namespace detail_
 
