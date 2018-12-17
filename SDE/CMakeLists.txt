@@ -1,6 +1,7 @@
 set(
     SRCS Module.cpp
          ModuleManager.cpp
+         SubmoduleRequestForm.cpp
 )
 set(
     INCS Cache.hpp
@@ -13,6 +14,7 @@ set(
          Module.hpp
          ModuleManager.hpp
          Option.hpp
+         SubmoduleRequestForm.hpp
 )
 
 if(BUILD_PYBINDINGS)
