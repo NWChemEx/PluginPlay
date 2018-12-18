@@ -48,12 +48,14 @@ public:
      *  1) Default ctor
      *  2 and 3) Copy ctor/assignment operator
      *  4 and 5) Move ctor/assignment operator
+     *  6) Initializes instance to provided value.
      *
      *  @param rhs For 2 and 3 the object to copy. For 4 and 5 the object to
      *         take ownership of. For 4 and 5, @p rhs is in a valid, but
      *         otherwise undefined state after the call.
-     *
-     *  @throw None All ctors/assignment operators are no throw guarantee.
+     *  @param value For 6, the value to initialize the instance to.
+     *  @throw None With the exception of 6, all ctors/assignment operators are
+     *         no throw guarantee.
      */
     Property() = default;
     Property(const Property& rhs) = default;
@@ -141,5 +143,19 @@ private:
     /// The actual managed state
     std::shared_ptr<const detail_::SDEAny> prop_;
 };
+
+/** @brief Returns true if two Property instances are exactly equal.
+ *
+ * @param lhs The instance on the left side of the equality operator.
+ * @param rhs The instance on the right side of the equality operator.
+ * @return True if the two instances are exactly equal and false otherwise.
+ */
+inline bool operator==(const Property& lhs, const Property& rhs) noexcept {
+    return *lhs.get() == *rhs.get();
+}
+
+inline bool operator!=(const Property& lhs, const Property& rhs) noexcept {
+    return !(lhs == rhs);
+}
 
 } //End namespace

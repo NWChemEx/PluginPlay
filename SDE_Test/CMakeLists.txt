@@ -1,12 +1,12 @@
 set(
-    SDE_TESTS test_main.cpp
-              TestCache.cpp TestIOMap.cpp
-              TestParameters.cpp TestProperty.cpp
-              TestSDEAny.cpp
-#	      TestMemoization.cpp
-              TestModuleHelpers.cpp
-              TestModule.cpp
-              TestModuleManager.cpp
+        SDE_TESTS test_main.cpp
+        TestCache.cpp TestComputedProperties.cpp
+        TestParameters.cpp TestProperty.cpp
+        TestSDEAny.cpp
+        #	      TestMemoization.cpp
+        TestModuleHelpers.cpp
+        TestModule.cpp
+        TestModuleManager.cpp
 )
 
 cpp_add_executable(
