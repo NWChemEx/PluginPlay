@@ -25,6 +25,14 @@ TEST_CASE("Property Class") {
         (3));
 
     SECTION("Adding a value") {
+        SECTION("Via Ctor: by ptr") {
+            Property prop2(ptr);
+            check_state<int>(prop2, ptr);
+        }
+        SECTION("Via Ctor: by value") {
+            Property prop2(int{3});
+            check_state<int>(prop2, ptr);
+        }
         SECTION("Via shared_ptr") {
             prop.put(ptr);
             check_state<int>(prop, ptr);

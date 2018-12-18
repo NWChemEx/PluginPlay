@@ -24,8 +24,14 @@ namespace SDE {
  */
 class Property{
 private:
+    /// Contains `value` set to true if `T` is a qualified type of Property
     template<typename T>
-    constexpr bool IsProperty = std::is_same_v<Property, std::decay_t<T>>;
+    using IsProperty = std::is_same<Property, std::decay_t<T>>;
+
+    /// A type that will fail to compile if `T` is a qualified form of Property
+    template<typename T>
+    using DisableIfProperty =
+        std::enable_if_t<std::negation_v<IsProperty<T>>, int>;
 
 public:
     /// Type of the managed pointer within the class
@@ -54,6 +60,8 @@ public:
     Property& operator=(const Property& rhs) = default;
     Property(Property&& rhs) = default;
     Property& operator=(Property&& rhs) = default;
+    template<typename T, DisableIfProperty<T> = 0>
+    Property(T&& value) { put(std::forward<T>(value)); }
     //@}
 
     /** @brief Deletes the current Property instance.
