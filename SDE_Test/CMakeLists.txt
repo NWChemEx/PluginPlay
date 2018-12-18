@@ -1,8 +1,7 @@
 set(
     SDE_TESTS test_main.cpp
-              TestCache.cpp
-              TestParameters.cpp
-              TestProperty.cpp
+              TestCache.cpp TestIOMap.cpp
+              TestParameters.cpp TestProperty.cpp
               TestSDEAny.cpp
 #	      TestMemoization.cpp
               TestModuleHelpers.cpp

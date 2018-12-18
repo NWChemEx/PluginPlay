@@ -23,6 +23,10 @@ namespace SDE {
  *
  */
 class Property{
+private:
+    template<typename T>
+    constexpr bool IsProperty = std::is_same_v<Property, std::decay_t<T>>;
+
 public:
     /// Type of the managed pointer within the class
     using const_pointer = std::shared_ptr<const detail_::SDEAny>;

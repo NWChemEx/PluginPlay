@@ -3,7 +3,8 @@ set(
          ModuleManager.cpp
 )
 set(
-    INCS Cache.hpp
+    INCS detail_/IOMap.hpp
+         Cache.hpp
        	Memoization.hpp
          Pythonization.hpp
          Parameters.hpp
