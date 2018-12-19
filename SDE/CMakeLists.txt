@@ -9,12 +9,12 @@ set(
          Module.hpp
          ModuleHelpers.hpp
          ModuleManager.hpp
+         Option.hpp
          Parameters.hpp
          Property.hpp
          Pythonization.hpp
          SDEAny.hpp
          Serialization.hpp
-         Option.hpp
 )
 
 if(BUILD_PYBINDINGS)
