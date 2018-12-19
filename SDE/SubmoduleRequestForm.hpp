@@ -191,7 +191,7 @@ public:
      *
      * 3 and 4) Retrieve the newest request still on the form.
      *
-     * 2 and 4 are respectively read-only versions of 1 and 2.
+     * 2 and 4 are respectively read-only versions of 1 and 3.
      *
      * @warning Calling front/back on an empty container is undefined behavior.
      *
