@@ -3,16 +3,17 @@ set(
          ModuleManager.cpp
 )
 set(
-    INCS detail_/IOMap.hpp
-         Cache.hpp
-       	Memoization.hpp
-         Pythonization.hpp
+    INCS Cache.hpp
+         ComputedProperties.hpp
+       	 Memoization.hpp
+         Module.hpp
+         ModuleHelpers.hpp
+         ModuleManager.hpp
          Parameters.hpp
+         Property.hpp
+         Pythonization.hpp
          SDEAny.hpp
          Serialization.hpp
-         ModuleHelpers.hpp
-         Module.hpp
-         ModuleManager.hpp
          Option.hpp
 )
 
