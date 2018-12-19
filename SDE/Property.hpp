@@ -146,6 +146,11 @@ private:
 
 /** @brief Returns true if two Property instances are exactly equal.
  *
+ * @relates Property
+ *
+ * Two Property instances are equal if their type-erased payloads are exactly
+ * equal.
+ *
  * @param lhs The instance on the left side of the equality operator.
  * @param rhs The instance on the right side of the equality operator.
  * @return True if the two instances are exactly equal and false otherwise.
@@ -154,6 +159,17 @@ inline bool operator==(const Property& lhs, const Property& rhs) noexcept {
     return *lhs.get() == *rhs.get();
 }
 
+/** @brief Returns true if two Property instances are not exactly equal.
+ *
+ * @relates Property
+ *
+ * Two Property instances are equal if their type-erased payloads are exactly
+ * equal.
+ *
+ * @param lhs The instance on the left side of the inequality operator.
+ * @param rhs The instance on the right side of the inequality operator.
+ * @return False if the two instances are exactly equal and true otherwise.
+ */
 inline bool operator!=(const Property& lhs, const Property& rhs) noexcept {
     return !(lhs == rhs);
 }

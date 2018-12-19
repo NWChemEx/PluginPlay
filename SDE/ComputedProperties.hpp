@@ -4,8 +4,13 @@
 
 namespace SDE {
 
-/** @brief Class
+/** @brief Class responsible for holding the objects returned from a module.
  *
+ *  This class is a glorified `std::map` except that the elements of the map are
+ *  type-erased. As a result, this class extends the typical `std::map` API to
+ *  facilitate retrieval of the elements. This is done *via* the `value` member,
+ *  which functions similar to `std::map::at`, except that it takes a template
+ *  type parameter specifying what the type of the returned quantity is.
  */
 class ComputedProperties {
 private:
@@ -93,7 +98,6 @@ public:
     }
     //@}
 
-
     /** @brief Adds a new value to the map.
      *
      * @param key The key the value will be associated with. If @p key already
@@ -147,6 +151,33 @@ public:
     iterator end() noexcept { return values_.end(); }
     const_iterator end() const noexcept { return values_.end(); }
     const_iterator cend() const noexcept {return values_.cend(); }
+    //@}
+
+    //@{
+    /** @name Comparison Operators
+     *
+     * Two ComputedProperties instances are defined as equivalent if they have
+     * the same keys, in the same order, and each key maps to exactly the same
+     * value. Equality of the values adheres to the definition affored by their
+     * respective `operator==` members.
+     *
+     * 1) Equality operator
+     * 2) Inequality operator
+     *
+     * @param rhs The other ComputedProperties instance to compare against
+     * @return 1 returns true if the the current instance is equivalent to
+     *         @p rhs and false otherwise. 2 returns false if the current
+     *         instance is equivalent to @p rhs and true otherwise.
+     *
+     * @throw None No throw guarantee.
+     */
+    bool operator==(const ComputedProperties& rhs) const noexcept {
+        return values_ == rhs.values_;
+    }
+
+    bool operator!=(const ComputedProperties& rhs) const noexcept {
+        return values_ != rhs.values_;
+    }
     //@}
 private:
     ///The object that actually implements this class
