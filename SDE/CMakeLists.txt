@@ -1,7 +1,7 @@
 set(
-    SRCS Module.cpp
-         ModuleManager.cpp
-         SubmoduleRequestForm.cpp
+        SRCS ModuleBase.cpp
+        ModuleManager.cpp
+        SubmoduleRequestForm.cpp
 )
 set(
     INCS detail_/IOMap.hpp
