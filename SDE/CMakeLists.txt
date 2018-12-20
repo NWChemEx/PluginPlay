@@ -1,6 +1,7 @@
 set(
     SRCS Module.cpp
          ModuleManager.cpp
+         SubmoduleRequestForm.cpp
 )
 set(
     INCS Cache.hpp
@@ -15,6 +16,7 @@ set(
          Pythonization.hpp
          SDEAny.hpp
          Serialization.hpp
+         SubmoduleRequestForm.hpp
 )
 
 if(BUILD_PYBINDINGS)

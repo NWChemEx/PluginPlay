@@ -8,7 +8,6 @@ option(BUILD_TESTS "Should we build the tests?" ON)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 ### Dependencies ####
-cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
 cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
                                     BRANCH cmake_patch)
 cpp_find_or_build_dependency(
@@ -17,10 +16,6 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
                SKIP_PORTABILITY_TEST=ON
 )
-
-cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
-cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
-                                         BRANCH cmake_patch)
 
 cpp_find_or_build_dependency(
     NAME utilities
@@ -34,6 +29,7 @@ add_subdirectory(SDE)
 
 ### Testing ###
 if(BUILD_TESTS)
+    cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
     enable_testing()
     add_subdirectory(SDE_Test)
 endif()
