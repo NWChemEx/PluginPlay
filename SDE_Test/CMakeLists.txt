@@ -7,7 +7,6 @@ set(
               TestModuleHelpers.cpp
               TestModule.cpp
               TestModuleManager.cpp
-              TestSubmoduleRequestForm.cpp
 )
 
 cpp_add_executable(
