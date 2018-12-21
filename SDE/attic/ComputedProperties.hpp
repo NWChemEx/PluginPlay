@@ -1,5 +1,5 @@
 #pragma once
-#include "SDE/Property.hpp"
+#include "Property.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 
 namespace SDE {

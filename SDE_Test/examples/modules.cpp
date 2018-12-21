@@ -1,4 +1,4 @@
-#include <SDE/ModuleBase.hpp> //Needed for defining the modules
+#include <SDE/attic/ModuleBase.hpp> //Needed for defining the modules
 using namespace SDE; //Shortens the example, in practice avoid using in headers
 
 /*
@@ -38,18 +38,18 @@ using namespace SDE; //Shortens the example, in practice avoid using in headers
 
 struct Area : PropertyType {
     Area() {
-        add_input<int>("Width", "The width of the polygon");
-        add_input<int>("Height", "The height of the polygon");
-        add_return<int>("Area", "The area of the polygon");
+        add_input<int>("Width").description("The width of the polygon");
+        add_input<int>("Height").description("The height of the polygon");
+        add_result<int>("Area").description("The area of the polygon");
     }
 };
 
 struct Volume : PropertyType {
     Volume() {
-        add_input<int>("Width", "The width of the solid");
-        add_input<int>("Height", "The height of the solid");
-        add_input<int>("Length", "The length of the solid");
-        add_return<int>("Volume", "The volume of the solid");
+        add_input<int>("Width").description("The width of the solid");
+        add_input<int>("Height").description("The height of the solid");
+        add_input<int>("Length").description("The length of the solid");
+        add_return<int>("Volume").description("The volume of the solid");
     }
 };
 
@@ -129,6 +129,6 @@ private:
 
     Prism() {
         satisfies_property_type<Volume>();
-        request_submodule<Area>("Area");
+        add_submodule<Area>("Area");
     }
 };

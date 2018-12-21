@@ -1,6 +1,6 @@
-#include <SDE/SDEAny.hpp>
-#include <SDE/Cache.hpp>
-#include <SDE/Memoization.hpp>
+#include <SDE/detail_/SDEAny.hpp>
+#include <SDE/attic/Cache.hpp>
+#include <SDE/attic/Memoization.hpp>
 #include <catch2/catch.hpp>
 
 

@@ -1,5 +1,5 @@
-#include <SDE/Cache.hpp>
-#include <SDE/Module.hpp>
+#include <SDE/attic/Cache.hpp>
+#include <SDE/attic/Module.hpp>
 #include <array>
 #include <catch2/catch.hpp>
 

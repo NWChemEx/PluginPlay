@@ -1,4 +1,4 @@
-#include <SDE/Property.hpp>
+#include <SDE/attic/Property.hpp>
 #include <catch2/catch.hpp>
 
 using namespace SDE;

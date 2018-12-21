@@ -1,5 +1,5 @@
 #pragma once
-#include "SDE/SDEAny.hpp"
+#include "SDE/detail_/SDEAny.hpp"
 
 namespace SDE {
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <SDE/Memoization.hpp>
+#include <SDE/attic/Memoization.hpp>
 
 /** @file Pythonization.hpp File for factoring out ifdefs related to Python
  *        bindings.

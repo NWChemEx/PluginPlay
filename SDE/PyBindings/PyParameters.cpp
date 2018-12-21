@@ -1,5 +1,5 @@
-#include "SDE/Memoization.hpp"
-#include "SDE/Parameters.hpp"
+#include "SDE/attic/Memoization.hpp"
+#include "SDE/attic/Parameters.hpp"
 #include "SDE/PyBindings/PySmartEnums.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>

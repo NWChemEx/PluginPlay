@@ -1,4 +1,4 @@
-#include "SDE/ModuleManager.hpp"
+#include "SDE/attic/ModuleManager.hpp"
 #include <pybind11/functional.h>
 #include <pybind11/pybind11.h>
 namespace py = pybind11;

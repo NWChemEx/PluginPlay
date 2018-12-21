@@ -1,4 +1,4 @@
-#include <SDE/Parameters.hpp>
+#include <SDE/attic/Parameters.hpp>
 #include <catch2/catch.hpp>
 
 using namespace SDE;

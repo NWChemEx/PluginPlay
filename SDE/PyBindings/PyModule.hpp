@@ -1,6 +1,6 @@
 #pragma once
-#include "SDE/Module.hpp"
-#include "SDE/ModuleHelpers.hpp"
+#include "SDE/attic/Module.hpp"
+#include "SDE/attic/ModuleHelpers.hpp"
 #include <pybind11/pybind11.h>
 
 /** @file PyModule.hpp Contains functions and macros for helping one make

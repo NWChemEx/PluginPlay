@@ -1,4 +1,4 @@
-#include <SDE/ModuleHelpers.hpp>
+#include <SDE/attic/ModuleHelpers.hpp>
 #include <catch2/catch.hpp>
 #include <type_traits>
 

@@ -1,4 +1,4 @@
-#include <SDE/ModuleManager.hpp>
+#include <SDE/attic/ModuleManager.hpp>
 #include <catch2/catch.hpp>
 
 using namespace SDE;

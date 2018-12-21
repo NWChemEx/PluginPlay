@@ -1,4 +1,4 @@
-#include "SDE/Pythonization.hpp"
+#include "SDE/attic/Pythonization.hpp"
 
 namespace SDE {
 // Function that registers the ModuleBase class into a Python module.

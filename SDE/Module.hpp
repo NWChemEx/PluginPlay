@@ -1,59 +1,45 @@
 #pragma once
-#include "SDE/ComputedProperties.hpp"
-#include "SDE/Parameters.hpp"
-#include <Utilities/Containers/CaseInsensitiveMap.hpp>
 
 namespace SDE {
 namespace detail_ {
+class ModulePIMPL;
+}
 
-} // namespace detail_
-
-
-class Module{
+class Module {
 public:
-    using submodule_map = Utilities::CaseInsensitiveMap<Module>;
+    using result_type = OutputResults;
+    using input_type = InputParameters;
 
-    Parameters& params();
-    const Parameters& params() const {
-        return const_cast<Module &>(*this).params();
+    Module();
+    Module(const Module& rhs);
+    Module& operator=(const Module& rhs);
+    Module(Module&& rhs) noexcept;
+    Module& operator=(Module&& rhs) noexcept;
+    ~Module()noexcept;
+
+    Module(std::unique_ptr<ModulePIMPL> pimpl) : pimpl_(std::move(pimpl)) {}
+
+    template<typename property_type>
+    bool can_be_run_as() const {
+        property_type p;
+        return can_be_run_as_(p.type(), p.inputs(), p.outputs());
     }
 
-
-    /**
-     *
-     * The `run_as` function is the main API for running a module.
-     *
-     * @note semantically `mod.run_as<PropertyType>(args...)` is identical to
-     * ```
-     * PropertyType pt;
-     * pt.run(mod, args...);
-     * ```
-     *
-     * @tparam PropertyType
-     * @tparam Args
-     * @param args
-     * @return
-     */
-    template<typename PropertyType, typename...Args>
+    template<typename property_type, typename...Args>
     auto run_as(Args&&...args) {
-        PropertyType pt;
-        return pt.run(*this, std::forward<Args>(args...));
+        property_type p;
+        auto inputs = p.inputs();
+        auto outputs = p.outputs();
+
+        return p.run();
     }
 
-    ComputedProperties run(const Parameters& params);
+    auto run(const input_type& ps);
+private:
+    using
+    bool can_be_run_as_(inputs, outputs);
 
-
+    std::unique_ptr<ModulePIMPL> pimpl_;
 };
 
-} // namespace SDE
-
-/** @brief Macro to factor out boilerplate for defining a property type
- *
- *  @param[in] prop_name Name to be used for resulting class
- *  @param[in] return_value Type of the return
- *  @param[in] __VA_ARGS__ The types of the inputs to the module.
- */
-#define DEFINE_PROPERTY_TYPE(prop_name, return_value, ...) \
-    struct prop_name : SDE::ModuleBase {                   \
-        virtual return_value run(__VA_ARGS__) = 0;         \
-    }
+} //End namespace

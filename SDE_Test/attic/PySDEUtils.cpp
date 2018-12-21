@@ -1,8 +1,8 @@
-#include <SDE/Module.hpp>
-#include <SDE/Parameters.hpp>
+#include <SDE/attic/Module.hpp>
+#include <SDE/attic/Parameters.hpp>
 #include <SDE/PyBindings/PyModule.hpp>
-#include <SDE/Pythonization.hpp>
-#include <SDE/SDEAny.hpp>
+#include <SDE/attic/Pythonization.hpp>
+#include <SDE/detail_/SDEAny.hpp>
 
 /* This file contains C++ exports for testing various aspects of the SDE from
  * Python.  Generally speaking the contents of this file should not be used to
