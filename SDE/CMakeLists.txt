@@ -1,5 +1,6 @@
 set(SDE_SRCS )
-set(SDE_INCLUDES detail_/ModuleIOOptions.hpp
+set(SDE_INCLUDES detail_/Memoization.hpp
+                 detail_/ModuleIOOptions.hpp
                  ModuleIO.hpp
 )
 cpp_add_library(

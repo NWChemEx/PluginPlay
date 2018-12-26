@@ -1,5 +1,5 @@
 #pragma once
-#include "SDE/attic/Memoization.hpp"
+#include "Memoization.hpp"
 #include "SDE/attic/Pythonization.hpp"
 #include <memory>
 #include <type_traits>
