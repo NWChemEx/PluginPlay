@@ -40,11 +40,11 @@ void check_state(SDEAny& da_any, std::initializer_list<T> contents) {
         REQUIRE(val == right_val);
         REQUIRE(const_val == right_val);
 
-#ifndef USING_pybind11
-        REQUIRE_THROWS_AS(da_any.pythonize(), std::runtime_error);
-        REQUIRE_THROWS_AS(const_da_any.pythonize(), std::runtime_error);
-        REQUIRE_THROWS_AS(da_any.insert_python(), std::runtime_error);
-#endif
+//#ifndef USING_pybind11
+//        REQUIRE_THROWS_AS(da_any.pythonize(), std::runtime_error);
+//        REQUIRE_THROWS_AS(const_da_any.pythonize(), std::runtime_error);
+//        REQUIRE_THROWS_AS(da_any.insert_python(), std::runtime_error);
+//#endif
 
         REQUIRE_THROWS_AS(SDEAnyCast<std::string&>(da_any), std::bad_cast);
         REQUIRE_THROWS_AS(SDEAnyCast<const std::string&>(const_da_any),

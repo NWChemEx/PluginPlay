@@ -1,7 +1,8 @@
 set(SDE_SRCS )
 set(SDE_INCLUDES detail_/Memoization.hpp
-                 detail_/ModuleIOOptions.hpp
-                 ModuleIO.hpp
+                 detail_/PropertyTypeInputBuilder.hpp
+                 ModuleInput.hpp
+                 ModuleOutput.hpp
 )
 cpp_add_library(
     sde

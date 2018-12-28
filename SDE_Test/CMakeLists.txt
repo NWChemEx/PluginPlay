@@ -1,6 +1,8 @@
 set(
         SDE_TESTS test_main.cpp
-        TestModuleIO.cpp
+        detail_/TestSDEAny.cpp
+        TestModuleInput.cpp
+        TestModuleOutput.cpp
 #        TestCache.cpp
 #        TestComputedProperties.cpp
 #        TestParameters.cpp
