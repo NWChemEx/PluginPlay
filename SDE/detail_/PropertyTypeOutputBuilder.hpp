@@ -1,7 +1,7 @@
 #pragma once
 #include "SDE/ModuleOutput.hpp"
 #include "SDE/detail_/ModuleOutputBuilder.hpp"
-#include <Utilities/Containers/CaseInsensitiveMap.hpp>
+#include <vector>
 
 namespace SDE {
 namespace detail_ {
@@ -15,9 +15,12 @@ private:
     using my_type = PropertyTypeOutputBuilder<Args...>;
 
 public:
+    using key_type         = std::string;
     using output_type      = ModuleOutput;
-    using output_map       = Utilities::CaseInsensitiveMap<output_type>;
+    using value_type       = std::pair<key_type, output_type>;
+    using output_list      = std::vector<value_type>;
     using description_type = typename output_type::description_type;
+    using types            = std::tuple<Args...>;
 
     PropertyTypeOutputBuilder()               = default;
     PropertyTypeOutputBuilder(const my_type&) = default;
@@ -27,7 +30,8 @@ public:
 
     template<typename T>
     auto add_output(std::string key) {
-        builder_ = ModuleOutputBuilder(outputs_[key]);
+        outputs_.push_back(std::make_pair(std::move(key), output_type{}));
+        builder_ = ModuleOutputBuilder(outputs_.back().second);
         builder_.type<T>();
         new_output<T> temp;
         temp.swap(*this);
@@ -39,7 +43,7 @@ public:
         return *this;
     }
 
-    output_map&& finalize() { return std::move(outputs_); }
+    output_list&& finalize() { return std::move(outputs_); }
 
 private:
     template<typename... OtherArgs>
@@ -51,7 +55,7 @@ private:
         std::swap(builder_, other.builder_);
     }
 
-    output_map outputs_;
+    output_list outputs_;
     ModuleOutputBuilder builder_;
 };
 

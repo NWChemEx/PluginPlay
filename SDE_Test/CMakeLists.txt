@@ -1,6 +1,7 @@
 set(
         SDE_TESTS test_main.cpp
         detail_/TestSDEAny.cpp
+        examples/TestPropertyType.cpp
         TestModuleInput.cpp
         TestModuleOutput.cpp
 #        TestCache.cpp
@@ -20,6 +21,7 @@ cpp_add_executable(
         SOURCES ${SDE_TESTS}
         DEPENDS sde Catch2::Catch2
 )
+target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME test_sde COMMAND test_sde)
 #if(BUILD_PYBINDINGS)
 #    add_python_module(

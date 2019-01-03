@@ -7,6 +7,7 @@ set(SDE_INCLUDES detail_/Memoization.hpp
                  detail_/SDEAny.hpp
                  ModuleInput.hpp
                  ModuleOutput.hpp
+                 PropertyType.hpp
 )
 cpp_add_library(
     sde

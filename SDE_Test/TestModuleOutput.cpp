@@ -21,8 +21,16 @@ template<typename U, typename T>
 static void check_state(ModuleOutput& input, T value, std::string desc = "") {
     check_state(input, desc);
     SECTION("Value") { REQUIRE(input.value<U>() == value); }
-    SECTION("Shared Pointer to Value") {
-        REQUIRE(input.value<typename ModuleOutput::shared_any>().use_count());
+    SECTION("Shared Pointer to Const Value") {
+        auto shared = input.value<std::shared_ptr<const U>>();
+        REQUIRE(*shared == value);
+        REQUIRE(shared.get() == &input.value<const U&>());
+    }
+    SECTION("Shared Pointer to Any") {
+        auto shared      = input.value<typename ModuleOutput::shared_any>();
+        const U& pshared = detail_::SDEAnyCast<const U&>(*shared);
+        REQUIRE(pshared == value);
+        REQUIRE(&pshared == &input.value<const U&>());
     }
 }
 
@@ -141,15 +149,15 @@ TEST_CASE("PropertyTypeOutputBuilder Class") {
 
     SECTION("Add an Output") {
         auto map = builder.add_output<int>("Key").finalize();
-        REQUIRE(map.count("Key") == 1);
-        check_state(map.at("Key"));
+        REQUIRE(map[0].first == "Key");
+        check_state(map[0].second);
     }
 
     auto new_builder = builder.add_output<int>("Key");
 
     SECTION("Description") {
         auto map = new_builder.description("Hi").finalize();
-        check_state(map.at("Key"), "Hi");
+        check_state(map[0].second, "Hi");
     }
 
     SECTION("Can Chain") {
@@ -158,8 +166,10 @@ TEST_CASE("PropertyTypeOutputBuilder Class") {
                      .add_output<int>("Key3")
                      .description("Bye")
                      .finalize();
-        check_state(map.at("Key"));
-        check_state(map.at("Key2"), "Hi");
-        check_state(map.at("Key3"), "Bye");
+        check_state(map[0].second);
+        REQUIRE(map[1].first == "Key2");
+        check_state(map[1].second, "Hi");
+        REQUIRE(map[2].first == "Key3");
+        check_state(map[2].second, "Bye");
     }
 }
