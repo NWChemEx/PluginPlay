@@ -1,30 +1,24 @@
+#include <SDE/detail_/Cache.hpp>
+#include <SDE/detail_/Memoization.hpp>
 #include <SDE/detail_/SDEAny.hpp>
-#include <SDE/attic/Cache.hpp>
-#include <SDE/attic/Memoization.hpp>
 #include <catch2/catch.hpp>
 
-
-const std::string make_hash(double val)
-{
+const std::string make_hash(double val) {
     bphash::Hasher h(bphash::HashType::Hash128);
     h(val);
     return bphash::hash_to_string(h.finalize());
 }
 
-
-
 using namespace SDE;
 
-TEST_CASE("Cache Class")
-{
+TEST_CASE("Cache Class") {
     double val1 = 3.1415;
-    auto key1 = make_hash(val1);
+    auto key1   = make_hash(val1);
 
     double val2 = 2.7183;
-    auto key2 = make_hash(val2);
+    auto key2   = make_hash(val2);
 
-    SECTION("Insert")
-    {
+    SECTION("Insert") {
         Cache cache1;
         cache1.insert(key1, val1);
         REQUIRE(cache1.count(key1) == 1);
@@ -36,8 +30,7 @@ TEST_CASE("Cache Class")
         REQUIRE(cache1.count("some key") == 0);
     }
 
-    SECTION("At")
-    {
+    SECTION("At") {
         Cache cache1;
         cache1.insert(key1, val1);
         double ref_val1 = 3.1415;
@@ -46,8 +39,7 @@ TEST_CASE("Cache Class")
         REQUIRE_THROWS_AS(cache1.at<int>(key1), std::bad_cast);
     }
 
-    SECTION("Reference Counting")
-    {
+    SECTION("Reference Counting") {
         Cache cache1;
         REQUIRE(cache1.get_use_count(key1) == 0);
         cache1.insert(key1, val1);
@@ -68,8 +60,7 @@ TEST_CASE("Cache Class")
         REQUIRE(cache1.get_use_count(key1) == 0);
     }
 
-    SECTION("Iterators")
-    {
+    SECTION("Iterators") {
         Cache cache1;
         REQUIRE(cache1.begin() == cache1.end());
         cache1.insert(key1, val1);
@@ -82,8 +73,7 @@ TEST_CASE("Cache Class")
         REQUIRE(cache1.begin() == cache1.end());
     }
 
-    SECTION("Synchronize")
-    {
+    SECTION("Synchronize") {
         Cache cache1;
         Cache cache2;
         cache1.insert(key1, val1);
@@ -104,6 +94,5 @@ TEST_CASE("Cache Class")
         REQUIRE(cache1 != cache2);
         cache2.synchronize(cache1);
         REQUIRE(cache1 == cache2);
-
     }
 }

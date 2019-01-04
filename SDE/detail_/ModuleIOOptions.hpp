@@ -18,7 +18,7 @@ struct Comparison {
      */
     Comparison(const T thresh) : rhs(thresh){};
 
-    ///Default dtor just frees up the memory used for the threshold
+    /// Default dtor just frees up the memory used for the threshold
     ~Comparison() noexcept = default;
 
     /**
@@ -49,18 +49,19 @@ namespace detail_ {
  */
 class ModuleIOOptions {
 private:
-    ///Helper type for removing the reference on a type
+    /// Helper type for removing the reference on a type
     template<typename T>
     using no_ref = std::remove_reference_t<T>;
 
-    ///The type of a wrapped reference
+    /// The type of a wrapped reference
     template<typename T>
     using ref_wrapper = std::reference_wrapper<no_ref<T>>;
+
 public:
-    ///The type of a human-readable description for the value
+    /// The type of a human-readable description for the value
     using description_type = typename ModuleIO::description_type;
 
-    ///The type of a callback for checking the validity of a new value
+    /// The type of a callback for checking the validity of a new value
     template<typename T>
     using value_checker = typename ModuleIO::value_checker<T>;
 
@@ -86,27 +87,31 @@ public:
      */
     ModuleIOOptions() = delete;
 
-    ModuleIOOptions(const ModuleIOOptions &) = default;
+    ModuleIOOptions(const ModuleIOOptions&) = default;
 
-    ModuleIOOptions &operator=(const ModuleIOOptions &) = delete;
+    ModuleIOOptions& operator=(const ModuleIOOptions&) = delete;
 
-    ModuleIOOptions(ModuleIOOptions &&) = delete;
+    ModuleIOOptions(ModuleIOOptions&&) = delete;
 
-    ModuleIOOptions &operator=(ModuleIOOptions &&) = delete;
+    ModuleIOOptions& operator=(ModuleIOOptions&&) = delete;
 
-    ModuleIOOptions(ModuleIO &parent) : parent_(&parent) {}
+    ModuleIOOptions(ModuleIO& parent) : parent_(&parent) {}
     //@}
 
-    ///Basic dtor, nothing special aside from it being virtual
+    /// Basic dtor, nothing special aside from it being virtual
     virtual ~ModuleIOOptions() = default;
 
-    ///Sets the type of the input/output to @p T
+    /// Sets the type of the input/output to @p T
     template<typename T>
-    ModuleIOOptions& type() { parent_->set_type<T>(); return *this; }
+    ModuleIOOptions& type() {
+        parent_->set_type<T>();
+        return *this;
+    }
 
-    ///Sets the description of the input/output to @p desc
+    /// Sets the description of the input/output to @p desc
     ModuleIOOptions& description(description_type desc) {
-        parent_->desc = std::move(desc); return *this;
+        parent_->desc = std::move(desc);
+        return *this;
     }
 
     //@{
@@ -127,26 +132,26 @@ public:
     template<typename T>
     ModuleIOOptions& check(GreaterThan<T> new_check) {
         auto desc =
-            "Ensures value is greater than " + std::to_string(new_check.rhs);
+          "Ensures value is greater than " + std::to_string(new_check.rhs);
         return check(new_check, desc);
     }
 
     template<typename T>
     ModuleIOOptions& check(LessThan<T> new_check) {
         auto desc =
-            "Ensures value is less than " + std::to_string(new_check.rhs);
+          "Ensures value is less than " + std::to_string(new_check.rhs);
         return check(new_check, desc);
     }
 
     template<typename T>
     ModuleIOOptions& check(value_checker<T> new_check,
-                           description_type desc = ""){
+                           description_type desc = "") {
         parent_->add_check(new_check);
         return *this;
     }
     //@}
 
-    ///Sets the default value to @p value, assuming @p value is valid.
+    /// Sets the default value to @p value, assuming @p value is valid.
     template<typename T>
     ModuleIOOptions& default_value(T&& value) {
         parent_->change(std::forward<T>(value));
@@ -154,7 +159,7 @@ public:
     }
 
 private:
-    ///The instance whose state we are modifying
+    /// The instance whose state we are modifying
     ModuleIO* parent_;
 };
 
@@ -163,23 +168,25 @@ private:
  *  This class is literally a wrapper over ModuleIOOptions. See ModuleIOOptions
  *  for more details on usage.
  */
-class ModuleOutputOptions : private ModuleIOOptions {
+class ModuleOutputOptions {
 public:
-    ///Makes a new ModuleOutputOptions instance that fills in @p parent
+    /// Makes a new ModuleOutputOptions instance that fills in @p parent
     ModuleOutputOptions(ModuleOutput& parent) :
-        ModuleIOOptions(parent), my_parent_(&parent) {}
-    ///Copy ctor so instances can be returned
+      ModuleIOOptions(parent),
+      my_parent_(&parent) {}
+    /// Copy ctor so instances can be returned
     ModuleOutputOptions(const ModuleOutputOptions& rhs) = default;
 
-    //Pull base class's members into scope
-    using ModuleIOOptions::type;
-    using ModuleIOOptions::description;
+    // Pull base class's members into scope
+
     using ModuleIOOptions::check;
     using ModuleIOOptions::default_value;
+    using ModuleIOOptions::description;
+    using ModuleIOOptions::type;
 
 private:
-    ///Pointer to the ModuleOutput instance we're modifying (name differs from
-    ///base class member to avoid shadowing).
+    /// Pointer to the ModuleOutput instance we're modifying (name differs from
+    /// base class member to avoid shadowing).
     ModuleOutput* my_parent_;
 };
 
@@ -194,44 +201,46 @@ private:
  */
 class ModuleInputOptions : private ModuleIOOptions {
 public:
-    ///Makes an instance that sets the state of @p parent.
+    /// Makes an instance that sets the state of @p parent.
     ModuleInputOptions(ModuleInput& parent) :
-        ModuleIOOptions(parent), my_parent_(&parent) {}
+      ModuleIOOptions(parent),
+      my_parent_(&parent) {}
 
-    ///Copy ctor so we can return an instance from a function
+    /// Copy ctor so we can return an instance from a function
     ModuleInputOptions(const ModuleInputOptions& rhs) = default;
 
-    //Brings the base class's members into scope
-    using ModuleIOOptions::type;
-    using ModuleIOOptions::description;
+    // Brings the base class's members into scope
     using ModuleIOOptions::check;
-    using ModuleIOOptions::default_value;        
+    using ModuleIOOptions::default_value;
+    using ModuleIOOptions::description;
+    using ModuleIOOptions::type;
 
-    ///Marks the input as transparent (does not influence hashing)
-    ModuleInputOptions& transparent(){
+    /// Marks the input as transparent (does not influence hashing)
+    ModuleInputOptions& transparent() {
         my_parent_->is_transparent = true;
         return *this;
     }
 
-    ///Marks the input as opaque (influences hashing), this is the default
-    ModuleInputOptions& opaque(){
+    /// Marks the input as opaque (influences hashing), this is the default
+    ModuleInputOptions& opaque() {
         my_parent_->is_transparent = false;
         return *this;
     }
 
-    ///Marks the input as optional (the module can run without a value)
-    ModuleInputOptions& optional(){
+    /// Marks the input as optional (the module can run without a value)
+    ModuleInputOptions& optional() {
         my_parent_->is_optional = true;
         return *this;
     }
 
-    ///Marks the input as required for the module to run, this is the default
-    ModuleInputOptions& required(){
+    /// Marks the input as required for the module to run, this is the default
+    ModuleInputOptions& required() {
         my_parent_->is_optional = false;
         return *this;
     }
+
 private:
-    ///The instance we are setting the state of
+    /// The instance we are setting the state of
     ModuleInput* my_parent_;
 };
 } // namespace detail_

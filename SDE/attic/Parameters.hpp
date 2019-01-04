@@ -1,7 +1,6 @@
 #pragma once
-#include "Memoization.hpp"
 #include "Option.hpp"
-#include "SDE/detail_/SDEAny.hpp"
+#include "SDE/detail_/Memoization.hpp"
 #include "SDE/detail_/SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>

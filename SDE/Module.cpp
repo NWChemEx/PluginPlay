@@ -1,28 +1,22 @@
-#include "SDE/Module.hpp"
+#include "SDE/detail_/ModulePIMPL.hpp"
 
 namespace SDE {
-namespace detail_ {
 
-class ModulePIMPL {
-public:
-    using submodule_map = std::map<std::string, Module>;
-    using input_type = typename Module::input_type;
-    using result_type = typename Module::result_type;
+using output_type = typename Module::output_type;
+using output_map  = typename Module::output_map;
+using input_type  = typename Module::input_type;
+using input_map   = typename Module::input_map;
 
-    submodule_map submodules() { return submodules_; }
+Module::Module() : pimpl_(std::make_unique<detail_::ModulePIMPL>()) {}
+Module::Module(const Module& rhs) :
+    pimpl_(std::make_unique<detail_::ModulePIMPL>(*rhs.pimpl_))
+Module& operator=(const Module& rhs) {
+    return *this = std::move(Module(rhs));
+}
+Module::Module(Module&& rhs) = default;
+Module& operator=(Module&& rhs) = default;
+Module::~Module()               = default;
 
-    result_type run(const input_type& params) {
+output_map Module::run(input_map ps) { return pimpl_->run(std::move(ps)); }
 
-    }
-private:
-    std::unique_ptr<ModuleBase> impl_;
-    submodule_map submodules_;
-    //Cache cache_;
-    input_type inputs_;
-
-};
-
-
-bool Module::can_be_run_as_(inputs, outputs) {}
-
-}}
+} // namespace SDE

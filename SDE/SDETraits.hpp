@@ -3,16 +3,13 @@
 #include <typeindex>
 
 namespace SDE {
+namespace detail_ {
 
-struct SubmoduleRequest {
+struct SDETraits {
     using description_type = std::string;
+    using key_type         = std::string;
     using rtti_type        = std::type_index;
-
-    description_type desc;
-
-    rtti_type property_type;
-
-    std::shared_ptr<Module> module;
 };
 
+} // namespace detail_
 } // namespace SDE

@@ -1,6 +1,5 @@
 #pragma once
-#include "Memoization.hpp"
-#include "SDE/detail_/SDEAny.hpp"
+#include "SDE/detail_/Memoization.hpp"
 #include "SDE/detail_/SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <Utilities/SmartEnum.hpp>
@@ -17,38 +16,6 @@ class PyOption;
 // Forward declaration
 template<typename T>
 struct OptionHelper;
-
-/**
- * @brief Class which compares a given value against a threshold
- * @tparam T type of the Option value to check.
- * @tparam op function which accepts two Ts and returns a bool
- */
-template<typename T, typename op>
-struct Comparison {
-    /// The threshold to compare against
-    T rhs;
-
-    /**
-     * @brief Constructor which takes a threshold to compare against
-     * @param thresh value to compare against
-     */
-    Comparison(const T thresh) : rhs(thresh){};
-    ~Comparison() noexcept = default;
-
-    /**
-     * @brief Returns true if op(lhs,rhs) is true
-     * @param lhs
-     * @return bool from result of op(lhs,rhs)
-     */
-    bool operator()(const T& lhs) const { return op()(lhs, rhs); }
-};
-
-/// Comparison using std::greater
-template<typename T>
-using GreaterThan = Comparison<T, std::greater<T>>;
-/// Comparison using std::less
-template<typename T>
-using LessThan = Comparison<T, std::less<T>>;
 
 /**
  * @brief Possible traits an option can have.

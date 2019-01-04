@@ -1,5 +1,5 @@
 #pragma once
-#include <SDE/attic/Memoization.hpp>
+#include <SDE/detail_/Memoization.hpp>
 
 /** @file Pythonization.hpp File for factoring out ifdefs related to Python
  *        bindings.
@@ -71,7 +71,7 @@ pyobject pycast(const T& value) {
     throw std::runtime_error("Python Bindings were not enabled!");
 }
 
-void hash_object(const pyobject& cls, SDE::Hasher& h) { h(cls); }
+inline void hash_object(const pyobject& cls, SDE::Hasher& h) { h(cls); }
 
 } // namespace SDE
 #endif

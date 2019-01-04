@@ -1,76 +1,66 @@
 #pragma once
-#include "SDE/detail_/SDEAny.hpp"
 #include "SDE/detail_/Memoization.hpp"
+#include "SDE/detail_/SDEAny.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <functional>
-
-
-
+#include <typeindex>
 namespace SDE {
 namespace detail_ {
 
-/** @brief Code factorization for members/state of ModuleInput and ModuleOutput
- *  classes.
+/** @brief Code common to all I/O to a module.
  *
- *  Together the ModuleIO, ModuleInput, and ModuleOutput classes form what we
- *  call the "module input/output classes" or "module I/O classes" for short.
- *  The present class, ModuleIO, is a base class containing functionality common
- *  to the other module I/O classes. ModuleIO is not meant to be used directly,
- *  rather classes wanting to interact with a module's input and output should
- *  work directly with ModuleInput/ModuleOutput depending on which aspect they
- *  intend to interact with.
- *
- *  The module I/O classes each hold an input or output value and some metadata
- *  associated with that value. Since there is a rather large number of metadata
- *  parameters associated with any given value we have chosen to adopt the
- *  builder pattern for initialization (
- *  [wikipedia](https://en.wikipedia.org/wiki/Builder_pattern)).  Basically,
- *  what this amounts to is when a module developer declares, say an input, they
- *  do so like:
- *
- *  ```
- *  add_input<int>("input name");
- *  ```
- *
- *  This makes an input parameter accessible with the key `"input name"` that is
- *  of type `int`. The `add_input` function returns a builder object of type
- *  ModuleInput which can be used to initialize the input in a clean manner. For
- *  example extending the above code so that we declare our parameter to be
- *  transparent and have a default value of 4 would be done like:
- *
- *  ```
- *  add_input<int>("input name").transparent().default_value(4);
- *  ```
- *
- *  Here the order of the calls to `transparent` and `default_value` are
- *  irrelevant. Aside from the slightly unique mechanism for initializing the
- *  class the rest of the module I/O classes is pretty straight forward being
- *  made up primarily of getters/setters.
  *
  */
-class ModuleIO {
+class ModuleIOStub {
+public:
+    using description_type = std::string;
+    using rtti_type        = std::type_index;
+
+    const rtti_type& type() const noexcept { return type_; }
+
+    template<typename T>
+    void set_type() noexcept {
+        type_ = rtti_type(typeid(T));
+    }
+
+    template<typename T>
+    bool same_type() const noexcept {
+        return type() == rtti_type(typeid(T));
+    }
+
 private:
-    ///Type of the type-erased holder class
+    rtti_type type_;
+};
+
+class SubmoduleRequest : private ModuleIO {};
+using OutputNotice = ModuleIO;
+
+class ModuleTypeErasedIO : private ModuleIO {
+private:
+    /// Type of the type-erased holder class
     using any_type = SDEAny;
 
-    ///Type of a callback for checking a value via the type-erased holder
-    using check_fxn = std::function<bool(const any_type&)>;
-
-    ///Type w/o the reference
-    template<typename T> using no_ref = std::remove_reference_t<T>;
-
-    ///Type of the class wrapping a reference
-    template<typename T> using ref_wrapper = std::reference_wrapper<no_ref<T>>;
-
 public:
-    ///Type of a value's input
-    using description_type = std::string;
-
-    ///Type user-provided callbacks should satisfy.
+    /// Type user-provided callbacks should satisfy.
     template<typename T>
     using value_checker = std::function<bool(const T&)>;
 
-    ///Basic dtor, virtual because we derive from it, but otherwise not special
+    /// Type of a callback for checking a value via the type-erased holder
+    using check_fxn = std::function<bool(const any_type&)>;
+
+    /// Type w/o the reference
+    template<typename T>
+    using no_ref = std::remove_reference_t<T>;
+
+    /// Type of the class wrapping a reference
+    template<typename T>
+    using ref_wrapper = std::reference_wrapper<no_ref<T>>;
+
+public:
+    /// Type of a value's input
+    using description_type = std::string;
+
+    /// Basic dtor, virtual because we derive from it, but otherwise not special
     virtual ~ModuleIO() = default;
 
     /** @brief Returns the RTTI for values that can be wrapped by this class.
@@ -99,15 +89,13 @@ public:
      */
     template<typename T>
     T value() const {
-        if(is_ref_)
-            return SDEAnyCast<ref_wrapper<T>>(value_).get();
+        if(is_ref_) return SDEAnyCast<ref_wrapper<T>>(value_).get();
         return SDEAnyCast<T>(value_);
     }
 
     template<typename T>
     T value() {
-        if(is_ref_)
-            return SDEAnyCast<ref_wrapper<T>>(value_).get();
+        if(is_ref_) return SDEAnyCast<ref_wrapper<T>>(value_).get();
         return SDEAnyCast<T>(value_);
     }
     //@}
@@ -138,7 +126,7 @@ public:
     template<typename T>
     void change(T&& new_value) {
         auto temp = wrap_value(std::forward<T>(new_value));
-        if (!is_valid_(temp))
+        if(!is_valid_(temp))
             throw std::invalid_argument("Not a valid option value");
         value_.swap(temp);
     }
@@ -153,7 +141,7 @@ public:
      *        class for the value. Strong throw guarantee.
      */
     template<typename T>
-    bool is_valid(T &&test_value) const {
+    bool is_valid(T&& test_value) const {
         return is_valid_(wrap_value(std::forward<T>(test_value)));
     }
 
@@ -168,10 +156,9 @@ public:
      */
     template<typename T>
     void add_check(value_checker<T> check, description_type desc = "") {
-        if (desc == "")
-            desc = "Check #" + std::to_string(checks_.size());
+        if(desc == "") desc = "Check #" + std::to_string(checks_.size());
         auto lambda = [=](const any_type& value) {
-            return check(SDEAnyCast<const T &>(value));
+            return check(SDEAnyCast<const T&>(value));
         };
         checks_[desc] = lambda;
     }
@@ -191,10 +178,10 @@ public:
      *        callback. Strong throw guarantee.
      */
     template<typename T>
-    void set_type(){
-        constexpr bool is_ref = std::is_reference_v<T>;
+    void set_type() {
+        constexpr bool is_ref   = std::is_reference_v<T>;
         constexpr bool is_const = std::is_const_v<no_ref<T>>;
-        using clean_T = std::decay_t<T>;
+        using clean_T           = std::decay_t<T>;
         check_fxn lambda;
         if constexpr(is_ref && is_const)
             lambda = [=](const any_type& value) {
@@ -208,25 +195,29 @@ public:
             lambda = [=](const any_type& value) {
                 return value.type() == typeid(T);
             };
-        add_check_(lambda, "Type Checker"); //may throw, rest is nothrow
-        is_ref_ = is_ref;
+        add_check_(lambda, "Type Checker"); // may throw, rest is nothrow
+        is_ref_       = is_ref;
         is_const_ref_ = is_ref && is_const;
-        type_ = [=]()->const std::type_info& { return typeid(T);};
+        type_         = [=]() -> const std::type_info& { return typeid(T); };
     }
 
-    ///A human-readable description of what this input/output does/is
+    void hash(Hasher& h) { value_.hash(h); }
+
+    /// A human-readable description of what this input/output does/is
     description_type desc = "";
+
 private:
-    ///Type of a map from descriptions to functions working with the check_fxns
+    /// Type of a map from descriptions to functions working with the check_fxns
     using check_map = Utilities::CaseInsensitiveMap<check_fxn>;
 
-    ///Code factorization for wrapping a value in the holder class
+    /// Code factorization for wrapping a value in the holder class
     template<typename T>
     auto wrap_value(T&& test_value) const {
         using clean_T = std::decay_t<T>;
         any_type temp;
         if(is_const_ref_)
-            temp = make_SDEAny<ref_wrapper<const clean_T>>(std::cref(test_value));
+            temp =
+              make_SDEAny<ref_wrapper<const clean_T>>(std::cref(test_value));
         else if(is_ref_)
             temp = make_SDEAny<ref_wrapper<clean_T>>(std::ref(test_value));
         else
@@ -234,35 +225,35 @@ private:
         return temp;
     }
 
-    ///Code factorization and non-templated part of is_valid
-    bool is_valid_(const any_type &test_value) const {
-        for (auto[name, check] : checks_)
-            if (!check(test_value)) return false;
+    /// Code factorization and non-templated part of is_valid
+    bool is_valid_(const any_type& test_value) const {
+        for(auto[name, check] : checks_)
+            if(!check(test_value)) return false;
         return true;
     }
 
-    ///Non-template part of add_check
+    /// Non-template part of add_check
     void add_check_(check_fxn fxn, description_type desc) {
         checks_[desc] = fxn;
     }
 
-    ///A map from descriptions of checks to the callbacks that perform them
+    /// A map from descriptions of checks to the callbacks that perform them
     check_map checks_;
 
-    ///The actual type-erased value we are holding
+    /// The actual type-erased value we are holding
     any_type value_;
 
-    ///Callback for returning the type (callback b/c of type_info's weird
+    /// Callback for returning the type (callback b/c of type_info's weird
     // semantics probably should switch to type_index)
     std::function<const std::type_info&()> type_ =
-        [=]()->const std::type_info& {return typeid(nullptr);};
+      [=]() -> const std::type_info& { return typeid(nullptr); };
 
-    ///True if we are wrapping a reference, false otherwise
-    bool is_ref_ =  false;
-    ///True if we are wrapping a read-only reference, false otherwise.
+    /// True if we are wrapping a reference, false otherwise
+    bool is_ref_ = false;
+    /// True if we are wrapping a read-only reference, false otherwise.
     bool is_const_ref_ = false;
 };
-}
+} // namespace detail_
 
 /** @brief Class for wrapping the output of a module.
  *
@@ -281,12 +272,11 @@ using ModuleOutput = detail_::ModuleIO;
  */
 class ModuleInput : public detail_::ModuleIO {
 public:
-    ///Whether an input is transparent (does not affect the output)
+    /// Whether an input is transparent (does not affect the output)
     bool is_transparent = false;
 
-    ///Whether an input is optional (the module can run without a value)
+    /// Whether an input is optional (the module can run without a value)
     bool is_optional = false;
 };
 
-
-}; //End namespace
+}; // namespace SDE

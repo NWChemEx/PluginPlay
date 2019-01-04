@@ -1,6 +1,6 @@
-#include "SDE/attic/Memoization.hpp"
-#include "SDE/attic/Module.hpp"
 #include "SDE/PyBindings/PySmartEnums.hpp"
+#include "SDE/attic/Module.hpp"
+#include "SDE/detail_/Memoization.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "Cache.hpp"
 #include "SDE/attic/Module.hpp"
+#include "SDE/detail_/Cache.hpp"
 #include <functional>
 #include <string>
 
