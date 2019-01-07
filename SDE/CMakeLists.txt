@@ -1,9 +1,8 @@
-set(SDE_SRCS )
+set(SDE_SRCS ModuleInput.cpp
+             ModuleOutput.cpp
+)
 set(SDE_INCLUDES detail_/Memoization.hpp
-                 detail_/ModuleInputBuilder.hpp
-                 detail_/ModuleOutputBuilder.hpp
-                 detail_/PropertyTypeInputBuilder.hpp
-                 detail_/PropertyTypeOutputBuilder.hpp
+                 detail_/PropertyTypeBuilder.hpp
                  detail_/SDEAny.hpp
                  ModuleInput.hpp
                  ModuleOutput.hpp

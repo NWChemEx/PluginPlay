@@ -13,6 +13,11 @@ struct SubmoduleRequest {
     rtti_type property_type;
 
     std::shared_ptr<Module> module;
+
+    template<typename property_type, typename... Args>
+    auto run_as(Args&&... args) {
+        return module->run_as<property_type>(std::forward<Args>(args)...);
+    }
 };
 
 } // namespace SDE

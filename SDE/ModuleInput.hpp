@@ -1,11 +1,20 @@
 #pragma once
 #include "SDE/detail_/SDEAny.hpp"
-#include <Utilities/Containers/CaseInsensitiveMap.hpp>
 #include <functional>
 #include <string>
-#include <typeindex>
 
 namespace SDE {
+namespace detail_ {
+class ModuleInputPIMPL;
+}
+
+/** @brief Overloads equality operator for reference wrappers.
+ *
+ * @tparam T The type of the object in the reference wrapper
+ * @param lhs
+ * @param rhs
+ * @return
+ */
 template<typename T>
 bool operator==(const std::reference_wrapper<T> lhs,
                 const std::reference_wrapper<T> rhs) {
@@ -14,119 +23,159 @@ bool operator==(const std::reference_wrapper<T> lhs,
 
 class ModuleInput {
 private:
+    /// Helper type for declaring a reference wrapper around an object of type T
     template<typename T>
     using cref_wrapper = std::reference_wrapper<const std::decay_t<T>>;
 
-    template<typename T>
-    using ref_wrapper = std::reference_wrapper<std::decay_t<T>>;
-
-    template<typename T>
-    struct is_c_string : std::false_type {};
-
-    template<std::size_t N>
-    struct is_c_string<const char (&)[N]> : std::true_type {};
-
-    using any_type  = detail_::SDEAny;
-    using any_check = std::function<bool(const any_type&)>;
-
+    /// Helper type for deducing whether or not a type is a const reference
     template<typename T>
     using is_const_ref =
       std::conjunction<std::is_reference<T>,
                        std::is_const<std::remove_reference_t<T>>>;
 
 public:
-    using description_type = std::string;
-    using rtti_type        = std::type_index;
+    /// Type of a check to apply to a value
     template<typename T>
     using validity_check = std::function<bool(const T&)>;
 
-    template<typename T>
-    bool is_valid(T&& new_value) const {
-        // Start by wrapping a const reference in an SDEAny so we can pass it to
-        // each lambda
-        auto wrapped_value =
-          detail_::make_SDEAny<cref_wrapper<T>>(std::cref(new_value));
+    /// The type we use for type-erasure
+    using any_type = detail_::SDEAny;
 
-        // Now run it through all lambdas, short-circuiting if one fails
-        for(auto & [k, v] : checks_)
-            if(!v(wrapped_value)) return false;
+    /// Type of a check that operates on a type-erased value
+    using any_check = validity_check<any_type>;
 
-        return true;
-    }
+    /// Type of the description
+    using description_type = std::string;
 
-    template<typename T>
-    void change(T&& new_value) {
-        if(type_ == rtti_type(typeid(std::nullptr_t)))
-            throw std::runtime_error("Must set type first");
-        using detail_::make_SDEAny;
-        if(!is_valid(new_value))
-            throw std::invalid_argument("Value has failed one or more checks.");
-        any_type temp;
-        if(is_cref_)
-            temp = make_SDEAny<cref_wrapper<T>>(std::cref(new_value));
-        else
-            temp = make_SDEAny<std::decay_t<T>>(std::forward<T>(new_value));
-        value_.swap(temp);
-    }
+    ModuleInput();
+    ModuleInput(const ModuleInput& rhs);
+    ModuleInput& operator=(const ModuleInput& rhs);
+    ModuleInput(ModuleInput&& rhs) noexcept;
+    ModuleInput& operator=(ModuleInput&& rhs) noexcept;
+    ~ModuleInput() noexcept;
 
+    //@{
+    /** @name Getters
+     *
+     *  These are functions for accessing the state of the input.
+     *
+     */
     template<typename T>
     T value() {
-        constexpr bool by_const_ref = is_const_ref<T>::value;
-        constexpr bool by_value     = std::is_same_v<std::decay_t<T>, T>;
-        if constexpr(by_const_ref || by_value)
+        constexpr bool by_value = std::is_same_v<std::decay_t<T>, T>;
+        if constexpr(is_const_ref<T>::value || by_value)
             return const_cast<const ModuleInput&>(*this).value<T>();
-        // Want it presumably by reference
-        return detail_::SDEAnyCast<T>(value_);
+        return detail_::SDEAnyCast<T>(get_());
     }
     template<typename T>
     T value() const {
-        if(is_cref_) return detail_::SDEAnyCast<cref_wrapper<T>>(value_);
-        return detail_::SDEAnyCast<T>(value_);
+        return is_cref_ ? unwrap_cref<T>(get_()) :
+                          detail_::SDEAnyCast<T>(get_());
     }
+    bool is_optional() const noexcept;
+    bool is_transparent() const noexcept;
+    const description_type& description() const noexcept;
+    //@}
 
+    //@{
+    /** @name Setters
+     *
+     * @return All setters return the current object, with the state modified in
+     *         the requested manner to promote chaining.
+     */
     template<typename T>
-    void set_type() {
+    auto& set_type() {
         constexpr bool is_ref   = std::is_reference_v<T>;
-        constexpr bool is_const = std::is_const_v<std::remove_reference_t<T>>;
-        constexpr bool is_const_ref = is_ref && is_const;
-        static_assert(is_const_ref || !is_ref,
+        constexpr bool is_c_ref = is_const_ref<T>::value;
+        static_assert(is_c_ref || !is_ref,
                       "Inputs should be read-only references or by value");
-        is_cref_ = is_const_ref;
-        type_    = rtti_type(typeid(T));
-        add_type_check<T>();
+        is_cref_ = is_c_ref;
+        set_type_(typeid(T));
+        return add_type_check<T>();
     }
 
     template<typename T>
-    void add_check(validity_check<T> check, description_type desc = "") {
-        if(desc == "") desc = "Check #" + std::to_string(checks_.size());
-        any_check temp;
-        using cast_type = cref_wrapper<T>;
-        temp            = [check{std::move(check)}](const any_type& new_value) {
-            return check(detail_::SDEAnyCast<cast_type>(new_value));
+    auto& add_check(validity_check<T> check, description_type desc = "") {
+        any_check temp = [check{std::move(check)}](const any_type& new_value) {
+            return check(ModuleInput::unwrap_cref<T>(new_value));
         };
-        checks_.emplace(std::move(desc), std::move(temp));
+        return add_check_(std::move(temp), std::move(desc));
+    }
+    template<typename T>
+    auto& change(T&& new_value) {
+        if(!is_valid(new_value))
+            throw std::invalid_argument("Value has failed one or more checks");
+        change_(is_cref_ ? wrap_cref(std::forward<T>(new_value)) :
+                           wrap_value(std::forward<T>(new_value)));
+        return *this;
+    }
+    template<typename T>
+    auto& set_default(T&& new_value) {
+        return change(std::forward<T>(new_value));
+    }
+    ModuleInput& set_description(description_type desc) noexcept;
+    ModuleInput& make_optional() noexcept;
+    ModuleInput& make_required() noexcept;
+    ModuleInput& make_transparent() noexcept;
+    ModuleInput& make_opaque() noexcept;
+    //@}
+
+    template<typename T>
+    bool is_valid(T&& new_value) const {
+        return is_valid_(wrap_cref(std::forward<T>(new_value)));
     }
 
-    void hash(Hasher& h) { h(value_); }
-
-    description_type desc = "";
-    bool is_optional      = false;
-    bool is_transparent   = false;
+    void hash(Hasher& h);
 
 private:
+    any_type& get_() {
+        const auto& temp = const_cast<const ModuleInput&>(*this).get_();
+        return const_cast<any_type&>(temp);
+    }
+    const any_type& get_() const;
+
     template<typename T>
-    void add_type_check() {
+    auto& add_type_check() {
         any_check check = [](const any_type& new_value) {
             return new_value.type() == typeid(cref_wrapper<T>);
         };
-        checks_["Type Check"] = std::move(check);
+        return add_check_(std::move(check), "Type Check");
     }
 
-    bool is_cref_   = false;
-    rtti_type type_ = rtti_type(typeid(std::nullptr_t));
+    template<typename T>
+    static T unwrap_cref(const any_type& the_value) {
+        return detail_::SDEAnyCast<cref_wrapper<T>>(the_value);
+    }
 
-    Utilities::CaseInsensitiveMap<any_check> checks_;
-    any_type value_;
+    template<typename T>
+    static auto wrap_cref(T&& new_value) {
+        return detail_::make_SDEAny<cref_wrapper<T>>(
+          std::cref(std::forward<T>(new_value)));
+    }
+
+    template<typename T>
+    static auto wrap_value(T&& new_value) {
+        using clean_T = std::decay_t<T>;
+        return detail_::make_SDEAny<clean_T>(std::forward<T>(new_value));
+    }
+
+    void change_(any_type new_value);
+    bool is_valid_(const any_type& new_value) const;
+    void set_type_(const std::type_info& type) noexcept;
+
+    /**
+     *
+     * @param check
+     * @param desc
+     * @return
+     * @throws std::bad_alloc if there is insufficient memory to generate the
+     *         description (if one is not provided) or the storage element.
+     *         Strong throw guarantee.
+     */
+    ModuleInput& add_check_(any_check check, description_type desc);
+
+    bool is_cref_ = false;
+    std::unique_ptr<detail_::ModuleInputPIMPL> pimpl_;
 };
 
 } // namespace SDE

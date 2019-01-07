@@ -1,24 +1,17 @@
 #pragma once
-#include "SDE/detail_/PropertyTypeInputBuilder.hpp"
-#include "SDE/detail_/PropertyTypeOutputBuilder.hpp"
+#include "SDE/ModuleInput.hpp"
+#include "SDE/ModuleOutput.hpp"
+#include "SDE/detail_/PropertyTypeBuilder.hpp"
 
 namespace SDE {
 
-/**
- *
- * @note Since the order of the inputs/outputs maps to the order of the run
- *       function we can't use the actual user-facing classes,
- */
 template<typename derived_type>
 class PropertyType {
 public:
-    using input_type = typename detail_::PropertyTypeInputBuilder<>::input_type;
-    using input_list = typename detail_::PropertyTypeInputBuilder<>::input_list;
-    using output_type =
-      typename detail_::PropertyTypeOutputBuilder<>::output_type;
-    using output_list =
-      typename detail_::PropertyTypeOutputBuilder<>::output_list;
-    using key_type = std::string;
+    using input_type     = ModuleInput;
+    using input_builder  = detail_::PropertyTypeBuilder<input_type>;
+    using output_type    = ModuleOutput;
+    using output_builder = detail_::PropertyTypeBuilder<output_type>;
 
     static input_list inputs() { return input_builder_().finalize(); }
 
@@ -43,31 +36,34 @@ public:
     }
 
 protected:
-    template<typename T>
-    auto add_input(key_type key) {
-        detail_::PropertyTypeInputBuilder temp;
-        return temp.add_input<T>(std::move(key));
-    }
+    static auto declare_input() { return input_builder{}; }
 
-    template<typename T>
-    auto add_output(key_type key) {
-        detail_::PropertyTypeOutputBuilder temp;
-        return temp.add_output<T>(std::move(key));
-    }
+    static auto declare_output() { return output_builder_{}; }
 
 private:
     using my_type = PropertyType<derived_type>;
 
-    static auto input_builder_() {
+    //@{
+    /** @name compile-time polymorphism hooks
+     *
+     * The derived class is responsible for implementing our API. Ideally we
+     * want this API to be as simple as possible. The trick to this is to use a
+     * series of wrappers around the actual hooks instead of calling the hooks
+     * directly. By doing this we can more or less insulate our code from the
+     * qualifiers/lack of qualifiers the derived class applies to each of the
+     * hooks. For example, in a perfect world, the derived class would declare
+     * each hook as static, but I anticipate most developers will not do so.
+     */
+    static auto inputs_wrapper_() {
         derived_type parent;
         return parent.inputs_();
     }
 
-    static auto output_builder_() {
+    static auto outputs_wrapper_() {
         derived_type parent;
         return parent.outputs_();
     }
-
+    //@}
     template<std::size_t ArgI, typename T, typename... Args>
     static void wrap_inputs_(input_list& params, T&& value, Args&&... args) {
         using input_tuple = typename decltype(my_type::input_builder_())::types;
@@ -98,13 +94,6 @@ private:
             return std::tuple_cat(std::move(lhs), std::move(rhs));
         }
     }
-    //
-    //    auto set_output_(output_map& results, const output_list& output) {
-    //         return std::make_tuple(
-    //             results.at(output[ArgI])
-    //                    .value<std::tuple_element_t<ArgI, output_types>()...
-    //         );
-    //    }
 }; // End class PropertyType
 
 } // namespace SDE

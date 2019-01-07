@@ -20,14 +20,18 @@
 class Area : public SDE::PropertyType<Area> {
 public:
     auto inputs_() {
-        return add_input<double>("Dimension 1")
-          .description("The length of the first dimension")
-          .add_input<double>("Dimension 2")
-          .description("The length of the second dimension");
+        auto rv = declare_input()
+                    .add_field<double>("Dimension 1")
+                    .add_field<double>("Dimension 2");
+        rv["Dimension 1"].set_description("The length of the 1st dimension");
+        rv["Dimension 2"].set_description("The length of the 2nd dimension");
+        return rv;
     }
 
     auto outputs_() {
-        return add_output<double>("Area").description("The area of the shape");
+        auto rv = declare_output().add_field<double>("Area");
+        rv["Area"].set_description("The area of the shape");
+        return rv;
     }
 };
 
@@ -43,14 +47,18 @@ public:
 class PrismVolume : public SDE::PropertyType<PrismVolume> {
 public:
     auto inputs_() {
-        return add_input<const std::vector<double>&>("Dimensions")
-          .description("The length of each dimension");
+        auto rv =
+          declare_input().add_field<const std::vector<double>&>("Dimensions");
+        rv["Dimensions"].set_description("The length of each dimension");
+        return rv;
     }
 
     auto outputs_() {
-        return add_output<double>("Base area")
-          .description("The area of the base")
-          .add_output<double>("Volume")
-          .description("The volume of the prism");
+        auto rv = declare_output()
+                    .declare_field<double>("Base area")
+                    .declare_field<double>("Volume");
+        rv["Base area"].set_description("The area of the base");
+        rv["Volume"].set_description("The volume of the prism");
+        return rv;
     }
 };
