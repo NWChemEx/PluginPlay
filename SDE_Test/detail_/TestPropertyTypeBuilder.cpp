@@ -6,11 +6,10 @@ using PropertyTypeInputBuilder =
   SDE::detail_::PropertyTypeBuilder<SDE::ModuleInput>;
 
 template<typename T>
-void check_state(T& builder, std::vector<std::string> keys) {
-    REQUIRE(builder.size() == keys.size());
-    for(size_t i = 0; i < keys.size(); ++i) {
-        REQUIRE(i == builder.position(keys[i]));
-    }
+void check_state(T& builder, std::vector<std::string> corr_keys) {
+    REQUIRE(builder.size() == corr_keys.size());
+    auto keyi = corr_keys.begin();
+    for(auto[k, v] : builder) REQUIRE(k == *keyi++);
 }
 
 TEST_CASE("PropertyTypeBuilder") {
@@ -25,7 +24,7 @@ TEST_CASE("PropertyTypeBuilder") {
     }
 
     PropertyTypeInputBuilder builder;
-    keys.push_back("key1");
+    keys.emplace_back("key1");
 
     SECTION("Add field") {
         auto new_builder = builder.add_field<int>("key1");
@@ -43,7 +42,7 @@ TEST_CASE("PropertyTypeBuilder") {
 
     SECTION("Can add second field") {
         auto newer_builder = new_builder.add_field<double>("key2");
-        keys.push_back("key2");
+        keys.emplace_back("key2");
         check_state(newer_builder, keys);
     }
 }

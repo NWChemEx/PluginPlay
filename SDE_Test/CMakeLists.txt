@@ -2,6 +2,7 @@ set(
         SDE_TESTS test_main.cpp
         detail_/TestSDEAny.cpp
         detail_/TestPropertyTypeBuilder.cpp
+        examples/TestPropertyType.cpp
         TestModuleInput.cpp
         TestModuleOutput.cpp
 #        TestCache.cpp

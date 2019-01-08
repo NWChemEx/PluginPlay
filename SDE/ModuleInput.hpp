@@ -65,12 +65,20 @@ public:
         constexpr bool by_value = std::is_same_v<std::decay_t<T>, T>;
         if constexpr(is_const_ref<T>::value || by_value)
             return const_cast<const ModuleInput&>(*this).value<T>();
+        /* Want it by reference. Normally the any cast will catch this and
+         * throw an error; however, we have one edge case to worry about:
+         * we're supposedly storing a const reference, but the user gave us the
+         * object by value (hence we're actually storing the object by value).
+         * This
+         * is an implementation detail, so we fake the cast.
+         */
+        if(is_cref_) throw std::bad_cast();
         return detail_::SDEAnyCast<T>(get_());
     }
     template<typename T>
     T value() const {
-        return is_cref_ ? unwrap_cref<T>(get_()) :
-                          detail_::SDEAnyCast<T>(get_());
+        return is_actually_cref_ ? unwrap_cref<T>(get_()) :
+                                   detail_::SDEAnyCast<T>(get_());
     }
     bool is_optional() const noexcept;
     bool is_transparent() const noexcept;
@@ -103,10 +111,41 @@ public:
     }
     template<typename T>
     auto& change(T&& new_value) {
+        constexpr bool is_value = std::is_same_v<T, std::decay_t<T>>;
         if(!is_valid(new_value))
             throw std::invalid_argument("Value has failed one or more checks");
-        change_(is_cref_ ? wrap_cref(std::forward<T>(new_value)) :
-                           wrap_value(std::forward<T>(new_value)));
+        any_type da_any;
+
+        /* Fun time. The SDE supports modules taking arguments in one of two
+         * ways:
+         * 1. By const reference (read-only)
+         * 2. By value
+         *
+         * When setting the actual value there's no stipulation requiring the
+         * user to provide us that value in the same form. Specifically they
+         * can provide us the value:
+         * 1. In read/write mode (by reference)
+         * 2. In read-only mode (by constant reference)
+         * 3. By value (constructed it in place)
+         *
+         * Of these three possible inputs, number 3 is the easiest. We basically
+         * just take ownership of it. For the other types of input what we do
+         * depends on how it's going to be used. If the value will be used in a
+         * read-only manner we just make a reference wrapper around it,
+         * otherwise we copy it.
+         */
+        if constexpr(is_value) { // User gave us the input by value
+            da_any            = wrap_value(std::forward<T>(new_value));
+            is_actually_cref_ = false;
+        } else {
+            if(is_cref_) {
+                da_any            = wrap_cref(std::forward<T>(new_value));
+                is_actually_cref_ = true;
+            } else {
+                da_any = wrap_value(std::forward<T>(new_value));
+            }
+        }
+        change_(da_any);
         return *this;
     }
     template<typename T>
@@ -174,7 +213,8 @@ private:
      */
     ModuleInput& add_check_(any_check check, description_type desc);
 
-    bool is_cref_ = false;
+    bool is_cref_          = false;
+    bool is_actually_cref_ = false;
     std::unique_ptr<detail_::ModuleInputPIMPL> pimpl_;
 };
 

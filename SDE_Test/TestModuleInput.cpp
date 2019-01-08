@@ -68,25 +68,44 @@ TEST_CASE("ModuleInput Class") {
         }
         SECTION("Stored By Value") {
             input.set_type<int>();
-            input.change(value);
-            check_state<int>(input, value);
-            int& pvalue = input.value<int&>();
-            SECTION("Makes a Copy") { REQUIRE(&pvalue != &value); }
-            SECTION("Can be modified") {
-                pvalue = four;
-                check_state<int>(input, four);
+            SECTION("Passed by reference") {
+                input.change(value); // std::forward will take this as a ref
+                check_state<int>(input, value);
+                int& pvalue = input.value<int&>();
+                SECTION("Makes a Copy") { REQUIRE(&pvalue != &value); }
+                SECTION("Can be modified") {
+                    pvalue = four;
+                    check_state<int>(input, four);
+                }
+            }
+            SECTION("Passed by value") {
+                input.change(int{3});
+                check_state<int>(input, value);
+                SECTION("Can be modified") {
+                    input.value<int&>() = four;
+                    check_state<int>(input, four);
+                }
             }
         }
         SECTION("Stored By Reference") {
             input.set_type<const int&>();
-            input.change(value);
-            check_state<const int&>(input, value);
-            SECTION("Can't Get Read/Write Version") {
-                REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
+            SECTION("Passed by reference") {
+                input.change(value);
+                check_state<const int&>(input, value);
+                SECTION("Can't Get Read/Write Version") {
+                    REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
+                }
+                SECTION("Is by reference") {
+                    const int& pvalue = input.value<const int&>();
+                    REQUIRE(&pvalue == &value);
+                }
             }
-            SECTION("Is by reference") {
-                const int& pvalue = input.value<const int&>();
-                REQUIRE(&pvalue == &value);
+            SECTION("Passed by value") {
+                input.change(int{3});
+                check_state<const int&>(input, value);
+                SECTION("Can't Get Read/Write Version") {
+                    REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
+                }
             }
         }
     }

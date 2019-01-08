@@ -1,6 +1,8 @@
 #pragma once
 #include "SDE/ModuleInput.hpp"
 #include "SDE/ModuleOutput.hpp"
+#include "SDE/SubmoduleRequest.hpp"
+#include <Utilities/Containers/CaseInsensitiveMap.hpp>
 
 namespace SDE {
 namespace detail_ {
@@ -13,6 +15,8 @@ public:
     using input_map   = Utilities::CaseInsensitiveMap<input_type>;
     using output_type = ModuleOutput;
     using output_map  = Utilities::CaseInsensitiveMap<output_type>;
+    using submod_type = SubmoduleRequest;
+    using submod_map  = Utilities::CaseInsensitiveMap<submod_type>;
     using key_type    = std::string;
 
     Module();
@@ -27,7 +31,7 @@ public:
     auto run_as(Args&&... args) {
         auto temp = property_type::wrap_inputs(std::forward<Args>(args)...);
         input_map params = inputs();
-        for(auto kv : temp) params.at(kv.first).change(std::move(kv.second));
+        for(auto[k, v] : temp) params.at(k).change(std::move(v));
         auto results = run(params);
         return property_type::unwrap_outputs(results);
     }
@@ -38,10 +42,6 @@ public:
         return const_cast<input_map&>(input);
     }
     const output_map& outputs() const;
-    output_map& outputs() {
-        const auto& output = const_cast<const Module&>(*this).outputs();
-        return const_cast<output_map&>(output);
-    }
     const submod_map& submods() const;
     submod_map& submods() {
         const auto& submod = const_cast<const Module&>(*this).submods();
@@ -51,7 +51,7 @@ public:
     output_map run(input_map ps);
 
 private:
-    std::unique_ptr<ModulePIMPL> pimpl_;
+    std::unique_ptr<detail_::ModulePIMPL> pimpl_;
 };
 
 } // namespace SDE

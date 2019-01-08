@@ -26,6 +26,17 @@ public:
         rv["Dimension 1"].set_description("The length of the 1st dimension");
         rv["Dimension 2"].set_description("The length of the 2nd dimension");
         return rv;
+        /* Syntax 2:
+         *
+         * return declare_input().
+         *   add_field(
+         *      add_input<double>("Dimension 1").set_description("...")
+         *   ).
+         *   add_field(
+         *      add_input<double>("Dimension 2").set_description("...")
+         *   );
+         *
+         */
     }
 
     auto outputs_() {
@@ -55,8 +66,8 @@ public:
 
     auto outputs_() {
         auto rv = declare_output()
-                    .declare_field<double>("Base area")
-                    .declare_field<double>("Volume");
+                    .add_field<double>("Base area")
+                    .add_field<double>("Volume");
         rv["Base area"].set_description("The area of the base");
         rv["Volume"].set_description("The volume of the prism");
         return rv;

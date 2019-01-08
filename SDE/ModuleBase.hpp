@@ -1,30 +1,55 @@
 #pragma once
-#include "SDE/detail_/ModuleInputBuilder.hpp"
-#include "SDE/detail_/ModuleOutputBuilder.hpp"
-#include "SDE/
+#include "SDE/ModuleInput.hpp"
+#include "SDE/ModuleOutput.hpp"
+#include "SDE/SubmoduleRequest.hpp"
+#include <Utilities/Containers/CaseInsensitiveMap.hpp>
 
 namespace SDE {
 
 class ModuleBase {
 public:
-    using input_type     = typename detail_::ModuleInputBuilder::input_type;
+    using input_type     = ModuleInput;
     using input_map      = Utilities::CaseInsensitiveMap<input_type>;
-    using output_type    = typename detail_::ModuleOutputBuilder::output_type;
+    using output_type    = ModuleOutput;
     using output_map     = Utilities::CaseInsensitiveMap<output_type>;
     using submod_request = SubmoduleRequest;
     using submod_map     = Utilities::CaseInsensitiveMap<submod_request>;
+    using hash_type      = std::string;
 
-    output_map run(input_map inputs, submod_map submods) {
-        // Hash inputs and submods
-        // Check cache, return if present
+    //@{
+    /** @name Ctors and Assignment Operators
+     *
+     *  ModuleBase is meant to be inherited from. In order to avoid the user
+     *  having to perform polymorphic copies/moves correctly, we simply disable
+     *  copying/moving ModuleBase objects. While this may sound extreme, note
+     *  that ModuleBase objects are simply PIMPLs in Module objects. The Module
+     *  class can be safely copied and moved thanks to it only holding a pointer
+     *  to the ModuleBase object.
+     */
+    ModuleBase()                      = default;
+    ModuleBase(const ModuleBase& rhs) = delete;
+    ModuleBase& operator=(const MoleculeBase& rhs) = delete;
+    ModuleBase(ModuleBase&& rhs)                   = delete;
+    ModuleBase& operator=(ModuleBase&& rhs) = delete;
+    //@}
+    virtual ~ModuleBase() = default;
 
-        auto output = run_(std::move(inputs), std::move(submods));
-
-        // Cache output, return cached output
-        return output;
+    output_map run(input_map inputs, submod_map submods) const {
+        return run_(std::move(inputs), std::move(submods));
     }
 
-    output_map outputs const { return outputs_; }
+    hash_type memoize(const input_map& inputs,
+                      const submod_map& submods) const {
+        bphash::Hasher h(bphash::HashType::Hash128);
+        for(const auto & [k, v] : inputs) v.hash(h);
+        for(const auto & [k, v] : submods) v.hash(h);
+        return bphash::hash_to_string(h.finalize());
+    }
+
+    const output_map& outputs() const { return outputs_; }
+    output_map& outputs() { return outputs_; }
+    const input_map& inputs() const { return inputs_; }
+    input_map& inputs() { return inputs_; }
 
 protected:
     void description(description_type desc) { desc_ = std::move(desc); }
@@ -35,28 +60,26 @@ protected:
 
     template<typename T>
     auto add_input(key_type key) {
-        detail_::ModuleInputBuilder temp(inputs_[key]);
-        return temp.type<T>();
+        return inputs_[key].set_type<T>();
     }
 
     template<typename T>
     auto add_output(key_type key) {
-        detail_::ModuleOutputBuilder temp(outputs_[key]);
-        return temp.type<T>();
+        return outputs_[key].set_type<T>();
     }
 
     template<typename property_type>
-    void add_submodule(key_type key, key_type desc = "") {
-        submod_request temp{std::move(desc),
-                            std::type_index(typeid(property_type))};
-        submods_.emplace(std::move(key), std::move(temp));
+    void add_submodule(key_type key) {
+        return submods_[key].set_type<T>();
     }
 
     template<typename property_type>
     void satisfies_property_type() {
         property_type p;
-        for(auto&& input : p.inputs()) inputs_.insert(std::move(input));
-        for(auto&& output : p.outputs()) outputs_.insert(std::move(output));
+        auto inputs = p.inputs();
+        inputs_.insert(inputs.begin(), inputs.end());
+        auto outputs = p.outputs();
+        outputs_.insert(outputs.begin(), outputs.end());
     }
 
 private:
@@ -74,7 +97,7 @@ private:
     std::vector<description_list> references_;
     //@}
 
-    virtual output_map run_(input_map inputs, submod_map submods) = 0;
+    virtual output_map run_(input_map inputs, submod_map submods) const = 0;
 };
 
 } // namespace SDE

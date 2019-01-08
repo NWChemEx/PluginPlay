@@ -15,10 +15,10 @@ TEST_CASE("Area Property Type") {
     SECTION("Inputs") {
         auto inputs = pt.inputs();
         REQUIRE(inputs.size() == 2);
-        REQUIRE(inputs[0].first == "Dimension 1");
-        REQUIRE(inputs[0].second.desc == "The length of the first dimension");
-        REQUIRE(inputs[1].first == "Dimension 2");
-        REQUIRE(inputs[1].second.desc == "The length of the second dimension");
+        REQUIRE(inputs["Dimension 1"].description() ==
+                "The length of the 1st dimension");
+        REQUIRE(inputs["Dimension 2"].description() ==
+                "The length of the 2nd dimension");
     }
 
     SECTION("Wrap Inputs") {
@@ -26,22 +26,21 @@ TEST_CASE("Area Property Type") {
         // pt.wrap_inputs(std::string{"Hi"}, double{3.14});
         auto inputs = pt.wrap_inputs(double{1.23}, double{4.56});
         REQUIRE(inputs.size() == 2);
-        REQUIRE(inputs[0].second.value<double>() == 1.23);
-        REQUIRE(inputs[1].second.value<double>() == 4.56);
+        REQUIRE(inputs["Dimension 1"].value<double>() == 1.23);
+        REQUIRE(inputs["Dimension 2"].value<double>() == 4.56);
     }
 
     SECTION("Outputs") {
         auto outputs = pt.outputs();
         REQUIRE(outputs.size() == 1);
-        REQUIRE(outputs[0].first == "Area");
-        REQUIRE(outputs[0].second.desc == "The area of the shape");
+        REQUIRE(outputs["Area"].description() == "The area of the shape");
     }
 
     SECTION("Unwrap Outputs") {
         auto outputs = pt.outputs();
-        outputs[0].second.change(double{1.23});
+        outputs["Area"].change(double{1.23});
         std::map<std::string, SDE::ModuleOutput> results;
-        results.emplace(outputs[0]);
+        results.emplace("Area", outputs["Area"]);
         double area = pt.unwrap_outputs(results);
         REQUIRE(area == 1.23);
     }
@@ -52,8 +51,8 @@ TEST_CASE("PrismVolume Property Type") {
     SECTION("Inputs") {
         auto inputs = pt.inputs();
         REQUIRE(inputs.size() == 1);
-        REQUIRE(inputs[0].first == "Dimensions");
-        REQUIRE(inputs[0].second.desc == "The length of each dimension");
+        REQUIRE(inputs["Dimensions"].description() ==
+                "The length of each dimension");
     }
 
     SECTION("Wrap Inputs") {
@@ -61,26 +60,24 @@ TEST_CASE("PrismVolume Property Type") {
         v_double dims{1.23, 4.56, 7.89};
         auto inputs = pt.wrap_inputs(dims);
         REQUIRE(inputs.size() == 1);
-        const auto& pdims = inputs[0].second.value<const v_double&>();
+        const auto& pdims = inputs["Dimensions"].value<const v_double&>();
         REQUIRE(&pdims == &dims);
     }
 
     SECTION("Outputs") {
         auto outputs = pt.outputs();
         REQUIRE(outputs.size() == 2);
-        REQUIRE(outputs[0].first == "Base area");
-        REQUIRE(outputs[0].second.desc == "The area of the base");
-        REQUIRE(outputs[1].first == "Volume");
-        REQUIRE(outputs[1].second.desc == "The volume of the prism");
+        REQUIRE(outputs["Base area"].description() == "The area of the base");
+        REQUIRE(outputs["Volume"].description() == "The volume of the prism");
     }
 
     SECTION("Unwrap Outputs") {
         auto outputs = pt.outputs();
-        outputs[0].second.change(double{1.23});
-        outputs[1].second.change(double{4.56});
+        outputs["Base area"].change(double{1.23});
+        outputs["Volume"].change(double{4.56});
         std::map<std::string, SDE::ModuleOutput> results;
-        results.emplace(outputs[0]);
-        results.emplace(outputs[1]);
+        results.emplace("Base area", outputs["Base area"]);
+        results.emplace("Volume", outputs["Volume"]);
         auto[area, volume] = pt.unwrap_outputs(results);
         REQUIRE(area == 1.23);
         REQUIRE(volume == 4.56);
