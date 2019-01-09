@@ -15,15 +15,14 @@ private:
     /// Type of this class
     using my_type = PropertyTypeBuilder<ElementType, ErasedTypes...>;
 
+public:
+    using size_type   = std::size_t;
+    using key_type    = std::string;
+    using mapped_type = ElementType;
+    using value_type  = std::pair<key_type, mapped_type>;
     /// The current number of fields in the API
     static constexpr std::size_t nfields = sizeof...(ErasedTypes);
-
-public:
-    using size_type       = std::size_t;
-    using key_type        = std::string;
-    using mapped_type     = ElementType;
-    using value_type      = std::pair<key_type, mapped_type>;
-    using tuple_of_fields = std::tuple<ErasedTypes...>;
+    using tuple_of_fields                = std::tuple<ErasedTypes...>;
 
     /// The type of an array holding @p N fields
     template<std::size_t N>
