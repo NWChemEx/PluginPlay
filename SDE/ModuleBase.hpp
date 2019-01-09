@@ -28,8 +28,8 @@ public:
      */
     ModuleBase()                      = default;
     ModuleBase(const ModuleBase& rhs) = delete;
-    ModuleBase& operator=(const MoleculeBase& rhs) = delete;
-    ModuleBase(ModuleBase&& rhs)                   = delete;
+    ModuleBase& operator=(const ModuleBase& rhs) = delete;
+    ModuleBase(ModuleBase&& rhs)                 = delete;
     ModuleBase& operator=(ModuleBase&& rhs) = delete;
     //@}
     virtual ~ModuleBase() = default;
@@ -38,20 +38,23 @@ public:
         return run_(std::move(inputs), std::move(submods));
     }
 
-    hash_type memoize(const input_map& inputs,
-                      const submod_map& submods) const {
-        bphash::Hasher h(bphash::HashType::Hash128);
+    void memoize(bphash::Hasher& h, const input_map& inputs,
+                 const submod_map& submods) const {
         for(const auto & [k, v] : inputs) v.hash(h);
         for(const auto & [k, v] : submods) v.hash(h);
-        return bphash::hash_to_string(h.finalize());
     }
 
     const output_map& outputs() const { return outputs_; }
     output_map& outputs() { return outputs_; }
     const input_map& inputs() const { return inputs_; }
     input_map& inputs() { return inputs_; }
+    const submod_map& submods() const { return submods_; }
+    submod_map& submods() { return submods_; }
 
 protected:
+    using description_type = typename ModuleInput::description_type;
+    using key_type         = typename input_map::key_type;
+
     void description(description_type desc) { desc_ = std::move(desc); }
 
     void reference(description_type new_ref) {
@@ -68,7 +71,7 @@ protected:
         return outputs_[key].set_type<T>();
     }
 
-    template<typename property_type>
+    template<typename T>
     void add_submodule(key_type key) {
         return submods_[key].set_type<T>();
     }
@@ -94,7 +97,7 @@ private:
      *
      */
     description_type desc_;
-    std::vector<description_list> references_;
+    std::vector<description_type> references_;
     //@}
 
     virtual output_map run_(input_map inputs, submod_map submods) const = 0;

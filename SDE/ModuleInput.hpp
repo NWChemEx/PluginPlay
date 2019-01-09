@@ -164,7 +164,7 @@ public:
         return is_valid_(wrap_cref(std::forward<T>(new_value)));
     }
 
-    void hash(Hasher& h);
+    void hash(Hasher& h) const;
 
 private:
     any_type& get_() {

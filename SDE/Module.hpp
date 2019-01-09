@@ -1,10 +1,10 @@
 #pragma once
 #include "SDE/ModuleInput.hpp"
 #include "SDE/ModuleOutput.hpp"
-#include "SDE/SubmoduleRequest.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
 
 namespace SDE {
+class SubmoduleRequest;
 namespace detail_ {
 class ModulePIMPL;
 }
@@ -24,11 +24,12 @@ public:
     Module& operator=(const Module& rhs);
     Module(Module&& rhs) noexcept;
     Module& operator=(Module&& rhs) noexcept;
-    Module(std::unique_ptr<ModulePIMPL> pimpl) : pimpl_(std::move(pimpl)) {}
+    Module(std::unique_ptr<detail_::ModulePIMPL> pimpl) :
+      pimpl_(std::move(pimpl)) {}
     ~Module() noexcept;
 
     template<typename property_type, typename... Args>
-    auto run_as(Args&&... args) {
+    auto run_as(Args&&... args) const {
         auto temp = property_type::wrap_inputs(std::forward<Args>(args)...);
         input_map params = inputs();
         for(auto[k, v] : temp) params.at(k).change(std::move(v));
@@ -48,7 +49,9 @@ public:
         return const_cast<submod_map&>(submod);
     }
 
-    output_map run(input_map ps);
+    output_map run(input_map ps) const;
+    bool is_ready() const;
+    void hash(bphash::Hasher& h) const;
 
 private:
     std::unique_ptr<detail_::ModulePIMPL> pimpl_;

@@ -25,9 +25,16 @@ TEST_CASE("Area Property Type") {
         // Uncomment to check static assertion
         // pt.wrap_inputs(std::string{"Hi"}, double{3.14});
         auto inputs = pt.wrap_inputs(double{1.23}, double{4.56});
-        REQUIRE(inputs.size() == 2);
-        REQUIRE(inputs["Dimension 1"].value<double>() == 1.23);
-        REQUIRE(inputs["Dimension 2"].value<double>() == 4.56);
+        SECTION("Manually unwrap") {
+            REQUIRE(inputs.size() == 2);
+            REQUIRE(inputs["Dimension 1"].value<double>() == 1.23);
+            REQUIRE(inputs["Dimension 2"].value<double>() == 4.56);
+        }
+        SECTION("Auto unwrap") {
+            auto[dim1, dim2] = Area::unwrap_inputs(inputs);
+            REQUIRE(dim1 == 1.23);
+            REQUIRE(dim2 == 4.56);
+        }
     }
 
     SECTION("Outputs") {
@@ -35,14 +42,16 @@ TEST_CASE("Area Property Type") {
         REQUIRE(outputs.size() == 1);
         REQUIRE(outputs["Area"].description() == "The area of the shape");
     }
+    SECTION("Wrap Outputs") {
+        auto outputs = Area::wrap_outputs(double{1.23});
+        SECTION("Manually unwrap") {
+            REQUIRE(outputs.at("Area").value<double>() == 1.23);
+        }
 
-    SECTION("Unwrap Outputs") {
-        auto outputs = pt.outputs();
-        outputs["Area"].change(double{1.23});
-        std::map<std::string, SDE::ModuleOutput> results;
-        results.emplace("Area", outputs["Area"]);
-        double area = pt.unwrap_outputs(results);
-        REQUIRE(area == 1.23);
+        SECTION("Unwrap Auto Wrapped Outputs") {
+            auto[area] = Area::unwrap_outputs(outputs);
+            REQUIRE(area == 1.23);
+        }
     }
 }
 
@@ -60,8 +69,14 @@ TEST_CASE("PrismVolume Property Type") {
         v_double dims{1.23, 4.56, 7.89};
         auto inputs = pt.wrap_inputs(dims);
         REQUIRE(inputs.size() == 1);
-        const auto& pdims = inputs["Dimensions"].value<const v_double&>();
-        REQUIRE(&pdims == &dims);
+        SECTION("Manually unwrap") {
+            const auto& pdims = inputs["Dimensions"].value<const v_double&>();
+            REQUIRE(&pdims == &dims);
+        }
+        SECTION("Auto unwrap Inputs") {
+            const auto & [pdims] = PrismVolume::unwrap_inputs(inputs);
+            REQUIRE(&pdims == &dims);
+        }
     }
 
     SECTION("Outputs") {
@@ -71,15 +86,18 @@ TEST_CASE("PrismVolume Property Type") {
         REQUIRE(outputs["Volume"].description() == "The volume of the prism");
     }
 
-    SECTION("Unwrap Outputs") {
-        auto outputs = pt.outputs();
-        outputs["Base area"].change(double{1.23});
-        outputs["Volume"].change(double{4.56});
-        std::map<std::string, SDE::ModuleOutput> results;
-        results.emplace("Base area", outputs["Base area"]);
-        results.emplace("Volume", outputs["Volume"]);
-        auto[area, volume] = pt.unwrap_outputs(results);
-        REQUIRE(area == 1.23);
-        REQUIRE(volume == 4.56);
+    SECTION("Wrap Outputs") {
+        double v1    = 1.23;
+        double v2    = 4.56;
+        auto results = PrismVolume::wrap_outputs(v1, v2);
+        SECTION("Manually unwrap") {
+            REQUIRE(results.at("Base area").value<double>() == v1);
+            REQUIRE(results.at("Volume").value<double>() == v2);
+        }
+        SECTION("Auto unwrap Outputs") {
+            auto[area, volume] = pt.unwrap_outputs(results);
+            REQUIRE(area == 1.23);
+            REQUIRE(volume == 4.56);
+        }
     }
 }

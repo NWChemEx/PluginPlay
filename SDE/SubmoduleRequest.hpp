@@ -4,6 +4,7 @@
 #include <typeindex>
 
 namespace SDE {
+class Module;
 
 class SubmoduleRequest {
 public:
@@ -19,7 +20,7 @@ public:
 
     const description_type description() const noexcept { return desc_; }
 
-    void hash(bphash::Hasher& h) { module_->hash(h); }
+    void hash(bphash::Hasher& h) const { module_->hash(h); }
 
     void change(std::shared_ptr<Module> new_module) { module_ = new_module; }
 

@@ -48,9 +48,9 @@ public:
           std::is_same_v<clean_T, shared_any> || // is shared_ptr<const any>
           std::is_same_v<clean_T, std::shared_ptr<any_type>>; // no const
         if constexpr(is_shared_any)
-            change_(new_value);
+            change_(std::forward<T>(new_value));
         else
-            change_(std::move(wrap_value_(new_value)));
+            change_(std::move(wrap_value_(std::forward<T>(new_value))));
     }
 
     template<typename T>

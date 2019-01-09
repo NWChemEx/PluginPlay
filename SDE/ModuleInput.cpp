@@ -24,6 +24,8 @@ using MI = ModuleInput;
 
 MI::ModuleInput() : pimpl_(std::make_unique<detail_::ModuleInputPIMPL>()) {}
 MI::ModuleInput(const ModuleInput& rhs) :
+  is_cref_(rhs.is_cref_),
+  is_actually_cref_(rhs.is_actually_cref_),
   pimpl_(std::make_unique<detail_::ModuleInputPIMPL>(*rhs.pimpl_)) {}
 MI& MI::operator=(const SDE::ModuleInput& rhs) {
     std::make_unique<detail_::ModuleInputPIMPL>(*rhs.pimpl_).swap(pimpl_);
@@ -39,7 +41,7 @@ const description_type& MI::description() const noexcept {
     return pimpl_->desc;
 }
 
-void MI::hash(Hasher& h) {
+void MI::hash(Hasher& h) const {
     // Only hash the value if it's opaque
     if(!pimpl_->is_transparent) h(pimpl_->value);
 }
