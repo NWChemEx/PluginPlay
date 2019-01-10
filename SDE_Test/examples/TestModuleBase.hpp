@@ -90,9 +90,9 @@ public:
          * rectangle class needs...).
          */
         add_input<std::string>("Name")
-          .description("The name of the rectangle")
+          .set_description("The name of the rectangle")
           .set_default("");
-        add_ouput<std::string>("Picture").description(
+        add_output<std::string>("Picture").set_description(
           "An ASCII picture of the rectangle");
 
         /* Particularly when a field is set from a property type the metadata
@@ -149,17 +149,19 @@ private:
         //{
         std::stringstream pic;
         pic << name << " :" << std::endl;
-        size_t dims[2];
-        if(dim1 == dim2)
-            dims = {10, 10};
-        else if(dim1 > dim2)
-            dims = { 10, 5 } else dims = {5, 10};
+        std::array<size_t, 2> dims{10, 10};
+        if(dim1 > dim2)
+            dims[1] = 5;
+        else if(dim2 > dim1)
+            dims[0] = 5;
 
-        // Note: std::string(char c, int N) sets string to N copies of c
-        pic << std::string('*', dims[1]) << std::endl; // Top of rectangle
-        for(size_t i = 0; i < dims[0] - 2; ++i)        // Middle of rectangle
-            pic << '*' << std::string(' ', dims[1] - 2) << '*' << std::endl;
-        pic << std::string('*', dims[1]) << std::endl; // bottom of rectangle
+        // Note: std::string(int N, char c) sets string to N copies of c
+        std::string top(dims[1], '*');
+        std::string space(dims[1] - 2, ' ');
+        pic << top << std::endl;
+        for(size_t i = 0; i < dims[0] - 2; ++i)
+            pic << '*' << space << '*' << std::endl;
+        pic << top; // bottom of rectangle
         //}
 
         /* With our values computed we now need to package them up and return
@@ -178,7 +180,8 @@ private:
          * output.at("Area").change(area);
          */
         //{
-        auto output = Area::wrap_outputs(outputs(), area);
+        auto output = outputs();
+        output      = Area::wrap_outputs(output, area);
         output.at("Picture").change(pic.str());
         //}
 
@@ -222,18 +225,19 @@ private:
          * we do not have any additional inputs. Note that there's no need to
          * use structured bindings if there's only one input to unwrap.
          */
-        const auto& dims = PrismVolume::unwrap_inputs(inputs);
+        const auto & [dims] = PrismVolume::unwrap_inputs(inputs);
 
         /* Here we call our submodule. Like the inputs and outpus
          */
         //{
-        auto area   = submods.at("area").run_as<Area>(dims[0], dims[1]);
+        auto[area]  = submods.at("area").run_as<Area>(dims[0], dims[1]);
         auto volume = area * dims[2];
         //}
 
         /* Finally we need to wrap and return the results.
          *
          */
-        return PrismVolume::wrap_outputs(outputs(), area, volume);
+        auto out = outputs();
+        return PrismVolume::wrap_outputs(out, area, volume);
     }
 };

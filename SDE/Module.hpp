@@ -24,17 +24,14 @@ public:
     Module& operator=(const Module& rhs);
     Module(Module&& rhs) noexcept;
     Module& operator=(Module&& rhs) noexcept;
-    Module(std::unique_ptr<detail_::ModulePIMPL> pimpl) :
-      pimpl_(std::move(pimpl)) {}
+    Module(std::unique_ptr<detail_::ModulePIMPL> base) noexcept;
     ~Module() noexcept;
 
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args) const {
-        auto temp = property_type::wrap_inputs(std::forward<Args>(args)...);
-        input_map params = inputs();
-        for(auto[k, v] : temp) params.at(k).change(std::move(v));
-        auto results = run(params);
-        return property_type::unwrap_outputs(results);
+        auto temp = inputs();
+        temp = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
+        return property_type::unwrap_outputs(run(temp));
     }
 
     const input_map& inputs() const;

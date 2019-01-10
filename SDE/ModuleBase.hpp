@@ -62,17 +62,17 @@ protected:
     }
 
     template<typename T>
-    auto add_input(key_type key) {
+    auto& add_input(key_type key) {
         return inputs_[key].set_type<T>();
     }
 
     template<typename T>
-    auto add_output(key_type key) {
+    auto& add_output(key_type key) {
         return outputs_[key].set_type<T>();
     }
 
     template<typename T>
-    void add_submodule(key_type key) {
+    auto& add_submodule(key_type key) {
         return submods_[key].set_type<T>();
     }
 

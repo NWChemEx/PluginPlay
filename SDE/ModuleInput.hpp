@@ -33,6 +33,11 @@ private:
       std::conjunction<std::is_reference<T>,
                        std::is_const<std::remove_reference_t<T>>>;
 
+    template<typename T>
+    struct IsCString : std::false_type {};
+    template<std::size_t N>
+    struct IsCString<const char (&)[N]> : std::true_type {};
+
 public:
     /// Type of a check to apply to a value
     template<typename T>
@@ -111,43 +116,49 @@ public:
     }
     template<typename T>
     auto& change(T&& new_value) {
-        constexpr bool is_value = std::is_same_v<T, std::decay_t<T>>;
-        if(!is_valid(new_value))
-            throw std::invalid_argument("Value has failed one or more checks");
-        any_type da_any;
-
-        /* Fun time. The SDE supports modules taking arguments in one of two
-         * ways:
-         * 1. By const reference (read-only)
-         * 2. By value
-         *
-         * When setting the actual value there's no stipulation requiring the
-         * user to provide us that value in the same form. Specifically they
-         * can provide us the value:
-         * 1. In read/write mode (by reference)
-         * 2. In read-only mode (by constant reference)
-         * 3. By value (constructed it in place)
-         *
-         * Of these three possible inputs, number 3 is the easiest. We basically
-         * just take ownership of it. For the other types of input what we do
-         * depends on how it's going to be used. If the value will be used in a
-         * read-only manner we just make a reference wrapper around it,
-         * otherwise we copy it.
-         */
-        if constexpr(is_value) { // User gave us the input by value
-            da_any            = wrap_value(std::forward<T>(new_value));
-            is_actually_cref_ = false;
+        if constexpr(IsCString<T>::value) {
+            change_(wrap_value(std::string(new_value)));
         } else {
-            if(is_cref_) {
-                da_any            = wrap_cref(std::forward<T>(new_value));
-                is_actually_cref_ = true;
+            constexpr bool is_value = std::is_same_v<T, std::decay_t<T>>;
+            if(!is_valid(new_value))
+                throw std::invalid_argument(
+                  "Value has failed one or more checks");
+            any_type da_any;
+
+            /* Fun time. The SDE supports modules taking arguments in one of two
+             * ways:
+             * 1. By const reference (read-only)
+             * 2. By value
+             *
+             * When setting the actual value there's no stipulation requiring
+             * the user to provide us that value in the same form. Specifically
+             * they can provide us the value:
+             * 1. In read/write mode (by reference)
+             * 2. In read-only mode (by constant reference)
+             * 3. By value (constructed it in place)
+             *
+             * Of these three possible inputs, number 3 is the easiest. We
+             * basically just take ownership of it. For the other types of input
+             * what we do depends on how it's going to be used. If the value
+             * will be used in a read-only manner we just make a reference
+             * wrapper around it, otherwise we copy it.
+             */
+            if constexpr(is_value) { // User gave us the input by value
+                da_any            = wrap_value(std::forward<T>(new_value));
+                is_actually_cref_ = false;
             } else {
-                da_any = wrap_value(std::forward<T>(new_value));
+                if(is_cref_) {
+                    da_any            = wrap_cref(std::forward<T>(new_value));
+                    is_actually_cref_ = true;
+                } else {
+                    da_any = wrap_value(std::forward<T>(new_value));
+                }
             }
+            change_(da_any);
         }
-        change_(da_any);
         return *this;
     }
+
     template<typename T>
     auto& set_default(T&& new_value) {
         return change(std::forward<T>(new_value));

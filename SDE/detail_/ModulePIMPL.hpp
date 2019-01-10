@@ -19,50 +19,54 @@ namespace detail_ {
  */
 class ModulePIMPL {
 public:
-    using output_type   = typename Module::output_type;
-    using output_map    = typename Module::output_map;
-    using input_type    = typename Module::input_type;
-    using input_map     = typename Module::input_map;
-    using submodule_map = typename Module::submodule_map;
+    using input_type  = typename Module::input_type;
+    using input_map   = typename Module::input_map;
+    using output_type = typename Module::output_type;
+    using output_map  = typename Module::output_map;
+    using submod_type = typename Module::submod_type;
+    using submod_map  = typename Module::submod_map;
+    using base_type   = ModuleBase;
+    using base_ptr    = std::shared_ptr<ModuleBase>;
+    using cache_type  = std::map<std::string, output_map>;
+    using cache_ptr   = std::shared_ptr<cache_type>;
 
-    ModulePIMPL(module_base_ptr base) :
-      inputs(std::move(base->inputs())),
-      outputs(std::move(base->outputs())),
-      submodule_map(std::move(base->)),
+    ModulePIMPL()                       = default;
+    ModulePIMPL(const ModulePIMPL& rhs) = default;
+    ModulePIMPL& operator=(const ModulePIMPL& rhs) = default;
+    ModulePIMPL(ModulePIMPL&& rhs)                 = default;
+    ModulePIMPL& operator=(ModulePIMPL&& rhs) = default;
+    ModulePIMPL(base_ptr base, cache_ptr cache = cache_ptr{}) :
+      base_(base),
       cache_(cache),
-      pimpl(base) {}
+      inputs_(std::move(base->inputs())),
+      submods_(std::move(base->submods())) {}
+    ~ModulePIMPL() = default;
 
-    /**
-     *
-     * @param inputs
-     * @return
-     * @throw std::invalid_argument if any of the parameters
-     */
-    auto run(input_map inputs) {
-        // Make sure all the inputs are valid
-        for(auto & [k, v] : inputs)
-            if(!inputs_.count(k))
-                throw std::invalid_argument("Unrecognized input: " + k);
+    output_map run(input_map ps) const {
+        bphash::Hasher h(bphash::HashType::Hash128);
+        base_->memoize(h, ps, submods_);
+        auto hv = bphash::hash_to_string(h.finalize());
+        if(cache_ && cache_->count(hv)) return cache_->at(hv);
+        auto rv = base_->run(std::move(ps), submods_);
+        if(!cache_) return rv;
 
-        // Swap inputs into inputs_
+        // cache_ is internal detail so okay to break const
+        std::const_pointer_cast<cache_type>(cache_)->emplace(hv, std::move(rv));
 
-        // Hash inputs and submodules
-        if(!cache_->count(hash)) {
-            auto output = pimpl_->run(inputs_, submodules_);
-            cache_->insert(hash, output);
-        }
-        // Swap original values
-
-        // return cached value
-        return cache_->at(hash);
+        return cache_->at(hv);
     }
 
+    void hash(bphash::Hasher& h) const { base_->memoize(h, inputs_, submods_); }
+
+    input_map& inputs() { return inputs_; }
+    submod_map& submods() { return submods_; }
+    const output_map& outputs() const { return base_->outputs(); }
+
 private:
+    base_ptr base_;
+    cache_ptr cache_;
     input_map inputs_;
-    output_map outputs_;
-    submodule_map submodules_;
-    std::shared_ptr<Cache> cache_;
-    std::shared_ptr<const ModuleBase> pimpl_;
+    submod_map submods_;
 };
 } // namespace detail_
 } // namespace SDE

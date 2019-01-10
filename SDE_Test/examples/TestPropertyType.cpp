@@ -24,7 +24,7 @@ TEST_CASE("Area Property Type") {
     SECTION("Wrap Inputs") {
         // Uncomment to check static assertion
         // pt.wrap_inputs(std::string{"Hi"}, double{3.14});
-        auto inputs = pt.wrap_inputs(double{1.23}, double{4.56});
+        auto inputs = pt.wrap_inputs(pt.inputs(), double{1.23}, double{4.56});
         SECTION("Manually unwrap") {
             REQUIRE(inputs.size() == 2);
             REQUIRE(inputs["Dimension 1"].value<double>() == 1.23);
@@ -43,7 +43,7 @@ TEST_CASE("Area Property Type") {
         REQUIRE(outputs["Area"].description() == "The area of the shape");
     }
     SECTION("Wrap Outputs") {
-        auto outputs = Area::wrap_outputs(double{1.23});
+        auto outputs = Area::wrap_outputs(pt.outputs(), double{1.23});
         SECTION("Manually unwrap") {
             REQUIRE(outputs.at("Area").value<double>() == 1.23);
         }
@@ -67,7 +67,7 @@ TEST_CASE("PrismVolume Property Type") {
     SECTION("Wrap Inputs") {
         using v_double = std::vector<double>;
         v_double dims{1.23, 4.56, 7.89};
-        auto inputs = pt.wrap_inputs(dims);
+        auto inputs = pt.wrap_inputs(pt.inputs(), dims);
         REQUIRE(inputs.size() == 1);
         SECTION("Manually unwrap") {
             const auto& pdims = inputs["Dimensions"].value<const v_double&>();
@@ -89,7 +89,8 @@ TEST_CASE("PrismVolume Property Type") {
     SECTION("Wrap Outputs") {
         double v1    = 1.23;
         double v2    = 4.56;
-        auto results = PrismVolume::wrap_outputs(v1, v2);
+        auto results = pt.outputs();
+        results      = PrismVolume::wrap_outputs(results, v1, v2);
         SECTION("Manually unwrap") {
             REQUIRE(results.at("Base area").value<double>() == v1);
             REQUIRE(results.at("Volume").value<double>() == v2);

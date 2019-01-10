@@ -1,46 +1,52 @@
 #pragma once
 #include "SDE/Module.hpp"
+#include <memory>
 #include <string>
-#include <typeindex>
 
 namespace SDE {
-class Module;
+namespace detail_ {
+class SubmoduleRequestPIMPL;
+}
 
 class SubmoduleRequest {
 public:
     using description_type = std::string;
-    using rtti_type        = std::type_index;
+    using module_type      = Module;
+    using module_ptr       = std::shared_ptr<const Module>;
+
+    SubmoduleRequest();
+    SubmoduleRequest(const SubmoduleRequest& rhs);
+    SubmoduleRequest& operator=(const SubmoduleRequest&);
+    SubmoduleRequest(SubmoduleRequest&& rhs) noexcept;
+    SubmoduleRequest& operator=(SubmoduleRequest&& rhs) noexcept;
+    ~SubmoduleRequest() noexcept;
 
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args) {
-        if(rtti_type(typeid(property_type)) != type_)
+        if(!check_type_(typeid(property_type)))
             throw std::invalid_argument("Wrong property type");
-        return module_->run_as<property_type>(std::forward<Args>(args)...);
+        return value().run_as<property_type>(std::forward<Args>(args)...);
     }
 
-    const description_type description() const noexcept { return desc_; }
+    const module_type& value() const;
 
-    void hash(bphash::Hasher& h) const { module_->hash(h); }
-
-    void change(std::shared_ptr<Module> new_module) { module_ = new_module; }
+    const description_type& description() const noexcept;
+    void hash(bphash::Hasher& h) const { value().hash(h); }
+    void change(module_ptr new_module);
 
     template<typename T>
     auto& set_type() noexcept {
-        type_ = std::type_index(typeid(std::decay_t<T>));
+        set_type_(typeid(std::decay_t<T>));
         return *this;
     }
 
-    auto& set_description(description_type desc) noexcept {
-        desc_ = std::move(desc);
-        return *this;
-    }
+    SubmoduleRequest& set_description(description_type desc) noexcept;
 
 private:
-    description_type desc_;
+    bool check_type_(const std::type_info& type) const noexcept;
+    void set_type_(const std::type_info& type) noexcept;
 
-    rtti_type type_;
-
-    std::shared_ptr<Module> module_;
+    std::unique_ptr<detail_::SubmoduleRequestPIMPL> pimpl_;
 };
 
 } // namespace SDE

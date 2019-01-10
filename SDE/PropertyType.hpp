@@ -33,14 +33,16 @@ public:
         return parent.outputs_();
     }
 
-    template<typename... Args>
-    static auto wrap_inputs(Args&&... args) {
-        return wrap_(inputs(), std::forward<Args>(args)...);
+    template<typename T, typename... Args>
+    static auto wrap_inputs(T&& rv, Args&&... args) {
+        return wrap_(std::forward<T>(rv), inputs(),
+                     std::forward<Args>(args)...);
     }
 
-    template<typename... Args>
-    static auto wrap_outputs(Args&&... args) {
-        return wrap_(outputs(), std::forward<Args>(args)...);
+    template<typename T, typename... Args>
+    static auto& wrap_outputs(T&& output, Args&&... args) {
+        return wrap_(std::forward<T>(output), outputs(),
+                     std::forward<Args>(args)...);
     }
 
     template<typename T>
@@ -61,24 +63,25 @@ private:
     /// Type of this instance
     using my_type = PropertyType<derived_type>;
 
-    template<typename T, typename... Args>
-    static auto wrap_(T&& builder, Args&&... args) {
+    template<typename T, typename U, typename... Args>
+    static auto& wrap_(T&& rv, U&& builder, Args&&... args) {
         if constexpr(sizeof...(Args) > 0)
-            wrap_guts_<0>(std::forward<T>(builder),
+            wrap_guts_<0>(std::forward<T>(rv), std::forward<U>(builder),
                           std::forward<Args>(args)...);
-        return builder;
+        return rv;
     }
 
-    template<std::size_t ArgI, typename T, typename U, typename... Args>
-    static void wrap_guts_(T&& builder, U&& value, Args&&... args) {
-        using tuple_of_fields = typename std::decay_t<T>::tuple_of_fields;
+    template<std::size_t ArgI, typename T, typename U, typename V,
+             typename... Args>
+    static void wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
+        using tuple_of_fields = typename std::decay_t<U>::tuple_of_fields;
         using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
-        static_assert(std::is_convertible_v<U, type>,
+        static_assert(std::is_convertible_v<V, type>,
                       "Wrap argument is of incorrect type.");
         auto pvalue = builder.begin() + ArgI;
-        pvalue->second.change(std::forward<U>(value));
+        rv.at(pvalue->first).change(std::forward<V>(value));
         if constexpr(sizeof...(Args) > 0)
-            wrap_guts_<ArgI + 1>(std::forward<T>(builder),
+            wrap_guts_<ArgI + 1>(std::forward<T>(rv), std::forward<U>(builder),
                                  std::forward<Args>(args)...);
     }
 
