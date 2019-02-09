@@ -8,7 +8,7 @@ namespace detail_ {
 /** @brief The class that actually contains a module's state.
  *
  *  Design Points:
- *  - The actual list of submodules, inputs, and outputs a module will use are
+ *  - The actual list of submodules, inputs, and results a module will use are
  *    stored in this class
  *    - The ones returned from ModuleBase are the defaults specified by
  *      the developer and are used to populate the original lists
@@ -19,31 +19,29 @@ namespace detail_ {
  */
 class ModulePIMPL {
 public:
-    using input_type  = typename Module::input_type;
-    using input_map   = typename Module::input_map;
-    using output_type = typename Module::output_type;
-    using output_map  = typename Module::output_map;
-    using submod_type = typename Module::submod_type;
-    using submod_map  = typename Module::submod_map;
-    using base_type   = ModuleBase;
-    using base_ptr    = std::shared_ptr<ModuleBase>;
-    using cache_type  = std::map<std::string, output_map>;
-    using cache_ptr   = std::shared_ptr<cache_type>;
+    using input_map  = typename Module::input_map;
+    using result_map = typename Module::result_map;
+    using submod_map = typename Module::submod_map;
+    using base_ptr   = std::shared_ptr<const ModuleBase>;
+    using cache_type = std::map<std::string, result_map>;
+    using cache_ptr  = std::shared_ptr<cache_type>;
 
     ModulePIMPL()                       = default;
     ModulePIMPL(const ModulePIMPL& rhs) = default;
     ModulePIMPL& operator=(const ModulePIMPL& rhs) = default;
     ModulePIMPL(ModulePIMPL&& rhs)                 = default;
     ModulePIMPL& operator=(ModulePIMPL&& rhs) = default;
+
     ModulePIMPL(base_ptr base, cache_ptr cache = cache_ptr{}) :
       base_(base),
       cache_(cache),
-      inputs_(std::move(base->inputs())),
-      submods_(std::move(base->submods())) {}
+      inputs_(base->inputs()),
+      submods_(base->submods()) {}
+
     ~ModulePIMPL() = default;
 
-    output_map run(input_map ps) const {
-        bphash::Hasher h(bphash::HashType::Hash128);
+    auto run(input_map ps) const {
+        type::hasher h(bphash::HashType::Hash128);
         base_->memoize(h, ps, submods_);
         auto hv = bphash::hash_to_string(h.finalize());
         if(cache_ && cache_->count(hv)) return cache_->at(hv);
@@ -56,11 +54,11 @@ public:
         return cache_->at(hv);
     }
 
-    void hash(bphash::Hasher& h) const { base_->memoize(h, inputs_, submods_); }
+    void hash(type::hasher& h) const { base_->memoize(h, inputs_, submods_); }
 
     input_map& inputs() { return inputs_; }
     submod_map& submods() { return submods_; }
-    const output_map& outputs() const { return base_->outputs(); }
+    const result_map& results() const { return base_->results(); }
 
 private:
     base_ptr base_;

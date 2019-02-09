@@ -16,10 +16,10 @@ TEST_CASE("Rectangle Class") {
         REQUIRE(inputs.at("Name").description() == "The name of the "
                                                    "rectangle");
     }
-    SECTION("Outputs") {
-        auto outputs = r.outputs();
-        REQUIRE(outputs.at("Area").description() == "The area of the shape");
-        REQUIRE(outputs.at("Picture").description() == "An ASCII picture of "
+    SECTION("Results") {
+        auto results = r.results();
+        REQUIRE(results.at("Area").description() == "The area of the shape");
+        REQUIRE(results.at("Picture").description() == "An ASCII picture of "
                                                        "the rectangle");
     }
     SECTION("Submods") { REQUIRE(r.submods().size() == 0); }
@@ -50,11 +50,11 @@ TEST_CASE("Prism Class") {
         REQUIRE(inputs.at("Dimensions").description() ==
                 "1st 2 elements are for the base, last is height");
     }
-    SECTION("Outputs") {
-        auto outputs = r.outputs();
-        REQUIRE(outputs.at("Base area").description() ==
+    SECTION("Results") {
+        auto results = r.results();
+        REQUIRE(results.at("Base area").description() ==
                 "The area of the base");
-        REQUIRE(outputs.at("Volume").description() ==
+        REQUIRE(results.at("Volume").description() ==
                 "The volume of the prism");
     }
     SECTION("Submods") {

@@ -9,7 +9,10 @@ template<typename T>
 void check_state(T& builder, std::vector<std::string> corr_keys) {
     REQUIRE(builder.size() == corr_keys.size());
     auto keyi = corr_keys.begin();
-    for(auto[k, v] : builder) REQUIRE(k == *keyi++);
+    for(auto[k, v] : builder) {
+        REQUIRE(k == *keyi++);
+        REQUIRE(builder.count(k));
+    }
 }
 
 TEST_CASE("PropertyTypeBuilder") {
@@ -35,6 +38,11 @@ TEST_CASE("PropertyTypeBuilder") {
     }
 
     auto new_builder = builder.add_field<int>("key1");
+    SECTION("Can't reuse the same key") {
+        REQUIRE_THROWS_AS(new_builder.add_field<int>("key1"),
+                          std::invalid_argument);
+    }
+
     SECTION("Can set field's meta data") {
         new_builder.at("key1").set_description("Hi");
         REQUIRE(new_builder.at("key1").description() == "Hi");

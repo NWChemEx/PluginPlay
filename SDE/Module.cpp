@@ -2,18 +2,16 @@
 #include "SDE/detail_/ModulePIMPL.hpp"
 
 namespace SDE {
-using input_type  = typename Module::input_type;
-using input_map   = typename Module::input_map;
-using output_type = typename Module::output_type;
-using output_map  = typename Module::output_map;
-using submod_type = typename Module::submod_type;
-using submod_map  = typename Module::submod_map;
+using input_map  = typename Module::input_map;
+using result_map = typename Module::result_map;
+using submod_map = typename Module::submod_map;
 
-namespace detail_ {} // namespace detail_
+using pimpl = detail_::ModulePIMPL;
 
-Module::Module() : pimpl_(std::make_unique<detail_::ModulePIMPL>()) {}
+Module::Module() : pimpl_(std::make_unique<pimpl>()) {}
 Module::Module(const Module& rhs) :
-  pimpl_(std::make_unique<detail_::ModulePIMPL>(*rhs.pimpl_)) {}
+  pimpl_(std::make_unique<pimpl>(*rhs.pimpl_)) {}
+
 Module& Module::operator=(const Module& rhs) {
     std::make_unique<detail_::ModulePIMPL>(*rhs.pimpl_).swap(pimpl_);
     return *this;
@@ -24,18 +22,29 @@ Module::Module(std::unique_ptr<detail_::ModulePIMPL> pimpl) noexcept :
   pimpl_(std::move(pimpl)) {}
 Module::~Module() = default;
 
-output_map Module::run(input_map ps) const {
+result_map Module::run(input_map ps) const {
     return pimpl_->run(std::move(ps));
 }
 
 void Module::hash(bphash::Hasher& h) const {
-    if(!is_ready()) throw std::runtime_error("Can not hash non-ready module");
+    if(!ready()) throw std::runtime_error("Can not hash non-ready module");
     pimpl_->hash(h);
 }
 
-bool Module::is_ready() const { return true; }
-const input_map& Module::inputs() const { return pimpl_->inputs(); }
-const output_map& Module::outputs() const { return pimpl_->outputs(); }
-const submod_map& Module::submods() const { return pimpl_->submods(); }
+bool Module::ready() const noexcept { return true; }
+bool Module::locked() const noexcept { return true; }
+bool Module::valid() const noexcept { return true; }
+
+const input_map& Module::inputs() const noexcept { return pimpl_->inputs(); }
+const result_map& Module::results() const noexcept { return pimpl_->results(); }
+const submod_map& Module::submods() const noexcept { return pimpl_->submods(); }
+
+ModuleInput& Module::change_input(type::key key) {
+    return pimpl_->inputs().at(key);
+}
+
+SubmoduleRequest& Module::change_submod(type::key key) {
+    return pimpl_->submods().at(key);
+}
 
 } // namespace SDE

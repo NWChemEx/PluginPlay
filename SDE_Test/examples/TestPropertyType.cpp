@@ -37,19 +37,19 @@ TEST_CASE("Area Property Type") {
         }
     }
 
-    SECTION("Outputs") {
-        auto outputs = pt.outputs();
-        REQUIRE(outputs.size() == 1);
-        REQUIRE(outputs["Area"].description() == "The area of the shape");
+    SECTION("Results") {
+        auto results = pt.results();
+        REQUIRE(results.size() == 1);
+        REQUIRE(results["Area"].description() == "The area of the shape");
     }
-    SECTION("Wrap Outputs") {
-        auto outputs = Area::wrap_outputs(pt.outputs(), double{1.23});
+    SECTION("Wrap Results") {
+        auto results = Area::wrap_results(pt.results(), double{1.23});
         SECTION("Manually unwrap") {
-            REQUIRE(outputs.at("Area").value<double>() == 1.23);
+            REQUIRE(results.at("Area").value<double>() == 1.23);
         }
 
-        SECTION("Unwrap Auto Wrapped Outputs") {
-            auto[area] = Area::unwrap_outputs(outputs);
+        SECTION("Unwrap Auto Wrapped Results") {
+            auto[area] = Area::unwrap_results(results);
             REQUIRE(area == 1.23);
         }
     }
@@ -79,24 +79,24 @@ TEST_CASE("PrismVolume Property Type") {
         }
     }
 
-    SECTION("Outputs") {
-        auto outputs = pt.outputs();
-        REQUIRE(outputs.size() == 2);
-        REQUIRE(outputs["Base area"].description() == "The area of the base");
-        REQUIRE(outputs["Volume"].description() == "The volume of the prism");
+    SECTION("Results") {
+        auto results = pt.results();
+        REQUIRE(results.size() == 2);
+        REQUIRE(results["Base area"].description() == "The area of the base");
+        REQUIRE(results["Volume"].description() == "The volume of the prism");
     }
 
-    SECTION("Wrap Outputs") {
+    SECTION("Wrap Results") {
         double v1    = 1.23;
         double v2    = 4.56;
-        auto results = pt.outputs();
-        results      = PrismVolume::wrap_outputs(results, v1, v2);
+        auto results = pt.results();
+        results      = PrismVolume::wrap_results(results, v1, v2);
         SECTION("Manually unwrap") {
             REQUIRE(results.at("Base area").value<double>() == v1);
             REQUIRE(results.at("Volume").value<double>() == v2);
         }
-        SECTION("Auto unwrap Outputs") {
-            auto[area, volume] = pt.unwrap_outputs(results);
+        SECTION("Auto unwrap Results") {
+            auto[area, volume] = pt.unwrap_results(results);
             REQUIRE(area == 1.23);
             REQUIRE(volume == 4.56);
         }

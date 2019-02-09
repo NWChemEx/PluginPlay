@@ -60,7 +60,7 @@ run(Module& mod, double param1, double param2, std::string type) {
 }    
 ```
 
-Note that this becomes very tedious when a module has a lot of inputs/outputs,
+Note that this becomes very tedious when a module has a lot of inputs/results,
 furthermore all of this information needs to appear in other places since the
 property type also needs to implement functions for listing the input and output
 parameters (this implementation would look nearly identical to the what we
@@ -81,7 +81,7 @@ auto inputs() {
 
 }
 
-auto outputs() {
+auto results() {
     return add_output<double>("Area").description("The area of the shape.");
 }
     
@@ -90,35 +90,35 @@ auto outputs() {
 
 The idea is that the `add_input`/`add_output` calls creates an object called
 `PropertyTypeInputBuilder`/`PropertyTypeOutputBuilder`. These objects build up
-a wrapped `input_map`/`output_map` instance containing the inputs/outputs and
+a wrapped `input_map`/`output_map` instance containing the inputs/results and
 any metadata associated with them. The template metaprogramming aspect comes in,
 in the fact that the two builders are templated on the types of each input, for
 example the `inputs` function would return something like 
 `PropertyTypeInputBuilder<double, double, std::string>`. This tells us that the
 arguments to the resulting property type are of types `double`, `double`, and
 `std::string`, in that order (the order comes from the order in which 
-`add_input` was called). A similar convention holds for the outputs. With types
-that contain the types of the inputs/outputs, and the order in which they should
+`add_input` was called). A similar convention holds for the results. With types
+that contain the types of the inputs/results, and the order in which they should
 appear in the signature, it becomes a straightforward template metaprogramming
 exercise to map the actual inputs to their type-erased positions.  
 
 The Opaque Input/Output Types
 -----------------------------
 
-While the type-erased inputs and outputs superficially look a lot a like, 
+While the type-erased inputs and results superficially look a lot a like, 
 there's actually a number of differences under the hood, which has led to the
 decision to make them two unrelated classes. For posterity those differences
 are:
 
 - Checks. It makes sense to check an input before it goes into a module since
   what otherwise may be a valid value might be out of scope for the module. For
-  outputs checks do not make sense since the module should error if it produced 
+  results checks do not make sense since the module should error if it produced 
   a bad value.
-- Memory. While both inputs and outputs are envisioned as read-only rigorously 
-  enforced for outputs), outputs are usually shared (minimally with the cache).
-  The result is that it's more natural to store outputs in `shared_ptr` 
+- Memory. While both inputs and results are envisioned as read-only rigorously 
+  enforced for results), results are usually shared (minimally with the cache).
+  The result is that it's more natural to store results in `shared_ptr` 
   instances and take inputs as `const T&` or by value.
-- Memoization. Inputs need to be hashed, outputs do not.
+- Memoization. Inputs need to be hashed, results do not.
 - Defaults. Defaults only make sense for inputs.
 
 Admittedly it is possible to factor some of the code common to the two classes
@@ -127,11 +127,11 @@ with making new classes) than it saves.
     
 We run into a similar problem with the builders. There are two situations when
 one will trigger a builder: while declaring a property type and when adding
-additional inputs/outputs to a module. Again there are some differences:
+additional inputs/results to a module. Again there are some differences:
 
 - Order. When declaring a property type order of declaration matters, whereas 
   order doesn't matter for a module.
-- Module's inputs/outputs is the union of inputs/outputs for each satisfied
+- Module's inputs/results is the union of inputs/results for each satisfied
   property type  
   
 In particular it is challenging to both keep track of the order inputs were 
@@ -141,6 +141,6 @@ that is part of the builder pattern (you'll slice the derived class off by
 using base class members). For this reason we've chosen to implement two sets
 of builders, one for the property types and one for the modules. This also 
 unfortunately means that if new metadata is added to the 
-ModuleInput/ModuleOutput two builders need updated to reflect the changes.
+ModuleInput/ModuleResult two builders need updated to reflect the changes.
     
   

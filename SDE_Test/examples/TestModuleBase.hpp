@@ -8,7 +8,7 @@
  *
  *  - How to define the API of a module by using a property type
  *  - How to set the metadata (e.g., description, references) of a module
- *  - How to add inputs/outputs beyond the property type's API
+ *  - How to add inputs/results beyond the property type's API
  *  - How to modify metadata of the property type's API to make them more
  *    applicable to the current module.
  *  - How to implement the module's algorithm
@@ -31,8 +31,8 @@ public:
          * This boilerplate code that adds no new information, hence this can be
          * automated for you by using the satisfies_property_type member
          * function. The satisfies_property_type function automatically adds the
-         * specified property type's inputs and outputs to this module's inputs
-         * and outputs.
+         * specified property type's inputs and results to this module's inputs
+         * and results.
          *
          * As a note, if a module satisfies multiple property types and any of
          * those property types include the same input/output parameter only the
@@ -49,17 +49,17 @@ public:
          * relevant literature.
          */
         description("Computes the area of a rectangle");
-        reference("Euclid. The Elements. 300 BCE");
+        citation("Euclid. The Elements. 300 BCE");
 
-        /* The input/outputs of a module are not limited to those specified by
-         * the property type. You are free to add additional inputs and outputs.
+        /* The input/results of a module are not limited to those specified by
+         * the property type. You are free to add additional inputs and results.
          * However, users using your module through a property type not
-         * defining these additional inputs/outputs will not be able to
+         * defining these additional inputs/results will not be able to
          * directly access these fields. Nevertheless the additional
-         * inputs/outputs can always be accessed via the expert API and may be
+         * inputs/results can always be accessed via the expert API and may be
          * accessible from other property type APIs. This means that
          * particularly for inputs it is best if these additional inputs are
-         * algorithmic parameters with default values (additional outputs can
+         * algorithmic parameters with default values (additional results can
          * always be ignored no problem and thanks to memoization need not be
          * recomputed if they are later needed). Inevitably, there will be times
          * when no reasonable default exists; in these cases users can set the
@@ -107,11 +107,9 @@ public:
          * such as "height" and "width" could be associated with each field, but
          * such an option is presently not available).
          */
-        inputs()
-          .at("Dimension 1")
+        change_input("Dimension 1")
           .set_description("The height of the rectangle");
-        inputs()
-          .at("Dimension 2")
+        change_input("Dimension 2")
           .set_description("The width of the rectangle");
     }
 
@@ -166,27 +164,27 @@ private:
 
         /* With our values computed we now need to package them up and return
          * them. Like unwrapping the inputs, each property type provides a
-         * static functions wrap_outputs that will fill up an output_map
-         * instance with our computed values. The input to the wrap_outputs
+         * static functions wrap_results that will fill up an output_map
+         * instance with our computed values. The input to the wrap_results
          * command is the map we are filling in (ultimately the full map is the
          * union of all results so there's often more results than just what one
          * property type defines) and a set of objects containing the values for
          * that property type's results.
          *
          * Like the inputs, we need to manually pack our additional output
-         * value. For the record, the wrap_outputs command is equivalent to the
+         * value. For the record, the wrap_results command is equivalent to the
          * same packing line of code, i.e.:
          *
          * output.at("Area").change(area);
          */
         //{
-        auto output = outputs();
-        output      = Area::wrap_outputs(output, area);
-        output.at("Picture").change(pic.str());
+        auto result = results();
+        result      = Area::wrap_results(result, area);
+        result.at("Picture").change(pic.str());
         //}
 
         // Finally we return the map of results
-        return output;
+        return result;
     }
 };
 
@@ -204,9 +202,8 @@ public:
         //{
         satisfies_property_type<PrismVolume>();
         description("Computes the area of a prism");
-        reference("Euclid. The Elements. 300 BCE");
-        inputs()
-          .at("Dimensions")
+        citation("Euclid. The Elements. 300 BCE");
+        change_input("Dimensions")
           .set_description("1st 2 elements are for the base, last is height");
         //}
 
@@ -237,7 +234,7 @@ private:
         /* Finally we need to wrap and return the results.
          *
          */
-        auto out = outputs();
-        return PrismVolume::wrap_outputs(out, area, volume);
+        auto out = results();
+        return PrismVolume::wrap_results(out, area, volume);
     }
 };

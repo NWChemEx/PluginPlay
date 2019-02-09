@@ -23,7 +23,7 @@
  *    - The input API is declared by implementing the "virtual" function (the
  *      function is polymorphic, but compile-time polymorphic, meaning there
  *      is no corresponding "virtual" function in the base class) inputs_()
- *      and the output API is declared via the outputs_() function
+ *      and the output API is declared via the results_() function
  *  - Inputs can be copies/values
  *
  */
@@ -61,11 +61,11 @@ public:
          * rv = rv.add_field<double>("Dimension 1");
          * rv = rv.add_field<double>("Dimension 2");
          *
-         * and obtain equivalent rv objects (the former will compile, but
-         * creates an API with no fields because the field information stored
-         * in the return type of the add_field functions is thrown away and the
-         * latter will fail to compile because the return types of add_field are
-         * different than the type of rv.
+         * will not work as intended. The first one will compile, but creates an
+         * API with no fields because the new fields are stored in the returned
+         * object, which is thrown away. The second example will fail to
+         * compile because the return types of add_field are different than
+         * the type of rv.
          */
 
         /* With the API defined we are free to assign default metadata to each
@@ -102,7 +102,7 @@ public:
          */
     }
 
-    auto outputs_() {
+    auto results_() {
         /* Implementing the return part of the API is nearly identical to the
          * input API. We create an object with a nasty type (the type of which
          * we ignore by using auto) and then fill in the metadata for each field
@@ -112,7 +112,7 @@ public:
          * All of the syntax comments of inputs_() are relevant here too. In
          * particular it is necessary to chain the add_field() function calls.
          */
-        auto rv = declare_output().add_field<double>("Area");
+        auto rv = declare_result().add_field<double>("Area");
         rv["Area"].set_description("The area of the shape");
         return rv;
     }
@@ -147,12 +147,12 @@ public:
         return rv;
     }
 
-    auto outputs_() {
+    auto results_() {
         /* With the exception of showcasing how to declare multiple return
-         * values, the implementation of PrismVolume::outputs_ displays no new
-         * features from Area::outputs_
+         * values, the implementation of PrismVolume::results_ displays no new
+         * features from Area::results_
          */
-        auto rv = declare_output()
+        auto rv = declare_result()
                     .add_field<double>("Base area")
                     .add_field<double>("Volume");
         rv["Base area"].set_description("The area of the base");

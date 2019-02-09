@@ -1,17 +1,10 @@
 #include <SDE/ModuleInput.hpp>
-//#include <SDE/detail_/PropertyTypeInputBuilder.hpp>
 #include <catch2/catch.hpp>
+
 using namespace SDE;
 using namespace SDE::detail_;
 
-/* This file contains tests for the ModuleInput and ModuleInputBuilder classes.
- * The ModuleInputBuilder class is dependent on the ModuleInput class hence we
- * first establish that the ModuleInput class is working correctly before
- * testing the ModuleInputBuilder class. Testing the latter is accomplished by
- * reusing the check_state functions from the ModuleInput class tests to check
- * the state of the ModuleInput instance we are building.
- */
-
+// Checks everything, but the value
 static void check_state(ModuleInput& input, std::string desc = "",
                         bool opt = false, bool trans = false) {
     SECTION("Description") { REQUIRE(input.description() == desc); }
@@ -19,6 +12,7 @@ static void check_state(ModuleInput& input, std::string desc = "",
     SECTION("Is Transparent?") { REQUIRE(input.is_transparent() == trans); }
 }
 
+// Additionally checks the value
 template<typename U, typename T>
 static void check_state(ModuleInput& input, T value, std::string desc = "",
                         bool opt = false, bool trans = false) {
@@ -179,102 +173,30 @@ TEST_CASE("ModuleInput Class") {
         check_state<int>(move, three);
         SECTION("Can be chained") { REQUIRE(&pmove == &move); }
     }
-}
 
-// TEST_CASE("PropertyTypeInputBuilder Class") {
-//    SECTION("Default Ctor") {
-//        PropertyTypeInputBuilder<> builder;
-//        auto inputs = builder.finalize();
-//        REQUIRE(inputs.size() == 0);
-//    }
-//
-//    PropertyTypeInputBuilder<> builder;
-//
-//    SECTION("Add an input") {
-//        auto new_builder = builder.add_input<int>("key");
-//        using new_type   = decltype(new_builder);
-//        using corr_type  = PropertyTypeInputBuilder<int>;
-//        static_assert(std::is_same_v<new_type, corr_type>,
-//                      "Resulting type is wrong.");
-//        auto inputs = new_builder.finalize();
-//        REQUIRE(inputs[0].first == "key");
-//        check_state(inputs[0].second);
-//    }
-//
-//    auto new_builder = builder.add_input<int>("key");
-//
-//    SECTION("Public Member Variables") {
-//        SECTION("Description") {
-//            new_builder.description("Hi");
-//            auto inputs = new_builder.finalize();
-//            check_state(inputs[0].second, "Hi");
-//        }
-//        SECTION("Optional") {
-//            new_builder.optional();
-//            auto inputs = new_builder.finalize();
-//            check_state(inputs[0].second, "", true);
-//        }
-//        SECTION("Required") {
-//            SECTION("By Itself") {
-//                new_builder.required();
-//                auto inputs = new_builder.finalize();
-//                check_state(inputs[0].second, "", false);
-//            }
-//            SECTION("Undoes Optional") {
-//                new_builder.optional().required();
-//                auto inputs = new_builder.finalize();
-//                check_state(inputs[0].second, "", false);
-//            }
-//        }
-//        SECTION("Transparent") {
-//            new_builder.transparent();
-//            auto inputs = new_builder.finalize();
-//            check_state(inputs[0].second, "", false, true);
-//        }
-//        SECTION("Opaque") {
-//            SECTION("By Itself") {
-//                new_builder.opaque();
-//                auto inputs = new_builder.finalize();
-//                check_state(inputs[0].second, "", false, false);
-//            }
-//            SECTION("Undoes Transparent") {
-//                new_builder.transparent().opaque();
-//                auto inputs = new_builder.finalize();
-//                check_state(inputs[0].second, "", false, false);
-//            }
-//        }
-//    }
-//
-//    SECTION("Default Value") {
-//        new_builder.default_value(int{3});
-//        auto inputs = new_builder.finalize();
-//        check_state<int>(inputs[0].second, 3);
-//    }
-//
-//    SECTION("Check") {
-//        using validity_check = typename ModuleInput::validity_check<int>;
-//        validity_check check([](const int& x) { return x == 3; });
-//        new_builder.check(check);
-//        auto inputs = new_builder.finalize();
-//        SECTION("Valid value") { REQUIRE(inputs[0].second.is_valid(int{3})); }
-//        SECTION("Invalid value") {
-//            REQUIRE(!inputs[0].second.is_valid(int{4}));
-//        }
-//    }
-//
-//    SECTION("Can declare an API") {
-//        auto newest_builder = new_builder.add_input<double>("key2")
-//                                .description("Hi")
-//                                .add_input<std::string>("key3")
-//                                .optional();
-//        using final_type = decltype(newest_builder);
-//        using corr_type  = PropertyTypeInputBuilder<int, double, std::string>;
-//        static_assert(std::is_same_v<final_type, corr_type>, "Type is wrong");
-//        auto inputs = newest_builder.finalize();
-//        check_state(inputs[0].second);
-//        REQUIRE(inputs[1].first == "key2");
-//        check_state(inputs[1].second, "Hi");
-//        REQUIRE(inputs[2].first == "key3");
-//        check_state(inputs[2].second, "", true);
-//    }
-//}
+    SECTION("Equality/Inequality") {
+        ModuleInput copy(input);
+        REQUIRE(input == copy);
+        REQUIRE(!(input != copy));
+        SECTION("Different values") {
+            copy.change(4);
+            REQUIRE(copy != input);
+            REQUIRE(!(copy == input));
+        }
+        SECTION("Different descriptions") {
+            copy.set_description("Something different");
+            REQUIRE(copy != input);
+            REQUIRE(!(copy == input));
+        }
+        SECTION("Optional-ness") {
+            copy.make_optional();
+            REQUIRE(copy != input);
+            REQUIRE(!(copy == input));
+        }
+        SECTION("Transparency") {
+            copy.make_transparent();
+            REQUIRE(copy != input);
+            REQUIRE(!(copy == input));
+        }
+    }
+} // TEST_CASE

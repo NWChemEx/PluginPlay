@@ -1,6 +1,7 @@
 set(SDE_SRCS Module.cpp
              ModuleInput.cpp
-             ModuleOutput.cpp
+             ModuleManager.cpp
+             ModuleResult.cpp
              SubmoduleRequest.cpp
 )
 set(SDE_INCLUDES detail_/Memoization.hpp
@@ -10,7 +11,8 @@ set(SDE_INCLUDES detail_/Memoization.hpp
                  Module.hpp
                  ModuleBase.hpp
                  ModuleInput.hpp
-                 ModuleOutput.hpp
+                 ModuleManager.hpp
+                 ModuleResult.hpp
                  PropertyType.hpp
                  SubmoduleRequest.hpp
 )
@@ -76,4 +78,4 @@ cpp_add_library(
 #        DEPENDS cereal utilities::utilities bphash::bphash
 #    )
 #endif()
-#cpp_install(TARGETS sde)
+cpp_install(TARGETS sde)

@@ -4,8 +4,10 @@ set(
         detail_/TestPropertyTypeBuilder.cpp
         examples/TestModuleBase.cpp
         examples/TestPropertyType.cpp
+        examples/TestWorkflow.cpp
         TestModuleInput.cpp
-        TestModuleOutput.cpp
+        TestModuleResult.cpp
+        TestUtility.cpp
 #        TestCache.cpp
 #        TestComputedProperties.cpp
 #        TestParameters.cpp

@@ -1,5 +1,6 @@
 #pragma once
 #include "SDE/Module.hpp"
+#include "SDE/Types.hpp"
 #include <memory>
 #include <string>
 
@@ -8,19 +9,82 @@ namespace detail_ {
 class SubmoduleRequestPIMPL;
 }
 
+/** @brief Class that wraps a module's request for a particular submodule.
+ *
+ *  When a module needs to use a submodule as part of its `run` function, the
+ *  module creates an instance of this class. For the most part, a submodule
+ *  request comes down to one thing, the property type that the submodule
+ *  must satisfy. The SubmoduleRequest class stores the requested property type
+ *  as well as some other metadata such as the description.
+ *
+ *  Note that there is a cyclic dependency between the SubmoduleRequest class
+ *  and the Module class, which results from the fact that a Module holds a
+ *  list of submodule requests and that each submodule request holds the module
+ *  that is being used to satisfy the request. In practice this dependency is
+ *  trivially handled because both classes only need forward declarations of
+ *  the other for their respective declarations.
+ *
+ */
 class SubmoduleRequest {
 public:
-    using description_type = std::string;
-    using module_type      = Module;
-    using module_ptr       = std::shared_ptr<const Module>;
+    /// Type of a shared pointer to a module, how the submodule is stored
+    using module_ptr = std::shared_ptr<const Module>;
 
+    ///@{
+    /** @name Ctor and assignment operators
+     *
+     * Functions in this section create a SubmoduleRequest either in a default
+     * state or a state copied/taken from another instance. Customization of the
+     * state is accomplished using the setters. All copies are deep copies.
+     *
+     * @param rhs The other instance to copy/move from. If moving from, @p rhs
+     *        is in a valid, but otherwise undefined state after the operation.
+     *
+     * @throw std::bad_alloc if there is insufficient memory to make a new
+     *        pimpl. 2 and 3 additionally throw if there is insufficient memory
+     *        to copy the underlying module.
+     * @throw none 4 and 5 are no throw guarantee.
+     */
     SubmoduleRequest();
     SubmoduleRequest(const SubmoduleRequest& rhs);
     SubmoduleRequest& operator=(const SubmoduleRequest&);
     SubmoduleRequest(SubmoduleRequest&& rhs) noexcept;
     SubmoduleRequest& operator=(SubmoduleRequest&& rhs) noexcept;
+    ///@}
+
+    /** @brief Standard destructor
+     *
+     * After calling the dtor all references to metadata are invalid and the
+     * reference count of the wrapped module is decreased by one. Hence
+     * references to the module remain valid after the call to the dtor, until
+     * the reference count goes to zero.
+     *
+     * @throw none No throw guarantee.
+     */
     ~SubmoduleRequest() noexcept;
 
+    /** @brief Runs the
+     *
+     * This function is a convenience function for running the wrapped submodule
+     * as a particular property type. It is semantically the same as calling:
+     *
+     * ```
+     * this->value().run_as<T>(args...);
+     * ```
+     *
+     * aside from the fact that it also asserts that the submodule is being run
+     * as the correct property type. Expert users can access the wrapped module
+     * via the `value` member and perform more advanced runs that way.
+     *
+     * @tparam property_type The class defining the property type that the
+     *         submodule should be run as.
+     * @tparam Args The types of the arguments to the property type
+     * @param args The values of the arguments corresponding to the property
+     *        type.
+     * @return whatever the property type returns
+     * @throw std::invalid_argument if the submodule is being run as a property
+     *        type other than the one it should be. Strong throw guarantee.
+     */
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args) {
         if(!check_type_(typeid(property_type)))
@@ -28,11 +92,41 @@ public:
         return value().run_as<property_type>(std::forward<Args>(args)...);
     }
 
-    const module_type& value() const;
+    ///@{
+    /** @name Getters
+     *
+     * Functions in this section allow inquiries into the state of the current
+     * instance.
+     *
+     * Respectively the piece of accessed state is:
+     * - the wrapped module
+     * - the description of the module
+     *
+     * @return the requested piece of state.
+     */
+    const Module& value() const;
+    const type::description& description() const noexcept;
+    ///@}
 
-    const description_type& description() const noexcept;
-    void hash(bphash::Hasher& h) const { value().hash(h); }
-    void change(module_ptr new_module);
+    ///@{
+    /** @name Setters
+     *
+     * Functions in this section can be used to change the state of the
+     * instance.
+     *
+     * Respectively they change:
+     *
+     * - the wrapped module
+     * - the property type the wrapped module must satisfy
+     * - the description of how the wrapped module will be used
+     *
+     * @param new_module The module to change to.
+     * @param desc The new description of the request
+     * @return 2 and 3 return the current instance, modified accordingly to
+     *         support chaining.
+     * @throw none all setters are no throw guarantee.
+     */
+    void change(module_ptr new_module) noexcept;
 
     template<typename T>
     auto& set_type() noexcept {
@@ -40,12 +134,31 @@ public:
         return *this;
     }
 
-    SubmoduleRequest& set_description(description_type desc) noexcept;
+    SubmoduleRequest& set_description(type::description desc) noexcept;
+    ///@}
+
+    /** @brief Hashes the module wrapped in the class.
+     *
+     *  @param h The hasher instance to use.
+     */
+    void hash(type::hasher& h) const { value().hash(h); }
 
 private:
+    ///@{
+    /** @name Bridging functions
+     *
+     *  Functions in this section bridge the templated public API functions to
+     *  the corresponding backend implementation.
+     *
+     *  @param type The property type that the submodule must satisfy.
+     *  @return 1 returns true if the provided type is the same as the property
+     *          type the submodule must have and false otherwise.
+     */
     bool check_type_(const std::type_info& type) const noexcept;
     void set_type_(const std::type_info& type) noexcept;
+    ///@}
 
+    /// Object actually storing the state of this class
     std::unique_ptr<detail_::SubmoduleRequestPIMPL> pimpl_;
 };
 
