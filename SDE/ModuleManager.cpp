@@ -5,7 +5,7 @@ namespace SDE {
 
 using key_type           = typename ModuleManager::key_type;
 using module_base_ptr    = typename ModuleManager::module_base_ptr;
-using submodule_requests = typename ModuleBase::submod_request;
+using submodule_requests = SubmoduleRequest;
 using size_type          = typename ModuleManager::size_type;
 using cache_type         = typename detail_::ModulePIMPL::cache_type;
 template<typename T>

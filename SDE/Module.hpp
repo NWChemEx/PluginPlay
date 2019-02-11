@@ -81,7 +81,7 @@ public:
      * @return The property
      */
     template<typename property_type, typename... Args>
-    auto run_as(Args&&... args) const {
+    auto run_as(Args&&... args) {
         auto temp = inputs();
         temp = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
         return property_type::unwrap_results(run(temp));
@@ -111,15 +111,24 @@ public:
      * @throw ??? If the underlying algorithm throws, the exception will also be
      *        thrown by this function. Strong throw guarantee.
      */
-    result_map run(input_map ps) const;
+    result_map run(input_map ps);
 
     ///@{
     /** @name Module state accessors
      *
+     * The functions in this section are used to inquire about the state of the
+     * module.
+     *
+     * Respectively these functions:
+     *
+     * - Whether a module is ready (contains an actual algorithm, all submodules
+     *   are set, and all required options are set)
+     * - Whether a module is locked
+     *
      * @return The value of the requested piece of state.
+     * @throw none No throw guarantee.
      */
     bool ready() const noexcept;
-    bool valid() const noexcept;
     bool locked() const noexcept;
     ///@}
 

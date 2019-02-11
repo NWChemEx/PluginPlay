@@ -28,7 +28,7 @@ class SubmoduleRequestPIMPL;
 class SubmoduleRequest {
 public:
     /// Type of a shared pointer to a module, how the submodule is stored
-    using module_ptr = std::shared_ptr<const Module>;
+    using module_ptr = std::shared_ptr<Module>;
 
     ///@{
     /** @name Ctor and assignment operators
@@ -105,6 +105,10 @@ public:
      * @return the requested piece of state.
      */
     const Module& value() const;
+    Module& value() {
+        const auto& rv = const_cast<const SubmoduleRequest&>(*this).value();
+        return const_cast<Module&>(rv);
+    }
     const type::description& description() const noexcept;
     ///@}
 
@@ -142,6 +146,9 @@ public:
      *  @param h The hasher instance to use.
      */
     void hash(type::hasher& h) const { value().hash(h); }
+
+    bool ready() const noexcept;
+    void lock();
 
 private:
     ///@{

@@ -49,6 +49,16 @@ SR& SR::set_description(type::description desc) noexcept {
     return *this;
 }
 
+bool SR::ready() const noexcept {
+    if(!pimpl_->module) return false;
+    return pimpl_->module->ready();
+}
+
+void SR::lock() {
+    if(!ready()) throw std::runtime_error("Can't lock non-ready submodule");
+    pimpl_->module->lock();
+}
+
 bool SR::check_type_(const std::type_info& type) const noexcept {
     return pimpl_->type == std::type_index(type);
 }

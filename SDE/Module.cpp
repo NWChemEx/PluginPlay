@@ -22,18 +22,13 @@ Module::Module(std::unique_ptr<detail_::ModulePIMPL> pimpl) noexcept :
   pimpl_(std::move(pimpl)) {}
 Module::~Module() = default;
 
-result_map Module::run(input_map ps) const {
-    return pimpl_->run(std::move(ps));
-}
+result_map Module::run(input_map ps) { return pimpl_->run(std::move(ps)); }
 
-void Module::hash(bphash::Hasher& h) const {
-    if(!ready()) throw std::runtime_error("Can not hash non-ready module");
-    pimpl_->hash(h);
-}
+void Module::hash(bphash::Hasher& h) const { pimpl_->hash(h); }
+void Module::lock() noexcept {}
 
-bool Module::ready() const noexcept { return true; }
-bool Module::locked() const noexcept { return true; }
-bool Module::valid() const noexcept { return true; }
+bool Module::ready() const noexcept { return pimpl_->ready(); }
+bool Module::locked() const noexcept { return pimpl_->is_locked(); }
 
 const input_map& Module::inputs() const noexcept { return pimpl_->inputs(); }
 const result_map& Module::results() const noexcept { return pimpl_->results(); }
