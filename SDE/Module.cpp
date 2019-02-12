@@ -28,7 +28,7 @@ void Module::hash(bphash::Hasher& h) const { pimpl_->hash(h); }
 void Module::lock() noexcept {}
 
 bool Module::ready() const noexcept { return pimpl_->ready(); }
-bool Module::locked() const noexcept { return pimpl_->is_locked(); }
+bool Module::locked() const noexcept { return false; }
 
 const input_map& Module::inputs() const noexcept { return pimpl_->inputs(); }
 const result_map& Module::results() const noexcept { return pimpl_->results(); }

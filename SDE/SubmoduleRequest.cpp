@@ -12,7 +12,7 @@ struct SubmoduleRequestPIMPL {
     SubmoduleRequestPIMPL(const pimpl_t& rhs) :
       desc(rhs.desc),
       type(rhs.type),
-      module(std::make_shared<Module>(*rhs.module)) {}
+      module(rhs.module ? std::make_shared<Module>(*rhs.module) : nullptr) {}
     pimpl_t& operator=(const pimpl_t& rhs) {
         return *this = std::move(pimpl_t(rhs));
     }

@@ -71,7 +71,9 @@ public:
 
     ModuleInput(const ModuleInput& rhs);
 
-    ModuleInput& operator=(const ModuleInput& rhs);
+    ModuleInput& operator=(const ModuleInput& rhs) {
+        return *this = std::move(ModuleInput(rhs));
+    }
 
     ModuleInput(ModuleInput&& rhs) noexcept;
 
@@ -98,18 +100,22 @@ public:
      *  - Retrieve the input's value in a read-only form
      *  - Indicate whether the value must be set.
      *  - Indicate whether the value affects hashing
-     *  - Indicate whether the input is ready (set if non-optional)
+     *  - Indicate whether the input is ready (present, if non-optional)
      *  - Retrieve a human-readable description of what the input is used for.
      *
      *  @param T For `value`, the type you want the wrapped value back as.
      *
      *  @throw std::bad_cast if the value can not be converted to the type @p T
      *         provided to `value`. Strong throw guarantee.
+     *  @throw std::runtime_error if the value has not been set (and is not
+     *         optional). Strong throw guarantee.
+     *
      *  @throw none With the exception of the `value` member function all
      *         getters are no throw guarantee.
      */
     template<typename T>
     T value() {
+        if(!is_ready()) throw std::runtime_error("Value is not set.");
         constexpr bool by_value = std::is_same_v<std::decay_t<T>, T>;
         if constexpr(detail_::IsConstRef<T>::value || by_value)
             return const_cast<const ModuleInput&>(*this).value<T>();
@@ -125,6 +131,7 @@ public:
     }
     template<typename T>
     T value() const {
+        if(!is_ready()) throw std::runtime_error("Value is not set.");
         return is_actually_cref_ ? unwrap_cref<T>(get_()) :
                                    detail_::SDEAnyCast<T>(get_());
     }
@@ -310,7 +317,7 @@ private:
 
     bool is_valid_(const type::any& new_value) const;
 
-    void set_type_(const std::type_info& type) noexcept;
+    void set_type_(const std::type_info& type);
 
     ModuleInput& add_check_(any_check check, type::description desc);
     ///@}

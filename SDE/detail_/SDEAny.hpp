@@ -387,7 +387,7 @@ public:
      *         were not enabled.  Strong throw guarantee.
      *
      */
-//    pyobject pythonize() const { return ptr_->pythonize(); }
+    //    pyobject pythonize() const { return ptr_->pythonize(); }
 
     /**
      * @brief Sets the internal value of an SDEAny from a Python object.
@@ -407,10 +407,10 @@ public:
      * @throw std::runtime_error if this SDEAny instance does not hold a value.
      *        Strong throw guarantee.
      */
-//    void change_python(pyobject& obj) {
-//        if(!ptr_) throw std::runtime_error("Can't change empty SDEAny");
-//        ptr_->change_python(obj);
-//    }
+    //    void change_python(pyobject& obj) {
+    //        if(!ptr_) throw std::runtime_error("Can't change empty SDEAny");
+    //        ptr_->change_python(obj);
+    //    }
 
     /**
      * @brief Comparison operators.
@@ -429,7 +429,10 @@ public:
      */
     ///@{
     bool operator==(const SDEAny& rhs) const noexcept {
-        return (*ptr_) == (*rhs.ptr_);
+        const bool lhs_good = static_cast<bool>(ptr_);
+        const bool rhs_good = static_cast<bool>(rhs.ptr_);
+        if(lhs_good && rhs_good) return (*ptr_) == (*rhs.ptr_);
+        return lhs_good == rhs_good;
     }
 
     bool operator!=(const SDEAny& rhs) const noexcept {
@@ -519,10 +522,10 @@ private:
         void hash(Hasher& h) const { hash_(h); }
 
         /// Public API for virtual python function
-//        pyobject pythonize() { return pythonize_(); }
-//
-//        /// Public API for changing the value from python
-//        void change_python(pyobject& obj) { change_python_(obj); }
+        //        pyobject pythonize() { return pythonize_(); }
+        //
+        //        /// Public API for changing the value from python
+        //        void change_python(pyobject& obj) { change_python_(obj); }
 
         /// Public API for determining equality
         bool operator==(const SDEAnyBase_& rhs) const noexcept {
@@ -559,11 +562,11 @@ private:
         /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
 
-//        /// Implemented by derived class to provide read-only python object
-//        virtual pyobject pythonize_() const = 0;
-//
-//        /// To be implemented by the derived class to change the value
-//        virtual void change_python_(pyobject& obj) = 0;
+        //        /// Implemented by derived class to provide read-only python
+        //        object virtual pyobject pythonize_() const = 0;
+        //
+        //        /// To be implemented by the derived class to change the value
+        //        virtual void change_python_(pyobject& obj) = 0;
 
         /// Implemented by derived class for polymorphic copy
         virtual std::unique_ptr<SDEAnyBase_> clone_() const = 0;
@@ -704,9 +707,9 @@ private:
          * @throws std::runtime_error if Python bindings are not enabled.
          * Strong throw guarantee.
          */
-//        pyobject pythonize_() const override { return pycast(value); }
-//
-//        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
+        //        pyobject pythonize_() const override { return pycast(value); }
+        //
+        //        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
     };
 
     /**

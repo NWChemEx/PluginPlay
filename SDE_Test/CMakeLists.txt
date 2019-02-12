@@ -1,13 +1,15 @@
 set(
         SDE_TESTS test_main.cpp
-        detail_/TestSDEAny.cpp
-        detail_/TestPropertyTypeBuilder.cpp
-        examples/TestModuleBase.cpp
-        examples/TestPropertyType.cpp
-        examples/TestWorkflow.cpp
+        detail_//TestModuleInputPIMPL.cpp
+#        detail_/TestSDEAny.cpp
+#        detail_/TestModulePIMPL.cpp
+#        detail_/TestPropertyTypeBuilder.cpp
+#        examples/TestModuleBase.cpp
+#        examples/TestPropertyType.cpp
+#        examples/TestWorkflow.cpp
         TestModuleInput.cpp
-        TestModuleResult.cpp
-        TestUtility.cpp
+#        TestModuleResult.cpp
+#        TestUtility.cpp
 #        TestCache.cpp
 #        TestComputedProperties.cpp
 #        TestParameters.cpp

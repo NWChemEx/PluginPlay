@@ -32,7 +32,6 @@ public:
     ModulePIMPL& operator=(ModulePIMPL&& rhs) = default;
 
     ModulePIMPL(base_ptr base, cache_ptr cache = cache_ptr{}) :
-      locked_(false),
       base_(base),
       cache_(cache),
       inputs_(base->inputs()),
@@ -41,12 +40,13 @@ public:
     ~ModulePIMPL() = default;
 
     auto run(input_map ps) {
-        lock();
+        auto ins = inputs();
+        ins.insert(ps.begin(), ps.end());
         type::hasher h(bphash::HashType::Hash128);
-        base_->memoize(h, ps, submods_);
+        base_->memoize(h, ins, submods_);
         auto hv = bphash::hash_to_string(h.finalize());
         if(cache_ && cache_->count(hv)) return cache_->at(hv);
-        auto rv = base_->run(std::move(ps), submods_);
+        auto rv = base_->run(std::move(ins), submods_);
         if(!cache_) return rv;
         cache_->emplace(hv, std::move(rv));
         return cache_->at(hv);
@@ -83,12 +83,6 @@ public:
         auto hv = bphash::hash_to_string(h.finalize());
         return cache_->count(hv);
     }
-    void lock() {
-        if(!ready()) throw std::runtime_error("Can't lock non-ready module.");
-        for(auto & [k, v] : submods_) v.lock();
-        locked_ = true;
-    }
-
     auto problems() const {
         Utilities::CaseInsensitiveMap<std::set<type::key>> probs;
         if(!base_) probs["Algorithm"];
@@ -102,10 +96,8 @@ public:
     input_map& inputs() { return inputs_; }
     submod_map& submods() { return submods_; }
     const result_map& results() const { return base_->results(); }
-    bool is_locked() const noexcept { return locked_; }
 
 private:
-    bool locked_;
     base_ptr base_;
     cache_ptr cache_;
     input_map inputs_;

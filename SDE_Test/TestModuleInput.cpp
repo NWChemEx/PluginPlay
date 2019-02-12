@@ -20,183 +20,226 @@ static void check_state(ModuleInput& input, T value, std::string desc = "",
     SECTION("Value") { REQUIRE(input.value<U>() == value); }
 }
 
-TEST_CASE("ModuleInput Class") {
-    SECTION("Default Ctor") {
-        ModuleInput input;
-        check_state(input);
+TEST_CASE("ModuleInput Class : Default ctor") {
+    ModuleInput input;
+    SECTION("State") {
+        REQUIRE(!input.is_optional());
+        REQUIRE(!input.is_transparent());
+        REQUIRE(!input.is_ready());
+        REQUIRE(input.description() == "");
     }
+    SECTION("Error checking") {
+        REQUIRE_THROWS_AS(input.value<double>(), std::runtime_error);
+    }
+}
 
+TEST_CASE("ModuleInput Class : set_type") {
     ModuleInput input;
 
     int three = 3;
     double pi = 3.14;
-    SECTION("Set Type") {
-        SECTION("Read/Write Reference") {
-            // Should fail to compile, uncomment to check
-            // input.set_type<int&>();
-        }
-        SECTION("Value") {
-            input.set_type<int>();
-            SECTION("Valid Type") { REQUIRE(input.is_valid(three)); }
-            SECTION("Invalid Type") { REQUIRE(!input.is_valid(pi)); }
-        }
-        SECTION("Read-Only Reference") {
-            input.set_type<const int&>();
-            SECTION("Valid Type") { REQUIRE(input.is_valid(three)); }
-            SECTION("Invalid Type") { REQUIRE(!input.is_valid(pi)); }
-        }
+    SECTION("Can't set type to read/write reference") {
+        // Should fail to compile, uncomment to check
+        // input.set_type<int&>();
     }
+    SECTION("Set type to by value") {
+        auto* ptr = &(input.set_type<int>());
+        SECTION("Correct return") { REQUIRE(ptr == &input); }
+        SECTION("Valid value") { REQUIRE(input.is_valid(three)); }
+        SECTION("Invalid value") { REQUIRE(!input.is_valid(pi)); }
+    }
+    SECTION("Set type to read-only reference") {
+        input.set_type<const int&>();
+        SECTION("Valid value") { REQUIRE(input.is_valid(three)); }
+        SECTION("Invalid value") { REQUIRE(!input.is_valid(pi)); }
+    }
+}
 
-    const int four = 4;
+TEST_CASE("ModuleInput Class : add_check") {
+    ModuleInput input;
+    input.set_type<int>();
+    const int three = 3;
+    const int four  = 4;
     SECTION("Add Check") {
         using validity_check = typename ModuleInput::validity_check<int>;
-        input.add_check(validity_check([](const int& x) { return x == 3; }));
+        validity_check fxn   = [](const int& x) { return x == 3; };
+        auto* ptr            = &(input.add_check(fxn));
+        SECTION("Correct return") { REQUIRE(&input == ptr); }
         SECTION("Valid Value") { REQUIRE(input.is_valid(three)); }
         SECTION("Invalid Value") { REQUIRE(!input.is_valid(four)); }
     }
+}
 
-    SECTION("Change Value") {
-        int value = 3;
-        SECTION("Can't set value if type isn't set") {
-            REQUIRE_THROWS_AS(input.change(value), std::runtime_error);
-        }
-        SECTION("Stored By Value") {
-            input.set_type<int>();
-            SECTION("Passed by reference") {
-                input.change(value); // std::forward will take this as a ref
-                check_state<int>(input, value);
-                int& pvalue = input.value<int&>();
-                SECTION("Makes a Copy") { REQUIRE(&pvalue != &value); }
-                SECTION("Can be modified") {
-                    pvalue = four;
-                    check_state<int>(input, four);
-                }
-            }
-            SECTION("Passed by value") {
-                input.change(int{3});
-                check_state<int>(input, value);
-                SECTION("Can be modified") {
-                    input.value<int&>() = four;
-                    check_state<int>(input, four);
-                }
+TEST_CASE("ModuleInput Class : change") {
+    ModuleInput input;
+    SECTION("Store by value") {
+        input.set_type<int>();
+        SECTION("Pass by reference") {
+            int value = 3;
+            auto* ptr = &(input.change(value));
+            SECTION("Return") { REQUIRE(ptr == &input); }
+            int& pvalue = input.value<int&>();
+            SECTION("Correct value") { REQUIRE(pvalue == 3); }
+            SECTION("Makes a Copy") { REQUIRE(&pvalue != &value); }
+            SECTION("Can be modified") {
+                pvalue = 4;
+                REQUIRE(input.value<int&>() == 4);
             }
         }
-        SECTION("Stored By Reference") {
-            input.set_type<const int&>();
-            SECTION("Passed by reference") {
-                input.change(value);
-                check_state<const int&>(input, value);
-                SECTION("Can't Get Read/Write Version") {
-                    REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
-                }
-                SECTION("Is by reference") {
-                    const int& pvalue = input.value<const int&>();
-                    REQUIRE(&pvalue == &value);
-                }
-            }
-            SECTION("Passed by value") {
-                input.change(int{3});
-                check_state<const int&>(input, value);
-                SECTION("Can't Get Read/Write Version") {
-                    REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
-                }
+        SECTION("Passed by value") {
+            input.change(int{3});
+            SECTION("Correct value") { REQUIRE(input.value<int>() == 3); }
+            SECTION("Can be modified") {
+                input.value<int&>() = 4;
+                REQUIRE(input.value<int>() == 4);
             }
         }
     }
-    SECTION("Description") {
-        auto desc = "The description";
-        input.set_description(desc);
-        check_state(input, desc);
+    SECTION("Stored by const reference") {
+        input.set_type<const int&>();
+        SECTION("Passed by reference") {
+            int value = 3;
+            input.change(value);
+            SECTION("Correct value") { REQUIRE(input.value<int>() == 3); }
+            SECTION("Can't get read/write reference") {
+                REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
+            }
+            SECTION("Is by reference") {
+                const int* pvalue = &(input.value<const int&>());
+                REQUIRE(pvalue == &value);
+            }
+        }
+        SECTION("Passed by value") {
+            input.change(int{3});
+            SECTION("Correct value") { REQUIRE(input.value<int>() == 3); }
+            SECTION("Can't Get Read/Write Version") {
+                REQUIRE_THROWS_AS(input.value<int&>(), std::bad_cast);
+            }
+        }
     }
-    SECTION("Optional") {
-        input.make_optional();
-        check_state(input, "", true);
+}
 
-        input.make_required();
-        check_state(input, "", false);
+TEST_CASE("ModuleInput Class : description") {
+    ModuleInput input;
+    auto desc = "The description";
+    auto* ptr = &(input.set_description(desc));
+    SECTION("Return") { REQUIRE(ptr == &input); }
+    SECTION("Value") { REQUIRE(input.description() == desc); }
+}
 
-        // make sure it wasn't doing nothing the first time
-        input.make_optional();
-        check_state(input, "", true);
+TEST_CASE("ModuleInput Class: optional") {
+    ModuleInput input;
+    auto* ptr = &(input.make_optional());
+    SECTION("Return") { REQUIRE(ptr == &input); }
+    SECTION("Value") { REQUIRE(input.is_optional()); }
+    SECTION("Undone by make_required") {
+        auto* ptr2 = &(input.make_required());
+        REQUIRE(ptr2 == &input);
+        REQUIRE(!input.is_optional());
     }
-    SECTION("Is Transparent") {
-        input.make_transparent();
-        check_state(input, "", false, true);
+}
 
-        input.make_opaque();
-        check_state(input, "", false, false);
-
-        input.make_transparent();
-        check_state(input, "", false, true);
+TEST_CASE("ModuleInput Class: transparent") {
+    ModuleInput input;
+    auto* ptr = &(input.make_transparent());
+    SECTION("Return") { REQUIRE(ptr == &input); }
+    SECTION("Value") { REQUIRE(input.is_transparent()); }
+    SECTION("Undone by make_opaque") {
+        auto* ptr2 = &(input.make_opaque());
+        REQUIRE(ptr2 == &input);
+        REQUIRE(!input.is_transparent());
     }
+}
 
+TEST_CASE("ModuleInput Class : hash") {
+    ModuleInput input;
     input.set_type<int>();
-    input.change(three);
-
-    SECTION("Hash") {
-        Hasher h(bphash::HashType::Hash128);
-        SECTION("Opaque") {
-            input.hash(h);
-            auto hv = bphash::hash_to_string(h.finalize());
-            // std::cout << hv << std::endl;
-            REQUIRE(hv == "9a4294b64e60cc012c5ed48db4cd9c48");
-        }
-        SECTION("Transparent") {
-            input.make_transparent();
-            input.hash(h);
-            auto hv = bphash::hash_to_string(h.finalize());
-            // std::cout << hv <<std::endl;
-            REQUIRE(hv == "00000000000000000000000000000000");
-        }
+    input.change(int{3});
+    Hasher h(bphash::HashType::Hash128);
+    SECTION("Opaque") {
+        input.hash(h);
+        auto hv = bphash::hash_to_string(h.finalize());
+        // std::cout << hv << std::endl;
+        REQUIRE(hv == "9a4294b64e60cc012c5ed48db4cd9c48");
     }
-
-    SECTION("Copy Ctor") {
-        ModuleInput copy(input);
-        check_state<int>(copy, three);
+    SECTION("Transparent") {
+        input.make_transparent();
+        input.hash(h);
+        auto hv = bphash::hash_to_string(h.finalize());
+        // std::cout << hv <<std::endl;
+        REQUIRE(hv == "00000000000000000000000000000000");
     }
+}
 
-    SECTION("Copy Assignment") {
-        ModuleInput copy;
-        auto& pcopy = (copy = input);
-        check_state<int>(copy, three);
-        SECTION("Can be chained") { REQUIRE(&pcopy == &copy); }
+TEST_CASE("Equality comparisons") {
+    ModuleInput input1, input2;
+    SECTION("Default are equal") {
+        REQUIRE(input1 == input2);
+        REQUIRE(!(input1 != input2));
     }
+    SECTION("Different types") {
+        input1.set_type<int>();
+        REQUIRE(input1 != input2);
+        REQUIRE(!(input1 == input2));
+    }
+    SECTION("Different descriptions") {
+        input1.set_description("Something different");
+        REQUIRE(input1 != input2);
+        REQUIRE(!(input1 == input2));
+    }
+    SECTION("Different optional-ness") {
+        input1.make_optional();
+        REQUIRE(input1 != input2);
+        REQUIRE(!(input1 == input2));
+    }
+    SECTION("Different opaque-ness") {
+        input1.make_transparent();
+        REQUIRE(input1 != input2);
+        REQUIRE(!(input1 == input2));
+    }
+    SECTION("Different values") {
+        input1.set_type<int>();
+        input2.set_type<int>();
+        input1.change(int{4});
+        REQUIRE(input1 != input2);
+        REQUIRE(!(input1 == input2));
+    }
+}
 
-    SECTION("Move Ctor") {
-        ModuleInput move(std::move(input));
-        check_state<int>(move, three);
-    }
+TEST_CASE("ModuleInput Class : Copy Ctor") {
+    ModuleInput input;
+    input.set_type<int>();
+    input.make_optional();
+    ModuleInput copy(input);
+    REQUIRE(copy == input);
+}
 
-    SECTION("Move Assignment") {
-        ModuleInput move;
-        auto& pmove = (move = std::move(input));
-        check_state<int>(move, three);
-        SECTION("Can be chained") { REQUIRE(&pmove == &move); }
-    }
+TEST_CASE("ModuleInput Class : Copy Assignment") {
+    ModuleInput input;
+    input.set_type<int>();
+    input.make_optional();
+    ModuleInput copy;
+    auto* ptr = &(copy = input);
+    REQUIRE(copy == input);
+    REQUIRE(ptr == &copy);
+}
 
-    SECTION("Equality/Inequality") {
-        ModuleInput copy(input);
-        REQUIRE(input == copy);
-        REQUIRE(!(input != copy));
-        SECTION("Different values") {
-            copy.change(4);
-            REQUIRE(copy != input);
-            REQUIRE(!(copy == input));
-        }
-        SECTION("Different descriptions") {
-            copy.set_description("Something different");
-            REQUIRE(copy != input);
-            REQUIRE(!(copy == input));
-        }
-        SECTION("Optional-ness") {
-            copy.make_optional();
-            REQUIRE(copy != input);
-            REQUIRE(!(copy == input));
-        }
-        SECTION("Transparency") {
-            copy.make_transparent();
-            REQUIRE(copy != input);
-            REQUIRE(!(copy == input));
-        }
-    }
-} // TEST_CASE
+TEST_CASE("ModuleInput Class : Move Ctor") {
+    ModuleInput input;
+    input.set_type<int>();
+    input.make_optional();
+    ModuleInput copy(input);
+    ModuleInput moved(std::move(input));
+    REQUIRE(copy == moved);
+}
+
+TEST_CASE("ModuleInput Class : Move Assignment") {
+    ModuleInput input;
+    input.set_type<int>();
+    input.make_optional();
+    ModuleInput copy(input);
+    ModuleInput moved;
+    auto* ptr = &(moved = std::move(input));
+    REQUIRE(moved == copy);
+    REQUIRE(ptr == &moved);
+}

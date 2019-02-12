@@ -1,114 +1,78 @@
 #include "SDE/ModuleInput.hpp"
-#include <Utilities/Containers/CaseInsensitiveMap.hpp>
-#include <typeindex>
+#include "SDE/detail_/ModuleInputPIMPL.hpp"
 
 namespace SDE {
 using any_check = typename ModuleInput::any_check;
 
-namespace detail_ {
+ModuleInput::ModuleInput() :
+  pimpl_(std::make_unique<detail_::ModuleInputPIMPL>()) {}
 
-struct ModuleInputPIMPL {
-    type::any value;
-    Utilities::CaseInsensitiveMap<any_check> checks;
-    std::type_index type   = std::type_index(typeid(std::nullptr_t));
-    type::description desc = "";
-    bool is_optional       = false;
-    bool is_transparent    = false;
-};
-
-bool operator==(const ModuleInputPIMPL& lhs, const ModuleInputPIMPL& rhs) {
-    return std::tie(lhs.value, lhs.type, lhs.desc, lhs.is_optional,
-                    lhs.is_transparent) == std::tie(rhs.value, rhs.type,
-                                                    rhs.desc, rhs.is_optional,
-                                                    rhs.is_transparent);
-}
-
-} // namespace detail_
-
-using MI = ModuleInput;
-
-MI::ModuleInput() : pimpl_(std::make_unique<detail_::ModuleInputPIMPL>()) {}
-
-MI::ModuleInput(const ModuleInput& rhs) :
+ModuleInput::ModuleInput(const ModuleInput& rhs) :
   is_cref_(rhs.is_cref_),
   is_actually_cref_(rhs.is_actually_cref_),
-  pimpl_(std::make_unique<detail_::ModuleInputPIMPL>(*rhs.pimpl_)) {}
+  pimpl_(rhs.pimpl_->clone()) {}
 
-MI& MI::operator=(const ModuleInput& rhs) {
-    std::make_unique<detail_::ModuleInputPIMPL>(*rhs.pimpl_).swap(pimpl_);
-    return *this;
-}
-MI::ModuleInput(ModuleInput&& rhs) noexcept = default;
-MI& MI::operator=(ModuleInput&& rhs) noexcept = default;
-MI::~ModuleInput() noexcept                   = default;
+ModuleInput::ModuleInput(ModuleInput&& rhs) noexcept = default;
+ModuleInput& ModuleInput::operator=(ModuleInput&& rhs) noexcept = default;
+ModuleInput::~ModuleInput() noexcept                            = default;
 
-bool MI::is_optional() const noexcept { return pimpl_->is_optional; }
-bool MI::is_transparent() const noexcept { return pimpl_->is_transparent; }
-bool MI::is_ready() const noexcept {
-    return is_optional() || pimpl_->value.has_value();
+bool ModuleInput::is_optional() const noexcept { return pimpl_->m_optional; }
+bool ModuleInput::is_transparent() const noexcept {
+    return pimpl_->m_transparent;
 }
-const type::description& MI::description() const noexcept {
-    return pimpl_->desc;
+bool ModuleInput::is_ready() const noexcept { pimpl_->is_ready(); }
+
+const type::description& ModuleInput::description() const noexcept {
+    return pimpl_->m_desc;
 }
 
-void MI::hash(Hasher& h) const {
-    // Only hash the value if it's opaque
-    if(!pimpl_->is_transparent) h(pimpl_->value);
-}
+void ModuleInput::hash(Hasher& h) const { return pimpl_->hash(h); }
 
-MI& MI::set_description(type::description desc) noexcept {
-    pimpl_->desc = std::move(desc);
+ModuleInput& ModuleInput::set_description(type::description desc) noexcept {
+    pimpl_->m_desc = std::move(desc);
     return *this;
 }
 
-MI& MI::make_optional() noexcept {
-    pimpl_->is_optional = true;
+ModuleInput& ModuleInput::make_optional() noexcept {
+    pimpl_->m_optional = true;
     return *this;
 }
 
 ModuleInput& ModuleInput::make_required() noexcept {
-    pimpl_->is_optional = false;
+    pimpl_->m_optional = false;
     return *this;
 }
 
 ModuleInput& ModuleInput::make_transparent() noexcept {
-    pimpl_->is_transparent = true;
+    pimpl_->m_transparent = true;
     return *this;
 }
 
 ModuleInput& ModuleInput::make_opaque() noexcept {
-    pimpl_->is_transparent = false;
+    pimpl_->m_transparent = false;
     return *this;
 }
 
-const type::any& MI::get_() const { return pimpl_->value; }
+const type::any& ModuleInput::get_() const { return pimpl_->m_value; }
 
-void MI::change_(type::any new_value) {
-    if(pimpl_->type == std::type_index(typeid(std::nullptr_t)))
-        throw std::runtime_error("Must set type first");
-    pimpl_->value.swap(new_value);
+void ModuleInput::change_(type::any new_value) {
+    pimpl_->change(std::move(new_value));
 }
 
-bool MI::is_valid_(const type::any& new_value) const {
-    for(auto & [k, v] : pimpl_->checks)
-        if(!v(new_value)) return false;
-    return true;
+bool ModuleInput::is_valid_(const type::any& new_value) const {
+    return pimpl_->is_valid(new_value);
 }
 
-void MI::set_type_(const std::type_info& type) noexcept {
-    pimpl_->type = std::type_index(type);
+void ModuleInput::set_type_(const std::type_info& type) {
+    pimpl_->set_type(type);
 }
 
-MI& MI::add_check_(any_check check, type::description desc) {
-    if(desc == "") {
-        desc = "Check #";
-        desc += std::to_string(pimpl_->checks.size());
-    }
-    pimpl_->checks.emplace(std::move(desc), std::move(check));
+ModuleInput& ModuleInput::add_check_(any_check check, type::description desc) {
+    pimpl_->add_check(std::move(check), std::move(desc));
     return *this;
 }
 
-bool MI::operator==(const ModuleInput& rhs) const {
+bool ModuleInput::operator==(const ModuleInput& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
