@@ -42,4 +42,10 @@ SubmoduleRequest& Module::change_submod(type::key key) {
     return pimpl_->submods().at(key);
 }
 
+bool Module::operator==(const SDE::Module& rhs) const {
+    return *pimpl_ == *rhs.pimpl_;
+}
+
+void Module::unlock() noexcept { pimpl_->unlock(); }
+
 } // namespace SDE

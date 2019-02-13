@@ -3,8 +3,11 @@
 #include "SDE/Types.hpp"
 #include <memory>
 #include <string>
+#include <typeindex>
 
 namespace SDE {
+template<typename T>
+class PropertyType;
 namespace detail_ {
 class SubmoduleRequestPIMPL;
 }
@@ -47,7 +50,9 @@ public:
      */
     SubmoduleRequest();
     SubmoduleRequest(const SubmoduleRequest& rhs);
-    SubmoduleRequest& operator=(const SubmoduleRequest&);
+    SubmoduleRequest& operator=(const SubmoduleRequest& rhs) {
+        return *this = std::move(SubmoduleRequest(rhs));
+    }
     SubmoduleRequest(SubmoduleRequest&& rhs) noexcept;
     SubmoduleRequest& operator=(SubmoduleRequest&& rhs) noexcept;
     ///@}
@@ -110,6 +115,7 @@ public:
         return const_cast<Module&>(rv);
     }
     const type::description& description() const noexcept;
+    const std::type_index& type() const;
     ///@}
 
     ///@{
@@ -128,13 +134,15 @@ public:
      * @param desc The new description of the request
      * @return 2 and 3 return the current instance, modified accordingly to
      *         support chaining.
-     * @throw none all setters are no throw guarantee.
+     * @throw std::runtime_error thrown by 2 if the type is already set. Strong
+     *        throw guarantee.
      */
     void change(module_ptr new_module) noexcept;
 
     template<typename T>
-    auto& set_type() noexcept {
-        set_type_(typeid(std::decay_t<T>));
+    auto& set_type() {
+        using clean_t = std::decay_t<T>;
+        set_type_(typeid(clean_t));
         return *this;
     }
 
@@ -150,6 +158,11 @@ public:
     bool ready() const noexcept;
     void lock();
 
+    bool operator==(const SubmoduleRequest& rhs) const;
+    bool operator!=(const SubmoduleRequest& rhs) const {
+        return !((*this) == rhs);
+    }
+
 private:
     ///@{
     /** @name Bridging functions
@@ -162,7 +175,7 @@ private:
      *          type the submodule must have and false otherwise.
      */
     bool check_type_(const std::type_info& type) const noexcept;
-    void set_type_(const std::type_info& type) noexcept;
+    void set_type_(const std::type_info& type);
     ///@}
 
     /// Object actually storing the state of this class

@@ -11,7 +11,8 @@ class SubmoduleRequest;
 
 namespace detail_ {
 class ModulePIMPL;
-}
+class ModuleManagerPIMPL;
+} // namespace detail_
 
 /** @brief The public API of all modules.
  *
@@ -180,7 +181,23 @@ public:
 
     void hash(type::hasher& h) const;
 
+    bool operator==(const Module& rhs) const;
+    bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
+
 private:
+    friend class detail_::ModuleManagerPIMPL;
+
+    /** @brief Unlocks a locked module
+     *
+     * There are very select circumstances when we need to unlock a locked
+     * module (for example after deep copying a locked module, we need to
+     * unlock the copy). The ModuleManager (through its PIMPL) is the only class
+     * that can do this because it knows when it is okay.
+     *
+     * @throw none No throw guarantee.
+     */
+    void unlock() noexcept;
+
     /// The instance that actually does everything for us.
     std::unique_ptr<detail_::ModulePIMPL> pimpl_;
 };

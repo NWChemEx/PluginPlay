@@ -1,4 +1,4 @@
-#include "SDE/PyBindings/PySmartEnums.hpp"
+#include "PySmartEnums.hpp"
 #include "SDE/attic/Parameters.hpp"
 #include "SDE/detail_/Memoization.hpp"
 #include <pybind11/pybind11.h>

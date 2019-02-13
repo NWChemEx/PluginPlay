@@ -20,7 +20,7 @@ bool ModuleInput::is_optional() const noexcept { return pimpl_->m_optional; }
 bool ModuleInput::is_transparent() const noexcept {
     return pimpl_->m_transparent;
 }
-bool ModuleInput::is_ready() const noexcept { pimpl_->is_ready(); }
+bool ModuleInput::ready() const noexcept { pimpl_->is_ready(); }
 
 const type::description& ModuleInput::description() const noexcept {
     return pimpl_->m_desc;

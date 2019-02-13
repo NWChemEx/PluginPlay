@@ -13,7 +13,7 @@
  *    applicable to the current module.
  *  - How to implement the module's algorithm
  */
-class Rectangle : public SDE::ModuleBase {
+class Rectangle : public SDE::ModuleBaseHelper<Rectangle> {
 public:
     Rectangle() {
         /* Most modules will be designed with a property type in mind. For
@@ -195,7 +195,7 @@ private:
  *   - Calling a submodule
  *   - Wrapping multiple return values.
  */
-class Prism : public SDE::ModuleBase {
+class Prism : public SDE::ModuleBaseHelper<Prism> {
 public:
     Prism() {
         // The bulk of the setup ia analogous to Rectangle

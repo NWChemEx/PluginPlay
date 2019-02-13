@@ -25,7 +25,7 @@ TEST_CASE("ModuleInput Class : Default ctor") {
     SECTION("State") {
         REQUIRE(!input.is_optional());
         REQUIRE(!input.is_transparent());
-        REQUIRE(!input.is_ready());
+        REQUIRE(!input.ready());
         REQUIRE(input.description() == "");
     }
     SECTION("Error checking") {

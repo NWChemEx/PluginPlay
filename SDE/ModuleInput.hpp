@@ -115,7 +115,7 @@ public:
      */
     template<typename T>
     T value() {
-        if(!is_ready()) throw std::runtime_error("Value is not set.");
+        if(!ready()) throw std::runtime_error("Value is not set.");
         constexpr bool by_value = std::is_same_v<std::decay_t<T>, T>;
         if constexpr(detail_::IsConstRef<T>::value || by_value)
             return const_cast<const ModuleInput&>(*this).value<T>();
@@ -131,7 +131,7 @@ public:
     }
     template<typename T>
     T value() const {
-        if(!is_ready()) throw std::runtime_error("Value is not set.");
+        if(!ready()) throw std::runtime_error("Value is not set.");
         return is_actually_cref_ ? unwrap_cref<T>(get_()) :
                                    detail_::SDEAnyCast<T>(get_());
     }
@@ -140,7 +140,7 @@ public:
 
     bool is_transparent() const noexcept;
 
-    bool is_ready() const noexcept;
+    bool ready() const noexcept;
 
     const type::description& description() const noexcept;
     //@}

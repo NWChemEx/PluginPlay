@@ -3,122 +3,112 @@
 using namespace SDE;
 using namespace SDE::detail_;
 
-static void check_state(ModuleResult& output, std::string desc = "") {
-    SECTION("Description") { REQUIRE(output.description() == desc); }
-}
-
-template<typename U, typename T>
-static void check_state(ModuleResult& output, T value, std::string desc = "") {
-    check_state(output, desc);
-    SECTION("Value") { REQUIRE(output.value<U>() == value); }
-    SECTION("Shared Pointer to Const Value") {
-        auto shared = output.value<std::shared_ptr<const U>>();
-        REQUIRE(*shared == value);
-        REQUIRE(shared.get() == &output.value<const U&>());
-    }
-    SECTION("Shared Pointer to Any") {
-        auto shared      = output.value<typename ModuleResult::shared_any>();
-        const U& pshared = detail_::SDEAnyCast<const U&>(*shared);
-        REQUIRE(pshared == value);
-        REQUIRE(&pshared == &output.value<const U&>());
-    }
-}
-
-TEST_CASE("ModuleResult Class") {
-    SECTION("Default Ctor") {
-        ModuleResult output;
-        check_state(output);
-    }
-
+TEST_CASE("ModuleResult Class : Default Ctor") {
     ModuleResult output;
-
-    SECTION("Description") {
-        output.set_description("Hi");
-        check_state(output, "Hi");
-    }
-
-    SECTION("Set Type") {
-        SECTION("Must Be Unqualified Type") {
-            // Will fail to compile, uncomment to check
-            // output.set_type<int&>();
-            // output.set_type<const int>();
-        }
-        SECTION("Valid Type") {
-            output.set_type<int>();
-            check_state(output);
+    SECTION("Default state") { REQUIRE(output.description() == ""); }
+    SECTION("Error checking") {
+        SECTION("Can't call change") {
+            REQUIRE_THROWS_AS(output.change(int{3}), std::runtime_error);
         }
     }
+}
 
-    int three = 3;
-    SECTION("Set Value") {
-        SECTION("Fails if set_type hasn't been called") {
-            REQUIRE_THROWS_AS(output.change(three), std::runtime_error);
-        }
-        output.set_type<int>();
-        SECTION("Can set to a value of correct type") {
-            output.change(three);
-            check_state<int>(output, three);
-        }
-        SECTION("Throws if bad type") {
-            double pi = 3.14;
-            REQUIRE_THROWS_AS(output.change(pi), std::invalid_argument);
-        }
-        SECTION("Can set to a shared pointer") {
-            auto an_any = detail_::make_SDEAny<int>(three);
-            auto shared = std::make_shared<detail_::SDEAny>(an_any);
-            output.change(shared);
-            check_state<int>(output, three);
-            REQUIRE(shared.use_count() == 2);
-        }
+TEST_CASE("ModuleResult Class : Description") {
+    ModuleResult output;
+    auto ptr = &(output.set_description("Hello world"));
+    SECTION("Return") { REQUIRE(ptr == &output); }
+    SECTION("Value") { REQUIRE(output.description() == "Hello world"); }
+}
+
+TEST_CASE("ModuleResult Class : set_type") {
+    ModuleResult output;
+    SECTION("Must Be Unqualified Type") {
+        // Will fail to compile, uncomment to check
+        // output.set_type<int &>();
+        // output.set_type<const int>();
     }
+    SECTION("Valid Type") {
+        auto ptr = &(output.set_type<int>());
+        REQUIRE(ptr == &output);
+    }
+}
+
+TEST_CASE("ModuleResult Class : change") {
+    ModuleResult output;
     output.set_type<int>();
-    output.change(three);
-
-    SECTION("Copy Ctor") {
-        ModuleResult copy(output);
-        check_state<int>(copy, three);
+    int three = 3;
+    SECTION("Valid value") {
+        output.change(three);
+        REQUIRE(output.value<int>() == 3);
     }
-
-    SECTION("Copy Assignment") {
-        ModuleResult copy;
-        auto& pcopy = (copy = output);
-        check_state<int>(copy, three);
-        SECTION("Can Chain") { REQUIRE(&pcopy == &copy); }
+    SECTION("Throws if bad type") {
+        REQUIRE_THROWS_AS(output.change(double{3.15}), std::invalid_argument);
     }
-
-    SECTION("Move Ctor") {
-        ModuleResult move(output);
-        check_state<int>(move, three);
+    SECTION("Can set to a shared pointer") {
+        auto da_any = detail_::make_SDEAny<int>(three);
+        auto shared = std::make_shared<type::any>(std::move(da_any));
+        int* ptr    = &(SDEAnyCast<int&>(*shared));
+        output.change(shared);
+        auto value = output.value<std::shared_ptr<const int>>();
+        REQUIRE(value.get() == ptr);
     }
+}
 
-    SECTION("Move Assignment") {
-        ModuleResult move;
-        auto& pmove = (move = output);
-        check_state<int>(move, three);
-        SECTION("Can Chain") { REQUIRE(&pmove == &move); }
+TEST_CASE("ModuleResult Class: Equality") {
+    ModuleResult output1, output2;
+    SECTION("Defaults") {
+        REQUIRE(output1 == output2);
+        REQUIRE(!(output1 != output2));
     }
-
-    SECTION("Can chain") {
-        ModuleResult chain;
-        chain.set_type<int>().set_description("Hi").change(three);
-        check_state<int>(chain, three, "Hi");
+    SECTION("Different types") {
+        output1.set_type<int>();
+        REQUIRE(output1 != output2);
+        REQUIRE(!(output1 == output2));
     }
-
-    SECTION("Comparison operators") {
-        ModuleResult copy(output);
-        REQUIRE(copy == output);
-        REQUIRE(!(copy != output));
-
-        SECTION("Different values") {
-            copy.change(4);
-            REQUIRE(copy != output);
-            REQUIRE(!(copy == output));
-        }
-
-        SECTION("Different descriptions") {
-            copy.set_description("Different description");
-            REQUIRE(copy != output);
-            REQUIRE(!(copy == output));
-        }
+    SECTION("Different descriptions") {
+        output1.set_description("hello world");
+        REQUIRE(output1 != output2);
+        REQUIRE(!(output1 == output2));
     }
+    SECTION("Different values") {
+        output1.set_type<int>();
+        output2.set_type<int>();
+        output1.change(int{4});
+        REQUIRE(output1 != output2);
+        REQUIRE(!(output1 == output2));
+    }
+}
+
+TEST_CASE("ModuleResult Class : Copy ctor") {
+    ModuleResult output1;
+    output1.set_type<int>();
+    ModuleResult output2(output1);
+    REQUIRE(output2 == output1);
+}
+
+TEST_CASE("ModuleResult Class : Copy assignment") {
+    ModuleResult output1;
+    output1.set_type<int>();
+    ModuleResult output2;
+    auto* ptr = &(output2 = output1);
+    REQUIRE(output2 == output1);
+    REQUIRE(ptr == &output2);
+}
+
+TEST_CASE("ModuleResult Class : Move ctor") {
+    ModuleResult output1;
+    output1.set_type<int>();
+    ModuleResult output2(output1);
+    ModuleResult output3(std::move(output1));
+    REQUIRE(output3 == output2);
+}
+
+TEST_CASE("ModuleResult Class : Move assignment") {
+    ModuleResult output1;
+    output1.set_type<int>();
+    ModuleResult output2(output1);
+    ModuleResult output3;
+    auto* ptr = &(output3 = std::move(output1));
+    REQUIRE(output3 == output2);
+    REQUIRE(ptr == &output3);
 }

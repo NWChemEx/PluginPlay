@@ -15,37 +15,34 @@ void check_state(T& builder, std::vector<std::string> corr_keys) {
     }
 }
 
-TEST_CASE("PropertyTypeBuilder") {
+TEST_CASE("PropertyTypeBuilder : Default ctor") {
     std::vector<std::string> keys;
-
-    SECTION("Default Ctor") {
-        PropertyTypeInputBuilder builder;
-        check_state(builder, keys);
-        using corr_type = std::tuple<>;
-        using fields    = typename decltype(builder)::tuple_of_fields;
-        STATIC_REQUIRE(std::is_same_v<corr_type, fields>);
-    }
-
     PropertyTypeInputBuilder builder;
-    keys.emplace_back("key1");
+    check_state(builder, keys);
+    using corr_type = std::tuple<>;
+    using fields    = typename decltype(builder)::tuple_of_fields;
+    STATIC_REQUIRE(std::is_same_v<corr_type, fields>);
+}
 
-    SECTION("Add field") {
-        auto new_builder = builder.add_field<int>("key1");
+TEST_CASE("PropertyTypeBuilder : add_field") {
+    PropertyTypeInputBuilder builder;
+    std::vector<std::string> keys{"key1"};
+    auto new_builder = builder.add_field<int>("key1");
+    SECTION("Resulting state") {
         check_state(new_builder, keys);
         using corr_type = std::tuple<int>;
         using fields    = typename decltype(new_builder)::tuple_of_fields;
         STATIC_REQUIRE(std::is_same_v<corr_type, fields>);
     }
-
-    auto new_builder = builder.add_field<int>("key1");
     SECTION("Can't reuse the same key") {
         REQUIRE_THROWS_AS(new_builder.add_field<int>("key1"),
                           std::invalid_argument);
     }
 
-    SECTION("Can set field's meta data") {
-        new_builder.at("key1").set_description("Hi");
-        REQUIRE(new_builder.at("key1").description() == "Hi");
+    SECTION("Can get field") {
+        SDE::ModuleInput input;
+        input.set_type<int>();
+        REQUIRE(new_builder.at("key1") == input);
     }
 
     SECTION("Can add second field") {

@@ -8,7 +8,7 @@
  */
 
 /* The Area property type is very basic. For all intents and purposes it defines
- * an API:
+ * a functor with an API:
  *
  * double run(double, double)
  *

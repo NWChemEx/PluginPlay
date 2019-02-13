@@ -1,25 +1,21 @@
 set(
         SDE_TESTS test_main.cpp
-        detail_//TestModuleInputPIMPL.cpp
-#        detail_/TestSDEAny.cpp
-#        detail_/TestModulePIMPL.cpp
-#        detail_/TestPropertyTypeBuilder.cpp
-#        examples/TestModuleBase.cpp
-#        examples/TestPropertyType.cpp
-#        examples/TestWorkflow.cpp
+        detail_/TestModuleInputPIMPL.cpp
+        detail_/TestModuleManagerPIMPL.cpp
+        detail_/TestModulePIMPL.cpp
+        detail_/TestModuleResultPIMPL.cpp
+        detail_/TestPropertyTypeBuilder.cpp
+        detail_/TestSDEAny.cpp
+        detail_/TestSubmoduleRequestPIMPL.cpp
+        examples/TestModuleBase.cpp
+        examples/TestPropertyType.cpp
+        examples/TestWorkflow.cpp
         TestModuleInput.cpp
-#        TestModuleResult.cpp
-#        TestUtility.cpp
+        TestModuleManager.cpp
+        TestModuleResult.cpp
+        TestUtility.cpp
 #        TestCache.cpp
-#        TestComputedProperties.cpp
-#        TestParameters.cpp
-#        TestProperty.cpp
-#        TestSDEAny.cpp
 #        #	      TestMemoization.cpp
-#        TestModuleHelpers.cpp
-#        TestModule.cpp
-#        TestModuleManager.cpp
-#        TestSubmoduleRequestForm.cpp
 )
 
 cpp_add_executable(

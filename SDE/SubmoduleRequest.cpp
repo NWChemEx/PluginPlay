@@ -1,70 +1,51 @@
 #include "SDE/SubmoduleRequest.hpp"
-#include <typeindex>
+#include "SDE/detail_/SubmoduleRequestPIMPL.hpp"
 
 namespace SDE {
-using SR         = SubmoduleRequest;
-using module_ptr = typename SR::module_ptr;
-using pimpl_t    = detail_::SubmoduleRequestPIMPL;
-namespace detail_ {
+using module_ptr = typename SubmoduleRequest::module_ptr;
 
-struct SubmoduleRequestPIMPL {
-    SubmoduleRequestPIMPL() = default;
-    SubmoduleRequestPIMPL(const pimpl_t& rhs) :
-      desc(rhs.desc),
-      type(rhs.type),
-      module(rhs.module ? std::make_shared<Module>(*rhs.module) : nullptr) {}
-    pimpl_t& operator=(const pimpl_t& rhs) {
-        return *this = std::move(pimpl_t(rhs));
-    }
-    SubmoduleRequestPIMPL(pimpl_t&&) = default;
-    pimpl_t& operator=(pimpl_t&&) = default;
+SubmoduleRequest::SubmoduleRequest() :
+  pimpl_(std::make_unique<detail_::SubmoduleRequestPIMPL>()) {}
+SubmoduleRequest::SubmoduleRequest(const SubmoduleRequest& rhs) :
+  pimpl_(rhs.pimpl_->clone()) {}
+SubmoduleRequest::SubmoduleRequest(SubmoduleRequest&& rhs) noexcept = default;
+SubmoduleRequest& SubmoduleRequest::operator=(SubmoduleRequest&&) noexcept =
+  default;
 
-    type::description desc;
-    std::type_index type = std::type_index(typeid(std::nullptr_t));
-    module_ptr module;
-};
+SubmoduleRequest::~SubmoduleRequest() noexcept = default;
 
-} // namespace detail_
+const Module& SubmoduleRequest::value() const { return pimpl_->value(); }
 
-using pimpl_t = detail_::SubmoduleRequestPIMPL;
-
-SR::SubmoduleRequest() : pimpl_(std::make_unique<pimpl_t>()) {}
-SR::SubmoduleRequest(const SR& rhs) :
-  pimpl_(std::make_unique<pimpl_t>(*rhs.pimpl_)) {}
-SR& SR::operator=(const SR& rhs) {
-    std::make_unique<pimpl_t>(*rhs.pimpl_).swap(pimpl_);
-    return *this;
+const type::description& SubmoduleRequest::description() const noexcept {
+    return pimpl_->m_desc;
 }
-SR::SubmoduleRequest(SR&& rhs) noexcept = default;
-SR& SR::operator=(SR&& rhs) noexcept = default;
-SR::~SubmoduleRequest() noexcept     = default;
 
-const Module& SR::value() const { return *pimpl_->module; }
-const type::description& SR::description() const noexcept {
-    return pimpl_->desc;
+void SubmoduleRequest::change(module_ptr new_mod) noexcept {
+    pimpl_->m_module = new_mod;
 }
-void SR::change(module_ptr new_mod) noexcept { pimpl_->module = new_mod; }
-SR& SR::set_description(type::description desc) noexcept {
-    pimpl_->desc = std::move(desc);
+
+SubmoduleRequest& SubmoduleRequest::set_description(
+  type::description desc) noexcept {
+    pimpl_->m_desc = std::move(desc);
     return *this;
 }
 
-bool SR::ready() const noexcept {
-    if(!pimpl_->module) return false;
-    return pimpl_->module->ready();
+bool SubmoduleRequest::ready() const noexcept { pimpl_->ready(); }
+
+void SubmoduleRequest::lock() { pimpl_->lock(); }
+
+const std::type_index& SubmoduleRequest::type() const { return pimpl_->m_type; }
+
+bool SubmoduleRequest::check_type_(const std::type_info& type) const noexcept {
+    return pimpl_->check_type(type);
 }
 
-void SR::lock() {
-    if(!ready()) throw std::runtime_error("Can't lock non-ready submodule");
-    pimpl_->module->lock();
+void SubmoduleRequest::set_type_(const std::type_info& type) {
+    pimpl_->set_type(type);
 }
 
-bool SR::check_type_(const std::type_info& type) const noexcept {
-    return pimpl_->type == std::type_index(type);
-}
-
-void SR::set_type_(const std::type_info& type) noexcept {
-    pimpl_->type = std::type_index(type);
+bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
+    return *pimpl_ == *rhs.pimpl_;
 }
 
 } // namespace SDE

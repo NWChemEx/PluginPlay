@@ -47,7 +47,9 @@ public:
      */
     ModuleResult();
     ModuleResult(const ModuleResult& rhs);
-    ModuleResult& operator=(const ModuleResult& rhs);
+    ModuleResult& operator=(const ModuleResult& rhs) {
+        return *this = std::move(ModuleResult(rhs));
+    }
     ModuleResult(ModuleResult&& rhs) noexcept;
     ModuleResult& operator=(ModuleResult&& rhs) noexcept;
     ///@}
@@ -114,7 +116,8 @@ public:
      *        will be created to hold the value.
      *
      * @throw std::runtime_error is thrown by 1 if the type has not been set
-     *        yet. Strong throw guarantee.
+     *        yet and by 2 if the type has already been set. Strong throw
+     *        guarantee.
      * @throw std::invalid_argument is thrown by 1 if @p T is not convertible
      *        to the type this instance is supposed to wrap. Strong throw
      *        guarantee.
@@ -184,7 +187,7 @@ private:
     void change_(type::any new_value);
     void change_(shared_any new_value) noexcept;
 
-    ModuleResult& set_type_(const std::type_info& type) noexcept;
+    ModuleResult& set_type_(const std::type_info& type);
     ///@}
 
     /// The object that holds the actual state of the instance.

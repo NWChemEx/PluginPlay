@@ -80,6 +80,8 @@ public:
         for(const auto & [k, v] : submods) v.hash(h);
     }
 
+    const std::type_info& type() const noexcept { return type_(); }
+
     ///@{
     /** @name State accessors
      *
@@ -91,6 +93,27 @@ public:
     const output_map& results() const { return results_; }
     const input_map& inputs() const { return inputs_; }
     const submod_map& submods() const { return submods_; }
+    ///@}
+
+    ///@{
+    /** @name Comparison operators
+     *
+     *  Two ModuleBase instances are equivalent if their algorithm is
+     *  implemented by the same derived class. This is because the only ctor
+     *  that is ever invoked is the default ctor and that ctor must set the
+     *  state of the module the same everytime.
+     *
+     *  @param rhs The instance to compare against.
+     *  @return true if the comparison is true and false otherwise
+     *  @throw none No throw guarantee.
+     */
+    bool operator==(const ModuleBase& rhs) const noexcept {
+        return type() == rhs.type();
+    }
+
+    bool operator!=(const ModuleBase& rhs) const noexcept {
+        return !((*this) == rhs);
+    }
     ///@}
 protected:
     ///@{
@@ -172,6 +195,7 @@ protected:
         results_.insert(results.begin(), results.end());
     }
     ///@}
+
 private:
     /** @brief Developer facing API for running the module.
      *
@@ -186,6 +210,17 @@ private:
      * @return Whatever properties your module computes.
      */
     virtual output_map run_(input_map inputs, submod_map submods) const = 0;
+
+    /** @brief Implements the `type` function
+     *
+     *  Derived classes are responsible for implementing this function. The
+     *  easiest way to do this is to inherit from the `ModuleBaseHelper` class,
+     *  which will in turn implement it for you.
+     *
+     *  @return The RTTI of the derived class
+     *  @throw none No throw guarantee.
+     */
+    virtual const std::type_info& type_() const noexcept = 0;
 
     //@{
     /** @name Developer set state
@@ -213,6 +248,19 @@ private:
     type::description desc_;
     std::vector<type::description> citations_;
     //@}
+};
+
+/** @brief Class that implements the `type` member function automatically
+ *
+ * This class exists purely to help out module developers so that they don't
+ * have to actually implement the `type_` member function
+ *
+ * @tparam T The type of the derived class.
+ */
+template<typename T>
+class ModuleBaseHelper : public ModuleBase {
+private:
+    const std::type_info& type_() const noexcept override { return typeid(T); }
 };
 
 } // namespace SDE
