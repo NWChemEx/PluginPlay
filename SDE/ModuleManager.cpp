@@ -29,7 +29,7 @@ void ModuleManager::copy_module(const type::key& old_key, type::key new_key) {
 }
 
 const Module& ModuleManager::at(const type::key& module_key) const {
-    return *pimpl_->m_modules.at(module_key);
+    return *pimpl_->at(module_key);
 }
 
 void ModuleManager::set_default_(const std::type_info& type, type::key key) {

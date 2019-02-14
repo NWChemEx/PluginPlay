@@ -68,7 +68,7 @@ static void example_main() {
      * Rectangle).
      */
     std::vector<double> dims{1.23, 4.56, 7.89};
-    // auto [volume, area] = mm.run_as<PrismVolume>("Prism", dims);
+    auto[volume, area] = mm.run_as<PrismVolume>("Prism", dims);
 
     /* Like it was for setting the options, this is just a convenience function
      * wrapping:
