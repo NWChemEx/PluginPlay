@@ -7,23 +7,43 @@ namespace detail_ {
 
 /** @brief The class that actually contains a module's state.
  *
- *  Design Points:
- *  - The actual list of submodules, inputs, and results a module will use are
- *    stored in this class
- *    - The ones returned from ModuleBase are the defaults specified by
- *      the developer and are used to populate the original lists
- *  - Once a ModuleBase has been constructed there's no way to change it
- *    - Avoids contaminating the developer's defaults
- *    - Avoids modules having "hidden variables" that live in the derived class
- *
+ *  This class contains a module's actual state in the sense that whenever the
+ *  module is called the values in this class are taken to be the bound values
+ *  for the inputs. Of particular not is it is these values, and not the
+ *  values in the developer-provided ModuleBase instance, that are used.
  *
  */
 class ModulePIMPL {
 public:
-    using base_ptr   = std::shared_ptr<const ModuleBase>;
-    using cache_type = std::map<std::string, type::result_map>;
-    using cache_ptr  = std::shared_ptr<cache_type>;
+    /// Type used to store the developer-provided implementation
+    using base_ptr = std::shared_ptr<const ModuleBase>;
 
+    /// Type of the object used to store the results computed by the module
+    using cache_type = std::map<std::string, type::result_map>;
+
+    /// How we store the object used for caching
+    using cache_ptr = std::shared_ptr<cache_type>;
+
+    /// How we tell you what's preventing your module from running
+    using not_set_type = Utilities::CaseInsensitiveMap<std::set<type::key>>;
+
+    ///@{
+    /** @name Ctor and assignment operators
+     *
+     * Of note copies deep copy inputs and submodules, the pointer to the base
+     * and the pointer to the cache are aliased. This is because the base is
+     * simply an algorithm whose state can't change over the run of a
+     * calculation, and the cache is assigned based on the base.
+     *
+     * @param rhs The instance to copy/move from. For move operations @p rhs
+     *        will be in a valid, but otherwise undefined state.
+     * @param base The algorithm that this Module is wrapping.
+     * @param cache Where computed results should be stored.
+     * @throw std::bad_alloc 1, 2, 3, and 6 throw if there is insufficient
+     *        memory to copy the state over or make the default state (1 only).
+     *        Strong throw guarantee.
+     * @throw non 1, 4, and 5 are no throw guarantee.
+     */
     ModulePIMPL()                       = default;
     ModulePIMPL(const ModulePIMPL& rhs) = default;
     ModulePIMPL& operator=(const ModulePIMPL& rhs) = default;
@@ -35,22 +55,44 @@ public:
       cache_(cache),
       inputs_(base->inputs()),
       submods_(base->submods()) {}
+    ///@}
 
+    /// Standard dtor
     ~ModulePIMPL() = default;
 
-    void hash(type::hasher& h) const {
-        if(!ready()) throw std::runtime_error("Can't hash non-ready module.");
-        base_->memoize(h, inputs_, submods_);
+    /// Computes the hash of the current instance using the bound parameters
+    void hash(type::hasher& h) const { memoize(h, inputs_); }
+
+    /** @brief computes a hash for a particular invocation of the `run` member.
+     *
+     * For a deterministic module providing the module the same inputs must
+     * return the same outputs. We need a way to determine if we have already
+     * called the module with a particular set of inputs; that's where this
+     * function comes in. This function takes a set of input values, as well as
+     * the set of submodules to use, and maps them to a hash value. Barring the
+     * universe conspiring against us, that hash value is a concise and unique
+     * representation of the input state.
+     *
+     * @param h The hasher instance to use
+     * @param inputs The values of the inputs to hash
+     * @param submods The values of the submodules to use.
+     *
+     */
+    void memoize(type::hasher& h, type::input_map inputs) const {
+        inputs = merge_inputs_(std::move(inputs));
+        for(const auto & [k, v] : inputs) v.hash(h);
+        for(const auto & [k, v] : submods_) v.hash(h);
     }
 
     /** @brief Checks whether the result of a call is cached.
      *
-     * @param in_inputs The inputs
+     * @param in_inputs The inputs to use in the memoization
      * @return
      */
     bool is_cached(const type::input_map& in_inputs) {
         if(!cache_) return false;
-        return cache_->count(get_hash_(in_inputs)) == 1;
+        auto ps = merge_inputs_(in_inputs);
+        return cache_->count(get_hash_(ps)) == 1;
     }
 
     /** @brief Function for determining whether the instance is ready to run.
@@ -75,6 +117,7 @@ public:
         return true;
     }
 
+    /// Returns whether or not the module is locked
     bool locked() const noexcept { return locked_; }
 
     /** @brief Returns a list of module state that is not "ready"
@@ -102,9 +145,10 @@ public:
      * @throw std::bad_alloc if there is insufficent memory to allocate the
      *        returned object. Strong throw guarantee.
      */
-    auto not_set(const type::input_map& in_inputs = type::input_map{}) const {
+    not_set_type not_set(
+      const type::input_map& in_inputs = type::input_map{}) const {
         auto inps = merge_inputs_(in_inputs);
-        Utilities::CaseInsensitiveMap<std::set<type::key>> probs;
+        not_set_type probs;
         if(!base_) probs["Algorithm"];
         auto in_probs = not_set_guts_(inps);
         if(in_probs.size()) probs.emplace("Inputs", std::move(in_probs));
@@ -114,12 +158,14 @@ public:
         return probs;
     }
 
+    /// Locks the module
     void lock() {
         if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
         for(auto & [k, v] : submods_) v.lock();
         locked_ = true;
     }
 
+    /// Unlocks the module
     void unlock() noexcept { locked_ = false; }
 
     type::input_map& inputs() { return inputs_; }
@@ -165,24 +211,36 @@ public:
      *         comparisons throw. Same guarantee.
      */
     bool operator==(const ModulePIMPL& rhs) const {
-        return std::tie(locked_, base_, inputs_, submods_) ==
-               std::tie(rhs.locked_, rhs.base_, rhs.inputs_, rhs.submods_);
+        const bool lptr = static_cast<bool>(base_);
+        const bool rptr = static_cast<bool>(rhs.base_);
+        if(lptr != rptr) return false;
+        if(std::tie(locked_, inputs_, submods_) !=
+           std::tie(rhs.locked_, rhs.inputs_, rhs.submods_))
+            return false;
+        if(lptr && rptr)
+            if(*base_ != *rhs.base_) return false;
+        return true;
     }
 
     bool operator!=(const ModulePIMPL& rhs) const { return !((*this) == rhs); }
     ///@}
 private:
+    /// Code factorization for merging an input_map with the inputs in this
+    /// class
     type::input_map merge_inputs_(type::input_map in_inputs) const {
         for(const auto & [k, v] : inputs_)
             if(!in_inputs.count(k)) in_inputs[k] = v;
         return in_inputs;
     }
+
+    /// Code factorization for computing the hash of a module
     std::string get_hash_(const type::input_map& in_inputs) {
         type::hasher h(bphash::HashType::Hash128);
-        base_->memoize(h, in_inputs, submods_);
+        memoize(h, in_inputs);
         return bphash::hash_to_string(h.finalize());
     }
 
+    /// Code factorization for checking if things in a map are ready
     template<typename T>
     std::set<type::key> not_set_guts_(T&& map) const {
         std::set<type::key> probs;
@@ -191,6 +249,11 @@ private:
         return probs;
     }
 
+    ///@{
+    /** @name Module state
+     *
+     *  The members in this section
+     */
     bool locked_ = false;
     base_ptr base_;
     cache_ptr cache_;

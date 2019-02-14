@@ -153,16 +153,51 @@ public:
      *
      *  @param h The hasher instance to use.
      */
-    void hash(type::hasher& h) const { value().hash(h); }
+    void hash(type::hasher& h) const;
 
+    /** @brief Determines if the wrapped submodule can be used
+     *
+     * A submodule can be used if there is actually a submodule wrapped in the
+     * request and if that submodule reports that it is ready for use (the
+     * criteria for it being ready for use are identical to the Module class).
+     *
+     * @return True if the current request contains a submodule that is ready
+     *         for use and false otherwise.
+     * @throw none No throw gurantee.
+     *
+     */
     bool ready() const noexcept;
+
+    /** @brief Locks the wrapped submodule
+     *
+     *  Locking a submodule has the same effect as locking a Module, namely the
+     *  inputs and submodules bound to the instance can not be changed any
+     *  longer.
+     *
+     *  @throws std::runtime_error if the wrapped submodule is not ready to be
+     *          locked (*i.e.*, if `ready` returns false). Strong throw
+     *          guarantee.
+     */
     void lock();
 
+    ///@{
+    /** @name Equality comparisons
+     *
+     *  Two SubmoduleRequests are equivalent if the wrapped module compares
+     *  equal (either because both wrap a nullptr or because the actual
+     *  wrapped instances are equal), both have the same description, and the
+     *  required property type is the same.
+     *
+     *  @param rhs The instance to compare against.
+     *  @return True if the comparison is true and false otherwise
+     *
+     *  @throw ??? If the wrapped modules throw. Same guarantee as the modules.
+     */
     bool operator==(const SubmoduleRequest& rhs) const;
     bool operator!=(const SubmoduleRequest& rhs) const {
         return !((*this) == rhs);
     }
-
+    ///@}
 private:
     ///@{
     /** @name Bridging functions

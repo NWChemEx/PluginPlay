@@ -114,7 +114,8 @@ public:
     }
 
 private:
-    output_map run_(input_map inputs, submod_map) const override {
+    SDE::type::result_map run_(SDE::type::input_map inputs,
+                               SDE::type::submodule_map) const override {
         /* Here we implement the module's algorithm. Generally speaking this
          * follows the pattern convert input parameters to variables, compute
          * results, put results in output, return output.
@@ -122,8 +123,8 @@ private:
          * The process is somewhat boilerplate heavy so we have implemented
          * convenience functions to help out. For unwrapping the inputs each
          * property type defines a static function unwrap_inputs, which takes
-         * the input_map and returns a tuple of values. The order of the returns
-         * is the same as the property type's input signature.
+         * the SDE::type::input_map and returns a tuple of values. The order of
+         * the returns is the same as the property type's input signature.
          *
          */
         const auto[dim1, dim2] = Area::unwrap_inputs(inputs);
@@ -164,12 +165,12 @@ private:
 
         /* With our values computed we now need to package them up and return
          * them. Like unwrapping the inputs, each property type provides a
-         * static functions wrap_results that will fill up an output_map
-         * instance with our computed values. The input to the wrap_results
-         * command is the map we are filling in (ultimately the full map is the
-         * union of all results so there's often more results than just what one
-         * property type defines) and a set of objects containing the values for
-         * that property type's results.
+         * static functions wrap_results that will fill up an
+         * SDE::type::result_map instance with our computed values. The input to
+         * the wrap_results command is the map we are filling in (ultimately the
+         * full map is the union of all results so there's often more results
+         * than just what one property type defines) and a set of objects
+         * containing the values for that property type's results.
          *
          * Like the inputs, we need to manually pack our additional output
          * value. For the record, the wrap_results command is equivalent to the
@@ -217,7 +218,9 @@ public:
     }
 
 private:
-    output_map run_(input_map inputs, submod_map submods) const override {
+    SDE::type::result_map run_(
+      SDE::type::input_map inputs,
+      SDE::type::submodule_map submods) const override {
         /* Obtaining the inputs for this class is easier than Rectangle because
          * we do not have any additional inputs. Note that there's no need to
          * use structured bindings if there's only one input to unwrap.

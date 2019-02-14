@@ -2,7 +2,30 @@
 #include <SDE/detail_/ModulePIMPL.hpp>
 #include <catch2/catch.hpp>
 
+using namespace SDE;
 using namespace SDE::detail_;
+
+TEST_CASE("ModuleBase : Equality") {
+    SECTION("Same type") {
+        Rectangle r1, r2;
+        REQUIRE(r1 == r2);
+        REQUIRE(!(r1 != r2));
+    }
+    SECTION("Different types") {
+        Rectangle r;
+        Prism p;
+        REQUIRE(r != p);
+        REQUIRE(!(r == p));
+    }
+}
+
+TEST_CASE("Rectangle Class : Results") {
+    Rectangle r;
+    auto results = r.results();
+    REQUIRE(results.at("Area").description() == "The area of the shape");
+    REQUIRE(results.at("Picture").description() == "An ASCII picture of "
+                                                   "the rectangle");
+}
 
 TEST_CASE("Rectangle Class : Inputs") {
     Rectangle r;
@@ -14,17 +37,15 @@ TEST_CASE("Rectangle Class : Inputs") {
     REQUIRE(inputs.at("Name").description() == "The name of the "
                                                "rectangle");
 }
-TEST_CASE("Rectangle Class : Results") {
-    Rectangle r;
-    auto results = r.results();
-    REQUIRE(results.at("Area").description() == "The area of the shape");
-    REQUIRE(results.at("Picture").description() == "An ASCII picture of "
-                                                   "the rectangle");
-}
 
 TEST_CASE("Rectangle Class : Submods") {
     Rectangle r;
     REQUIRE(r.submods().size() == 0);
+}
+
+TEST_CASE("Rectangle Class : Type") {
+    Rectangle r;
+    REQUIRE(r.type() == typeid(Rectangle));
 }
 
 TEST_CASE("Rectangle Class : run") {
@@ -64,6 +85,11 @@ TEST_CASE("Prism Class : Submods") {
     auto submods = r.submods();
     REQUIRE(submods.at("area").description() ==
             "Submodule used to compute base's area");
+}
+
+TEST_CASE("Prism Class : Type") {
+    Prism p;
+    REQUIRE(p.type() == typeid(Prism));
 }
 
 TEST_CASE("Prism Class : run") {

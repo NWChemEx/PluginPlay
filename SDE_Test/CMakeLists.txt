@@ -10,9 +10,11 @@ set(
         examples/TestModuleBase.cpp
         examples/TestPropertyType.cpp
         examples/TestWorkflow.cpp
+        TestModule.cpp
         TestModuleInput.cpp
         TestModuleManager.cpp
         TestModuleResult.cpp
+        TestSubmoduleRequest.cpp
         TestUtility.cpp
 #        TestCache.cpp
 #        #	      TestMemoization.cpp

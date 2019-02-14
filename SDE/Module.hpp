@@ -33,10 +33,6 @@ class ModuleManagerPIMPL;
  */
 class Module {
 public:
-    using input_map  = Utilities::CaseInsensitiveMap<ModuleInput>;
-    using result_map = Utilities::CaseInsensitiveMap<ModuleResult>;
-    using submod_map = Utilities::CaseInsensitiveMap<SubmoduleRequest>;
-
     ///@{
     /** @name Ctors and Assignment Operators
      *
@@ -112,7 +108,7 @@ public:
      * @throw ??? If the underlying algorithm throws, the exception will also be
      *        thrown by this function. Strong throw guarantee.
      */
-    result_map run(input_map ps);
+    type::result_map run(type::input_map ps);
 
     ///@{
     /** @name Module state accessors
@@ -157,9 +153,9 @@ public:
      *
      *  @throw none All functions are no throw guarantee.
      */
-    const input_map& inputs() const noexcept;
-    const result_map& results() const noexcept;
-    const submod_map& submods() const noexcept;
+    const type::input_map& inputs() const noexcept;
+    const type::result_map& results() const;
+    const type::submodule_map& submods() const noexcept;
     ///@}
 
     ///@{
@@ -181,6 +177,21 @@ public:
 
     void hash(type::hasher& h) const;
 
+    ///@{
+    /** @name Equality comparisons
+     *
+     * Two modules are equal if they both:
+     *
+     * - contain instances of the same ModuleBase class
+     * - have the same bound input values
+     * - have the same bound submodules
+     * - are in the same locked state
+     *
+     * @param rhs The instance to compare against.
+     * @return True if the comparison is true and false otherwise.
+     * @throw ??? if any of the input value comparisons throw. Same throw
+     *        guarantee.
+     */
     bool operator==(const Module& rhs) const;
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
 

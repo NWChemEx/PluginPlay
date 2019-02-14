@@ -18,6 +18,11 @@ struct SubmoduleRequestPIMPL {
     ///@{
     /** @names Ctor and Assignment operators
      *
+     *  @param rhs The instance to copy/move from. For move operations @p rhs
+     *         is in a valid, but otherwise undefined state.
+     *  @throw std::bad_alloc is thrown by 2 and 3 if there is insufficient
+     *         memory to copy the other instance. Strong throw guarantee.
+     *  @throw none 1, 4, and 5 are no throw guarantee.
      */
     SubmoduleRequestPIMPL() = default;
 
@@ -80,16 +85,19 @@ struct SubmoduleRequestPIMPL {
     }
     ///@}
 
+    /// Returns the submodule after ensuring there is one
     const Module& value() const {
-        if(!ready()) throw std::runtime_error("Submodule is not ready");
+        if(!have_module()) throw std::runtime_error("Submodule is not ready");
         return *m_module;
     }
 
+    /// Locks the submodule
     void lock() {
         if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
         m_module->lock();
     }
 
+    /// Sets the property type the submodule must satisfy
     void set_type(const std::type_info& type) {
         if(type_set()) throw std::runtime_error("Can't set type twice");
         m_type = std::type_index(type);
@@ -125,9 +133,20 @@ struct SubmoduleRequestPIMPL {
     }
     ///@}
 
+    ///@{
+    /** @name SubmoduleRequest State
+     *
+     *  The members in this section are the state of the SubmoduleRequest.
+     *  Respectively they are:
+     *
+     *  - A human-readable description of what the submodule is used for
+     *  - The property type the submodule must satisfy
+     *  - The actual submodule
+     */
     type::description m_desc;
     std::type_index m_type = std::type_index(typeid(std::nullptr_t));
     module_ptr m_module;
+    ///@}
 };
 
 } // namespace detail_

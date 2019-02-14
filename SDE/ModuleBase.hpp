@@ -13,10 +13,8 @@ namespace SDE {
  */
 class ModuleBase {
 public:
-    using input_map  = Utilities::CaseInsensitiveMap<ModuleInput>;
-    using output_map = Utilities::CaseInsensitiveMap<ModuleResult>;
-    using submod_map = Utilities::CaseInsensitiveMap<SubmoduleRequest>;
-    using hash_type  = std::string;
+    /// The type returned by memoization
+    using hash_type = std::string;
 
     //@{
     /** @name Ctors and Assignment Operators
@@ -55,44 +53,30 @@ public:
      * @param submods The values the submodules the module should use
      * @return The result
      */
-    output_map run(input_map inputs, submod_map submods) const {
+    type::result_map run(type::input_map inputs,
+                         type::submodule_map submods) const {
         return run_(std::move(inputs), std::move(submods));
     }
-
-    /** @brief computes a hash for a particular invocation of the `run` member.
-     *
-     * For a deterministic module providing the module the same inputs must
-     * return the same outputs. We need a way to determine if we have already
-     * called the module with a particular set of inputs; that's where this
-     * function comes in. This function takes a set of input values, as well as
-     * the set of submodules to use, and maps them to a hash value. Barring the
-     * universe conspiring against us, that hash value is a concise and unique
-     * representation of the input state.
-     *
-     * @param h The hasher instance to use
-     * @param inputs The values of the inputs to hash
-     * @param submods The values of the submodules to use.
-     *
-     */
-    void memoize(type::hasher& h, const input_map& inputs,
-                 const submod_map& submods) const {
-        for(const auto & [k, v] : inputs) v.hash(h);
-        for(const auto & [k, v] : submods) v.hash(h);
-    }
-
-    const std::type_info& type() const noexcept { return type_(); }
 
     ///@{
     /** @name State accessors
      *
-     * Functions in this section provide read-only acccess to the state of the
-     * module as set by the developer of the module.
+     * Functions in this section provide read-only access to the state of the
+     * module as set by the developer of the module. Respectively those pieces
+     * of information are the:
+     *
+     * - list of properties the module computes
+     * - list of inputs the module accepts
+     * - list of modules the module calls
+     * - RTTI for the class that implements the actual algorithm
      *
      * @return The requested piece of state.
+     * @throw none All functions are no throw guarantee.
      */
-    const output_map& results() const { return results_; }
-    const input_map& inputs() const { return inputs_; }
-    const submod_map& submods() const { return submods_; }
+    const type::result_map& results() const noexcept { return results_; }
+    const type::input_map& inputs() const noexcept { return inputs_; }
+    const type::submodule_map& submods() const noexcept { return submods_; }
+    const std::type_info& type() const noexcept { return type_(); }
     ///@}
 
     ///@{
@@ -174,16 +158,21 @@ protected:
     auto& add_input(type::key key) {
         return inputs_[key].set_type<T>();
     }
+
     auto& change_input(type::key key) { return inputs_.at(key); }
+
     template<typename T>
     auto& add_output(type::key key) {
         return results_[key].set_type<T>();
     }
+
     auto& change_output(type::key key) { return results_.at(key); }
+
     template<typename T>
     auto& add_submodule(type::key key) {
         return submods_[key].set_type<T>();
     }
+
     auto& change_submod(type::key key) { return submods_.at(key); }
 
     template<typename property_type>
@@ -209,7 +198,8 @@ private:
      * @param submods The submodules to use during the run call.
      * @return Whatever properties your module computes.
      */
-    virtual output_map run_(input_map inputs, submod_map submods) const = 0;
+    virtual type::result_map run_(type::input_map inputs,
+                                  type::submodule_map submods) const = 0;
 
     /** @brief Implements the `type` function
      *
@@ -232,9 +222,9 @@ private:
      *  that lives in the ModulePIMPL class that will be provided to the module
      *  when the run member is invoked.
      */
-    input_map inputs_;
-    output_map results_;
-    submod_map submods_;
+    type::input_map inputs_;
+    type::result_map results_;
+    type::submodule_map submods_;
     //@}
 
     //@{

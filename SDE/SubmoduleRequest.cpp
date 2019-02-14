@@ -30,6 +30,10 @@ SubmoduleRequest& SubmoduleRequest::set_description(
     return *this;
 }
 
+void SubmoduleRequest::hash(type::hasher& h) const {
+    if(pimpl_->m_module) value().hash(h);
+}
+
 bool SubmoduleRequest::ready() const noexcept { pimpl_->ready(); }
 
 void SubmoduleRequest::lock() { pimpl_->lock(); }
