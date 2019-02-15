@@ -306,7 +306,7 @@ private:
      *
      *  @throw std::runtime_error
      */
-    auto& get_() {
+    type::any& get_() {
         const auto& temp = const_cast<const ModuleInput&>(*this).get_();
         return const_cast<type::any&>(temp);
     }
@@ -355,7 +355,7 @@ private:
     }
 
     template<typename T>
-    static auto wrap_value(T&& new_value) {
+    static type::any wrap_value(T&& new_value) {
         using clean_T = std::decay_t<T>;
         return detail_::make_SDEAny<clean_T>(std::forward<T>(new_value));
     }

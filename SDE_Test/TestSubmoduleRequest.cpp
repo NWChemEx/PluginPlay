@@ -1,16 +1,10 @@
 #include "examples/TestModuleBase.hpp"
-#include <SDE/Module.hpp>
 #include <SDE/SubmoduleRequest.hpp>
 #include <SDE/detail_/ModulePIMPL.hpp>
 #include <catch2/catch.hpp>
 
 using namespace SDE;
 using namespace SDE::detail_;
-
-inline std::shared_ptr<Module> make_module() {
-    auto pimpl = std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-    return std::make_shared<Module>(std::move(pimpl));
-}
 
 TEST_CASE("SubmoduleRequest : default ctor") {
     SubmoduleRequest request;
@@ -39,7 +33,9 @@ TEST_CASE("SubmoduleRequest : comparisons") {
     SECTION("Different modules") {
         request1.set_type<Area>();
         request2.set_type<Area>();
-        request1.change(make_module());
+        auto pimpl =
+          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+        request1.change(std::make_shared<Module>(std::move(pimpl)));
         REQUIRE(request1 != request2);
         REQUIRE(!(request1 == request2));
     }
@@ -52,15 +48,6 @@ TEST_CASE("SubmoduleRequest : set_description") {
     REQUIRE(ptr == &request1);
 }
 
-TEST_CASE("SubmoduleRequest : change") {
-    SubmoduleRequest r;
-    r.set_type<Area>();
-    auto ptr  = make_module();
-    auto ptr2 = make_module();
-    r.change(ptr);
-    REQUIRE(r.value() == *ptr2);
-}
-
 TEST_CASE("SubmoduleRequest : set_type") {
     SubmoduleRequest r;
     r.set_type<Area>();
@@ -69,12 +56,25 @@ TEST_CASE("SubmoduleRequest : set_type") {
     }
 }
 
+TEST_CASE("SubmoduleRequest : change") {
+    SubmoduleRequest r;
+    r.set_type<Area>();
+    auto pimpl  = std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+    auto ptr    = std::make_shared<Module>(std::move(pimpl));
+    auto pimpl2 = std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+    auto ptr2   = std::make_shared<Module>(std::move(pimpl2));
+    r.change(ptr);
+    REQUIRE(r.value() == *ptr2);
+}
+
 TEST_CASE("SubmoduleRequest : ready") {
     SubmoduleRequest r;
     SECTION("No module") { REQUIRE(!r.ready()); }
     SECTION("Ready module") {
         r.set_type<Area>();
-        r.change(make_module());
+        auto pimpl =
+          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+        r.change(std::make_shared<Module>(std::move(pimpl)));
         REQUIRE(r.ready());
     }
 }
@@ -86,7 +86,9 @@ TEST_CASE("SubmoduleRequest : lock") {
     }
     SECTION("Can lock if ready") {
         r.set_type<Area>();
-        r.change(make_module());
+        auto pimpl =
+          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+        r.change(std::make_shared<Module>(std::move(pimpl)));
         r.lock();
         REQUIRE(r.value().locked());
     }
@@ -102,7 +104,9 @@ TEST_CASE("SubmoduleRequest : hash") {
     }
     SECTION("Module") {
         r.set_type<Area>();
-        r.change(make_module());
+        auto pimpl =
+          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
+        r.change(std::make_shared<Module>(std::move(pimpl)));
         r.hash(h);
         auto hv = bphash::hash_to_string(h.finalize());
         REQUIRE(hv == "1b740793eacb5cdf38dc426f626ab5ab");

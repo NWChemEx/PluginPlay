@@ -1,6 +1,9 @@
 #pragma once
 #include "Memoization.hpp"
+#include "SDE/Utility.hpp"
 #include "SDE/attic/Pythonization.hpp"
+#include "SDE/detail_/Serializer.hpp"
+#include <iostream>
 #include <memory>
 #include <type_traits>
 
@@ -217,6 +220,10 @@ public:
     template<typename T, typename X = disable_if_related<T>>
     explicit SDEAny(T&& value) :
       ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
+
+    /*void save(Serializer& s) const { s << ptr_; }
+
+    void load(Serializer& s){ s >> ptr_; }*/
 
     /**
      *  @brief Allows the SDEAny instance to be hashed.
@@ -500,6 +507,10 @@ private:
          */
         const std::type_info& type() const noexcept { return type_(); };
 
+        /*void save(Serializer& s) const { save_(s); }
+
+        void load(Serializer& s) { load_(s); }*/
+
         /**
          *  @brief Allows the SDEAnyBase_ instance to be hashed.
          *
@@ -556,6 +567,8 @@ private:
         }
 
     private:
+        friend class cereal::access;
+
         /// The function for equality, to be implemented by the derived class
         virtual bool are_equal_(const SDEAnyBase_& rhs) const noexcept = 0;
 
@@ -573,6 +586,11 @@ private:
 
         /// Function implementing the retrieval of the RTTI
         virtual const std::type_info& type_() const noexcept = 0;
+
+        /// Function implementing the serialization of the object
+        /*virtual void save_(Serializer& s) const = 0;
+
+        virtual void load_(Serializer& s) = 0;*/
     };
 
     /**
@@ -673,6 +691,10 @@ private:
         const std::type_info& type_() const noexcept override {
             return typeid(T);
         }
+
+        /* void save_(Serializer& s) const override { s << value; }
+
+         void load_(Serializer& s) override { s >> value; }*/
 
         bool are_equal_(const SDEAnyBase_& rhs) const noexcept override {
             if(type() != rhs.type()) return false; // Wrong types
