@@ -1,12 +1,23 @@
 set(
-    SDE_TESTS test_main.cpp
-              TestCache.cpp
-              TestParameters.cpp
-              TestSDEAny.cpp
-#	      TestMemoization.cpp
-              TestModuleHelpers.cpp
-              TestModule.cpp
-              TestModuleManager.cpp
+        SDE_TESTS test_main.cpp
+        detail_/TestModuleInputPIMPL.cpp
+        detail_/TestModuleManagerPIMPL.cpp
+        detail_/TestModulePIMPL.cpp
+        detail_/TestModuleResultPIMPL.cpp
+        detail_/TestPropertyTypeBuilder.cpp
+        detail_/TestSDEAny.cpp
+        detail_/TestSubmoduleRequestPIMPL.cpp
+        examples/TestModuleBase.cpp
+        examples/TestPropertyType.cpp
+        examples/TestWorkflow.cpp
+        TestModule.cpp
+        TestModuleInput.cpp
+        TestModuleManager.cpp
+        TestModuleResult.cpp
+        TestSubmoduleRequest.cpp
+        TestUtility.cpp
+#        TestCache.cpp
+#        #	      TestMemoization.cpp
 )
 
 cpp_add_executable(
@@ -14,6 +25,7 @@ cpp_add_executable(
         SOURCES ${SDE_TESTS}
         DEPENDS sde Catch2::Catch2
 )
+target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME test_sde COMMAND test_sde)
 #if(BUILD_PYBINDINGS)
 #    add_python_module(

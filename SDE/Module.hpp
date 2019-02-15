@@ -1,470 +1,216 @@
 #pragma once
-#include "SDE/Cache.hpp"
-#include "SDE/Memoization.hpp"
-#include "SDE/ModuleHelpers.hpp"
-#include "SDE/Parameters.hpp"
+#include "SDE/ModuleInput.hpp"
+#include "SDE/ModuleResult.hpp"
+#include "SDE/Types.hpp"
 #include <Utilities/Containers/CaseInsensitiveMap.hpp>
-#include <Utilities/SmartEnum.hpp>
-#include <memory> // for shared_ptr and unique_ptr
-#include <vector>
 
 namespace SDE {
+
+// Needed b/c Module and SubmoduleRequest use each other in their declarations
+class SubmoduleRequest;
+
 namespace detail_ {
-class PyModuleBase;
-class MMImpl;
+class ModulePIMPL;
+class ModuleManagerPIMPL;
 } // namespace detail_
-/**
- *   @brief A list of physical, hardware, and software resources.
+
+/** @brief The public API of all modules.
  *
- *   The Resource enum is largely intended to be used to select which resource
- *   the ModuleBaseImpl::cost returns the cost of.
+ *  Developers implement classes that derive from ModuleBase. ModuleBase acts as
+ *  a PIMPL (a ModuleBase instance is hidden inside the ModulePIMPL class)
+ *  decoupling the algorithm details from the API. Users of the SDE interact
+ *  with the algorithm through the common API implemented by the Module class.
+ *
+ *  The state of the Module class is divided in two. The first set of state is
+ *  referred to as the algorithm's state and includes the list of allowed
+ *  inputs, values of bound inputs, a list of all callback points, values of
+ *  the submodules bound to those callback points, and the list of all possible
+ *  results. This is state that is directly accessed during the execution of the
+ *  algorithm, hence the name. The second set of state is termed module state
+ *  and is needed by the SDE framework to correctly use the module. This state
+ *  is not accessible (nor relevant) once the module is running. For the most
+ *  part users will only be interested in algorithm state.
  */
-DECLARE_SmartEnum(Resource, time, memory, disk, processes, threads
-
-);
-
-/**
- *  @brief Enumerations for the various metadata types associated with a
- *         module.
- *
- *  The MetaProperty enumeration is meant as a way to associate important meta
- *  data with a module.  At the moment, recognized metadata includes:
- *
- *  - name: A descriptive name for the module
- *  - version: Information that can be used to uniquely identify the state of
- *             the module's source code.
- *  - description: An informative discourse of what the module is capable of
- *  - authors: The people who wrote the module
- *  - citations: Things that should be cited if the module is used.
- *
- */
-DECLARE_SmartEnum(MetaProperty, name, version, description, authors, citations
-
-);
-
-/**
- * @brief Enumerations pertaining to the characteristics of the module.
- *
- * The moduletraits set of enumerations is envisioned as being one of the ways
- * the SDE, as well as other modules, can obtain information related to the
- * module, without knowing its contents.
- *
- * At the moment the recognized traits include:
- * - nondeterministic: Signals that runs of the same module with the same
- *   algorithmic parameters and the same input may yield different results
- *   (intentionally).  Consequentially memoization should not be performed.
- */
-DECLARE_SmartEnum(ModuleTraits, nondeterministic);
-
-/**
- * @brief Enumeration of the various types of state held in the Module
- *
- * This enumeration is primarily meant to be used with the "not_ready" member of
- * the ModuleBase class to signal, which members are not ready.
- */
-DECLARE_SmartEnum(ModuleProperty, metadata, parameters, submodules, traits);
-
-/**
- *  @brief This is the class that all modules will be passed around as.
- *
- *  ModuleBase is the opaque handle to a module that is usable with the SDE. As
- *  a handle much of their functionality revolves around exploiting
- *  polymorphism.  In an effort to prevent the user from slicing a module, we
- *  have deleted the copy and move ctors as well as the corresponding assignment
- *  operators.  We expect modules to always be wrapped in shared pointers (I'd
- *  prefer unique pointers, but that's not a viable option for modules that go
- *  round-trip through Python (*i.e.* a C++ module returned into Python, passed
- *  back into C++) because Python (or at least Pybind11) won't give up
- *  ownership.
- *
- *  @nosubgrouping
- *
- */
-class ModuleBase {
+class Module {
 public:
-    /// Type of a pointer to this class
-    using module_pointer = std::shared_ptr<ModuleBase>;
-
-    /// Type of the metadata stored in this class
-    using metadata_type = std::map<MetaProperty, std::string>;
-
-    /// Type of the submodule call backs
-    using submodule_list = Utilities::CaseInsensitiveMap<module_pointer>;
-
-    /// Type of the set of traits
-    using traits_type = std::set<ModuleTraits>;
-
-    /// Type returned by not_ready (no support for multimap in Python)
-    using not_ready_return =
-      std::vector<std::pair<module_pointer, ModuleProperty>>;
-
-    using hash_type = const std::string;
-
-    /**
-     * @brief Creates a new ModuleBase
-     *
-     * The resulting ModuleBase will be default initialized and thus will
-     * contain no parameters, submodules, or meta-data.  Module developers are
-     * encouraged to fill said data in via the derived class's ctor.
-     *
-     * @throws None. No throw guarantee.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * None.
-     */
-    ModuleBase() = default;
-
-    /**
-     * @brief Frees up memory associated with the current module.
-     *
-     * @par Complexity:
-     * Linear in the number of submodules, and parameters.
-     *
-     * @par Data Races:
-     * The contents of the current instance are modified and data races may
-     * result if the instance is concurrently accessed.
-     *
-     * @throws None No throw guarantee.
-     */
-    virtual ~ModuleBase() noexcept = default;
-
-    /// Deleted to avoid slicing, ModuleBase should always be passed as pointers
     ///@{
-    ModuleBase(const ModuleBase& rhs) = delete;
-
-    ModuleBase(ModuleBase&& rhs) noexcept = delete;
-
-    ModuleBase& operator=(ModuleBase&& rhs) noexcept = delete;
+    /** @name Ctors and Assignment Operators
+     *
+     *  A Module instance is only valid if it has been created by a
+     *  ModuleManager instance or if it is created by copying/moving from a
+     *  valid instance. Default constructed Modules are allowed as placeholders,
+     *  but must be made valid by copy/move assignment. The validity of a module
+     *  can be checked by calling the member `is_valid` (the similarly named
+     *  `is_ready` can also be used for this purpose since `is_valid` is one of
+     *  the checks it runs to ensure that the module is ready to be run).
+     *
+     *  @param rhs The instance we are constructing the module from. For the
+     *         move ctor and assignment operators @p rhs will be in a valid, but
+     *         otherwise undefined state after the operation.
+     *  @param base An already made PIMPL instance for the class to use. In most
+     *         cases this PIMPL will have been created by the ModuleManager.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to allocate a new
+     *         PIMPL (only relevant for 1, 2, and 3). Strong throw guarantee.
+     *  @throw None Functions 4, 5, and 6 are no throw guarantee.
+     */
+    Module();
+    Module(const Module& rhs);
+    Module& operator=(const Module& rhs);
+    Module(Module&& rhs) noexcept;
+    Module& operator=(Module&& rhs) noexcept;
+    Module(std::unique_ptr<detail_::ModulePIMPL> base) noexcept;
     ///@}
 
-    /**
-     * @name Accessors
-     * @brief Functions in this section provide read-only access to the
-     *        module's state.
+    /** @brief Standard destructor.
      *
-     * @return The requested submodules, metadata, or parameters objects in a
-     *         read-only state.
-     *
-     * @throw None. All functions are no-throw guarantee.
-     *
-     * @par Complexity:
-     * Constant.
-     *
+     *  @throw none No throw guarantee.
      */
-    ///@{
-    const metadata_type& metadata() const noexcept { return metadata_; }
-    const submodule_list& submodules() const noexcept { return submodules_; }
-    const traits_type& traits() const noexcept { return traits_; }
-    const Parameters& parameters() const noexcept { return parameters_; }
+    ~Module() noexcept;
 
-    /**
-     * @name Modifiers
+    /** @brief The primary API for running the encapsulated code.
      *
-     * @brief The functions in this section allow users to modify the parameters
-     *        and submodules so long as the module has not been locked yet.
      *
-     * @param[in] key The name of the parameter/submodule callback point you
-     *            want to change the value of.
-     * @param[in] value the new parameter/submodule to use.
-     *
-     * @throw std::runtime_error if the module is locked.  Strong throw
-     *        guarantee.
-     * @throw std::range_error if @p key is not a valid key.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The content of the module is modified and data races may ensue if the
-     * module is concurrently accessed.
+     * @tparam property_type The class codifying the property type that the
+     *         module should be run as.
+     * @tparam Args The types of the input arguments
+     * @param args The input values that will be forwarded to the
+     * @return The property
      */
-    ///@{
-    void change_submodule(const std::string& key, module_pointer value) {
-        if(locked_) throw std::runtime_error("Module is locked!!!");
-        submodules_.at(key) = value;
-    }
-
-    template<typename T>
-    void change_parameter(const std::string& key, T value) {
-        if(locked_) throw std::runtime_error("Module is locked!!!");
-        parameters_.change(key, value);
-    }
-
-    /**
-     * @brief Provides a hash for the current module's state.
-     *
-     * For memoization we need two things: the input and algorithm that was
-     * called.  This function provides a hash of the latter.  In particular this
-     * function will hash the parameters to this module, the submodules this
-     * module will call, and the module info.  The combination of the above
-     * data should uniquely define the algorithm.  More specifically what we
-     * are saying with this hash is that if there exists another module, with
-     * the same parameters, list of submodules, and module info, then for a
-     * given input this module and the other module will generate the same
-     * result.
-     *
-     * @note It is not straightforward to expose the hasher to Python;
-     *       consequentially, we instead internally perform the hash and return
-     *       the value as a string.
-     *
-     * @return The hash value of the module, as a string.
-     *
-     * @par Complexity:
-     * Linear in both the number of parameters and the number of submodules.
-     * This assumes that all modules contain a ModuleInfo instance of about the
-     * same size.
-     *
-     * @par Data Races:
-     * The state of this module's algorithm, as well as the state of all
-     * submodules are accessed.  Data races may result if the states of this
-     * module or any of its submodules are concurrently modified.
-     *
-     * @throw ??? if any of the parameters' or submodules' hash functions throw.
-     * Same guarantee as the parameters' and/or submodules' hash functions.
-     */
-    void hash(Hasher& h) const { h(submodules_, metadata_); }
-
-    /**
-     * @brief Locks the module and all submodules.
-     *
-     * A module that is locked can no longer have its parameters or submodules
-     * changed.
-     *
-     * @throw None. No throw guarantee.
-     *
-     * @par Complexity:
-     * Linear in the number of submodules. Constant on all subsequent calls.
-     *
-     * @par Data Races:
-     * The state of the current module is modified and data races may occur if
-     * the module is concurrently accessed.
-     */
-    void lock() noexcept {
-        if(locked_) return;
-        for(auto& x : submodules_)
-            if(x.second) x.second->lock();
-        locked_ = true;
-    }
-
-    /**
-     * @brief Can be used to inquire into whether or not the module is currently
-     *        locked.
-     *
-     * @return True if the module is locked and false otherwise.
-     *
-     * @throws None. No throw guarantee.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The state of the current instance will be accessed and concurrent
-     * modifications may cause a data race.
-     */
-    bool locked() const noexcept { return locked_; }
-
-    /**
-     * @brief Used to determine if the current module is ready to be run.
-     *
-     * A module is ready to be run if all required parameters are set and all
-     * submodule call back points are assigned a submodule to call (*i.e.*
-     * `submodules_["Some call back point"] != nullptr`).  This check will
-     * proceed recursively to ensure that all submodules are also ready.
-     *
-     * @return A list of pairs such that the first element of the pair is a
-     * pointer to the module that is not ready, and the second element is one of
-     * the ModuleProperty enumerations corresponding to why the module is not
-     * ready.
-     * @note In order to use enable_shared_from_this we need to ensure that
-     * every module is wrapped in shared pointers.  If one is not, we get
-     * undefined behavior.  This is difficult to enforce without hiding all the
-     * ctors, which in turn makes it hard to write loaders.  Point is if it is
-     * the current module that is not ready the key will be a nullptr.
-     * @throw std::bad_alloc if there is insufficient memory to add elements to
-     *        the return structure.  Strong throw guarantee.
-     * @par Complexity:
-     * Linear in the total number of submodules.
-     */
-    not_ready_return not_ready();
-
-    template<typename PropertyType, typename... Args>
+    template<typename property_type, typename... Args>
     auto run_as(Args&&... args) {
-        PropertyType* impl = downcast<PropertyType>();
-        if(impl->not_ready().size())
-            throw std::runtime_error("Module is not ready");
-        lock();
-        using return_type   = detail_::RunDetails_return_type<PropertyType>;
-        using shared_return = std::shared_ptr<return_type>;
-        valKey_             = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
-        shared_return result;
-	    /* Disable memoization until we have a differentiate hashes based on the module instance
-        if(cache_ptr_ && cache_ptr_->count(valKey_))
-            result = cache_ptr_->at<return_type>(valKey_);
-        else
-        {
-	*/
-            return_type rv = impl->run(std::forward<Args>(args)...);
-            //If cache exists, add results
-            if(cache_ptr_)
-            {
-                cache_ptr_->insert(valKey_, rv);
-                result = cache_ptr_->at<return_type>(valKey_);
-            }
-            else
-            result         = std::make_shared<return_type>(std::move(rv));
-    //    }
-        return result;
-    };
-
-    /**
-     * @brief This function provides the hash value associated with a specific
-     *        input for memoization purposes.
-     *
-     * This is a default memoization implementation.  It hashes the algorithm
-     * and the input values.  Module developers are free to override this
-     * behavior to, say, additionally hash the SDE instance or anything else
-     * that may influence the value of the results.
-     *
-     * @note We do not want to put the && after @p Args because the user gave
-     *       us the arguments fully decorated and the && would trigger perfect
-     *       forwarding, which (somewhat ironically) will put additional
-     *       references on the arguments.
-     *
-     * @param[in] args The input to the module.
-     * @return  A hash value that depends on both the current state of the
-     *          algorithm as well as the input.
-     * @throws ??? If hashing any of the input arguments fails.  Strong throw
-     *         guarantee.
-     * @par Complexity:
-     *      The greater of the complexity to hash the algorithm's state or
-     *      linear in the number of arguments.
-     * @par Data Races:
-     *      The state of the arguments as well as the module are accessed. Thus
-     *      data races may result if either state is concurrently modified.
-     */
-    template<typename... Args>
-    HashValue memoize(Args&&... args) const {
-        Hasher h(HashType::Hash128);
-        hash(h);
-        h(std::forward<Args>(args)...);
-        return h.finalize();
+        auto temp = inputs();
+        temp = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
+        return property_type::unwrap_results(run(temp));
     }
 
-    /**
-     * @brief Determines if the result of calling the module with the provided
-     * arguments is cached
+    /** @brief The advanced API for running the module.
      *
-     * @tparam Args The types of the arguments to memoize.
-     * @param[in] args the arguments to memoize.
-     * @return True if the result is cached and false otherwise.
-     * @throws None. No throw guarantee.
+     *  This member allows you to set whatever inputs you would like and gives
+     *  you access to all of the results. This flexibility comes at the cost of
+     *  compile-time error checking. The result is that if you provide an input
+     *  with an object of the incorrect type or try to cast an output to an
+     *  incompatible type this will only be detected as an error at runtime
+     *  when those commands are executed. All inputs will still be checked for
+     *  domain errors per usual.
+     *
+     *  This function is primarily intended for use by developers who for
+     *  whatever reason need to provide/access inputs/results that are not part
+     *  of a property type. In most scenarios the use of this function signals
+     *  the accrual of technical debt resulting from code coupling. The
+     *  technical debt can be avoided by creating/modifying a property type so
+     *  that it takes/returns the additional inputs/results.
+     *
+     *
+     * @param ps A map from input keys to that input's values.
+     * @return A map from output keys to that output's value.
+     *
+     * @throw ??? If the underlying algorithm throws, the exception will also be
+     *        thrown by this function. Strong throw guarantee.
      */
-    template<typename... Args>
-    bool is_cached(Args&&... args) const noexcept {
-        auto key = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
-        return(cache_ptr_ && cache_ptr_->count(key));
-    }
+    type::result_map run(type::input_map ps);
 
-    /**
-     * @brief Sets the Cache that will be used by the module for storage and/or
-     * retrieval of computed results
+    ///@{
+    /** @name Module state accessors
      *
-     * @param[in] args Shared pointer to the Cache
-     * @throws None. No throw guarantee.
+     * The functions in this section are used to inquire about the state of the
+     * module.
+     *
+     * Respectively these functions:
+     *
+     * - Whether a module is ready (contains an actual algorithm, all submodules
+     *   are set, and all required options are set)
+     * - Whether a module is locked
+     *
+     * @return The value of the requested piece of state.
+     * @throw none No throw guarantee.
      */
-    void set_cache(std::shared_ptr<Cache> cp ) {cache_ptr_=cp;}
+    bool ready() const noexcept;
+    bool locked() const noexcept;
+    ///@}
 
-    /**
-     * @brief Retrieves a shared_ptr to the Cache that is used by the module for
-     * storage and/or retrieval of computed results
-     *
-     * @param[out] args Shared pointer to the Cache
-     * @throws None. No throw guarantee.
-     */
-    std::shared_ptr<Cache> get_cache() {return cache_ptr_;}
-
-    template<typename... Args>
-    std::pair<std::string, std::string> make_node(Args&&... args) const {
-        auto valKey = bphash::hash_to_string(memoize(std::forward<Args>(args)...));
-        auto modKey = bphash::hash_to_string(memoize());
-        return std::make_pair(valKey, modKey);
-    }
-
-
-
-protected:
-    /// Allows Python helper class to get at data
-    friend class detail_::PyModuleBase;
-
-    /// The meta-data associated with this module
-    metadata_type metadata_;
-
-    /// The list of submodules this module may call
-    submodule_list submodules_;
-
-    /// The traits associated with the module
-    std::set<ModuleTraits> traits_;
-
-    /// The parameters associated with this module
-    Parameters parameters_;
-
-    /**
-     * @brief Convenience function for calling a submodule.
-     *
-     * This function wraps the retrieval of the module and the forwarding of
-     * the arguments to that module.
+    ///@{
+    /** @name Module state modifiers
      *
      */
-    template<typename PropertyType, typename... Args>
-    auto call_submodule(const std::string& key, Args&&... args) {
-	    if(cache_ptr_)
-	    {
-        // Record adjacency in module invocation graph
-        auto hashes = submodules_.at(key)->make_node(std::forward<Args>(args)...);
-        cache_ptr_->add_node(valKey_, hashes);
-	// Forward our Cache to the submodule. Should probably be handled by ModuleManager.
-	submodules_.at(key)->set_cache(cache_ptr_);
-	    }
-        return submodules_.at(key)->run_as<PropertyType>(
-          std::forward<Args>(args)...);
-    }
+    void lock() noexcept;
+    ///@}
+
+    ///@{
+    /** @name Algorithm state accessors
+     *
+     *  These functions allow you to view the state of the module in a read-only
+     *  manner. Each function returns a map whose keys are all of the keywords
+     *  recognized by the module in a particular context (as inputs, as results,
+     *  or as submodules). For the inputs and submodules the values in the map
+     *  are the objects that are currently bound to those keywords (*i.e.*, if
+     *  the module was called right this second those are the values that each
+     *  of those keywords would map to). The results map's values are null and
+     *  will be filled in by the `run` function based on the values of the bound
+     *  inputs and submodules as well as the inputs provided to the module. To
+     *  change the values the inputs or submodules are bound to use
+     *  `change_input` or `change_submodule` respectively.
+     *
+     *  @throw none All functions are no throw guarantee.
+     */
+    const type::input_map& inputs() const noexcept;
+    const type::result_map& results() const;
+    const type::submodule_map& submods() const noexcept;
+    ///@}
+
+    ///@{
+    /** @name Algorithm state modifiers
+     *
+     * These functions allow you to change what value an input or submodule
+     * keyword is bound to. Changes can only be made
+     *
+     * @param key Which input/submodule you want to modify.
+     * @return The requested input/submodule.
+     *
+     * @throw std::out_of_range if @p key is not a valid key. Strong throw
+     *        guarantee.
+     *
+     */
+    ModuleInput& change_input(type::key key);
+    SubmoduleRequest& change_submod(type::key key);
+    ///@}
+
+    void hash(type::hasher& h) const;
+
+    ///@{
+    /** @name Equality comparisons
+     *
+     * Two modules are equal if they both:
+     *
+     * - contain instances of the same ModuleBase class
+     * - have the same bound input values
+     * - have the same bound submodules
+     * - are in the same locked state
+     *
+     * @param rhs The instance to compare against.
+     * @return True if the comparison is true and false otherwise.
+     * @throw ??? if any of the input value comparisons throw. Same throw
+     *        guarantee.
+     */
+    bool operator==(const Module& rhs) const;
+    bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
 
 private:
-    /// Allows ModuleManager to copy the module
-    friend class detail_::MMImpl;
+    friend class detail_::ModuleManagerPIMPL;
 
-    /// Used when making a duplicate module
-    ModuleBase& operator=(const ModuleBase& rhs) = default;
+    /** @brief Unlocks a locked module
+     *
+     * There are very select circumstances when we need to unlock a locked
+     * module (for example after deep copying a locked module, we need to
+     * unlock the copy). The ModuleManager (through its PIMPL) is the only class
+     * that can do this because it knows when it is okay.
+     *
+     * @throw none No throw guarantee.
+     */
+    void unlock() noexcept;
 
-    // True means parameters and submodules can no longer be changed
-    bool locked_ = false;
-
-    std::shared_ptr<Cache> cache_ptr_;
-
-    // Holds hash of Module state and input. Used to create a module graph
-    // node if submodules are called.
-    std::string valKey_;
-
-    template<typename PropertyType>
-    PropertyType* downcast() {
-        PropertyType* new_ptr = dynamic_cast<PropertyType*>(this);
-        if(!new_ptr) throw std::bad_cast();
-        return new_ptr;
-    }
+    /// The instance that actually does everything for us.
+    std::unique_ptr<detail_::ModulePIMPL> pimpl_;
 };
 
 } // namespace SDE
-
-/** @brief Macro to factor out boilerplate for defining a property type
- *
- *  @param[in] prop_name Name to be used for resulting class
- *  @param[in] return_value Type of the return
- *  @param[in] __VA_ARGS__ The types of the inputs to the module.
- */
-#define DEFINE_PROPERTY_TYPE(prop_name, return_value, ...) \
-    struct prop_name : SDE::ModuleBase {                   \
-        virtual return_value run(__VA_ARGS__) = 0;         \
-    }
