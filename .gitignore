@@ -10,8 +10,9 @@ SDE.creator.user
 .idea/
 venv/
 
-#This is the documentation build directory
-docs/
+#These are the documentation build directories
+docs/build
+docs/doxyoutput
 
 #These are common build directory names
 Debug/

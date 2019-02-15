@@ -76,7 +76,7 @@ struct ModuleResultPIMPL {
     ///@}
 
     ///@{
-    /** @names State
+    /** @name State
      *
      * The members in this section are the state of the ModuleResult instance.
      * Respectively they store:

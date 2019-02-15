@@ -75,7 +75,6 @@ public:
      *
      * @param h The hasher instance to use
      * @param inputs The values of the inputs to hash
-     * @param submods The values of the submodules to use.
      *
      */
     void memoize(type::hasher& h, type::input_map inputs) const {

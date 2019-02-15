@@ -431,6 +431,7 @@ public:
      * `obj2` of type `T2` equality demands `T1==T2` and `operator==(obj1,
      * obj2)` evaluates to true.
      *
+     * @param rhs The instance to compare to
      * @throw None. All comparisons are no throw guarantee.
      *
      */
@@ -459,7 +460,7 @@ private:
      * @brief Class to hold the type-erased instance.
      *
      * This class will ultimately serve as the opaque API to the wrapped
-     * instance.  If one has read the discussion @ref te_solution then it's
+     * instance.  If one has read the discussion  then it's
      * worth noting that SDEAnyBase is the realization of the TEBase class.
      *
      * Note that this class is abstract and can not be instantiated.
@@ -610,7 +611,7 @@ private:
      * being a private class.
      */
     template<typename T>
-    struct[[gnu::visibility("hidden")]] SDEAnyWrapper_ : SDEAnyBase_ {
+    struct SDEAnyWrapper_ : SDEAnyBase_ {
         /**
          * @brief Creates a new SDEAnyWrapper_ by copying a value.
          *
@@ -648,7 +649,7 @@ private:
          * @throw ??? If T's move constructor throws.  Strong throw guarantee.
          *
          */
-        SDEAnyWrapper_(T && value_in) : value(std::move(value_in)) {}
+        SDEAnyWrapper_(T&& value_in) : value(std::move(value_in)) {}
 
         /// The actual wrapped value
         T value;
@@ -717,7 +718,7 @@ private:
          *  @throws ??? if the wrapped instance's hash function throws.  Strong
          *  throw guarantee.
          */
-        void hash_(Hasher & h) const override { h(value); }
+        void hash_(Hasher& h) const override { h(value); }
 
         /**
          * @brief Allows the wrapped object to be returned as the opaque Python

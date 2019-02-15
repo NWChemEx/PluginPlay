@@ -283,8 +283,15 @@ public:
      */
     void hash(type::hasher& h) const;
 
+    ///@{
+    /** @name Equality comparisons
+     *
+     * @param rhs
+     * @return
+     */
     bool operator==(const ModuleInput& rhs) const;
     bool operator!=(const ModuleInput& rhs) const { return !((*this) == rhs); }
+    ///@}
 
 private:
     ///@{
@@ -322,7 +329,7 @@ private:
     ModuleInput& add_check_(any_check check, type::description desc);
     ///@}
 
-    /// Generates a check that a value is of type @T.
+    /// Generates a check that a value is of type @p T.
     template<typename T>
     auto& add_type_check() {
         any_check check = [](const type::any& new_value) {

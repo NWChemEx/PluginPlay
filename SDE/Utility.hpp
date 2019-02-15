@@ -33,7 +33,7 @@ namespace detail_ {
  *
  *  This struct works by inheriting from `std::false_type` (which gives it a
  *  `static` `constexpr` member named `value` whose value is false). Then we
- *  specialize the struct so that if `T=const char (&)[N], the type of a
+ *  specialize the struct so that if `T=const char (&)[N]`, the type of a
  *  string literal, it instead inherits from `std::true_type` (which is the
  *  same as `std::false_type` except the value of `value` is true). We can not
  *  use `std::is_same` because we can't list all the types that `T` is allowed

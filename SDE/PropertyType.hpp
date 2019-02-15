@@ -118,7 +118,7 @@ protected:
     using result_builder = detail_::PropertyTypeBuilder<ModuleResult>;
 
     ///@{
-    /** @names API generators
+    /** @name API generators
      *
      * The derived class should use these functions to generate the objects for
      * declaring the input/result APIs.

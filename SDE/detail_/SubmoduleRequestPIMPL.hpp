@@ -16,7 +16,7 @@ struct SubmoduleRequestPIMPL {
     using module_ptr = std::shared_ptr<Module>;
 
     ///@{
-    /** @names Ctor and Assignment operators
+    /** @name Ctor and Assignment operators
      *
      *  @param rhs The instance to copy/move from. For move operations @p rhs
      *         is in a valid, but otherwise undefined state.
