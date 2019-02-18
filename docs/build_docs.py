@@ -5,7 +5,7 @@
 # - Parse the test examples into documentation
 
 import os
-import re
+import subprocess
 
 def separate_file(filename):
     comments = []
@@ -107,8 +107,12 @@ def main():
      root_dir = os.path.dirname(docs_dir)
      examples_dir = os.path.join(root_dir, "SDE_Test", "examples")
      tutorial_dir = os.path.join(docs_dir, "source", "tutorials")
-     write_tutorials(examples_dir, tutorial_dir)
 
+     if not os.path.exists(tutorial_dir):
+         os.mkdir(tutorial_dir)
+
+     write_tutorials(examples_dir, tutorial_dir)
+     subprocess.call(["make", "html"])
 
 if __name__ == "__main__" :
     main()

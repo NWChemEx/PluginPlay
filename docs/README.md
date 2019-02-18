@@ -4,10 +4,10 @@ Building the documentation
 Building is done by running:
 
 ```
-make html
+python3 build_docs.py
 ```
 
-in the `SDE/docs/source` directory. If this runs successfully you will get two
+in the `SDE/docs` directory. If this runs successfully you will get two
 additional directories: `build` and `doxyoutput`. The actual documentation can
 be viewed by opening `docs/build/html/index.html` in a web browser.
 
