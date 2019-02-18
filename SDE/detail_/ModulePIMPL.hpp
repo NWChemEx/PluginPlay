@@ -167,13 +167,25 @@ public:
     /// Unlocks the module
     void unlock() noexcept { locked_ = false; }
 
+    ///@{
+    /** @name Returns the state of the module
+     *
+     * @return The requested piece of the module's state
+     */
     type::input_map& inputs() { return inputs_; }
     type::submodule_map& submods() { return submods_; }
     const type::result_map& results() const {
         if(!base_) throw std::runtime_error("Algorithm is not set");
         return base_->results();
     }
+    ///@}
 
+    /** @brief Actually runs the module
+     *
+     * @param ps The input parameters set by the user, they are not merged with
+     *        the bound inputs yet.
+     * @return Whatever the module returns.
+     */
     auto run(type::input_map ps) {
         ps = merge_inputs_(std::move(ps));
 

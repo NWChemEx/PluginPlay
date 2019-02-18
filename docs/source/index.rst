@@ -10,6 +10,8 @@ Welcome to SDE's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   about/index
+   tutorials/index
    api/library_root
 
 Indices and tables

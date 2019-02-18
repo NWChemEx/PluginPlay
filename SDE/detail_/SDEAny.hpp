@@ -1,8 +1,6 @@
 #pragma once
 #include "Memoization.hpp"
 #include "SDE/Utility.hpp"
-#include "SDE/attic/Pythonization.hpp"
-#include "SDE/detail_/Serializer.hpp"
 #include <iostream>
 #include <memory>
 #include <type_traits>
@@ -379,48 +377,9 @@ public:
         return ptr_->cast<no_cv&>();
     };
 
+    ///@{
     /**
-     * @brief Facilitates using SDEAny in classes exposed to Python.
-     *
-     * SDEAny itself is not exposed to Python; however, classes like Parameters
-     * are exposed to Python and contain SDEAny instances.  This function will
-     * transform the type-erased object into an object that can be accessed from
-     * Python without needing to know the wrapped instance's type.
-     *
-     * @return The object wrapped in this instance as a pybind11::object.
-     * @throws pybind11::cast_error if the wrapped type can not be converted to
-     *         a Python type.  Strong throw guarantee.
-     * @throws std::runtime_error if this function is called and Python bindings
-     *         were not enabled.  Strong throw guarantee.
-     *
-     */
-    //    pyobject pythonize() const { return ptr_->pythonize(); }
-
-    /**
-     * @brief Sets the internal value of an SDEAny from a Python object.
-     *
-     * Particularly for the Parameters class, we sometimes need to change the
-     * type-erased value held within the SDEAny.  For C++ applications this is
-     * straightforwardly done by making a new SDEAny instance, since the types
-     * of the new value and the old value are known.  However, for Python this
-     * amounts to swapping the contents of one type-erased entity for another.
-     * This function allows us to do that.  As a slight aside, the type of the
-     * held object must always be known by the SDEAny, this in turn means that
-     * one can not use this function on an SDEAny with no wrapped object as
-     * such an entity would have no way of knowing what to cast the Python
-     * object to.
-     *
-     * @param obj The Python object to hold.
-     * @throw std::runtime_error if this SDEAny instance does not hold a value.
-     *        Strong throw guarantee.
-     */
-    //    void change_python(pyobject& obj) {
-    //        if(!ptr_) throw std::runtime_error("Can't change empty SDEAny");
-    //        ptr_->change_python(obj);
-    //    }
-
-    /**
-     * @brief Comparison operators.
+     * @name Comparison operators.
      *
      * These comparison operators allow one to compare the type-erased values
      * without knowing their types.
@@ -435,7 +394,6 @@ public:
      * @throw None. All comparisons are no throw guarantee.
      *
      */
-    ///@{
     bool operator==(const SDEAny& rhs) const noexcept {
         const bool lhs_good = static_cast<bool>(ptr_);
         const bool rhs_good = static_cast<bool>(rhs.ptr_);
@@ -533,12 +491,6 @@ private:
          */
         void hash(Hasher& h) const { hash_(h); }
 
-        /// Public API for virtual python function
-        //        pyobject pythonize() { return pythonize_(); }
-        //
-        //        /// Public API for changing the value from python
-        //        void change_python(pyobject& obj) { change_python_(obj); }
-
         /// Public API for determining equality
         bool operator==(const SDEAnyBase_& rhs) const noexcept {
             return are_equal_(rhs);
@@ -568,19 +520,11 @@ private:
         }
 
     private:
-        friend class cereal::access;
-
         /// The function for equality, to be implemented by the derived class
         virtual bool are_equal_(const SDEAnyBase_& rhs) const noexcept = 0;
 
         /// The function for hashing, to be implemented by the derived class
         virtual void hash_(Hasher& h) const = 0;
-
-        //        /// Implemented by derived class to provide read-only python
-        //        object virtual pyobject pythonize_() const = 0;
-        //
-        //        /// To be implemented by the derived class to change the value
-        //        virtual void change_python_(pyobject& obj) = 0;
 
         /// Implemented by derived class for polymorphic copy
         virtual std::unique_ptr<SDEAnyBase_> clone_() const = 0;
@@ -730,9 +674,6 @@ private:
          * @throws std::runtime_error if Python bindings are not enabled.
          * Strong throw guarantee.
          */
-        //        pyobject pythonize_() const override { return pycast(value); }
-        //
-        //        void change_python_(pyobject & obj) { value = obj.cast<T>(); }
     };
 
     /**
