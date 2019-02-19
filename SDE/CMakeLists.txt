@@ -12,6 +12,7 @@ set(SDE_INCLUDES detail_/Memoization.hpp
                  detail_/PropertyTypeBuilder.hpp
                  detail_/SDEAny.hpp
                  detail_/SubmoduleRequestPIMPL.hpp
+                 detail_/Serializer.hpp
                  Module.hpp
                  ModuleBase.hpp
                  ModuleInput.hpp
