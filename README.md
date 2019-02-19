@@ -17,4 +17,16 @@ Building SDE
 
 Please see the documentation (add link when public).
 
+Building Cppyy
+--------------
+
+The SDE uses Cppyy to generate Python bindings. At the moment SDE will not build
+Cppyy for you. Cppyy can be built manually by using pip:
+
+```
+python -m pip install cppyy
+```
+
+Pip by default uses your system compilers, so set the `CXX` and `CC` environment
+variables appropriately if this behavior is not desired.
 
