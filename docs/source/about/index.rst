@@ -5,4 +5,5 @@ About the SDE Project
    :maxdepth: 2
    :caption: Contents:
 
+   motivations
    overview

@@ -1,20 +1,46 @@
+/* This tutorial focuses on how to write a module. It builds upon the tutorial
+ * on PropertyTypes by showing how one could go about implementing a module that
+ * computes the area of a rectangle (the ``Rectangle`` class below) and another
+ * module that computes the volume of a prism using a module of property type
+ * ``Area`` (the ``Prism`` class below).
+ *
+ * To run the code in this tutorial you will need the following includes:
+ */
 #pragma once
 #include "examples/TestPropertyType.hpp"
 #include <SDE/ModuleBase.hpp>
 #include <sstream>
 
 /* The Rectangle module implements the algorithm for computing the area of a
- * rectangle. The actual class showcases:
+ * rectangle. For the record, given a rectangle with a base of length :math:`b`
+ * and a height of length :math:`h`, the area, :math:`a`, is given by:
  *
- *  - How to define the API of a module by using a property type
- *  - How to set the metadata (e.g., description, references) of a module
- *  - How to add inputs/results beyond the property type's API
- *  - How to modify metadata of the property type's API to make them more
- *    applicable to the current module.
- *  - How to implement the module's algorithm
+ * .. math::
+ *
+ *    a = bh
+ *
+ * To begin we inherit from ``SDE::ModuleBaseHelper<T>`` where ``T`` is replaced
+ * with the type of the class you are implementing. We saw this pattern before
+ * in the PropertyType tutorial, it's the curiously recurring template pattern,
+ * and it is used here for the same purpose, to have the SDE automatically
+ * implement some functionality for you using your class's type. Regardless, the
+ * important thing to note is that all modules derive from
+ * ``SDE::ModuleBaseHelper<T>``, where ``T`` is the name of the module's type.
  */
 class Rectangle : public SDE::ModuleBaseHelper<Rectangle> {
 public:
+    /* Next we declare the module's constructor, or ctor, for short. Like for
+     * any other C++ class, the ctor of a module is charged with creating the
+     * module and setting up its default state. Ultimately, your module will be
+     * constructed and then the constructed instance will be provided to the
+     * SDE. What this means is you're free to define the ctor any way you like,
+     * the SDE will take that instance by the base class ``ModuleBase`` and
+     * store it as such. The state of the instance you provide the SDE will be
+     * locked (that is no changes to it are permitted). Instead changes made by
+     * the user will be to a copy of the state. This allows the SDE to
+     * instantiate multiple instances of your module, with different state,
+     * without needing
+     */
     Rectangle() {
         /* Most modules will be designed with a property type in mind. For
          * example this module was designed with the explicit intent of making
@@ -187,7 +213,7 @@ private:
         // Finally we return the map of results
         return result;
     }
-};
+}; // end Rectangle
 
 /* The Prism class implements a module that can compute the volume of a prism
  * by using a submodule. Compared to the Rectangle class, the main additional
@@ -240,4 +266,4 @@ private:
         auto out = results();
         return PrismVolume::wrap_results(out, area, volume);
     }
-};
+}; // end Prism

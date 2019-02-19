@@ -53,7 +53,9 @@ static void example_main() {
 
     /* It is worth noting that this is just shorthand for:
      *
-     * `mm.at("Rectangle").inputs().at("Name").change("My Rectangle");`
+     * .. code-block:: c++
+     *
+     *    mm.at("Rectangle").inputs().at("Name").change("My Rectangle");
      *
      * if you want more control over the changes you can work with the module
      * directly.

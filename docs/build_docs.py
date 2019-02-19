@@ -9,7 +9,7 @@ import subprocess
 
 def separate_file(filename):
     comments = []
-    code = [""]
+    code = []
     with open(filename, 'r') as input_file:
         started_with = ""
         in_comment = False
@@ -28,6 +28,7 @@ def separate_file(filename):
             else:
                 if started_with == "":
                     started_with = "code"
+                    code.append("")
                 code[-1] += line
     return started_with, comments, code
 
@@ -38,10 +39,12 @@ def print_code(output_file, code):
 
 def print_comment(output_file, comment):
     for cmt in comment.split('\n'):
-        cmt = cmt.replace("/*", '')
+        cmt = cmt.strip()
+        cmt = cmt.replace("/* ", '')
         cmt = cmt.replace("*/", '')
+        cmt = cmt.replace("* ", '')
         cmt = cmt.replace('*', '')
-        output_file.write(cmt.strip() +'\n')
+        output_file.write(cmt +'\n')
 
 def write_tutorials(examples_dir, tutorial_dir):
     tutorial_list = []
