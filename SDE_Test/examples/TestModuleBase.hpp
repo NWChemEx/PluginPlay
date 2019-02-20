@@ -11,7 +11,10 @@
 #include <SDE/ModuleBase.hpp>
 #include <sstream>
 
-/* The Rectangle module implements the algorithm for computing the area of a
+/* Declaring the Module
+ * --------------------
+ *
+ * The Rectangle module implements the algorithm for computing the area of a
  * rectangle. For the record, given a rectangle with a base of length :math:`b`
  * and a height of length :math:`h`, the area, :math:`a`, is given by:
  *
@@ -29,47 +32,52 @@
  */
 class Rectangle : public SDE::ModuleBaseHelper<Rectangle> {
 public:
-    /* Next we declare the module's constructor, or ctor, for short. Like for
+    /* Defining the Module's API
+     * -------------------------
+     *
+     * Next we declare the module's constructor, or ctor, for short. Like for
      * any other C++ class, the ctor of a module is charged with creating the
-     * module and setting up its default state. Ultimately, your module will be
-     * constructed and then the constructed instance will be provided to the
-     * SDE. What this means is you're free to define the ctor any way you like,
-     * the SDE will take that instance by the base class ``ModuleBase`` and
-     * store it as such. The state of the instance you provide the SDE will be
-     * locked (that is no changes to it are permitted). Instead changes made by
-     * the user will be to a copy of the state. This allows the SDE to
-     * instantiate multiple instances of your module, with different state,
-     * without needing
+     * module and setting up its default state. The default state for a module
+     * determines its API, specifically:
+     *
+     * * the inputs it recognizes
+     * * the values it can compute
+     * * what properties it needs other modules to compute for it
+     *
+     * You're free to define the ctor any way you like, because the SDE takes
+     * and uses an already created instance of your class. That said since the
+     * default state for a module should be the same for all instances it is
+     * recommended that developers keep things simple and implement it in a
+     * default ctor like:
      */
     Rectangle() {
         /* Most modules will be designed with a property type in mind. For
          * example this module was designed with the explicit intent of making
-         * a module that computes Areas. In order to satisfy a property type
-         * all of the input fields and output fields of that property type must
-         * be included in the module's sets of input and output fields. For the
-         * Area property type that means we'd minimally need to write something
-         * like:
+         * a module that computes areas. In order to satisfy a property
+         * type all of the input and output fields of that property type must be
+         * included in the module's sets of input and output fields. For the
+         * ``Area`` property type that means we'd minimally need to write
+         * something like:
          *
-         * add_input<double>("Dimension 1").set_description(...);
-         * add_input<double>("Dimension 2").set_description(...);
-         * add_output<double>("Area").set_description(...);
+         * .. code-block:: c++
          *
-         * This boilerplate code that adds no new information, hence this can be
-         * automated for you by using the satisfies_property_type member
-         * function. The satisfies_property_type function automatically adds the
-         * specified property type's inputs and results to this module's inputs
-         * and results.
+         *    add_input<double>("Dimension 1").set_description(...);
+         *    add_input<double>("Dimension 2").set_description(...);
+         *    add_output<double>("Area").set_description(...);
          *
-         * As a note, if a module satisfies multiple property types and any of
-         * those property types include the same input/output parameter only the
-         * metadata associated with the last property type added will be stored.
-         * In practice this is rarely an issue since if two property types have
-         * a parameter with the same name they usually use that parameter in
-         * identical manners.
+         * All of this information is available in the property type, so there's
+         * not actually a need to repeat it here. To automatically add the
+         * inputs and results from a property type we use the
+         * ``satisfies_property_type`` member function of the base class.
          */
         satisfies_property_type<Area>();
 
-        /* In addition to the metadata associated with each input and output
+        /* .. note::
+         *
+         *    If a module satisfies multiple property types you simply repeat
+         *    this call for each of the property types.
+         *
+         * In addition to the metadata associated with each input and output
          * there is also metadata associated with the module itself. Here we
          * set the module's documentation description and add citations for any
          * relevant literature.
@@ -79,39 +87,18 @@ public:
 
         /* The input/results of a module are not limited to those specified by
          * the property type. You are free to add additional inputs and results.
-         * However, users using your module through a property type not
-         * defining these additional inputs/results will not be able to
-         * directly access these fields. Nevertheless the additional
-         * inputs/results can always be accessed via the expert API and may be
-         * accessible from other property type APIs. This means that
+         * Keep in mind that these additional fields will not be accessible from
+         * the property type API, which means that end-users will need to bind
+         * the additional inputs before calling your module. Nevertheless the
+         * additional inputs/results can always be accessed via the expert
+         * API and may be accessible from other property types. This means that
          * particularly for inputs it is best if these additional inputs are
          * algorithmic parameters with default values (additional results can
          * always be ignored no problem and thanks to memoization need not be
-         * recomputed if they are later needed). Inevitably, there will be times
-         * when no reasonable default exists; in these cases users can set the
-         * parameters directly on the module (typically via the ModuleManager)
-         * like:
-         *
-         * ModuleManager mm;//Assume this got filled somehow
-         * mm.at("Key to module") //get module
-         *   .inputs() //get inputs of module
-         *   .at("Input not part of property type") //get additional input
-         *   .change(value_to_set_it_to); //change inputs value
-         *
-         * //Sometime later
-         * mm.at("Key to module") //get module
-         *   .run_as<PropType>(args...); //run w/o specifying additional input
-         *
-         * In this code example the additional input is set directly on the
-         * module that will be used. This value is tied to the module with the
-         * module key "Key to module" meaning that other instances of the module
-         * will not have this value specified. Later when we use the module via
-         * the property type that does not recognize the additional field we
-         * only specify the inputs that the property type does recognize and the
-         * value for the unrecognized field is taken from the module's state.
+         * recomputed if they are later needed).
          *
          * Anyways, we add an additional input that names our rectangle (perhaps
-         * for printing) and an additional output which is a ASCII picture of
+         * for printing) and an additional output which is an ASCII picture of
          * of our rectangle (yes, I'm grasping at straws for what else a
          * rectangle class needs...).
          */
@@ -137,30 +124,41 @@ public:
           .set_description("The height of the rectangle");
         change_input("Dimension 2")
           .set_description("The width of the rectangle");
-    }
+    } // end Rectangle()
 
 private:
+    /* Implementing the Module's Algorithm
+     * -----------------------------------
+     *
+     * Now that we defined the module's API we have to actually implement the
+     * algorithm it encapsulates. The algorithm goes in the ``run_`` member. The
+     * ``run_`` member is a pure abstract member function defined by the
+     * ``ModuleBase`` base class. It's signature is:
+     *
+     * .. code-block:: c++
+     *
+     *    SDE::type::result_map run_(SDE::type::input_map inputs,
+     *                               SDE::type::submodule_map submods) const;
+     *
+     * The parameters are the values of the inputs your module should use
+     * (the SDE guarantees that all non-optional options have been set and that
+     * the values they are set to have passed all provided bounds checks). In
+     * the same vein, the provided map of submodules are the submodules that
+     * your module should use (again the SDE guarantees that all submodule
+     * requests have been satisfied, and that the submodules are ready to be run
+     * as the requested property type).
+     *
+     */
     SDE::type::result_map run_(SDE::type::input_map inputs,
                                SDE::type::submodule_map) const override {
-        /* Here we implement the module's algorithm. Generally speaking this
-         * follows the pattern convert input parameters to variables, compute
-         * results, put results in output, return output.
-         *
-         * The process is somewhat boilerplate heavy so we have implemented
-         * convenience functions to help out. For unwrapping the inputs each
-         * property type defines a static function unwrap_inputs, which takes
-         * the SDE::type::input_map and returns a tuple of values. The order of
-         * the returns is the same as the property type's input signature.
-         *
+        /* Typically the first thing done inside a module is to unwrap the
+         * inputs. Each property type defines a convenience function
+         * ``unwrap_inputs``, which will automatically unwrap it's inputs into
+         * identifiers for you.
          */
         const auto[dim1, dim2] = Area::unwrap_inputs(inputs);
 
-        /* To get our additional input we have to manually unwrap the value. It
-         * should be noted that property type unwrap is equivalent to this
-         * unwrap, i.e., the above code is equivalent to:
-         *
-         * auto dim1 = inputs.at("Dimension 1").value<double>();
-         * auto dim2 = inputs.at("Dimension 2").value<double>();
+        /* Since the
          */
         auto name = inputs.at("Name").value<std::string>();
 
@@ -213,7 +211,7 @@ private:
         // Finally we return the map of results
         return result;
     }
-}; // end Rectangle
+}; // end Rectangle class
 
 /* The Prism class implements a module that can compute the volume of a prism
  * by using a submodule. Compared to the Rectangle class, the main additional

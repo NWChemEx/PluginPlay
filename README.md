@@ -15,6 +15,6 @@ program.  In particular it is in the SDE one will find:
 Building SDE
 ------------
 
-Please see the documentation (add link when public)
+Please see the documentation (add link when public).
 
 
