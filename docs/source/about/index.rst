@@ -6,4 +6,5 @@ About the SDE Project
    :caption: Contents:
 
    motivations
+   other_frameworks
    overview

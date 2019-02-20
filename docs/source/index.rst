@@ -11,6 +11,7 @@ Welcome to SDE's documentation!
    :caption: Contents:
 
    about/index
+   installation/index
    tutorials/index
    developer/index
    api/library_root
