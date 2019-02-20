@@ -30,25 +30,7 @@ cpp_add_library(
 )
 
 if(BUILD_PYBINDINGS)
-    list(
-        APPEND
-        CMAKE_MODULE_PATH
-        /home/ryan/scratch/WORK/lib64/python3.6/site-packages/cppyy_backend/cmake
-    )
-    get_target_property(SDE_INCLUDE_DIRS sde INTERFACE_INCLUDE_DIRECTORIES)
-    get_target_property(SDE_LIBRARIES sde INTERFACE_LINK_LIBRARIES)
-    message("All the includes: ${SDE_INCLUDE_DIRS}")
-    find_package(Cppyy REQUIRED)
-    cppyy_add_bindings(
-        ${PROJECT_NAME}
-        ${PROJECT_VERSION}
-        NWChemEx
-        nwchem-ex@googlegroups.com
-        LANGUAGE_STANDARD 17
-        INCLUDE_DIRS "${SDE_INCLUDE_DIRS}"
-        LINK_LIBRARIES "${SDE_INTERFACE_LINK_LIBRARIES}"
-        H_FILES "${SDE_INCLUDES}"
-    )
+
 endif()
 
 cpp_install(TARGETS sde)
