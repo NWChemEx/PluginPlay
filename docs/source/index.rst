@@ -12,6 +12,7 @@ Welcome to SDE's documentation!
 
    about/index
    tutorials/index
+   developer/index
    api/library_root
 
 Indices and tables
