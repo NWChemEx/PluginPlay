@@ -7,4 +7,5 @@ About the SDE Project
 
    motivations
    other_frameworks
+   terminology
    overview
