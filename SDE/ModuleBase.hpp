@@ -254,6 +254,7 @@ private:
      *
      *  Respectively the metadata includes:
      *
+     *  - The RTTI of the derived class
      *  - The description of what the module does
      *  - A list of articles that should be cited
      */
