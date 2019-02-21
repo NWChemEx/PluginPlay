@@ -109,3 +109,20 @@ TEST_CASE("Prism Class : run") {
     REQUIRE(area == Approx(5.6088));
     REQUIRE(volume == Approx(44.253432));
 }
+
+template<size_t N>
+struct TemplatedModule : ModuleBase {
+    static constexpr size_t size = N;
+    TemplatedModule() : ModuleBase(this) { satisfies_property_type<Area>(); }
+
+    type::result_map run_(type::input_map, type::submodule_map) const {
+        return type::result_map{};
+    }
+};
+
+TEST_CASE("TemplatedModule") {
+    SECTION("Doesn't need this pointer or template keyword") {
+        TemplatedModule<1> test;
+        REQUIRE(test.inputs().size() == 2);
+    }
+}
