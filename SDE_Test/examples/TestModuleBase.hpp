@@ -154,7 +154,17 @@ private:
         /* Typically the first thing done inside a module is to unwrap the
          * inputs. Each property type defines a convenience function
          * ``unwrap_inputs``, which will automatically unwrap it's inputs into
-         * identifiers for you.
+         * identifiers for you. The output is an ``std::tuple`` of that property
+         * type's input parameters in the order they were defined. For our
+         * present example recall that the ``Area`` property type declared its
+         * parameters like:
+         *
+         * .. code-block::
+         *
+         *    auto rv = declare_input()
+         *              .add_field<double>("Dimension 1")
+         *              .add_field<double>("Dimension 2")
+         *
          */
         const auto[dim1, dim2] = Area::unwrap_inputs(inputs);
 
