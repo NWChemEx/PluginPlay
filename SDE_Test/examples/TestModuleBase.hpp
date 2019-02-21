@@ -13,9 +13,9 @@
  *    applicable to the current module.
  *  - How to implement the module's algorithm
  */
-class Rectangle : public SDE::ModuleBaseHelper<Rectangle> {
+class Rectangle : public SDE::ModuleBase {
 public:
-    Rectangle() {
+    Rectangle() : SDE::ModuleBase(this) {
         /* Most modules will be designed with a property type in mind. For
          * example this module was designed with the explicit intent of making
          * a module that computes Areas. In order to satisfy a property type
@@ -196,9 +196,9 @@ private:
  *   - Calling a submodule
  *   - Wrapping multiple return values.
  */
-class Prism : public SDE::ModuleBaseHelper<Prism> {
+class Prism : public SDE::ModuleBase {
 public:
-    Prism() {
+    Prism() : SDE::ModuleBase(this) {
         // The bulk of the setup ia analogous to Rectangle
         //{
         satisfies_property_type<PrismVolume>();
