@@ -19,6 +19,8 @@ set(SDE_INCLUDES detail_/Memoization.hpp
                  ModuleResult.hpp
                  PropertyType.hpp
                  SubmoduleRequest.hpp
+                 Types.hpp
+                 Utility.hpp
 )
 cpp_add_library(
     sde
