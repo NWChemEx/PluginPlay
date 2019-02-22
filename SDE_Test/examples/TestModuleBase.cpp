@@ -23,8 +23,8 @@ TEST_CASE("Rectangle Class : Results") {
     Rectangle r;
     auto results = r.results();
     REQUIRE(results.at("Area").description() == "The area of the shape");
-    REQUIRE(results.at("Picture").description() == "An ASCII picture of "
-                                                   "the rectangle");
+    REQUIRE(results.at("Perimeter").description() == "The perimeter of "
+                                                     "the rectangle");
 }
 
 TEST_CASE("Rectangle Class : Inputs") {
@@ -56,14 +56,7 @@ TEST_CASE("Rectangle Class : run") {
     in.at("Name").change("Test");
     auto out = r.run(in, r.submods());
     REQUIRE(out.at("Area").value<double>() == Approx(5.6088));
-    std::stringstream ss;
-    ss << "Test :" << std::endl;
-    ss << "**********" << std::endl;
-    ss << "*        *" << std::endl;
-    ss << "*        *" << std::endl;
-    ss << "*        *" << std::endl;
-    ss << "**********";
-    REQUIRE(ss.str() == out.at("Picture").value<std::string>());
+    REQUIRE(out.at("Perimeter").value<double>() == Approx(11.58));
 }
 
 TEST_CASE("Prism Class : Inputs") {

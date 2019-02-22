@@ -1,53 +1,82 @@
+/* The purpose of this tutorial is to showcase an end-to-end use of the SDE from
+ * C++.
+ *
+ * For all intents an purposes the ``ModuleManager`` class can be thought of as
+ * the code embodiment of the SDE. It is responsible for storing all of the
+ * available modules, assembling the call graph, integrating the modules into
+ * the actual runtime, and checkpointing the progress of the program. To get
+ * the ``ModuleManager`` class one includes ``ModuleManager.hpp``. The remainder
+ * of the following header files are needed for this tutorial.
+ */
 #pragma once
 #include "examples/TestModuleBase.hpp"
 #include "examples/TestPropertyType.hpp"
 #include <SDE/ModuleManager.hpp>
 
-/* Typically a developer does not write just one module, but rather a series of
- * related modules. It is natural to package these modules together in the same
- * library. As part of their library's public API the developer is expected to
- * define a function ``load_modules``, which takes a ModuleManager instance and
- * then proceeds to load each of their library's modules into the instance. They
- * also can set the default module to use for a particular property type.
+/* Populating the ModuleManager
+ * ----------------------------
  *
- * Using our area and volume modules as an example, the following function is an
- * example of how one would write such a function.
+ * Before the ``ModuleManager`` can manage some modules, it needs modules. The
+ * primary means of providing the ``ModuleManager`` with modules is manually.
+ * While this sounds tedious, and it is, it only needs to be done once. To this
+ * end libraries meant for use with the SDE will provide a function
+ * ``load_modules`` which takes a ``ModuleManager`` instance and adds to it
+ * the modules contained within that library. It is also typically during this
+ * function call that default modules are assigned.
+ *
+ * The following function indicates how this would be done assuming that our
+ * ``Area``, ``PrismVolume``, ``Rectangle`` and ``Prism`` classes are part of a
+ * library meant for use with the SDE.
  */
-
-static void load_modules(SDE::ModuleManager& mm) {
-    /* We start by registering our modules. We associate with each module a
-     * module key. This is a unique identifier for the module. Here we
-     * simply use the name of the class, but typically you want to ensure it is
-     * more unique, for example, by prefixing it with the name of your package.
+inline void load_modules(SDE::ModuleManager& mm) {
+    /* The function starts off by registering the two modules provided by our
+     * library. Registration involves two things:
+     *
+     * - creation of an instance of the module
+     * - association of that instance with a module key
+     *
+     * By taking an already instantiated object, the SDE remains decoupled from
+     * the procedure for initializing the module. It remains decoupled from the
+     * modules' C++ types (here ``Rectangle`` and ``Prism``) by taking the
+     * objects via pointers to the ``ModuleBase`` class it necessarily inherits
+     * from. To avoid gotchas related to handling polymorphic data types the
+     * SDE requires that the user provide the module as a ``shared_ptr``. The
+     * provided key can be used to retrieve the module (*vide infra*). The key
+     * must be unique (if it's not an error will be raised).
      */
     mm.add_module("Rectangle", std::make_shared<Rectangle>());
     mm.add_module("Prism", std::make_shared<Prism>());
 
     /* Since our modules introduced two new property types we should also set
-     * default modules for each property type. These defaults will be used when
-     * a module needs, say an area, and the user has not specifically stated
-     * which module to use.
+     * default modules for each of them. These defaults will be used when
+     * a module needs, say an ``Area``, and the user has not specifically stated
+     * which submodule to use. Setting the defaults for our library is easy
+     * since it only provides one of each...
      */
     mm.set_default<Area>("Rectangle");
     mm.set_default<PrismVolume>("Prism");
-}
+} // end load_modules()
 
-/* Typically a user drives an SDE calculation from Python; however it is also
- * possible to do this from C++. The following function implements a mock main
- * function showcasing how this works.
+/* Running a Computation
+ * ---------------------
+ *
+ * The ``load_modules()`` functions are provided by libraries designed to
+ * interact with the SDE. You typically will not be instantiating them, rather
+ * you will simply be consuming them in your workflow. The following function
+ * is an example workflow that a end-user would actually do. Typically it would
+ * be run from Python (the contents being nearly identical).
  */
 static void example_main() {
-    // The first thing a user does is create a ModuleManager instance
-    SDE::ModuleManager mm;
-
-    /* Next you should populate it with all the modules you want access to.
-     * Here we only want access to the example modules, but in practice you may
-     * need to call several functions to get all of the modules you want.
+    /* Ultimately the run starts by creating and initializing a ``ModuleManger``
+     * instance. This is where we leverage the ``load_modules()`` functions
+     * provided by libraries .
      */
+    SDE::ModuleManager mm;
     load_modules(mm);
 
-    /* With the modules loaded it's time to tweak the options to our specific
-     * run. For sake of example we'll change the name of our rectangle.
+    /* With the modules loaded it's time to set the options up so that they
+     * suite our specific run. For sake of example we'll change the name of
+     * our rectangle (even though the name is pointless).
      */
     mm.change_input("Rectangle", "Name", "My Rectangle");
 
@@ -57,27 +86,26 @@ static void example_main() {
      *
      *    mm.at("Rectangle").inputs().at("Name").change("My Rectangle");
      *
-     * if you want more control over the changes you can work with the module
-     * directly.
-     */
-
-    /* With all of our options set we are ready to run. If we weren't ready to
-     * run this function would throw xxx. Note that the PrismVolume class
-     * requires a submodule to compute the area of the prism's base. The
-     * ModuleManager satisfies this requirement for us automatically by
-     * providing the PrismVolume module whatever module is registered as the
-     * default for the Area property type (here the module with the key
-     * Rectangle).
+     * So if you wanted more control over the changes you could work with the
+     * module and input directly.
+     *
+     * With all of our options set we are ready to run. If we weren't ready to
+     * run this function would throw. Note that the PrismVolume class
+     * requires a submodule to compute the area of the prism's base. At no point
+     * did the developer of the ``Prism`` class specify what that module should
+     * be other than it needs to be able to compute an area. It's the
+     * ``ModuleManager`` that connects these modules (ultimately calling the
+     * ``Rectangle`` module since that's what the default is set to).
      */
     std::vector<double> dims{1.23, 4.56, 7.89};
     auto[volume, area] = mm.run_as<PrismVolume>("Prism", dims);
+} // end example_main()
 
-    /* Like it was for setting the options, this is just a convenience function
-     * wrapping:
-     *
-     * auto [area] = mm.at("Rectangle").run_as<Area>(1.23, 4.56);
-     *
-     * Hence if more control is desired you can work directly with the module to
-     * run.
-     */
-}
+/* That's it. That's the end of the workflow tutorial. From the end-user's
+ * perspective a typical run looks like the contents of the ``example_main``
+ * function. You load a ``ModuleManager`` instance, set your options, and then
+ * run. The SDE also provides Python bindings and it is expected that users
+ * will usually execute the above in Python. Nonetheless, the ability to run
+ * the SDE entirely from C++ may be useful for developers looking to implement
+ * domain-specific languages on top of it.
+ */

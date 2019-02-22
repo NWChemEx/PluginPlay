@@ -184,11 +184,11 @@ protected:
     auto& change_input(type::key key) { return inputs_.at(key); }
 
     template<typename T>
-    auto& add_output(type::key key) {
+    auto& add_result(type::key key) {
         return results_[key].set_type<T>();
     }
 
-    auto& change_output(type::key key) { return results_.at(key); }
+    auto& change_result(type::key key) { return results_.at(key); }
 
     template<typename T>
     auto& add_submodule(type::key key) {

@@ -33,6 +33,8 @@ def separate_file(filename):
     return started_with, comments, code
 
 def print_code(output_file, code):
+    if code.strip() == "":
+        return
     output_file.write(".. code:: c++\n\n")
     for line in code.split('\n'):
         output_file.write("    " + line +'\n')
@@ -43,7 +45,8 @@ def print_comment(output_file, comment):
         cmt = cmt.replace("/* ", '')
         cmt = cmt.replace("*/", '')
         cmt = cmt.replace("* ", '')
-        cmt = cmt.replace('*', '')
+        if cmt == '*':
+            cmt = ""
         output_file.write(cmt +'\n')
 
 def write_tutorials(examples_dir, tutorial_dir):
