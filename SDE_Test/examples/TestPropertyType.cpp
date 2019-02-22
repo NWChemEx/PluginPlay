@@ -102,3 +102,18 @@ TEST_CASE("PrismVolume Property Type") {
         }
     }
 }
+
+template<size_t N>
+struct TemplatedPT : SDE::PropertyType<TemplatedPT<N>> {
+    static constexpr size_t size = N;
+    auto inputs_() {
+        return SDE::declare_input().add_field<double>("Test param");
+    }
+};
+
+TEST_CASE("Templated Property Type") {
+    SECTION("Works without the this pointer and template keyword") {
+        TemplatedPT<1> test;
+        REQUIRE(test.inputs_().size() == 1);
+    }
+}

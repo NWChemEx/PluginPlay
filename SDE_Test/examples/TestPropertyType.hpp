@@ -37,7 +37,7 @@ public:
          * mess so it is strongly recommended that you use auto to spare
          * yourself that detail.
          */
-        auto rv = declare_input()
+        auto rv = SDE::declare_input()
                     .add_field<double>("Dimension 1")
                     .add_field<double>("Dimension 2");
 
@@ -112,7 +112,7 @@ public:
          * All of the syntax comments of inputs_() are relevant here too. In
          * particular it is necessary to chain the add_field() function calls.
          */
-        auto rv = declare_result().add_field<double>("Area");
+        auto rv = SDE::declare_result().add_field<double>("Area");
         rv["Area"].set_description("The area of the shape");
         return rv;
     }
@@ -141,8 +141,8 @@ public:
          * the implementation of PrismVolume::inputs_ displays no new features
          * from Area::inputs_
          */
-        auto rv =
-          declare_input().add_field<const std::vector<double>&>("Dimensions");
+        auto rv = SDE::declare_input().add_field<const std::vector<double>&>(
+          "Dimensions");
         rv["Dimensions"].set_description("The length of each dimension");
         return rv;
     }
@@ -152,7 +152,7 @@ public:
          * values, the implementation of PrismVolume::results_ displays no new
          * features from Area::results_
          */
-        auto rv = declare_result()
+        auto rv = SDE::declare_result()
                     .add_field<double>("Base area")
                     .add_field<double>("Volume");
         rv["Base area"].set_description("The area of the base");

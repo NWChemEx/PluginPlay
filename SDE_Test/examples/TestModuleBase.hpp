@@ -30,7 +30,7 @@
  * important thing to note is that all modules derive from
  * ``SDE::ModuleBaseHelper<T>``, where ``T`` is the name of the module's type.
  */
-class Rectangle : public SDE::ModuleBaseHelper<Rectangle> {
+class Rectangle : public SDE::ModuleBase {
 public:
     /* Defining the Module's API
      * -------------------------
@@ -50,7 +50,7 @@ public:
      * recommended that developers keep things simple and implement it in a
      * default ctor like:
      */
-    Rectangle() {
+    Rectangle() : SDE::ModuleBase(this) {
         /* Most modules will be designed with a property type in mind. For
          * example this module was designed with the explicit intent of making
          * a module that computes areas. In order to satisfy a property
@@ -230,9 +230,9 @@ private:
  *   - Calling a submodule
  *   - Wrapping multiple return values.
  */
-class Prism : public SDE::ModuleBaseHelper<Prism> {
+class Prism : public SDE::ModuleBase {
 public:
-    Prism() {
+    Prism() : SDE::ModuleBase(this) {
         // The bulk of the setup ia analogous to Rectangle
         //{
         satisfies_property_type<PrismVolume>();

@@ -25,9 +25,11 @@ public:
      *  object behavior to the outside world the state of the module is copied
      *  into the ModulePIMPL class and copies/moves deal with that state. This
      *  also has the advantage of preserving the developer's original settings
-     *  while still allowing the user to set their own defaults.
+     *  while still allowing the user to set their own defaults. The default
+     *  ctor is deleted to avoid developers erroneously forgetting to set the
+     *  type (this is done implicitly by passing the this pointer).
      */
-    ModuleBase()                      = default;
+    ModuleBase()                      = delete;
     ModuleBase(const ModuleBase& rhs) = delete;
     ModuleBase& operator=(const ModuleBase& rhs) = delete;
     ModuleBase(ModuleBase&& rhs)                 = delete;
@@ -100,6 +102,26 @@ public:
     }
     ///@}
 protected:
+    /** @brief the Ctor that all modules must call.
+     *
+     * Classes that derive form ModuleBase need to call this constructor to
+     * initialize the base. They do this by passing the `this` pointer to this
+     * ctor.
+     *
+     * @tparam T The type of the module
+     * @param[in] ptr the this pointer of the derived type
+     * @throw none No throw guarantee.
+     */
+    template<typename DerivedType>
+    explicit ModuleBase(DerivedType* /*ptr*/) :
+      m_type_(typeid(std::decay_t<DerivedType>)) {
+        using clean_t = std::decay_t<DerivedType>;
+        static_assert(
+          std::is_base_of_v<ModuleBase, clean_t>,
+          "The input pointer does not appear to be the derived class's "
+          "this pointer.");
+    }
+
     ///@{
     /** @name Metadata setters
      *
@@ -210,7 +232,7 @@ private:
      *  @return The RTTI of the derived class
      *  @throw none No throw guarantee.
      */
-    virtual const std::type_info& type_() const noexcept = 0;
+    const std::type_info& type_() const noexcept { return m_type_; }
 
     //@{
     /** @name Developer set state
@@ -232,25 +254,14 @@ private:
      *
      *  Respectively the metadata includes:
      *
+     *  - The RTTI of the derived class
      *  - The description of what the module does
      *  - A list of articles that should be cited
      */
+    const std::type_info& m_type_;
     type::description desc_;
     std::vector<type::description> citations_;
     //@}
-};
-
-/** @brief Class that implements the `type` member function automatically
- *
- * This class exists purely to help out module developers so that they don't
- * have to actually implement the `type_` member function
- *
- * @tparam T The type of the derived class.
- */
-template<typename T>
-class ModuleBaseHelper : public ModuleBase {
-private:
-    const std::type_info& type_() const noexcept override { return typeid(T); }
 };
 
 } // namespace SDE

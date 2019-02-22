@@ -110,26 +110,6 @@ public:
         return unwrap_(results(), std::forward<T>(rv));
     }
     ///@}
-protected:
-    /// Type of factory object that initiates the construction of the input API
-    using input_builder = detail_::PropertyTypeBuilder<ModuleInput>;
-
-    /// Type of factory object that initiates the construction of the result API
-    using result_builder = detail_::PropertyTypeBuilder<ModuleResult>;
-
-    ///@{
-    /** @name API generators
-     *
-     * The derived class should use these functions to generate the objects for
-     * declaring the input/result APIs.
-     *
-     * @return A factory object that will facilitate the declaration of the
-     *         input/result APIs.
-     */
-    static auto declare_input() { return input_builder{}; }
-
-    static auto declare_result() { return result_builder{}; }
-    ///@}
 private:
     ///@{
     /** @name Automatic wrapping/unwrapping implementations.
@@ -199,5 +179,25 @@ private:
     ///@}
 
 }; // End class PropertyType
+
+///@{
+/** @name API generators
+ *
+ * The class implementing the property type should use these functions to
+ * generate the objects for declaring the input/result APIs.
+ *
+ * @return A factory object that will facilitate the declaration of the
+ *         input/result APIs.
+ *
+ * @relates PropertyType
+ */
+inline auto declare_input() {
+    return detail_::PropertyTypeBuilder<ModuleInput>{};
+}
+
+inline auto declare_result() {
+    return detail_::PropertyTypeBuilder<ModuleResult>{};
+}
+///@}
 
 } // namespace SDE
