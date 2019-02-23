@@ -43,6 +43,7 @@ struct ModuleInputPIMPL {
         return m_type != std::type_index(typeid(std::nullptr_t));
     }
 
+    /// Computes a hash value for the state of this class
     void hash(type::hasher& h) {
         if(!m_transparent) h(m_value);
     }

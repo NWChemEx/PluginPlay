@@ -181,7 +181,7 @@ private:
 }; // End class PropertyType
 
 ///@{
-/** @names API generators
+/** @name API generators
  *
  * The class implementing the property type should use these functions to
  * generate the objects for declaring the input/result APIs.

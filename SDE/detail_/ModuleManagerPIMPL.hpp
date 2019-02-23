@@ -43,6 +43,7 @@ struct ModuleManagerPIMPL {
     using default_map = std::map<std::type_index, type::key>;
     ///@}
 
+    /// Makes a deep copy of this instance on the heap
     auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
 
     /// Ensures we determine if we have a module consistently
@@ -53,11 +54,28 @@ struct ModuleManagerPIMPL {
     /// Ensures we count the number of modules consistently
     type::size size() const noexcept { return m_modules.size(); }
 
+    /** @brief Sets the default module to use for a given property type
+     *
+     * When a user requests a module that module initially has no submodules
+     * set unless the user has bound some to that module. Instead, the
+     * ModuleManager is now responsible to provide the module with submodules
+     * using the defaults. This function allows one to specify what the
+     * defaults are.
+     *
+     * @param type The type of the property type this default is for
+     * @param key The module key for the module to use as the default
+     */
     void set_default(const std::type_info& type, type::key key) {
         if(!count(key)) m_modules.at(key); // Throws a consistent error
         m_defaults[std::type_index(type)] = key;
     }
 
+    /** @brief This function actually adds a module to the list of available
+     *         modules.
+     *
+     * @param key The key under which the module will be registered.
+     * @param base The instance containing the algorithm
+     */
     void add_module(type::key key, module_base_ptr base) {
         assert_unique_key_(key);
 
@@ -71,6 +89,14 @@ struct ModuleManagerPIMPL {
         m_modules.emplace(std::move(key), ptr);
     }
 
+    /** @brief Makes a deep copy of a module
+     *
+     * This function makes a deep copy of a module. The new module is unlocked
+     * regardless of whether the old module was locked or not. The user can call
+     * lock on the resulting module to make an exact copy
+     * @param old_key The key for the module to copy
+     * @param new_key The key under which the new module will live
+     */
     void copy_module(const type::key& old_key, type::key new_key) {
         assert_unique_key_(new_key);
         Module mod(*m_modules.at(old_key));
@@ -79,6 +105,12 @@ struct ModuleManagerPIMPL {
         m_modules.emplace(std::move(new_key), ptr);
     }
 
+    /** @brief Returns a module, filling in all non-set submodules with defaults
+     *         if a ready default exists.
+     *
+     * @param key The module you want
+     * @return A shared_ptr to the requested module
+     */
     shared_module at(const type::key& key) {
         auto mod = m_modules.at(key);
         // Loop over submodules filling them in from the defaults
@@ -148,6 +180,7 @@ struct ModuleManagerPIMPL {
     default_map m_defaults;
     ///@}
 private:
+    /// Wraps the check for making sure @p key is not in use.
     void assert_unique_key_(const type::key& key) const {
         if(count(key)) throw std::invalid_argument("Key is in use");
     }

@@ -3,7 +3,7 @@
 #include <string>
 
 ///@{
-/** @names Forward declarations
+/** @name Forward declarations
  *
  *  The types in this section are only forward declarations. They are here so
  *  we can define some of our common typedefs. They are forward declarations so

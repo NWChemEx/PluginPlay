@@ -175,6 +175,7 @@ public:
     SubmoduleRequest& change_submod(type::key key);
     ///@}
 
+    /// Hashes the module
     void hash(type::hasher& h) const;
 
     ///@{
@@ -194,7 +195,7 @@ public:
      */
     bool operator==(const Module& rhs) const;
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
-
+    ///@}
 private:
     friend class detail_::ModuleManagerPIMPL;
 
