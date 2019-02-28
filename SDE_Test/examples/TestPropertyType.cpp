@@ -55,6 +55,54 @@ TEST_CASE("Area Property Type") {
     }
 }
 
+TEST_CASE("Perimeter Property Type") {
+    Perimeter pt;
+    SECTION("Inputs") {
+        auto inputs = pt.inputs();
+        REQUIRE(inputs.size() == 2);
+        REQUIRE(inputs["Dimension 1"].description() ==
+                "The length of the 1st dimension");
+        REQUIRE(inputs["Dimension 2"].description() ==
+                "The length of the 2nd dimension");
+    }
+
+    SECTION("Wrap Inputs") {
+        // Uncomment to check static assertion
+        // pt.wrap_inputs(std::string{"Hi"}, double{3.14});
+        auto inputs = pt.wrap_inputs(pt.inputs(), double{1.23}, double{4.56});
+        SECTION("Manually unwrap") {
+            REQUIRE(inputs.size() == 2);
+            REQUIRE(inputs["Dimension 1"].value<double>() == 1.23);
+            REQUIRE(inputs["Dimension 2"].value<double>() == 4.56);
+        }
+        SECTION("Auto unwrap") {
+            auto[dim1, dim2] = Perimeter::unwrap_inputs(inputs);
+            REQUIRE(dim1 == 1.23);
+            REQUIRE(dim2 == 4.56);
+        }
+    }
+
+    SECTION("Results") {
+        auto results = pt.results();
+        REQUIRE(results.size() == 1);
+        REQUIRE(results["Perimeter"].description() ==
+                "The perimeter of the shape");
+    }
+
+    SECTION("Wrap Results") {
+        auto results = Perimeter::wrap_results(pt.results(), double{1.23});
+
+        SECTION("Manually unwrap") {
+            REQUIRE(results.at("Perimeter").value<double>() == 1.23);
+        }
+
+        SECTION("Unwrap Auto Wrapped Results") {
+            auto[area] = Perimeter::unwrap_results(results);
+            REQUIRE(area == 1.23);
+        }
+    }
+}
+
 TEST_CASE("PrismVolume Property Type") {
     PrismVolume pt;
     SECTION("Inputs") {

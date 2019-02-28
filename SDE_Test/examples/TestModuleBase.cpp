@@ -23,8 +23,8 @@ TEST_CASE("Rectangle Class : Results") {
     Rectangle r;
     auto results = r.results();
     REQUIRE(results.at("Area").description() == "The area of the shape");
-    REQUIRE(results.at("Perimeter").description() == "The perimeter of "
-                                                     "the rectangle");
+    REQUIRE(results.at("Perimeter").description() ==
+            "The perimeter of the shape");
 }
 
 TEST_CASE("Rectangle Class : Inputs") {

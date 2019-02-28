@@ -131,13 +131,33 @@ public:
 };    // end Area
 
 /* This concludes the property type tutorial. We leave you with the
- * definition of the ``PrismVolume`` class which we will need in later
- * tutorials, The definition is entirely analogous to that of the ``Area``
- * class. Nonetheless the reader may want to note:
- *
+ * definition of the ``Perimenter`` and ``PrismVolume`` classes which we will
+ * need in later tutorials, The definitions for these classes are entirely
+ * analogous to that of the ``Area`` class. Nonetheless the reader may want to
+ * note:
+ * - How property types that take the same input should strive to match APIs.
  * - inputs can be constant-references in addition to by-value
  * - the syntax for declaring multiple results
  */
+class Perimeter : public SDE::PropertyType<Perimeter> {
+public:
+    auto inputs_() {
+        auto rv = SDE::declare_input()
+                    .add_field<double>("Dimension 1")
+                    .add_field<double>("Dimension 2");
+        rv["Dimension 1"].set_description("The length of the 1st dimension");
+        rv["Dimension 2"].set_description("The length of the 2nd dimension");
+
+        return rv;
+    } // end inputs_()
+
+    auto results_() {
+        auto rv = SDE::declare_result().add_field<double>("Perimeter");
+        rv["Perimeter"].set_description("The perimeter of the shape");
+        return rv;
+    } // end results_()
+};    // end Perimeter
+
 class PrismVolume : public SDE::PropertyType<PrismVolume> {
 public:
     auto inputs_() {
