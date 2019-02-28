@@ -94,26 +94,34 @@ public:
         return cache_->count(get_hash_(ps)) == 1;
     }
 
-    /** @brief Function for determining whether the instance is ready to run.
+    /** @brief Determines if module is ready to be run as provided property
+     *         type.
      *
-     * A module is ready if it contains an algorithm (determined by member
-     * `base` being non-null), all submodules requests are satisfied, and
-     * if all of the submodules are ready. Of important note this definition
-     * does not include all inputs being set. This is because callers of the
-     * module can pass the not-set inputs to the module when they call `run`.
-     * Consequentially, it is `run`'s responsibility to make sure all
-     * non-optional inputs are set (for the present module; submodules need to
-     * check this during their `run` function for the same reason this module
-     * does).
+     * A module is ready to be run as a property type @p PropertyType if it:
      *
+     * - contains an algorithm (determined by member `base` being non-null),
+     * - inputs not associated with @p PropertyType are set,
+     * - submodule requests are satisfied, and
+     * - all submodules are ready.
+     *
+     * @tparam PropertyType The property type the module will be run as
      * @return True if the module is ready and false otherwise
-     * @throw none No throw guarantee.
+     *
+     * @throw std::bad_alloc if `not_set` throws. Strong throw guarantee.
      */
-    bool ready() const noexcept {
-        if(!base_) return false;
-        for(const auto & [k, v] : submods_)
-            if(!v.ready()) return false;
-        return true;
+    template<typename PropertyType>
+    bool ready() const {
+        if(!base_) return false; // No algorithm
+
+        auto errors = not_set();
+        if(errors.count("Submodules")) return false; // One or more submodules
+        if(!errors.count("Inputs")) return true;     // no problems
+
+        // Inputs are only a problem if they aren't part of the property type
+        auto inps = PropertyType::inputs();
+        for(const auto & [k, v] : inps)
+            if(errors.at("Inputs").count(k)) errors.at("Inputs").erase(k);
+        return errors.at("Inputs").size() == 0;
     }
 
     /// Returns whether or not the module is locked
