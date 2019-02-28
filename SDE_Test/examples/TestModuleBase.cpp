@@ -25,6 +25,8 @@ TEST_CASE("Rectangle Class : Results") {
     REQUIRE(results.at("Area").description() == "The area of the shape");
     REQUIRE(results.at("Perimeter").description() ==
             "The perimeter of the shape");
+    REQUIRE(results.at("Summary").description() ==
+            "A text summary of the results");
 }
 
 TEST_CASE("Rectangle Class : Inputs") {
@@ -57,6 +59,8 @@ TEST_CASE("Rectangle Class : run") {
     auto out = r.run(in, r.submods());
     REQUIRE(out.at("Area").value<double>() == Approx(5.6088));
     REQUIRE(out.at("Perimeter").value<double>() == Approx(11.58));
+    REQUIRE(out.at("Summary").value<std::string>() ==
+            "Test has an area of 5.608800 and a perimeter of 11.580000");
 }
 
 TEST_CASE("Prism Class : Inputs") {

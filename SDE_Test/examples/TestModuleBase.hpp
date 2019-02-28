@@ -111,12 +111,15 @@ public:
          * always be ignored no problem and thanks to memoization need not be
          * recomputed if they are needed later).
          *
-         * Anyways, we add an additional input that names our rectangle (perhaps
-         * for printing)
+         * Anyways, we add an additional input that names our rectangle and an
+         * additional result which is a text summary of the result.
          */
         add_input<std::string>("Name")
           .set_description("The name of the rectangle")
           .set_default("");
+
+        add_result<std::string>("Summary").set_description(
+          "A text summary of the results");
 
         /* .. note::
          *
@@ -206,11 +209,13 @@ private:
         auto name = inputs.at("Name").value<std::string>();
 
         /* With our inputs read in we actually implement the algorithm, which
-         * in this case means we compute the area and perimeter (we don't
-         * actually use the ``"Name"`` input parameter).
+         * in this case means we compute the area and perimeter. We also make
+         * the string summary.
          */
         const auto area      = base * height;
         const auto perimeter = 2 * (base + height);
+        const auto summary = name + " has an area of " + std::to_string(area) +
+                             " and a perimeter of " + std::to_string(perimeter);
 
         /* With our values computed we now need to package them up and return
          * them. Like unwrapping the inputs, each property type provides a
@@ -219,14 +224,16 @@ private:
          * the wrap_results command is the map we are filling in and the values
          * for the results, in the order specified in the property type.
          * containing the values for that property type's results.
-         *
-         * Like the ``"Name"`` input, which wasn't part of a property type, we
-         * would need to manually set any result that wasn't part of a property
-         * type.
          */
         auto result = results();
         result      = Area::wrap_results(result, area);
         result      = Perimeter::wrap_results(result, perimeter);
+
+        /*
+         * Packaging of results that are not part of a property type must be
+         * done manually.
+         */
+        result.at("Summary").change(summary);
         return result;
     }
 }; // end Rectangle class
