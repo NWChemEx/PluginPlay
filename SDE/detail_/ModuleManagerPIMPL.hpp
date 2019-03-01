@@ -65,9 +65,11 @@ struct ModuleManagerPIMPL {
      * @param type The type of the property type this default is for
      * @param key The module key for the module to use as the default
      */
-    void set_default(const std::type_info& type, type::key key) {
+    void set_default(const std::type_info& type, type::input_map inputs,
+                     type::key key) {
         if(!count(key)) m_modules.at(key); // Throws a consistent error
         m_defaults[std::type_index(type)] = key;
+        m_inputs[std::type_index(type)]   = std::move(inputs);
     }
 
     /** @brief This function actually adds a module to the list of available
@@ -99,9 +101,8 @@ struct ModuleManagerPIMPL {
      */
     void copy_module(const type::key& old_key, type::key new_key) {
         assert_unique_key_(new_key);
-        Module mod(*m_modules.at(old_key));
-        mod.unlock();
-        auto ptr = std::make_shared<Module>(std::move(mod));
+        Module mod = std::move(m_modules.at(old_key)->unlocked_copy());
+        auto ptr   = std::make_shared<Module>(std::move(mod));
         m_modules.emplace(std::move(new_key), ptr);
     }
 
@@ -121,8 +122,8 @@ struct ModuleManagerPIMPL {
                 // Recursive to make sure that that module gets filled in
                 auto default_mod = at(m_defaults.at(type));
                 // Only change if the module is also ready
-                if(default_mod->ready())
-                    mod->change_submod(k).change(default_mod);
+                if(default_mod->ready(m_inputs.at(type)))
+                    mod->change_submod(k, default_mod);
             }
         }
         return mod;
@@ -178,6 +179,9 @@ struct ModuleManagerPIMPL {
 
     // A map of property types
     default_map m_defaults;
+
+    // A map of inputs for property types
+    std::map<std::type_index, type::input_map> m_inputs;
     ///@}
 private:
     /// Wraps the check for making sure @p key is not in use.

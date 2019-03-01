@@ -123,7 +123,7 @@ TEST_CASE("ModuleManagerPIMPL : copy_module") {
         REQUIRE(!pimpl1.m_modules.at("new_key")->locked());
         SECTION("Different instances") {
             auto mod = pimpl1.m_modules.at("new_key");
-            mod->change_input("dimension 1").change(1.23);
+            mod->change_input("dimension 1", 1.23);
             REQUIRE(*mod != *pimpl1.m_modules.at("key"));
         }
     }
@@ -135,11 +135,12 @@ TEST_CASE("ModuleManagerPIMPL : set_default") {
     pimpl1.add_module("key", ptr1);
     pimpl2.add_module("key", ptr1);
     SECTION("Can't set to non-exisitant module") {
-        REQUIRE_THROWS_AS(pimpl1.set_default(typeid(double), "not a key"),
-                          std::out_of_range);
+        REQUIRE_THROWS_AS(
+          pimpl1.set_default(typeid(double), type::input_map{}, "not a key"),
+          std::out_of_range);
     }
     SECTION("Good key") {
-        pimpl1.set_default(typeid(Area), "key");
+        pimpl1.set_default(typeid(Area), type::input_map{}, "key");
         pimpl2.m_defaults[typeid(Area)] = "key";
         REQUIRE(pimpl1 == pimpl2);
     }
@@ -193,12 +194,12 @@ TEST_CASE("ModuleManagerPIMPL : at") {
             REQUIRE(!ptr3->ready());
         }
         SECTION("Default") {
-            pimpl1.set_default(typeid(Area), "key1");
+            pimpl1.set_default(typeid(Area), ptr1->inputs(), "key1");
             auto old_mod  = *pimpl1.m_modules.at("key2");
             auto smod     = *pimpl1.m_modules.at("key1");
             auto& new_mod = *pimpl1.at("key2");
             REQUIRE(old_mod != new_mod);
-            REQUIRE(new_mod.ready());
+            REQUIRE(new_mod.ready(ptr2->inputs()));
             REQUIRE(new_mod.submods().at("area").value() == smod);
         }
     }

@@ -68,6 +68,16 @@ public:
      */
     ~Module() noexcept;
 
+    /** @brief Returns an unlocked deep copy of this module.
+     *
+     * @return An unlocked deep copy of this module.
+     */
+    Module unlocked_copy() const {
+        Module rv(*this);
+        rv.unlock_();
+        return rv;
+    }
+
     /** @brief The primary API for running the encapsulated code.
      *
      *
@@ -125,7 +135,14 @@ public:
      * @return The value of the requested piece of state.
      * @throw none No throw guarantee.
      */
-    bool ready() const noexcept;
+    template<typename PropertyType>
+    bool ready() const {
+        auto temp = PropertyType::inputs();
+        type::input_map inps(temp.begin(), temp.end());
+        return ready(inps);
+    }
+    bool ready(const type::input_map& inps = type::input_map{}) const;
+
     bool locked() const noexcept;
     ///@}
 
@@ -171,8 +188,12 @@ public:
      *        guarantee.
      *
      */
-    ModuleInput& change_input(type::key key);
-    SubmoduleRequest& change_submod(type::key key);
+    template<typename T>
+    void change_input(const type::key& key, T&& value) {
+        if(locked()) throw std::runtime_error("Module is locked");
+        get_input_(key).change(std::forward<T>(value));
+    }
+    void change_submod(type::key key, std::shared_ptr<Module> new_module);
     ///@}
 
     /// Hashes the module
@@ -197,18 +218,16 @@ public:
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
     ///@}
 private:
-    friend class detail_::ModuleManagerPIMPL;
-
     /** @brief Unlocks a locked module
      *
      * There are very select circumstances when we need to unlock a locked
-     * module (for example after deep copying a locked module, we need to
-     * unlock the copy). The ModuleManager (through its PIMPL) is the only class
-     * that can do this because it knows when it is okay.
+     * module. This function will do it.
      *
      * @throw none No throw guarantee.
      */
-    void unlock() noexcept;
+    void unlock_() noexcept;
+
+    ModuleInput& get_input_(const type::key& key);
 
     /// The instance that actually does everything for us.
     std::unique_ptr<detail_::ModulePIMPL> pimpl_;

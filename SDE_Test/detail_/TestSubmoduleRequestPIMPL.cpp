@@ -44,7 +44,7 @@ TEST_CASE("SubmoduleRequestPIMPL : Comparisons") {
         REQUIRE(!(pimpl1 != pimpl2));
     }
     SECTION("Different types") {
-        pimpl1.set_type(typeid(double));
+        pimpl1.set_type(typeid(double), SDE::type::input_map{});
         REQUIRE(pimpl1 != pimpl2);
         REQUIRE(!(pimpl1 == pimpl2));
     }
@@ -91,6 +91,15 @@ TEST_CASE("SubmoduleRequestPIMPL : type_set") {
     REQUIRE(pimpl1.type_set());
 }
 
+TEST_CASE("SubmoduleRequestPIMPL : ready") {
+    SubmoduleRequestPIMPL pimpl1;
+    SECTION("No type means not ready") { REQUIRE(!pimpl1.ready()); }
+    SECTION("No submodule") {
+        pimpl1.set_type(typeid(double), SDE::type::input_map{});
+        REQUIRE(!pimpl1.ready());
+    }
+}
+
 TEST_CASE("SubmoduleRequestPIMPL : check_type") {
     SubmoduleRequestPIMPL pimpl;
     pimpl.m_type = std::type_index(typeid(double));
@@ -100,9 +109,10 @@ TEST_CASE("SubmoduleRequestPIMPL : check_type") {
 
 TEST_CASE("SubmoduleRequestPIMPL : set_type") {
     SubmoduleRequestPIMPL pimpl1, pimpl2;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     SECTION("Can't set type twice") {
-        REQUIRE_THROWS_AS(pimpl1.set_type(typeid(int)), std::runtime_error);
+        REQUIRE_THROWS_AS(pimpl1.set_type(typeid(int), SDE::type::input_map{}),
+                          std::runtime_error);
     }
     pimpl2.m_type = std::type_index(typeid(double));
     REQUIRE(pimpl1 == pimpl2);
@@ -110,21 +120,21 @@ TEST_CASE("SubmoduleRequestPIMPL : set_type") {
 
 TEST_CASE("SubmoduleRequestPIMPL : Clone") {
     SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     auto ptr = pimpl1.clone();
     REQUIRE(*ptr == pimpl1);
 }
 
 TEST_CASE("SubmoduleRequestPIMPL : Copy ctor") {
     SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     SubmoduleRequestPIMPL pimpl2(pimpl1);
     REQUIRE(pimpl2 == pimpl1);
 }
 
 TEST_CASE("SubmoduleRequestPIMPL : Copy assignment") {
     SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     SubmoduleRequestPIMPL pimpl2;
     auto* ptr = &(pimpl2 = pimpl1);
     REQUIRE(pimpl2 == pimpl1);
@@ -133,7 +143,7 @@ TEST_CASE("SubmoduleRequestPIMPL : Copy assignment") {
 
 TEST_CASE("SubmoduleRequestPIMPL : Move ctor") {
     SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     SubmoduleRequestPIMPL pimpl3(pimpl1);
     SubmoduleRequestPIMPL pimpl2(std::move(pimpl1));
     REQUIRE(pimpl2 == pimpl3);
@@ -141,7 +151,7 @@ TEST_CASE("SubmoduleRequestPIMPL : Move ctor") {
 
 TEST_CASE("SubmoduleRequestPIMPL : Move assignment") {
     SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
+    pimpl1.set_type(typeid(double), SDE::type::input_map{});
     SubmoduleRequestPIMPL pimpl3(pimpl1);
     SubmoduleRequestPIMPL pimpl2;
     auto* ptr = &(pimpl2 = std::move(pimpl1));

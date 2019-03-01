@@ -32,7 +32,8 @@ const Module& ModuleManager::at(const type::key& module_key) const {
     return *pimpl_->at(module_key);
 }
 
-void ModuleManager::set_default_(const std::type_info& type, type::key key) {
-    pimpl_->set_default(type, std::move(key));
+void ModuleManager::set_default_(const std::type_info& type,
+                                 type::input_map inps, type::key key) {
+    pimpl_->set_default(type, std::move(inps), std::move(key));
 }
 } // namespace SDE

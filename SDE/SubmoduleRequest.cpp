@@ -44,8 +44,9 @@ bool SubmoduleRequest::check_type_(const std::type_info& type) const noexcept {
     return pimpl_->check_type(type);
 }
 
-void SubmoduleRequest::set_type_(const std::type_info& type) {
-    pimpl_->set_type(type);
+void SubmoduleRequest::set_type_(const std::type_info& type,
+                                 type::input_map inputs) {
+    pimpl_->set_type(type, std::move(inputs));
 }
 
 bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {

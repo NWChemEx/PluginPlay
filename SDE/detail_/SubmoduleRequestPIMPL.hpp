@@ -29,6 +29,7 @@ struct SubmoduleRequestPIMPL {
     SubmoduleRequestPIMPL(const SubmoduleRequestPIMPL& rhs) :
       m_desc(rhs.m_desc),
       m_type(rhs.m_type),
+      m_inputs(rhs.m_inputs),
       m_module(rhs.have_module() ? std::make_shared<Module>(*rhs.m_module) :
                                    nullptr) {}
 
@@ -64,7 +65,9 @@ struct SubmoduleRequestPIMPL {
      *        against
      * @return Inquiries return true if that inquiry is true and false
      *         otherwise.
-     * @throw none 1, 2, and 3 are no throw guarantee.
+     * @throw none 1, and 2 are no throw guarantee.
+     * @throw std::bad_alloc 3 throws if there is insufficient memory to store
+     *        all the problems. Strong throw guarantee.
      * @throw std::runtime_error 4 throws if the type has not been set.
      */
     bool have_module() const noexcept { return static_cast<bool>(m_module); }
@@ -73,10 +76,10 @@ struct SubmoduleRequestPIMPL {
         return m_type != std::type_index(typeid(std::nullptr_t));
     }
 
-    bool ready() const noexcept {
+    bool ready() const {
         if(!type_set()) return false;
         if(!have_module()) return false;
-        return m_module->ready();
+        return m_module->ready(m_inputs);
     }
 
     bool check_type(const std::type_info& type) const {
@@ -97,10 +100,18 @@ struct SubmoduleRequestPIMPL {
         m_module->lock();
     }
 
-    /// Sets the property type the submodule must satisfy
-    void set_type(const std::type_info& type) {
+    /** @brief Sets the property type the submodule must satisfy
+     *
+     * @param type The RTTI of the property type
+     * @param inputs The inputs that will be provided by the property type.
+     *
+     * @throw std::runtime_error if the property type has already been set.
+     *        Strong throw guarantee.
+     */
+    void set_type(const std::type_info& type, type::input_map inputs) {
         if(type_set()) throw std::runtime_error("Can't set type twice");
-        m_type = std::type_index(type);
+        m_type   = std::type_index(type);
+        m_inputs = std::move(inputs);
     }
 
     ///@{
@@ -111,7 +122,6 @@ struct SubmoduleRequestPIMPL {
      * - have the same description, and
      * - are not satisfied or are both satisfied with the same module
      *
-     *
      * @param rhs The request to compare against
      * @return True if the comparision is true and false otherwise.
      * @throw ??? If the comparison between the two modules throws. Same throw
@@ -121,11 +131,13 @@ struct SubmoduleRequestPIMPL {
         const bool lmod = have_module();
         const bool rmod = rhs.have_module();
         if(lmod != rmod) return false;
+        if(std::tie(m_desc, m_type, m_inputs) !=
+           std::tie(rhs.m_desc, rhs.m_type, rhs.m_inputs))
+            return false;
         if(!lmod && !rmod)
-            return std::tie(m_desc, m_type) == std::tie(rhs.m_desc, rhs.m_type);
+            return true;
         else
-            return std::tie(m_desc, m_type, *m_module) ==
-                   std::tie(rhs.m_desc, rhs.m_type, *rhs.m_module);
+            return *m_module == *rhs.m_module;
     }
 
     bool operator!=(const SubmoduleRequestPIMPL& rhs) const {
@@ -141,10 +153,12 @@ struct SubmoduleRequestPIMPL {
      *
      *  - A human-readable description of what the submodule is used for
      *  - The property type the submodule must satisfy
+     *  - The inputs that property type provides
      *  - The actual submodule
      */
     type::description m_desc;
     std::type_index m_type = std::type_index(typeid(std::nullptr_t));
+    type::input_map m_inputs;
     module_ptr m_module;
     ///@}
 };

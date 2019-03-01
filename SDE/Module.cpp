@@ -22,10 +22,17 @@ type::result_map Module::run(type::input_map ps) {
     return pimpl_->run(std::move(ps));
 }
 
+void Module::change_submod(type::key key, std::shared_ptr<Module> new_module) {
+    if(locked()) throw std::runtime_error("Module is locked");
+    pimpl_->submods().at(key).change(new_module);
+}
+
 void Module::hash(bphash::Hasher& h) const { pimpl_->hash(h); }
 void Module::lock() noexcept { pimpl_->lock(); }
 
-bool Module::ready() const noexcept { return pimpl_->ready(); }
+bool Module::ready(const type::input_map& inps) const {
+    return pimpl_->ready(inps);
+}
 bool Module::locked() const noexcept { return pimpl_->locked(); }
 
 const type::input_map& Module::inputs() const noexcept {
@@ -36,18 +43,16 @@ const type::submodule_map& Module::submods() const noexcept {
     return pimpl_->submods();
 }
 
-ModuleInput& Module::change_input(type::key key) {
-    return pimpl_->inputs().at(key);
-}
-
-SubmoduleRequest& Module::change_submod(type::key key) {
-    return pimpl_->submods().at(key);
-}
-
 bool Module::operator==(const SDE::Module& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
-void Module::unlock() noexcept { pimpl_->unlock(); }
+//--------------------------- Private Members --------------------------------/
+
+void Module::unlock_() noexcept { pimpl_->unlock(); }
+
+ModuleInput& Module::get_input_(const type::key& key) {
+    return pimpl_->inputs().at(key);
+}
 
 } // namespace SDE

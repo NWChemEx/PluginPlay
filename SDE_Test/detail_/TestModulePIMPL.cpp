@@ -41,13 +41,17 @@ TEST_CASE("ModulePIMPL class : primary ctor") {
         auto ptr = std::make_shared<Rectangle>();
         ModulePIMPL p(ptr);
         SECTION("State") {
-            REQUIRE(p.ready());
+            REQUIRE(!p.ready());
             REQUIRE(!p.locked());
             SECTION("Problems") {
                 auto ps = p.not_set();
                 REQUIRE(ps.count("Inputs") == 1);
                 std::set<std::string> corr{"Dimension 1", "Dimension 2"};
                 REQUIRE(ps.at("Inputs") == corr);
+            }
+            SECTION("No problems with inputs") {
+                auto ps = p.not_set(p.inputs());
+                REQUIRE(ps.empty());
             }
         }
     }
@@ -144,14 +148,29 @@ TEST_CASE("ModulePIMPL class : memoization") {
         REQUIRE(hv == "14a280315ed0883345903b5ef34ee4e0");
     }
     SECTION("Different submods") {
-        pimpl.submods()
-          .at("area")
-          .value()
-          .change_input("Dimension 1")
-          .change(1.23);
+        pimpl.submods().at("area").value().change_input("Dimension 1", 1.23);
         pimpl.memoize(h, inputs);
         auto hv = bphash::hash_to_string(h.finalize());
         REQUIRE(hv == "d0571da6f22c6a9491816e8dd7b9f95f");
+    }
+}
+
+TEST_CASE("ModulePIMPL class : ready") {
+    SECTION("No submodules") {
+        auto ptr = std::make_shared<Rectangle>();
+        ModulePIMPL p(ptr);
+        REQUIRE(!p.ready());
+        SECTION("Fix problems") { REQUIRE(p.ready(p.inputs())); }
+    }
+    SECTION("Submodules") {
+        auto ptr = std::make_shared<Prism>();
+        ModulePIMPL p(ptr);
+        REQUIRE(!p.ready());
+        SECTION("Fix inputs") { REQUIRE(!p.ready(p.inputs())); }
+        SECTION("Fix all problems") {
+            p.submods().at("area").change(area_module());
+            REQUIRE(p.ready(p.inputs()));
+        }
     }
 }
 
@@ -159,15 +178,7 @@ TEST_CASE("ModulePIMPL class : not_set") {
     SECTION("No submodules") {
         auto ptr = std::make_shared<Rectangle>();
         ModulePIMPL p(ptr);
-        SECTION("Fix one problem") {
-            p.inputs().at("Dimension 1").change(1.23);
-            auto ps = p.not_set(p.inputs());
-            REQUIRE(ps.count("Inputs") == 1);
-            std::set<std::string> corr{"Dimension 2"};
-            REQUIRE(ps.at("Inputs") == corr);
-        }
-
-        SECTION("Fix all problems") {
+        SECTION("Fix problems") {
             p.inputs().at("Dimension 1").change(1.23);
             p.inputs().at("Dimension 2").change(4.56);
             auto ps = p.not_set(p.inputs());

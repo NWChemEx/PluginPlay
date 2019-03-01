@@ -142,7 +142,9 @@ public:
     template<typename T>
     auto& set_type() {
         using clean_t = std::decay_t<T>;
-        set_type_(typeid(clean_t));
+        auto inps     = clean_t::inputs();
+        type::input_map inputs(inps.begin(), inps.end());
+        set_type_(typeid(clean_t), std::move(inputs));
         return *this;
     }
 
@@ -210,7 +212,7 @@ private:
      *          type the submodule must have and false otherwise.
      */
     bool check_type_(const std::type_info& type) const noexcept;
-    void set_type_(const std::type_info& type);
+    void set_type_(const std::type_info& type, type::input_map inputs);
     ///@}
 
     /// Object actually storing the state of this class
