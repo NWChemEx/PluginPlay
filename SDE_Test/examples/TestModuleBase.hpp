@@ -1,8 +1,8 @@
 /* This tutorial focuses on how to write a module. It builds upon the tutorial
  * on PropertyTypes by showing how one could go about implementing a module that
- * computes the area of a rectangle (the ``Rectangle`` class below) and another
- * module that computes the volume of a prism using a submodule of property type
- * ``Area`` (the ``Prism`` class below).
+ * computes the area and perimeter of a rectangle (the ``Rectangle`` class
+ * below) and another module that computes the volume of a prism using a
+ * submodule of property type ``Area`` (the ``Prism`` class below).
  *
  * To register a module with the SDE you need to include the ``ModuleBase.hpp``
  * header file. The remainder of the following header list is required for
@@ -15,16 +15,27 @@
 /* Declaring the Module
  * --------------------
  *
- * The Rectangle module implements the algorithm for computing the area of a
- * rectangle. For the record, given a rectangle with a base of length :math:`b`
- * and a height of length :math:`h`, the area, :math:`a`, is given by:
+ * The Rectangle module implements the algorithm for computing the area and
+ * perimeter of a rectangle. For the record, given a rectangle with a base of
+ * length :math:`b` and a height of length :math:`h`, the area, :math:`a`, is
+ * given by:
  *
  * .. math::
  *
  *    a = bh
  *
+ * and the perimeter, :math:`p`, is given by:
+ *
+ * .. math::
+ *
+ *   p = 2(b + h)
+ *
  * To begin we inherit from ``SDE::ModuleBase``, which is the base class for
  * all module implementations.
+ *
+ * .. note::
+ *
+ *    Modules do not inherit from the property types they satisfy.
  */
 class Rectangle : public SDE::ModuleBase {
 public:
@@ -51,18 +62,20 @@ public:
     Rectangle() : SDE::ModuleBase(this) {
         /* Most modules will be designed with a property type in mind. For
          * example this module was designed with the explicit intent of making
-         * a module that computes areas. In order to satisfy a property
-         * type all of the input and result fields of that property type must
-         * also be fields of the Module. For the ``Area`` property type that
-         * means we'd minimally need to write something like:
+         * a module that computes areas and perimeters of rectangles. In order
+         * to satisfy these property types all of the input and result fields of
+         * the ``Area`` and ``Perimeter`` classes must also be fields of this
+         * Module. For the ``Area`` and ``Perimeter`` property types this means
+         * we'd minimally need to write something like:
          *
          * .. code-block:: c++
          *
          *    add_input<double>("Dimension 1").set_description(...);
          *    add_input<double>("Dimension 2").set_description(...);
          *    add_output<double>("Area").set_description(...);
+         *    add_output<double>("Perimeter").set_description(...);
          *
-         * All of this information is available in the property type, and the
+         * All of this information is available in the property types, and the
          * SDE can automatically add it to your module if you like. To do this
          * one uses the ``satisfies_property_type`` member function provided by
          * the base class. The signature is:
@@ -75,13 +88,9 @@ public:
          * satisfies. For our present module that amounts to:
          */
         satisfies_property_type<Area>();
+        satisfies_property_type<Perimeter>();
 
-        /* .. note::
-         *
-         *    If a module satisfies multiple property types you simply repeat
-         *    this call for each of the property types.
-         *
-         * In addition to the metadata associated with each input and output
+        /* In addition to the metadata associated with each input and output
          * there is also metadata associated with the module itself. Here we
          * set the module's documentation description and add citations for any
          * relevant literature (disclaimer: I have no idea who first worked out
@@ -102,15 +111,15 @@ public:
          * always be ignored no problem and thanks to memoization need not be
          * recomputed if they are needed later).
          *
-         * Anyways, we add an additional input that names our rectangle (perhaps
-         * for printing) and an additional output which is the perimeter of the
-         * rectangle (:math:`=2(h+b)`).
+         * Anyways, we add an additional input that names our rectangle and an
+         * additional result which is a text summary of the result.
          */
         add_input<std::string>("Name")
           .set_description("The name of the rectangle")
           .set_default("");
-        add_result<double>("Perimeter")
-          .set_description("The perimeter of the rectangle");
+
+        add_result<std::string>("Summary").set_description(
+          "A text summary of the results");
 
         /* .. note::
          *
@@ -181,17 +190,32 @@ private:
          */
         const auto[base, height] = Area::unwrap_inputs(inputs);
 
+        /* In our present case, the ``Perimeter`` class did not define any new
+         * inputs compared to the ``Area`` class, which means the next line is
+         * superfluous; however, generally speaking, when a module satisfies
+         * multiple property types you will need to unwrap the inputs from each.
+         *
+         * .. note::
+         *
+         *    As of C++17, C++ does not support "skipping" a value when using
+         *    structured bindings. Thus, even if you do not need a value you
+         *    will need to provide a placeholder for it.
+         */
+        const auto[base1, height1] = Perimeter::unwrap_inputs(inputs);
+
         /* For inputs that are not part of a property type you will need to
          * grab them manually. The syntax is:
          */
         auto name = inputs.at("Name").value<std::string>();
 
         /* With our inputs read in we actually implement the algorithm, which
-         * in this case means we compute the area and perimeter (we don't
-         * actually use the name input parameter).
+         * in this case means we compute the area and perimeter. We also make
+         * the string summary.
          */
         const auto area      = base * height;
         const auto perimeter = 2 * (base + height);
+        const auto summary = name + " has an area of " + std::to_string(area) +
+                             " and a perimeter of " + std::to_string(perimeter);
 
         /* With our values computed we now need to package them up and return
          * them. Like unwrapping the inputs, each property type provides a
@@ -200,14 +224,16 @@ private:
          * the wrap_results command is the map we are filling in and the values
          * for the results, in the order specified in the property type.
          * containing the values for that property type's results.
-         *
-         * Like the ``"Name"`` input, which wasn't part of a property type, we
-         * need to manually set the perimeter. Once our results are setup we
-         * return them
          */
         auto result = results();
         result      = Area::wrap_results(result, area);
-        result.at("Perimeter").change(perimeter);
+        result      = Perimeter::wrap_results(result, perimeter);
+
+        /*
+         * Packaging of results that are not part of a property type must be
+         * done manually.
+         */
+        result.at("Summary").change(summary);
         return result;
     }
 }; // end Rectangle class
