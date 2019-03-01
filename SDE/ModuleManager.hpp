@@ -73,7 +73,9 @@ public:
      */
     template<typename T>
     void set_default(type::key key) {
-        set_default_(typeid(T), std::move(key));
+        auto temp = T::inputs();
+        type::input_map inps(temp.begin(), temp.end());
+        set_default_(typeid(T), std::move(inps), std::move(key));
     }
 
     /** @brief Changes the value of an input bound to a module
@@ -86,7 +88,7 @@ public:
     template<typename T>
     void change_input(const type::key& key, const type::key& option,
                       T&& new_value) {
-        at(key).change_input(option).change(std::forward<T>(new_value));
+        at(key).change_input(option, std::forward<T>(new_value));
     }
 
     /** @brief Runs a given module
@@ -104,7 +106,8 @@ public:
 
 private:
     /// Bridges the gap between the set_default and the PIMPL
-    void set_default_(const std::type_info& type, type::key key);
+    void set_default_(const std::type_info& type, type::input_map inps,
+                      type::key key);
 
     /// The object that actually implements the ModuleManager
     std::unique_ptr<detail_::ModuleManagerPIMPL> pimpl_;

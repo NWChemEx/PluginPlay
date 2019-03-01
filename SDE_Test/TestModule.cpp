@@ -41,7 +41,7 @@ TEST_CASE("Module : Equality") {
         }
 
         SECTION("Input values") {
-            m1.change_input("Dimension 1").change(double{1.23});
+            m1.change_input("Dimension 1", double{1.23});
             REQUIRE(m1 != m2);
             REQUIRE(!(m1 == m2));
         }
@@ -65,7 +65,8 @@ TEST_CASE("Module : run") {
 
 TEST_CASE("Module : ready") {
     Module m(make_module());
-    REQUIRE(m.ready());
+    REQUIRE(!m.ready());
+    REQUIRE(m.ready<Area>());
 }
 
 TEST_CASE("Module : lock") {
@@ -83,13 +84,13 @@ TEST_CASE("Module : locked") {
 
 TEST_CASE("Module : change_input") {
     Module m(make_module());
-    m.change_input("Dimension 1").change(1.23);
+    m.change_input("Dimension 1", 1.23);
     REQUIRE(m.inputs().at("Dimension 1").value<double>() == 1.23);
 }
 
 TEST_CASE("Module : change_submod") {
     Module m(make_prism());
-    m.change_submod("area").change(std::make_shared<Module>(make_module()));
+    m.change_submod("area", std::make_shared<Module>(make_module()));
     REQUIRE(m.submods().at("area").value() == make_module());
 }
 

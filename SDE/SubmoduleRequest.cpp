@@ -34,7 +34,7 @@ void SubmoduleRequest::hash(type::hasher& h) const {
     if(pimpl_->m_module) value().hash(h);
 }
 
-bool SubmoduleRequest::ready() const noexcept { pimpl_->ready(); }
+bool SubmoduleRequest::ready() const noexcept { return pimpl_->ready(); }
 
 void SubmoduleRequest::lock() { pimpl_->lock(); }
 
@@ -44,8 +44,9 @@ bool SubmoduleRequest::check_type_(const std::type_info& type) const noexcept {
     return pimpl_->check_type(type);
 }
 
-void SubmoduleRequest::set_type_(const std::type_info& type) {
-    pimpl_->set_type(type);
+void SubmoduleRequest::set_type_(const std::type_info& type,
+                                 type::input_map inputs) {
+    pimpl_->set_type(type, std::move(inputs));
 }
 
 bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {

@@ -6,6 +6,10 @@
 using namespace SDE;
 using namespace SDE::detail_;
 
+struct PropType1 {
+    static auto inputs() { return SDE::type::input_map{}; }
+};
+
 TEST_CASE("SubmoduleRequest : default ctor") {
     SubmoduleRequest request;
     SECTION("State") {
@@ -26,7 +30,7 @@ TEST_CASE("SubmoduleRequest : comparisons") {
         REQUIRE(!(request1 == request2));
     }
     SECTION("Different property types") {
-        request1.set_type<double>();
+        request1.set_type<PropType1>();
         REQUIRE(request1 != request2);
         REQUIRE(!(request1 == request2));
     }
@@ -69,8 +73,18 @@ TEST_CASE("SubmoduleRequest : change") {
 
 TEST_CASE("SubmoduleRequest : ready") {
     SubmoduleRequest r;
-    SECTION("No module") { REQUIRE(!r.ready()); }
-    SECTION("Ready module") {
+    SECTION("No type") { REQUIRE(!r.ready()); }
+    SECTION("No module") {
+        r.set_type<PrismVolume>();
+        REQUIRE(!r.ready());
+    }
+    SECTION("Not ready module") {
+        r.set_type<PrismVolume>();
+        auto pimpl = std::make_unique<ModulePIMPL>(std::make_shared<Prism>());
+        r.change(std::make_shared<Module>(std::move(pimpl)));
+        REQUIRE(!r.ready());
+    }
+    SECTION("Ready") {
         r.set_type<Area>();
         auto pimpl =
           std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
