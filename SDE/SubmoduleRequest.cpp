@@ -34,7 +34,7 @@ void SubmoduleRequest::hash(type::hasher& h) const {
     if(pimpl_->m_module) value().hash(h);
 }
 
-bool SubmoduleRequest::ready() const noexcept { pimpl_->ready(); }
+bool SubmoduleRequest::ready() const noexcept { return pimpl_->ready(); }
 
 void SubmoduleRequest::lock() { pimpl_->lock(); }
 
