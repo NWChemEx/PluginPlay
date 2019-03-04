@@ -27,17 +27,15 @@ cpp_add_executable(
 )
 target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME test_sde COMMAND test_sde)
-#if(BUILD_PYBINDINGS)
-#    add_python_module(
-#            NAME py_sde_utils
-#            SOURCES PySDEUtils.cpp
-#            DEPENDS SDE
-#    )
-#    if(APPLE)
-#        set_target_properties(py_sde_utils PROPERTIES SUFFIX .so)
-#    endif()
-#    add_python_test(NAME TestSDEAny)
-#    add_python_test(NAME TestParameters)
-#    add_python_test(NAME TestModule)
-#    add_python_test(NAME TestModuleManager)
-#endif()
+if(BUILD_PYBINDINGS)
+    foreach(py_test_i examples/TestWorkflow)
+        add_test(
+            NAME Py${py_test_i}
+            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${py_test_i}.py
+        )
+        set_tests_properties(
+           Py${py_test_i}
+           PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
+        )
+    endforeach()
+endif()

@@ -1,3 +1,18 @@
+#This CMake module ensures that your Python interpreter has the cppyy module
+#installed. It also defines a function ``cppyy_make_python_package`` which will
+#skim a CMake target and automatically generate a
+find_package(PythonInterp REQUIRED)
+execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -c "import cppyy"
+    RESULT_VARIABLE _fcppyy_result
+    OUTPUT_VARIABLE _fcppyy_output
+    ERROR_VARIABLE  _fcppyy_error
+)
+
+if(NOT "${_fcppyy_result}" STREQUAL "")
+    set(Cppyy_FOUND FALSE)
+endif()
+
 # This function will skim a CMake target and create a file __init__.py that
 # should be placed next to the shared library created by that target. This
 # function assumes the target's:
