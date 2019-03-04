@@ -30,7 +30,9 @@ cpp_add_library(
 )
 
 if(BUILD_PYBINDINGS)
-
+    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+    find_package(Cppyy REQUIRED)
+    cppyy_make_python_package(sde NAMESPACE SDE)
 endif()
 
 cpp_install(TARGETS sde)
