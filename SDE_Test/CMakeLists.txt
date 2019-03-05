@@ -28,11 +28,9 @@ cpp_add_executable(
 target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME test_sde COMMAND test_sde)
 if(BUILD_PYBINDINGS)
-    foreach(py_test_i examples/TestWorkflow)
-        add_test(
-            NAME Py${py_test_i}
-            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${py_test_i}.py
-        )
+    foreach(py_test_i TestModuleBase TestWorkflow)
+        set(file ${CMAKE_CURRENT_SOURCE_DIR}/examples/${py_test_i}.py)
+        add_test(NAME Py${py_test_i} COMMAND ${PYTHON_EXECUTABLE} ${file})
         set_tests_properties(
            Py${py_test_i}
            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
