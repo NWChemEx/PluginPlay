@@ -5,13 +5,8 @@ set(SDE_SRCS Module.cpp
              SubmoduleRequest.cpp
 )
 set(SDE_INCLUDES detail_/Memoization.hpp
-                 detail_/ModuleInputPIMPL.hpp
-                 detail_/ModuleManagerPIMPL.hpp
-                 detail_/ModulePIMPL.hpp
-                 detail_/ModuleResultPIMPL.hpp
                  detail_/PropertyTypeBuilder.hpp
                  detail_/SDEAny.hpp
-                 detail_/SubmoduleRequestPIMPL.hpp
                  Module.hpp
                  ModuleBase.hpp
                  ModuleInput.hpp
