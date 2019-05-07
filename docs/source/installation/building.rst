@@ -33,7 +33,7 @@ thorough CPP build instructions located `here <https://cmakepackagingproject
 .readthedocs.io/en/latest/end_user/quick_start.html>`_ and note that SDE
 depends on several other projects:
 
-* `utilities <https://github.com/NWChemEx-Project/Utilities>`_
+* `utilities <https://github.com/NWChemEx-Project/utilities>`_
 * `bphash <https://github.com/bennybp/BPHash>`_
 * `cereal <https://github.com/USCiLab/cereal>`_
 * `Catch2 <https://github.com/catchorg/Catch2>`_ (for testing only)

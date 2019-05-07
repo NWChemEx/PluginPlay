@@ -1,0 +1,43 @@
+set(sde_TESTS test_main.cpp
+              detail_/module_input_pimpl.cpp
+              detail_/module_manager_pimpl.cpp
+              detail_/module_pimpl.cpp
+              detail_/module_result_pimpl.cpp
+              detail_/property_type_builder.cpp
+              detail_/sde_any.cpp
+              detail_/submodule_request_pimpl.cpp
+              examples/module_base.cpp
+              examples/property_type.cpp
+              examples/workflow.cpp
+              module.cpp
+              module_input.cpp
+              module_manager.cpp
+              module_result.cpp
+              submodule_request.cpp
+              utility.cpp
+#        TestCache.cpp
+#        #	      TestMemoization.cpp
+)
+
+cpp_add_executable(
+        test_sde
+        SOURCES ${sde_TESTS}
+        DEPENDS sde Catch2::Catch2
+)
+target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME test_sde COMMAND test_sde)
+
+#if(BUILD_PYBINDINGS)
+#    add_python_module(
+#            NAME py_sde_utils
+#            SOURCES PysdeUtils.cpp
+#            DEPENDS sde
+#    )
+#    if(APPLE)
+#        set_target_properties(py_sde_utils PROPERTIES SUFFIX .so)
+#    endif()
+#    add_python_test(NAME TestsdeAny)
+#    add_python_test(NAME TestParameters)
+#    add_python_test(NAME TestModule)
+#    add_python_test(NAME TestModuleManager)
+#endif()
