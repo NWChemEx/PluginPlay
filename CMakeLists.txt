@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
-project(SDE VERSION 1.0.0)
-set(CPP_NAMESPACE SDE)
+project(sde VERSION 1.0.0)
+set(CPP_NAMESPACE sde)
 find_package(CPP REQUIRED)
 
 ### Options ###
@@ -20,17 +20,18 @@ cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
 
 cpp_find_or_build_dependency(
     NAME utilities
-    URL github.com/NWChemEx-Project/Utilities
+    URL github.com/ryanmrichard/utilities
+    BRANCH formatting
     PRIVATE
     CMAKE_ARGS BUILD_TESTS=OFF
 )
 
 ### Target ###
-add_subdirectory(SDE)
+add_subdirectory(sde)
 
 ### Testing ###
 if(BUILD_TESTS)
     cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
     enable_testing()
-    add_subdirectory(SDE_Test)
+    add_subdirectory(tests)
 endif()
