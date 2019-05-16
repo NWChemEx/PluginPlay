@@ -11,7 +11,7 @@ import os
 
 # -- Project information -----------------------------------------------------
 
-project = u'SDE'
+project = u'sde'
 copyright = u'2019, NWChemEx Team'
 author = u'NWChemEx Team'
 
