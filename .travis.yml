@@ -1,0 +1,51 @@
+--- 
+before_install: 
+  - "mkdir -p ${DEPS_DIR}"
+  - "mkdir -p ${DEPS_DIR}/install"
+cache: 
+  - cmake
+  - g++-8
+  - gcc-8
+  - pip
+env: 
+  global: 
+    - LINUX_DIST=xenial
+    - "DEPS_DIR=${TRAVIS_BUILD_DIR}/deps"
+    - "CXX_FLAGS=\"-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow\""
+    - "CMAKE_OPTIONS=\"-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install\""
+install: 
+  - "pip install --user cppyy"
+  - "alias cmake=/usr/bin/cmake"
+  - "export CXX=\"g++-8\" CC=\"gcc-8\""
+  - "echo ${PATH}"
+  - "echo ${CXX}"
+  - "${CXX} --version"
+  - "${CXX} -v"
+  - "echo ${CMAKE_OPTIONS}"
+  - "cd ${DEPS_DIR}"
+  - "git clone https://github.com/CMakePackagingProject/CMakePackagingProject"
+  - "cd CMakePackagingProject"
+  - "cmake ${CMAKE_OPTIONS} --build ."
+  - "make && make install"
+  - "cd ${TRAVIS_BUILD_DIR}"
+language: cpp
+matrix: 
+  include: 
+    - 
+      addons: 
+        apt: 
+          packages: 
+            - "cmake - g++-8 - gcc-8"
+          sources: 
+            - 
+              key_url: "https://apt.kitware.com/keys/kitware-archive-latest.asc"
+              sourceline: "deb https://apt.kitware.com/ubuntu/ xenial main"
+            - ubuntu-toolchain-r-test
+      compiler: gcc
+      dist: xenial
+      os: linux
+      sudo: true
+script: 
+  - "cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build ."
+  - make
+  - ctest
