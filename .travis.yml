@@ -16,7 +16,8 @@ env:
     - "CMAKE_OPTIONS=\"${CMAKE_OPTIONS}fe02\""
 install: 
   - "pyenv shell 3.7"
-  - "alias $(which x86_64-linux-gnu-gcc)=$(which gcc-8) "
+  - "which x86_64-linux-gnu-gcc"
+  - "which gcc-8"
   - "CC=gcc-8 pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
