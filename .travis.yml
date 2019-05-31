@@ -20,7 +20,7 @@ install:
   - "clang -v"
   - "sudo ln -sf  /usr/bin/gcc-8 /usr/bin/x86_64-linux-gnu-gcc"
   - "sudo ln -sf  /usr/bin/g++-8 /usr/bin/x86_64-linux-gnu-g++"	
-  - "CC=gcc-8 CXX=g++-8 pip3 install --user cppyy"
+  - "STDCXX=17 CC=gcc-8 CXX=g++-8 pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
   - "echo ${PATH}"
