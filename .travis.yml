@@ -18,7 +18,7 @@ install:
   - "pyenv shell 3.7"
   - "alias x86_64-linux-gnu-gcc=gcc-8"
   - "alias  x86_64-linux-gnu-g++=g++-8"
-  - "pip3 install --user cppyy"
+  - "CC=gcc-8 CXX=g++-8 pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
   - "echo ${PATH}"
