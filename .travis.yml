@@ -14,6 +14,7 @@ env:
     - "CXX_FLAGS=\"-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow\""
     - "CMAKE_OPTIONS=\"-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install\""
 install: 
+  - "pyenv shell 3.7"
   - "CC=gcc-8 pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
@@ -29,8 +30,6 @@ install:
   - "make && make install"
   - "cd ${TRAVIS_BUILD_DIR}"
 language: cpp
-python: 
-  - "3.7"
 matrix: 
   include: 
     - 
