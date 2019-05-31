@@ -50,4 +50,4 @@ matrix:
 script: 
   - "cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build ."
   - make
-  - ctest
+  - ctest -VV
