@@ -4,9 +4,9 @@ import unittest
 dir = os.path.dirname(os.path.realpath(__file__))
 dir = os.path.dirname(dir)
 cppyy.add_include_path(dir)
-cppyy.include("property_type.hpp")
-cppyy.include("module_base.hpp")
-cppyy.include("workflow.hpp")
+cppyy.include("examples/property_type.hpp")
+cppyy.include("examples/module_base.hpp")
+cppyy.include("examples/workflow.hpp")
 
 
 class TestWorkflow(unittest.TestCase):
