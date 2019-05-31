@@ -12,7 +12,8 @@ env:
     - LINUX_DIST=xenial
     - "DEPS_DIR=${TRAVIS_BUILD_DIR}/deps"
     - "CXX_FLAGS=\"-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow\""
-    - "CMAKE_OPTIONS=\"-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install\""
+    - "CMAKE_OPTIONS=\"-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install -DCPP_GITHUB_TOKEN=a942e188f9c4a0d80d069b826fdb1a3e85f3\""
+    - "CMAKE_OPTIONS=\"${CMAKE_OPTIONS}fe02\""
 install: 
   - "pyenv shell 3.7"
   - "CC=gcc-8 pip3 install --user cppyy"
