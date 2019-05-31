@@ -50,4 +50,5 @@ matrix:
 script: 
   - "cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build ."
   - make
+  - "export PYTHONPATH=${PYTHONPATH}:${PWD}"
   - ctest -VV
