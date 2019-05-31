@@ -16,8 +16,8 @@ env:
     - "CMAKE_OPTIONS=\"${CMAKE_OPTIONS}fe02 -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8\""
 install: 
   - "pyenv shell 3.7"
-  - "ln -s /usr/bin/x86_64-linux-gnu-gcc /usr/bin/gcc-8"
-  - "ln -s /usr/bin/x86_64-linux-gnu-g++ /usr/bin/g++-8"
+  - "ln -s  /usr/bin/gcc-8 /usr/bin/x86_64-linux-gnu-gcc"
+  - "ln -s  /usr/bin/g++-8 /usr/bin/x86_64-linux-gnu-g++"
   - "pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
