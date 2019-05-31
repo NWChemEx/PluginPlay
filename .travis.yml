@@ -29,6 +29,8 @@ install:
   - "make && make install"
   - "cd ${TRAVIS_BUILD_DIR}"
 language: cpp
+python: 
+  - "3.7"
 matrix: 
   include: 
     - 
