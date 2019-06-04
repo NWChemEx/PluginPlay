@@ -33,8 +33,13 @@ set(sde_TESTS ${sde_TESTS} module.py
 			   examples/property_type.py
 			   examples/workflow.py
 			   )
-	add_test(NAME py_module COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/module.py)
-	add_test(NAME py_module_base COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/examples/module_base.py)
-	add_test(NAME py_property_type COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/examples/property_type.py)
-	add_test(NAME py_workflow COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/examples/workflow.py)		
+foreach(test_name module
+		  examples/module_base
+		  examples/property_type
+		  examples/workflow
+		  )
+	  add_test(NAME py_${test_name}
+	  COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.py
+	  )
+endforeach()
 endif()
