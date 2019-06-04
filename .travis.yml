@@ -17,7 +17,7 @@ env:
 install: 
   - "pyenv shell 3.7"
   -  "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 50 --slave /usr/bin/g++ g++ /usr/bin/g++-8"
-  - "STDCXX=17 CC=gcc-8 CXX=g++-8 pip3 install --user cppyy"
+  - "STDCXX=17 CC=gcc CXX=g++ pip3 install --user cppyy"
   - "alias cmake=/usr/bin/cmake"
   - "export CXX=\"g++-8\" CC=\"gcc-8\""
   - "echo ${PATH}"
