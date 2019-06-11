@@ -29,20 +29,19 @@ add_test(NAME test_sde COMMAND test_sde)
 
 if(BUILD_PYBINDINGS)
 	set(
-    	py_sde_tests module
-	                 examples/module_base
-	          	     examples/property_type
-			         examples/workflow
+        py_sde_tests module examples/module_base
+                            examples/property_type
+                            examples/workflow
     )
     foreach(test_name ${py_sde_tests})
-        add_test(
-		    NAME py_${test_name}
-	        COMMAND Python3::Interpreter
-			        ${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.py
-	    )
-        set_tests_properties(
-     	    py_${test_name}
-			PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
-    	)
-	endforeach()
+    add_test(
+        NAME py_${test_name}
+        COMMAND Python3::Interpreter
+                ${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.py
+    )
+    set_tests_properties(
+        py_${test_name}
+        PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
+    )
+    endforeach()
 endif()
