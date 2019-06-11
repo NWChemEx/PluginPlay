@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.12)
 project(sde VERSION 1.0.0)
 set(CPP_NAMESPACE sde)
 find_package(CPP REQUIRED)
@@ -24,6 +24,10 @@ cpp_find_or_build_dependency(
     PRIVATE
     CMAKE_ARGS BUILD_TESTS=OFF
 )
+
+if(BUILD_PYBINDINGS)
+    find_package(Python3 REQUIRED)
+endif()
 
 ### Target ###
 add_subdirectory(sde)
