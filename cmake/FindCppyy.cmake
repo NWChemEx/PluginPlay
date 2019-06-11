@@ -1,9 +1,9 @@
 #This CMake module ensures that your Python interpreter has the cppyy module
 #installed. It also defines a function ``cppyy_make_python_package`` which will
 #skim a CMake target and automatically generate a
-find_package(PythonInterp REQUIRED)
+find_package(Python3 REQUIRED)
 execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} -c "import cppyy"
+    COMMAND ${Python3_EXECUTABLE} -c "import cppyy"
     RESULT_VARIABLE _fcppyy_result
     OUTPUT_VARIABLE _fcppyy_output
     ERROR_VARIABLE  _fcppyy_error
