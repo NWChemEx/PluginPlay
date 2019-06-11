@@ -8,7 +8,7 @@ cppyy.add_include_path(dir)
 
 cppyy.include("examples/property_type.hpp")
 cppyy.include("examples/module_base.hpp")
-cppyy.include("examples/workflow.hpp")
+cppyy.include("examples/packaging.hpp")
 
 mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)

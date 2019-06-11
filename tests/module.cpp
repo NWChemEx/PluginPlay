@@ -49,9 +49,19 @@ TEST_CASE("Module : Equality") {
 }
 
 TEST_CASE("Module : run_as") {
-    Module m(make_module());
-    auto[area] = m.run_as<Area>(1.23, 4.56);
-    REQUIRE(area == 1.23 * 4.56);
+    SECTION("One return") {
+        Module m(make_module());
+        auto area = m.run_as<Area>(1.23, 4.56);
+        REQUIRE(area == 1.23 * 4.56);
+    }
+    SECTION("Two returns") {
+        Module m(make_prism());
+        m.change_submod("area", std::make_shared<Module>(make_module()));
+        std::vector dims{1.23, 4.56, 7.89};
+        auto[area, volume] = m.run_as<PrismVolume>(dims);
+        REQUIRE(area == 1.23 * 4.56);
+        REQUIRE(volume == area * 7.89);
+    }
 }
 
 TEST_CASE("Module : run") {

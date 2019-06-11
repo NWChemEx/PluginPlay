@@ -378,4 +378,7 @@ private:
     std::unique_ptr<detail_::ModuleInputPIMPL> pimpl_;
 };
 
+std::ostream& print_as_rst(std::ostream& os, const ModuleInput& input,
+                           std::string indent = "");
+
 } // namespace sde

@@ -20,7 +20,7 @@ dir = os.path.dirname(dir)
 cppyy.add_include_path(dir)
 cppyy.include("examples/property_type.hpp")
 cppyy.include("examples/module_base.hpp")
-cppyy.include("examples/workflow.hpp")
+cppyy.include("examples/packaging.hpp")
 
 
 class TestWorkflow(unittest.TestCase):
@@ -54,19 +54,9 @@ class TestWorkflow(unittest.TestCase):
         #rectange that is say 1.23 by 4.56 (arbitrary units)? Simply by telling
         #``mm`` to run the "Rectangle" module as property type "Area" and
         #providing it the rectangle's dimensions
-        area = mm.run_as["Area"]("Rectangle", 1.23, 4.56)
+        (area, ) = mm.run_as["Area"]("Rectangle", 1.23, 4.56)
 
         #TUTORIAL
-        #
-        #SDE uses Cppyy to generate Python bindings. Unfortunately, Cppyy
-        #currently has a bug which makes it unable to automatically deduce
-        #template type paramaters when one type parameter is explicitly
-        #provided. This is why we had to provide the two "double" strings. Once
-        #this bug is fixed the proper syntax will be:
-        #
-        #.. code-block:: python
-        #
-        #   area = mm.run_as["Area"]("Prism", 1.23, 4.56)
         #
         #This tutorial should have given you a very high-level overview of what
         #a typical workflow with the SDE looks like. Subsequent tutorials will

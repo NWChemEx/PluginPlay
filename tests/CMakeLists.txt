@@ -6,9 +6,7 @@ set(sde_TESTS test_main.cpp
               detail_/property_type_builder.cpp
               detail_/sde_any.cpp
               detail_/submodule_request_pimpl.cpp
-              examples/module_base.cpp
-              examples/property_type.cpp
-              examples/workflow.cpp
+              examples/cxx_workflow.cpp
               module.cpp
               module_input.cpp
               module_manager.cpp
@@ -26,6 +24,7 @@ cpp_add_executable(
 )
 target_include_directories(test_sde PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME test_sde COMMAND test_sde)
+
 
 if(BUILD_PYBINDINGS)
 	set(

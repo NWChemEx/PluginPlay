@@ -10,7 +10,7 @@ import urllib.request
 
 if not os.path.exists("make_tutorial.py"):
     make_tutorial_url = "https://raw.githubusercontent.com/NWChemEx-Project/" \
-                        "DeveloperTools/scripts/scripts/make_tutorials.py"
+                        "DeveloperTools/master/scripts/make_tutorials.py"
     urllib.request.urlretrieve(make_tutorial_url, "make_tutorials.py")
 
 from make_tutorials import make_tutorials

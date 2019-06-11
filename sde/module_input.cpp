@@ -76,4 +76,7 @@ bool ModuleInput::operator==(const ModuleInput& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
+std::ostream& print_as_rst(std::ostream& os, const ModuleInput& input,
+                           std::string indent) {}
+
 } // namespace sde

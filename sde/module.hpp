@@ -70,7 +70,9 @@ public:
 
     /** @brief Returns an unlocked deep copy of this module.
      *
-     * @return An unlocked deep copy of this module.
+     *  @return An unlocked deep copy of this module.
+     *  @throw std::bad_alloc if there is insufficient memory to allocate the
+     *                        copy. Strong throw guarantee.
      */
     Module unlocked_copy() const {
         Module rv(*this);
@@ -85,13 +87,18 @@ public:
      *         module should be run as.
      * @tparam Args The types of the input arguments
      * @param args The input values that will be forwarded to the
-     * @return The property
+     * @return The property(s). If there is more than one they are returned as
+     *         an std::tuple.
      */
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args) {
         auto temp = inputs();
-        temp = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
-        return property_type::unwrap_results(run(temp));
+        temp    = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
+        auto rv = property_type::unwrap_results(run(temp));
+        if constexpr(std::tuple_size_v<decltype(rv)> == 1)
+            return std::get<0>(rv);
+        else
+            return std::move(rv);
     }
 
     /** @brief The advanced API for running the module.
