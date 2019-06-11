@@ -7,7 +7,8 @@ namespace sde {
 namespace detail_ {
 class ModuleManagerPIMPL;
 }
-/** @brief Class responsible for manipulating
+/** @brief Class responsible for storing and manipulating the available
+ *         modules.
  *
  */
 class ModuleManager {

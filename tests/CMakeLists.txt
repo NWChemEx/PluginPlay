@@ -31,7 +31,7 @@ if(BUILD_PYBINDINGS)
 	set(
         py_sde_tests module examples/module_base
                             examples/property_type
-                            examples/workflow
+                            examples/python_workflow
     )
     foreach(test_name ${py_sde_tests})
     add_test(
