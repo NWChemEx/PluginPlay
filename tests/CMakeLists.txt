@@ -4,6 +4,7 @@ set(sde_TESTS test_main.cpp
               detail_/module_pimpl.cpp
               detail_/module_result_pimpl.cpp
               detail_/property_type_builder.cpp
+              detail_/rest_printer.cpp
               detail_/sde_any.cpp
               detail_/sde_any_wrapper.cpp
               detail_/submodule_request_pimpl.cpp
