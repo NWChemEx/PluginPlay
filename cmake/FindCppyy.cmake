@@ -3,7 +3,7 @@
 #skim a CMake target and automatically generate a
 find_package(Python3 REQUIRED)
 execute_process(
-    COMMAND ${Python3_EXECUTABLE} -c "import cppyy"
+    COMMAND Python3::Interpreter -c "import cppyy"
     RESULT_VARIABLE _fcppyy_result
     OUTPUT_VARIABLE _fcppyy_output
     ERROR_VARIABLE  _fcppyy_error
