@@ -55,4 +55,6 @@ ModuleInput& Module::get_input_(const type::key& key) {
     return pimpl_->inputs().at(key);
 }
 
+std::ostream
+
 } // namespace sde

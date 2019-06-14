@@ -233,4 +233,6 @@ private:
     std::unique_ptr<detail_::ModulePIMPL> pimpl_;
 };
 
+std::ostream& operator<<(std::ostream& os, const Module& m);
+
 } // namespace sde
