@@ -199,6 +199,9 @@ public:
     /// Hashes the module
     void hash(type::hasher& h) const;
 
+    /// Returns a string representation of the module suitable for documentation
+    std::string str() const;
+
     ///@{
     /** @name Equality comparisons
      *
