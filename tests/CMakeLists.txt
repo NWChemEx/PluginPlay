@@ -9,6 +9,7 @@ set(sde_TESTS test_main.cpp
               examples/module_base.cpp
               examples/property_type.cpp
               examples/workflow.cpp
+              bounds_checking.cpp
               module.cpp
               module_input.cpp
               module_manager.cpp
