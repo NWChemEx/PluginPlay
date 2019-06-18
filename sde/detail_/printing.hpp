@@ -18,6 +18,7 @@ std::string print_options(const type::input_map& inputs) {
     data[0].push_back("Description");
     data[0].push_back("Optional?");
     data[0].push_back("Opaque?");
+    data[0].push_back("Domain");
 
     std::size_t counter = 1;
     for(const auto & [name, value] : inputs) {
