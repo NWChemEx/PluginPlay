@@ -174,7 +174,8 @@ struct PrintableBoundsCheck {
     /** @brief Member that returns the string representation of the functor
      *
      *  This function just returns the empty string. Specializations of this
-     *  class will in general return actual strings.
+     *  class will in general return actual strings. This function will fail to
+     *  compile if @p U is not implicitly convertible to type @p T.
      *
      *  @tparam U The type of the particular functor we are printing out.
      *            Should be implicitly convertible to @p T.
@@ -186,10 +187,7 @@ struct PrintableBoundsCheck {
      *  @throw none No throw guarantee.
      */
     template<typename U>
-    static std::string str(U&&) noexcept {
-        static_assert(std::is_same_v<std::decay_t<U>, T>, "Must be type T");
-        return "";
-    }
+    static std::string str(U&&) noexcept;
 };
 
 /// Specializes PrintableBoundsCheck to ComapreTo checks
@@ -197,8 +195,11 @@ template<typename T, typename Op>
 struct PrintableBoundsCheck<CompareTo<T, Op>> {
     /** @brief Calls the `str` member of the provided CompareTo functor.
      *
-     * @tparam U The type of the functor we are printing out. Must be
-     *           implicitly convertible to
+     *  This function will fail to compile if @p U is not implicitly convertible
+     *  to @p T.
+     *
+     *  @tparam U The type of the functor we are printing out. Must be
+     *            implicitly convertible to
      *
      * @param[in] check The particular functor instance to print.
      *
@@ -209,16 +210,16 @@ struct PrintableBoundsCheck<CompareTo<T, Op>> {
      *                       throw guarantee.
      */
     template<typename U>
-    static std::string str(U&& check) {
-        static_assert(std::is_same_v<std::decay_t<U>, T>, "Must be type T");
-        return check.str();
-    }
+    static std::string str(U&& check);
 };
 
 /// Specializes PrintableBoundsCheck to InRange checks
 template<typename T>
 struct PrintableBoundsCheck<InRange<T>> {
     /** @brief Calls the `str` member of the provided InRange functor.
+     *
+     *  This function will fail to compile if @p U is not implicitly convertible
+     *  to @p T.
      *
      * @tparam U The type of the functor we are printing out. Must be
      *           implicitly convertible to
@@ -232,9 +233,7 @@ struct PrintableBoundsCheck<InRange<T>> {
      *                       throw guarantee.
      */
     template<typename U>
-    static std::string str(U&& check) {
-        return check.str();
-    }
+    static std::string str(U&& check);
 };
 
 } // namespace detail_
@@ -271,7 +270,7 @@ bool CompareTo<T, Op>::operator()(U&& lhs) const {
 
 template<typename T, typename Op>
 std::string CompareTo<T, Op>::str() const {
-    std::string rv = "";
+    std::string rv;
 
     constexpr bool is_not_equal     = std::is_same_v<Op, std::not_equal_to<T>>;
     constexpr bool is_greater       = std::is_same_v<Op, std::greater<T>>;
@@ -300,6 +299,34 @@ template<typename T>
 std::string InRange<T>::str() const {
     return "in [" + std::to_string(m_low) + ", " + std::to_string(m_high) + ")";
 }
+
+namespace detail_ {
+
+template<typename T>
+template<typename U>
+std::string PrintableBoundsCheck<T>::str(U&& check) noexcept {
+    using clean_t = std::decay_t<U>;
+    static_assert(std::is_same_v<clean_t, T>, "Must be type T");
+    return "";
+}
+
+template<typename T, typename Op>
+template<typename U>
+std::string PrintableBoundsCheck<CompareTo<T, Op>>::str(U&& check) {
+    using clean_t = std::decay_t<U>;
+    static_assert(std::is_same_v<clean_t, CompareTo<T, Op>>, "Must be type T");
+    return check.str();
+}
+
+template<typename T>
+template<typename U>
+std::string PrintableBoundsCheck<InRange<T>>::str(U&& check) {
+    using clean_t = std::decay_t<U>;
+    static_assert(std::is_same_v<clean_t, InRange<T>>, "Must be type T");
+    return check.str();
+}
+
+} // namespace detail_
 
 template<typename T>
 std::string print_bounds(T&& check) {
