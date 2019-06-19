@@ -11,6 +11,7 @@ set(SDE_INCLUDES detail_/memoization.hpp
                  detail_/module_result_pimpl.hpp
                  detail_/property_type_builder.hpp
                  detail_/sde_any.hpp
+                 detail_/sde_any_wrapper.hpp
                  detail_/submodule_request_pimpl.hpp
                  bounds_checking.hpp
                  module.hpp

@@ -11,6 +11,15 @@ using Hasher    = bphash::Hasher;
 using HashValue = bphash::HashValue;
 using HashType  = bphash::HashType;
 
+inline auto make_hasher() { return bphash::Hasher(bphash::HashType::Hash128); }
+
+template<typename... Args>
+auto hash_objects(Args&&... args) {
+    auto h = make_hasher();
+    h(std::forward<Args>(args)...);
+    return bphash::hash_to_string(h.finalize());
+}
+
 } // namespace sde
 
 namespace utilities {
