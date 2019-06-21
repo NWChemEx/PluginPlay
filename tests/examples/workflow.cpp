@@ -1,5 +1,6 @@
 #include "examples/workflow.hpp"
 #include <catch2/catch.hpp>
+#include <vector>
 
 TEST_CASE("load_modules") {
     sde::ModuleManager mm;

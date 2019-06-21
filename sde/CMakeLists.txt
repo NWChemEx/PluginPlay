@@ -1,17 +1,16 @@
-set(SDE_SRCS detail_/rest_printer.cpp
-             module.cpp
-             module_input.cpp
-             module_manager.cpp
-             module_result.cpp
-             submodule_request.cpp
+add_subdirectory(printing)
+
+list(APPEND SDE_SRCS module.cpp
+                     module_input.cpp
+                     module_manager.cpp
+                     module_result.cpp
+                     submodule_request.cpp
 )
 set(SDE_INCLUDES detail_/memoization.hpp
-                 detail_/module_input_pimpl.hpp
                  detail_/module_manager_pimpl.hpp
                  detail_/module_pimpl.hpp
                  detail_/module_result_pimpl.hpp
                  detail_/property_type_builder.hpp
-                 detail_/rest_printer.hpp
                  detail_/sde_any.hpp
                  detail_/sde_any_wrapper.hpp
                  detail_/submodule_request_pimpl.hpp

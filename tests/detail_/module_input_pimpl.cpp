@@ -12,141 +12,315 @@ TEST_CASE("ModuleInputPIMPL : Default ctor") {
     REQUIRE_FALSE(pimpl.is_optional());
     REQUIRE_FALSE(pimpl.is_transparent());
     REQUIRE_FALSE(pimpl.is_ready());
+    REQUIRE_THROWS_AS(pimpl.is_valid(make_SDEAny<double>(double{3})),
+                      std::runtime_error);
 }
 
-TEST_CASE("ModuleInputPIMPL::set_type") {
-    ModuleInputPIMPL pimpl1, pimpl2;
-    pimpl1.set_type(typeid(double));
-    pimpl2.m_type = std::type_index(typeid(double));
-    REQUIRE(pimpl1 == pimpl2);
-    REQUIRE(pimpl1.is_type_set());
-
-    SECTION("Can't change the type after it's set") {
-        const auto& type = typeid(int);
-        REQUIRE_THROWS_AS(pimpl1.set_type(type), std::runtime_error);
+TEST_CASE("ModuleInputPIMPL : has_type") {
+    ModuleInputPIMPL p;
+    SECTION("No type") { REQUIRE_FALSE(p.has_type()); }
+    SECTION("Has type") {
+        p.set_type(std::type_index(typeid(int)));
+        REQUIRE(p.has_type());
     }
 }
+
+TEST_CASE("ModuleInputPIMPL : has_value") {
+    ModuleInputPIMPL p;
+    SECTION("No value") { REQUIRE_FALSE(p.has_value()); }
+    SECTION("Has value") {
+        p.set_type(std::type_index(typeid(int)));
+        p.set_value(make_SDEAny<int>(3));
+        REQUIRE(p.has_value());
+    }
 }
 
-TEST_CASE("ModuleInputPIMPL : Equality comparisons") {
-    ModuleInputPIMPL pimpl1, pimpl2;
+TEST_CASE("ModuleInputPIMPL : has_description") {
+    ModuleInputPIMPL p;
+    SECTION("No description") { REQUIRE_FALSE(p.has_description()); }
 
-    SECTION("Defaults are equivalent") { REQUIRE(pimpl1 == pimpl2); }
-    SECTION("Different types") {
-        pimpl2.m_type = std::type_index(typeid(double));
-        REQUIRE(pimpl1 != pimpl2);
+    SECTION("Description") {
+        p.set_description("hi");
+        REQUIRE(p.has_description());
     }
-    SECTION("Different descriptions") {
-        pimpl2.m_desc = "hello world";
-        REQUIRE(pimpl1 != pimpl2);
+}
+
+TEST_CASE("ModuleInputPIMPL : is_optional") {
+    ModuleInputPIMPL p;
+    SECTION("Required") { REQUIRE_FALSE(p.is_optional()); }
+    SECTION("Optional") {
+        p.make_optional();
+        REQUIRE(p.is_optional());
     }
-    SECTION("Different optional-ness") {
-        pimpl2.m_optional = true;
-        REQUIRE(pimpl1 != pimpl2);
+}
+
+TEST_CASE("ModuleInputPIMPL : is_transparent") {
+    ModuleInputPIMPL p;
+    SECTION("Opaque") { REQUIRE_FALSE(p.is_transparent()); }
+    SECTION("Transparent") {
+        p.make_transparent();
+        REQUIRE(p.is_transparent());
     }
-    SECTION("Different transparencies") {
-        pimpl2.m_transparent = true;
-        REQUIRE(pimpl1 != pimpl2);
+}
+
+TEST_CASE("ModuleInputPIMPL : is_ready") {
+    ModuleInputPIMPL p;
+    SECTION("Not ready") { REQUIRE_FALSE(p.is_ready()); }
+    SECTION("Optional") {
+        p.make_optional();
+        REQUIRE(p.is_ready());
     }
-    SECTION("Different checks") {
-        check_fxn fxn = [](const type::any&) { return false; };
-        pimpl2.m_checks.emplace("A check", std::move(fxn));
-        REQUIRE(pimpl1 == pimpl2);
+    SECTION("Has value") {
+        p.set_type(std::type_index(typeid(int)));
+        p.set_value(make_SDEAny<int>(3));
+        REQUIRE(p.is_ready());
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : is_valid") {
+    ModuleInputPIMPL p;
+    REQUIRE_THROWS_AS(p.is_valid(make_SDEAny<int>(3)), std::runtime_error);
+    p.set_type(std::type_index(typeid(int)));
+
+    SECTION("No checks") { REQUIRE(p.is_valid(make_SDEAny<double>(1.1))); }
+
+    SECTION("Has checks") {
+        p.add_check([](const SDEAny& any) { return any.has_value(); });
+        REQUIRE(p.is_valid(make_SDEAny<int>(3)));
+        REQUIRE_FALSE(p.is_valid(SDEAny{}));
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : hash") {
+    ModuleInputPIMPL p;
+    p.set_type(std::type_index(typeid(int)));
+    SECTION("No value") {
+        REQUIRE(sde::hash_objects(p) == "cbc357ccb763df2852fee8c4fc7d55f2");
+    }
+    SECTION("has value") {
+        p.set_value(make_SDEAny<int>(3));
+        REQUIRE(sde::hash_objects(p) == "9a4294b64e60cc012c5ed48db4cd9c48");
+    }
+    SECTION("is transparent") {
+        p.set_value(make_SDEAny<int>(3));
+        p.make_transparent();
+        REQUIRE(sde::hash_objects(p) == "00000000000000000000000000000000");
     }
 }
 
 TEST_CASE("ModuleInputPIMPL : set_type") {
-    TEST_CASE("ModuleInputPIMPL : add_check") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        check_fxn fxn = [](const type::any& in) {
-            return SDEAnyCast<double>(in) > 1.0;
-        };
-        pimpl1.add_check(fxn);
-        REQUIRE(pimpl1.m_checks.size() == 1);
-        REQUIRE(pimpl1.m_checks.count("Check #0") == 1);
+    ModuleInputPIMPL p;
+    const auto t1 = std::type_index(typeid(int));
+    const auto t2 = std::type_index(typeid(double));
+    SECTION("Can set type") {
+        p.set_type(t1);
+        REQUIRE(p.has_type());
+        REQUIRE(p.type() == t1);
+    }
+    SECTION("Can change type as long as no value") {
+        p.set_type(t1);
+        p.set_type(t2);
+        REQUIRE(p.type() == t2);
+    }
+    SECTION("Can change type to same type even w/value") {
+        p.set_type(t1);
+        p.set_value(make_SDEAny<int>(3));
+        p.set_type(t1);
+        REQUIRE(p.type() == t1);
+    }
+    SECTION("Can't change type after value has been set") {
+        p.set_type(t1);
+        p.set_value(make_SDEAny<int>(3));
+        REQUIRE_THROWS_AS(p.set_type(t2), std::runtime_error);
+    }
+}
 
-        SECTION("Can add a check with a description") {
-            pimpl1.add_check(fxn, "A description");
-            REQUIRE(pimpl1.m_checks.size() == 2);
-            REQUIRE(pimpl1.m_checks.count("A description") == 1);
-        }
+TEST_CASE("ModuleInputPIMPL : set_value") {
+    ModuleInputPIMPL p;
+    const auto t1 = std::type_index(typeid(int));
+    auto any      = make_SDEAny<int>(3);
+    SECTION("Can't set value w/o setting type") {
+        REQUIRE_THROWS_AS(p.set_value(any), std::runtime_error);
+    }
+    SECTION("Can set to valid value") {
+        p.set_type(t1);
+        p.set_value(any);
+        REQUIRE(p.value() == any);
+    }
+    SECTION("Can't set to an invalid value") {
+        p.set_type(t1);
+        p.add_check([](const type::any& a) { return a.has_value(); });
+        REQUIRE_THROWS_AS(p.set_value(type::any{}), std::invalid_argument);
+    }
+}
 
-        SECTION("Honors the check") {
-            SECTION("Good value") {
-                auto da_any = make_SDEAny<double>(double{1.2});
-                REQUIRE(pimpl1.is_valid(da_any));
-            }
-            SECTION("Bad value") {
-                auto da_any = make_SDEAny<double>(double{-1.2});
-                REQUIRE(!pimpl1.is_valid(da_any));
-            }
-        }
+TEST_CASE("ModuleInputPIMPL : set_description") {
+    ModuleInputPIMPL p;
+    p.set_description("Hello world");
+
+    REQUIRE(p.description() == "Hello world");
+}
+
+TEST_CASE("ModuleInputPIMPL : add_check") {
+    ModuleInputPIMPL p;
+    p.set_type(std::type_index(typeid(int)));
+    auto any = make_SDEAny<int>(4);
+    auto l   = [](const SDEAny& a) { return a.cast<int>() != 4; };
+    SECTION("Add a check") {
+        p.add_check(l, "a check");
+        REQUIRE(p.check_descriptions() == std::set<std::string>{"a check"});
+        REQUIRE_FALSE(p.is_valid(any));
+    }
+    SECTION("Can't add a check if value fails it") {
+        p.set_value(any);
+        REQUIRE_THROWS_AS(p.add_check(l), std::invalid_argument);
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : make_optional") {
+    ModuleInputPIMPL p;
+    REQUIRE_FALSE(p.is_optional());
+    SECTION("Changes required to optional") {
+        p.make_optional();
+        REQUIRE(p.is_optional());
+    }
+    SECTION("Does nothing if already optional") {
+        p.make_optional();
+        p.make_optional();
+        REQUIRE(p.is_optional());
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : make_required") {
+    ModuleInputPIMPL p;
+    REQUIRE_FALSE(p.is_optional());
+    SECTION("Undoes optional") {
+        p.make_optional();
+        REQUIRE(p.is_optional());
+        p.make_required();
+        REQUIRE_FALSE(p.is_optional());
+    }
+    SECTION("Does nothing if already required") {
+        p.make_required();
+        REQUIRE_FALSE(p.is_optional());
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : make_transparent") {
+    ModuleInputPIMPL p;
+    REQUIRE_FALSE(p.is_transparent());
+    SECTION("Changes opaque to transparent") {
+        p.make_transparent();
+        REQUIRE(p.is_transparent());
+    }
+    SECTION("Does nothing if already transparent") {
+        p.make_transparent();
+        p.make_transparent();
+        REQUIRE(p.is_transparent());
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : make_opaque") {
+    ModuleInputPIMPL p;
+    REQUIRE_FALSE(p.is_transparent());
+    SECTION("Undoes transparent") {
+        p.make_transparent();
+        REQUIRE(p.is_transparent());
+        p.make_opaque();
+        REQUIRE_FALSE(p.is_transparent());
+    }
+    SECTION("Does nothing if already required") {
+        p.make_opaque();
+        REQUIRE_FALSE(p.is_transparent());
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : type") {
+    ModuleInputPIMPL p;
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(p.type(), std::runtime_error);
+    }
+    SECTION("Returns the type if set") {
+        auto t = std::type_index(typeid(int));
+        p.set_type(t);
+        REQUIRE(p.type() == t);
+    }
+}
+
+TEST_CASE("ModuleInputPIMPL : value") {
+    ModuleInputPIMPL p;
+    p.set_type(std::type_index(typeid(int)));
+    auto any = make_SDEAny<int>(3);
+
+    SECTION("Throws if value is not set") {
+        REQUIRE_THROWS_AS(p.value(), std::runtime_error);
     }
 
-    TEST_CASE("ModuleInputPIMPL : change") {
-        ModuleInputPIMPL pimpl1, pimpl2;
-        pimpl1.set_type(typeid(double));
-        pimpl2.set_type(typeid(double));
-        auto da_any    = make_SDEAny<double>(3.14);
-        pimpl2.m_value = da_any;
-
-        SECTION("Change the value") {
-            pimpl1.change(da_any);
-            REQUIRE(pimpl1 == pimpl2);
-            REQUIRE(pimpl1.is_ready());
-        }
+    SECTION("Can get value") {
+        p.set_value(any);
+        REQUIRE(p.value() == any);
     }
+}
 
-    TEST_CASE("ModuleInputPIMPL : clone") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        auto da_any = make_SDEAny<double>(3.14);
-        pimpl1.change(da_any);
-
-        auto da_clone = pimpl1.clone();
-        REQUIRE(*da_clone == pimpl1);
-        REQUIRE(da_clone.get() != &pimpl1);
+TEST_CASE("ModuleInputPIMPL : description") {
+    ModuleInputPIMPL p;
+    SECTION("Throws if description is not set") {
+        REQUIRE_THROWS_AS(p.description(), std::bad_optional_access);
     }
-
-    TEST_CASE("ModuleInputPIMPL : copy ctor") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        auto da_any = make_SDEAny<double>(3.14);
-        pimpl1.change(da_any);
-        ModuleInputPIMPL pimpl2(pimpl1);
-        REQUIRE(pimpl1 == pimpl2);
+    SECTION("Can get the value") {
+        p.set_description("Hello world");
+        REQUIRE(p.description() == "Hello world");
     }
+}
 
-    TEST_CASE("ModuleInputPIMPL : copy assignment") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        auto da_any = make_SDEAny<double>(3.14);
-        pimpl1.change(da_any);
-        ModuleInputPIMPL pimpl2;
-        auto* ptr = &(pimpl2 = pimpl1);
-        REQUIRE(pimpl1 == pimpl2);
-        REQUIRE(ptr == &pimpl2);
+TEST_CASE("ModuleInputPIMPL : check_descriptions") {
+    ModuleInputPIMPL p;
+    using set_t = typename ModuleInputPIMPL::check_description_type;
+    auto l      = [](const SDEAny&) { return true; };
+    SECTION("No descriptions") { REQUIRE(p.check_descriptions() == set_t{}); }
+    SECTION("No description provided") {
+        p.add_check(l);
+        REQUIRE(p.check_descriptions() == set_t{""});
     }
+    SECTION("Description provided") {
+        p.add_check(l, "hi");
+        REQUIRE(p.check_descriptions() == set_t{"hi"});
+    }
+}
 
-    TEST_CASE("ModuleInputPIMPL : move ctor") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        auto da_any = make_SDEAny<double>(3.14);
-        pimpl1.change(da_any);
-        ModuleInputPIMPL pimpl2(pimpl1);
-        ModuleInputPIMPL pimpl3(std::move(pimpl1));
-        REQUIRE(pimpl3 == pimpl2);
-    }
+TEST_CASE("ModuleInputPIMPL : Equality comparisons") {
+    ModuleInputPIMPL p, p2;
 
-    TEST_CASE("ModuleInputPIMPL : move assignment") {
-        ModuleInputPIMPL pimpl1;
-        pimpl1.set_type(typeid(double));
-        auto da_any = make_SDEAny<double>(3.14);
-        pimpl1.change(da_any);
-        ModuleInputPIMPL pimpl2;
-        ModuleInputPIMPL pimpl3(pimpl1);
-        auto* ptr = &(pimpl2 = std::move(pimpl1));
-        REQUIRE(pimpl3 == pimpl2);
-        REQUIRE(ptr == &pimpl2);
+    SECTION("Defaults are equivalent") {
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p != p2);
     }
+    SECTION("Different types") {
+        p2.set_type(std::type_index(typeid(int)));
+        REQUIRE_FALSE(p == p2);
+        REQUIRE(p != p2);
+    }
+    SECTION("Different values") {
+        p2.set_type(std::type_index(typeid(int)));
+        p.set_type(std::type_index(typeid(int)));
+        p2.set_value(make_SDEAny<int>(4));
+        p.set_value(make_SDEAny<int>(3));
+        REQUIRE_FALSE(p == p2);
+        REQUIRE(p != p2);
+    }
+    SECTION("Different descriptions") {
+        p2.set_description("hello world");
+        REQUIRE_FALSE(p == p2);
+        REQUIRE(p != p2);
+    }
+    SECTION("Different optional-ness") {
+        p2.make_optional();
+        REQUIRE_FALSE(p == p2);
+        REQUIRE(p != p2);
+    }
+    SECTION("Different transparencies") {
+        p2.make_transparent();
+        REQUIRE_FALSE(p == p2);
+        REQUIRE(p != p2);
+    }
+}

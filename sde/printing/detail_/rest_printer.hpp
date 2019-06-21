@@ -2,7 +2,7 @@
 #include <functional>
 #include <iostream>
 
-namespace sde::detail_ {
+namespace sde::printing::detail_ {
 
 /** @brief Helps print out reST documentation
  *
@@ -95,4 +95,4 @@ private:
     std::reference_wrapper<std::ostream> m_os_;
 }; // class reSTPrinter
 
-} // namespace sde::detail_
+} // namespace sde::printing::detail_
