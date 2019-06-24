@@ -3,129 +3,197 @@
 using namespace sde;
 using namespace sde::detail_;
 using shared_any = typename ModuleResultPIMPL::shared_any;
-/* Our testing strategy is to establish that default state is correct. Then we
- * establish that changing any member (aside from checks) causes equality to
- * fail. With this knowledge we check each function comparing the resulting
- * instance to an instance we have set to the correct state.
- *
- */
 
-TEST_CASE("ModuleResultPIMPL : Default ctor") {
-    ModuleResultPIMPL pimpl;
-    SECTION("Default state") {
-        REQUIRE(!pimpl.is_type_set());
-        REQUIRE(pimpl.m_value == shared_any{});
-        REQUIRE(pimpl.m_desc == "");
-        REQUIRE(pimpl.m_type == std::type_index(typeid(std::nullptr_t)));
-    }
+template<typename T, typename U>
+static auto wrap_value(U&& value) {
+    return std::make_shared<const type::any>(
+      make_SDEAny<T>(std::forward<U>(value)));
+}
 
-    SECTION("Error checking") {
-        SECTION("Can't change the value") {
-            REQUIRE_THROWS_AS(pimpl.change(shared_any{}), std::runtime_error);
-        }
-        SECTION("Can't check validity") {
-            REQUIRE_THROWS_AS(pimpl.is_valid(type::any{}), std::runtime_error);
-        }
+static const std::type_index d(typeid(double));
+
+TEST_CASE("ModuleResultPIMPL : default ctor") {
+    ModuleResultPIMPL p;
+    REQUIRE_FALSE(p.has_type());
+    REQUIRE_FALSE(p.has_value());
+    REQUIRE_FALSE(p.has_description());
+}
+
+TEST_CASE("ModuleResultPIMPL : has_type") {
+    ModuleResultPIMPL p;
+    SECTION("No type") { REQUIRE_FALSE(p.has_type()); }
+    SECTION("Has a type") {
+        p.set_type(d);
+        REQUIRE(p.has_type());
     }
 }
 
-TEST_CASE("ModuleResultPIMPL : Equality comparisons") {
-    ModuleResultPIMPL pimpl1, pimpl2;
+TEST_CASE("ModuleResultPIMPL : has_value") {
+    ModuleResultPIMPL p;
+    SECTION("No value") { REQUIRE_FALSE(p.has_value()); }
+    SECTION("Has a value") {
+        p.set_type(d);
+        p.set_value(wrap_value<double>(3.14));
+        REQUIRE(p.has_value());
+    }
+}
 
-    SECTION("Defaults are equivalent") { REQUIRE(pimpl1 == pimpl2); }
-    SECTION("Different types") {
-        pimpl2.m_type = std::type_index(typeid(double));
-        REQUIRE(pimpl1 != pimpl2);
-    }
-    SECTION("Different descriptions") {
-        pimpl2.m_desc = "hello world";
-        REQUIRE(pimpl1 != pimpl2);
-    }
-    SECTION("Different values") {
-        pimpl2.m_value = std::make_shared<SDEAny>(make_SDEAny<int>(3));
-        REQUIRE(pimpl1 != pimpl2);
+TEST_CASE("ModuleResultPIMPL : has_description") {
+    ModuleResultPIMPL p;
+    SECTION("No description") { REQUIRE_FALSE(p.has_description()); }
+    SECTION("Description") {
+        p.set_description("Hello world");
+        REQUIRE(p.has_description());
     }
 }
 
 TEST_CASE("ModuleResultPIMPL : set_type") {
-    ModuleResultPIMPL pimpl1, pimpl2;
-    pimpl1.set_type(typeid(double));
-    pimpl2.m_type = std::type_index(typeid(double));
-    REQUIRE(pimpl1 == pimpl2);
-    REQUIRE(pimpl1.is_type_set());
-
-    SECTION("Can't change the type after it's set") {
-        const auto& type = typeid(int);
-        REQUIRE_THROWS_AS(pimpl1.set_type(type), std::runtime_error);
+    ModuleResultPIMPL p;
+    p.set_type(d);
+    SECTION("No value") { REQUIRE(p.type() == d); }
+    SECTION("Has value with same type") {
+        p.set_value(wrap_value<double>(3.14));
+        p.set_type(d);
+    }
+    SECTION("Throws if value is different type") {
+        p.set_value(wrap_value<double>(3.14));
+        std::type_index i(typeid(int));
+        REQUIRE_THROWS_AS(p.set_type(i), std::runtime_error);
     }
 }
 
-TEST_CASE("ModuleResultPIMPL : change") {
-    ModuleResultPIMPL pimpl1, pimpl2;
-    pimpl1.set_type(typeid(double));
-    pimpl2.set_type(typeid(double));
-    auto ptr       = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl2.m_value = ptr;
-
-    SECTION("Change the value") {
-        pimpl1.change(ptr);
-        REQUIRE(pimpl1 == pimpl2);
+TEST_CASE("ModuleResultPIMPL : set_value") {
+    ModuleResultPIMPL p;
+    auto v = wrap_value<double>(3.14);
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(p.set_value(v), std::bad_optional_access);
     }
-    SECTION("Invalid value") {
-        auto ptr2 = std::make_shared<type::any>(make_SDEAny<int>(3));
-        REQUIRE_THROWS_AS(pimpl1.change(ptr2), std::invalid_argument);
+    SECTION("Throws if the value's type is wrong") {
+        p.set_type(d);
+        auto i = wrap_value<int>(2);
+        REQUIRE_THROWS_AS(p.set_value(i), std::invalid_argument);
+    }
+    SECTION("Can set it") {
+        p.set_type(d);
+        p.set_value(v);
+        REQUIRE(*p.value() == *v);
     }
 }
 
-TEST_CASE("ModuleResultPIMPL : clone") {
-    ModuleResultPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
-    auto da_any = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl1.change(da_any);
+TEST_CASE("ModuleResultPIMPL : set_description") {
+    ModuleResultPIMPL p;
+    p.set_description("Hello world");
+    REQUIRE(p.description() == "Hello world");
+}
 
-    auto da_clone = pimpl1.clone();
-    REQUIRE(*da_clone == pimpl1);
-    REQUIRE(da_clone.get() != &pimpl1);
+TEST_CASE("ModuleResultPIMPL : type") {
+    ModuleResultPIMPL p;
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(p.type(), std::bad_optional_access);
+    }
+    SECTION("Works if the type is set") {
+        p.set_type(d);
+        REQUIRE(p.type() == d);
+    }
+}
+
+TEST_CASE("ModuleResultPIMPL : value") {
+    ModuleResultPIMPL p;
+    SECTION("Throws if value is not set") {
+        REQUIRE_THROWS_AS(p.value(), std::runtime_error);
+    }
+    SECTION("Can get value") {
+        p.set_type(d);
+        p.set_value(wrap_value<double>(3.14));
+        REQUIRE(p.value()->cast<double>() == 3.14);
+    }
+}
+
+TEST_CASE("ModuleResultPIMPL : description") {
+    ModuleResultPIMPL p;
+    SECTION("Throws if description is not set") {
+        REQUIRE_THROWS_AS(p.description(), std::bad_optional_access);
+    }
+    SECTION("has a description") {
+        p.set_description("Hello world");
+        REQUIRE(p.description() == "Hello world");
+    }
+}
+
+TEST_CASE("ModuleResultPIMPL : comparisons") {
+    ModuleResultPIMPL p, p2;
+
+    SECTION("Both empty") {
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p != p2);
+    }
+    SECTION("Different typed-ness") {
+        p.set_type(d);
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different types") {
+        p.set_type(d);
+        p2.set_type(std::type_index(typeid(int)));
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different valued-ness") {
+        p.set_type(d);
+        p2.set_type(d);
+        p.set_value(wrap_value<double>(3.14));
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different values") {
+        p.set_type(d);
+        p2.set_type(d);
+        p.set_value(wrap_value<double>(3.14));
+        p2.set_value(wrap_value<double>(1.23));
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different description-ness") {
+        p.set_description("Hello world");
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different descriptions") {
+        p.set_description("Hello world");
+        p2.set_description("Bye world");
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
 }
 
 TEST_CASE("ModuleResultPIMPL : copy ctor") {
-    ModuleResultPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
-    auto da_any = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl1.change(da_any);
-    ModuleResultPIMPL pimpl2(pimpl1);
-    REQUIRE(pimpl1 == pimpl2);
+    ModuleResultPIMPL p;
+    p.set_type(d);
+    ModuleResultPIMPL p2(p);
+    REQUIRE(p == p2);
 }
 
 TEST_CASE("ModuleResultPIMPL : copy assignment") {
-    ModuleResultPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
-    auto da_any = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl1.change(da_any);
-    ModuleResultPIMPL pimpl2;
-    auto* ptr = &(pimpl2 = pimpl1);
-    REQUIRE(pimpl1 == pimpl2);
-    REQUIRE(ptr == &pimpl2);
+    ModuleResultPIMPL p, p2;
+    p2.set_type(d);
+    auto pp = &(p = p2);
+    REQUIRE(pp == &p);
+    REQUIRE(p == p2);
 }
 
 TEST_CASE("ModuleResultPIMPL : move ctor") {
-    ModuleResultPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
-    auto da_any = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl1.change(da_any);
-    ModuleResultPIMPL pimpl2(pimpl1);
-    ModuleResultPIMPL pimpl3(std::move(pimpl1));
-    REQUIRE(pimpl3 == pimpl2);
+    ModuleResultPIMPL p;
+    p.set_type(d);
+    ModuleResultPIMPL p2(p);
+    ModuleResultPIMPL p3(std::move(p2));
+    REQUIRE(p == p3);
 }
 
 TEST_CASE("ModuleResultPIMPL : move assignment") {
-    ModuleResultPIMPL pimpl1;
-    pimpl1.set_type(typeid(double));
-    auto da_any = std::make_shared<type::any>(make_SDEAny<double>(3.14));
-    pimpl1.change(da_any);
-    ModuleResultPIMPL pimpl2;
-    ModuleResultPIMPL pimpl3(pimpl1);
-    auto* ptr = &(pimpl2 = std::move(pimpl1));
-    REQUIRE(pimpl3 == pimpl2);
-    REQUIRE(ptr == &pimpl2);
+    ModuleResultPIMPL p, p2;
+    p2.set_type(d);
+    ModuleResultPIMPL p3(p2);
+    auto pp = &(p = std::move(p2));
+    REQUIRE(pp == &p);
+    REQUIRE(p == p3);
 }

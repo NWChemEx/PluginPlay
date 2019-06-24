@@ -5,7 +5,7 @@ using namespace sde::detail_;
 
 TEST_CASE("ModuleResult Class : Default Ctor") {
     ModuleResult output;
-    SECTION("Default state") { REQUIRE(output.description() == ""); }
+
     SECTION("Error checking") {
         SECTION("Can't call change") {
             REQUIRE_THROWS_AS(output.change(int{3}), std::runtime_error);
