@@ -48,8 +48,6 @@ const std::set<type::rtti>& Module::property_types() const noexcept {
 
 std::string Module::str() const {}
 
-std::string Module::str() const {}
-
 bool Module::operator==(const Module& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
