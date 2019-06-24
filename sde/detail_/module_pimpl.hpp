@@ -112,6 +112,8 @@ public:
         return errors.size() == 0;
     }
 
+    auto& property_types() const noexcept { return m_base_->property_types(); }
+
     /** @brief Returns a list of module state that is not "ready"
      *
      *  Calling `ready` is an easy way to determine if the module's `run` member

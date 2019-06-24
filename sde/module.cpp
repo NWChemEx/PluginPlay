@@ -42,6 +42,9 @@ const type::result_map& Module::results() const { return pimpl_->results(); }
 const type::submodule_map& Module::submods() const noexcept {
     return pimpl_->submods();
 }
+const std::set<type::rtti>& Module::property_types() const noexcept {
+    return pimpl_->property_types();
+}
 
 std::string Module::str() const {}
 
