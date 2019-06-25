@@ -5,7 +5,7 @@
 using namespace sde;
 
 static const auto null_pt_t      = std::type_index(typeid(testing::NullPT));
-static const auto not_ready_pt_t = std::type_index(typeid(testing::NotReadyPT));
+static const auto not_ready_pt_t = std::type_index(typeid(testing::OneIn));
 static const auto inputs         = type::input_map{};
 
 TEST_CASE("SubmoduleRequest : default ctor") {
@@ -57,7 +57,7 @@ TEST_CASE("SubmoduleRequestL : ready") {
         REQUIRE(r.ready());
     }
     SECTION("Has not ready submodule") {
-        r.set_type<testing::NotReadyPT>();
+        r.set_type<testing::OneIn>();
         r.change(testing::make_module<testing::NotReadyModule2>());
         REQUIRE_FALSE(r.ready());
     }
@@ -75,8 +75,7 @@ TEST_CASE("SubmoduleRequest : set_type") {
     SECTION("Throws if module is already set and different") {
         r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>());
-        REQUIRE_THROWS_AS(r.set_type<testing::NotReadyPT>(),
-                          std::runtime_error);
+        REQUIRE_THROWS_AS(r.set_type<testing::OneIn>(), std::runtime_error);
     }
 }
 
@@ -159,8 +158,7 @@ TEST_CASE("SubmoduleRequest : run_as") {
     }
     SECTION("Throws if type is different") {
         r.set_type<testing::NullPT>();
-        REQUIRE_THROWS_AS(r.run_as<testing::NotReadyPT>(3),
-                          std::invalid_argument);
+        REQUIRE_THROWS_AS(r.run_as<testing::OneIn>(3), std::invalid_argument);
     }
     SECTION("Throws if module is not set") {
         r.set_type<testing::NullPT>();
@@ -179,7 +177,7 @@ TEST_CASE("SubmoduleRequest : hash") {
         REQUIRE(hash_objects(r) == "00000000000000000000000000000000");
     }
     SECTION("Module") {
-        r.set_type<testing::NotReadyPT>();
+        r.set_type<testing::OneIn>();
         r.change(testing::make_module<testing::NotReadyModule>());
         REQUIRE(hash_objects(r) == "cbc357ccb763df2852fee8c4fc7d55f2");
     }
@@ -199,7 +197,7 @@ TEST_CASE("SubmoduleRequest : comparisons") {
     }
     SECTION("Different types") {
         r.set_type<testing::NullPT>();
-        r2.set_type<testing::NotReadyPT>();
+        r2.set_type<testing::OneIn>();
         REQUIRE(r != r2);
         REQUIRE_FALSE(r == r2);
     }
@@ -222,8 +220,8 @@ TEST_CASE("SubmoduleRequest : comparisons") {
         REQUIRE_FALSE(r == r2);
     }
     SECTION("Different Modules") {
-        r.set_type<testing::NotReadyPT>();
-        r2.set_type<testing::NotReadyPT>();
+        r.set_type<testing::OneIn>();
+        r2.set_type<testing::OneIn>();
         r.change(testing::make_module<testing::NotReadyModule>());
         auto mod = testing::make_module<testing::NotReadyModule>();
         mod->change_input("Option 1", 0);
@@ -232,8 +230,8 @@ TEST_CASE("SubmoduleRequest : comparisons") {
         REQUIRE_FALSE(r == r2);
     }
     SECTION("Fully set-up") {
-        r.set_type<testing::NotReadyPT>();
-        r2.set_type<testing::NotReadyPT>();
+        r.set_type<testing::OneIn>();
+        r2.set_type<testing::OneIn>();
         r.change(testing::make_module<testing::NotReadyModule>());
         r2.change(testing::make_module<testing::NotReadyModule>());
         REQUIRE(r == r2);

@@ -6,7 +6,7 @@ using namespace sde::detail_;
 using module_ptr = typename SubmoduleRequestPIMPL::module_ptr;
 
 static const auto null_pt_t      = std::type_index(typeid(testing::NullPT));
-static const auto not_ready_pt_t = std::type_index(typeid(testing::NotReadyPT));
+static const auto not_ready_pt_t = std::type_index(typeid(testing::OneIn));
 
 TEST_CASE("SubmoduleRequestPIMPL : Default ctor") {
     SubmoduleRequestPIMPL pimpl;
