@@ -1,114 +1,219 @@
+#include "sde/module_result.hpp"
 #include <catch2/catch.hpp>
-#include <sde/module_result.hpp>
 using namespace sde;
-using namespace sde::detail_;
 
-TEST_CASE("ModuleResult Class : Default Ctor") {
-    ModuleResult output;
+TEST_CASE("ModuleResult : default ctor") {
+    ModuleResult p;
+    REQUIRE_FALSE(p.has_type());
+    REQUIRE_FALSE(p.has_value());
+    REQUIRE_FALSE(p.has_description());
+}
 
-    SECTION("Error checking") {
-        SECTION("Can't call change") {
-            REQUIRE_THROWS_AS(output.change(int{3}), std::runtime_error);
-        }
+TEST_CASE("ModuleResult : has_type") {
+    ModuleResult p;
+    SECTION("No type") { REQUIRE_FALSE(p.has_type()); }
+    SECTION("Has a type") {
+        p.set_type<double>();
+        REQUIRE(p.has_type());
     }
 }
 
-TEST_CASE("ModuleResult Class : Description") {
-    ModuleResult output;
-    auto ptr = &(output.set_description("Hello world"));
-    SECTION("Return") { REQUIRE(ptr == &output); }
-    SECTION("Value") { REQUIRE(output.description() == "Hello world"); }
-}
-
-TEST_CASE("ModuleResult Class : set_type") {
-    ModuleResult output;
-    SECTION("Must Be Unqualified Type") {
-        // Will fail to compile, uncomment to check
-        // output.set_type<int &>();
-        // output.set_type<const int>();
-    }
-    SECTION("Valid Type") {
-        auto ptr = &(output.set_type<int>());
-        REQUIRE(ptr == &output);
+TEST_CASE("ModuleResult : has_value") {
+    ModuleResult p;
+    SECTION("No value") { REQUIRE_FALSE(p.has_value()); }
+    SECTION("Has a value") {
+        p.set_type<double>();
+        p.change(double{3.14});
+        REQUIRE(p.has_value());
     }
 }
 
-TEST_CASE("ModuleResult Class : change") {
-    ModuleResult output;
-    output.set_type<int>();
-    int three = 3;
-    SECTION("Valid value") {
-        output.change(three);
-        REQUIRE(output.value<int>() == 3);
-    }
-    SECTION("Throws if bad type") {
-        REQUIRE_THROWS_AS(output.change(double{3.15}), std::invalid_argument);
-    }
-    SECTION("Can set to a shared pointer") {
-        auto da_any = detail_::make_SDEAny<int>(three);
-        auto shared = std::make_shared<type::any>(std::move(da_any));
-        int* ptr    = &(SDEAnyCast<int&>(*shared));
-        output.change(shared);
-        auto value = output.value<std::shared_ptr<const int>>();
-        REQUIRE(value.get() == ptr);
+TEST_CASE("ModuleResult : has_description") {
+    ModuleResult p;
+    SECTION("No description") { REQUIRE_FALSE(p.has_description()); }
+    SECTION("Description") {
+        p.set_description("Hello world");
+        REQUIRE(p.has_description());
     }
 }
 
-TEST_CASE("ModuleResult Class: Equality") {
-    ModuleResult output1, output2;
-    SECTION("Defaults") {
-        REQUIRE(output1 == output2);
-        REQUIRE(!(output1 != output2));
+TEST_CASE("ModuleResult : set_type") {
+    ModuleResult p;
+    auto pp = &(p.set_type<double>());
+    REQUIRE(pp == &p);
+    SECTION("No value") {
+        REQUIRE(p.type() == std::type_index(typeid(double)));
+    }
+    SECTION("Has value with same type") {
+        p.change(double{3.14});
+        p.set_type<double>();
+    }
+    SECTION("Throws if value is different type") {
+        p.change(double{3.14});
+        REQUIRE_THROWS_AS(p.set_type<int>(), std::runtime_error);
+    }
+}
+
+TEST_CASE("ModuleResult : change") {
+    ModuleResult p;
+    const double v = 3.14;
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(p.change(v), std::bad_optional_access);
+    }
+    SECTION("Throws if the value's type is wrong") {
+        p.set_type<int>();
+        REQUIRE_THROWS_AS(p.change(v), std::invalid_argument);
+    }
+    SECTION("Can set it with value") {
+        p.set_type<double>();
+        p.change(v);
+        REQUIRE(p.value<double>() == v);
+    }
+    SECTION("Throws if given share_any with wrong type") {
+        p.set_type<int>();
+        auto any =
+          std::make_shared<type::any>(sde::detail_::make_SDEAny<double>(v));
+        REQUIRE_THROWS_AS(p.change(any), std::invalid_argument);
+    }
+    SECTION("Can set with shared_any to read/write value") {
+        p.set_type<double>();
+        auto any =
+          std::make_shared<type::any>(sde::detail_::make_SDEAny<double>(v));
+        p.change(any);
+        REQUIRE(p.value<double>() == v);
+    }
+    SECTION("Can set with shared_any to read-only value") {
+        p.set_type<double>();
+        auto any = std::make_shared<const type::any>(
+          sde::detail_::make_SDEAny<double>(v));
+        p.change(any);
+        REQUIRE(p.value<double>() == v);
+    }
+}
+
+TEST_CASE("ModuleResult : set_description") {
+    ModuleResult p;
+    p.set_description("Hello world");
+    REQUIRE(p.description() == "Hello world");
+}
+
+TEST_CASE("ModuleResult : type") {
+    ModuleResult p;
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(p.type(), std::bad_optional_access);
+    }
+    SECTION("Works if the type is set") {
+        p.set_type<double>();
+        REQUIRE(p.type() == std::type_index(typeid(double)));
+    }
+}
+
+TEST_CASE("ModuleResult : value") {
+    ModuleResult p;
+    p.set_type<double>();
+    SECTION("Throws if value is not set") {
+        REQUIRE_THROWS_AS(p.value<double>(), std::runtime_error);
+    }
+    SECTION("Throws if requested type is wrong") {
+        p.change(double{3.14});
+        REQUIRE_THROWS_AS(p.value<int>(), std::bad_any_cast);
+    }
+    SECTION("Can get value") {
+        p.change(double{3.14});
+        REQUIRE(p.value<double>() == 3.14);
+    }
+    SECTION("Can get value as shared_ptr") {
+        p.change(double{3.14});
+        auto ptr = p.value<std::shared_ptr<const type::any>>();
+        REQUIRE(ptr->cast<double>() == 3.14);
+    }
+}
+
+TEST_CASE("ModuleResult : description") {
+    ModuleResult p;
+    SECTION("Throws if description is not set") {
+        REQUIRE_THROWS_AS(p.description(), std::bad_optional_access);
+    }
+    SECTION("has a description") {
+        p.set_description("Hello world");
+        REQUIRE(p.description() == "Hello world");
+    }
+}
+
+TEST_CASE("ModuleResult : comparisons") {
+    ModuleResult p, p2;
+
+    SECTION("Both empty") {
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p != p2);
+    }
+    SECTION("Different typed-ness") {
+        p.set_type<double>();
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
     }
     SECTION("Different types") {
-        output1.set_type<int>();
-        REQUIRE(output1 != output2);
-        REQUIRE(!(output1 == output2));
+        p.set_type<double>();
+        p2.set_type<int>();
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
     }
-    SECTION("Different descriptions") {
-        output1.set_description("hello world");
-        REQUIRE(output1 != output2);
-        REQUIRE(!(output1 == output2));
+    SECTION("Different valued-ness") {
+        p.set_type<double>();
+        p2.set_type<double>();
+        p.change(double{3.14});
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
     }
     SECTION("Different values") {
-        output1.set_type<int>();
-        output2.set_type<int>();
-        output1.change(int{4});
-        REQUIRE(output1 != output2);
-        REQUIRE(!(output1 == output2));
+        p.set_type<double>();
+        p2.set_type<double>();
+        p.change(double{3.14});
+        p2.change(double{1.23});
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different description-ness") {
+        p.set_description("Hello world");
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
+    }
+    SECTION("Different descriptions") {
+        p.set_description("Hello world");
+        p2.set_description("Bye world");
+        REQUIRE(p != p2);
+        REQUIRE_FALSE(p == p2);
     }
 }
 
-TEST_CASE("ModuleResult Class : Copy ctor") {
-    ModuleResult output1;
-    output1.set_type<int>();
-    ModuleResult output2(output1);
-    REQUIRE(output2 == output1);
+TEST_CASE("ModuleResult : copy ctor") {
+    ModuleResult p;
+    p.set_type<double>();
+    ModuleResult p2(p);
+    REQUIRE(p == p2);
 }
 
-TEST_CASE("ModuleResult Class : Copy assignment") {
-    ModuleResult output1;
-    output1.set_type<int>();
-    ModuleResult output2;
-    auto* ptr = &(output2 = output1);
-    REQUIRE(output2 == output1);
-    REQUIRE(ptr == &output2);
+TEST_CASE("ModuleResult : copy assignment") {
+    ModuleResult p, p2;
+    p2.set_type<double>();
+    auto pp = &(p = p2);
+    REQUIRE(pp == &p);
+    REQUIRE(p == p2);
 }
 
-TEST_CASE("ModuleResult Class : Move ctor") {
-    ModuleResult output1;
-    output1.set_type<int>();
-    ModuleResult output2(output1);
-    ModuleResult output3(std::move(output1));
-    REQUIRE(output3 == output2);
+TEST_CASE("ModuleResult : move ctor") {
+    ModuleResult p;
+    p.set_type<double>();
+    ModuleResult p2(p);
+    ModuleResult p3(std::move(p2));
+    REQUIRE(p == p3);
 }
 
-TEST_CASE("ModuleResult Class : Move assignment") {
-    ModuleResult output1;
-    output1.set_type<int>();
-    ModuleResult output2(output1);
-    ModuleResult output3;
-    auto* ptr = &(output3 = std::move(output1));
-    REQUIRE(output3 == output2);
-    REQUIRE(ptr == &output3);
+TEST_CASE("ModuleResult : move assignment") {
+    ModuleResult p, p2;
+    p2.set_type<double>();
+    ModuleResult p3(p2);
+    auto pp = &(p = std::move(p2));
+    REQUIRE(pp == &p);
+    REQUIRE(p == p3);
 }

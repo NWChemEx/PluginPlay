@@ -18,6 +18,14 @@ ModuleResult& ModuleResult::operator=(ModuleResult&& rhs) noexcept = default;
 
 ModuleResult::~ModuleResult() noexcept = default;
 
+bool ModuleResult::has_type() const noexcept { return pimpl_->has_type(); }
+
+bool ModuleResult::has_value() const noexcept { return pimpl_->has_value(); }
+
+bool ModuleResult::has_description() const noexcept {
+    return pimpl_->has_description();
+}
+
 ModuleResult& ModuleResult::set_type_(const std::type_info& rtti) {
     pimpl_->set_type(rtti);
     return *this;
@@ -27,7 +35,7 @@ void ModuleResult::change_(type::any new_value) {
     pimpl_->set_value(std::make_shared<type::any>(std::move(new_value)));
 }
 
-void ModuleResult::change_(shared_any new_value) noexcept {
+void ModuleResult::change_(shared_any new_value) {
     pimpl_->set_value(new_value);
 }
 
@@ -36,9 +44,11 @@ ModuleResult& ModuleResult::set_description(type::description desc) noexcept {
     return *this;
 }
 
-const shared_any& ModuleResult::at_() const noexcept { return pimpl_->value(); }
+type::rtti ModuleResult::type() const { return pimpl_->type(); }
 
-const type::description& ModuleResult::description() const noexcept {
+const shared_any& ModuleResult::at_() const { return pimpl_->value(); }
+
+const type::description& ModuleResult::description() const {
     return pimpl_->description();
 }
 

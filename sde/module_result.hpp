@@ -27,32 +27,28 @@ public:
     /// The type of a `shared_ptr` to a type-erased value
     using shared_any = std::shared_ptr<const type::any>;
 
-    ///@{
-    /** @name Ctors and Assignment Operators
+    /** @brief Creates and empty ModuleResult instance.
      *
-     *  The functions in this section create a ModuleResult instance with a
-     *  default state, or state that is copied/taken from another instance.
-     *  Customization of the state is accomplished using the setters, which
-     *  support a factory-pattern syntax. Copies are deep copies with regards
-     *  to metadata and shallow copies with respect to the value. This design
-     *  accounts for the fact that the wrapped value is immutable and thus there
-     *  is no point in copying it.
+     *  A ModuleResult instance created with this ctor has no type, value, or
+     *  description associated with it.
      *
-     *  @param rhs The instance to copy/move state from. For move construction
-     *         and assignment, @p rhs will be in a valid, but otherwise
-     *         undefined state after the operation.
-     *  @throw std::bad_alloc if there is insufficient memory to allocate a new
-     *         pimpl. 2 and 3 will additionally throw if there is insufficient
-     *         memory to copy the state
+     *  @throw std::bad_alloc if there is insufficient memory to make the pimpl.
+     *                        Strong throw guarantee.
      */
     ModuleResult();
+
+    /** @brief Creates and empty ModuleResult instance.
+     *
+     *  A ModuleResult instance created with this ctor has no type, value, or
+     *  description associated with it.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to make the pimpl.
+     *                        Strong throw guarantee.
+     */
     ModuleResult(const ModuleResult& rhs);
-    ModuleResult& operator=(const ModuleResult& rhs) {
-        return *this = std::move(ModuleResult(rhs));
-    }
+    ModuleResult& operator=(const ModuleResult& rhs);
     ModuleResult(ModuleResult&& rhs) noexcept;
     ModuleResult& operator=(ModuleResult&& rhs) noexcept;
-    ///@}
 
     /** @brief Standard destructor
      *
@@ -65,133 +61,234 @@ public:
      */
     ~ModuleResult() noexcept;
 
-    ///@{
-    /** @name Getters
+    /** @brief Has the type of this result field been set?
      *
-     *  The functions in this section can be used to view the state of the
-     *  instance. Of note, the `value` member supports retreiving either the
-     *  value itself, or the `shared_ptr` wrapping the value. The returned type
-     *  is determined by the value of the template type parameter.
+     *  Each result field holds an object of a given type. This function can be
+     *  used to determine if the type of the present field has been set.
      *
-     *  Respectively the members retrieve:
+     *  @return True if this field's type has been set and false otherwise.
      *
-     *  - the wrapped value, and
-     *  - the description.
+     *  @throw none No throw gurantee.
+     */
+    bool has_type() const noexcept;
+
+    /** @brief Has a value been bound to this field yet?
      *
-     * @tparam T The type to return the wrapped value as.
-     * @return The requested piece of state.
-     * @throw std::bad_cast if the wrapped object can not be converted to @p T.
-     *        Strong throw guarantee.
-     * @throw none retrieval of the description is no throw guarantee.
+     *  At any given time a result field either has a value bound to it or it
+     *  does not. This function can be used to determine which state the field
+     *  is in.
+     *
+     *  @return true if the this field has a value and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_value() const noexcept;
+
+    /** @brief Does this result have a description?
+     *
+     *  This function is used to determine if the developer has provided a
+     *  human-readable description of this result field or not.
+     *
+     *  @return True if this result has a description and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_description() const noexcept;
+
+    /** @brief Sets the type this result field must have.
+     *
+     *  Result fields are always types akin to std::shared_ptr<const T>. This
+     *  function sets the T in that type.
+     *
+     *  @tparam T The unqualified type of the result.
+     *
+     *  @return The current instance with the type set to @p T.
+     *
+     *  @throw std::runtime_error if the value has already been set and this
+     *                            call would change the type. Strong throw
+     *                            guarantee.
      */
     template<typename T>
-    T value() const {
-        using clean_T = std::decay_t<T>;
-        if constexpr(std::is_same_v<shared_any, clean_T>)
-            return at_();
-        else if constexpr(detail_::IsSharedPtr<clean_T>::value) {
-            using type = typename clean_T::element_type;
-            return T(at_(), &value<type&>());
-        } else
-            return detail_::SDEAnyCast<T>(*at_());
-    }
+    auto& set_type();
 
-    const type::description& description() const noexcept;
-    ///@}
-
-    ///@{
-    /** @name Setters
+    /** @brief Binds a value to this result field
      *
-     * Members in this section can be used to change the state of the instance.
+     *  This function is used to bind @p new_value to the present field. This
+     *  call will ensure that the field is ready (i.e., the type of the field
+     *  is set) and that @p new_value is of the proper type. This function
+     *  allows the result to either be set by forwarding the actual value or
+     *  by providing a shared_ptr to a type-erased value. Either way the type
+     *  of the result will be checked and guaranteed to be compatible with that
+     *  set by set_type.
      *
-     * Respectively these members change:
+     *  @tparam T The type of the object to forward to the PIMPL. Should be
+     *            directly convertible to the type set by set_type, or a
+     *            share_ptr to a type-erased instance of that type.
      *
-     * - the value wrapped in the instance,
-     * - the expected type of the wrapped value, and
-     * - the description of the value.
+     * @param[in] new_value The value to bind to this field.
      *
-     * @tparam T The type of the wrapped value.
-     * @param new_value The value to hold. If it is a `shared_ptr` the held
-     *        value will be an alias to the input. Otherwise a new `shared_ptr`
-     *        will be created to hold the value.
-     *
-     * @throw std::runtime_error is thrown by 1 if the type has not been set
-     *        yet and by 2 if the type has already been set. Strong throw
-     *        guarantee.
-     * @throw std::invalid_argument is thrown by 1 if @p T is not convertible
-     *        to the type this instance is supposed to wrap. Strong throw
-     *        guarantee.
-     * @throw std::bad_alloc is thrown by 1 if there is insufficient memory
-     *        to create a `shared_ptr` for the value. Strong throw guarantee.
-     *
+     * @throw std::bad_optional_access if the type has not been set. Strong
+     *                                 throw guarantee.
+     * @throw std::invalid_argument if @p new_value does not have the correct
+     *                              type. Strong throw guarantee.
      */
     template<typename T>
-    void change(T&& new_value) {
-        using clean_T = std::decay_t<T>;
-        constexpr bool is_shared_any =
-          std::is_same_v<clean_T, shared_any> || // is shared_ptr<const any>
-          std::is_same_v<clean_T, std::shared_ptr<type::any>>; // no const
-        if constexpr(is_shared_any)
-            change_(std::forward<T>(new_value));
-        else
-            change_(std::move(wrap_value_(std::forward<T>(new_value))));
-    }
+    void change(T&& new_value);
 
-    template<typename T>
-    auto& set_type() {
-        constexpr bool is_clean = std::is_same_v<std::decay_t<T>, T>;
-        static_assert(is_clean, "Results must be unqualified types.");
-        return set_type_(typeid(T));
-    }
-
+    /** @brief Sets this result field's description.
+     *
+     *  This function is used to set the human-readable description of what this
+     *  result field is. If the description has been previously set this call
+     *  will overwrite the previous description.
+     *
+     *  @param[in] desc The description of this result field.
+     *
+     *  @return The current instance with the description set to @p desc.
+     *
+     *  @throw none No throw guarantee.
+     */
     ModuleResult& set_description(type::description desc) noexcept;
-    ///@}
 
-    ///@{
-    /** @name Comparison operators
+    /** @brief Returns the RTTI associated with the bound value
      *
-     *  Functions in this section can be used to compare ModuleResult instances.
-     *  Two instances are equivalent if their values compare equivalent and the
-     *  associated metadata compares equal.
+     *  Each field must be of a well defined type. This function is used to
+     *  retrieve the RTTI of that type.
      *
-     *  @param rhs The instance to compare to.
-     *  @return True if the comparison is true and false otherwise.
-     *  @throw ??? throws if the wrapped type's comparison operator throws.
+     *  @return The RTTI of the bound value.
+     *
+     *  @throw std::bad_optional_access if the type of this field has not been
+     *                                  set. Strong throw guarantee.
+     */
+    type::rtti type() const;
+
+    /** @brief Retrieves the bound value.
+     *
+     *  This function can be used to retrieve the value bound to this result
+     *  field assuming the caller knows the type. Assuming this result is of
+     *  type U. The caller may request the value back as an object of any of
+     *  the following types:
+     *
+     *  - U
+     *  - const U&
+     *  - std::shared_ptr<const sde::any>
+     *
+     *  If no value is currently bound then an error will be raised.
+     *
+     *  @param T The type to retrieve the wrapped result as.
+     *
+     *  @return the result as the requested type.
+     *
+     *  @throw std::runtime_error if no value is bound to this field. Strong
+     *                            throw guarantee.
+     *  @throw std::bad_any_cast if the wrapped value is not convertible to type
+     *                           @p T. Strong throw guarantee.
+     */
+    template<typename T>
+    T value() const;
+
+    /** @brief Retrieves the human-readable description of the bound value.
+     *
+     *  Developers are encouraged to write descriptions of what a result
+     *  represents. These strings are purely for edification. This function
+     *  can be used to retrieve the description, if the developer wrote one.
+     *
+     *  @return The human-readable description of the field.
+     *
+     *  @throw std::bad_optional_access if this field does not have a
+     *                                  description. Strong throw guarantee.
+     */
+    const type::description& description() const;
+
+    /** @brief Compares two ModuleResult instances for equality
+     *
+     *  Two ModuleResult instances are equivalent if they hold the same
+     *  value, have the same description of that value, and require the same
+     *  type.
+     *
+     *  @param[in] rhs The instance to compare to.
+     *
+     *  @return True if the two instances are equal and false otherwise.
+     *
+     *  @throw ??? Throws if the value's comparison throws. Same guarantee.
      */
     bool operator==(const ModuleResult& rhs) const;
-    bool operator!=(const ModuleResult& rhs) const { return !((*this) == rhs); }
-    ///@}
-private:
-    /// Helper function for wrapping a value in an SDEAny
-    template<typename T>
-    static type::any wrap_value_(T&& new_value) {
-        using clean_T = std::decay_t<T>;
-        return detail_::make_SDEAny<clean_T>(std::forward<T>(new_value));
-    }
 
-    ///@{
-    /** @name Bridge functions.
+    /** @brief Determines if two ModuleResul instances are different
      *
-     *  These functions bridge the gap between the templated public members of
-     *  the class and the pimpled backend. These functions work by
-     *  taking/returning objects of common types, typically SDEAny.
+     *  Two ModuleResult instances are equivalent if they hold the same
+     *  value, have the same description of that value, and require the same
+     *  type.
      *
-     * @param new_value the value we will be wrapping.
-     * @param type The type that wrapped values must be.
+     *  @param[in] rhs The instance to compare to.
      *
-     * @return 1 returns the SDEAny that is holding the value.
-     * @return 4 returns the current instance after setting the type.
+     *  @return False if the two instances are equal and true otherwise.
+     *
+     *  @throw ??? Throws if the value's comparison throws. Same guarantee.
      */
-    const shared_any& at_() const noexcept;
+    bool operator!=(const ModuleResult& rhs) const { return !((*this) == rhs); }
 
-    void change_(type::any new_value);
-    void change_(shared_any new_value) noexcept;
-
+private:
+    /// Implements set_type by deferring to PIMPL
     ModuleResult& set_type_(const std::type_info& type);
-    ///@}
+
+    /// Retrieves the type-erased value from the PIMPL
+    const shared_any& at_() const;
+
+    // Implements change when we are only given a value
+    void change_(type::any new_value);
+
+    // Implements change when we are given a shared_ptr to a value
+    void change_(shared_any new_value);
+
+    /// Helper function for wrapping a value of type @p T in an SDEAny
+    template<typename T>
+    static type::any wrap_value_(T&& new_value);
 
     /// The object that holds the actual state of the instance.
     std::unique_ptr<detail_::ModuleResultPIMPL> pimpl_;
-};
+}; // class ModuleResult
+
+//------------------------------Implementations---------------------------------
+
+inline ModuleResult& ModuleResult::operator=(const ModuleResult& rhs) {
+    return *this = std::move(ModuleResult(rhs));
+}
+
+template<typename T>
+auto& ModuleResult::set_type() {
+    constexpr bool is_clean = std::is_same_v<std::decay_t<T>, T>;
+    static_assert(is_clean, "Results must be unqualified types.");
+    return set_type_(typeid(T));
+}
+
+template<typename T>
+void ModuleResult::change(T&& new_value) {
+    using clean_T = std::decay_t<T>;
+    constexpr bool is_shared_any =
+      std::is_same_v<clean_T, shared_any> || // is shared_ptr<const any>
+      std::is_same_v<clean_T, std::shared_ptr<type::any>>; // no const
+    if constexpr(is_shared_any)
+        change_(new_value);
+    else
+        change_(std::move(wrap_value_(std::forward<T>(new_value))));
+}
+
+template<typename T>
+T ModuleResult::value() const {
+    using clean_T = std::decay_t<T>;
+    if constexpr(std::is_same_v<shared_any, clean_T>)
+        return at_();
+    else if constexpr(detail_::IsSharedPtr<clean_T>::value) {
+        using type = typename clean_T::element_type;
+        return T(at_(), &value<type&>());
+    } else
+        return detail_::SDEAnyCast<T>(*at_());
+}
+
+template<typename T>
+type::any ModuleResult::wrap_value_(T&& new_value) {
+    using clean_T = std::decay_t<T>;
+    return detail_::make_SDEAny<clean_T>(std::forward<T>(new_value));
+}
 
 } // namespace sde
