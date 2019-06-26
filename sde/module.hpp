@@ -33,76 +33,451 @@ class ModuleManagerPIMPL;
  */
 class Module {
 public:
-    ///@{
-    /** @name Ctors and Assignment Operators
+    /// Type of a pointer to a PIMPL
+    using pimpl_ptr = std::unique_ptr<detail_::ModulePIMPL>;
+
+    /// Type of the object used to convey why a module is not ready
+    using not_ready_type = utilities::CaseInsensitiveMap<std::set<type::key>>;
+
+    /** @brief Makes a module with no implementation.
      *
-     *  A Module instance is only valid if it has been created by a
-     *  ModuleManager instance or if it is created by copying/moving from a
-     *  valid instance. Default constructed Modules are allowed as placeholders,
-     *  but must be made valid by copy/move assignment. The validity of a module
-     *  can be checked by calling the member `is_valid` (the similarly named
-     *  `is_ready` can also be used for this purpose since `is_valid` is one of
-     *  the checks it runs to ensure that the module is ready to be run).
+     *  The Module instance resulting from this ctor wraps no algorithm, has no
+     *  description, and is not locked. The only way to make the instance have
+     *  an algorithm is to assign to it from an instance that already has an
+     *  algorithm. In general working Module instances will be made by the
+     *  ModuleManager and the only reason to make a Module instance without an
+     *  algorithm is as a placeholder.
      *
-     *  @param rhs The instance we are constructing the module from. For the
-     *         move ctor and assignment operators @p rhs will be in a valid, but
-     *         otherwise undefined state after the operation.
-     *  @param base An already made PIMPL instance for the class to use. In most
-     *         cases this PIMPL will have been created by the ModuleManager.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to allocate a new
-     *         PIMPL (only relevant for 1, 2, and 3). Strong throw guarantee.
-     *  @throw None Functions 4, 5, and 6 are no throw guarantee.
+     *  @throw none No throw guarantee.
      */
     Module();
+
+    /** @brief Initializing this Module with a deep copy of @p rhs
+     *
+     *  This ctor will make a deep copy of @p rhs. The resulting Module instance
+     *  will have the same state. Of note this includes locked-ness.
+     *
+     *  @param[in] rhs The instance to deep copy.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
+     *                        Strong throw guarantee.
+     */
     Module(const Module& rhs);
+
+    /** @brief Sets this Module's state to a deep copy of @p rhs
+     *
+     *  This function will set the current instance's state to a deep copy of
+     *  @p rhs's state. The resulting Module have the same state as @p rhs
+     *  including lockedness. Memory associated with the old state will be freed
+     *  up and references will thus become invalid. The notable exception is
+     *  the cache and the results in it, which will only be freed if they are
+     *  not also in use elsewhere.
+     *
+     *  @param[in] rhs The instance to deep copy.
+     *
+     *  @return The current instance set to a deep copy of @p rhs.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
+     *                        Strong throw guarantee.
+     */
     Module& operator=(const Module& rhs);
+
+    /** @brief Initializes this Module with @p rhs's state
+     *
+     *  This ctor will take ownership of @p rhs's state. The resulting instance
+     *  will have the same state, including locked-ness.
+     *
+     *  @param[in] rhs The instance to take the state of. After this function
+     *                 call @p rhs is in a valid, but otherwise undefined state.
+     *
+     *  @throw none No throw guarantee.
+     */
     Module(Module&& rhs) noexcept;
+
+    /** @brief Sets this Module's state to @p rhs's state
+     *
+     *  This function will set the current instance's state to @p rhs's state.
+     *  The resulting Module will have the same state as @p rhs including
+     *  lockedness. Memory associated with the old state will be freed up and
+     *  references will thus become invalid. The notable exception is the cache
+     *  and the results in it, which will only be freed if they are not also in
+     *  use elsewhere.
+     *
+     *  @param[in] rhs The instance to take the state of. After this operation
+     *                 @p rhs is in a valid, but otherwise undefined state.
+     *
+     *  @return The current instance, now with @p rhs's state.
+     *
+     *  @throw none No throw guarantee.
+     */
     Module& operator=(Module&& rhs) noexcept;
-    Module(std::unique_ptr<detail_::ModulePIMPL> base) noexcept;
-    ///@}
+
+    /** @brief Instantiates a Module with the provided backend.
+     *
+     *  This ctor is primarily designed to be used by the ModuleManager;
+     *  however, it can also be used by consumers who do not want to use the
+     *  ModuleManager.
+     *
+     * @param[in] base The backend and state that will be used to implement this
+     *                 module.
+     *
+     * @throw none No throw guarantee.
+     */
+    explicit Module(pimpl_ptr base) noexcept;
+
+    /** @brief Returns an unlocked deep copy of this module.
+     *
+     *  The copy ctor copies all aspects of the module including lockedness. If
+     *  you want to change the state of a locked module you need to make an
+     *  unlocked copy. This function will do that for you.
+     *
+     *  @return An unlocked deep copy of this module.
+     *
+     *  @throw std::bad_alloc if the copy ctor throws. Strong throw guarantee.
+     */
+    Module unlocked_copy() const;
 
     /** @brief Standard destructor.
+     *
+     *  After this call the cache and results may still persist depending on
+     *  whether or not their reference counts went to zero upon deletion. Of
+     *  note the ModuleManager usually holds a shared_ptr to the cache and the
+     *  cache usually holds one to the result.
      *
      *  @throw none No throw guarantee.
      */
     ~Module() noexcept;
 
-    /** @brief Returns an unlocked deep copy of this module.
+    /** @brief Does this module contain an implementation?
      *
-     * @return An unlocked deep copy of this module.
+     *  The ModuleBase class is responsible for implementing most of this class.
+     *  The ModuleManager only takes ModuleBase instances and therefore always
+     *  has modules with implementations; however, we allow users to default
+     *  construct (and copy/move from default constructed instances) which means
+     *  it is possible for a Module to not have an implementation. This
+     *  function is used to check whether or not the current module has an
+     *  implementation.
+     *
+     *  @return True if the module has an implementation and false otherwise.
+     *
+     *  @throw none No throw guarantee.
      */
-    Module unlocked_copy() const {
-        Module rv(*this);
-        rv.unlock_();
-        return rv;
-    }
+    bool has_module() const noexcept;
+
+    /** @brief Did the module developer set a description for this module?
+     *
+     *  This function is used to determine if the developer has set the module's
+     *  description.
+     *
+     *  @return true if the description has been set and false otherwise.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool has_description() const;
+
+    /** @brief Is the current module locked?
+     *
+     *  A locked module can not have its state modified. This avoids situations
+     *  that may invalidate memoization caused by an input changing after the
+     *  memoization check occurred. This function is used to determine if the
+     *  current module is locked or not.
+     *
+     *  @return true if the module is locked and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool locked() const noexcept;
+
+    /** @brief Returns a list of module state that is not "ready"
+     *
+     *  Calling `ready` is an easy way to determine if the module's `run` member
+     *  can be called; however, if the module is not ready it can be a bit of a
+     *  pain to figure out why. This function will return a map containing the
+     *  reasons why the module is not ready. The keys of the map describe the
+     *  part of the module that is not ready. Choices are:
+     *
+     *  - "Inputs" to indicate that one or more required inputs have not been
+     *    set
+     *  - "Submodules" to indicate that one or more submodules have not been
+     *  set.
+     *
+     *  For inputs and submodules, the value in the map is the set of
+     *  input/submodule keys corresponding to the inputs/submodules that are
+     *  not set yet.
+     *
+     *  Note that since some inputs will be provided via the property type it is
+     *  possible for the module to be ready even if all the bound inputs are
+     *  not. For this reason this function takes an optional list of inputs.
+     *  These inputs are assumed to be part of the property type's API and will
+     *  not be included in the value returned by this function.
+     *
+     * @param[in] in_inputs The set of inputs provided by the property type.
+     *                      Defaults to an empty map. Values are not checked for
+     *                      ready-ness.
+     *
+     * @return A map of this module's state that is not set yet.
+     *
+     * @throw std::bad_alloc if there is insufficient memory to allocate the
+     *                       returned object. Strong throw guarantee.
+     * @throw std::runtime_error if the implementation of this module has not
+     *                           been set. Strong throw guarantee.
+     */
+    not_ready_type list_not_ready(const type::input_map& in_inputs = {}) const;
+
+    /** @brief Determines if this module is ready to be run as the provided
+     *         property type
+     *
+     * This function is equivalent to calling `list_not_ready` and with the
+     * inputs provided by property type @p PropertyType and returning whether or
+     * not the returned list is empty.
+     *
+     * @tparam PropertyType The property type we want to know if the module can
+     *                      be run as.
+     *
+     * @return True if the module is ready to be run as @p PropertyType and
+     *         false otherwise.
+     *
+     * @throw std::runtime_error if an implementation has not been set yet.
+     *                           Strong throw guarantee.
+     * @throw std::bad_alloc if `list_not_ready` has insufficient memory. Strong
+     *                       throw guarantee.
+     */
+    template<typename PropertyType>
+    bool ready() const;
+
+    /** @brief Determines if this module is ready to be run given the inputs
+     *         provided.
+     *
+     * This function is equivalent to calling `list_not_ready` and with the
+     * inputs provided and returning whether or not the returned list is empty.
+     *
+     * @param[in] inps The inputs to forward to list_not_ready.
+     *
+     * @return True if the module can be run given the inputs provided in
+     *        @p inps and false otherwise.
+     *
+     * @throw std::runtime_error if an implementation has not been set yet.
+     *                           Strong throw guarantee.
+     * @throw std::bad_alloc if `list_not_ready` has insufficient memory. Strong
+     *                       throw guarantee.
+     */
+    bool ready(const type::input_map& inps = type::input_map{}) const;
+
+    /** @brief Locks the module and all submodules
+     *
+     *  A locked module can no longer have its inputs or submodules modified.
+     *  This function will first lock all submodules (throwing if any of the
+     *  submodules are not ready to be locked) and then lock the current module.
+     *  Unlike the lock calls to the submodules, which know the type that the
+     *  module will be run as, and can thus assert their readiness, this call
+     *  does not know how the module will be run and will perform no such check
+     *  for this module.
+     *
+     *  This call also locks all submodules
+     *
+     *  @throws std;:runtime_error if a submodule is not ready. Strong throw
+     *                             guarantee.
+     */
+    void lock();
+
+    /** @brief Returns the set of results that can be computed by this module.
+     *
+     *  The set of results that a module can compute is the union of the
+     *  set of results each property type can compute with the set of additional
+     *  results that the developer specified. This function will return the set
+     *  of results that a module can compute. The resulting set will not contain
+     *  any actual results, but rather simply serves as a list of what can be
+     *  computed.
+     *
+     *  @return  The set of results that this module can compute.
+     *
+     *  @throw std::runtime_error if no implementation has been set. Strong
+     *                            throw guarantee.
+     */
+    const type::result_map& results() const;
+
+    /** @brief Returns the inputs this module recognizes.
+     *
+     *  A module can have input values bound to it. Ultimately in order for the
+     *  module to run all required inputs must have a value bound to them. These
+     *  values come from two places those passed to the run_as/run function and
+     *  those bound to the module. This function returns the set of all inputs
+     *  that this module expects as well as any bound values.
+     *
+     *  This function is for read-only access. Use change_input to bind a value
+     *  or modify an already bound value.
+     *
+     * @return The set of inputs bound to this module.
+     *
+     * @throw std::runtime_error if the implementation of this module has not
+     *                           been set. Strong throw guarantee.
+     */
+    const type::input_map& inputs() const;
+
+    /** @brief Returns the submodule callback points defined by this module
+     *
+     *  Modules may define callback points where they will call other modules
+     *  to compute an intermediate result. Associated with each of these
+     *  callback points is a SubmoduleRequest. This function can be used to
+     *  retrieve the list of submodule callback points defined by this module as
+     *  well as which submodule is bound to that callback point.
+     *
+     * @return The set of submodule requests defined by this module.
+     *
+     * @throw std::runtime_error if the implementation of this module has not
+     *                           been set. Strong throw guarantee.
+     */
+    const type::submodule_map& submods() const;
+
+    /** @brief Returns the set of property types that this module can be run
+     *         as.
+     *
+     *  The SDE will only run a module as a whitelisted property type. When a
+     *  developer specifies that a module satisfies a particular property type
+     *  that property type gets whitelisted. It is also possible for the user to
+     *  specify additional property types that a module satisfies. Since the
+     *  user can not modify the sets of inputs/results that the module
+     *  takes/computes adding additional property types only makes sense if the
+     *  module already satisfies the property type, but the developer did not
+     *  say so. Regardless, this function can be used to retrieve the set of
+     *  property types that this module can be run as.
+     *
+     * @return The set of property types that this module satisfies.
+     *
+     * @throw std::runtime_error if this instance does not have an
+     *                           implementation. Strong throw guarantee.
+     */
+    const std::set<type::rtti>& property_types() const;
+
+    /** @brief Returns the human-readable description provided by the developer
+     *
+     *  Developers are encouraged to provide human-readable descriptions of what
+     *  their modules do. This description will be used as documentation. If
+     *  the developer set a description then this function can be used to
+     *  retrieve it.
+     *
+     *  @return The description that the developer set.
+     *
+     *  @throw std::runtime_error if this module does not have an
+     *                            implementation. Strong throw guarantee.
+     *  @throw std::bad_optional_access if the description was not set. Strong
+     *                                  throw guarantee.
+     *
+     */
+    const type::description& description() const;
+
+    /** @brief Returns a list of things to cite if you use the module.
+     *
+     *  We intend for most of the modules that are used with the SDE to be
+     *  developed in an academic context. In those setting it's important to
+     *  make sure credit is given where credit is due. This function will return
+     *  a list of literature refrences that should be cited if you use this
+     *  module.
+     *
+     *  @return A list of citations.
+     *
+     *  @throw std::runtime_error if this module does not have an implementation
+     *                            set. Strong throw guarantee.
+     */
+    const std::vector<type::description>& citations() const;
+
+    /** @brief Binds an input value to the specified input.
+     *
+     *  Inputs to a module can be set in one of two ways: by passing the inputs
+     *  to run_as/run or by binding them to a module instance. This function is
+     *  used to bind an input value to a module instance.
+     *
+     * @tparam T The type of value being bound. Must be convertible to the type
+     *           of the input field.
+     *
+     * @param[in] key The input whose value is being bound to @p value.
+     * @param[in] value The new value of this input.
+     *
+     * @throw std::runtime_error if the module's backend is not set or the
+     *                           module is locked, Strong throw guarantee.
+     * @throw std::out_of_range if @p key does not correspond to an existing
+     *                          input. Strong throw guarantee.
+     * @throw std::invalid_argument if @p value fails one or more bounds checks
+     *                              including being the wrong type. Strong throw
+     *                              guarantee.
+     */
+    template<typename T>
+    void change_input(const type::key& key, T&& value);
+
+    /** @brief Allows the user to change the submodule a module uses.
+     *
+     *  Each module maintains a list of callback points that it will use. Users
+     *  can bind a particular module to a particular callback point using this
+     *  function.
+     *
+     * @param[in] key The callback point to bind the module to.
+     * @param[in] new_module The module to bind to the callback point.
+     *
+     * @throw std::runtime_error if the module does not have an implementation
+     *                           or if it is locked, Strong throw guarantee.
+     * @throw std::out_of_range if @p key does not map to an existing callback
+     *                          point. Strong throw guarantee.
+     * @throw std::invalid_argument if @p new_module does not satisfy the
+     *                              requested property type. Strong throw
+     *                              guarantee.
+     */
+    void change_submod(type::key key, std::shared_ptr<Module> new_module);
+
+    /** @brief Makes the module satisfy the specified property type.
+     *
+     *  Each property type defines a series of inputs and results that a module
+     *  must accept and compute. It is possible that a module satisfies a
+     *  property type, but the module's developer did not register that the
+     *  module satisfies that type. This function can be used to add additional
+     *  property types to a module. Note that because a user can not add
+     *  additional inputs or results to the module, the module must already
+     *  satisfy the property type to be added. This function does not check if
+     *  the module is capable of satisfying the provided property type.
+     *
+     *  @tparam PropertyType The additional property type that this module
+     * should satisfy.
+     *
+     *  @throw std::runtime_error if this module does not have a backend or if
+     *                            the module is locked. Strong throw guarantee.
+     */
+    template<typename PropertyType>
+    void add_property_type();
 
     /** @brief The primary API for running the encapsulated code.
      *
+     *  When a user runs a module they typically go through this API. The input
+     *  to this API are the property type to run the module as and the inputs
+     *  defined by the property type. The results are the results defined by the
+     *  property type.
      *
      * @tparam property_type The class codifying the property type that the
-     *         module should be run as.
-     * @tparam Args The types of the input arguments
-     * @param args The input values that will be forwarded to the
-     * @return The property
+     *                       module should be run as. An error will be raised if
+     *                       the module does not satisfy that property type.
+     * @tparam Args The types of the input arguments. Must be implicitly
+     *              convertible to the input types defined by the property type.
+     *
+     * @param[in] args The input values that will be forwarded to the module.
+     *
+     * @return the results defined by the property type.
+     *
+     * @throw std::runtime_error if the module does not have an implementation,
+     *                           the provided inputs are not ready, if the
+     *                           module is not ready, or if the module is not
+     *                           of the specified property type. Strong throw
+     *                           guarantee.
      */
     template<typename property_type, typename... Args>
-    auto run_as(Args&&... args) {
-        auto temp = inputs();
-        temp = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
-        return property_type::unwrap_results(run(temp));
-    }
+    auto run_as(Args&&... args);
 
     /** @brief The advanced API for running the module.
      *
      *  This member allows you to set whatever inputs you would like and gives
      *  you access to all of the results. This flexibility comes at the cost of
-     *  compile-time error checking. The result is that if you provide an input
-     *  with an object of the incorrect type or try to cast an output to an
-     *  incompatible type this will only be detected as an error at runtime
-     *  when those commands are executed. All inputs will still be checked for
-     *  domain errors per usual.
+     *  loosing compile-time type checking. The result is that if you provide an
+     *  input with an object of the incorrect type or try to cast an output to
+     *  an incompatible type this will only be detected as an error at runtime.
+     *  All inputs will still be checked for domain errors per usual.
      *
      *  This function is primarily intended for use by developers who for
      *  whatever reason need to provide/access inputs/results that are not part
@@ -111,132 +486,128 @@ public:
      *  technical debt can be avoided by creating/modifying a property type so
      *  that it takes/returns the additional inputs/results.
      *
+     * @param[in] ps A list of inputs and the values to bind to them.
      *
-     * @param ps A map from input keys to that input's values.
      * @return A map from output keys to that output's value.
      *
-     * @throw ??? If the underlying algorithm throws, the exception will also be
-     *        thrown by this function. Strong throw guarantee.
+     * @throw std::runtime_error if the module does not have an implementation,
+     *                           the provided inputs are not ready, or if the
+     *                           module is not ready. Strong throw
+     *                           guarantee.
+     *
+     * @throw ??? If the underlying algorithm throws. Strong throw guarantee.
      */
-    type::result_map run(type::input_map ps);
+    type::result_map run(type::input_map ps = {});
 
-    ///@{
-    /** @name Module state accessors
+    /** @brief Computes a hash of the module's state.
      *
-     * The functions in this section are used to inquire about the state of the
-     * module.
+     *  This function is used to compute a hash of the module's current state.
+     *  This hash takes into account the currently bound inputs and submodules
+     *  (including the states of those submodules). Note that memoization also
+     *  needs to take into account the values of any additional inputs to
+     *  run_as/run.
      *
-     * Respectively these functions:
+     *  @param[in,out] h The hasher instance to add the hash of the module to.
      *
-     * - Whether a module is ready (contains an actual algorithm, all submodules
-     *   are set, and all required options are set)
-     * - Whether a module is locked
-     *
-     * @return The value of the requested piece of state.
-     * @throw none No throw guarantee.
+     *  @throw ??? If hashing any of the inputs throws. Same throw guarantee.
      */
-    template<typename PropertyType>
-    bool ready() const {
-        auto temp = PropertyType::inputs();
-        type::input_map inps(temp.begin(), temp.end());
-        return ready(inps);
-    }
-    bool ready(const type::input_map& inps = type::input_map{}) const;
-
-    bool locked() const noexcept;
-    ///@}
-
-    ///@{
-    /** @name Module state modifiers
-     *
-     */
-    void lock() noexcept;
-    ///@}
-
-    ///@{
-    /** @name Algorithm state accessors
-     *
-     *  These functions allow you to view the state of the module in a read-only
-     *  manner. Each function returns a map whose keys are all of the keywords
-     *  recognized by the module in a particular context (as inputs, as results,
-     *  or as submodules). For the inputs and submodules the values in the map
-     *  are the objects that are currently bound to those keywords (*i.e.*, if
-     *  the module was called right this second those are the values that each
-     *  of those keywords would map to). The results map's values are null and
-     *  will be filled in by the `run` function based on the values of the bound
-     *  inputs and submodules as well as the inputs provided to the module. To
-     *  change the values the inputs or submodules are bound to use
-     *  `change_input` or `change_submodule` respectively.
-     *
-     *  @throw none All functions are no throw guarantee.
-     */
-    const type::input_map& inputs() const noexcept;
-    const type::result_map& results() const;
-    const type::submodule_map& submods() const noexcept;
-    const std::set<type::rtti>& property_types() const noexcept;
-    ///@}
-
-    ///@{
-    /** @name Algorithm state modifiers
-     *
-     * These functions allow you to change what value an input or submodule
-     * keyword is bound to. Changes can only be made
-     *
-     * @param key Which input/submodule you want to modify.
-     * @return The requested input/submodule.
-     *
-     * @throw std::out_of_range if @p key is not a valid key. Strong throw
-     *        guarantee.
-     *
-     */
-    template<typename T>
-    void change_input(const type::key& key, T&& value) {
-        if(locked()) throw std::runtime_error("Module is locked");
-        get_input_(key).change(std::forward<T>(value));
-    }
-    void change_submod(type::key key, std::shared_ptr<Module> new_module);
-    ///@}
-
-    /// Hashes the module
     void hash(type::hasher& h) const;
 
-    /// Returns a string representation of the module suitable for documentation
-    std::string str() const;
-
-    ///@{
-    /** @name Equality comparisons
+    /** @brief Compares two Module instances for equality
      *
-     * Two modules are equal if they both:
+     * Two modules are equivalent if they contain the same algorithm (determined
+     * by comparing the `base` member), they have the same bound inputs, the
+     * same bound set of submodules, the same lockedness, and satisfy the same
+     * property types.
      *
-     * - contain instances of the same ModuleBase class
-     * - have the same bound input values
-     * - have the same bound submodules
-     * - are in the same locked state
+     * @param[in] rhs The instance to compare against
      *
-     * @param rhs The instance to compare against.
-     * @return True if the comparison is true and false otherwise.
-     * @throw ??? if any of the input value comparisons throw. Same throw
-     *        guarantee.
+     * @return True if the instances are equal and false otherwise.
+     *
+     * @throws ??? If the base comparison throws or if any of the input
+     *         comparisons throw. Same guarantee.
      */
     bool operator==(const Module& rhs) const;
+
+    /** @brief Determines if two Module instances are different
+     *
+     * Two modules are equivalent if they contain the same algorithm (determined
+     * by comparing the `base` member), they have the same bound inputs, the
+     * same bound set of submodules, the same lockedness, and satisfy the same
+     * property types.
+     *
+     * @param[in] rhs The instance to compare against.
+     *
+     * @return False if the instances are equal and false otherwise.
+     *
+     * @throws ??? If the base comparison throws or if any of the input
+     *         comparisons throw. Same guarantee.
+     */
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
-    ///@}
+
 private:
     /** @brief Unlocks a locked module
      *
-     * There are very select circumstances when we need to unlock a locked
-     * module. This function will do it.
+     *  There are very select circumstances when we need to unlock a locked
+     *  module. This function will do it.
      *
      * @throw none No throw guarantee.
      */
     void unlock_() noexcept;
 
+    /// Returns the inputs in a read/write state
     ModuleInput& get_input_(const type::key& key);
 
-    /// The instance that actually does everything for us.
-    std::unique_ptr<detail_::ModulePIMPL> pimpl_;
-};
+    /// Guts for adding a property type
+    void add_property_type_(type::rtti prop_type);
 
-std::ostream& operator<<(std::ostream& os, const Module& m);
+    /// Code factorization for ensuring the module is not locked.
+    void assert_not_locked_();
+
+    /// Hides the check of the property type
+    void check_property_type_(type::rtti prop_type);
+
+    /// The instance that actually does everything for us.
+    pimpl_ptr m_pimpl_;
+}; // class Module
+
+//-----------------------------Implementations----------------------------------
+
+inline Module Module::unlocked_copy() const {
+    Module rv(*this);
+    rv.unlock_();
+    return rv;
+}
+
+template<typename PropertyType>
+bool Module::ready() const {
+    auto temp = PropertyType::inputs();
+    type::input_map inps(temp.begin(), temp.end());
+    return ready(inps);
+}
+
+template<typename T>
+void Module::change_input(const type::key& key, T&& value) {
+    assert_not_locked_();
+    get_input_(key).change(std::forward<T>(value));
+}
+
+template<typename PropertyType>
+void Module::add_property_type() {
+    assert_not_locked_();
+    add_property_type_(type::rtti(typeid(PropertyType)));
+}
+
+template<typename property_type, typename... Args>
+auto Module::run_as(Args&&... args) {
+    check_property_type_(type::rtti{typeid(property_type)});
+    auto temp = inputs();
+    temp      = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
+    return property_type::unwrap_results(run(temp));
+}
+
+inline void Module::assert_not_locked_() {
+    if(locked()) throw std::runtime_error("Locked modules can not be modified");
+}
 
 } // namespace sde

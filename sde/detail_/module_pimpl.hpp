@@ -12,6 +12,11 @@ namespace sde::detail_ {
  *  these values, and not the values in the developer-provided ModuleBase
  *  instance, that are used. This allows us to preserve the developer's default
  *  state while allowing users to override it.
+ *
+ *  As an implementation note, we choose to punt locked checks to the Module
+ *  class itself. This is because this is best done in templated functions,
+ *  which would prohibit us from using a PIMPL.
+ *
  */
 class ModulePIMPL {
 public:
@@ -27,12 +32,94 @@ public:
     /// How we tell you what's preventing your module from running
     using not_set_type = utilities::CaseInsensitiveMap<std::set<type::key>>;
 
-    ModulePIMPL()                       = default;
+    /** @brief Makes a module with no implementation.
+     *
+     *  The ModulePIMPL instance resulting from this ctor wraps no algorithm,
+     *  has no description, and is not locked. The only way to make the instance
+     *  have an algorithm is to assign to it from an instance that already has
+     *  an algorithm. In general working Module instances will be made by the
+     *  ModuleManager and the only reason to make a Module instance without an
+     *  algorithm is as a placeholder.
+     *
+     *  @throw none No throw guarantee.
+     */
+    ModulePIMPL() = default;
+
+    /** @brief Initializing this ModulePIMPL with a deep copy of @p rhs
+     *
+     *  This ctor will make a deep copy of @p rhs. The resulting ModulePIMPL
+     *  instance will have the same state. Of note this includes locked-ness.
+     *
+     *  @param[in] rhs The instance to deep copy.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
+     *                        Strong throw guarantee.
+     */
     ModulePIMPL(const ModulePIMPL& rhs) = default;
+
+    /** @brief Sets this ModulePIMPL's state to a deep copy of @p rhs
+     *
+     *  This function will set the current instance's state to a deep copy of
+     *  @p rhs's state. The resulting ModulePIMPL have the same state as @p rhs
+     *  including lockedness. Memory associated with the old state will be freed
+     *  up and references will thus become invalid. The notable exception is
+     *  the cache and the results in it, which will only be freed if they are
+     *  not also in use elsewhere.
+     *
+     *  @param[in] rhs The instance to deep copy.
+     *
+     *  @return The current instance set to a deep copy of @p rhs.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
+     *                        Strong throw guarantee.
+     */
     ModulePIMPL& operator=(const ModulePIMPL& rhs) = default;
-    ModulePIMPL(ModulePIMPL&& rhs)                 = default;
+
+    /** @brief Initializes this ModulePIMPL with @p rhs's state
+     *
+     *  This ctor will take ownership of @p rhs's state. The resulting instance
+     *  will have the same state, including locked-ness.
+     *
+     *  @param[in] rhs The instance to take the state of. After this function
+     *                 call @p rhs is in a valid, but otherwise undefined state.
+     *
+     *  @throw none No throw guarantee.
+     */
+    ModulePIMPL(ModulePIMPL&& rhs) = default;
+
+    /** @brief Sets this ModulePIMPL's state to @p rhs's state
+     *
+     *  This function will set the current instance's state to @p rhs's state.
+     *  The resulting ModulePIMPL have the same state as @p rhs
+     *  including lockedness. Memory associated with the old state will be freed
+     *  up and references will thus become invalid. The notable exception is
+     *  the cache and the results in it, which will only be freed if they are
+     *  not also in use elsewhere.
+     *
+     *  @param[in] rhs The instance to take the state of. After this operation
+     *                 @p rhs is in a valid, but otherwise undefined state.
+     *
+     *  @return The current instance, now with @p rhs's state.
+     *
+     *  @throw none No throw guarantee.
+     */
     ModulePIMPL& operator=(ModulePIMPL&& rhs) = default;
 
+    /** @brief Makes a ModulePIMPL that wraps the provided algorithm
+     *
+     *  This is the main useful ctor for the ModulePIMPL class. It take a
+     *  pointer to a ModuleBase instance (which is guaranteed to have a
+     *  algorithm inside it) and optionally the cache that should be used for
+     *  memoization.
+     *
+     * @param[in] base The ModulBase instance this PIMPL is wrapping. The state
+     *                 (inputs, results, etc.) of the module will stem from this
+     *                 instance.
+     * @param[in] cache The object to use for memoization. Default is a nullptr.
+     *
+     * @throw std::bad_alloc if there is insufficient memory to copy the
+     *                       developer's default state. Strong throw guarantee.
+     */
     explicit ModulePIMPL(base_ptr base, cache_ptr cache = cache_ptr{});
 
     /** @brief Frees up the state bound to this module.
@@ -132,7 +219,10 @@ public:
      *
      * @return True if the module is ready and false otherwise
      *
-     * @throw std::bad_alloc if `not_set` throws. Strong throw guarantee.
+     * @throw std::runtime_error if an implementation has not been set yet.
+     *                           Strong throw guarantee.
+     * @throw std::bad_alloc if `not_set` has insufficient memory. Strong throw
+     *                      guarantee.
      */
     bool ready(const type::input_map& inps = {}) const;
 
@@ -260,6 +350,38 @@ public:
      */
     auto& property_types() const;
 
+    /** @brief Returns the human-readable description provided by the developer
+     *
+     *  Developers are encouraged to provide human-readable descriptions of what
+     *  their modules do. This description will be used as documentation. If
+     *  the developer set a description then this function can be used to
+     *  retrieve it.
+     *
+     *  @return The description that the developer set.
+     *
+     *  @throw std::runtime_error if this module does not have an
+     *                            implementation. Strong throw guarantee.
+     *  @throw std::bad_optional_access if the description was not set. Strong
+     *                                  throw guarantee.
+     *
+     */
+    auto& description() const;
+
+    /** @brief Returns a list of things to cite if you use the module.
+     *
+     *  We intend for most of the modules that are used with the SDE to be
+     *  developed in an academic context. In those setting it's important to
+     *  make sure credit is given where credit is due. This function will return
+     *  a list of literature refrences that should be cited if you use this
+     *  module.
+     *
+     *  @return A list of citations.
+     *
+     *  @throw std::runtime_error if this module does not have an implementation
+     *                            set. Strong throw guarantee.
+     */
+    auto& citations() const;
+
     /** @brief Computes the hash of the current instance using the bound params.
      *
      *  This function simply calls memoize with the currently bound inputs.
@@ -315,7 +437,6 @@ public:
      *
      * @return Whatever the module returns.
      *
-     *
      * @throw std::runtime_error if the module does not have an implementation,
      *                           the provided inputs are not ready, or if the
      *                           module is not ready. Strong throw
@@ -324,22 +445,38 @@ public:
      */
     auto run(type::input_map ps);
 
-    ///@{
-    /** @name Equivalence comparisons
+    /** @brief Compares two ModulePIMPL instances for equality
      *
      * Two modules are equivalent if they contain the same algorithm (determined
-     * by comparing the `base` member), they have the same bound inputs, and
-     * they have the same set of submodules.
+     * by comparing the `base` member), they have the same bound inputs, the
+     * same bound set of submodules, the same lockedness, and satisfy the same
+     * property types.
      *
-     * @param rhs The instance to compare against
-     * @return True if the comparison is true and false otherwise.
+     * @param[in] rhs The instance to compare against
+     *
+     * @return True if the instances are equal and false otherwise.
+     *
      * @throws ??? If the base comparison throws or if any of the input
      *         comparisons throw. Same guarantee.
      */
     bool operator==(const ModulePIMPL& rhs) const;
 
+    /** @brief Determines if two ModulePIMPL instances are different
+     *
+     * Two modules are equivalent if they contain the same algorithm (determined
+     * by comparing the `base` member), they have the same bound inputs, the
+     * same bound set of submodules, the same lockedness, and satisfy the same
+     * property types.
+     *
+     * @param[in] rhs The instance to compare against.
+     *
+     * @return False if the instances are equal and false otherwise.
+     *
+     * @throws ??? If the base comparison throws or if any of the input
+     *         comparisons throw. Same guarantee.
+     */
     bool operator!=(const ModulePIMPL& rhs) const { return !((*this) == rhs); }
-    ///@}
+
 private:
     /** @brief Code factorization for merging two sets of inputs.
      *
@@ -458,6 +595,16 @@ inline auto& ModulePIMPL::property_types() const {
     return m_property_types_;
 }
 
+inline auto& ModulePIMPL::description() const {
+    assert_mod_();
+    return m_base_->get_desc();
+}
+
+inline auto& ModulePIMPL::citations() const {
+    assert_mod_();
+    return m_base_->citations();
+}
+
 inline void ModulePIMPL::memoize(type::hasher& h,
                                  type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
@@ -498,11 +645,13 @@ inline auto ModulePIMPL::run(type::input_map ps) {
 
 inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
     if(has_module() != rhs.has_module()) return false;
+    if(locked() != rhs.locked()) return false;
+    if(!has_module()) return true;
 
-    if(std::tie(m_locked_, m_inputs_, m_submods_) !=
-       std::tie(rhs.m_locked_, rhs.m_inputs_, rhs.m_submods_))
+    if(std::tie(inputs(), submods(), property_types()) !=
+       std::tie(rhs.inputs(), rhs.submods(), rhs.property_types()))
         return false;
-    return !has_module() || (*m_base_ == *rhs.m_base_);
+    return (*m_base_ == *rhs.m_base_);
 }
 
 inline type::input_map ModulePIMPL::merge_inputs_(

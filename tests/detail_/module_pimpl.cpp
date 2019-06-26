@@ -7,6 +7,12 @@ using namespace sde::detail_;
 using namespace testing;
 using not_set_t = typename ModulePIMPL::not_set_type;
 
+TEST_CASE("ModulePIMPL : default ctor") {
+    ModulePIMPL p;
+    REQUIRE_FALSE(p.has_module());
+    REQUIRE_FALSE(p.locked());
+}
+
 TEST_CASE("ModulePIMPL : has_module") {
     SECTION("No module") {
         ModulePIMPL p;
@@ -39,18 +45,10 @@ TEST_CASE("ModulePIMPL : locked") {
         ModulePIMPL p;
         REQUIRE_FALSE(p.locked());
     }
-    SECTION("No submodules") {
+    SECTION("Is locked") {
         ModulePIMPL p;
         p.lock();
         REQUIRE(p.locked());
-    }
-    SECTION("Submodules") {
-        auto mod  = make_module_pimpl<SubModModule>();
-        auto mod2 = make_module<NullModule>();
-        mod.submods().at("Submodule 1").change(mod2);
-        mod.lock();
-        REQUIRE(mod.locked());
-        REQUIRE(mod2->locked());
     }
 }
 
@@ -85,9 +83,9 @@ TEST_CASE("ModulePIMPL : not_set") {
 }
 
 TEST_CASE("ModulePIMPL : ready") {
-    SECTION("No PIMPL") {
+    SECTION("Throws if no PIMPL") {
         ModulePIMPL p;
-        REQUIRE_THROWS_AS(p.not_set(), std::runtime_error);
+        REQUIRE_THROWS_AS(p.ready(), std::runtime_error);
     }
     SECTION("Is ready") {
         auto mod = make_module_pimpl<NullModule>();
@@ -95,7 +93,6 @@ TEST_CASE("ModulePIMPL : ready") {
     }
     SECTION("Not ready input") {
         auto mod = make_module_pimpl<NotReadyModule>();
-        not_set_t corr{{"Inputs", std::set<std::string>{"Option 1"}}};
         REQUIRE_FALSE(mod.ready());
         SECTION("Providing input as input fixes it") {
             type::input_map inputs;
@@ -105,7 +102,6 @@ TEST_CASE("ModulePIMPL : ready") {
     }
     SECTION("Not ready submodule") {
         auto mod = make_module_pimpl<SubModModule>();
-        not_set_t corr{{"Submodules", std::set<std::string>{"Submodule 1"}}};
         REQUIRE_FALSE(mod.ready());
         SECTION("Setting it fixes it") {
             mod.submods().at("Submodule 1").change(make_module<NullModule>());
@@ -116,10 +112,6 @@ TEST_CASE("ModulePIMPL : ready") {
 
 TEST_CASE("ModulePIMPL : lock") {
     type::input_map inputs;
-    SECTION("Not locked") {
-        ModulePIMPL p;
-        REQUIRE_FALSE(p.locked());
-    }
     SECTION("No submodules") {
         ModulePIMPL p;
         p.lock();
@@ -236,6 +228,32 @@ TEST_CASE("ModulePIMPL : property_types") {
     }
 }
 
+TEST_CASE("ModulePIMPL : description") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.description(), std::runtime_error);
+    }
+    SECTION("Throws if no description") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE_THROWS_AS(mod.description(), std::bad_optional_access);
+    }
+    SECTION("Works") {
+        auto mod = make_module_pimpl<DescModule>();
+        REQUIRE(mod.description() == "A description");
+    }
+}
+
+TEST_CASE("ModulePIMPL : citations") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.citations(), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module_pimpl<CiteModule>();
+        REQUIRE(mod.citations() == std::vector{std::string{"A citation"}});
+    }
+}
+
 TEST_CASE("ModulePIMPL : hash") {
     SECTION("Inputs not set") {
         auto mod = make_module_pimpl<NotReadyModule>();
@@ -271,8 +289,18 @@ TEST_CASE("ModulePIMPL : run") {
     SECTION("Works") {
         auto mod = make_module_pimpl<ResultModule>();
         REQUIRE(mod.run(type::input_map{}).at("Result 1").value<int>() == 4);
+        SECTION("Locks module") { REQUIRE(mod.locked()); }
     }
 }
+
+// Used to test that different implementations compare different
+struct NullModule2 : ModuleBase {
+    NullModule2() : ModuleBase(this) { satisfies_property_type<NullPT>(); }
+    sde::type::result_map run_(sde::type::input_map,
+                               sde::type::submodule_map) const override {
+        return results();
+    }
+};
 
 TEST_CASE("ModulePIMPL : comparisons") {
     ModulePIMPL p;
@@ -281,4 +309,73 @@ TEST_CASE("ModulePIMPL : comparisons") {
         REQUIRE(p == p2);
         REQUIRE_FALSE(p != p2);
     }
+    SECTION("Different module-ness") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(p != mod);
+        REQUIRE_FALSE(mod == p);
+    }
+    SECTION("Different lockedness") {
+        auto mod  = make_module_pimpl<NullModule>();
+        auto mod2 = make_module_pimpl<NullModule>();
+        mod.lock();
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different inputs") {
+        auto mod  = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        mod.inputs().at("Option 1").change(int{3});
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different submodules") {
+        auto mod  = make_module_pimpl<SubModModule>();
+        auto mod2 = make_module_pimpl<SubModModule>();
+        mod.submods().at("Submodule 1").change(make_module<NullModule>());
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different Implementations") {
+        auto mod  = make_module_pimpl<NullModule>();
+        auto mod2 = make_module_pimpl<NullModule2>();
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different property types") {
+        auto mod  = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        mod.property_types().insert(type::rtti{typeid(NullPT)});
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+}
+
+TEST_CASE("ModulePIMPL : copy ctor") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2(mod);
+    REQUIRE(mod == mod2);
+}
+
+TEST_CASE("ModulePIMPL : copy assignment") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2;
+    auto pmod2 = &(mod2 = mod);
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == mod);
+}
+
+TEST_CASE("ModulePIMPL : move ctor") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2(mod);
+    ModulePIMPL mod3(std::move(mod2));
+    REQUIRE(mod == mod3);
+}
+
+TEST_CASE("ModulePIMPL : move assignment") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2;
+    ModulePIMPL mod3(mod);
+    auto pmod2 = &(mod2 = std::move(mod));
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == mod3);
 }
