@@ -119,6 +119,29 @@ struct SubModModule : sde::ModuleBase {
     }
 };
 
+// Module using every feature
+struct RealDeal : sde::ModuleBase {
+    RealDeal() : sde::ModuleBase(this) {
+        satisfies_property_type<NullPT>();
+        satisfies_property_type<OneIn>();
+        satisfies_property_type<OneOut>();
+
+        description("This module is the real deal. It does math stuff like:\n\n"
+                    ".. math::\n\n"
+                    "   \\sum_{i=0}^N i = \\frac{N(N+1)}{2}\n\n"
+                    "Okay it's not that cool...");
+
+        citation("A. Person. *The Best Article*. A Journal "
+                 "You Have Never Heard Of. 1 (2008).");
+        citation("B. Person. *A So-So Article*. A Journal Everyone Has Heard"
+                 "Of. 1 (2009).");
+    }
+    sde::type::result_map run_(sde::type::input_map,
+                               sde::type::submodule_map) const override {
+        return results();
+    }
+};
+
 // Wraps the creation of a module pimpl w/o going through a module manager
 template<typename T>
 auto make_module_pimpl() {

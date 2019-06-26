@@ -47,7 +47,8 @@ std::string document_module(std::string name, const Module& mod) {
         p << "The following is a list of property types that this module "
              "satisfies.\n\n";
         for(const auto& x : mod.property_types()) {
-            p << "- " << utilities::printing::Demangler::demangle(x) << "\n";
+            p << "- ``" << utilities::printing::Demangler::demangle(x)
+              << "``\n";
         }
     }
     p << "\n";
