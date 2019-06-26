@@ -448,6 +448,7 @@ typename SDEAnyWrapper<T>::wrapper_ptr SDEAnyWrapper<T>::clone_() const {
 template<typename T>
 std::string SDEAnyWrapper<T>::str_() const {
     std::stringstream ss;
+    using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {
         ss << value_();
     } else {

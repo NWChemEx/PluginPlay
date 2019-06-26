@@ -34,6 +34,7 @@ inline static void compare_value(T&& w, corr_t corr) {
 
     SECTION("str") {
         std::stringstream ss;
+        using utilities::printing::operator<<;
         ss << corr;
         REQUIRE(ss.str() == w.str());
     }
