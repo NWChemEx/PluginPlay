@@ -310,7 +310,7 @@ public:
      *
      *  This function returns the RTTI of the wrapped instance.  It should be
      *  noted that the representation of the RTTI is compiler specific and
-     *  should be used wit caution.  If the current instance is not wrapping
+     *  should be used with caution.  If the current instance is not wrapping
      *  anything the result will be typeid(void).
      *
      * @return The RTTI of the wrapped type.
@@ -334,7 +334,7 @@ public:
      *         instance.
      *
      *  This function ultimately works by printing "<empty SDEAny>" if the
-     *  current instance does not contain a value, of the result of forwarding
+     *  current instance does not contain a value, or the result of forwarding
      *  the wrapped value to `std::ostream::operator<<`. Overloads of this
      *  operator for STL containers are leveraged.
      *
@@ -416,7 +416,7 @@ private:
     static wrapper_ptr wrap_ptr_(Args&&... args);
 
     /// The object holding the actual value
-    std::unique_ptr<SDEAnyWrapperBase> m_ptr_;
+    wrapper_ptr m_ptr_;
 };
 
 /** @brief Provides access to the value wrapped in an SDEAny instance.
