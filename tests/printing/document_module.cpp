@@ -148,7 +148,7 @@ TEST_CASE("document_module") {
                     "=====================\n"
                     "\n"
                     "The following subsections provide detailed descriptions of"
-                    "each input recognized\n"
+                    " each input recognized\n"
                     "by this module. The subsection headings are the name of "
                     "the input. Within each\n"
                     "subsection we list:\n"
