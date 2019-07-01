@@ -19,8 +19,7 @@ class shared_ptr;
  *  the structs and not hard-coded types).
  */
 
-namespace sde {
-namespace detail_ {
+namespace sde::detail_ {
 
 /** @brief Determines if a type is a C-string.
  *
@@ -124,28 +123,4 @@ bool operator==(const std::reference_wrapper<LHS_t> lhs,
     return lhs.get() == rhs.get();
 }
 
-/** @brief Generates a struct that determines if the expression compiles
- *
- *  This macro declares a struct (and a specialization of the struct) which has
- *  a constexpr member `value` that is true if the expression compiles and
- *  false otherwise.
- *
- *  @param class_name This will be the name of the resulting class
- *  @param ... This is the expression you want to test. Usual C macro caveats
- *         apply with regards to what can and cannot be in the expression.
- *
- */
-#define EXPRESSION_COMPILES(class_name, ...)                  \
-    template<class T, class = void>                           \
-    struct IsPrintable : std::false_type {};                  \
-    template<class T>                                         \
-    struct IsPrintable<T, std::void_t<decltype(__VA_ARGS__)>> \
-      : std::true_type {}
-
-/// Checks if a type can be given to a std::ostream instance via `<<`
-EXPRESSION_COMPILES(IsPrintable, std::cout << std::declval<T>());
-
-// Clean-up macros
-#undef EXPRESSION_COMPILES
-} // namespace detail_
-} // namespace sde
+} // namespace sde::detail_
