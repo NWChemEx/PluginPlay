@@ -1,11 +1,12 @@
-set(SDE_SRCS module.cpp
-             module_input.cpp
-             module_manager.cpp
-             module_result.cpp
-             submodule_request.cpp
+add_subdirectory(printing)
+
+list(APPEND SDE_SRCS module.cpp
+                     module_input.cpp
+                     module_manager.cpp
+                     module_result.cpp
+                     submodule_request.cpp
 )
 set(SDE_INCLUDES detail_/memoization.hpp
-                 detail_/module_input_pimpl.hpp
                  detail_/module_manager_pimpl.hpp
                  detail_/module_pimpl.hpp
                  detail_/module_result_pimpl.hpp

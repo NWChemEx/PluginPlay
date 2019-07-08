@@ -2,78 +2,98 @@
 #include "sde/module_input.hpp"
 
 namespace sde {
+
 using any_check = typename ModuleInput::any_check;
 
 ModuleInput::ModuleInput() :
-  pimpl_(std::make_unique<detail_::ModuleInputPIMPL>()) {}
+  m_pimpl_(std::make_unique<detail_::ModuleInputPIMPL>()) {}
 
 ModuleInput::ModuleInput(const ModuleInput& rhs) :
-  is_cref_(rhs.is_cref_),
-  is_actually_cref_(rhs.is_actually_cref_),
-  pimpl_(rhs.pimpl_->clone()) {}
+  m_is_cref_(rhs.m_is_cref_),
+  m_is_actually_cref_(rhs.m_is_actually_cref_),
+  m_pimpl_(rhs.m_pimpl_->clone()) {}
 
 ModuleInput::ModuleInput(ModuleInput&& rhs) noexcept = default;
+
 ModuleInput& ModuleInput::operator=(ModuleInput&& rhs) noexcept = default;
-ModuleInput::~ModuleInput() noexcept                            = default;
 
-bool ModuleInput::is_optional() const noexcept { return pimpl_->m_optional; }
+ModuleInput::~ModuleInput() noexcept = default;
+
+bool ModuleInput::has_type() const noexcept { return m_pimpl_->has_type(); }
+
+bool ModuleInput::has_value() const noexcept { return m_pimpl_->has_value(); }
+
+bool ModuleInput::has_description() const noexcept {
+    return m_pimpl_->has_description();
+}
+
+bool ModuleInput::is_optional() const noexcept {
+    return m_pimpl_->is_optional();
+}
+
 bool ModuleInput::is_transparent() const noexcept {
-    return pimpl_->m_transparent;
-}
-bool ModuleInput::ready() const noexcept { return pimpl_->is_ready(); }
-
-const type::description& ModuleInput::description() const noexcept {
-    return pimpl_->m_desc;
+    return m_pimpl_->is_transparent();
 }
 
-void ModuleInput::hash(Hasher& h) const { return pimpl_->hash(h); }
+bool ModuleInput::ready() const noexcept { return m_pimpl_->is_ready(); }
+
+const type::description& ModuleInput::description() const {
+    return m_pimpl_->description();
+}
+
+void ModuleInput::hash(Hasher& h) const { return m_pimpl_->hash(h); }
 
 ModuleInput& ModuleInput::set_description(type::description desc) noexcept {
-    pimpl_->m_desc = std::move(desc);
+    m_pimpl_->set_description(std::move(desc));
     return *this;
 }
 
 ModuleInput& ModuleInput::make_optional() noexcept {
-    pimpl_->m_optional = true;
+    m_pimpl_->make_optional();
     return *this;
 }
 
 ModuleInput& ModuleInput::make_required() noexcept {
-    pimpl_->m_optional = false;
+    m_pimpl_->make_required();
     return *this;
 }
 
 ModuleInput& ModuleInput::make_transparent() noexcept {
-    pimpl_->m_transparent = true;
+    m_pimpl_->make_transparent();
     return *this;
 }
 
 ModuleInput& ModuleInput::make_opaque() noexcept {
-    pimpl_->m_transparent = false;
+    m_pimpl_->make_opaque();
     return *this;
 }
 
-const type::any& ModuleInput::get_() const { return pimpl_->m_value; }
+typename ModuleInput::bounds_check_desc_t ModuleInput::check_descriptions()
+  const {
+    return m_pimpl_->check_descriptions();
+}
+
+const type::any& ModuleInput::get_() const { return m_pimpl_->value(); }
 
 void ModuleInput::change_(type::any new_value) {
-    pimpl_->change(std::move(new_value));
+    m_pimpl_->set_value(std::move(new_value));
 }
 
 bool ModuleInput::is_valid_(const type::any& new_value) const {
-    return pimpl_->is_valid(new_value);
+    return m_pimpl_->is_valid(new_value);
 }
 
 void ModuleInput::set_type_(const std::type_info& type) {
-    pimpl_->set_type(type);
+    m_pimpl_->set_type(type);
 }
 
 ModuleInput& ModuleInput::add_check_(any_check check, type::description desc) {
-    pimpl_->add_check(std::move(check), std::move(desc));
+    m_pimpl_->add_check(std::move(check), std::move(desc));
     return *this;
 }
 
-bool ModuleInput::operator==(const ModuleInput& rhs) const {
-    return *pimpl_ == *rhs.pimpl_;
+bool ModuleInput::operator==(const ModuleInput& rhs) const noexcept {
+    return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
 } // namespace sde

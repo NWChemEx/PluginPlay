@@ -43,6 +43,8 @@ const type::submodule_map& Module::submods() const noexcept {
     return pimpl_->submods();
 }
 
+std::string Module::str() const {}
+
 bool Module::operator==(const Module& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
@@ -53,6 +55,10 @@ void Module::unlock_() noexcept { pimpl_->unlock(); }
 
 ModuleInput& Module::get_input_(const type::key& key) {
     return pimpl_->inputs().at(key);
+}
+
+std::ostream& operator<<(std::ostream& os, const Module& m) {
+    return os << m.str();
 }
 
 } // namespace sde

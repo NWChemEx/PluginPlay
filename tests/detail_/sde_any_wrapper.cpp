@@ -3,6 +3,7 @@
 #include <sstream>
 
 using namespace sde::detail_;
+using utilities::printing::operator<<;
 
 template<typename corr_t, typename T>
 inline static void compare_value(T&& w, corr_t corr) {

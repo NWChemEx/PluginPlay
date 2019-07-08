@@ -199,6 +199,9 @@ public:
     /// Hashes the module
     void hash(type::hasher& h) const;
 
+    /// Returns a string representation of the module suitable for documentation
+    std::string str() const;
+
     ///@{
     /** @name Equality comparisons
      *
@@ -232,5 +235,7 @@ private:
     /// The instance that actually does everything for us.
     std::unique_ptr<detail_::ModulePIMPL> pimpl_;
 };
+
+std::ostream& operator<<(std::ostream& os, const Module& m);
 
 } // namespace sde
