@@ -173,6 +173,7 @@ public:
     const type::input_map& inputs() const noexcept;
     const type::result_map& results() const;
     const type::submodule_map& submods() const noexcept;
+    const std::set<type::rtti>& property_types() const noexcept;
     ///@}
 
     ///@{

@@ -1,4 +1,5 @@
 #include "sde/printing/detail_/print_inputs.hpp"
+#include <utilities/printing/table.hpp>
 
 namespace sde::printing::detail_ {
 

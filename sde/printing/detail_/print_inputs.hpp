@@ -2,7 +2,6 @@
 #include "sde/module_input.hpp"
 #include "sde/printing/detail_/rest_printer.hpp"
 #include "sde/types.hpp"
-#include <utilities/printing/table.hpp>
 
 namespace sde::printing::detail_ {
 

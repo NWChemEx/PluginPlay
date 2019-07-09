@@ -79,6 +79,7 @@ public:
     const type::input_map& inputs() const noexcept { return inputs_; }
     const type::submodule_map& submods() const noexcept { return submods_; }
     const std::type_info& type() const noexcept { return type_(); }
+    const auto& property_types() const noexcept { return m_property_types_; }
     ///@}
 
     ///@{
@@ -200,6 +201,7 @@ protected:
     template<typename property_type>
     void satisfies_property_type() {
         property_type p;
+        m_property_types_.insert(type::rtti(typeid(property_type)));
         auto inputs = p.inputs();
         inputs_.insert(inputs.begin(), inputs.end());
         auto results = p.results();
@@ -247,6 +249,8 @@ private:
     type::input_map inputs_;
     type::result_map results_;
     type::submodule_map submods_;
+
+    std::set<type::rtti> m_property_types_;
     //@}
 
     //@{
