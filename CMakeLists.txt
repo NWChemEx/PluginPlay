@@ -20,8 +20,7 @@ cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
 
 cpp_find_or_build_dependency(
     NAME utilities
-    URL github.com/ryanmrichard/utilities
-    BRANCH develop
+    URL github.com/NWChemEx-Project/utilities
     PRIVATE
     CMAKE_ARGS BUILD_TESTS=OFF
 )
