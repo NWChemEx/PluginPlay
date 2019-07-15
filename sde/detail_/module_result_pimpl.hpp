@@ -3,93 +3,228 @@
 #include "sde/types.hpp"
 #include <memory>
 #include <typeindex>
+#include <utilities/printing/demangler.hpp>
 
-namespace sde {
-namespace detail_ {
+namespace sde::detail_ {
 
 /** @brief The class responsible for implementing the ModuleResult class
  *
- *  Like the ModuleInput class, this class is not meant to be used directly. If
- *  you must use this class it is recommended that you use the member functions
- *  as much as possible to benefit from error checking.
+ *  This class is very similar to ModuleInputPIMPL except that it is geared at
+ *  the values that are returned form a module. Handeling the inputs is a lot
+ *  more tricky than the results because the result are immutable and always
+ *  passed around as shared pointers. Thus this class is also much simpler in
+ *  implementation ModuleInputPIMPL.
  *
  */
-struct ModuleResultPIMPL {
+class ModuleResultPIMPL {
+public:
     /// The type of a shared_ptr to a read-only SDEAny
     using shared_any = std::shared_ptr<const type::any>;
 
-    /// Makes a copy of this class on the heap
+    /** @brief Makes a deep copy of the PIMPL on the heap.
+     *
+     *  This function is primarily for use by the ModuleResult class to easily
+     *  copy the PIMPL.
+     *
+     *  @return A unique_ptr to the new PIMPL.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy this
+     *                        instance. Strong throw guarantee.
+     */
     auto clone() const { return std::make_unique<ModuleResultPIMPL>(*this); }
 
-    /// Returns true if the type is set and false otherwise
-    bool is_type_set() const noexcept {
-        return m_type != std::type_index(typeid(std::nullptr_t));
-    }
-
-    /// Determines if the wrapped value is valid
-    bool is_valid(const type::any& value) const {
-        if(!is_type_set()) throw std::runtime_error("Type must be set first");
-        if(!value.has_value()) return false;
-        return std::type_index(value.type()) == m_type;
-    }
-
-    ///@{
-    /** @name State setters.
+    /** @brief Has the type of this result field been set?
      *
-     * @param new_xxx The value the piece of state should be set to.
-     * @throw std::runtime_error is thrown by 1 if the type is already set and
-     *        by 2 if the type has not been set yet. Strong throw guarantee.
-     * @throw std::invalid_argument is thrown by 2 if the type of the value is
-     *        not the same as the developer specified. Strong throw guarantee.
+     *  Each result field holds an object of a given type. This function can be
+     *  used to determine if the type of the present field has been set.
+     *
+     *  @return True if this field's type has been set and false otherwise.
+     *
+     *  @throw none No throw gurantee.
      */
-    void set_type(const std::type_info& new_type) {
-        if(is_type_set()) throw std::runtime_error("Can't set type twice");
-        m_type = std::type_index(new_type);
-    }
+    bool has_type() const noexcept { return m_type_.has_value(); }
 
-    void change(shared_any new_value) {
-        if(!is_type_set()) throw std::runtime_error("Type must be set first.");
-        if(!is_valid(*new_value))
-            throw std::invalid_argument("Value has failed one or more checks.");
-        m_value = new_value;
-    }
-
-    ///@{
-    /** @name Equality comparisons
+    /** @brief Has a value been bound to this field yet?
      *
-     * Two ModuleResultPIMPL instances are equivalent if they hold the same
-     * value, have the same description of that value, and require the same
-     * type.
+     *  At any given time a result field either has a value bound to it or it
+     *  does not. This function can be used to determine which state the field
+     *  is in.
      *
-     * @param rhs The instance to compare to.
-     * @return Whether the specified comparison is true or not.
-     * @throw ??? Throws if the value's comparison throws. Same guarantee.
+     *  @return true if the this field has a value and false otherwise.
+     *
+     *  @throw none No throw guarantee.
      */
-    bool operator==(const ModuleResultPIMPL& rhs) const {
-        return std::tie(m_value, m_desc, m_type) ==
-               std::tie(rhs.m_value, rhs.m_desc, rhs.m_type);
-    }
+    bool has_value() const noexcept { return static_cast<bool>(m_value_); }
 
-    bool operator!=(const ModuleResultPIMPL& rhs) const {
-        return !((*this) == rhs);
-    }
-    ///@}
-
-    ///@{
-    /** @name State
+    /** @brief Does this result have a description?
      *
-     * The members in this section are the state of the ModuleResult instance.
-     * Respectively they store:
+     *  This function is used to determine if the developer has provided a
+     *  human-readable description of this result field or not.
      *
-     * - The type-erased value of this return
-     * - A description of the value
-     * - The type the value must adhere to
+     *  @return True if this result has a description and false otherwise.
+     *
+     *  @throw none No throw guarantee.
      */
-    shared_any m_value;
-    type::description m_desc = "";
-    std::type_index m_type   = std::type_index(typeid(std::nullptr_t));
-    ///@}
-};
+    bool has_description() const noexcept { return m_desc_.has_value(); }
 
-} // namespace detail_
-} // namespace sde
+    /** @brief Sets the type this result field must have.
+     *
+     *  Result fields are always types akin to std::shared_ptr<const T>. This
+     *  function sets the RTII of the field to that of T. T is determined by
+     *  the ModuleResult class and fowarded to this class.
+     *
+     *  @param[in] new_type The RTTI of this field.
+     *
+     *  @throw std::runtime_error if the value has already been set and this
+     *                            call would change the type. Strong throw
+     *                            guarantee.
+     */
+    void set_type(type::rtti new_type);
+
+    /** @brief Binds a value to this result field
+     *
+     *  This function is used to bind @p new_value to the present field. This
+     *  call will ensure that the field is ready (i.e., the type of the field
+     *  is set) and that @p new_value is of the proper type.
+     *
+     * @param[in] new_value The value to bind to this field.
+     *
+     * @throw std::bad_optional_access if the type has not been set. Strong
+     *                                 throw guarantee.
+     * @throw std::invalid_argument if @p new_value does not have the correct
+     *                              type. Strong throw guarantee.
+     */
+    void set_value(shared_any new_value);
+
+    /** @brief Sets this result field's description.
+     *
+     *  This function is used to set the human-readable description of what this
+     *  result field is. If the description has been previously set this call
+     *  will overwrite the previous description.
+     *
+     *  @param[in] desc The description of this result field.
+     *
+     *  @throw none No throw guarantee.
+     */
+    void set_description(type::description desc) noexcept;
+
+    /** @brief Returns the RTTI associated with the bound value
+     *
+     *  Each field must be of a well defined type. This function is used to
+     *  retrieve the RTTI of that type.
+     *
+     *  @return The RTTI of the bound value.
+     *
+     *  @throw std::bad_optional_access if the type of this field has not been
+     *                                  set. Strong throw guarantee.
+     */
+    type::rtti type() const { return m_type_.value(); }
+
+    /** @brief Retrieves the bound value.
+     *
+     *  This function can be used to retrieve the value bound to this result
+     *  field. If no value is currently bound then an error will be raised.
+     *
+     *  @return A shared pointer to the type-erased bound value.
+     *
+     *  @throw std::runtime_error if no value is bound to this field. Strong
+     *                            throw guarantee.
+     */
+    auto& value() const;
+
+    /** @brief Retrieves the human-readable description of the bound value.
+     *
+     *  Developers are encouraged to write descriptions of what a result
+     *  represents. These strings are purely for edification. This function
+     *  can be used to retrieve the description, if the developer wrote one.
+     *
+     *  @return The human-readable description of the field.
+     *
+     *  @throw std::bad_optional_access if this field does not have a
+     *                                  description. Strong throw guarantee.
+     */
+    auto& description() const { return m_desc_.value(); }
+
+    /** @brief Compares two ModuleResultPIMPL instances for equality
+     *
+     *  Two ModuleResultPIMPL instances are equivalent if they hold the same
+     *  value, have the same description of that value, and require the same
+     *  type.
+     *
+     *  @param[in] rhs The instance to compare to.
+     *
+     *  @return True if the two instances are equal and false otherwise.
+     *
+     *  @throw ??? Throws if the value's comparison throws. Same guarantee.
+     */
+    bool operator==(const ModuleResultPIMPL& rhs) const;
+
+    /** @brief Determines if two ModuleResultPIMPL instances are different
+     *
+     *  Two ModuleResultPIMPL instances are equivalent if they hold the same
+     *  value, have the same description of that value, and require the same
+     *  type.
+     *
+     *  @param[in] rhs The instance to compare to.
+     *
+     *  @return False if the two instances are equal and true otherwise.
+     *
+     *  @throw ??? Throws if the value's comparison throws. Same guarantee.
+     */
+    bool operator!=(const ModuleResultPIMPL& rhs) const;
+
+private:
+    /// The type-erased value bound to this field
+    shared_any m_value_;
+
+    /// A human-readable description of what this field is
+    std::optional<type::description> m_desc_;
+
+    /// The RTTI of this field
+    std::optional<type::rtti> m_type_;
+}; // class ModuleResultPIMPL
+
+//-----------------------------------Implementations----------------------------
+
+inline void ModuleResultPIMPL::set_type(type::rtti new_type) {
+    if(has_value() && type() != new_type)
+        throw std::runtime_error("Can't change type after value is set");
+    m_type_.emplace(std::type_index(new_type));
+}
+
+inline void ModuleResultPIMPL::set_value(shared_any new_value) {
+    if(std::type_index(new_value->type()) != type()) {
+        std::string msg{"Value is not of type: "};
+        msg += utilities::printing::Demangler::demangle(type().name());
+        throw std::invalid_argument(msg);
+    }
+    m_value_ = new_value;
+}
+
+inline void ModuleResultPIMPL::set_description(
+  type::description desc) noexcept {
+    m_desc_.emplace(std::move(desc));
+}
+
+inline auto& ModuleResultPIMPL::value() const {
+    if(has_value()) return m_value_;
+    throw std::runtime_error("Result does not have a bound value");
+}
+
+bool ModuleResultPIMPL::operator==(const ModuleResultPIMPL& rhs) const {
+    if(has_type() != rhs.has_type()) return false;
+    if(has_value() != rhs.has_value()) return false;
+    if(has_description() != rhs.has_description()) return false;
+
+    if(has_type() && type() != rhs.type()) return false;
+    if(has_value() && (*value() != *(rhs.value()))) return false;
+    if(has_description() && description() != rhs.description()) return false;
+
+    return true;
+}
+
+bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
+    return !((*this) == rhs);
+}
+
+} // namespace sde::detail_
