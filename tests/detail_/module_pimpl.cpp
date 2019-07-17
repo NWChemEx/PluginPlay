@@ -1,239 +1,381 @@
-#include "examples/module_base.hpp"
+#include "sde/detail_/module_pimpl.hpp"
+#include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/module_pimpl.hpp>
-#include <sde/module.hpp>
+
 using namespace sde;
 using namespace sde::detail_;
+using namespace testing;
+using not_set_t = typename ModulePIMPL::not_set_type;
 
-/* For simplicity we use the modules defined in the examples, but this test is
- * not considered part of the examples since the ModulePIMPL class is an
- * implementation detail.
- */
-
-using input_map  = type::input_map;
-using result_map = type::result_map;
-using cache_type = typename ModulePIMPL::cache_type;
-
-inline std::shared_ptr<Module> area_module() {
-    auto area  = std::make_shared<Rectangle>();
-    auto parea = std::make_unique<ModulePIMPL>(area);
-    return std::make_shared<Module>(std::move(parea));
+TEST_CASE("ModulePIMPL : default ctor") {
+    ModulePIMPL p;
+    REQUIRE_FALSE(p.has_module());
+    REQUIRE_FALSE(p.locked());
 }
 
-TEST_CASE("ModulePIMPL class : Default ctor") {
-    ModulePIMPL p;
-    SECTION("State") {
-        REQUIRE(!p.ready());
-        REQUIRE(!p.locked());
-        REQUIRE(p.inputs() == input_map{});
-        SECTION("Problems") {
-            auto ps = p.not_set();
-            REQUIRE(ps.count("Algorithm") == 1);
+TEST_CASE("ModulePIMPL : has_module") {
+    SECTION("No module") {
+        ModulePIMPL p;
+        REQUIRE_FALSE(p.has_module());
+    }
+    SECTION("Has module") {
+        ModulePIMPL p = make_module_pimpl<NullModule>();
+        REQUIRE(p.has_module());
+    }
+}
+
+TEST_CASE("ModulePIMPL : has_description") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.has_description(), std::runtime_error);
+    }
+    SECTION("No description") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE_FALSE(mod.has_description());
+    }
+    SECTION("Description") {
+        auto mod = make_module_pimpl<DescModule>();
+        REQUIRE(mod.has_description());
+    }
+}
+
+TEST_CASE("ModulePIMPL : locked") {
+    type::input_map inputs;
+    SECTION("Not locked") {
+        ModulePIMPL p;
+        REQUIRE_FALSE(p.locked());
+    }
+    SECTION("Is locked") {
+        ModulePIMPL p;
+        p.lock();
+        REQUIRE(p.locked());
+    }
+}
+
+TEST_CASE("ModulePIMPL : not_set") {
+    SECTION("No PIMPL") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.not_set(), std::runtime_error);
+    }
+    SECTION("Is ready") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.not_set().empty());
+    }
+    SECTION("Not ready input") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        not_set_t corr{{"Inputs", std::set<std::string>{"Option 1"}}};
+        REQUIRE(mod.not_set() == corr);
+        SECTION("Providing input as input fixes it") {
+            type::input_map inputs;
+            inputs["Option 1"];
+            REQUIRE(mod.not_set(inputs).empty());
         }
     }
-    SECTION("Error checking") {
+    SECTION("Not ready submodule") {
+        auto mod = make_module_pimpl<SubModModule>();
+        not_set_t corr{{"Submodules", std::set<std::string>{"Submodule 1"}}};
+        REQUIRE(mod.not_set() == corr);
+        SECTION("Setting it fixes it") {
+            mod.submods().at("Submodule 1").change(make_module<NullModule>());
+            REQUIRE(mod.not_set().empty());
+        }
+    }
+}
+
+TEST_CASE("ModulePIMPL : ready") {
+    SECTION("Throws if no PIMPL") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.ready(), std::runtime_error);
+    }
+    SECTION("Is ready") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.ready());
+    }
+    SECTION("Not ready input") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        REQUIRE_FALSE(mod.ready());
+        SECTION("Providing input as input fixes it") {
+            type::input_map inputs;
+            inputs["Option 1"];
+            REQUIRE(mod.ready(inputs));
+        }
+    }
+    SECTION("Not ready submodule") {
+        auto mod = make_module_pimpl<SubModModule>();
+        REQUIRE_FALSE(mod.ready());
+        SECTION("Setting it fixes it") {
+            mod.submods().at("Submodule 1").change(make_module<NullModule>());
+            REQUIRE(mod.ready());
+        }
+    }
+}
+
+TEST_CASE("ModulePIMPL : lock") {
+    type::input_map inputs;
+    SECTION("No submodules") {
+        ModulePIMPL p;
+        p.lock();
+        REQUIRE(p.locked());
+    }
+    SECTION("Throws if submodule is not ready") {
+        auto mod  = make_module_pimpl<SubModModule>();
+        auto mod2 = make_module<SubModModule>();
+        mod.submods().at("Submodule 1").change(mod2);
+        REQUIRE_THROWS_AS(mod.lock(), std::runtime_error);
+    }
+    SECTION("Submodules") {
+        auto mod  = make_module_pimpl<SubModModule>();
+        auto mod2 = make_module<NullModule>();
+        mod.submods().at("Submodule 1").change(mod2);
+        mod.lock();
+        REQUIRE(mod.locked());
+        REQUIRE(mod2->locked());
+    }
+}
+
+TEST_CASE("ModulePIMPL : unlock") {
+    SECTION("unlocked") {
+        ModulePIMPL p;
+        p.unlock();
+        REQUIRE_FALSE(p.locked());
+    }
+    SECTION("locked") {
+        ModulePIMPL p;
+        p.lock();
+        p.unlock();
+        REQUIRE_FALSE(p.locked());
+    }
+}
+
+TEST_CASE("ModulePIMPL : results()") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
         REQUIRE_THROWS_AS(p.results(), std::runtime_error);
     }
-}
-
-TEST_CASE("ModulePIMPL class : primary ctor") {
-    SECTION("No submodules") {
-        auto ptr = std::make_shared<Rectangle>();
-        ModulePIMPL p(ptr);
-        SECTION("State") {
-            REQUIRE(!p.ready());
-            REQUIRE(!p.locked());
-            SECTION("Problems") {
-                auto ps = p.not_set();
-                REQUIRE(ps.count("Inputs") == 1);
-                std::set<std::string> corr{"Dimension 1", "Dimension 2"};
-                REQUIRE(ps.at("Inputs") == corr);
-            }
-            SECTION("No problems with inputs") {
-                auto ps = p.not_set(p.inputs());
-                REQUIRE(ps.empty());
-            }
-        }
+    SECTION("No results") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.results().empty());
     }
-    SECTION("Submodules") {
-        auto ptr = std::make_shared<Prism>();
-        ModulePIMPL p(ptr);
-        SECTION("State") {
-            REQUIRE(!p.ready());
-            REQUIRE(!p.locked());
-            SECTION("Problems") {
-                auto ps = p.not_set();
-                SECTION("Inputs") {
-                    REQUIRE(ps.count("Inputs") == 1);
-                    std::set<std::string> corr{"Dimensions"};
-                    REQUIRE(ps.at("Inputs") == corr);
-                }
-                SECTION("Submodules") {
-                    REQUIRE(ps.count("Submodules") == 1);
-                    std::set<std::string> corr{"area"};
-                    REQUIRE(ps.at("Submodules") == corr);
-                }
-            }
-        }
+    SECTION("Results") {
+        auto mod = make_module_pimpl<ResultModule>();
+        type::result_map corr;
+        corr["Result 1"].set_type<int>();
+        REQUIRE(mod.results() == corr);
     }
 }
 
-TEST_CASE("ModulePIMPL class : equality") {
-    SECTION("Default ctor") {
-        ModulePIMPL pimpl1, pimpl2;
-        REQUIRE(pimpl1 == pimpl2);
-        REQUIRE(!(pimpl1 != pimpl2));
-        SECTION("inputs") {
-            pimpl1.inputs()["key"] = ModuleInput{};
-            REQUIRE(pimpl1 != pimpl2);
-            REQUIRE(!(pimpl1 == pimpl2));
-        }
-        SECTION("Submods") {
-            pimpl1.submods()["key"] = SubmoduleRequest{};
-            REQUIRE(pimpl1 != pimpl2);
-            REQUIRE(!(pimpl1 == pimpl2));
-        }
+TEST_CASE("ModulePIMPL : inputs()") {
+    SECTION("No PIMPL") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.inputs(), std::runtime_error);
     }
-    SECTION("Primary construction") {
-        auto ptr = std::make_shared<Rectangle>();
-        ModulePIMPL pimpl1(ptr);
-        SECTION("Same module") {
-            ModulePIMPL pimpl2(ptr);
-            REQUIRE(pimpl1 == pimpl2);
-            REQUIRE(!(pimpl1 != pimpl2));
-            SECTION("locked-ness") {
-                pimpl1.lock();
-                REQUIRE(pimpl1 != pimpl2);
-                REQUIRE(!(pimpl1 == pimpl2));
-            }
-        }
-        SECTION("Different module") {
-            auto ptr2 = std::make_shared<Prism>();
-            ModulePIMPL pimpl2(ptr2);
-            REQUIRE(pimpl2 != pimpl1);
-            REQUIRE(!(pimpl2 == pimpl1));
-        }
+    SECTION("No inputs") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.inputs().empty());
+    }
+    SECTION("Inputs") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        type::input_map corr;
+        corr["Option 1"].set_type<int>();
+        REQUIRE(mod.inputs() == corr);
+    }
+    SECTION("Doesn't change module base") {
+        auto mod_base = std::make_shared<NullModule>();
+        ModulePIMPL p(mod_base);
+        REQUIRE(&(mod_base->inputs()) != &(p.inputs()));
     }
 }
 
-TEST_CASE("ModulePIMPL class : hash") {
-    type::hasher h(bphash::HashType::Hash128);
-    SECTION("Actual state") {
-        auto ptr = std::make_shared<Rectangle>();
-        ModulePIMPL pimpl(ptr);
-        pimpl.inputs().at("Dimension 1").change(double{1.23});
-        pimpl.inputs().at("Dimension 2").change(double{4.56});
-        pimpl.hash(h);
-        auto hv = bphash::hash_to_string(h.finalize());
-        // std::cout << hv <<std::endl;
-        REQUIRE(hv == "88a81704d8a35c1e58e5d2eba110a94f");
+TEST_CASE("ModulePIMPL : submods()") {
+    SECTION("No implementation") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.submods(), std::runtime_error);
+    }
+    SECTION("No submods") {
+        auto mod = make_module_pimpl<testing::NullModule>();
+        REQUIRE(mod.submods().empty());
+    }
+    SECTION("Submods") {
+        auto mod = make_module_pimpl<testing::SubModModule>();
+        type::submodule_map corr;
+        corr["Submodule 1"].set_type<testing::NullPT>();
+        REQUIRE(mod.submods() == corr);
+    }
+    SECTION("Doesn't change module base") {
+        auto mod_base = std::make_shared<NullModule>();
+        ModulePIMPL p(mod_base);
+        REQUIRE(&(mod_base->submods()) != &(p.submods()));
     }
 }
 
-TEST_CASE("ModulePIMPL class : memoization") {
-    type::hasher h(bphash::HashType::Hash128);
-    ModulePIMPL pimpl(std::make_shared<Prism>());
-    pimpl.submods().at("area").change(area_module());
-    auto inputs = pimpl.inputs();
-    inputs.at("Dimensions").change(std::vector<double>{1.23, 4.56, 7.89});
-    SECTION("Default memoization") {
-        pimpl.memoize(h, inputs);
-        auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "f735bc5fea4e675d858f81fe9bc218cd");
+TEST_CASE("ModulePIMPL : property_types") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.property_types(), std::runtime_error);
     }
-    SECTION("Different input") {
-        inputs.at("Dimensions").change(std::vector<double>{1.11, 2.22, 3.33});
-        pimpl.memoize(h, inputs);
-        auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "14a280315ed0883345903b5ef34ee4e0");
+    SECTION("No property types") {
+        auto mod = make_module_pimpl<NoPTModule>();
+        REQUIRE(mod.property_types().empty());
     }
-    SECTION("Different submods") {
-        pimpl.submods().at("area").value().change_input("Dimension 1", 1.23);
-        pimpl.memoize(h, inputs);
-        auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "d0571da6f22c6a9491816e8dd7b9f95f");
+    SECTION("Has prop types") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.property_types() == std::set{type::rtti{typeid(NullPT)}});
+    }
+    SECTION("Doesn't change module base") {
+        auto mod_base = std::make_shared<NullModule>();
+        ModulePIMPL p(mod_base);
+        REQUIRE(&(mod_base->property_types()) != &(p.property_types()));
     }
 }
 
-TEST_CASE("ModulePIMPL class : ready") {
-    SECTION("No submodules") {
-        auto ptr = std::make_shared<Rectangle>();
-        ModulePIMPL p(ptr);
-        REQUIRE(!p.ready());
-        SECTION("Fix problems") { REQUIRE(p.ready(p.inputs())); }
+TEST_CASE("ModulePIMPL : description") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.description(), std::runtime_error);
     }
-    SECTION("Submodules") {
-        auto ptr = std::make_shared<Prism>();
-        ModulePIMPL p(ptr);
-        REQUIRE(!p.ready());
-        SECTION("Fix inputs") { REQUIRE(!p.ready(p.inputs())); }
-        SECTION("Fix all problems") {
-            p.submods().at("area").change(area_module());
-            REQUIRE(p.ready(p.inputs()));
-        }
+    SECTION("Throws if no description") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE_THROWS_AS(mod.description(), std::bad_optional_access);
+    }
+    SECTION("Works") {
+        auto mod = make_module_pimpl<DescModule>();
+        REQUIRE(mod.description() == "A description");
     }
 }
 
-TEST_CASE("ModulePIMPL class : not_set") {
-    SECTION("No submodules") {
-        auto ptr = std::make_shared<Rectangle>();
-        ModulePIMPL p(ptr);
-        SECTION("Fix problems") {
-            p.inputs().at("Dimension 1").change(1.23);
-            p.inputs().at("Dimension 2").change(4.56);
-            auto ps = p.not_set(p.inputs());
-            REQUIRE(ps.empty());
-            REQUIRE(p.ready());
-        }
+TEST_CASE("ModulePIMPL : citations") {
+    SECTION("Throws if no impl") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.citations(), std::runtime_error);
     }
-    SECTION("Submodules") {
-        auto ptr = std::make_shared<Prism>();
-        ModulePIMPL p(ptr);
-        SECTION("Fix inputs") {
-            std::vector<double> dims{1.23, 4.56, 7.89};
-            p.inputs().at("Dimensions").change(dims);
-            auto ps = p.not_set(p.inputs());
-            REQUIRE(ps.count("Inputs") == 0);
-            REQUIRE(ps.count("Submodules") == 1);
-            std::set<std::string> corr{"area"};
-            REQUIRE(ps.at("Submodules") == corr);
-        }
-        SECTION("Fix all problems") {
-            std::vector<double> dims{1.23, 4.56, 7.89};
-            p.inputs().at("Dimensions").change(dims);
-            p.submods().at("area").change(area_module());
-            auto ps = p.not_set(p.inputs());
-            REQUIRE(ps.empty());
-            REQUIRE(p.ready());
-        }
+    SECTION("Works") {
+        auto mod = make_module_pimpl<CiteModule>();
+        REQUIRE(mod.citations() == std::vector{std::string{"A citation"}});
     }
 }
 
-TEST_CASE("ModulePIMPL class : run") {
-    SECTION("No submodules") {
-        auto ptr = std::make_shared<Rectangle>();
-        auto c   = std::make_shared<cache_type>();
-        ModulePIMPL p(ptr, c);
-        p.inputs().at("Dimension 1").change(1.23);
-        p.inputs().at("Dimension 2").change(4.56);
-
-        SECTION("Can run it") {
-            REQUIRE(!p.locked());
-            REQUIRE(!p.is_cached(input_map{}));
-            auto rv = p.run(input_map{});
-            REQUIRE(rv.at("Area").value<double>() == 1.23 * 4.56);
-            REQUIRE(p.locked());
-            REQUIRE(p.is_cached(input_map{}));
-        }
+TEST_CASE("ModulePIMPL : hash") {
+    SECTION("Inputs not set") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        REQUIRE(hash_objects(mod) == "cbc357ccb763df2852fee8c4fc7d55f2");
     }
-
-    SECTION("Submodules") {
-        auto ptr = std::make_shared<Prism>();
-        ModulePIMPL p(ptr);
-        std::vector<double> dims{1.23, 4.56, 7.89};
-        p.inputs().at("Dimensions").change(dims);
-        p.submods().at("area").change(area_module());
-        auto rv = p.run(input_map{});
-        REQUIRE(rv.at("volume").value<double>() == 1.23 * 4.56 * 7.89);
+    SECTION("Input set") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        mod.inputs().at("Option 1").change(3);
+        REQUIRE(hash_objects(mod) == "9a4294b64e60cc012c5ed48db4cd9c48");
     }
+}
+
+TEST_CASE("ModulePIMPL : is_cached") {
+    SECTION("No cache") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE_FALSE(mod.is_cached(type::input_map{}));
+    }
+}
+
+TEST_CASE("ModulePIMPL : run") {
+    SECTION("Throws if no implementation") {
+        ModulePIMPL p;
+        REQUIRE_THROWS_AS(p.run(type::input_map{}), std::runtime_error);
+    }
+    SECTION("Throws if inputs are not ready") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod.run(mod.inputs()), std::runtime_error);
+    }
+    SECTION("Throws if the module is not ready") {
+        auto mod = make_module_pimpl<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod.run(type::input_map{}), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module_pimpl<ResultModule>();
+        REQUIRE(mod.run(type::input_map{}).at("Result 1").value<int>() == 4);
+        SECTION("Locks module") { REQUIRE(mod.locked()); }
+    }
+}
+
+// Used to test that different implementations compare different
+struct NullModule2 : ModuleBase {
+    NullModule2() : ModuleBase(this) { satisfies_property_type<NullPT>(); }
+    sde::type::result_map run_(sde::type::input_map,
+                               sde::type::submodule_map) const override {
+        return results();
+    }
+};
+
+TEST_CASE("ModulePIMPL : comparisons") {
+    ModulePIMPL p;
+    SECTION("Empty") {
+        ModulePIMPL p2;
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p != p2);
+    }
+    SECTION("Different module-ness") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(p != mod);
+        REQUIRE_FALSE(mod == p);
+    }
+    SECTION("Different lockedness") {
+        auto mod  = make_module_pimpl<NullModule>();
+        auto mod2 = make_module_pimpl<NullModule>();
+        mod.lock();
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different inputs") {
+        auto mod  = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        mod.inputs().at("Option 1").change(int{3});
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different submodules") {
+        auto mod  = make_module_pimpl<SubModModule>();
+        auto mod2 = make_module_pimpl<SubModModule>();
+        mod.submods().at("Submodule 1").change(make_module<NullModule>());
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different Implementations") {
+        auto mod  = make_module_pimpl<NullModule>();
+        auto mod2 = make_module_pimpl<NullModule2>();
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+    SECTION("Different property types") {
+        auto mod  = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        mod.property_types().insert(type::rtti{typeid(NullPT)});
+        REQUIRE(mod != mod2);
+        REQUIRE_FALSE(mod == mod2);
+    }
+}
+
+TEST_CASE("ModulePIMPL : copy ctor") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2(mod);
+    REQUIRE(mod == mod2);
+}
+
+TEST_CASE("ModulePIMPL : copy assignment") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2;
+    auto pmod2 = &(mod2 = mod);
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == mod);
+}
+
+TEST_CASE("ModulePIMPL : move ctor") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2(mod);
+    ModulePIMPL mod3(std::move(mod2));
+    REQUIRE(mod == mod3);
+}
+
+TEST_CASE("ModulePIMPL : move assignment") {
+    auto mod = make_module_pimpl<NullModule>();
+    ModulePIMPL mod2;
+    ModulePIMPL mod3(mod);
+    auto pmod2 = &(mod2 = std::move(mod));
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == mod3);
 }

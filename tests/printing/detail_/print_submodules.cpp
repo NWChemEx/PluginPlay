@@ -71,7 +71,7 @@ TEST_CASE("print_submods") {
     SECTION("Submodules") {
         submods["Submod1"].set_type<testing::NullPT>().set_description(
           "Hello World");
-        submods["Sumbod2"].set_type<testing::NotReadyPT>().set_description(
+        submods["Sumbod2"].set_type<testing::OneIn>().set_description(
           "Bye World");
         print_submods(p, submods);
         auto corr = "##########\n"
@@ -88,13 +88,13 @@ TEST_CASE("print_submods") {
                     "must satisfy.\n"
                     "- Description : How the module will use the submodule.\n"
                     "\n"
-                    "+---------+---------------------+-------------+\n"
-                    "| Key     | Property Type       | Description |\n"
-                    "+=========+=====================+=============+\n"
-                    "| Submod1 | testing::NullPT     | Hello World |\n"
-                    "+---------+---------------------+-------------+\n"
-                    "| Sumbod2 | testing::NotReadyPT | Bye World   |\n"
-                    "+---------+---------------------+-------------+";
+                    "+---------+-----------------+-------------+\n"
+                    "| Key     | Property Type   | Description |\n"
+                    "+=========+=================+=============+\n"
+                    "| Submod1 | testing::NullPT | Hello World |\n"
+                    "+---------+-----------------+-------------+\n"
+                    "| Sumbod2 | testing::OneIn  | Bye World   |\n"
+                    "+---------+-----------------+-------------+";
         REQUIRE(ss.str() == corr);
     }
 }

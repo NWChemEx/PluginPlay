@@ -1,132 +1,458 @@
-#include "examples/module_base.hpp"
+#include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/module_pimpl.hpp>
 #include <sde/module.hpp>
 
 using namespace sde;
-
-inline Module make_module() {
-    auto ptr = std::make_shared<Rectangle>();
-    return Module(std::make_unique<detail_::ModulePIMPL>(ptr));
-}
-
-inline Module make_prism() {
-    auto ptr = std::make_shared<Prism>();
-    return Module(std::make_unique<detail_::ModulePIMPL>(ptr));
-}
+using namespace testing;
+using not_set_t = typename Module::not_ready_type;
 
 TEST_CASE("Module : default ctor") {
-    Module m;
-    REQUIRE(!m.ready());
-    REQUIRE(!m.locked());
-    REQUIRE(m.inputs() == type::input_map{});
-    REQUIRE(m.submods() == type::submodule_map{});
+    Module p;
+    REQUIRE_FALSE(p.has_module());
+    REQUIRE_FALSE(p.locked());
 }
 
-TEST_CASE("Module : Equality") {
-    SECTION("Default state") {
-        Module m1, m2;
-        REQUIRE(m1 == m2);
-        REQUIRE(!(m1 != m2));
+TEST_CASE("Module : unlocked_copy") {
+    SECTION("Copy an unlocked module") {
+        Module p;
+        auto p2 = p.unlocked_copy();
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p.locked());
     }
-    SECTION("Non-default state") {
-        Module m1 = make_module(), m2 = make_module();
-        REQUIRE(m1 == m2);
-        REQUIRE(!(m1 != m2));
+    SECTION("Copy a locked module") {
+        Module p, p3;
+        p.lock();
+        auto p2 = p.unlocked_copy();
+        REQUIRE_FALSE(p2.locked());
+        REQUIRE(p != p2);
+        REQUIRE(p2 == p3);
+    }
+}
 
-        SECTION("Locked-ness") {
-            m1.lock();
-            REQUIRE(m1 != m2);
-            REQUIRE(!(m1 == m2));
-        }
+TEST_CASE("Module : has_module") {
+    SECTION("No module") {
+        Module p;
+        REQUIRE_FALSE(p.has_module());
+    }
+    SECTION("Has module") {
+        auto p = make_module<NullModule>();
+        REQUIRE(p->has_module());
+    }
+}
 
-        SECTION("Input values") {
-            m1.change_input("Dimension 1", double{1.23});
-            REQUIRE(m1 != m2);
-            REQUIRE(!(m1 == m2));
+TEST_CASE("Module : has_description") {
+    SECTION("Throws if no impl") {
+        Module p;
+        REQUIRE_THROWS_AS(p.has_description(), std::runtime_error);
+    }
+    SECTION("No description") {
+        auto mod = make_module<NullModule>();
+        REQUIRE_FALSE(mod->has_description());
+    }
+    SECTION("Description") {
+        auto mod = make_module<DescModule>();
+        REQUIRE(mod->has_description());
+    }
+}
+
+TEST_CASE("Module : locked") {
+    Module p;
+    SECTION("Not locked") { REQUIRE_FALSE(p.locked()); }
+    SECTION("Is locked") {
+        p.lock();
+        REQUIRE(p.locked());
+    }
+}
+
+TEST_CASE("Module : list_not_ready") {
+    SECTION("No PIMPL") {
+        Module p;
+        REQUIRE_THROWS_AS(p.list_not_ready(), std::runtime_error);
+    }
+    SECTION("Is ready") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->list_not_ready().empty());
+    }
+    SECTION("Not ready because of input") {
+        auto mod = make_module<NotReadyModule>();
+        not_set_t corr{{"Inputs", std::set<std::string>{"Option 1"}}};
+        REQUIRE(mod->list_not_ready() == corr);
+        SECTION("Providing input as input fixes it") {
+            type::input_map inputs;
+            inputs["Option 1"];
+            REQUIRE(mod->list_not_ready(inputs).empty());
         }
+    }
+    SECTION("Not ready because of submodule") {
+        auto mod = make_module<SubModModule>();
+        not_set_t corr{{"Submodules", std::set<std::string>{"Submodule 1"}}};
+        REQUIRE(mod->list_not_ready() == corr);
+        SECTION("Setting it fixes it") {
+            mod->change_submod("Submodule 1", make_module<NullModule>());
+            REQUIRE(mod->list_not_ready().empty());
+        }
+    }
+}
+
+TEST_CASE("Module : ready") {
+    SECTION("Throws if no algorithm") {
+        Module p;
+        REQUIRE_THROWS_AS(p.ready(), std::runtime_error);
+    }
+    SECTION("Is ready") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->ready());
+    }
+    SECTION("Not ready because of input") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_FALSE(mod->ready());
+        SECTION("Providing missing input makes it ready") {
+            type::input_map inputs;
+            inputs["Option 1"];
+            REQUIRE(mod->ready(inputs));
+        }
+    }
+    SECTION("Not ready because of missing submodule") {
+        auto mod = make_module<SubModModule>();
+        REQUIRE_FALSE(mod->ready());
+        SECTION("Setting submodule fixes it") {
+            mod->change_submod("Submodule 1", make_module<NullModule>());
+            REQUIRE(mod->ready());
+        }
+    }
+    SECTION("Checking with property type works") {
+        auto mod = make_module<NotReadyModule>();
+        SECTION("Still not ready if property type doesn't fix problem") {
+            REQUIRE_FALSE(mod->ready<NullPT>());
+        }
+        SECTION("Ready if property type fixes problem") {
+            REQUIRE(mod->ready<OneIn>());
+        }
+    }
+}
+
+TEST_CASE("Module : lock") {
+    type::input_map inputs;
+    SECTION("Can lock if no submodules") {
+        Module p;
+        p.lock();
+        REQUIRE(p.locked());
+    }
+    SECTION("Throws if submodules are not ready") {
+        auto mod  = make_module<SubModModule>();
+        auto mod2 = make_module<SubModModule>();
+        mod->change_submod("Submodule 1", mod2);
+        REQUIRE_THROWS_AS(mod->lock(), std::runtime_error);
+    }
+    SECTION("Submodules are ready") {
+        auto mod  = make_module<SubModModule>();
+        auto mod2 = make_module<NullModule>();
+        mod->change_submod("Submodule 1", mod2);
+        mod->lock();
+        REQUIRE(mod->locked());
+        SECTION("Also locks submodule") { REQUIRE(mod2->locked()); }
+    }
+}
+
+TEST_CASE("Module : results()") {
+    SECTION("Throws if no impl") {
+        Module p;
+        REQUIRE_THROWS_AS(p.results(), std::runtime_error);
+    }
+    SECTION("Module has no results") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->results().empty());
+    }
+    SECTION("Module has results") {
+        auto mod = make_module<ResultModule>();
+        type::result_map corr;
+        corr["Result 1"].set_type<int>();
+        REQUIRE(mod->results() == corr);
+    }
+}
+
+TEST_CASE("Module : inputs()") {
+    SECTION("Implementation is not set") {
+        Module p;
+        REQUIRE_THROWS_AS(p.inputs(), std::runtime_error);
+    }
+    SECTION("Module accepts no inputs") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->inputs().empty());
+    }
+    SECTION("Module has inputs") {
+        auto mod = make_module<NotReadyModule>();
+        type::input_map corr;
+        corr["Option 1"].set_type<int>();
+        REQUIRE(mod->inputs() == corr);
+    }
+}
+
+TEST_CASE("Module : submods()") {
+    SECTION("No implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.submods(), std::runtime_error);
+    }
+    SECTION("No submods") {
+        auto mod = make_module<testing::NullModule>();
+        REQUIRE(mod->submods().empty());
+    }
+    SECTION("Has submods") {
+        auto mod = make_module<testing::SubModModule>();
+        type::submodule_map corr;
+        corr["Submodule 1"].set_type<testing::NullPT>();
+        REQUIRE(mod->submods() == corr);
+    }
+}
+
+TEST_CASE("Module : property_types") {
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.property_types(), std::runtime_error);
+    }
+    SECTION("No property types") {
+        auto mod = make_module<NoPTModule>();
+        REQUIRE(mod->property_types().empty());
+    }
+    SECTION("Has property types") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->property_types() == std::set{type::rtti{typeid(NullPT)}});
+    }
+}
+
+TEST_CASE("Module : change_input") {
+    const std::string key{"Option 1"};
+    const int value = 3;
+    SECTION("Throws if locked") {
+        Module p;
+        p.lock();
+        REQUIRE_THROWS_AS(p.change_input(key, value), std::runtime_error);
+    }
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.change_input(key, value), std::runtime_error);
+    }
+    SECTION("Throws if input does not exist") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->change_input("Not a key", 3), std::out_of_range);
+    }
+    SECTION("Throws if value is wrong type") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->change_input(key, key), std::invalid_argument);
+    }
+    SECTION("Works") {
+        auto mod = make_module<NotReadyModule>();
+        mod->change_input(key, value);
+        REQUIRE(mod->inputs().at(key).value<int>() == value);
+    }
+}
+
+TEST_CASE("Module : change_submod") {
+    const std::string key{"Submodule 1"};
+    auto mod   = make_module<SubModModule>();
+    auto value = make_module<NullModule>();
+    SECTION("Throws if locked") {
+        Module p;
+        REQUIRE_THROWS_AS(p.change_submod(key, value), std::runtime_error);
+    }
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.change_submod(key, value), std::runtime_error);
+    }
+    SECTION("Throws if request does not exist") {
+        REQUIRE_THROWS_AS(mod->change_submod("Not a key", value),
+                          std::out_of_range);
+    }
+    SECTION("Throws if value is wrong type") {
+        auto mod2 = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->change_submod(key, mod2), std::runtime_error);
+    }
+    SECTION("Works") {
+        mod->change_submod(key, value);
+        REQUIRE(mod->submods().at(key).value() == *value);
+    }
+}
+
+TEST_CASE("Module : add_property_type") {
+    using T = OneIn;
+    SECTION("Throws if locked") {
+        Module p;
+        REQUIRE_THROWS_AS(p.add_property_type<T>(), std::runtime_error);
+    }
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.add_property_type<T>(), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module<NullModule>();
+        mod->add_property_type<T>();
+        std::set corr{type::rtti{typeid(NullPT)}, type::rtti{typeid(T)}};
+        REQUIRE(mod->property_types() == corr);
+    }
+}
+
+TEST_CASE("Module : description") {
+    SECTION("Throws if no impl") {
+        Module p;
+        REQUIRE_THROWS_AS(p.description(), std::runtime_error);
+    }
+    SECTION("Throws if no description") {
+        auto mod = make_module<NullModule>();
+        REQUIRE_THROWS_AS(mod->description(), std::bad_optional_access);
+    }
+    SECTION("Works") {
+        auto mod = make_module<DescModule>();
+        REQUIRE(mod->description() == "A description");
+    }
+}
+
+TEST_CASE("Module : citations") {
+    SECTION("Throws if no impl") {
+        Module p;
+        REQUIRE_THROWS_AS(p.citations(), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module<CiteModule>();
+        REQUIRE(mod->citations() == std::vector{std::string{"A citation"}});
     }
 }
 
 TEST_CASE("Module : run_as") {
-    Module m(make_module());
-    auto[area] = m.run_as<Area>(1.23, 4.56);
-    REQUIRE(area == 1.23 * 4.56);
+    SECTION("Throws if it module doesn't satisfy property type") {
+        Module p;
+        REQUIRE_THROWS_AS(p.run_as<NullPT>(), std::runtime_error);
+    }
+    SECTION("Throws if inputs are not ready") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->run(mod->inputs()), std::runtime_error);
+    }
+    SECTION("Throws if the module is not ready") {
+        auto mod = make_module<NotReadyModule>();
+        mod->add_property_type<NullPT>();
+        REQUIRE_THROWS_AS(mod->run_as<NullPT>(), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module<ResultModule>();
+        REQUIRE(std::get<0>(mod->run_as<OneOut>()) == 4);
+        SECTION("Locks module") { REQUIRE(mod->locked()); }
+    }
 }
 
 TEST_CASE("Module : run") {
-    Module m(make_module());
-    auto inputs = m.inputs();
-    inputs.at("Dimension 1").change(double{1.23});
-    inputs.at("Dimension 2").change(double{4.56});
-    auto rv = m.run(inputs);
-    REQUIRE(rv.at("area").value<double>() == 1.23 * 4.56);
-}
-
-TEST_CASE("Module : ready") {
-    Module m(make_module());
-    REQUIRE(!m.ready());
-    REQUIRE(m.ready<Area>());
-}
-
-TEST_CASE("Module : lock") {
-    Module m(make_module());
-    REQUIRE(!m.locked());
-    m.lock();
-    REQUIRE(m.locked());
-}
-
-TEST_CASE("Module : locked") {
-    Module m(make_module());
-    m.lock();
-    REQUIRE(m.locked());
-}
-
-TEST_CASE("Module : change_input") {
-    Module m(make_module());
-    m.change_input("Dimension 1", 1.23);
-    REQUIRE(m.inputs().at("Dimension 1").value<double>() == 1.23);
-}
-
-TEST_CASE("Module : change_submod") {
-    Module m(make_prism());
-    m.change_submod("area", std::make_shared<Module>(make_module()));
-    REQUIRE(m.submods().at("area").value() == make_module());
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.run(), std::runtime_error);
+    }
+    SECTION("Throws if inputs are not ready") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->run(mod->inputs()), std::runtime_error);
+    }
+    SECTION("Throws if the module is not ready") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE_THROWS_AS(mod->run(), std::runtime_error);
+    }
+    SECTION("Works") {
+        auto mod = make_module<ResultModule>();
+        REQUIRE(mod->run().at("Result 1").value<int>() == 4);
+        SECTION("Locks module") { REQUIRE(mod->locked()); }
+    }
 }
 
 TEST_CASE("Module : hash") {
-    Module m(make_module());
-    type::hasher h(bphash::HashType::Hash128);
-    m.hash(h);
-    auto hv = bphash::hash_to_string(h.finalize());
-    REQUIRE(hv == "1b740793eacb5cdf38dc426f626ab5ab");
+    SECTION("Inputs not set") {
+        auto mod = make_module<NotReadyModule>();
+        REQUIRE(hash_objects(*mod) == "cbc357ccb763df2852fee8c4fc7d55f2");
+    }
+    SECTION("Input set") {
+        auto mod = make_module<NotReadyModule>();
+        mod->change_input("Option 1", int{3});
+        REQUIRE(hash_objects(*mod) == "9a4294b64e60cc012c5ed48db4cd9c48");
+    }
+}
+
+// Used to test that different implementations compare different
+struct NullModule2 : ModuleBase {
+    NullModule2() : ModuleBase(this) { satisfies_property_type<NullPT>(); }
+    sde::type::result_map run_(sde::type::input_map,
+                               sde::type::submodule_map) const override {
+        return results();
+    }
+};
+
+TEST_CASE("Module : comparisons") {
+    Module p;
+    SECTION("Empty") {
+        Module p2;
+        REQUIRE(p == p2);
+        REQUIRE_FALSE(p != p2);
+    }
+    SECTION("Different module-ness") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(p != *mod);
+        REQUIRE_FALSE(*mod == p);
+    }
+    SECTION("Different lockedness") {
+        auto mod  = make_module<NullModule>();
+        auto mod2 = make_module<NullModule>();
+        mod->lock();
+        REQUIRE(*mod != *mod2);
+        REQUIRE_FALSE(*mod == *mod2);
+    }
+    SECTION("Different inputs") {
+        auto mod  = make_module<NotReadyModule>();
+        auto mod2 = make_module<NotReadyModule>();
+        mod->change_input("Option 1", int{3});
+        REQUIRE(*mod != *mod2);
+        REQUIRE_FALSE(*mod == *mod2);
+    }
+    SECTION("Different submodules") {
+        auto mod  = make_module<SubModModule>();
+        auto mod2 = make_module<SubModModule>();
+        mod->change_submod("Submodule 1", make_module<NullModule>());
+        REQUIRE(*mod != *mod2);
+        REQUIRE_FALSE(*mod == *mod2);
+    }
+    SECTION("Different Implementations") {
+        auto mod  = make_module<NullModule>();
+        auto mod2 = make_module<NullModule2>();
+        REQUIRE(*mod != *mod2);
+        REQUIRE_FALSE(*mod == *mod2);
+    }
+    SECTION("Different property types") {
+        auto mod  = make_module<NotReadyModule>();
+        auto mod2 = make_module<NotReadyModule>();
+        mod->add_property_type<NullPT>();
+        REQUIRE(*mod != *mod2);
+        REQUIRE_FALSE(*mod == *mod2);
+    }
 }
 
 TEST_CASE("Module : copy ctor") {
-    Module m1(make_module());
-    Module m2(m1);
-    REQUIRE(m1 == m2);
+    auto mod = make_module<NullModule>();
+    Module mod2(*mod);
+    REQUIRE(*mod == mod2);
 }
 
 TEST_CASE("Module : copy assignment") {
-    Module m1(make_module());
-    Module m2;
-    auto* ptr = &(m2 = m1);
-    REQUIRE(m1 == m2);
-    REQUIRE(ptr == &m2);
+    auto mod = make_module<NullModule>();
+    Module mod2;
+    auto pmod2 = &(mod2 = *mod);
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == *mod);
 }
 
 TEST_CASE("Module : move ctor") {
-    Module m1(make_module());
-    Module m2(m1);
-    Module m3(std::move(m1));
-    REQUIRE(m3 == m2);
+    auto mod = make_module<NullModule>();
+    Module mod2(*mod);
+    Module mod3(std::move(mod2));
+    REQUIRE(*mod == mod3);
 }
 
 TEST_CASE("Module : move assignment") {
-    Module m1(make_module());
-    Module m2(m1), m3;
-    auto* ptr = &(m3 = std::move(m1));
-    REQUIRE(m3 == m2);
-    REQUIRE(ptr == &m3);
+    auto mod = make_module<NullModule>();
+    Module mod2;
+    Module mod3(*mod);
+    auto pmod2 = &(mod2 = std::move(*mod));
+    REQUIRE(pmod2 == &mod2);
+    REQUIRE(mod2 == mod3);
 }

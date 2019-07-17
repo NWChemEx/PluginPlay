@@ -1,0 +1,118 @@
+#include "test_common.hpp"
+#include <catch2/catch.hpp>
+#include <sde/module_base.hpp>
+
+using namespace sde;
+
+static const auto null_pt_rtti = std::type_index(typeid(testing::NullPT));
+
+TEST_CASE("ModuleBase : run") {
+    testing::ResultModule mod;
+    type::result_map corr;
+    corr["Result 1"].set_type<int>().change(4);
+    REQUIRE(mod.run(type::input_map{}, type::submodule_map{}) == corr);
+}
+
+TEST_CASE("ModuleBase : has_description") {
+    SECTION("No description") {
+        testing::NullModule mod;
+        REQUIRE_FALSE(mod.has_description());
+    }
+
+    SECTION("Has description") {
+        testing::DescModule mod;
+        REQUIRE(mod.has_description());
+    }
+}
+
+TEST_CASE("ModuleBase : results()") {
+    SECTION("No results") {
+        testing::NullModule mod;
+        REQUIRE(mod.results().empty());
+    }
+    SECTION("Results") {
+        testing::ResultModule mod;
+        type::result_map corr;
+        corr["Result 1"].set_type<int>();
+        REQUIRE(mod.results() == corr);
+    }
+}
+
+TEST_CASE("ModuleBase : inputs()") {
+    SECTION("No inputs") {
+        testing::NullModule mod;
+        REQUIRE(mod.inputs().empty());
+    }
+    SECTION("Inputs") {
+        testing::NotReadyModule mod;
+        type::input_map corr;
+        corr["Option 1"].set_type<int>();
+        REQUIRE(mod.inputs() == corr);
+    }
+}
+
+TEST_CASE("ModuleBase : submods()") {
+    SECTION("No submods") {
+        testing::NullModule mod;
+        REQUIRE(mod.submods().empty());
+    }
+    SECTION("Submods") {
+        testing::SubModModule mod;
+        type::submodule_map corr;
+        corr["Submodule 1"].set_type<testing::NullPT>();
+        REQUIRE(mod.submods() == corr);
+    }
+}
+
+TEST_CASE("ModuleBase : property_types()") {
+    SECTION("No property type") {
+        testing::NoPTModule mod;
+        REQUIRE(mod.property_types().empty());
+    }
+    SECTION("Has Property type") {
+        testing::NotReadyModule mod;
+        type::rtti corr(typeid(testing::OneIn));
+        REQUIRE(mod.property_types() == std::set{corr});
+    }
+}
+
+TEST_CASE("ModuleBase : type") {
+    testing::NotReadyModule mod;
+    REQUIRE(mod.type() == type::rtti(typeid(testing::NotReadyModule)));
+}
+
+TEST_CASE("ModuleBase : get_desc") {
+    SECTION("Throws if no description") {
+        testing::NullModule mod;
+        REQUIRE_THROWS_AS(mod.get_desc(), std::bad_optional_access);
+    }
+    SECTION("Get description") {
+        testing::DescModule mod;
+        REQUIRE(mod.get_desc() == "A description");
+    }
+}
+
+TEST_CASE("ModuleBase : citations") {
+    SECTION("No citations") {
+        testing::NullModule mod;
+        REQUIRE(mod.citations().empty());
+    }
+    SECTION("Citations") {
+        testing::CiteModule mod;
+        REQUIRE(mod.citations() == std::vector{std::string("A citation")});
+    }
+}
+
+TEST_CASE("ModuleBase : Comparisons") {
+    testing::NullModule mod;
+    SECTION("Same module") {
+        testing::NullModule mod2;
+        REQUIRE(mod == mod2);
+        REQUIRE_FALSE(mod != mod2);
+    }
+    SECTION("Different modules") {
+        testing::NotReadyModule mod2;
+        REQUIRE_FALSE(mod == mod2);
+        REQUIRE(mod != mod2);
+    }
+}
