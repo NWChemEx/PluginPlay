@@ -109,7 +109,7 @@ public:
      *                          already present modules or callback points. Weak
      *                          throw guarantee.
      */
-    void change_module(const type::key& module_key,
+    void change_submod(const type::key& module_key,
                        const type::key& callback_key,
                        const type::key& submod_key);
 
