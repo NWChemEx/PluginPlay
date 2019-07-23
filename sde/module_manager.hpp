@@ -91,6 +91,28 @@ public:
         at(key).change_input(option, std::forward<T>(new_value));
     }
 
+    /** @brief Changes the submodule a module calls.
+     *
+     *  Modules can call other modules at predesignated callback points. Each of
+     *  these callback points has a key associated with it. This function allows
+     *  the user to change which module is called at a particular callback point
+     *  by specifying the key of the module, the callback point's key, and the
+     *  key for tne new submodule.
+     *
+     * @param[in] module_key   The key for the module whose submodule is being
+     *                         changed.
+     * @param[in] callback_key The name of the callback point in the module
+     *                         assigned to @p module_key
+     * @param[in] submod_key   The key for the submodule to call.
+     *
+     * @throw std::out_of_range if any of the keys do not refer to valid,
+     *                          already present modules or callback points. Weak
+     *                          throw guarantee.
+     */
+    void change_module(const type::key& module_key,
+                       const type::key& callback_key,
+                       const type::key& submod_key);
+
     /** @brief Runs a given module
      *
      * @tparam T

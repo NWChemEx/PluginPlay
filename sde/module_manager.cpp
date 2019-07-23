@@ -28,6 +28,12 @@ void ModuleManager::copy_module(const type::key& old_key, type::key new_key) {
     pimpl_->copy_module(old_key, std::move(new_key));
 }
 
+void ModuleManager::change_module(const type::key& module_key,
+                                  const type::key& callback_key,
+                                  const type::key& submod_key) {
+    pimpl_->at(module_key)->change_submod(callback_key, pimpl_->at(submod_key));
+}
+
 const Module& ModuleManager::at(const type::key& module_key) const {
     return *pimpl_->at(module_key);
 }
