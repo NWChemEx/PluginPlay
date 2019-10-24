@@ -1,3 +1,4 @@
+add_subdirectory(examples)
 add_subdirectory(printing)
 list(APPEND sde_TESTS test_main.cpp
               bounds_checking.cpp
@@ -9,9 +10,6 @@ list(APPEND sde_TESTS test_main.cpp
               detail_/sde_any.cpp
               detail_/sde_any_wrapper.cpp
               detail_/submodule_request_pimpl.cpp
-              examples/module_base.cpp
-              examples/property_type.cpp
-              examples/workflow.cpp
               module.cpp
               module_base.cpp
               module_input.cpp

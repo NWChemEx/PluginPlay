@@ -610,6 +610,8 @@ inline void ModulePIMPL::memoize(type::hasher& h,
     inputs = merge_inputs_(std::move(inputs));
     for(const auto & [k, v] : inputs) v.hash(h);
     for(const auto & [k, v] : m_submods_) v.hash(h);
+    // This is not a great way of hashing the class name...
+    h(m_base_->type().name());
 }
 
 inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
@@ -632,11 +634,11 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(m_cache_ && m_cache_->count(hv)) return m_cache_->at(hv);
+    if(false && m_cache_ && m_cache_->count(hv)) return m_cache_->at(hv);
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(!m_cache_) return rv;
+    if(true || !m_cache_) return rv;
 
     // cache result
     m_cache_->emplace(hv, std::move(rv));

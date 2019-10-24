@@ -21,6 +21,9 @@ Module::Module(Module&& rhs) noexcept = default;
 
 Module& Module::operator=(Module&& rhs) noexcept = default;
 
+Module::Module(std::unique_ptr<ModuleBase> ptr) :
+  Module(std::make_unique<pimpl>(std::move(ptr), nullptr)) {}
+
 Module::Module(pimpl_ptr pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
 Module::~Module() noexcept = default;

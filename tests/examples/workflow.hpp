@@ -9,8 +9,8 @@
  * of the following header files are needed for this tutorial.
  */
 #pragma once
-#include "examples/module_base.hpp"
-#include "examples/property_type.hpp"
+#include "examples/writing_a_module.hpp"
+#include "examples/writing_a_property_type.hpp"
 #include <sde/module_manager.hpp>
 
 /* Populating the ModuleManager

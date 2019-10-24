@@ -8,6 +8,7 @@ namespace sde {
 
 // Needed b/c Module and SubmoduleRequest use each other in their declarations
 class SubmoduleRequest;
+class ModuleBase;
 
 namespace detail_ {
 class ModulePIMPL;
@@ -111,6 +112,8 @@ public:
      *  @throw none No throw guarantee.
      */
     Module& operator=(Module&& rhs) noexcept;
+
+    explicit Module(std::unique_ptr<ModuleBase> ptr);
 
     /** @brief Instantiates a Module with the provided backend.
      *
@@ -405,6 +408,8 @@ public:
     template<typename T>
     void change_input(const type::key& key, T&& value);
 
+    void change_submod(type::key key, Module new_mod);
+
     /** @brief Allows the user to change the submodule a module uses.
      *
      *  Each module maintains a list of callback points that it will use. Users
@@ -590,6 +595,10 @@ template<typename T>
 void Module::change_input(const type::key& key, T&& value) {
     assert_not_locked_();
     get_input_(key).change(std::forward<T>(value));
+}
+
+inline void Module::change_submod(type::key key, Module new_mod) {
+    change_submod(std::move(key), std::make_shared<Module>(std::move(new_mod)));
 }
 
 template<typename PropertyType>

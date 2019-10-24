@@ -19,6 +19,7 @@ set(SDE_INCLUDES detail_/memoization.hpp
                  module_manager.hpp
                  module_result.hpp
                  property_type.hpp
+                 sde.hpp
                  submodule_request.hpp
                  types.hpp
                  utility.hpp
