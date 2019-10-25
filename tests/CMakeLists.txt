@@ -1,15 +1,8 @@
+add_subdirectory(detail_)
 add_subdirectory(examples)
 add_subdirectory(printing)
 list(APPEND sde_TESTS test_main.cpp
               bounds_checking.cpp
-              detail_/module_input_pimpl.cpp
-              detail_/module_manager_pimpl.cpp
-              detail_/module_pimpl.cpp
-              detail_/module_result_pimpl.cpp
-              detail_/property_type_builder.cpp
-              detail_/sde_any.cpp
-              detail_/sde_any_wrapper.cpp
-              detail_/submodule_request_pimpl.cpp
               module.cpp
               module_base.cpp
               module_input.cpp

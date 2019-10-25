@@ -6,7 +6,8 @@ list(APPEND SDE_SRCS module.cpp
                      module_result.cpp
                      submodule_request.cpp
 )
-set(SDE_INCLUDES detail_/memoization.hpp
+set(SDE_INCLUDES detail_/lambda_module.hpp
+                 detail_/memoization.hpp
                  detail_/module_manager_pimpl.hpp
                  detail_/module_pimpl.hpp
                  detail_/property_type_builder.hpp

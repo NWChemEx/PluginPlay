@@ -36,11 +36,15 @@ namespace sde {
  * more correct as it protects against users accidentally calling the
  * implementation directly.
  *
- * @tparam derived_type Must be default constructable and define the functions
+ * @tparam DerivedType Must be default constructable and define the functions
  *         listed in the above description.
  */
-template<typename derived_type>
+template<typename DerivedType>
 class PropertyType {
+private:
+    /// Type of this base class
+    using my_type = PropertyType<DerivedType>;
+
 public:
     ///@{
     /** @name Public APIs for obtaining the fields comprising the API
@@ -59,15 +63,9 @@ public:
      * @throws ??? if the derived class's implementation throws. Same throw
      *         guarantee as the derived class.
      */
-    static auto inputs() {
-        derived_type parent;
-        return parent.inputs_();
-    }
+    static auto inputs();
 
-    static auto results() {
-        derived_type parent;
-        return parent.results_();
-    }
+    static auto results();
     ///@}
 
     ///@{
@@ -90,25 +88,16 @@ public:
      *         ready to be used with structured bindings.
      */
     template<typename T, typename... Args>
-    static auto wrap_inputs(T&& rv, Args&&... args) {
-        return wrap_(std::forward<T>(rv), inputs(),
-                     std::forward<Args>(args)...);
-    }
+    static auto wrap_inputs(T&& rv, Args&&... args);
 
     template<typename T, typename... Args>
-    static auto& wrap_results(T&& rv, Args&&... args) {
-        return wrap_(std::forward<T>(rv), results(),
-                     std::forward<Args>(args)...);
-    }
+    static auto& wrap_results(T&& rv, Args&&... args);
 
     template<typename T>
-    static auto unwrap_inputs(T&& rv) {
-        return unwrap_(inputs(), std::forward<T>(rv));
-    }
+    static auto unwrap_inputs(T&& rv);
+
     template<typename T>
-    static auto unwrap_results(T&& rv) {
-        return unwrap_(results(), std::forward<T>(rv));
-    }
+    static auto unwrap_results(T&& rv);
     ///@}
 private:
     ///@{
@@ -125,57 +114,17 @@ private:
      * on-the-fly.
      */
     template<typename T, typename U, typename... Args>
-    static auto& wrap_(T&& rv, U&& builder, Args&&... args) {
-        if constexpr(sizeof...(Args) > 0)
-            wrap_guts_<0>(std::forward<T>(rv), std::forward<U>(builder),
-                          std::forward<Args>(args)...);
-        return rv;
-    }
+    static auto& wrap_(T&& rv, U&& builder, Args&&... args);
 
     template<std::size_t ArgI, typename T, typename U, typename V,
              typename... Args>
-    static void wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
-        using tuple_of_fields = typename std::decay_t<U>::tuple_of_fields;
-        using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
-        static_assert(std::is_convertible_v<V, type>,
-                      "Wrap argument is of incorrect type.");
-        auto key = (builder.begin() + ArgI)->first;
-        rv.at(key).change(std::forward<V>(value));
-        if constexpr(sizeof...(Args) > 0)
-            wrap_guts_<ArgI + 1>(std::forward<T>(rv), std::forward<U>(builder),
-                                 std::forward<Args>(args)...);
-    }
+    static void wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args);
 
     template<typename T, typename U>
-    static auto unwrap_(T&& builder, U&& rv) {
-        auto results =
-          unwrap_guts_<0>(std::forward<T>(builder), std::forward<U>(rv));
-        using tuple_type            = decltype(results);
-        constexpr std::size_t nargs = std::tuple_size_v<tuple_type>;
-        if constexpr(nargs == 0) return;
-        //        else if constexpr(nargs == 1){
-        //            using type = std::tuple_element_t <0, tuple_type>;
-        //            return std::forward<type>(std::get<0>(results));
-        //        }
-        else
-            return results;
-    }
+    static auto unwrap_(T&& builder, U&& rv);
 
     template<std::size_t ArgI, typename T, typename U>
-    static auto unwrap_guts_(T&& builder, U&& rv) {
-        using tuple_of_fields = typename T::tuple_of_fields;
-        constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
-        if constexpr(ArgI == nargs)
-            return std::make_tuple();
-        else {
-            using type = std::tuple_element_t<ArgI, tuple_of_fields>;
-            auto key   = (builder.begin() + ArgI)->first;
-            auto lhs   = std::tuple<type>(rv.at(key).template value<type>());
-            auto rhs   = unwrap_guts_<ArgI + 1>(std::forward<T>(builder),
-                                              std::forward<U>(rv));
-            return std::tuple_cat(std::move(lhs), std::move(rhs));
-        }
-    }
+    static auto unwrap_guts_(T&& builder, U&& rv);
     ///@}
 
 }; // End class property_type
@@ -199,5 +148,111 @@ inline auto declare_result() {
     return detail_::PropertyTypeBuilder<ModuleResult>{};
 }
 ///@}
+
+// ----------------------------- Implementations -------------------------------
+#define PROP_TYPE PropertyType<DerivedType>
+
+template<typename DerivedType>
+auto PROP_TYPE::inputs() {
+    DerivedType parent;
+    return parent.inputs_();
+}
+
+template<typename DerivedType>
+auto PROP_TYPE::results() {
+    DerivedType parent;
+    return parent.results_();
+}
+
+template<typename DerivedType>
+template<typename T, typename... Args>
+auto PROP_TYPE::wrap_inputs(T&& rv, Args&&... args) {
+    return wrap_(std::forward<T>(rv), inputs(), std::forward<Args>(args)...);
+}
+
+template<typename DerivedType>
+template<typename T, typename... Args>
+auto& PROP_TYPE::wrap_results(T&& rv, Args&&... args) {
+    return wrap_(std::forward<T>(rv), results(), std::forward<Args>(args)...);
+}
+
+template<typename DerivedType>
+template<typename T>
+auto PROP_TYPE::unwrap_inputs(T&& rv) {
+    // If there are no inputs to unwrap we return an empty tuple
+    using input_type                 = decltype(DerivedType::inputs());
+    using input_tuple                = typename input_type::tuple_of_fields;
+    static constexpr bool has_inputs = input_type::nfields > 0;
+
+    if constexpr(has_inputs) {
+        return unwrap_(inputs(), std::forward<T>(rv));
+    } else {
+        return input_tuple{};
+    }
+}
+
+template<typename DerivedType>
+template<typename T>
+auto PROP_TYPE::unwrap_results(T&& rv) {
+    return unwrap_(results(), std::forward<T>(rv));
+}
+
+template<typename DerivedType>
+template<typename T, typename U, typename... Args>
+auto& PROP_TYPE::wrap_(T&& rv, U&& builder, Args&&... args) {
+    if constexpr(sizeof...(Args) > 0)
+        wrap_guts_<0>(std::forward<T>(rv), std::forward<U>(builder),
+                      std::forward<Args>(args)...);
+    return rv;
+}
+
+template<typename DerivedType>
+template<std::size_t ArgI, typename T, typename U, typename V, typename... Args>
+void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
+    using tuple_of_fields = typename std::decay_t<U>::tuple_of_fields;
+    using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
+    static_assert(std::is_convertible_v<V, type>,
+                  "Wrap argument is of incorrect type.");
+    auto key = (builder.begin() + ArgI)->first;
+    rv.at(key).change(std::forward<V>(value));
+    if constexpr(sizeof...(Args) > 0)
+        wrap_guts_<ArgI + 1>(std::forward<T>(rv), std::forward<U>(builder),
+                             std::forward<Args>(args)...);
+}
+
+template<typename DerivedType>
+template<typename T, typename U>
+auto PROP_TYPE::unwrap_(T&& builder, U&& rv) {
+    auto results =
+      unwrap_guts_<0>(std::forward<T>(builder), std::forward<U>(rv));
+    using tuple_type            = decltype(results);
+    constexpr std::size_t nargs = std::tuple_size_v<tuple_type>;
+    if constexpr(nargs == 0) return;
+    //        else if constexpr(nargs == 1){
+    //            using type = std::tuple_element_t <0, tuple_type>;
+    //            return std::forward<type>(std::get<0>(results));
+    //        }
+    else
+        return results;
+}
+
+template<typename DerivedType>
+template<std::size_t ArgI, typename T, typename U>
+auto PROP_TYPE::unwrap_guts_(T&& builder, U&& rv) {
+    using tuple_of_fields = typename T::tuple_of_fields;
+    constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
+    if constexpr(ArgI == nargs)
+        return std::make_tuple();
+    else {
+        using type = std::tuple_element_t<ArgI, tuple_of_fields>;
+        auto key   = (builder.begin() + ArgI)->first;
+        auto lhs   = std::tuple<type>(rv.at(key).template value<type>());
+        auto rhs =
+          unwrap_guts_<ArgI + 1>(std::forward<T>(builder), std::forward<U>(rv));
+        return std::tuple_cat(std::move(lhs), std::move(rhs));
+    }
+}
+
+#undef PROP_TYPE
 
 } // namespace sde

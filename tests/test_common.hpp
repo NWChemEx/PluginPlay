@@ -24,6 +24,16 @@ struct OneOut : sde::PropertyType<OneOut> {
     auto results_() { return sde::declare_result().add_field<int>("Result 1"); }
 };
 
+// Property type for module with two results
+struct TwoOut : sde::PropertyType<TwoOut> {
+    auto inputs_() { return sde::declare_input(); }
+    auto results_() {
+        return sde::declare_result()
+          .add_field<int>("Result 1")
+          .add_field<char>("Result 2");
+    }
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //////////                                                            //////////
 //////////                      Modules                               //////////

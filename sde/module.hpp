@@ -113,6 +113,21 @@ public:
      */
     Module& operator=(Module&& rhs) noexcept;
 
+    /** @brief Creates a Module with the provided implementation
+     *
+     *  This ctor will create a new Module instance which is implemented by the
+     *  provided implementation. This ctor is largely intended to be used for
+     *  creating lambda modules or other "one-off" types of modules because it
+     *  does **not** associate a cache with the Module. To associate a cache
+     *  with the module one must use the ctor that takes a pointer to a
+     *  ModulePIMPL instance.
+     *
+     *  @param[in] ptr The implementation the Module should use.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to create the
+     *                        PIMPL for the resulting instance. Strong throw
+     *                        guarantee.
+     */
     explicit Module(std::unique_ptr<ModuleBase> ptr);
 
     /** @brief Instantiates a Module with the provided backend.
@@ -408,6 +423,31 @@ public:
     template<typename T>
     void change_input(const type::key& key, T&& value);
 
+    /** @brief Changes the specified submodule to the provided module.
+     *
+     *  This overload will register the submodule @p new_submod under the key
+     *  @p key. This overload is a convenience overload that is useful when the
+     *  submodule is not stored in the ModuleManager or when the user wants to
+     *  break aliasing. Most of the time, when the submodule is in the
+     *  ModuleManager one wants to use the overload of this function which takes
+     *  a shared_ptr in order to keep the connections synchronized.
+     *
+     *  @param[in] key The key under which the module should be registered.
+     *                 @p key must be one of the keys defined by this module's
+     *                 implementation.
+     *
+     *  @param[in] new_mod The module to register under the provided key.
+     *
+     *  @throw std::runtime_error if this module does not have an implementation
+     *                            or if it is locked, Strong throw guarantee.
+     *  @throw std::out_of_range if @p key does not correspond to a recognized
+     *                           callback. Strong throw guarantee.
+     *  @throw std::invalid_argument if @p new_mod does not satisfy the property
+     *                               type associated with @p key. Strong throw
+     *                               guarantee.
+     *  @throw std::bad_alloc if there is insufficient memory to wrap @p new_mod
+     *                        in a shared_ptr. Strong throw guarantee.
+     */
     void change_submod(type::key key, Module new_mod);
 
     /** @brief Allows the user to change the submodule a module uses.
