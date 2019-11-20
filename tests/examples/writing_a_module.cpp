@@ -1,4 +1,4 @@
-#include "examples/module_base.hpp"
+#include "examples/writing_a_module.hpp"
 #include <catch2/catch.hpp>
 #include <sde/detail_/module_pimpl.hpp>
 

@@ -16,7 +16,7 @@ default_build:
       - linux,kamban
     stage: build
     script:
-      - module load gcc-9.1.0-gcc-7.4.0-jjv2tsg mpich-3.3-gcc-9.1.0-ennj3ix cmake-3.14.2-gcc-9.1.0-jzu7ays
+      - module load gcc-9.2.0-gcc-7.4.0-jugbolv mpich-3.3.1-gcc-9.2.0-q7ln3zh cmake-3.15.4-gcc-9.2.0-zlszrdv
       - cd $CI_PROJECT_DIR/CMakePackagingProject
       - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
       - cd build
