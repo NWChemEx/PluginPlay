@@ -1,15 +1,10 @@
-set(sde_TESTS test_main.cpp
-              detail_/module_input_pimpl.cpp
-              detail_/module_manager_pimpl.cpp
-              detail_/module_pimpl.cpp
-              detail_/module_result_pimpl.cpp
-              detail_/property_type_builder.cpp
-              detail_/sde_any.cpp
-              detail_/submodule_request_pimpl.cpp
-              examples/module_base.cpp
-              examples/property_type.cpp
-              examples/workflow.cpp
+add_subdirectory(detail_)
+add_subdirectory(examples)
+add_subdirectory(printing)
+list(APPEND sde_TESTS test_main.cpp
+              bounds_checking.cpp
               module.cpp
+              module_base.cpp
               module_input.cpp
               module_manager.cpp
               module_result.cpp

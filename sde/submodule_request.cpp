@@ -1,56 +1,69 @@
 #include "sde/detail_/submodule_request_pimpl.hpp"
-#include "sde/submodule_request.hpp"
 
 namespace sde {
+
 using module_ptr = typename SubmoduleRequest::module_ptr;
 
 SubmoduleRequest::SubmoduleRequest() :
-  pimpl_(std::make_unique<detail_::SubmoduleRequestPIMPL>()) {}
+  m_pimpl_(std::make_unique<detail_::SubmoduleRequestPIMPL>()) {}
+
 SubmoduleRequest::SubmoduleRequest(const SubmoduleRequest& rhs) :
-  pimpl_(rhs.pimpl_->clone()) {}
+  m_pimpl_(rhs.m_pimpl_->clone()) {}
+
 SubmoduleRequest::SubmoduleRequest(SubmoduleRequest&& rhs) noexcept = default;
+
 SubmoduleRequest& SubmoduleRequest::operator=(SubmoduleRequest&&) noexcept =
   default;
 
 SubmoduleRequest::~SubmoduleRequest() noexcept = default;
 
-const Module& SubmoduleRequest::value() const { return pimpl_->value(); }
-
-const type::description& SubmoduleRequest::description() const noexcept {
-    return pimpl_->m_desc;
+bool SubmoduleRequest::has_type() const noexcept {
+    return m_pimpl_->has_type();
 }
 
-void SubmoduleRequest::change(module_ptr new_mod) noexcept {
-    pimpl_->m_module = new_mod;
+bool SubmoduleRequest::has_module() const noexcept {
+    return m_pimpl_->has_module();
+}
+
+bool SubmoduleRequest::has_description() const noexcept {
+    return m_pimpl_->has_description();
+}
+
+bool SubmoduleRequest::ready() const noexcept { return m_pimpl_->ready(); }
+
+void SubmoduleRequest::change(module_ptr new_mod) {
+    m_pimpl_->set_module(new_mod);
 }
 
 SubmoduleRequest& SubmoduleRequest::set_description(
   type::description desc) noexcept {
-    pimpl_->m_desc = std::move(desc);
+    m_pimpl_->set_description(std::move(desc));
     return *this;
 }
 
-void SubmoduleRequest::hash(type::hasher& h) const {
-    if(pimpl_->m_module) value().hash(h);
+type::rtti SubmoduleRequest::type() const { return m_pimpl_->type(); }
+
+const Module& SubmoduleRequest::value() const { return m_pimpl_->value(); }
+
+Module& SubmoduleRequest::value() { return m_pimpl_->value(); }
+
+const type::description& SubmoduleRequest::description() const {
+    return m_pimpl_->description();
 }
 
-bool SubmoduleRequest::ready() const noexcept { return pimpl_->ready(); }
+void SubmoduleRequest::lock() { m_pimpl_->lock(); }
 
-void SubmoduleRequest::lock() { pimpl_->lock(); }
+void SubmoduleRequest::hash(type::hasher& h) const {
+    if(m_pimpl_->has_module()) value().hash(h);
+}
 
-const std::type_index& SubmoduleRequest::type() const { return pimpl_->m_type; }
-
-bool SubmoduleRequest::check_type_(const std::type_info& type) const noexcept {
-    return pimpl_->check_type(type);
+bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
+    return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
 void SubmoduleRequest::set_type_(const std::type_info& type,
                                  type::input_map inputs) {
-    pimpl_->set_type(type, std::move(inputs));
-}
-
-bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
-    return *pimpl_ == *rhs.pimpl_;
+    m_pimpl_->set_type(std::type_index(type), std::move(inputs));
 }
 
 } // namespace sde

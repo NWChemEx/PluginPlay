@@ -1,0 +1,28 @@
+stages:
+  - build
+
+before_script:
+  - mkdir -p $CI_PROJECT_DIR/install
+  - git clone https://github.com/CMakePP/CMakePackagingProject.git
+
+variables:
+  NWX_INSTALL_PATH: "~/git/gitlabCI/SDE/install"
+  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$CI_PROJECT_DIR/install -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCPP_GITHUB_TOKEN=a942e188f9c4a0d80d069b826fdb1a3e85f3fe02"
+  NUM_CORES: "20"
+  CMAKE_BUILD_PARALLEL_LEVEL: "24"
+
+default_build:
+    tags:
+      - linux,kamban
+    stage: build
+    script:
+      - module load gcc-9.2.0-gcc-7.4.0-jugbolv mpich-3.3.1-gcc-9.2.0-q7ln3zh cmake-3.15.4-gcc-9.2.0-zlszrdv
+      - cd $CI_PROJECT_DIR/CMakePackagingProject
+      - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
+      - cd build
+      - make install
+      - cd $CI_PROJECT_DIR
+      - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
+      - cd build
+      - make -j$NUM_CORES
+      - ctest -VV

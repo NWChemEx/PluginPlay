@@ -1,128 +1,276 @@
-#include "examples/module_base.hpp"
+#include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/module_pimpl.hpp>
 #include <sde/submodule_request.hpp>
 
 using namespace sde;
-using namespace sde::detail_;
 
-struct PropType1 {
-    static auto inputs() { return sde::type::input_map{}; }
-};
+static const auto null_pt_t      = std::type_index(typeid(testing::NullPT));
+static const auto not_ready_pt_t = std::type_index(typeid(testing::OneIn));
+static const auto inputs         = type::input_map{};
 
 TEST_CASE("SubmoduleRequest : default ctor") {
-    SubmoduleRequest request;
-    SECTION("State") {
-        REQUIRE(request.description() == "");
-        REQUIRE(!request.ready());
+    SubmoduleRequest r;
+    REQUIRE_FALSE(r.has_module());
+    REQUIRE_FALSE(r.has_type());
+    REQUIRE_FALSE(r.has_description());
+    REQUIRE_FALSE(r.ready());
+}
+
+TEST_CASE("SubmoduleRequest : has_type") {
+    SubmoduleRequest r;
+    SECTION("No type") { REQUIRE_FALSE(r.has_type()); }
+    SECTION("Type") {
+        r.set_type<testing::NullPT>();
+        REQUIRE(r.has_type());
     }
 }
 
-TEST_CASE("SubmoduleRequest : comparisons") {
-    SubmoduleRequest request1, request2;
-    SECTION("Default state") {
-        REQUIRE(request1 == request2);
-        REQUIRE(!(request1 != request2));
-    }
-    SECTION("Different descriptions") {
-        request1.set_description("hello world");
-        REQUIRE(request1 != request2);
-        REQUIRE(!(request1 == request2));
-    }
-    SECTION("Different property types") {
-        request1.set_type<PropType1>();
-        REQUIRE(request1 != request2);
-        REQUIRE(!(request1 == request2));
-    }
-    SECTION("Different modules") {
-        request1.set_type<Area>();
-        request2.set_type<Area>();
-        auto pimpl =
-          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-        request1.change(std::make_shared<Module>(std::move(pimpl)));
-        REQUIRE(request1 != request2);
-        REQUIRE(!(request1 == request2));
+TEST_CASE("SubmoduleRequest : has_module") {
+    SubmoduleRequest r;
+    SECTION("No Module") { REQUIRE_FALSE(r.has_module()); }
+    SECTION("Module") {
+        r.set_type<testing::NullPT>();
+        r.change(testing::make_module<testing::NullModule>());
+        REQUIRE(r.has_module());
     }
 }
 
-TEST_CASE("SubmoduleRequest : set_description") {
-    SubmoduleRequest request1;
-    auto* ptr = &(request1.set_description("hello world"));
-    REQUIRE(request1.description() == "hello world");
-    REQUIRE(ptr == &request1);
+TEST_CASE("SubmoduleRequest : has_description") {
+    SubmoduleRequest r;
+    SECTION("No description") { REQUIRE_FALSE(r.has_description()); }
+    SECTION("Has description") {
+        r.set_description("Hello world");
+        REQUIRE(r.has_description());
+    }
+}
+
+TEST_CASE("SubmoduleRequestL : ready") {
+    SubmoduleRequest r;
+    SECTION("No type means not ready") { REQUIRE_FALSE(r.ready()); }
+    SECTION("No submodule") {
+        r.set_type<testing::NullPT>();
+        REQUIRE_FALSE(r.ready());
+    }
+    SECTION("Has ready submodule") {
+        r.set_type<testing::NullPT>();
+        r.change(testing::make_module<testing::NullModule>());
+        REQUIRE(r.ready());
+    }
+    SECTION("Has not ready submodule") {
+        r.set_type<testing::OneIn>();
+        r.change(testing::make_module<testing::NotReadyModule2>());
+        REQUIRE_FALSE(r.ready());
+    }
 }
 
 TEST_CASE("SubmoduleRequest : set_type") {
     SubmoduleRequest r;
-    r.set_type<Area>();
-    SECTION("Type already set") {
-        REQUIRE_THROWS_AS(r.set_type<Area>(), std::runtime_error);
+    r.set_type<testing::NullPT>();
+
+    SECTION("Set the property type") { REQUIRE(r.has_type()); }
+    SECTION("Fine if module is set and obeys type") {
+        r.change(testing::make_module<testing::NullModule>());
+        r.set_type<testing::NullPT>();
+    }
+    SECTION("Throws if module is already set and different") {
+        r.set_type<testing::NullPT>();
+        r.change(testing::make_module<testing::NullModule>());
+        REQUIRE_THROWS_AS(r.set_type<testing::OneIn>(), std::runtime_error);
     }
 }
 
 TEST_CASE("SubmoduleRequest : change") {
     SubmoduleRequest r;
-    r.set_type<Area>();
-    auto pimpl  = std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-    auto ptr    = std::make_shared<Module>(std::move(pimpl));
-    auto pimpl2 = std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-    auto ptr2   = std::make_shared<Module>(std::move(pimpl2));
-    r.change(ptr);
-    REQUIRE(r.value() == *ptr2);
+    auto mod = testing::make_module<testing::NullModule>();
+    SECTION("Throws if nullptr") {
+        std::shared_ptr<sde::Module> ptr;
+        REQUIRE_THROWS_AS(r.change(ptr), std::runtime_error);
+    }
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(r.change(mod), std::bad_optional_access);
+    }
+    SECTION("Throws if doesn't satisfy property type") {
+        r.set_type<testing::NullPT>();
+        auto mod2 = testing::make_module<testing::NotReadyModule>();
+        REQUIRE_THROWS_AS(r.change(mod2), std::runtime_error);
+    }
+    SECTION("Can set the module") {
+        r.set_type<testing::NullPT>();
+        r.change(mod);
+        REQUIRE(r.value() == *mod);
+    }
 }
 
-TEST_CASE("SubmoduleRequest : ready") {
+TEST_CASE("SubmoduleRequest : set_description") {
     SubmoduleRequest r;
-    SECTION("No type") { REQUIRE(!r.ready()); }
-    SECTION("No module") {
-        r.set_type<PrismVolume>();
-        REQUIRE(!r.ready());
+    r.set_description("Hello World");
+    REQUIRE(r.description() == "Hello World");
+}
+
+TEST_CASE("SubmoduleRequest : type") {
+    SubmoduleRequest r;
+    SECTION("Not set") {
+        REQUIRE_THROWS_AS(r.type(), std::bad_optional_access);
     }
-    SECTION("Not ready module") {
-        r.set_type<PrismVolume>();
-        auto pimpl = std::make_unique<ModulePIMPL>(std::make_shared<Prism>());
-        r.change(std::make_shared<Module>(std::move(pimpl)));
-        REQUIRE(!r.ready());
+    SECTION("Set") {
+        r.set_type<testing::NullPT>();
+        REQUIRE(r.type() == std::type_index(typeid(testing::NullPT)));
     }
-    SECTION("Ready") {
-        r.set_type<Area>();
-        auto pimpl =
-          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-        r.change(std::make_shared<Module>(std::move(pimpl)));
-        REQUIRE(r.ready());
+}
+
+TEST_CASE("SubmoduleRequest : value") {
+    SubmoduleRequest r;
+    SECTION("No value") { REQUIRE_THROWS_AS(r.value(), std::runtime_error); }
+    SECTION("Has a value") {
+        r.set_type<testing::NullPT>();
+        auto mod = testing::make_module<testing::NullModule>();
+        r.change(mod);
+        REQUIRE(r.value() == *mod);
     }
+}
+
+TEST_CASE("SubmoduleRequest : description") {
+    SubmoduleRequest r;
+    r.set_description("Hello world");
+    REQUIRE(r.description() == "Hello world");
 }
 
 TEST_CASE("SubmoduleRequest : lock") {
-    SubmoduleRequest r;
-    SECTION("Can't lock if not ready") {
-        REQUIRE_THROWS_AS(r.lock(), std::runtime_error);
+    SubmoduleRequest p;
+    p.set_type<testing::NullPT>();
+    auto mod = testing::make_module<testing::NullModule>();
+    SECTION("Lock a ready module") {
+        p.change(mod);
+        REQUIRE_FALSE(mod->locked());
+        p.lock();
+        REQUIRE(mod->locked());
     }
-    SECTION("Can lock if ready") {
-        r.set_type<Area>();
-        auto pimpl =
-          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-        r.change(std::make_shared<Module>(std::move(pimpl)));
-        r.lock();
-        REQUIRE(r.value().locked());
+    SECTION("Can't lock unready module") {
+        REQUIRE_THROWS_AS(p.lock(), std::runtime_error);
+    }
+}
+
+TEST_CASE("SubmoduleRequest : run_as") {
+    SubmoduleRequest r;
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(r.run_as<testing::NullPT>(),
+                          std::bad_optional_access);
+    }
+    SECTION("Throws if type is different") {
+        r.set_type<testing::NullPT>();
+        REQUIRE_THROWS_AS(r.run_as<testing::OneIn>(3), std::invalid_argument);
+    }
+    SECTION("Throws if module is not set") {
+        r.set_type<testing::NullPT>();
+        REQUIRE_THROWS_AS(r.run_as<testing::NullPT>(), std::runtime_error);
+    }
+    SECTION("Works") {
+        r.set_type<testing::NullPT>();
+        r.change(testing::make_module<testing::NullModule>());
+        r.run_as<testing::NullPT>();
     }
 }
 
 TEST_CASE("SubmoduleRequest : hash") {
     SubmoduleRequest r;
-    type::hasher h(bphash::HashType::Hash128);
     SECTION("No module") {
-        r.hash(h);
-        auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "00000000000000000000000000000000");
+        //        REQUIRE(hash_objects(r) ==
+        //        "00000000000000000000000000000000");
     }
     SECTION("Module") {
-        r.set_type<Area>();
-        auto pimpl =
-          std::make_unique<ModulePIMPL>(std::make_shared<Rectangle>());
-        r.change(std::make_shared<Module>(std::move(pimpl)));
-        r.hash(h);
-        auto hv = bphash::hash_to_string(h.finalize());
-        REQUIRE(hv == "1b740793eacb5cdf38dc426f626ab5ab");
+        r.set_type<testing::OneIn>();
+        r.change(testing::make_module<testing::NotReadyModule>());
+        //        REQUIRE(hash_objects(r) ==
+        //        "cbc357ccb763df2852fee8c4fc7d55f2");
     }
+}
+
+TEST_CASE("SubmoduleRequest : comparisons") {
+    SubmoduleRequest r, r2;
+
+    SECTION("Default constructed") {
+        REQUIRE(r == r2);
+        REQUIRE_FALSE(r != r2);
+    }
+    SECTION("Different having type-ness") {
+        r.set_type<testing::NullPT>();
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Different types") {
+        r.set_type<testing::NullPT>();
+        r2.set_type<testing::OneIn>();
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Different having description-nes") {
+        r.set_description("Hello world");
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Different Descriptions") {
+        r.set_description("Hello world");
+        r2.set_description("Bye world");
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Different Module-ness") {
+        r.set_type<testing::NullPT>();
+        r2.set_type<testing::NullPT>();
+        r.change(testing::make_module<testing::NullModule>());
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Different Modules") {
+        r.set_type<testing::OneIn>();
+        r2.set_type<testing::OneIn>();
+        r.change(testing::make_module<testing::NotReadyModule>());
+        auto mod = testing::make_module<testing::NotReadyModule>();
+        mod->change_input("Option 1", 0);
+        r2.change(mod);
+        REQUIRE(r != r2);
+        REQUIRE_FALSE(r == r2);
+    }
+    SECTION("Fully set-up") {
+        r.set_type<testing::OneIn>();
+        r2.set_type<testing::OneIn>();
+        r.change(testing::make_module<testing::NotReadyModule>());
+        r2.change(testing::make_module<testing::NotReadyModule>());
+        REQUIRE(r == r2);
+        REQUIRE_FALSE(r != r2);
+    }
+}
+
+TEST_CASE("SubmoduleRequest : Copy ctor") {
+    SubmoduleRequest r;
+    r.set_type<testing::NullPT>();
+    SubmoduleRequest r2(r);
+    REQUIRE(r2 == r);
+}
+
+TEST_CASE("SubmoduleRequest : Copy assignment") {
+    SubmoduleRequest r;
+    r.set_type<testing::NullPT>();
+    SubmoduleRequest r2;
+    auto* ptr = &(r2 = r);
+    REQUIRE(r2 == r);
+    REQUIRE(ptr == &r2);
+}
+
+TEST_CASE("SubmoduleRequest : Move ctor") {
+    SubmoduleRequest r;
+    r.set_type<testing::NullPT>();
+    SubmoduleRequest r3(r);
+    SubmoduleRequest r2(std::move(r));
+    REQUIRE(r2 == r3);
+}
+
+TEST_CASE("SubmoduleRequest : Move assignment") {
+    SubmoduleRequest r;
+    r.set_type<testing::NullPT>();
+    SubmoduleRequest r3(r);
+    SubmoduleRequest r2;
+    auto* ptr = &(r2 = std::move(r));
+    REQUIRE(r2 == r3);
+    REQUIRE(ptr == &r2);
 }

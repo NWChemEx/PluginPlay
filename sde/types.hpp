@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <typeindex>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 ///@{
@@ -31,7 +32,6 @@ class SubmoduleRequest;
 } // namespace sde
 ///@}
 
-namespace sde {
 /** @brief  Holds typedefs of types commonly used throughout the SDE.
  *
  *  Although C++11's auto helps a lot, in general it is best if you declare
@@ -41,7 +41,7 @@ namespace sde {
  *  avoids polluting the global namespace with our typedefs if the user decides
  *  to do `using namespace std;` or something similar.
  */
-namespace type {
+namespace sde::type {
 
 /// The type of our type-erased holder class
 using any = detail_::SDEAny;
@@ -61,11 +61,13 @@ using key = std::string;
 /// Type of a map containing results
 using result_map = utilities::CaseInsensitiveMap<ModuleResult>;
 
+/// Type of the RTTI
+using rtti = std::type_index;
+
 /// Type of a natural number, including zero
 using size = std::size_t;
 
 /// Type of a map containing submodules
 using submodule_map = utilities::CaseInsensitiveMap<SubmoduleRequest>;
 
-} // namespace type
-} // namespace sde
+} // namespace sde::type

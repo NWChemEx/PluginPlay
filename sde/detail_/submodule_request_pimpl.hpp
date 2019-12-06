@@ -1,167 +1,398 @@
 #pragma once
-#include "sde/module.hpp"
-#include <typeindex>
+#include "sde/submodule_request.hpp"
+#include <optional>
+#include <utilities/printing/demangler.hpp>
 
-namespace sde {
-namespace detail_ {
+namespace sde::detail_ {
 
-/** @brief Class that implements the SubmoduleRequest class
+/** @brief Guts of the SubmoduleRequest class
  *
- * This class is a detail and should not be used directly by the end-user.
- * Interactions with this class should go through the available member functions
- * to the extent possible to ensure that proper error checking is occurring.
+ *  Modules typically rely on other modules to perform subtasks for them. When a
+ *  module X calls a module Y to run a subtask, module Y is said to be a
+ *  submodule of module X. The SubmoduleRequest class defines the API for the
+ *  developer of module X to request Y. The SubmoduleRequestPIMPL class actually
+ *  implements the SubmoduleRequest class.
+ *
+ *  @par Why Does This Class Have Inputs?
+ *
+ *  Before a module can be run we need to know that all of its submodules are
+ *  ready. This requires us to call ready on each submodule. However, unlike the
+ *  call at the top-level, which has the inputs available to it the submodules
+ *  do not. Furthermore, forwarding the inputs from the top-level is unlikely
+ *  to solve the problem because inputs to the submodule can be computed as
+ *  part of the caller. Thankfully we know what property type the submodule will
+ *  be run as, and then consequentially we know what types of inputs will be
+ *  provided to this submodule when it is called. This is what the `m_inputs_`
+ *  member of this class does; it saves a dummy set of inputs to use for the
+ *  check.
  */
-struct SubmoduleRequestPIMPL {
-    /// Type used to hold the module
-    using module_ptr = std::shared_ptr<Module>;
+class SubmoduleRequestPIMPL {
+public:
+    /// Type used to hold the submodule
+    using module_ptr = typename SubmoduleRequest::module_ptr;
 
-    ///@{
-    /** @name Ctor and Assignment operators
+    /** @brief Makes an empty request.
      *
-     *  @param rhs The instance to copy/move from. For move operations @p rhs
-     *         is in a valid, but otherwise undefined state.
-     *  @throw std::bad_alloc is thrown by 2 and 3 if there is insufficient
-     *         memory to copy the other instance. Strong throw guarantee.
-     *  @throw none 1, 4, and 5 are no throw guarantee.
+     *  The PIMPL resulting from this call will have no description, no type,
+     *  and no module.
+     *
+     *  @throw none No throw guarantee.
      */
     SubmoduleRequestPIMPL() = default;
 
-    SubmoduleRequestPIMPL(const SubmoduleRequestPIMPL& rhs) :
-      m_desc(rhs.m_desc),
-      m_type(rhs.m_type),
-      m_inputs(rhs.m_inputs),
-      m_module(rhs.have_module() ? std::make_shared<Module>(*rhs.m_module) :
-                                   nullptr) {}
-
-    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs) {
-        return *this = std::move(SubmoduleRequestPIMPL(rhs));
-    }
-
-    SubmoduleRequestPIMPL(SubmoduleRequestPIMPL&&) = default;
-
-    SubmoduleRequestPIMPL& operator=(SubmoduleRequestPIMPL&&) = default;
-    ///@}
-
-    /// Standard dtor
-    ~SubmoduleRequestPIMPL() = default;
-
-    /// Makes a deep-copy on the heap
-    auto clone() const {
-        return std::make_unique<SubmoduleRequestPIMPL>(*this);
-    }
-
-    ///@{
-    /** @name State inquiries
+    /** @brief Sets the current request's state to a deep copy of @p rhs
      *
-     * Functions in this section make inquiries against the state of the
-     * request. Respectively they determine if the request:
+     *  This funciton will make a deep copy of another SubmoduleRequest's
+     *  state. This includes any bound module, if it exists.
      *
-     * - has been fulfilled
-     * - specifies a property type
-     * - is ready to be run
-     * - is for the provided property type
+     *  @param[in] rhs The instance's state to copy.
      *
-     * @param type The property type to compare the requested property type
-     *        against
-     * @return Inquiries return true if that inquiry is true and false
-     *         otherwise.
-     * @throw none 1, and 2 are no throw guarantee.
-     * @throw std::bad_alloc 3 throws if there is insufficient memory to store
-     *        all the problems. Strong throw guarantee.
-     * @throw std::runtime_error 4 throws if the type has not been set.
+     *  @throw std::bad_alloc if there is insufficient memory for the copy.
+     *                        Strong throw guarantee.
      */
-    bool have_module() const noexcept { return static_cast<bool>(m_module); }
+    SubmoduleRequestPIMPL(const SubmoduleRequestPIMPL& rhs);
 
-    bool type_set() const noexcept {
-        return m_type != std::type_index(typeid(std::nullptr_t));
-    }
+    /** @brief Sets the current request's state to a deep copy of @p rhs
+     *
+     *  This function will overwrite the current instance's state with a deep
+     *  copy of another SubmoduleRequest's state. This includes any bound
+     *  module, if it exists.
+     *
+     *  @param[in] rhs The instance's state to copy.
+     *
+     *  @return The current instance containing a deep copy of @p rhs's state.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory for the copy.
+     *                        Strong throw guarantee.
+     */
+    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs);
 
-    bool ready() const {
-        if(!type_set()) return false;
-        if(!have_module()) return false;
-        return m_module->ready(m_inputs);
-    }
+    /** @brief Takes ownership of another instance's state.
+     *
+     *  This ctor will make the current instance own @p rhs's state. The state
+     *  owned by the resulting instance will not be a copy of @p rhs's state,
+     *  but will own the actual state. After this operation @p rhs will no
+     *  longer have access to its original state and its state will be in a
+     *  valid, but otherwise undefined state.
+     *
+     *  @param[in] rhs The instance whose state will be taken. After this
+     *                 operation @p rhs is in a valid, but otherwise undefined
+     *                 state.
+     *
+     *  @throw none No throw guarantee.
+     */
+    SubmoduleRequestPIMPL(SubmoduleRequestPIMPL&& rhs) = default;
 
-    bool check_type(const std::type_info& type) const {
-        if(!type_set()) throw std::runtime_error("Type is not set");
-        return m_type == std::type_index(type);
-    }
-    ///@}
+    /** @brief Takes ownership of another instance's state.
+     *
+     *  This function will overwrite the current instance's state with @p rhs's
+     *  state.
+     *
+     *  @param[in] rhs The instance whose state will be taken. After this
+     *                 operation @p rhs is in a valid, but otherwise undefined
+     *                 state.
+     *
+     *  @return The current instance with @p rhs's state.
+     *
+     *  @throw none No throw guarantee.
+     */
+    SubmoduleRequestPIMPL& operator=(SubmoduleRequestPIMPL&& rhs) = default;
 
-    /// Returns the submodule after ensuring there is one
-    const Module& value() const {
-        if(!have_module()) throw std::runtime_error("Submodule is not ready");
-        return *m_module;
-    }
+    /** @brief Makes a deep copy of the submodule request on the heap.
+     *
+     *  This function is a convenience function to be used by the
+     *  SubmoduleRequest class in order to copy the PIMPL. Should the PIMPL be
+     *  made polymorphic then this function would also serve as the polymorphic
+     *  copy ctor.
+     *
+     *  @return A unique pointer to the deep copy.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to make the copy.
+     *                        Strong throw guarantee.
+     */
+    auto clone() const;
 
-    /// Locks the submodule
-    void lock() {
-        if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
-        m_module->lock();
-    }
+    /** @brief Has the property type the submodule needs to satisfy been set?
+     *
+     *  This request is for a submodule that will compute a property for the
+     *  parent module. This function is used to determine if the property type
+     *  that the submodule must satisfy has been set.
+     *
+     *  @return  True if the property type has been set and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_type() const noexcept { return m_type_.has_value(); }
+
+    /** @brief Has this request been fulfilled?
+     *
+     *  This function checks to see if a submodule has been assigned to this
+     *  request. Use set_module to actually fulfill the request.
+     *
+     *  @return True if this request is satisfied and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_module() const noexcept { return static_cast<bool>(m_module_); }
+
+    /** @brief Has the description been set?
+     *
+     *  Developers are encouraged to explain how a submodule will be used. This
+     *  prose is the description of the SubmoduleRequest and is used for
+     *  documentation and help purposes only. This function checks if the
+     *  description has been set.
+     *
+     *  @return True if the description has been set and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_description() const noexcept { return m_desc_.has_value(); }
+
+    /** @brief Has this request been fulfilled and is that module ready?
+     *
+     *  This function is slightly different than has_module. The former only
+     *  checks if the module is set, whereas this function additionally checks
+     *  that the submodule is ready to be run provided it is given inputs of the
+     *  types stored in `m_inputs_`.
+     *
+     *  @return True if the submodule is ready to run and false otherwise.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory for
+     *                        Module::ready() throws. Strong throw guarantee.
+     */
+    bool ready() const;
 
     /** @brief Sets the property type the submodule must satisfy
      *
-     * @param type The RTTI of the property type
-     * @param inputs The inputs that will be provided by the property type.
+     *
+     *
+     *  @param[in] type The RTTI of the property type
+     *  @param[in] inputs A set of inputs consistent with the property type's
+     *                    API.
      *
      * @throw std::runtime_error if the property type has already been set.
      *        Strong throw guarantee.
      */
-    void set_type(const std::type_info& type, type::input_map inputs) {
-        if(type_set()) throw std::runtime_error("Can't set type twice");
-        m_type   = std::type_index(type);
-        m_inputs = std::move(inputs);
-    }
+    void set_type(type::rtti type, type::input_map inputs);
 
-    ///@{
-    /** @brief Comparison operators
+    /** @brief Sets the module that is to be used to satisfy the request
+     *
+     *  This function is designed to be called by the ModuleManager via the
+     *  SubmoduleRequest class in order to fulfill the request.
+     *
+     *  @param[in] ptr Pointer to the module to use.
+     *
+     *  @throw std::runtime_error if @p ptr is null. Strong throw guarantee.
+     *  @throw std::bad_optional_access if the property type has not been set
+     *                                  yet. Strong throw guarantee.
+     *  @throw std::runtime_error if @p ptr is not of the correct property type.
+     *                            Strong throw guarantee.
+     */
+    void set_module(module_ptr ptr);
+
+    /** @brief Sets the human-readable description for the this request.
+     *
+     *  Developers are encouraged to provide descriptions for how a submodule
+     *  will be used. This description is set by calling this function. If the
+     *  request contains a description prior to this call it will be
+     *  overwritten by this call.
+     *
+     *  @param[in] desc The new value for this request's description.
+     *
+     *  @throw none No throw guarantee.
+     */
+    void set_description(std::string desc) noexcept;
+
+    /** @brief Get the RTTI of the property type this submodule must satisfy
+     *
+     *  The developer must specify the property type that the submodule
+     *  satisfies using set_type. This function is the accessor providing
+     *  access to the type that the developer specified.
+     *
+     *  @return The RTTI of the property type that the submodule must satisfy.
+     *
+     *  @throw std::bad_optional_access if has_type() is false. Strong throw
+     *                                  guarantee.
+     */
+    type::rtti type() const { return m_type_.value(); }
+
+    /** @brief Provides the module used to satisfy this request.
+     *
+     *  This function will ultimately be used by SubmoduleRequest::run_as in
+     *  order to run the submodule.
+     *
+     *  @return The module satisfying this request.
+     *
+     *  @throw std::runtime_error if the request has not been fulfilled yet.
+     *                            Strong throw guarantee.
+     */
+    const Module& value() const;
+
+    /** @brief Provides the module used to satisfy this request in a read/write
+     *         state.
+     *
+     *  This function allows one to retrieve the module used to satisfy the
+     *  request in a read/write state. This is useful for changing inputs before
+     *  running the module.
+     *
+     *  @return The module satisfying this request.
+     *
+     *  @throw std::runtime_error if the request has not been fulfilled yet.
+     *                            Strong throw guarantee.
+     */
+    Module& value();
+
+    /** @brief Used to retrieve the description of this request.
+     *
+     *  Developers are encouraged to set the description of how a submodule will
+     *  be used. If they set this description it can be retrieved via this
+     *  function.
+     *
+     * @return The human-readable description of how this submodule will be used
+     *
+     * @throw std::bad_optional_access if the description has not been set yet.
+     *                                 Strong throw guarantee.
+     */
+    const auto& description() const { return m_desc_.value(); }
+
+    /** @brief Locks the submodule.
+     *
+     *  A locked module can no longer have its inputs and submodules modified.
+     *  Locking a module helps avoid data races and problems with memoization
+     *  that can occur if the inputs/submodules changed. This function locks the
+     *  submodule. Since it would not be possible to ready a locked submodule
+     *  (recall the property type is known and set) this function will throw if
+     *  one attempts to lock an unready module.
+     *
+     *
+     *  @throw std::runtime_error if the submodule is not ready. Strong throw
+     *                            guarantee.
+     */
+    void lock();
+
+    /** @brief Compares two SubmoduleRequestPIMPL instances for equality
      *
      * Two SubmoduleRequestPIMPL instances are equivalent if they both:
      * - request the same property type,
      * - have the same description, and
      * - are not satisfied or are both satisfied with the same module
      *
-     * @param rhs The request to compare against
-     * @return True if the comparision is true and false otherwise.
+     * @param[in] rhs The request to compare against
+     *
+     * @return True if the this instance is the same as @p rhs and false
+     *              otherwise.
+     *
      * @throw ??? If the comparison between the two modules throws. Same throw
      *        guarantee.
      */
-    bool operator==(const SubmoduleRequestPIMPL& rhs) const {
-        const bool lmod = have_module();
-        const bool rmod = rhs.have_module();
-        if(lmod != rmod) return false;
-        if(std::tie(m_desc, m_type, m_inputs) !=
-           std::tie(rhs.m_desc, rhs.m_type, rhs.m_inputs))
-            return false;
-        if(!lmod && !rmod)
-            return true;
-        else
-            return *m_module == *rhs.m_module;
-    }
+    bool operator==(const SubmoduleRequestPIMPL& rhs) const;
 
-    bool operator!=(const SubmoduleRequestPIMPL& rhs) const {
-        return !((*this) == rhs);
-    }
-    ///@}
-
-    ///@{
-    /** @name SubmoduleRequest State
+    /** @brief Determines if two SubmoduleRequestPIMPL instances are different
      *
-     *  The members in this section are the state of the SubmoduleRequest.
-     *  Respectively they are:
+     * Two SubmoduleRequestPIMPL instances are equivalent if they both:
+     * - request the same property type,
+     * - have the same description, and
+     * - are not satisfied or are both satisfied with the same module
      *
-     *  - A human-readable description of what the submodule is used for
-     *  - The property type the submodule must satisfy
-     *  - The inputs that property type provides
-     *  - The actual submodule
+     * @param[in] rhs The request to compare against
+     *
+     * @return False if the this instance is the same as @p rhs and true
+     *              otherwise.
+     *
+     * @throw ??? If the comparison between the two modules throws. Same throw
+     *        guarantee.
      */
-    type::description m_desc;
-    std::type_index m_type = std::type_index(typeid(std::nullptr_t));
-    type::input_map m_inputs;
-    module_ptr m_module;
-    ///@}
-};
+    bool operator!=(const SubmoduleRequestPIMPL& rhs) const;
 
-} // namespace detail_
-} // namespace sde
+private:
+    /// A description of what this submodule will be used for.
+    std::optional<type::description> m_desc_;
+
+    /// RTTI of the property type the module must satisfy
+    std::optional<std::type_index> m_type_;
+
+    /// Inputs representative of those provided to the required property type
+    type::input_map m_inputs_;
+
+    /// The actual submodule
+    module_ptr m_module_;
+}; // class SubmoduleRequestPIMPL
+
+//------------------------------------Implementations---------------------------
+
+inline SubmoduleRequestPIMPL::SubmoduleRequestPIMPL(
+  const SubmoduleRequestPIMPL& rhs) :
+  m_desc_(rhs.m_desc_),
+  m_type_(rhs.m_type_),
+  m_inputs_(rhs.m_inputs_),
+  m_module_(rhs.has_module() ? std::make_shared<Module>(*rhs.m_module_) :
+                               nullptr) {}
+
+inline SubmoduleRequestPIMPL& SubmoduleRequestPIMPL::operator=(
+  const SubmoduleRequestPIMPL& rhs) {
+    return *this = std::move(SubmoduleRequestPIMPL(rhs));
+}
+
+inline auto SubmoduleRequestPIMPL::clone() const {
+    return std::make_unique<SubmoduleRequestPIMPL>(*this);
+}
+
+inline bool SubmoduleRequestPIMPL::ready() const {
+    // Relies on short-circuiting to avoid the segfault
+    return has_type() && has_module() && m_module_->ready(m_inputs_);
+}
+
+inline void SubmoduleRequestPIMPL::set_type(type::rtti type,
+                                            type::input_map inputs) {
+    if(has_module() && !value().property_types().count(type))
+        throw std::runtime_error("Can't change type after setting module");
+    m_type_.emplace(type);
+    m_inputs_ = std::move(inputs);
+}
+
+inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {
+    if(!ptr) throw std::runtime_error("Pointer does not contain a module");
+    // Type will check that a property type was set
+    if(ptr->property_types().count(type()) == 0) {
+        std::string msg("Module does not satisfy property type: ");
+        msg += utilities::printing::Demangler::demangle(type());
+        throw std::runtime_error(msg);
+    }
+    m_module_ = ptr;
+}
+
+inline void SubmoduleRequestPIMPL::set_description(std::string desc) noexcept {
+    m_desc_.emplace(std::move(desc));
+}
+
+inline const Module& SubmoduleRequestPIMPL::value() const {
+    if(!has_module()) throw std::runtime_error("Submodule is not ready");
+    return *m_module_;
+}
+
+inline Module& SubmoduleRequestPIMPL::value() {
+    if(!has_module()) throw std::runtime_error("Submodule is not ready");
+    return *m_module_;
+}
+
+void SubmoduleRequestPIMPL::lock() {
+    if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
+    m_module_->lock();
+}
+
+bool SubmoduleRequestPIMPL::operator==(const SubmoduleRequestPIMPL& rhs) const {
+    if(has_type() != rhs.has_type()) return false;
+    if(has_description() != rhs.has_description()) return false;
+    if(has_module() != rhs.has_module()) return false;
+
+    if(has_type() && type() != rhs.type()) return false;
+    if(has_description() && description() != rhs.description()) return false;
+    if(has_module() && (value() != rhs.value())) return false;
+    return true;
+}
+
+bool SubmoduleRequestPIMPL::operator!=(const SubmoduleRequestPIMPL& rhs) const {
+    return !((*this) == rhs);
+}
+
+} // namespace sde::detail_

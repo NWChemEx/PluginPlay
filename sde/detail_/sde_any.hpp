@@ -1,108 +1,98 @@
 #pragma once
-#include "sde/detail_/memoization.hpp"
+#include "sde/detail_/sde_any_wrapper.hpp"
 #include "sde/utility.hpp"
 #include <iostream>
 #include <memory>
 #include <type_traits>
 
-namespace sde {
-
-/// Namespace for classes not meant to be part of the SDE's public API
-namespace detail_ {
+namespace sde::detail_ {
 
 /** @brief The SDEAny class is capable of holding an instance of any type in a
- *  type-safe manner.
+ *         type-safe manner.
  *
- *  The primary motivation for this class is sometimes you just want to store a
- *  bunch of objects, of different types, in the same container.  Since in C++
- *  types do not all inherit from some common type (like Python's Object class
- *  for example) the SDEAny class provides a mock common base class.  Ultimately
- *  this class works by type-erasure.
- *
- *  To use this class:
- *  @code
- *  //To put value into the SDEAny instance
- *  double value = 2.0;
- *  auto wrapped_value = make_SDEAny(value);
- *
- *  //To get the value back
- *  double retrieved_value = SDEAnyCast<double>(wrapped_value);
- *  @endcode
- *
- *
- *  @note Interestingly the universal reference constructor takes precedence
- *  over the copy constructor, hence the meta-template programming.
- *
+ *  This class is used extensively through the SDE to avoid needing to know the
+ *  types of inputs and results to a property type or module API. Under the hood
+ *  it works by wrapping an std::any and casting that any to implement the
+ *  additional functions which are part of the SDEAny's API, but not the
+ *  std::any's API.
  */
 class SDEAny {
 private:
-    /** @brief Class for determining whether or not a type is derived from
-     *  SDEAny.
-     *
-     *  If @p T is derived from SDEAny (or is an SDEAny), then the resulting
-     *  typedef, is_related, will contain a bool member variable called
-     *  "value" set to true, otherwise "value" is false.
-     *
-     *  @tparam T The type to check for inheritance.
-     */
+    /// Trait to see if @p T is an SDEAny
     template<typename T>
-    using is_related =
-      std::is_base_of<SDEAny, typename std::remove_reference<T>::type>;
+    using is_any = std::is_same<SDEAny, std::decay_t<T>>;
 
-    /** @brief Class for disabling a function via SFINAE if the input is derived
-     *  from SDEAny.
-     *
-     *  If @p T is derived from SDEAny (or is an SDEAny), then the resulting
-     *  typedef, disable_if_related, will contain a member typedef "type"
-     *  set that is an alias for void, otherwise "type" will not exist.
-     *
-     *  @tparam T The type to check for inheritance.
-     */
+    /// True if @p T is an SDEAny
     template<typename T>
-    using disable_if_related =
-      typename std::enable_if<!is_related<T>::value>::type;
+    static constexpr bool is_any_v = is_any<T>::value;
+
+    /// True if @p T is not an SDEAny
+    template<typename T>
+    static constexpr bool not_an_any_v = std::negation_v<is_any<T>>;
+
+    /// Enables a function if @p T is an SDEAny
+    template<typename T>
+    using enable_if_any_t = std::enable_if_t<is_any_v<T>, int>;
+
+    /// Enables a function if @p T is not an SDEAny
+    template<typename T>
+    using enable_if_not_an_any_t = std::enable_if_t<not_an_any_v<T>, int>;
 
 public:
+    /// The type of rtti returned by the `type` function
+    using rtti_type = typename SDEAnyWrapperBase::rtti_type;
+
+    /// The type of the pointer holding the value
+    using wrapper_ptr = typename SDEAnyWrapperBase::wrapper_ptr;
+
     /** @brief Makes an empty SDEAny instance.
      *
      *  The resulting SDEAny instance wraps no object.  An object can be added
-     * to it by calling the member function emplace.
-     *
-     *  @par Complexity:
-     *  Constant.
-     *
-     *  @par Data Races:
-     *  None.
+     *  to this instance by calling the member function emplace, by assigning to
+     *  this instance another SDEAny instance (containing a value), or by moving
+     *  from another SDEAny instance containing a value.
      *
      *  @throw None. No throw guarantee.
      */
-    SDEAny() = default;
+    SDEAny() noexcept = default;
+
+    /** @brief Used to construct an SDEAny instance holding a particular value.
+     *
+     * This ctor forwards the provided value to the underlying std::any. If an
+     * lvalue is provided a copy will be made.
+     *
+     * @tparam T The type of the instance to wrap. Must be copyable, hashable,
+     *           and have operator== defined.
+     * @tparam <anonymous> A dummy type used to implement SFINAE.
+     *
+     * @param[in] value The instance to wrap. It will be forwarded to the
+     *                  underlying std::any.
+     *
+     *
+     * @throws std::bad_alloc if memory allocation fails.  Strong throw
+     *                        guarantee.
+     * @throws ??? If the copy/move constructor of @p T throws. Same guarantee
+     *             as @p T's ctor.
+     */
+    template<typename T, enable_if_not_an_any_t<T> = 0>
+    explicit SDEAny(T&& value);
 
     /**
-     * @brief Makes a new SDEAny instance by copying an already existing SDEAny
-     * instance (and its wrapped instance).
+     * @brief Makes a new SDEAny instance by deep copying the instance wrapped
+     *        in another SDEAny instance.
      *
-     * This function will invoke the copy constructor of the wrapped class. Thus
-     * whether this function results in a deep copy or a shallow copy depends on
-     * the semantics of the wrapped type.
+     * From the perspective of this class the copy ctor always makes a deep
+     * copy. Whether it actually is a deep copy or not depends on the copy
+     * constructor of the wrapped class.
      *
      * @param[in] rhs The SDEAny instance to copy.
      *
-     * @par Complexity:
-     * Same as the copy constructor of the wrapped type.
-     *
-     * @par Data Races:
-     * The state of @p rhs will be accessed. Data races may result if @p rhs is
-     * modified during the copy.
-     *
      * @throw std::bad_alloc if there is insufficient memory to copy the
-     * instance stored in @p rhs.  Strong throw guarantee.
-     * @throw ??? if the wrapped type's constructor throws.  Strong throw
-     * guarantee.
+     *                       instance stored in @p rhs.  Strong throw guarantee.
+     * @throw ??? if the wrapped type's copy ctor throws.  Same guarantee as
+     *            the wrapped type's copy ctor
      */
-    SDEAny(const SDEAny& rhs) {
-        if(rhs.ptr_) ptr_ = std::move(rhs.ptr_->clone());
-    }
+    SDEAny(const SDEAny& rhs) : m_ptr_(rhs.clone_()) {}
 
     /**
      * @brief Sets the current instance to a copy of another instance.
@@ -128,13 +118,7 @@ public:
      * @throws ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    SDEAny& operator=(const SDEAny& rhs) {
-        if(this != &rhs && rhs.ptr_)
-            ptr_ = std::move(rhs.ptr_->clone());
-        else if(!rhs.ptr_)
-            ptr_.release();
-        return *this;
-    }
+    SDEAny& operator=(const SDEAny& r) { return *this = std::move(SDEAny(r)); }
 
     /**
      * @brief Causes the current SDEAny instance to take ownership of another
@@ -152,7 +136,7 @@ public:
      *
      * @throws None. No throw guarantee.
      */
-    SDEAny(SDEAny&& rhs) = default;
+    SDEAny(SDEAny&& rhs) noexcept = default;
 
     /**
      * @brief Sets the current instance to the state of another SDEAny instance.
@@ -175,146 +159,12 @@ public:
 
     /** @brief Frees up the memory wrapped by the SDEAny instance.
      *
-     *  @par Complexity:
-     *  Constant.
-     *
-     *  @par Data Races:
-     *  The state of the current instance is modified and attempts to
-     *  concurrently access it may result in a data race.
+     *  This is a default dtor. After calling it all references to the
+     *  underlying type-erased instance are no longer valid.
      *
      *  @throw None. No throw guarantee.
      */
     ~SDEAny() = default;
-
-    /**
-     * @brief Used to construct an SDEAny instance holding a particular value.
-     *
-     * The value held by the resulting instance contains a copy of @p value's
-     * state if @p value is an lvalue.  If @p value is a an rvalue, then the
-     * resulting instance contains @p value's state and @p value is in a valid,
-     * but otherwise undefined state.
-     *
-     * @tparam T The type of instance to wrap.  Must meet the concept of
-     * copyable.
-     * @tparam X A dummy type used to prevent this function from
-     * participating in resolution if T is related to SDEAny (in which case
-     * we're really trying to copy/move the other SDEAny instance).
-     *
-     * @param[in] value The instance to wrap.
-     *
-     * @par Complexity:
-     * For copying, same as the copy constructor of @p T.  For moving constant.
-     *
-     * @par Data Races:
-     * The content of @p value will be accessed (for copying) or modified (for
-     * moving).  Either way, data races may result if @p value is concurrently
-     * accessed.
-     *
-     * @throws std::bad_alloc if memory allocation fails.  Strong throw
-     * guarantee.
-     * @throws ??? If the copy/move constructor of @p T throws. Strong throw
-     * guarantee.
-     */
-    template<typename T, typename X = disable_if_related<T>>
-    explicit SDEAny(T&& value) :
-      ptr_(std::move(wrap_ptr<std::decay_t<T>>(std::forward<T>(value)))) {}
-
-    /*void save(Serializer& s) const { s << ptr_; }
-
-    void load(Serializer& s){ s >> ptr_; }*/
-
-    /**
-     *  @brief Allows the SDEAny instance to be hashed.
-     *
-     *  @param[in, out] h A Hasher instance to use for the hashing.
-     *
-     *  @par Complexity:
-     *  Same as the complexity of hashing the wrapped type.
-     *
-     *  @par Data Races:
-     *  The state of the current instance will be accessed and data races may
-     *  result if it is concurrently modified.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Strong
-     *  throw guarantee.
-     */
-    void hash(Hasher& h) const { h(ptr_); }
-
-    /**
-     * @brief Returns the type of the wrapped instance.
-     *
-     * This function returns the RTTI of the wrapped instance.  It should be
-     * noted that the result is compiler specific and should be used with
-     * caution.  If the current instance is not wrapping anything the result
-     * will be typeid(nullptr).
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The state of the current instance is accessed and data races may occur if
-     * the current instance is concurrently modified.
-     *
-     * @return The RTTI of the wrapped type.
-     * @throw None. No throw guarantee.
-     */
-    const std::type_info& type() const noexcept {
-        return ptr_ ? ptr_->type() : typeid(nullptr);
-    }
-
-    /**
-     * @brief Releases the wrapped memory associated with the present SDEAny
-     * instance.
-     *
-     * SDEAny instances own the memory they are wrapping.  This member function
-     * can be used to release the memory before the SDEAny instance goes out
-     * of scope.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The contents of the current instance are modified and data races may
-     * occur if the instance is concurrently accessed.
-     *
-     * @throw None. No throw guarantee.
-     */
-    void reset() noexcept { ptr_.reset(); }
-
-    /**
-     * @brief Swaps the states of two SDEAny instances.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races.
-     * The contents of both this and @p rhs are modified.  Data races may ensure
-     * if attempts are made to access or modify either instance concurrently.
-     *
-     * @param[in,out] rhs The SDEAny instance to swap contents with. After this
-     * call @p rhs will contain the current instance's state.
-     *
-     * @throw None. No throw guarantee.
-     */
-    void swap(SDEAny& rhs) noexcept { ptr_.swap(rhs.ptr_); }
-
-    /**
-     * @brief Returns true if the current SDEAny instance is presently wrapping
-     * a value.
-     *
-     * @par Complexity:
-     * Constant.
-     *
-     * @par Data Races:
-     * The contents of the current instance are accessed and data races may
-     * ensue if the instance is concurrently modified.
-     *
-     * @return True if the current instance has allocated memory and False
-     * otherwise.
-     *
-     * @throw None. No throw guarantee.
-     */
-    bool has_value() const noexcept { return static_cast<bool>(ptr_); }
 
     /**
      * @brief Initializes the wrapped value by forwarding the provided arguments
@@ -371,423 +221,333 @@ public:
      * as T's constructor.
      */
     template<typename T, typename... Args>
-    std::decay_t<T>& emplace(Args&&... args) {
-        using no_cv = std::decay_t<T>;
-        ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
-        return ptr_->cast<no_cv&>();
-    };
+    T& emplace(Args&&... args);
 
-    ///@{
-    /**
-     * @name Comparison operators.
+    /** @brief Releases the wrapped value freeing up the memory associated with
+     *         it.
      *
-     * These comparison operators allow one to compare the type-erased values
-     * without knowing their types.
+     *  SDEAny instances own the memory they are wrapping.  This member function
+     *  can be used to release the memory before the SDEAny instance goes out
+     *  of scope. Following normal RAII practices the SDEAny will release any
+     *  held memory in its dtor meaning users need not call this function before
+     *  letting an SDEAny instance go out of scope.
      *
-     * Two wrapped instances are equal if they are of the same type and that
-     * type's equality operator declares them equal.  In other words, if this
-     * SDEAny wraps an object `obj1` of type `T1` and @p rhs wraps an object
-     * `obj2` of type `T2` equality demands `T1==T2` and `operator==(obj1,
-     * obj2)` evaluates to true.
+     * @throw None. No throw guarantee.
+     */
+    void reset() noexcept { m_ptr_.reset(); }
+
+    /** @brief Swaps the states of two SDEAny instances.
      *
-     * @param rhs The instance to compare to
-     * @throw None. All comparisons are no throw guarantee.
+     *  After a call to this function, the current instance will contain
+     *  @p rhs's state and @p rhs will contain the current instance's state.
+     *
+     * @param[in,out] rhs The SDEAny instance to swap contents with. After this
+     *                call @p rhs will contain the current instance's state.
+     *
+     * @throw None. No throw guarantee.
+     *
+     * @par Complexity constant.
+     */
+    void swap(SDEAny& rhs) noexcept { m_ptr_.swap(rhs.m_ptr_); }
+
+    /** @brief Used to retrieve the value wrapped in the SDEAny.
+     *
+     *  The canonical way to retrieve the value from an SDEAny is to use
+     *  SDEAnyCast. This function is the implementation for the cast and can be
+     *  called directly if the user wants.
+     *
+     * @tparam T The type to cast the wrapped SDEAny instance to. Should include
+     *         cv qualifiers and include reference/pointer designations if so
+     *         desired.
+     *
+     * @return The wrapped value as the requested type.
+     *
+     * @throws std::bad_any_cast if the instance does not contain a wrapped
+     *                           value or if that wrapped value can not be
+     *                           converted to @p T. Strong throw guarantee.
+     */
+    template<typename T>
+    T cast();
+
+    /** @brief Used to retrieve the value wrapped in a read-only SDEAny.
+     *
+     *  The canonical way to retrieve the value from an SDEAny is to use
+     *  SDEAnyCast. This function is the implementation for the cast and can be
+     *  called directly if the user wants. This overload will only allow you to
+     *  retrieve the value in a read-only state.
+     *
+     * @tparam T The type to cast the wrapped SDEAny instance to. Should include
+     *         cv qualifiers and include reference/pointer designations if so
+     *         desired.
+     *
+     * @return The wrapped value as the requested type.
+     *
+     * @throws std::bad_any_cast if the instance does not contain a wrapped
+     *                           value or if that wrapped value can not be
+     *                           converted to @p T. Strong throw guarantee.
+     */
+    template<typename T>
+    T cast() const;
+
+    /** @brief Returns true if the current SDEAny instance is presently wrapping
+     *         a value.
+     *
+     *  An SDEAny can either be holding a type-erased value or not. This
+     *  function is used to determine which it is.
+     *
+     * @return True if the current instance is holding a value and false
+     *         otherwise.
+     *
+     * @throw None. No throw guarantee.
+     *
+     * @par Complexity:
+     *      Constant.
      *
      */
-    bool operator==(const SDEAny& rhs) const noexcept {
-        const bool lhs_good = static_cast<bool>(ptr_);
-        const bool rhs_good = static_cast<bool>(rhs.ptr_);
-        if(lhs_good && rhs_good) return (*ptr_) == (*rhs.ptr_);
-        return lhs_good == rhs_good;
-    }
+    bool has_value() const noexcept { return m_ptr_ != nullptr; }
 
-    bool operator!=(const SDEAny& rhs) const noexcept {
-        return !((*this) == rhs);
-    }
-    ///@}
+    template<typename T>
+    bool is_convertible() const;
+
+    /** @brief Returns the type of the wrapped instance.
+     *
+     *  This function returns the RTTI of the wrapped instance.  It should be
+     *  noted that the representation of the RTTI is compiler specific and
+     *  should be used with caution.  If the current instance is not wrapping
+     *  anything the result will be typeid(void).
+     *
+     * @return The RTTI of the wrapped type.
+     * @throw None. No throw guarantee.
+     */
+    rtti_type type() const noexcept;
+
+    /** @brief Forwards the wrapped type to the provided Hasher.
+     *
+     *  @param[in,out] h A Hasher instance to use for the hashing.
+     *
+     *  @throws ??? if the wrapped instance's hash function throws.  Same
+     *              throw guarantee as the wrapped instance's hash function.
+     *
+     * @par Complexity:
+     *  Same as the complexity of hashing the wrapped type.
+     */
+    void hash(Hasher& h) const { h(m_ptr_); }
+
+    /** @brief Creates a human-readable string representation of the wrapped
+     *         instance.
+     *
+     *  This function ultimately works by printing "<empty SDEAny>" if the
+     *  current instance does not contain a value, or the result of forwarding
+     *  the wrapped value to `std::ostream::operator<<`. Overloads of this
+     *  operator for STL containers are leveraged.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to create the
+     *                        string. Strong throw guarantee.
+     *  @throw ??? if std::ostream<< throws when provided the wrapped value.
+     *             Same guarantee as std::ostream<<.
+     */
+    std::string str() const;
+
+    /** @brief Compares two SDEAny instances for equality.
+     *
+     * Two SDEAny instances are equal if they both hold a value (or do not hold
+     * a value) and, in the case that they both hold a value, the wrapped values
+     * compare equal.
+     *
+     * @param[in] rhs The instance to compare to
+     *
+     * @return true if the SDEAny instances are equal and false otherwise.
+     *
+     * @throw None. All comparisons are no throw guarantee.
+     */
+    bool operator==(const SDEAny& rhs) const noexcept;
+
+    /** @brief Compares two SDEAny instances to see if they are different.
+     *
+     * Two SDEAny instances are equal if they both hold a value (or do not hold
+     * a value) and, in the case that they both hold a value, the wrapped values
+     * compare equal.
+     *
+     * @param[in] rhs The instance to compare to
+     *
+     * @return false if the SDEAny instances are equal and true otherwise.
+     *
+     * @throw None. All comparisons are no throw guarantee.
+     */
+    bool operator!=(const SDEAny& rhs) const noexcept;
 
 private:
-    /// Allows SDEAnyCast to return the wrapped value
-    template<typename T>
-    friend T SDEAnyCast(SDEAny&);
-
-    template<typename T>
-    friend T SDEAnyCast(const SDEAny&);
-
-    /**
-     * @brief Class to hold the type-erased instance.
+    /** @brief Code factorization for copying the wrapper.
      *
-     * This class will ultimately serve as the opaque API to the wrapped
-     * instance.  If one has read the discussion  then it's
-     * worth noting that SDEAnyBase is the realization of the TEBase class.
+     *  The wrapper is copied by calling its clone member. This function first
+     *  ensures that we are holding a wrapper. If we are it then calls that
+     *  wrapper's clone member. If we do not have a wrapper this function simply
+     *  returns an empty pointer.
      *
-     * Note that this class is abstract and can not be instantiated.
+     *  @return The wrapper
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to allocate the
+     *                        copy. Strong throw guarantee.
+     *  @throw ??? If the value's copy ctor throws. Same guarantee
+     *             as the value's copy ctor.
      */
-    struct SDEAnyBase_ {
-        /**
-         *  @brief Cleans up an SDEAnyBase_ instance.
-         *
-         *  Since SDEAnyBase_ instances have no state this is a null operation.
-         *  However, it is important to mark this function as virtual to ensure
-         *  that we don't end up with a memory leak caused by the derived class
-         *  not deleting its data when we pass that class around via the base
-         *  class (which is literally all the time).
-         *
-         *  @par Complexity:
-         *  Constant.
-         *
-         *  @par Data Races:
-         *  None.
-         *
-         *  @throws None. No throw guarantee.
-         */
-        virtual ~SDEAnyBase_() = default;
+    wrapper_ptr clone_() const;
 
-        /**
-         *  @brief Makes a polymorphic copy of the wrapper.
-         *
-         *  This abstract method should be implemented in the derived class by
-         *  creating a new SDEAnyBase_ on the heap by calling the copy ctor of
-         *  the derived class.  The resulting copy should be returned inside a
-         *  unique_ptr
-         *
-         *  @return A newly allocated copy of the wrapped instance.
-         *
-         */
-        std::unique_ptr<SDEAnyBase_> clone() { return clone_(); }
-
-        /**
-         * @brief Provides the RTTI of the wrapped class.
-         *
-         * This member should be implemented so that it returns the result of
-         * calling `typeid()` on the wrapped type.
-         *
-         * @return The RTTI of the wrapped class.
-         */
-        const std::type_info& type() const noexcept { return type_(); };
-
-        /*void save(Serializer& s) const { save_(s); }
-
-        void load(Serializer& s) { load_(s); }*/
-
-        /**
-         *  @brief Allows the SDEAnyBase_ instance to be hashed.
-         *
-         *  This function simply delegates to the protected hash_ member
-         *  function (following the suggestion on BPHash's website).
-         *
-         *  @param[in, out] h A Hasher instance to use for the hashing.
-         *
-         *  @par Complexity:
-         *  Same as the complexity of hashing the wrapped type.
-         *
-         *  @par Data Races:
-         *  The state of the current instance will be accessed and data races
-         *  may
-         *  result if it is concurrently modified.
-         *
-         *  @throws ??? if the wrapped instance's hash function throws.  Strong
-         *  throw guarantee.
-         */
-        void hash(Hasher& h) const { hash_(h); }
-
-        /// Public API for determining equality
-        bool operator==(const SDEAnyBase_& rhs) const noexcept {
-            return are_equal_(rhs);
-        }
-
-        /**
-         * @brief Casts the wrapped object back to the readonly type @p T
-         *
-         * @tparam T The type to cast to.  Should be fully cv qualified.
-         * @return The wrapped instance.
-         * @throw std::bad_cast if the wrapped instance is not of type @p T.
-         *        Strong throw guarantee.
-         */
-        template<typename T>
-        T cast() const {
-            using no_ref = std::decay_t<T>;
-            if(type() != typeid(no_ref)) throw std::bad_cast{};
-            return static_cast<const SDEAnyWrapper_<no_ref>&>(*this).value;
-        }
-
-        /// Same as `cast() const`, but allows converting to read/write values
-        template<typename T>
-        T cast() {
-            using no_ref = std::decay_t<T>;
-            if(type() != typeid(no_ref)) throw std::bad_cast{};
-            return static_cast<SDEAnyWrapper_<no_ref>&>(*this).value;
-        }
-
-    private:
-        /// The function for equality, to be implemented by the derived class
-        virtual bool are_equal_(const SDEAnyBase_& rhs) const noexcept = 0;
-
-        /// The function for hashing, to be implemented by the derived class
-        virtual void hash_(Hasher& h) const = 0;
-
-        /// Implemented by derived class for polymorphic copy
-        virtual std::unique_ptr<SDEAnyBase_> clone_() const = 0;
-
-        /// Function implementing the retrieval of the RTTI
-        virtual const std::type_info& type_() const noexcept = 0;
-
-        /// Function implementing the serialization of the object
-        /*virtual void save_(Serializer& s) const = 0;
-
-        virtual void load_(Serializer& s) = 0;*/
-    };
-
-    /**
-     * @brief The class in the SDEAny hierarchy responsible for holding the
-     * wrapped instance.
+    /** @brief Code factorization for emplace creation of the internal pointer.
      *
-     * The SDEAnyWrapper_ class holds the wrapped instance for the SDEAnyBase_
-     * class.  It also is responsible for implementing the abstract methods in
-     * the latter.
+     *  This function creates a new @p T instance by forwarding the provided
+     *  arguments to @p T's ctor. The resulting @p T is then moved into the
+     *  internal wrapper.
      *
-     * @tparam T The type of the instance to wrap.  Must satisfy the concept of
-     * copyable and should have no qualifiers (const, reference, pointer...)
-     *
-     * @note Without the attribute the GCC compiler for some reason tries to
-     * export the symbols for this class and then issues a warning that the
-     * resulting symbol is publically accessible (through the ABI), despite it
-     * being a private class.
-     */
-    template<typename T>
-    struct SDEAnyWrapper_ : SDEAnyBase_ {
-        /**
-         * @brief Creates a new SDEAnyWrapper_ by copying a value.
-         *
-         * @param[in] value_in a copy of the value.
-         *
-         * @par Complexity:
-         * Constant.
-         *
-         * @par Data Race:
-         * None.  Data is copied in and the copied value is wrapped.
-         *
-         * @throw ??? If T's move constructor throws.  Strong throw guarantee.
-         *
-         */
-        SDEAnyWrapper_(const T& value_in) : value(value_in) {
-            static_assert(std::is_same<T, std::decay_t<T>>::value,
-                          "Type to wrapper must be unqualified");
-        }
-
-        /**
-         * @brief Creates a new SDEAnyWrapper_ by taking ownership of an
-         * already existing @p T instance.
-         *
-         * @param[in] value_in the instance whose state we are stealing.  After
-         * this call @p value_in will be in a valid, but otherwise undefined
-         * state.
-         *
-         * @par Complexity:
-         * Same as T's move constructor.
-         *
-         * @par Data Race:
-         * @p value_in is modified and data races may occur if it is
-         * concurrently accessed.
-         *
-         * @throw ??? If T's move constructor throws.  Strong throw guarantee.
-         *
-         */
-        SDEAnyWrapper_(T&& value_in) : value(std::move(value_in)) {}
-
-        /// The actual wrapped value
-        T value;
-
-    private:
-        /** @brief Polymorphic copy function that returns an SDEAnyBase_
-         * allocated on the heap by copying the current instance.
-         *
-         *  @return A newly allocated SDEAnyBase_ instance.
-         *
-         *  @par Complexity:
-         *  Same as T's copy ctor.
-         *
-         *  @par Data Races:
-         *  The value wrapped by the current instance is accessed and data races
-         *  may occur if it is concurrently modified.
-         *
-         *  @throw std::bad_alloc if there is insufficient memory to copy.
-         *  Strong throw guarantee.
-         *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
-         *  T's copy constructor.
-         */
-        std::unique_ptr<SDEAnyBase_> clone_() const override {
-            return std::move(std::make_unique<SDEAnyWrapper_<T>>(*this));
-        }
-
-        /**
-         * @brief Returns the RTTI of the wrapped instance.
-         *
-         * @return The RTTI of the wrapped instance.
-         *
-         * @par Complexity:
-         * Constant.
-         *
-         * @par DataRaces:
-         * None.
-         *
-         * @throws None. No throw guarantee.
-         */
-        const std::type_info& type_() const noexcept override {
-            return typeid(T);
-        }
-
-        /* void save_(Serializer& s) const override { s << value; }
-
-         void load_(Serializer& s) override { s >> value; }*/
-
-        bool are_equal_(const SDEAnyBase_& rhs) const noexcept override {
-            if(type() != rhs.type()) return false; // Wrong types
-            return value == rhs.cast<const T&>();
-        }
-
-        /**
-         *  @brief Implements hashing for the SDEAnyBase_ class.
-         *
-         *  @param[in, out] h A Hasher instance to use for the hashing.
-         *
-         *  @par Complexity:
-         *  Same as the complexity of hashing the wrapped type.
-         *
-         *  @par Data Races:
-         *  The state of the current instance will be accessed and data races
-         *  may
-         *  result if it is concurrently modified.
-         *
-         *  @throws ??? if the wrapped instance's hash function throws.  Strong
-         *  throw guarantee.
-         */
-        void hash_(Hasher& h) const override { h(value); }
-
-        /**
-         * @brief Allows the wrapped object to be returned as the opaque Python
-         * base class.  The returned instance is read-only.
-         *
-         * @return The object wrapped in an opaque Python base class
-         * @throws pybind11::cast_error if the cast fails.  Strong throw
-         * guarantee.
-         * @throws std::runtime_error if Python bindings are not enabled.
-         * Strong throw guarantee.
-         */
-    };
-
-    /**
-     * @brief Code factorization for the internal process of wrapping an
-     * instance.
-     *
-     * The actual process of making the wrapped instance requires us to:
-     * 1. Remove decorators (e.g. const) to get at the fundamental type.
-     * 2. Ensure the type is copyable.
-     * 3. Forwarding the input arguments to @p T's ctor.
-     *
-     * This function wraps that procedure.
-     *
-     * @tparam T The fully decorated type of the object we are wrapping.  Must
-     * be copyable.
+     * @tparam T The cv qualified type that this SDEAny instance will be
+     *           wrapping.
      *
      * @tparam Args The types of the arguments that will be provided to @p T's
-     *         ctor.
+     *              ctor.
      *
-     * @param args The actual arguments to @p T's ctor.
-     * @return A new SDEAnyBase_ instance allocated on the heap.
+     * @param[in] args The arguments to forward to @p T's ctor.
+     *
+     * @return A unique_ptr containing an SDEAnyWrapperBase instance which wraps
+     *         the newly created @p T instance.
+     *
      * @throws std::bad_alloc if there is insufficient memory to allocate a
-     *         new SDEWrapper<T> instance.  Strong throw guarantee.
-     * @throws ??? if T's ctor throws. Strong throw guarantee.
+     *                        new SDEWrapper<T> instance.  Strong throw
+     *                        guarantee.
+     * @throws ??? if @p T's ctor throws. Same guarantee as @p T's ctor.
      */
     template<typename T, typename... Args>
-    std::unique_ptr<SDEAnyBase_> wrap_ptr(Args&&... args) const {
-        using no_cv = std::decay_t<T>;
-        static_assert(std::is_copy_constructible<no_cv>::value,
-                      "Only copy constructable objects may be assigned to "
-                      "SDEAny instances");
-        using result_t = SDEAnyWrapper_<no_cv>;
-        return std::move(
-          std::make_unique<result_t>(std::forward<Args>(args)...));
-    }
+    static wrapper_ptr wrap_ptr_(Args&&... args);
 
-    /// The actual type-erased value
-    std::unique_ptr<SDEAnyBase_> ptr_;
+    /// The object holding the actual value
+    wrapper_ptr m_ptr_;
 };
 
-/**
- * @brief Provides access to the value wrapped in an SDEAny instance.
- * @relates SDEAny
- * @tparam T The type to cast the SDEAny instance to.
- * @param[in] wrapped_value An any instance containing a value.
- * @return The value wrapped by @p wrapped_value.
- * @throw std::bad_cast if the value wrapped by @p wrapped_value is not
- * convertible to type @p T.  Strong throw guarantee.
- * @par Complexity:
- * Constant.
- * @par Data Races:
- * The state of @p wrapped_value is accessed and data races may occur if
- * @p wrapped_value is concurrently modified.
- */
-template<typename T>
-T SDEAnyCast(SDEAny& wrapped_value) {
-    return wrapped_value.ptr_->cast<T>();
-}
-
-/**
- * @brief Provides access to the value wrapped in a read-only SDEAny instance.
+/** @brief Provides access to the value wrapped in an SDEAny instance.
+ *
  * @relates SDEAny
  *
- * Rather than writing two versions of SDEAny::cast (which are the same aside
- * from their const-ness), we instead opt for a const_cast.  This is justified
- * because the returned value is provided to the user as const reference.  Thus
- * the user still interacts with the SDEAny instance in a read-only fashion.
+ * @tparam T The type of the value wrapped in the SDEAny instance.
+ * @tparam U The type of the SDEAny instance itself. Should be at most
+ *           cv-qualified SDEAny.
  *
- * @tparam T The type to cast the SDEAny instance to.
- * @param wrapped_value An any instance containing a value.
- * @return The value, in a read-only state, that is wrapped by @p wrapped_value.
- * @throw std::bad_cast if the value wrapped by @p wrapped_value is not
- * convertible to type @p T.  Strong throw guarantee.
- * @par Complexity:
- * Constant.
- * @par Data Races:
- * The state of @p wrapped_value is accessed and data races may occur if
- * @p wrapped_value is concurrently modified.
+ * @param[in] da_any The SDEAny instance to retrieve the value from.
+ *
+ * @return The value wrapped by @p da_any.
+ *
+ * @throw std::bad_any_cast if the value wrapped by @p da_any is not
+ *                          convertible to type @p T or if @p da_any does not
+ *                          contain a value.  Strong throw guarantee.
+ *
+ * @par Complexity: Constant.
  */
-template<typename T>
-T SDEAnyCast(const SDEAny& wrapped_value) {
-    return wrapped_value.ptr_->cast<T>();
+template<typename T, typename U>
+T SDEAnyCast(U&& da_any) {
+    return da_any.template cast<T>();
 }
 
 /** @brief Makes an SDEAny instance by forwarding the arguments to the wrapped
  *  instance's constructor.
  *
+ *  @relates SDEAny
+ *
  *  This is a convenience function for directly populating an SDEAny instance so
  *  that the user does not have to first construct a temporary and then forward
  *  that temporary to an SDEAny instance.
  *
- *  @relates SDEAny
- *
- *  @param args The arguments to forward to @p T's constructor.
- *  @tparam T The type of the object we are going to wrap.
+ *  @tparam T The type of the object that the SDEAny should wrap.
  *  @tparam Args The types of the arguments that are being forwarded.
- *  @return An any instance constructed with the current arguments.
  *
- *  @par Complexity:
- *  Same as T's ctor taking @p args.
+ *  @param[in] args The values to forward to @p T's ctor.
+ *
+ *  @return An SDEAny instance containing a newly created wrapped @p T instance.
  *
  *  @par Data Races:
  *  The values of @p args are forwarded to T's ctor and data races may occur if
  *  the values of args are concurrently modified.
  *
- *  @throw std::bad_alloc if there is insufficient memory for the resulting
- *  instance.  Strong throw guarantee.
+ *  @throw std::bad_alloc if there is insufficient memory for the SDEAny to
+ *                        create the wrapper.  Strong throw guarantee.
  *  @throw ??? If @p T's constructor throws.  Same guarantee as T's constructor.
+ *
+ *  @par Complexity:
+ *  Same as T's ctor taking @p args.
  *
  */
 template<typename T, typename... Args>
-SDEAny make_SDEAny(Args&&... args) {
-    return SDEAny(std::move(T(std::forward<Args>(args)...)));
+SDEAny make_SDEAny(Args&&... args);
+
+//--------------------------Implementations-------------------------------------
+
+template<typename T, typename SDEAny::enable_if_not_an_any_t<T>>
+SDEAny::SDEAny(T&& value) :
+  m_ptr_(wrap_ptr_<std::conditional_t<std::is_reference_v<T>,
+                                      std::remove_reference_t<T>, T>>(
+    std::forward<T>(value))) {}
+
+template<typename T, typename... Args>
+T& SDEAny::emplace(Args&&... args) {
+    wrap_ptr_<T>(std::forward<Args>(args)...).swap(m_ptr_);
+    return m_ptr_->cast<T&>();
 };
 
-} // namespace detail_
-} // namespace sde
+template<typename T>
+T SDEAny::cast() {
+    if(!has_value()) throw std::bad_any_cast();
+    return m_ptr_->cast<T>();
+}
+
+template<typename T>
+T SDEAny::cast() const {
+    if(!has_value()) throw std::bad_any_cast();
+    // Not sure if it's a compiler bug or I'm missing something, but for some
+    // reason just doing ->cast<T>() calls the non-const version
+    const auto* p = m_ptr_.get();
+    return p->cast<T>();
+}
+
+template<typename T>
+bool SDEAny::is_convertible() const {
+    try {
+        cast<T>();
+        return true;
+    } catch(...) { return false; }
+}
+
+inline typename SDEAny::rtti_type SDEAny::type() const noexcept {
+    return has_value() ? m_ptr_->type() : typeid(void);
+}
+
+inline std::string SDEAny::str() const {
+    if(has_value()) return m_ptr_->str();
+    return "<empty SDEAny>";
+}
+
+inline bool SDEAny::operator==(const SDEAny& rhs) const noexcept {
+    if(has_value() != rhs.has_value()) return false;
+    if(!has_value()) return true;
+    return (*m_ptr_) == (*rhs.m_ptr_);
+}
+
+inline bool SDEAny::operator!=(const SDEAny& rhs) const noexcept {
+    return !((*this) == rhs);
+}
+
+inline typename SDEAny::wrapper_ptr SDEAny::clone_() const {
+    return has_value() ? m_ptr_->clone() : wrapper_ptr{};
+}
+
+template<typename T, typename... Args>
+typename SDEAny::wrapper_ptr SDEAny::wrap_ptr_(Args&&... args) {
+    static_assert(!std::is_reference_v<T>, "T should not be a reference");
+
+    T temp(std::forward<Args>(args)...);
+    return std::make_unique<SDEAnyWrapper<T>>(std::move(temp));
+}
+
+template<typename T, typename... Args>
+SDEAny make_SDEAny(Args&&... args) {
+    SDEAny a;
+    a.emplace<T>(std::forward<Args>(args)...);
+    return a;
+};
+} // namespace sde::detail_

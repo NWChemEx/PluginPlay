@@ -31,8 +31,3 @@ TEST_CASE("Reference wrapper equality") {
     REQUIRE(detail_::operator==(std::cref(ione), std::cref(done)));
     REQUIRE(!detail_::operator==(std::cref(ione), std::cref(dtwo)));
 }
-
-TEST_CASE("IsPrintable") {
-    REQUIRE(detail_::IsPrintable<std::string>::value);
-    REQUIRE(!detail_::IsPrintable<std::vector<int>>::value);
-}

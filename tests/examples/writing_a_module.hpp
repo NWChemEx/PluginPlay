@@ -9,7 +9,7 @@
  * running this tutorial.
  */
 #pragma once
-#include "examples/property_type.hpp"
+#include "examples/writing_a_property_type.hpp"
 #include <sde/module_base.hpp>
 
 /* Declaring the Module
