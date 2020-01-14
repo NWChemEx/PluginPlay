@@ -375,12 +375,13 @@ inline Module& SubmoduleRequestPIMPL::value() {
     return *m_module_;
 }
 
-void SubmoduleRequestPIMPL::lock() {
+inline void SubmoduleRequestPIMPL::lock() {
     if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
     m_module_->lock();
 }
 
-bool SubmoduleRequestPIMPL::operator==(const SubmoduleRequestPIMPL& rhs) const {
+inline bool SubmoduleRequestPIMPL::operator==(
+  const SubmoduleRequestPIMPL& rhs) const {
     if(has_type() != rhs.has_type()) return false;
     if(has_description() != rhs.has_description()) return false;
     if(has_module() != rhs.has_module()) return false;
@@ -391,7 +392,8 @@ bool SubmoduleRequestPIMPL::operator==(const SubmoduleRequestPIMPL& rhs) const {
     return true;
 }
 
-bool SubmoduleRequestPIMPL::operator!=(const SubmoduleRequestPIMPL& rhs) const {
+inline bool SubmoduleRequestPIMPL::operator!=(
+  const SubmoduleRequestPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 

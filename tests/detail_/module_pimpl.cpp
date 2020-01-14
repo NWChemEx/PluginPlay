@@ -1,5 +1,5 @@
 #include "sde/detail_/module_pimpl.hpp"
-#include "test_common.hpp"
+#include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
 
 using namespace sde;

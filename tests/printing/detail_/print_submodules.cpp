@@ -1,5 +1,5 @@
 #include "sde/printing/detail_/print_submodules.hpp"
-#include "test_common.hpp"
+#include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
 #include <tests/test_common.hpp>
 #include <utilities/printing/word_wrap_stream.hpp>

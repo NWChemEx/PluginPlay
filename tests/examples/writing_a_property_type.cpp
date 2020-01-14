@@ -1,4 +1,4 @@
-#include "examples/writing_a_property_type.hpp"
+#include "tests/examples/writing_a_property_type.hpp"
 #include <catch2/catch.hpp>
 
 /* This test focuses on the property_type class. The property_type class can not
