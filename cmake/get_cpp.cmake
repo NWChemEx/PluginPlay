@@ -13,7 +13,6 @@ function(get_cpp)
     FetchContent_Declare(
             cpp
             GIT_REPOSITORY https://github.com/CMakePP/CMakePackagingProject
-            GIT_TAG rewrite
     )
     FetchContent_MakeAvailable(cpp)
     set(BUILD_TESTING "${build_testing_old}" CACHE BOOL "" FORCE)

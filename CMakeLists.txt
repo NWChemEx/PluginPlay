@@ -15,7 +15,6 @@ option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 cpp_find_or_build_dependency(
         utilities
         URL github.com/NWChemEx-Project/utilities
-        VERSION new_cpp
         PRIVATE TRUE
         BUILD_TARGET utilities
         CMAKE_ARGS BUILD_TESTING=OFF
