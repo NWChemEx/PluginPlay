@@ -211,7 +211,7 @@ inline auto& ModuleResultPIMPL::value() const {
     throw std::runtime_error("Result does not have a bound value");
 }
 
-bool ModuleResultPIMPL::operator==(const ModuleResultPIMPL& rhs) const {
+inline bool ModuleResultPIMPL::operator==(const ModuleResultPIMPL& rhs) const {
     if(has_type() != rhs.has_type()) return false;
     if(has_value() != rhs.has_value()) return false;
     if(has_description() != rhs.has_description()) return false;
@@ -223,7 +223,7 @@ bool ModuleResultPIMPL::operator==(const ModuleResultPIMPL& rhs) const {
     return true;
 }
 
-bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
+inline bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 

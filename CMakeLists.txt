@@ -1,36 +1,62 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(sde VERSION 1.0.0)
-set(CPP_NAMESPACE sde)
-find_package(CPP REQUIRED)
+
+set(
+    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
+    CACHE STRING "" FORCE
+)
+
+include(get_cpp)
 
 ### Options ###
-option(BUILD_TESTS "Should we build the tests?" ON)
+option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
-### Dependencies ####
 cpp_find_or_build_dependency(
-    NAME cereal
+        utilities
+        URL github.com/NWChemEx-Project/utilities
+        PRIVATE TRUE
+        BUILD_TARGET utilities
+        CMAKE_ARGS BUILD_TESTING=OFF
+)
+
+cpp_find_or_build_dependency(
+    cereal
     URL github.com/USCiLab/cereal
+    BUILD_TARGET cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
                SKIP_PORTABILITY_TEST=ON
 )
 
-cpp_find_or_build_dependency(NAME bphash URL github.com/ryanmrichard/BPHash
-                                         BRANCH cmake_patch)
-
 cpp_find_or_build_dependency(
-    NAME utilities
-    URL github.com/NWChemEx-Project/utilities
-    PRIVATE
-    CMAKE_ARGS BUILD_TESTS=OFF
+    bphash
+    URL github.com/ryanmrichard/BPHash
+    BUILD_TARGET bphash
+    FIND_TARGET bphash::bphash
+    BRANCH cmake_patch
+    CMAKE_ARGS BUILD_TESTING=OFF
 )
 
-### Target ###
-add_subdirectory(sde)
+cpp_add_library(
+    sde
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
+    DEPENDS utilities cereal bphash
+)
 
-### Testing ###
-if(BUILD_TESTS)
-    cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
-    enable_testing()
-    add_subdirectory(tests)
+if("${BUILD_TESTING}")
+    cpp_find_or_build_dependency(
+        Catch2
+        URL github.com/catchorg/Catch2
+        BUILD_TARGET Catch2
+        FIND_TARGET Catch2::Catch2
+    )
+    cpp_add_tests(
+        test_sde
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
+        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
+        DEPENDS Catch2 sde
+    )
 endif()
+
+
