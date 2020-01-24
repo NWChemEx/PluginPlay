@@ -17,6 +17,7 @@ cpp_find_or_build_dependency(
         URL github.com/NWChemEx-Project/utilities
         PRIVATE TRUE
         BUILD_TARGET utilities
+        FIND_TARGET nwx::utilities
         CMAKE_ARGS BUILD_TESTING=OFF
 )
 
@@ -24,6 +25,7 @@ cpp_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
+    FIND_TARGET cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
                SKIP_PORTABILITY_TEST=ON
 )
@@ -41,7 +43,7 @@ cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-    DEPENDS utilities cereal bphash
+    DEPENDS nwx::utilities cereal bphash::bphash
 )
 
 if("${BUILD_TESTING}")
@@ -55,7 +57,7 @@ if("${BUILD_TESTING}")
         test_sde
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-        DEPENDS Catch2 sde
+        DEPENDS Catch2::Catch2 sde
     )
 endif()
 
