@@ -15,7 +15,6 @@ option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 cpp_find_or_build_dependency(
         utilities
         URL github.com/NWChemEx-Project/utilities
-        VERSION target_unify
         PRIVATE TRUE
         BUILD_TARGET utilities
         FIND_TARGET nwx::utilities
