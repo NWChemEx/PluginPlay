@@ -99,8 +99,12 @@ TEST_CASE("Module : ready") {
         Module p;
         REQUIRE_THROWS_AS(p.ready(), std::runtime_error);
     }
-    SECTION("Is ready") {
+    SECTION("Is ready because no arguments") {
         auto mod = make_module<NullModule>();
+        REQUIRE(mod->ready());
+    }
+    SECTION("Is ready because all inputs are defaulted") {
+        auto mod = make_module<ReadyModule>();
         REQUIRE(mod->ready());
     }
     SECTION("Not ready because of input") {
@@ -330,6 +334,14 @@ TEST_CASE("Module : run_as") {
         auto mod = make_module<NotReadyModule>();
         mod->add_property_type<NullPT>();
         REQUIRE_THROWS_AS(mod->run_as<NullPT>(), std::runtime_error);
+    }
+    SECTION("Can call defaulted module without arg") {
+        auto mod = make_module<ReadyModule>();
+        REQUIRE(std::get<0>(mod->run_as<OptionalInput>()) == 1);
+    }
+    SECTION("Can call defaulted module without arg") {
+        auto mod = make_module<ReadyModule>();
+        REQUIRE(std::get<0>(mod->run_as<OptionalInput>(42)) == 42);
     }
     SECTION("Works") {
         auto mod = make_module<ResultModule>();
