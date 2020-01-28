@@ -94,9 +94,11 @@ TEST_CASE("ModuleInput : is_valid") {
     }
     SECTION("Valid type + other") {
         ModuleInput i;
+	int i3 = 3;
+	int i4 = 4;
         i.set_type<int>();
-        i.add_check(bounds_checking::NotEqualTo<const int&>(4));
-        REQUIRE(i.is_valid((int)3));
+        i.add_check(bounds_checking::NotEqualTo<const int&>(i4));
+        REQUIRE(i.is_valid(i3));
     }
     SECTION("Not valid type + other") {
         ModuleInput i;
