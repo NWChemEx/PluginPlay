@@ -1,3 +1,7 @@
+[![Actions](https://github.com/hjjvandam/SDE/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/SDE)
+
+[![Codecov](https://codecov.io/github/hjjvandam/SDE/branch/github-actions/graphs/sunburst.svg?token=Voqz8tO)](https://codecov.io/github/NWChemEx-Project/SDE/branch/master)
+
 Simulation Development Environment (SDE)
 =========================================
 
