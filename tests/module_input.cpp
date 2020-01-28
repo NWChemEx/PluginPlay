@@ -96,7 +96,7 @@ TEST_CASE("ModuleInput : is_valid") {
         ModuleInput i;
         i.set_type<int>();
         i.add_check(bounds_checking::NotEqualTo<const int&>(4));
-        REQUIRE(i.is_valid(int{3}));
+        REQUIRE(i.is_valid((int)3));
     }
     SECTION("Not valid type + other") {
         ModuleInput i;
