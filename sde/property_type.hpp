@@ -1,5 +1,5 @@
 #pragma once
-#include "sde/detail_/property_type_builder.hpp"
+#include "field_tuple.hpp"
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 
@@ -141,11 +141,11 @@ private:
  * @relates PropertyType
  */
 inline auto declare_input() {
-    return detail_::PropertyTypeBuilder<ModuleInput>{};
+    return FieldTuple<ModuleInput>{};
 }
 
 inline auto declare_result() {
-    return detail_::PropertyTypeBuilder<ModuleResult>{};
+    return FieldTuple<ModuleResult>{};
 }
 ///@}
 
@@ -181,8 +181,9 @@ template<typename T>
 auto PROP_TYPE::unwrap_inputs(T&& rv) {
     // If there are no inputs to unwrap we return an empty tuple
     using input_type                 = decltype(DerivedType::inputs());
-    using input_tuple                = typename input_type::tuple_of_fields;
-    static constexpr bool has_inputs = input_type::nfields > 0;
+    using traits_type                = typename input_type::traits_type;
+    using input_tuple                = typename traits_type::tuple_of_fields;
+    static constexpr bool has_inputs = traits_type::nfields > 0;
 
     if constexpr(has_inputs) {
         return unwrap_(inputs(), std::forward<T>(rv));
@@ -209,7 +210,8 @@ auto& PROP_TYPE::wrap_(T&& rv, U&& builder, Args&&... args) {
 template<typename DerivedType>
 template<std::size_t ArgI, typename T, typename U, typename V, typename... Args>
 void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
-    using tuple_of_fields = typename std::decay_t<U>::tuple_of_fields;
+    using traits_type     = typename std::decay_t<U>::traits_type;
+    using tuple_of_fields = typename traits_type::tuple_of_fields;
     using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
     static_assert(std::is_convertible_v<V, type>,
                   "Wrap argument is of incorrect type.");
@@ -239,7 +241,7 @@ auto PROP_TYPE::unwrap_(T&& builder, U&& rv) {
 template<typename DerivedType>
 template<std::size_t ArgI, typename T, typename U>
 auto PROP_TYPE::unwrap_guts_(T&& builder, U&& rv) {
-    using tuple_of_fields = typename T::tuple_of_fields;
+    using tuple_of_fields = typename T::traits_type::tuple_of_fields;
     constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
     if constexpr(ArgI == nargs)
         return std::make_tuple();

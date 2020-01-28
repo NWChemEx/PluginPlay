@@ -178,8 +178,9 @@ LAMBDA_MOD_TYPE::LambdaModule(FxnType&& fxn) :
                  PropertyType::unwrap_inputs(std::move(inputs));
 
                using result_type        = decltype(PropertyType::results());
-               using result_tuple       = typename result_type::tuple_of_fields;
-               constexpr auto n_results = result_type::nfields;
+               using traits_type        = typename result_type::traits_type;
+               using result_tuple       = typename traits_type::tuple_of_fields;
+               constexpr auto n_results = traits_type::nfields;
                result_tuple rv;
 
                if constexpr(n_results > 0) {

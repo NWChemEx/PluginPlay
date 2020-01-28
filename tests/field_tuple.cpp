@@ -1,9 +1,13 @@
 #include <catch2/catch.hpp>
-#include <sde/detail_/property_type_builder.hpp>
+#include <sde/field_tuple.hpp>
 #include <sde/module_input.hpp>
 
+using namespace sde;
+using namespace sde::detail_;
+
+
 using PropertyTypeInputBuilder =
-  sde::detail_::PropertyTypeBuilder<sde::ModuleInput>;
+  sde::FieldTuple<sde::ModuleInput>;
 
 template<typename T>
 void check_state(T& builder, std::vector<std::string> corr_keys) {
@@ -15,23 +19,23 @@ void check_state(T& builder, std::vector<std::string> corr_keys) {
     }
 }
 
-TEST_CASE("PropertyTypeBuilder : Default ctor") {
+TEST_CASE("FieldTuple : Default ctor") {
     std::vector<std::string> keys;
     PropertyTypeInputBuilder builder;
     check_state(builder, keys);
     using corr_type = std::tuple<>;
-    using fields    = typename decltype(builder)::tuple_of_fields;
+    using fields    = typename decltype(builder)::traits_type::tuple_of_fields;
     STATIC_REQUIRE(std::is_same_v<corr_type, fields>);
 }
 
-TEST_CASE("PropertyTypeBuilder : add_field") {
+TEST_CASE("FieldTuple : add_field") {
     PropertyTypeInputBuilder builder;
     std::vector<std::string> keys{"key1"};
     auto new_builder = builder.add_field<int>("key1");
     SECTION("Resulting state") {
         check_state(new_builder, keys);
         using corr_type = std::tuple<int>;
-        using fields    = typename decltype(new_builder)::tuple_of_fields;
+        using fields    = typename decltype(new_builder)::traits_type::tuple_of_fields;
         STATIC_REQUIRE(std::is_same_v<corr_type, fields>);
     }
     SECTION("Can't reuse the same key") {
