@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 #include <sde/field_tuple.hpp>
 #include <sde/module_input.hpp>
+#include <sde/module_result.hpp>
 
 using namespace sde;
 using namespace sde::detail_;
@@ -16,6 +17,89 @@ void check_state(T& builder, std::vector<std::string> corr_keys) {
     for(auto[k, v] : builder) {
         REQUIRE(k == *keyi++);
         REQUIRE(builder.count(k));
+    }
+}
+
+/*
+ * We know FieldTupleTraits works from its unit test. This unit test ensures
+ * that we forward the types correctly through the FieldTuple class. In other
+ * words we need to check we obtain the correct traits_type for various template
+ * parameter combinations and then for one of those combinations we need to make
+ * sure that the types are forwarded correctly.
+ */
+TEST_CASE("FieldTuple : types") {
+
+    SECTION("FieldTuple<ModuleInput>::traits_type"){
+        using traits_type = typename FieldTuple<ModuleInput>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleInput>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("FieldTuple<ModuleInput, int>::traits_type"){
+        using traits_type = typename FieldTuple<ModuleInput, int>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleInput, int>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("FieldTuple<ModuleInput, int, const int&>::traits_type"){
+        using traits_type =
+          typename FieldTuple<ModuleInput, int, const int&>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleInput, int, const int&>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("FieldTuple<ModuleResult>::traits_type"){
+        using traits_type = typename FieldTuple<ModuleResult>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleResult>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("FieldTuple<ModuleResult, int>::traits_type"){
+        using traits_type = typename FieldTuple<ModuleResult, int>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleResult, int>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("FieldTuple<ModuleResult, int, double>::traits_type"){
+        using traits_type =
+          typename FieldTuple<ModuleResult, int, double>::traits_type;
+        using corr = detail_::FieldTupleTraits<ModuleResult, int, double>;
+        STATIC_REQUIRE(std::is_same_v<traits_type, corr>);
+    }
+
+    SECTION("Type forwarding"){
+        using field_tuple = FieldTuple<ModuleInput, int>;
+        using traits_type = typename field_tuple::traits_type;
+
+        SECTION("key_type") {
+            using key_type = typename field_tuple::key_type;
+            using corr     = typename traits_type::key_type;
+            STATIC_REQUIRE(std::is_same_v<key_type, corr>);
+        }
+
+        SECTION("mapped_type") {
+            using mapped_type = typename field_tuple::mapped_type;
+            using corr     = typename traits_type::mapped_type;
+            STATIC_REQUIRE(std::is_same_v<mapped_type, corr>);
+        }
+
+        SECTION("value_type") {
+            using value_type = typename field_tuple::value_type;
+            using corr     = typename traits_type::value_type;
+            STATIC_REQUIRE(std::is_same_v<value_type, corr>);
+        }
+
+        SECTION("iterator") {
+            using iterator = typename field_tuple::iterator;
+            using corr     = typename traits_type::iterator;
+            STATIC_REQUIRE(std::is_same_v<iterator, corr>);
+        }
+
+        SECTION("const_iterator") {
+            using const_iterator = typename field_tuple::const_iterator;
+            using corr           = typename traits_type::const_iterator;
+            STATIC_REQUIRE(std::is_same_v<const_iterator, corr>);
+        }
     }
 }
 

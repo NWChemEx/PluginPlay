@@ -1,8 +1,8 @@
 #pragma once
 #include "sde/types.hpp"
 #include <array>
-#include<tuple>
-#include<utility>
+#include <tuple>
+#include <utility>
 
 namespace sde {
 

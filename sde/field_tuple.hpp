@@ -26,9 +26,6 @@ class ModuleInput;
  */
 template<typename ElementType, typename... FieldTypes>
 class FieldTuple {
-private:
-    /// Type of this class
-    using my_type = FieldTuple<ElementType, FieldTypes...>;
 public:
     /// The type of the traits class
     using traits_type = detail_::FieldTupleTraits<ElementType, FieldTypes...>;
@@ -72,11 +69,11 @@ public:
 
     FieldTuple(const FieldTuple& rhs) = default;
 
-    my_type& operator=(const my_type& rhs) = default;
+    FieldTuple& operator=(const FieldTuple& rhs) = default;
 
     FieldTuple(FieldTuple&& rhs) = default;
 
-    my_type& operator=(my_type&& rhs) = default;
+    FieldTuple& operator=(FieldTuple&& rhs) = default;
 
     FieldTuple(std::array<value_type, traits_type::nfields> values) noexcept;
     ///@}
@@ -272,7 +269,7 @@ sde::type::size BUILDER_TYPE::count(const type::key& key) const noexcept {
 
 BUILDER_PARAMS
 auto& BUILDER_TYPE::at(const type::key& key) {
-    const auto& temp = const_cast<const my_type&>(*this).at(key);
+    const auto& temp = const_cast<const BUILDER_TYPE&>(*this).at(key);
     return const_cast<mapped_type&>(temp.second);
 }
 
