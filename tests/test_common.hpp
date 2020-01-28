@@ -7,10 +7,9 @@
 namespace testing {
 
 // Simplest property type possible
-struct NullPT : sde::PropertyType<NullPT> {
-    auto inputs_() { return sde::declare_input(); }
-    auto results_() { return sde::declare_result(); }
-};
+DECLARE_PROPERTY_TYPE(NullPT);
+inline PROPERTY_TYPE_INPUTS(NullPT){ return sde::declare_input(); }
+inline PROPERTY_TYPE_RESULTS(NullPT){ return sde::declare_result(); }
 
 // Property type for module with one option
 struct OneIn : sde::PropertyType<OneIn> {
@@ -41,13 +40,10 @@ struct TwoOut : sde::PropertyType<TwoOut> {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Module with no property type
-struct NoPTModule : sde::ModuleBase {
-    NoPTModule() : sde::ModuleBase(this) {}
-    sde::type::result_map run_(sde::type::input_map,
-                               sde::type::submodule_map) const override {
-        return results();
-    }
-};
+DECLARE_MODULE(NoPTModule);
+inline MODULE_CTOR(NoPTModule){}
+inline MODULE_RUN(NoPTModule, inputs, submods) { return results(); }
+
 
 // Module with just a property type
 struct NullModule : sde::ModuleBase {

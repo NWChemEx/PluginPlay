@@ -149,6 +149,15 @@ inline auto declare_result() {
 }
 ///@}
 
+#define DECLARE_PROPERTY_TYPE(prop_type)\
+    struct prop_type : sde::PropertyType<prop_type> { \
+        auto inputs_(); \
+        auto results_(); \
+    }
+
+#define PROPERTY_TYPE_INPUTS(prop_type) auto prop_type::inputs_()
+#define PROPERTY_TYPE_RESULTS(prop_type) auto prop_type::results_()
+
 // ----------------------------- Implementations -------------------------------
 #define PROP_TYPE PropertyType<DerivedType>
 

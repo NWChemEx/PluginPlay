@@ -438,6 +438,22 @@ private:
     std::vector<type::description> m_citations_;
 }; // class ModuleBase
 
+#define DECLARE_MODULE(module_name)\
+    struct module_name : sde::ModuleBase { \
+        module_name();\
+    private:\
+        sde::type::result_map run_( \
+          sde::type::input_map inputs,\
+          sde::type::submodule_map submods) const override;\
+    }
+
+#define MODULE_CTOR(module_name) \
+    module_name::module_name() : sde::ModuleBase(this)
+
+#define MODULE_RUN(module_name, inputs, sumbods) \
+    sde::type::result_map module_name::run_( \
+      sde::type::input_map inputs, \
+      sde::type::submodule_map submods) const
 //--------------------------------Implementations-------------------------------
 
 inline type::result_map ModuleBase::run(type::input_map inputs,
