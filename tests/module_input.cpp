@@ -76,25 +76,30 @@ TEST_CASE("ModuleInput : ready") {
 }
 
 TEST_CASE("ModuleInput : is_valid") {
-    ModuleInput i;
+    // ModuleInput i;
 
     SECTION("Throws if the type has not been set") {
+        ModuleInput i;
         REQUIRE_THROWS_AS(i.is_valid(int{3}), std::runtime_error);
     }
     SECTION("Valid only type") {
+        ModuleInput i;
         i.set_type<int>();
         REQUIRE(i.is_valid(int{3}));
     }
     SECTION("Not valid only type") {
+        ModuleInput i;
         i.set_type<int>();
         REQUIRE_FALSE(i.is_valid(double{3.14}));
     }
     SECTION("Valid type + other") {
+        ModuleInput i;
         i.set_type<int>();
         i.add_check(bounds_checking::NotEqualTo<const int&>(4));
         REQUIRE(i.is_valid(int{3}));
     }
     SECTION("Not valid type + other") {
+        ModuleInput i;
         i.set_type<int>();
         i.add_check(bounds_checking::NotEqualTo<const int&>(4));
         REQUIRE_FALSE(i.is_valid(int{4}));
