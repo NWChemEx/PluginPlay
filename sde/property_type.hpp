@@ -159,10 +159,10 @@ inline auto declare_result() {
  *  @param[in] prop_type The name to use for the resulting property type.
  *
  */
-#define DECLARE_PROPERTY_TYPE(prop_type)\
+#define DECLARE_PROPERTY_TYPE(prop_type)              \
     struct prop_type : sde::PropertyType<prop_type> { \
-        auto inputs_(); \
-        auto results_(); \
+        auto inputs_();                               \
+        auto results_();                              \
     }
 
 /** @brief Starts the definition of a property types' inputs hook.
@@ -281,8 +281,7 @@ template<std::size_t ArgI, typename T, typename U>
 auto PROP_TYPE::unwrap_guts_(T&& builder, U&& rv) {
     using tuple_of_fields = typename T::tuple_of_fields;
     constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
-    if constexpr(ArgI == nargs)
-        return std::make_tuple();
+    if constexpr(ArgI == nargs) return std::make_tuple();
     else {
         using type = std::tuple_element_t<ArgI, tuple_of_fields>;
         auto key   = (builder.begin() + ArgI)->first;

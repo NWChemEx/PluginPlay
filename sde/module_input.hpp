@@ -617,10 +617,10 @@ auto& ModuleInput::add_check(bounds_checking::CompareTo<T, U> check,
                              type::description desc) {
     if(desc.empty()) desc = print_bounds(check);
 
-    validity_check<T> l{[check{std::move(check)}](const T& x){return check(x);
-}
-}; // namespace sde
-return add_check(std::move(l), desc);
+    validity_check<T> l{[check{std::move(check)}](const T& x) {
+        return check(x);
+    }}; // namespace sde
+    return add_check(std::move(l), desc);
 }
 
 template<typename T>
@@ -628,11 +628,9 @@ auto& ModuleInput::add_check(bounds_checking::InRange<T> check,
                              type::description desc) {
     if(desc.empty()) desc = print_bounds(check);
 
-    validity_check<T> l{[check{std::move(check)}](const T& x){return check(x);
-}
-}
-;
-return add_check(std::move(l), desc);
+    validity_check<T> l{
+      [check{std::move(check)}](const T& x) { return check(x); }};
+    return add_check(std::move(l), desc);
 }
 
 template<typename T>

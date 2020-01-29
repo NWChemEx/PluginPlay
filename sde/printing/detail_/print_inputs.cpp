@@ -34,7 +34,7 @@ std::string input_quick_ref_table(const type::input_map& inputs) {
     data[0].push_back("Description");
 
     std::size_t counter = 1;
-    for(const auto & [name, value] : inputs) {
+    for(const auto& [name, value] : inputs) {
         auto& row = data[counter];
         row.push_back(name);
         row.push_back(value.has_value() ? value.str() : "N/A");
@@ -62,7 +62,7 @@ reSTPrinter& input_full_list_desc(reSTPrinter& p) {
 }
 
 reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
-    for(const auto & [name, input] : inputs) {
+    for(const auto& [name, input] : inputs) {
         p.start_section(name);
         p << "\n";
         p << std::string("- Description : ") +
@@ -75,8 +75,7 @@ reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
                (input.is_transparent() ? "False" : "True") + "\n";
 
         auto checks = input.check_descriptions();
-        if(checks.empty())
-            p << "- Domain Restrictions : N/A\n";
+        if(checks.empty()) p << "- Domain Restrictions : N/A\n";
         else {
             p << "- Domain Restrictions :\n\n";
             for(auto& desc : checks) {
@@ -101,8 +100,7 @@ reSTPrinter& print_inputs(reSTPrinter& p, const type::input_map& inputs) {
 
     p << "\n";
 
-    if(inputs.empty())
-        p << "The module defines no inputs.\n\n";
+    if(inputs.empty()) p << "The module defines no inputs.\n\n";
     else {
         input_quick_ref_desc(p);
         p << "\n" << input_quick_ref_table(inputs) << "\n\n";
@@ -111,8 +109,7 @@ reSTPrinter& print_inputs(reSTPrinter& p, const type::input_map& inputs) {
 
     p.start_section("Detailed Descriptions");
 
-    if(inputs.empty())
-        p << "\nThe module defines no inputs.\n";
+    if(inputs.empty()) p << "\nThe module defines no inputs.\n";
     else {
         p << "\n";
         input_full_list_desc(p);

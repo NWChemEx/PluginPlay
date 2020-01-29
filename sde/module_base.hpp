@@ -449,13 +449,14 @@ private:
  *
  *  @param[in] module_name The name of the class which will hold your module.
  */
-#define DECLARE_MODULE(module_name)\
-    struct module_name : sde::ModuleBase { \
-        module_name();\
-    private:\
-        sde::type::result_map run_( \
-          sde::type::input_map inputs,\
-          sde::type::submodule_map submods) const override;\
+#define DECLARE_MODULE(module_name)                         \
+    struct module_name : sde::ModuleBase {                  \
+        module_name();                                      \
+                                                            \
+    private:                                                \
+        sde::type::result_map run_(                         \
+          sde::type::input_map inputs,                      \
+          sde::type::submodule_map submods) const override; \
     }
 
 /** @brief Starts the definition of a Module's default constructor.
@@ -486,9 +487,8 @@ private:
  *                     access the submodules provided to your module.
  */
 #define MODULE_RUN(module_name, inputs, sumbods) \
-    sde::type::result_map module_name::run_( \
-      sde::type::input_map inputs, \
-      sde::type::submodule_map submods) const
+    sde::type::result_map module_name::run_(     \
+      sde::type::input_map inputs, sde::type::submodule_map submods) const
 //--------------------------------Implementations-------------------------------
 
 inline type::result_map ModuleBase::run(type::input_map inputs,
