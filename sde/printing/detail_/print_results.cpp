@@ -31,7 +31,7 @@ std::string result_table(const type::result_map& inputs) {
     data[0].push_back("Description");
 
     std::size_t counter = 1;
-    for(const auto & [name, value] : inputs) {
+    for(const auto& [name, value] : inputs) {
         auto& row = data[counter];
         row.push_back(name);
         row.push_back(value.has_type() ?

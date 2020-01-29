@@ -170,30 +170,25 @@ template<typename PropertyType>
 template<typename FxnType>
 LAMBDA_MOD_TYPE::LambdaModule(FxnType&& fxn) :
   ModuleBase(this),
-  m_fxn_([&, da_fxn = std::forward<FxnType>(fxn)](input_map inputs,
-                                                  const submodule_map&)
-           ->result_map {
+  m_fxn_([&, da_fxn = std::forward<FxnType>(fxn)](
+           input_map inputs, const submodule_map&) -> result_map {
+      auto unwrapped_inputs = PropertyType::unwrap_inputs(std::move(inputs));
 
-               auto unwrapped_inputs =
-                 PropertyType::unwrap_inputs(std::move(inputs));
+      using result_type        = decltype(PropertyType::results());
+      using result_tuple       = typename result_type::tuple_of_fields;
+      constexpr auto n_results = result_type::nfields;
+      result_tuple rv;
 
-               using result_type        = decltype(PropertyType::results());
-               using result_tuple       = typename result_type::tuple_of_fields;
-               constexpr auto n_results = result_type::nfields;
-               result_tuple rv;
+      if constexpr(n_results > 0) {
+          rv = std::move(std::apply(da_fxn, std::move(unwrapped_inputs)));
+      } else {
+          std::apply(da_fxn, std::move(unwrapped_inputs));
+      }
 
-               if constexpr(n_results > 0) {
-                   rv =
-                     std::move(std::apply(da_fxn, std::move(unwrapped_inputs)));
-               } else {
-                   std::apply(da_fxn, std::move(unwrapped_inputs));
-               }
+      auto is = std::make_index_sequence<n_results>();
 
-               auto is = std::make_index_sequence<n_results>();
-
-               return wrap_results_(std::move(rv), is);
-
-           } // end lambda function
+      return wrap_results_(std::move(rv), is);
+  } // end lambda function
   ) {
     satisfies_property_type<PropertyType>();
 }
