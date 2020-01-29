@@ -26,4 +26,4 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v2
         env:
-          GITHUB_TOKE: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
