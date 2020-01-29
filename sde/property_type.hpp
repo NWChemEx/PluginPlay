@@ -149,6 +149,46 @@ inline auto declare_result() {
 }
 ///@}
 
+// ------------------------- Helper Macros ------------------------------------
+
+/** @brief Declares a new PropertyType
+ *
+ *  This macro will declare a derived class @p prop_type which inherits from
+ *  PropertyType and forwarded declares all necessary hooks.
+ *
+ *  @param[in] prop_type The name to use for the resulting property type.
+ *
+ */
+#define DECLARE_PROPERTY_TYPE(prop_type)              \
+    struct prop_type : sde::PropertyType<prop_type> { \
+        auto inputs_();                               \
+        auto results_();                              \
+    }
+
+/** @brief Starts the definition of a property types' inputs hook.
+ *
+ *  The inputs hook of a class derived from PropertyTypes establishes the fields
+ *  that the module recognizes as input. The hook is implemented as a member
+ *  function of the @p prop_type class with the macro taking care of declaring
+ *  the hook's signature so that all you need to do is declare the function's
+ *  body.
+ *
+ *  @param[in] prop_type The name of the class defining the property type.
+ */
+#define PROPERTY_TYPE_INPUTS(prop_type) inline auto prop_type::inputs_()
+
+/** @brief Starts the definition of a property types' results hook.
+ *
+ *  The results hook of a class derived from PropertyTypes establishes the
+ *  fields that the module returns. The hook is implemented as a member
+ *  function of the @p prop_type class with the macro taking care of declaring
+ *  the hook's signature so that all you need to do is declare the function's
+ *  body.
+ *
+ *  @param[in] prop_type The name of the class defining the property type.
+ */
+#define PROPERTY_TYPE_RESULTS(prop_type) inline auto prop_type::results_()
+
 // ----------------------------- Implementations -------------------------------
 #define PROP_TYPE PropertyType<DerivedType>
 
@@ -241,8 +281,7 @@ template<std::size_t ArgI, typename T, typename U>
 auto PROP_TYPE::unwrap_guts_(T&& builder, U&& rv) {
     using tuple_of_fields = typename T::tuple_of_fields;
     constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
-    if constexpr(ArgI == nargs)
-        return std::make_tuple();
+    if constexpr(ArgI == nargs) return std::make_tuple();
     else {
         using type = std::tuple_element_t<ArgI, tuple_of_fields>;
         auto key   = (builder.begin() + ArgI)->first;

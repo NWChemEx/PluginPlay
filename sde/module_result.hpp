@@ -267,8 +267,7 @@ void ModuleResult::change(T&& new_value) {
     constexpr bool is_shared_any =
       std::is_same_v<clean_T, shared_any> || // is shared_ptr<const any>
       std::is_same_v<clean_T, std::shared_ptr<type::any>>; // no const
-    if constexpr(is_shared_any)
-        change_(new_value);
+    if constexpr(is_shared_any) change_(new_value);
     else
         change_(std::move(wrap_value_(std::forward<T>(new_value))));
 }
@@ -276,8 +275,7 @@ void ModuleResult::change(T&& new_value) {
 template<typename T>
 T ModuleResult::value() const {
     using clean_T = std::decay_t<T>;
-    if constexpr(std::is_same_v<shared_any, clean_T>)
-        return at_();
+    if constexpr(std::is_same_v<shared_any, clean_T>) return at_();
     else if constexpr(detail_::IsSharedPtr<clean_T>::value) {
         using type = typename clean_T::element_type;
         return T(at_(), &value<type&>());
