@@ -545,7 +545,7 @@ inline auto ModulePIMPL::not_set(const type::input_map& in_inputs) const {
     auto in_probs = not_set_guts_(m_inputs_);
 
     // Now pull out those set by the property type
-    for(const auto & [k, v] : in_inputs)
+    for(const auto& [k, v] : in_inputs)
         if(in_probs.count(k)) in_probs.erase(k);
     if(!in_probs.empty()) probs.emplace("Inputs", std::move(in_probs));
 
@@ -608,8 +608,8 @@ inline auto& ModulePIMPL::citations() const {
 inline void ModulePIMPL::memoize(type::hasher& h,
                                  type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
-    for(const auto & [k, v] : inputs) v.hash(h);
-    for(const auto & [k, v] : m_submods_) v.hash(h);
+    for(const auto& [k, v] : inputs) v.hash(h);
+    for(const auto& [k, v] : m_submods_) v.hash(h);
     // This is not a great way of hashing the class name...
     h(m_base_->type().name());
 }
@@ -623,7 +623,7 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
 inline auto ModulePIMPL::run(type::input_map ps) {
     assert_mod_();
     // Check the inputs we were just given
-    for(const auto & [k, v] : ps)
+    for(const auto& [k, v] : ps)
         if(!v.ready()) throw std::runtime_error("Inputs are not ready");
 
     // Merge with bound and see if we are ready
@@ -658,13 +658,13 @@ inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
 
 inline type::input_map ModulePIMPL::merge_inputs_(
   type::input_map in_inputs) const {
-    for(const auto & [k, v] : m_inputs_)
+    for(const auto& [k, v] : m_inputs_)
         if(!in_inputs.count(k)) in_inputs[k] = v;
     return in_inputs;
 }
 
 inline void ModulePIMPL::lock() {
-    for(auto & [k, v] : m_submods_) v.lock();
+    for(auto& [k, v] : m_submods_) v.lock();
     m_locked_ = true;
 }
 
@@ -678,7 +678,7 @@ inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
 template<typename T>
 std::set<type::key> ModulePIMPL::not_set_guts_(T&& map) const {
     std::set<type::key> probs;
-    for(const auto & [k, v] : map)
+    for(const auto& [k, v] : map)
         if(!v.ready()) probs.insert(k);
     return probs;
 }
