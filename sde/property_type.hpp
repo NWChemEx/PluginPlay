@@ -281,7 +281,8 @@ template<std::size_t ArgI, typename T, typename U>
 auto PROP_TYPE::unwrap_guts_(T&& builder, U&& rv) {
     using tuple_of_fields = typename T::tuple_of_fields;
     constexpr auto nargs  = std::tuple_size_v<tuple_of_fields>;
-    if constexpr(ArgI == nargs) return std::make_tuple();
+    if constexpr(ArgI == nargs)
+        return std::make_tuple();
     else {
         using type = std::tuple_element_t<ArgI, tuple_of_fields>;
         auto key   = (builder.begin() + ArgI)->first;
