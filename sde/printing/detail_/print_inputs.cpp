@@ -34,7 +34,7 @@ std::string input_quick_ref_table(const type::input_map& inputs) {
     data[0].push_back("Description");
 
     std::size_t counter = 1;
-    for(const auto & [name, value] : inputs) {
+    for(const auto& [name, value] : inputs) {
         auto& row = data[counter];
         row.push_back(name);
         row.push_back(value.has_value() ? value.str() : "N/A");
@@ -62,7 +62,7 @@ reSTPrinter& input_full_list_desc(reSTPrinter& p) {
 }
 
 reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
-    for(const auto & [name, input] : inputs) {
+    for(const auto& [name, input] : inputs) {
         p.start_section(name);
         p << "\n";
         p << std::string("- Description : ") +

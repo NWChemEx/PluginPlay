@@ -400,7 +400,7 @@ bool operator!=(const ModuleInputPIMPL& lhs,
 
 inline bool ModuleInputPIMPL::is_valid(const type::any& new_value) const {
     assert_type_set_();
-    for(const auto & [k, v] : m_checks_)
+    for(const auto& [k, v] : m_checks_)
         if(!v(new_value)) return false;
     return true;
 }
@@ -416,7 +416,7 @@ inline void ModuleInputPIMPL::set_value(SDEAny any) {
     assert_type_set_();
     if(!is_valid(any)) {
         std::string msg("Input value has failed bounds checks: ");
-        for(const auto & [x, y] : m_checks_) {
+        for(const auto& [x, y] : m_checks_) {
             if(!y(any)) msg += x + " ";
         }
         throw std::invalid_argument(msg);
@@ -461,7 +461,7 @@ inline void ModuleInputPIMPL::assert_value_set_() const {
 inline typename ModuleInputPIMPL::check_description_type
 ModuleInputPIMPL::check_descriptions() const {
     check_description_type rv;
-    for(const auto & [x, _] : m_checks_) rv.insert(x);
+    for(const auto& [x, _] : m_checks_) rv.insert(x);
     return rv;
 }
 

@@ -26,7 +26,7 @@ std::string submod_table(const type::submodule_map& submods) {
     data[0].push_back("Description");
 
     std::size_t counter = 1;
-    for(const auto & [name, value] : submods) {
+    for(const auto& [name, value] : submods) {
         auto& row = data[counter];
         row.push_back(name);
         row.push_back(value.has_type() ?
