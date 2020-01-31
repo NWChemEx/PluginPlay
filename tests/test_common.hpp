@@ -18,6 +18,12 @@ PROPERTY_TYPE_INPUTS(OneIn) {
 }
 PROPERTY_TYPE_RESULTS(OneIn) { return sde::declare_result(); }
 
+// Property type for module with a defaulted option
+struct OptionalInput : sde::PropertyType<OptionalInput> {
+    auto inputs_() { return sde::declare_input().add_field<int>("Option 1", 1); }
+    auto results_() { return sde::declare_result().add_field<int>("Result 1"); }
+};
+
 // Property type for module with one result
 DECLARE_PROPERTY_TYPE(OneOut);
 PROPERTY_TYPE_INPUTS(OneOut) { return sde::declare_input(); }
@@ -70,6 +76,19 @@ inline MODULE_RUN(CiteModule, , ) { return results(); }
 DECLARE_MODULE(NotReadyModule);
 inline MODULE_CTOR(NotReadyModule) { satisfies_property_type<OneIn>(); }
 inline MODULE_RUN(NotReadyModule, , ) { return results(); }
+
+// A module with a defaulted int option
+struct ReadyModule : sde::ModuleBase {
+    ReadyModule(): sde::ModuleBase(this) {
+        satisfies_property_type<OptionalInput>();
+    }
+    sde::type::result_map run_(sde::type::input_map inputs,
+                               sde::type::submodule_map) const override {
+        auto [opt1] = OptionalInput::unwrap_inputs(inputs);
+        auto rv = results();
+        return OptionalInput::wrap_results(rv, opt1);
+    }
+};
 
 // Has property type int input "Option 1" and another int input "Option 2"
 DECLARE_MODULE(NotReadyModule2);
