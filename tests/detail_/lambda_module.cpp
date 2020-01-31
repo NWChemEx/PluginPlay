@@ -1,4 +1,4 @@
-#include "test_common.hpp"
+#include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
 #include <sde/detail_/lambda_module.hpp>
 

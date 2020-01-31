@@ -32,8 +32,8 @@
 // For the purposes of this tutorial we reuse the property types from our
 // property type tutorial and the modules from our module tutorial. The next
 // two lines include the relevant header files
-#include <examples/workflow.hpp>
 #include <sde/sde.hpp>
+#include <tests/examples/workflow.hpp>
 
 // TUTORIAL_START_SKIP
 TEST_CASE("How to use a lambda module") {

@@ -115,7 +115,7 @@ struct ModuleManagerPIMPL {
     shared_module at(const type::key& key) {
         auto mod = m_modules.at(key);
         // Loop over submodules filling them in from the defaults
-        for(auto & [k, v] : mod->submods()) {
+        for(auto& [k, v] : mod->submods()) {
             const auto& type = v.type();
             // Only change non-ready submodules
             if(!v.ready() && m_defaults.count(type)) {
@@ -142,12 +142,12 @@ struct ModuleManagerPIMPL {
         if(m_defaults.size() != rhs.m_defaults.size()) return false;
 
         // Skip checking the values b/c implementations are compared by type
-        for(const auto & [k, v] : rhs.m_bases) {
+        for(const auto& [k, v] : rhs.m_bases) {
             if(!m_bases.count(k)) return false;
         }
 
         // Need to check the values b/c user may have switched options
-        for(const auto & [k, v] : rhs.m_modules) {
+        for(const auto& [k, v] : rhs.m_modules) {
             if(!m_modules.count(k)) return false;
             if(*m_modules.at(k) != *v) return false;
         }

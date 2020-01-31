@@ -91,12 +91,12 @@ TEST_CASE("ModuleInput : is_valid") {
     }
     SECTION("Valid type + other") {
         i.set_type<int>();
-        i.add_check(bounds_checking::NotEqualTo<const int&>(4));
+        i.add_check(bounds_checking::NotEqualTo<int>(int{4}));
         REQUIRE(i.is_valid(int{3}));
     }
     SECTION("Not valid type + other") {
         i.set_type<int>();
-        i.add_check(bounds_checking::NotEqualTo<const int&>(4));
+        i.add_check(bounds_checking::NotEqualTo<int>(4));
         REQUIRE_FALSE(i.is_valid(int{4}));
     }
 }

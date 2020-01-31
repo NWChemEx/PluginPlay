@@ -1,4 +1,4 @@
-#include "examples/workflow.hpp"
+#include "tests/examples/workflow.hpp"
 #include <catch2/catch.hpp>
 #include <vector>
 

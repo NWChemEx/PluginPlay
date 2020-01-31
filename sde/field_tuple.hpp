@@ -1,70 +1,49 @@
 #pragma once
-#include "sde/types.hpp"
-#include <array>
+#include "sde/detail_/field_tuple_traits.hpp"
 #include <functional>
 
 namespace sde {
-namespace detail_ {
+class ModuleInput;
 
-/** @brief Records the property type's API.
+/** @brief Records the property type's input or result API.
  *
- * Ultimately the PropertyType class needs to know the details of the API. Our
- * goal is to give that class the details it needs in a way that is easy on the
- * user and hides much of the metatemplate programming required to pull it off.
- * This class is the result of those efforts. Admittedly perusing the source
- * code for this class makes it seem complicated; however, its use is much
- * simpler than it looks. To that end, it is our opinion that learning how to
- * use this class is best done by example and we recommend the reader consult
- * the test `examples/TestPropertyType.hpp` for such an example.
+ * This class is responsible for holding the details of a property type's input
+ * or result fields. In particular this means that the class must retain:
+ * - the order the fields were declared in,
+ * - the key for each field,
+ * - the type of each field's value, and
+ * - an input field's default value (only inputs may have default values)
  *
- * Anyways, this class works by requiring the developer to declare the results
- * or inputs (for generality we'll call these "fields") in the order they are
- * returned or accepted, respectively. For each field, we record the type in
- * this class's signature and the keyword used for the field. This makes this
- * class behave like a map, given a keyword we want to be able to retrieve the
- * details of a particular field. Where we differ from a map is that the storage
- * has to be in the order we added the fields, and not sorted for easy look-up.
- * Internally we accomplish this by using an std::array as the holder class
- * instead of a red-black tree like most std::map implementations.
+ * The FieldTuple class works like a map from a field's name to either
+ * a ModuleInput or ModuleResult instance (depending respectively on whether the
+ * instance is storing the inputs to or the results from calling a module).
  *
  * @tparam ElementType This will be either ModuleInput or ModuleResult depending
  *         on whether we are building the input or result API specification
  *         respectively.
- * @tparam ErasedTypes These are the types of the inputs/results in the order
+ * @tparam FieldTypes These are the types of the inputs/results in the order
  *         they are accepted/returned.
  */
-template<typename ElementType, typename... ErasedTypes>
-class PropertyTypeBuilder {
-private:
-    /// Type resulting from adding a new field of type @p T, onto the signature
-    template<typename T>
-    using new_field = PropertyTypeBuilder<ElementType, ErasedTypes..., T>;
-
-    /// Type of this class
-    using my_type = PropertyTypeBuilder<ElementType, ErasedTypes...>;
-
+template<typename ElementType, typename... FieldTypes>
+class FieldTuple {
 public:
-    /// The type of the field, name conforms to std::map::mapped_type
-    using mapped_type = ElementType;
+    /// The type of the traits class
+    using traits_type = detail_::FieldTupleTraits<ElementType, FieldTypes...>;
+
+    /// The type of a key used to retrieve a field
+    using key_type = typename traits_type::key_type;
+
+    /// The type of the field
+    using mapped_type = typename traits_type::mapped_type;
 
     /// How we're storing the key-value pair, name from std::map
-    using value_type = std::pair<type::key, mapped_type>;
-
-    /// The current number of fields in the API
-    static constexpr auto nfields = sizeof...(ErasedTypes);
-
-    /// A tuple where element i is the type of the i-th field
-    using tuple_of_fields = std::tuple<ErasedTypes...>;
-
-    /// The type of an array holding @p N fields
-    template<type::size N>
-    using array_type = std::array<value_type, N>;
+    using value_type = typename traits_type::value_type;
 
     /// The type of a read/write iterator over this class
-    using iterator = typename array_type<nfields>::iterator;
+    using iterator = typename traits_type::iterator;
 
     /// The type of a read-only iterator
-    using const_iterator = typename array_type<nfields>::const_iterator;
+    using const_iterator = typename traits_type::const_iterator;
 
     ///@{
     /** @name Ctor and assignment operators
@@ -86,13 +65,17 @@ public:
      *        memory to copy a field instance's state. Strong throw guarantee.
      * @throw none 1, and 4-6 are all no throw guarantee.
      */
-    PropertyTypeBuilder()                               = default;
-    PropertyTypeBuilder(const PropertyTypeBuilder& rhs) = default;
-    my_type& operator=(const my_type& rhs)         = default;
-    PropertyTypeBuilder(PropertyTypeBuilder&& rhs) = default;
-    my_type& operator=(my_type&& rhs) = default;
-    PropertyTypeBuilder(array_type<nfields> values) noexcept :
-      values_(std::move(values)) {}
+    FieldTuple() = default;
+
+    FieldTuple(const FieldTuple& rhs) = default;
+
+    FieldTuple& operator=(const FieldTuple& rhs) = default;
+
+    FieldTuple(FieldTuple&& rhs) = default;
+
+    FieldTuple& operator=(FieldTuple&& rhs) = default;
+
+    FieldTuple(std::array<value_type, traits_type::nfields> values) noexcept;
     ///@}
 
     /** @brief Standard dtor
@@ -101,7 +84,7 @@ public:
      *
      * @throw none No throw guarantee.
      */
-    ~PropertyTypeBuilder() = default;
+    ~FieldTuple() = default;
 
     /** @brief Adds another field to the API.
      *
@@ -116,7 +99,7 @@ public:
      *
      * @tparam T The type of the field you are adding.
      * @param key The keyword to associate with this field.
-     * @return A new PropertyTypeBuilder instance which in
+     * @return A new FieldTuple instance which in
      * @throw std::bad_alloc if there is not enough memory to create the new
      *        field. Strong throw guarantee.
      * @throw std::invalid_argument if the provided key is already in use by
@@ -124,14 +107,13 @@ public:
      *
      */
     template<typename T>
-    auto add_field(type::key key) {
-        if(count(key))
-            throw std::invalid_argument("Key: " + key + " already exists.");
-        ElementType elem;
-        elem.template set_type<T>();
-        auto temp_values = add_field_(std::move(key), std::move(elem));
-        return new_field<T>(std::move(temp_values));
-    }
+    auto add_field(type::key key);
+
+    template<typename T, typename U>
+    auto add_field(type::key key, U&& value);
+
+    template<typename T>
+    void set_default(T&& value);
 
     /** @brief Returns the number of fields.
      *
@@ -141,7 +123,7 @@ public:
      * @return The number of fields
      * @throw none no throw guarantee.
      */
-    static constexpr type::size size() noexcept { return nfields; }
+    static constexpr type::size size() noexcept { return traits_type::nfields; }
 
     /** @brief Determines the number of fields with a particular key
      *
@@ -152,11 +134,7 @@ public:
      * @return 1 if the instance contains a field with a keyword @p key and 0
      *         otherwise.
      */
-    type::size count(const type::key& key) const noexcept {
-        for(type::size i = 0; i < size(); ++i)
-            if(values_[i].first == key) return 1;
-        return 0;
-    }
+    type::size count(const type::key& key) const noexcept;
 
     ///@{
     /** @name Field accessors
@@ -175,14 +153,12 @@ public:
      *        already existing field. Strong throw guarantee.
      */
     auto& operator[](const type::key& key) { return at(key); }
+
     const auto& operator[](const type::key& key) const { return at(key); }
-    auto& at(const type::key& key) {
-        const auto& temp = const_cast<const my_type&>(*this).at(key);
-        return const_cast<mapped_type&>(temp.second);
-    }
-    const auto& at(const type::key& key) const {
-        return values_.at(position_(key));
-    }
+
+    auto& at(const type::key& key);
+
+    const auto& at(const type::key& key) const;
     ///@}
 
     ///@{
@@ -198,11 +174,16 @@ public:
      * @return the requested iterator.
      * @throw none No throw guarantee.
      */
-    iterator begin() noexcept { return values_.begin(); }
-    const_iterator begin() const noexcept { return values_.begin(); }
+    iterator begin() noexcept { return m_values_.begin(); }
+
+    const_iterator begin() const noexcept { return m_values_.begin(); }
+
     const_iterator cbegin() const noexcept { return begin(); }
-    iterator end() noexcept { return values_.end(); }
-    const_iterator end() const noexcept { return values_.end(); }
+
+    iterator end() noexcept { return m_values_.end(); }
+
+    const_iterator end() const noexcept { return m_values_.end(); }
+
     const_iterator cend() const noexcept { return end(); }
     ///@}
 
@@ -218,12 +199,7 @@ private:
      *         well as the new provided field.
      * @throw none No throw guarantee.
      */
-    auto add_field_(type::key key, mapped_type value) noexcept {
-        array_type<nfields + 1> temp;
-        for(type::size i = 0; i < nfields; ++i) temp[i] = std::move(values_[i]);
-        temp[nfields] = std::make_pair(std::move(key), std::move(value));
-        return temp;
-    }
+    auto add_field_(type::key key, mapped_type value) noexcept;
 
     /** @brief Computes the index for a given key
      *
@@ -233,15 +209,92 @@ private:
      * @throw std::out_of_range if the provided key is not associated with a
      *        field. Strong throw guarantee.
      */
-    type::size position_(const type::key& key) const {
-        for(type::size i = 0; i < size(); ++i)
-            if(values_[i].first == key) return i;
-        throw std::out_of_range(std::string("Key ") + key + " not found.");
-    }
+    type::size position_(const type::key& key) const;
 
     /// The fields that have been added so far
-    array_type<nfields> values_;
+    typename traits_type::template field_array<traits_type::nfields> m_values_;
 };
 
-} // namespace detail_
+/*******************************************************************************
+ *                                 Implementations                             *
+ ******************************************************************************/
+
+#define BUILDER_PARAMS template<typename ElementType, typename... FieldTypes>
+#define BUILDER_TYPE FieldTuple<ElementType, FieldTypes...>
+
+BUILDER_PARAMS
+BUILDER_TYPE::FieldTuple(
+  std::array<value_type, traits_type::nfields> values) noexcept :
+  m_values_(std::move(values)) {}
+
+BUILDER_PARAMS
+template<typename T>
+auto BUILDER_TYPE::add_field(type::key key) {
+    if(count(key))
+        throw std::invalid_argument("Key: " + key + " already exists.");
+    ElementType elem;
+    elem.template set_type<T>();
+    auto temp_values  = add_field_(std::move(key), std::move(elem));
+    using return_type = typename traits_type::template new_field_tuple<T>;
+    return return_type(std::move(temp_values));
+}
+
+BUILDER_PARAMS
+template<typename T, typename U>
+auto BUILDER_TYPE::add_field(type::key key, U&& value) {
+    auto rv = add_field<T>(std::move(key));
+    rv.set_default(std::forward<U>(value));
+    return rv;
+}
+
+BUILDER_PARAMS
+template<typename T>
+void BUILDER_TYPE::set_default(T&& value) {
+    constexpr auto nfields = traits_type::nfields;
+    static_assert(nfields > 0, "Must have a field to set a default");
+    constexpr bool is_input = std::is_same_v<ElementType, ModuleInput>;
+    static_assert(is_input, "Returns cannot have a default value");
+    if constexpr(is_input) {
+        constexpr auto nm1 = nfields - 1;
+        std::get<nm1>(m_values_).second.set_default(std::forward<T>(value));
+    }
+}
+
+BUILDER_PARAMS
+sde::type::size BUILDER_TYPE::count(const type::key& key) const noexcept {
+    for(type::size i = 0; i < size(); ++i)
+        if(m_values_[i].first == key) return 1;
+    return 0;
+}
+
+BUILDER_PARAMS
+auto& BUILDER_TYPE::at(const type::key& key) {
+    const auto& temp = const_cast<const BUILDER_TYPE&>(*this).at(key);
+    return const_cast<mapped_type&>(temp.second);
+}
+
+BUILDER_PARAMS
+const auto& BUILDER_TYPE::at(const type::key& key) const {
+    return m_values_.at(position_(key));
+}
+
+BUILDER_PARAMS
+auto BUILDER_TYPE::add_field_(type::key key, mapped_type value) noexcept {
+    constexpr auto nfields = traits_type::nfields;
+    typename traits_type::template field_array<nfields + 1> temp;
+    for(type::size i = 0; i < nfields; ++i) temp[i] = std::move(m_values_[i]);
+    temp[nfields] = std::make_pair(std::move(key), std::move(value));
+    return temp;
+}
+
+BUILDER_PARAMS
+type::size BUILDER_TYPE::position_(const type::key& key) const {
+    for(type::size i = 0; i < size(); ++i)
+        if(m_values_[i].first == key) return i;
+    throw std::out_of_range(std::string("Key ") + key + " not found.");
+}
+
+#undef BUILDER_TYPE
+#undef BUILDER_PARAMS
+
 } // namespace sde
