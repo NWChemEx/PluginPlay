@@ -140,13 +140,9 @@ private:
  *
  * @relates PropertyType
  */
-inline auto declare_input() {
-    return FieldTuple<ModuleInput>{};
-}
+inline auto declare_input() { return FieldTuple<ModuleInput>{}; }
 
-inline auto declare_result() {
-    return FieldTuple<ModuleResult>{};
-}
+inline auto declare_result() { return FieldTuple<ModuleResult>{}; }
 ///@}
 
 // ------------------------- Helper Macros ------------------------------------
