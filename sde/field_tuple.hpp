@@ -29,7 +29,7 @@ class FieldTuple {
 public:
     /// The type of the traits class
     using traits_type = detail_::FieldTupleTraits<ElementType, FieldTypes...>;
-    
+
     /// The type of a key used to retrieve a field
     using key_type = typename traits_type::key_type;
 
@@ -234,7 +234,7 @@ auto BUILDER_TYPE::add_field(type::key key) {
         throw std::invalid_argument("Key: " + key + " already exists.");
     ElementType elem;
     elem.template set_type<T>();
-    auto temp_values = add_field_(std::move(key), std::move(elem));
+    auto temp_values  = add_field_(std::move(key), std::move(elem));
     using return_type = typename traits_type::template new_field_tuple<T>;
     return return_type(std::move(temp_values));
 }

@@ -7,9 +7,10 @@
 namespace sde {
 
 /// Forward declare FieldTuple so we can use the type
-template<typename ElementType, typename...FieldTypes> class FieldTuple;
+template<typename ElementType, typename... FieldTypes>
+class FieldTuple;
 
-namespace detail_{
+namespace detail_ {
 
 /** @brief Responsible for working out the types to use in a FieldTuple instance
  *
@@ -21,7 +22,7 @@ namespace detail_{
  *  @tparam FieldTypes The types of the fields in the order they are accepted or
  *                     returned. Can be 0 or more types.
  */
-template<typename ElementType, typename...FieldTypes>
+template<typename ElementType, typename... FieldTypes>
 struct FieldTupleTraits {
     /// Type resulting from adding a new field of type @p T to this FieldTuple
     template<typename T>
@@ -53,4 +54,5 @@ struct FieldTupleTraits {
     using const_iterator = typename field_array<nfields>::const_iterator;
 }; // class FieldTypeTraits
 
-}} // namespace sde::detail_
+} // namespace detail_
+} // namespace sde
