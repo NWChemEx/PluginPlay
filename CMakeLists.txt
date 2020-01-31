@@ -9,7 +9,7 @@ set(
 include(get_cpp)
 
 ### Options ###
-option(BUILD_TESTING "Should we build the tests?" OFF)
+option(BUILD_TESTING "Should we build the tests?" ON)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 cpp_find_or_build_dependency(
@@ -40,6 +40,12 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
+
+if(BUILD_PYBINDINGS)
+    find_package(Python3 REQUIRED)
+endif()
+
+
 cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
@@ -47,7 +53,7 @@ cpp_add_library(
     DEPENDS nwx::utilities cereal bphash::bphash
 )
 
-if("${BUILD_TESTING}")
+if(BUILD_TESTING)
     cpp_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -60,6 +66,24 @@ if("${BUILD_TESTING}")
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
         DEPENDS Catch2::Catch2 sde
     )
+    if(BUILD_PYBINDINGS)
+	set(
+        py_sde_tests tests/module tests/examples/module_base
+                                  tests/examples/property_type
+                                  tests/examples/workflow
+        )
+        foreach(test_name ${py_sde_tests})
+        add_test(
+            NAME py_${test_name}
+            COMMAND Python3::Interpreter
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.py
+        )
+        set_tests_properties(
+            py_${test_name}
+            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
+        )
+        endforeach()
+    endif()
 endif()
 
 
