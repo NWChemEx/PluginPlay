@@ -43,6 +43,9 @@ cpp_find_or_build_dependency(
 
 if(BUILD_PYBINDINGS)
     find_package(Python3 REQUIRED)
+    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+    find_package(Cppyy REQUIRED)
+    cppyy_make_python_package(sde NAMESPACE sde)
 endif()
 
 
