@@ -1,4 +1,4 @@
-from sde import *
+from SDE import *
 from cppyy.gbl import std
 import unittest
 

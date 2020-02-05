@@ -9,7 +9,7 @@ set(
 include(get_cpp)
 
 ### Options ###
-option(BUILD_TESTING "Should we build the tests?" ON)
+option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 cpp_find_or_build_dependency(
@@ -83,7 +83,7 @@ if(BUILD_TESTING)
         )
         set_tests_properties(
             py_${test_name}
-            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR/SDE}"
+            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR/}"
         )
         endforeach()
     endif()
