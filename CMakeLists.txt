@@ -41,20 +41,20 @@ cpp_find_or_build_dependency(
 )
 
 
-if(BUILD_PYBINDINGS)
-    find_package(Python3 REQUIRED)
-    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-    find_package(Cppyy REQUIRED)
-    cppyy_make_python_package(sde NAMESPACE sde)
-endif()
-
-
 cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     DEPENDS nwx::utilities cereal bphash::bphash
 )
+
+if(BUILD_PYBINDINGS)
+    find_package(Python3 REQUIRED)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
+    find_package(Cppyy REQUIRED)
+    cppyy_make_python_package(sde NAMESPACE sde)
+endif()
+
 
 if(BUILD_TESTING)
     cpp_find_or_build_dependency(
@@ -83,7 +83,7 @@ if(BUILD_TESTING)
         )
         set_tests_properties(
             py_${test_name}
-            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
+            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR/SDE}"
         )
         endforeach()
     endif()
