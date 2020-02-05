@@ -22,8 +22,8 @@ class TestAreaPropertyType(unittest.TestCase):
     def test_wrap_inputs(self):
         inputs = self.pt.wrap_inputs(self.pt.inputs(), 1.23, 4.56)
         self.assertEqual(inputs.size(), 2)
-        self.assertEqual(inputs["Dimension 1"].value(), 1.23)
-        self.assertEqual(inputs["Dimension 2"].value(), 4.56)
+        self.assertEqual(inputs["Dimension 1"].value["double"](), 1.23)
+        self.assertEqual(inputs["Dimension 2"].value["double"](), 4.56)
         [dim1, dim2] = cppyy.gbl.Area.unwrap_inputs(inputs)
         self.assertEqual(dim1, 1.23)
         self.assertEqual(dim2, 4.56)

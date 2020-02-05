@@ -5,9 +5,9 @@ dir = os.path.dirname(os.path.realpath(__file__))
 dir = os.path.dirname(dir)
 cppyy.add_include_path(dir)
 
-cppyy.include("examples/writing_a_property_type.hpp")
-cppyy.include("examples/writing_a_module.hpp")
-cppyy.include("examples/workflow.hpp")
+cppyy.include("writing_a_property_type.hpp")
+cppyy.include("writing_a_module.hpp")
+cppyy.include("workflow.hpp")
 
 class TestWorkflow(unittest.TestCase):
     def setUp(self):
@@ -20,9 +20,7 @@ class TestWorkflow(unittest.TestCase):
 
     def test_workflow(self):
         self.mm.change_input("Rectangle", "Name", "MyRectangle")
-        dims = cppyy.gbl.vector["double"]()
-        dims += [1.23, 4.56, 7.89]
-        area, volume = self.mm.run_as["PrismVolume", "std::vector<double>"]("Prism", dims)
+        area, volume = self.mm.run_as["PrismVolume"]("Prism", [1.23, 4.56, 7.89])
         self.assertEqual(area, 1.23*4.56)            
         self.assertEqual(volume, 1.23*4.56*7.89)
 

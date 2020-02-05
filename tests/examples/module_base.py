@@ -14,12 +14,12 @@ mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)
 
 def get_rectangle():
-    mod = mm.at("Rectangle")
-    return sde.Module(mod)
+    #mod = mm.at("Rectangle")
+    return sde.Module(mm.at("Rectangle"))
 
 def get_prism():
-    mod = mm.at("Prism")
-    return sde.Module(mod)
+    #mod = mm.at("Prism")
+    return sde.Module(mm.at("Prism"))
 
 class test_module_base(unittest.TestCase):
     def setUp(self):
@@ -49,12 +49,12 @@ class test_module_base(unittest.TestCase):
 
     def test_rectangle_run(self):
         inputs = self.r1.inputs()
-        inputs.at("Dimension 1").change["double"](1.23)
-        inputs.at("Dimension 2").change["double"](4.56)
+        inputs.at("Dimension 1").change(1.23)
+        inputs.at("Dimension 2").change(4.56)
         inputs.at("Name").change["std::string"]("Test")
         results = self.r1.run(inputs)
-        self.assertAlmostEqual(results.at("Area").value(), 5.6088)
-        self.assertAlmostEqual(results.at("Perimeter").value(), 11.58)
+        self.assertAlmostEqual(results.at("Area").value["double"](), 5.6088)
+        self.assertAlmostEqual(results.at("Perimeter").value["double"](), 11.58)
         self.assertEqual(results.at("Summary").value["std::string"](), "Test has an area of 5.608800 and a perimeter of 11.580000")
 
     def test_prism_inputs(self):
@@ -73,9 +73,7 @@ class test_module_base(unittest.TestCase):
 
     def test_prism_run(self):
         inputs = self.p1.inputs()
-        dims = std.vector["double"]()
-        dims += [1.23, 4.56, 7.89]
-        inputs.at("Dimensions").change["const std::vector<double>&"](dims)
+        inputs.at("Dimensions").change([1.23, 4.56, 7.89])
         results= self.p1.run(inputs)
         area, volume = cppyy.gbl.PrismVolume.unwrap_results(results)
         self.assertAlmostEqual(area, 5.6088)

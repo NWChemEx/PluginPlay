@@ -14,12 +14,10 @@ mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)
 
 def get_rectangle():
-    mod = mm.at("Rectangle")
-    return sde.Module(mod)
+    return sde.Module(mm.at("Rectangle"))
 
 def get_prism():
-    mod = mm.at("Prism")
-    return sde.Module(mod)
+    return sde.Module(mm.at("Prism"))
 
 class test_module(unittest.TestCase):
     def setUp(self):
@@ -30,12 +28,12 @@ class test_module(unittest.TestCase):
 
     def test_default_ctor(self):
         m = sde.Module()
-        self.assertFalse(m.ready())
         self.assertFalse(m.locked())
 
     def test_copy_ctor(self):
-        m = sde.Module(self.r1)
-        self.assertEqual(self.r1, m)        
+        k = sde.Module(mm.at("Rectangle"))
+        m = sde.Module(k)
+        self.assertEqual(self.r1, m)
 
     def test_equality(self):
         m1 = sde.Module()
@@ -48,7 +46,7 @@ class test_module(unittest.TestCase):
         self.assertNotEqual(self.r1, self.r2)
 
     def test_change_input(self):
-        self.r1.change_input["double"]("Dimension 1", 1.23)
+        self.r1.change_input("Dimension 1", 1.23)
         self.assertNotEqual(self.r1, self.r2)
 
     def test_run_as(self):
@@ -72,7 +70,7 @@ class test_module(unittest.TestCase):
         self.assertTrue(self.r1.locked())
 
     def test_change_submod(self):
-        self.p1.change_submod("area", std.make_shared["Module"](get_rectangle()))
+        self.p1.change_submod("area", get_rectangle())
         self.assertEqual(self.p1.submods().at("area").value(), get_rectangle())
 
 if __name__ == "__main__":
