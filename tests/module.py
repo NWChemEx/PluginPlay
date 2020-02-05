@@ -6,8 +6,8 @@ dir = os.path.dirname(os.path.realpath(__file__))
 dir = os.path.abspath(dir)
 cppyy.add_include_path(dir)
 
-cppyy.include("examples/property_type.hpp")
-cppyy.include("examples/module_base.hpp")
+cppyy.include("examples/writing_a_property_type.hpp")
+cppyy.include("examples/writing_a_module.hpp")
 cppyy.include("examples/workflow.hpp")
 
 mm = sde.ModuleManager()
