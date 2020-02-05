@@ -16,11 +16,11 @@ public:
 
     /// Type of an iterator over cache entries
     using iterator_type =
-      std::map<const hash_type, std::shared_ptr<sdeAny>>::iterator;
+      std::map<const hash_type, std::shared_ptr<SDEAny>>::iterator;
 
     /// Type of a read-only iterator over cache entries
     using const_iterator_type =
-      std::map<const hash_type, std::shared_ptr<sdeAny>>::const_iterator;
+      std::map<const hash_type, std::shared_ptr<SDEAny>>::const_iterator;
 
     /// Type of the graph stored in the cache (deprecated)
     using graph_type = std::map<hash_type, std::multimap<hash_type, hash_type>>;
@@ -34,7 +34,7 @@ public:
     /// Inserts a hash-data pair into results map
     template<typename T>
     void insert(hash_type& key, T&& data) {
-        _results[key] = std::make_shared<sdeAny>(std::move(data));
+        _results[key] = std::make_shared<SDEAny>(std::move(data));
     }
 
     /// Computes hash value, and inserts hash-data pair into results map
@@ -43,7 +43,7 @@ public:
         bphash::Hasher h(htype);
         h(data);
         hash_type key = bphash::hash_to_string(h.finalize());
-        _results[key] = std::make_shared<sdeAny>(std::move(data));
+        _results[key] = std::make_shared<SDEAny>(std::move(data));
     }
 
     /** Returns a shared_ptr to the value held in an SDEAny instance stored in
@@ -79,7 +79,7 @@ public:
         return std::shared_ptr<T>(rv, &(SDEAnyCast<T&>(*rv)));
     }
 
-    /** Returns the use_count() of the shared_ptr<sdeAny> stored in the result
+    /** Returns the use_count() of the shared_ptr<SDEAny> stored in the result
      * map, index specified by hash key.
      */
     size_t get_use_count(hash_type& key) { return _results[key].use_count(); }
@@ -184,7 +184,7 @@ public:
 
 private:
     /// Stores the results
-    std::map<hash_type, std::shared_ptr<sdeAny>> _results;
+    std::map<hash_type, std::shared_ptr<SDEAny>> _results;
 
     /// The graph
     graph_type _graph;
