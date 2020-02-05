@@ -1,4 +1,4 @@
-from SDE import *
+from sde import *
 import unittest
 
 dir = os.path.dirname(os.path.realpath(__file__))
