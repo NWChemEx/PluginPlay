@@ -5,9 +5,9 @@ dir = os.path.dirname(os.path.realpath(__file__))
 dir = os.path.dirname(dir)
 cppyy.add_include_path(dir)
 
-cppyy.include("examples/writing_a_property_type.hpp")
-cppyy.include("examples/writing_a_module.hpp")
-cppyy.include("examples/workflow.hpp")
+cppyy.include("writing_a_property_type.hpp")
+cppyy.include("writing_a_module.hpp")
+cppyy.include("workflow.hpp")
 
 class TestAreaPropertyType(unittest.TestCase):
     def setUp(self):

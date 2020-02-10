@@ -14,12 +14,12 @@ mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)
 
 def get_rectangle():
-    #mod = mm.at("Rectangle")
-    return sde.Module(mm.at("Rectangle"))
+    mod = mm.at("Rectangle")
+    return sde.Module(mod)
 
 def get_prism():
-    #mod = mm.at("Prism")
-    return sde.Module(mm.at("Prism"))
+    mod = mm.at("Prism")
+    return sde.Module(mod)
 
 class test_module_base(unittest.TestCase):
     def setUp(self):

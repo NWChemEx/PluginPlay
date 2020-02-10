@@ -14,10 +14,12 @@ mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)
 
 def get_rectangle():
-    return sde.Module(mm.at("Rectangle"))
+    mod = mm.at("Rectangle")
+    return sde.Module(mod)
 
 def get_prism():
-    return sde.Module(mm.at("Prism"))
+    mod = mm.at("Prism")
+    return sde.Module(mod)
 
 class test_module(unittest.TestCase):
     def setUp(self):
@@ -31,8 +33,7 @@ class test_module(unittest.TestCase):
         self.assertFalse(m.locked())
 
     def test_copy_ctor(self):
-        k = sde.Module(mm.at("Rectangle"))
-        m = sde.Module(k)
+        m = sde.Module(self.r1)
         self.assertEqual(self.r1, m)
 
     def test_equality(self):
@@ -42,7 +43,7 @@ class test_module(unittest.TestCase):
 
     def test_lockedness(self):
         self.assertEqual(self.r1, self.r2)
-        self.r1.lock()
+        self.r2.lock()
         self.assertNotEqual(self.r1, self.r2)
 
     def test_change_input(self):
