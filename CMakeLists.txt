@@ -10,7 +10,7 @@ include(get_cpp)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_PYBINDINGS "Should we build Python3 bindings?" OFF)
 
 cpp_find_or_build_dependency(
         utilities
