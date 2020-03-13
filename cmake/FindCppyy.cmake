@@ -59,7 +59,6 @@ function(cppyy_make_python_package _cmpp_target)
         set(_cmpp_OUTPUT_DIR ${CMAKE_BINARY_DIR}/${_cmpp_PREFIX})
     endif()
 
-
     #---------------------------------------------------------------------------
     #------------Collect the information we need off the target-----------------
     #---------------------------------------------------------------------------
@@ -81,7 +80,6 @@ function(cppyy_make_python_package _cmpp_target)
     endforeach()
     #List of header files
     get_target_property(_cmpp_headers ${_cmpp_target} PUBLIC_HEADER)
-
     #The library name (obviously a generator...)
     set(_cmpp_lib "$<TARGET_FILE_NAME:${_cmpp_target}>")
 
