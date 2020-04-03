@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 #include <fstream>
-
+#include <tiledarray.h>
 
 TEST_CASE("Archive: cereal::BinaryOutputArchive") {
     int i = 2;
@@ -57,6 +57,31 @@ TEST_CASE("Archive: cereal::PortableBinaryOutputArchive") {
     oarchive(i);
     sde::PortableBinaryInputArchive iarchive( ss );
     iarchive(j);
-    REQUIRE(j==2);
     REQUIRE(i==j);
+}
+
+TEST_CASE("Archive: TA::TSpArrayD") {
+  auto& world = TA::get_default_world();
+  TA::TSpArrayD vec(world, {1.0, 2.0, 3.0});
+  const char *f = "test.dat";
+  sde::BinaryFstreamOutputArchive oarchive( f );
+  oarchive & vec;
+  oarchive.close();
+  sde::BinaryFstreamInputArchive iarchive( f );
+  TA::TSpArrayD vec2(world, {0.0, 0.0, 0.0});
+  iarchive & vec2;
+  iarchive.close();
+}
+
+TEST_CASE("Archive: madness::archive::BinaryFstreamOutputArchive") {
+  int i=2;
+  const char *f = "test.dat";
+  sde::BinaryFstreamOutputArchive oarchive( f );
+  oarchive & i;
+  oarchive.close();
+  sde::BinaryFstreamInputArchive iarchive( f );
+  int j;
+  iarchive & j;
+  iarchive.close();
+  REQUIRE(i==j);
 }

@@ -2,6 +2,7 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/archives/xml.hpp>
+#include <madness/world/binary_fstream_archive.h>
 
 namespace sde{
     using PortableBinaryOutputArchive = cereal::PortableBinaryOutputArchive;
@@ -12,4 +13,6 @@ namespace sde{
     using JSONInputArchive  = cereal::JSONInputArchive;
     using XMLOutputArchive = cereal::XMLOutputArchive;
     using XMLInputArchive  = cereal::XMLInputArchive;
+    using BinaryFstreamInputArchive = madness::archive::BinaryFstreamInputArchive;
+    using BinaryFstreamOutputArchive = madness::archive::BinaryFstreamOutputArchive;
 }
