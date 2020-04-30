@@ -9,26 +9,18 @@
 #include <madness/world/cereal_archive.h>
 
 namespace sde{
-    using PortableBinaryOutputArchive = cereal::PortableBinaryOutputArchive;
-    using PortableBinaryInputArchive  = cereal::PortableBinaryInputArchive;
-    using BinaryOutputArchive = cereal::BinaryOutputArchive;
-    using BinaryInputArchive  = cereal::BinaryInputArchive;
-    using JSONOutputArchive = cereal::JSONOutputArchive;
-    using JSONInputArchive  = cereal::JSONInputArchive;
-    using XMLOutputArchive = cereal::XMLOutputArchive;
-    using XMLInputArchive  = cereal::XMLInputArchive;
     using BinaryFstreamOutputArchive = madness::archive::BinaryFstreamOutputArchive;
     using BinaryFstreamInputArchive = madness::archive::BinaryFstreamInputArchive;
     using BufferOutputArchive = madness::archive::BufferOutputArchive;
     using BufferInputArchive = madness::archive::BufferInputArchive;
     using TextFstreamOutputArchive = madness::archive::TextFstreamOutputArchive;   
     using TextFstreamInputArchive = madness::archive::TextFstreamInputArchive;
-    using CerealBinaryInputArchive = madness::archive::CerealInputArchive<BinaryInputArchive>;
-    using CerealBinaryOutputArchive = madness::archive::CerealOutputArchive<BinaryOutputArchive>;
-    using CerealPortableBinaryInputArchive = madness::archive::CerealInputArchive<PortableBinaryInputArchive>;
-    using CerealPortableBinaryOutputArchive = madness::archive::CerealOutputArchive<PortableBinaryOutputArchive>;
-    using CerealJSONInputArchive = madness::archive::CerealInputArchive<JSONInputArchive>;
-    using CerealJSONOutputArchive = madness::archive::CerealOutputArchive<JSONOutputArchive>;
-    using CerealXMLInputArchive = madness::archive::CerealInputArchive<XMLInputArchive>;
-    using CerealXMLOutputArchive = madness::archive::CerealOutputArchive<XMLOutputArchive>;
+    using CerealBinaryInputArchive = madness::archive::CerealInputArchive<cereal::BinaryInputArchive>;
+    using CerealBinaryOutputArchive = madness::archive::CerealOutputArchive<cereal::BinaryOutputArchive>;
+    using CerealPortableBinaryInputArchive = madness::archive::CerealInputArchive<cereal::PortableBinaryInputArchive>;
+    using CerealPortableBinaryOutputArchive = madness::archive::CerealOutputArchive<cereal::PortableBinaryOutputArchive>;
+    using CerealJSONInputArchive = madness::archive::CerealInputArchive<cereal::JSONInputArchive>;
+    using CerealJSONOutputArchive = madness::archive::CerealOutputArchive<cereal::JSONOutputArchive>;
+    using CerealXMLInputArchive = madness::archive::CerealInputArchive<cereal::XMLInputArchive>;
+    using CerealXMLOutputArchive = madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
 }
