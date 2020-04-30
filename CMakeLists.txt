@@ -39,24 +39,26 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
-#cpp_find_or_build_dependency(
-#    madness
-#    URL github.com/m-a-d-n-e-s-s/madness
-#    BUILD_TARGET madness
-#    FIND_TARGET madness
-#)
-
 cpp_find_or_build_dependency(
-    tiledarray
-    URL github.com/ValeevGroup/tiledarray
-    BUILD_TARGET tiledarray
-    FIND_TARGET tiledarray
+    madness
+    URL github.com/keceli/madness
+    BUILD_TARGET madness
+    FIND_TARGET madness
+    CMAKE_ARGS BUILD_TESTING=OFF 
+		       ENABLE_UNITTESTS=OFF
+			   ENABLE_APPS=OFF
+			   ENABLE_EXAMPLES=OFF
+			   ENABLE_WORLD_ONLY=ON
 )
+
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/_deps/madness-build/src")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/_deps/madness-src/src")
+
 cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-    DEPENDS nwx::utilities cereal bphash::bphash tiledarray
+    DEPENDS nwx::utilities cereal bphash::bphash madness
 )
 
 if("${BUILD_TESTING}")
