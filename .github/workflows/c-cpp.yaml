@@ -19,10 +19,19 @@ jobs:
       run: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt-get update
-            sudo apt-get install gcc-8 g++-8 
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+            sudo apt-get install gcc-8 g++-8 gfortran-8
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+            gcc  --version
             g++  --version
+            gfortran --version
             gcov --version
+    - name: get-blas-lapack
+      run:  sudo apt-get install libopenblas-base libopenblas-dev libgslcblas0 libgsl-dev liblapacke liblapacke-dev
+    - name: get-openmpi
+      run: |
+            sudo apt-get install openmpi-bin libopenmpi-dev
+            mpicc -show
+            mpiexec --version
     - name: get-gcovr
       run:  pip install gcovr
     - name: get-cmake
