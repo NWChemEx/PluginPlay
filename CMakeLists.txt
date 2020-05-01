@@ -6,9 +6,6 @@ set(
     CACHE STRING "" FORCE
 )
 
-# To fix linking errors 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 include(get_cpp)
 
 ### Options ###
