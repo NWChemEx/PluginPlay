@@ -51,7 +51,7 @@ cpp_find_or_build_dependency(
 		       ENABLE_UNITTESTS=OFF
 			   ENABLE_APPS=OFF
 			   ENABLE_EXAMPLES=OFF
-			   ENABLE_WORLD_ONLY=ON
+			   ENABLE_TENSOR_ONLY=ON
 )
 
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/_deps/madness-build/src")
