@@ -12,8 +12,6 @@ jobs:
     - uses: actions/setup-python@v1
       with: 
          python-version: '3.x'
-    - name: get-clang-format
-      run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
     - name: get-gcc
       run: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
