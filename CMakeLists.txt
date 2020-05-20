@@ -41,25 +41,19 @@ cpp_find_or_build_dependency(
 
 cpp_find_or_build_dependency(
     madness
-    URL github.com/keceli/madness
-    BUILD_TARGET madness
-    FIND_TARGET madness
+    URL github.com/m-a-d-n-e-s-s/madness
+    BUILD_TARGET MADworld
+    FIND_TARGET MADworld
     CMAKE_ARGS BUILD_TESTING=OFF 
 		       ENABLE_UNITTESTS=OFF
-			   ENABLE_APPS=OFF
-			   ENABLE_EXAMPLES=OFF
-			   ENABLE_WORLD_CLAPACK_ONLY=ON
-			   ENABLE_LAPACK=OFF
+			   MADNESS_BUILD_MADWORLD_ONLY=ON
 )
-
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/_deps/madness-build/src")
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/_deps/madness-src/src")
 
 cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-    DEPENDS nwx::utilities cereal bphash::bphash madness
+    DEPENDS nwx::utilities cereal bphash::bphash MADworld
 )
 
 if("${BUILD_TESTING}")
