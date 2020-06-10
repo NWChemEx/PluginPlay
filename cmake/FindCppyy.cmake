@@ -49,7 +49,7 @@ function(cppyy_make_python_package _cmpp_target)
     #---------------------------------------------------------------------------
     #--------------------------Argument Parsing---------------------------------
     #---------------------------------------------------------------------------
-    set(_cmpp_options PREFIX OUTPUT_DIR TEST)
+    set(_cmpp_options NAMESPACE PREFIX OUTPUT_DIR TEST)
     cmake_parse_arguments(_cmpp "" "${_cmpp_options}" "" ${ARGN})
     if("${_cmpp_PREFIX}" STREQUAL "")
         get_filename_component(_cmpp_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
