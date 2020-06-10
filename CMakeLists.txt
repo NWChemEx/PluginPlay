@@ -52,7 +52,7 @@ if(BUILD_PYBINDINGS)
     find_package(Python3 REQUIRED)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
     find_package(Cppyy REQUIRED)
-    cppyy_make_python_package(sde NAMESPACE sde)
+    cppyy_make_python_package(sde NAMESPACE sde PREFIX sde TEST ${BUILD_TESTING})
 endif()
 
 
