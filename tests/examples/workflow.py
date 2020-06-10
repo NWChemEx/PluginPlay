@@ -1,13 +1,6 @@
 from sde import *
+from tests import *
 import unittest
-
-dir = os.path.dirname(os.path.realpath(__file__))
-dir = os.path.dirname(dir)
-cppyy.add_include_path(dir)
-
-cppyy.include("writing_a_property_type.hpp")
-cppyy.include("writing_a_module.hpp")
-cppyy.include("workflow.hpp")
 
 class TestWorkflow(unittest.TestCase):
     def setUp(self):
