@@ -49,7 +49,7 @@ function(cppyy_make_python_package _cmpp_target)
     #---------------------------------------------------------------------------
     #--------------------------Argument Parsing---------------------------------
     #---------------------------------------------------------------------------
-    set(_cmpp_options NAMESPACE PREFIX OUTPUT_DIR)
+    set(_cmpp_options PREFIX OUTPUT_DIR TEST)
     cmake_parse_arguments(_cmpp "" "${_cmpp_options}" "" ${ARGN})
     if("${_cmpp_PREFIX}" STREQUAL "")
         get_filename_component(_cmpp_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
@@ -100,10 +100,34 @@ function(cppyy_make_python_package _cmpp_target)
     set(_cmpp_file "${_cmpp_file}dir = os.path.realpath(__file__)\n")
     set(_cmpp_file "${_cmpp_file}dir = os.path.dirname(dir)\n")
     set(_cmpp_file "${_cmpp_file}lib = os.path.join(\"${CMAKE_BINARY_DIR}\", \"${_cmpp_lib}\")\n")
-    #set(_cmpp_file "${_cmpp_file}lib = os.path.join(dir, \"${_cmpp_lib}\")\n")
     set(_cmpp_file "${_cmpp_file}cppyy.load_library(lib)\n")
     set(_cmpp_file "${_cmpp_file}from cppyy.gbl import ${_cmpp_NAMESPACE}\n")
-
+    set(_cmpp_file "${_cmpp_file}from cppyy.gbl import std\n")
     #Write it out
     file(GENERATE OUTPUT ${_cmpp_file_name} CONTENT "${_cmpp_file}")
+
+    #---------------------------------------------------------------------------
+    #-----------------Generate __init__.py file contents for tests -------------
+    #---------------------------------------------------------------------------
+    if(${_cmpp_TEST})
+        file(GLOB_RECURSE _cmpp_test_headers
+             LIST_DIRECTORIES FALSE
+             CONFIGURE_DEPENDS
+             "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.hpp"
+            )
+        list(APPEND _cmpp_headers ${_cmpp_test_headers})
+        set(_cmpp_file_name "${CMAKE_BINARY_DIR}/tests/__init__.py")
+        set(_cmpp_file "import cppyy\n")
+        set(_cmpp_file "${_cmpp_file}import os\n")
+        set(_cmpp_file "${_cmpp_file}paths = \"${_cmpp_inc_dir}\".split(';')\n")
+        set(_cmpp_file "${_cmpp_file}for p in paths:\n")
+        set(_cmpp_file "${_cmpp_file}    if p:\n")
+        set(_cmpp_file "${_cmpp_file}        cppyy.add_include_path(p)\n")
+        set(_cmpp_file "${_cmpp_file}headers = \"${_cmpp_headers}\".split(';')\n")
+        set(_cmpp_file "${_cmpp_file}for h in headers:\n")
+        set(_cmpp_file "${_cmpp_file}    inc = os.path.join(\"${_cmpp_PREFIX}\",h)\n")
+        set(_cmpp_file "${_cmpp_file}    cppyy.include(inc)\n")
+        #Write it out
+        file(GENERATE OUTPUT ${_cmpp_file_name} CONTENT "${_cmpp_file}")
+    endif()
 endfunction()
