@@ -1,16 +1,6 @@
 from sde import *
-from cppyy.gbl import std
+from tests import *
 import unittest
-
-dir = os.path.dirname(os.path.realpath(__file__))
-dir = os.path.abspath(dir)
-cppyy.add_include_path(dir)
-
-cppyy.include("examples/writing_a_property_type.hpp")
-cppyy.include("examples/writing_a_module.hpp")
-cppyy.include("examples/workflow.hpp")
-cppyy.include("../sde/sde.hpp")
-cppyy.include("../sde/detail_/lambda_module.hpp")
 
 mm = sde.ModuleManager()
 cppyy.gbl.load_modules(mm)
