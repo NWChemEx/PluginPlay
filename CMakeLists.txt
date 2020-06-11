@@ -83,7 +83,7 @@ if(BUILD_TESTING)
         )
         set_tests_properties(
             py_${test_name}
-            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR/}"
+            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
         )
         endforeach()
     endif()
