@@ -42,6 +42,9 @@
  * enforced. For all intents and purposes the only thing you need to know is
  * that you declare your class like this:
  */
+
+namespace sde{
+
 class Area : public sde::PropertyType<Area> {
 public:
     /* Declaring the Input API
@@ -176,3 +179,4 @@ public:
         return rv;
     } // end results_()
 };    // end PrismVolume
+} // end sde

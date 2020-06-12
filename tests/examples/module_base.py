@@ -3,7 +3,7 @@ from tests import *
 import unittest
 
 mm = sde.ModuleManager()
-cppyy.gbl.load_modules(mm)
+sde.load_modules(mm)
 
 def get_rectangle():
     mod = mm.at("Rectangle")
@@ -67,7 +67,7 @@ class test_module_base(unittest.TestCase):
         inputs = self.p1.inputs()
         inputs.at("Dimensions").change([1.23, 4.56, 7.89])
         results= self.p1.run(inputs)
-        area, volume = cppyy.gbl.PrismVolume.unwrap_results(results)
+        area, volume = sde.PrismVolume.unwrap_results(results)
         self.assertAlmostEqual(area, 5.6088)
         self.assertAlmostEqual(volume, 44.253432)
 

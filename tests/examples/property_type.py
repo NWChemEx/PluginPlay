@@ -4,7 +4,7 @@ import unittest
 
 class TestAreaPropertyType(unittest.TestCase):
     def setUp(self):
-        self.pt = cppyy.gbl.Area()
+        self.pt = sde.Area()
 
     def test_inputs(self):
         inputs = self.pt.inputs()
@@ -17,7 +17,7 @@ class TestAreaPropertyType(unittest.TestCase):
         self.assertEqual(inputs.size(), 2)
         self.assertEqual(inputs["Dimension 1"].value["double"](), 1.23)
         self.assertEqual(inputs["Dimension 2"].value["double"](), 4.56)
-        [dim1, dim2] = cppyy.gbl.Area.unwrap_inputs(inputs)
+        [dim1, dim2] = sde.Area.unwrap_inputs(inputs)
         self.assertEqual(dim1, 1.23)
         self.assertEqual(dim2, 4.56)
 

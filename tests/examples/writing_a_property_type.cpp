@@ -1,6 +1,8 @@
 #include "tests/examples/writing_a_property_type.hpp"
 #include <catch2/catch.hpp>
 
+using namespace sde;
+
 /* This test focuses on the property_type class. The property_type class can not
  * be directly tested as it is an abstract class relying on compile-time
  * polymorphism. For this reason we test two example property types: "Area" and

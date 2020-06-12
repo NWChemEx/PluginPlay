@@ -37,6 +37,9 @@
  *
  *    Modules do not inherit from the property types they satisfy.
  */
+
+namespace sde{
+
 class Rectangle : public sde::ModuleBase {
 public:
     /* Defining the Module's API
@@ -320,3 +323,4 @@ private:
         return PrismVolume::wrap_results(out, area, volume);
     } // end run_()
 };    // end Prism
+} // end sde

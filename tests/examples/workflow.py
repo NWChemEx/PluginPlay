@@ -5,7 +5,7 @@ import unittest
 class TestWorkflow(unittest.TestCase):
     def setUp(self):
         self.mm = sde.ModuleManager()
-        cppyy.gbl.load_modules(self.mm)
+        sde.load_modules(self.mm)
 
     def test_count(self):
         self.assertEqual(self.mm.count("Rectangle"), 1)

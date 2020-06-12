@@ -2,9 +2,11 @@
 #include <catch2/catch.hpp>
 #include <vector>
 
+using namespace sde;
+
 TEST_CASE("load_modules") {
     sde::ModuleManager mm;
-    load_modules(mm);
+    sde::load_modules(mm);
     REQUIRE(mm.count("Rectangle") == 1);
     REQUIRE(mm.count("Prism") == 1);
 }

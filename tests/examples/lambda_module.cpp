@@ -35,6 +35,8 @@
 #include <sde/sde.hpp>
 #include <tests/examples/workflow.hpp>
 
+using namespace sde;
+
 // TUTORIAL_START_SKIP
 TEST_CASE("How to use a lambda module") {
     // TUTORIAL_STOP_SKIP
@@ -80,7 +82,7 @@ TEST_CASE("How to use a lambda module") {
     // instance and then retrieves the relevant modules for this tutorial:
 
     sde::ModuleManager mm;
-    load_modules(mm);
+    sde::load_modules(mm);
 
     // At this point volume_mod's "area" submodule is set to Rectangle
     auto volume_mod = mm.at("Prism");

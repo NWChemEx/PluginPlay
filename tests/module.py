@@ -3,7 +3,7 @@ from tests import *
 import unittest
 
 mm = sde.ModuleManager()
-cppyy.gbl.load_modules(mm)
+sde.load_modules(mm)
 
 def get_rectangle():
     mod = mm.at("Rectangle")
