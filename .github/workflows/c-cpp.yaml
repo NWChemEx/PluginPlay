@@ -44,3 +44,7 @@ jobs:
       with:
          token: ${{ secrets.CODECOV_TOKEN }}
          file: ./coverage.xml
+    - name: Get Doxygen
+      run: |
+            sudo apt update
+            sudo apt-get install -f doxygen
