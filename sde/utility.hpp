@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 
 /** @file Utility.hpp
  *
