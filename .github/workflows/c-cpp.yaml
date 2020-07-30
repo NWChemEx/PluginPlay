@@ -25,6 +25,10 @@ jobs:
             gcov --version
     - name: get-gcovr
       run:  pip install gcovr
+    - name: Get Doxygen
+      run: |
+            sudo apt update
+            sudo apt-get install -f doxygen
     - name: get-cmake
       run: |
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
@@ -44,7 +48,3 @@ jobs:
       with:
          token: ${{ secrets.CODECOV_TOKEN }}
          file: ./coverage.xml
-    - name: Get Doxygen
-      run: |
-            sudo apt update
-            sudo apt-get install -f doxygen
