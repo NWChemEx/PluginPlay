@@ -544,6 +544,8 @@ public:
      */
     type::result_map run(type::input_map ps = {});
 
+    std::string profile_info()const;
+
     /** @brief Computes a hash of the module's state.
      *
      *  This function is used to compute a hash of the module's current state.

@@ -1,6 +1,8 @@
 #pragma once
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
+#include <iomanip> // for put_time
+#include <utilities/timer.hpp>
 
 namespace sde::detail_ {
 
@@ -412,6 +414,8 @@ public:
      */
     void memoize(type::hasher& h, type::input_map inputs) const;
 
+    std::string profile_info() const;
+
     /** @brief Checks whether the result of a call is cached.
      *
      *  This function will memoize the provided inputs and determine if the
@@ -521,6 +525,8 @@ private:
     type::submodule_map m_submods_;
 
     std::set<type::rtti> m_property_types_;
+
+    utilities::Timer m_timer_;
 }; // class ModulePIMPL
 
 //-------------------------------Implementations--------------------------------
@@ -620,7 +626,28 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
+inline std::string ModulePIMPL::profile_info() const {
+    std::stringstream ss;
+    ss << m_timer_;
+    std::string tab("  ");
+    for(auto [key, submod] : m_submods_){
+        ss << tab << key << std::endl;
+        auto submod_prof_info = submod.value().profile_info();
+        std::stringstream ss2(submod_prof_info);
+        std::string token;
+        while(std::getline(ss2, token, '\n'))
+            ss << tab << tab << token << std::endl;
+    }
+    return ss.str();
+}
+
 inline auto ModulePIMPL::run(type::input_map ps) {
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
+    auto time_now = ss.str();
+    m_timer_.reset();
     assert_mod_();
     // Check the inputs we were just given
     for(const auto& [k, v] : ps)
@@ -634,14 +661,21 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(false && m_cache_ && m_cache_->count(hv)) return m_cache_->at(hv);
+    if(false && m_cache_ && m_cache_->count(hv)) {
+        m_timer_.record(time_now);
+        return m_cache_->at(hv);
+    }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(true || !m_cache_) return rv;
+    if(true || !m_cache_) {
+        m_timer_.record(time_now);
+        return rv;
+    }
 
     // cache result
     m_cache_->emplace(hv, std::move(rv));
+    m_timer_.record(time_now);
     return m_cache_->at(hv);
 }
 

@@ -254,6 +254,13 @@ TEST_CASE("ModulePIMPL : citations") {
     }
 }
 
+TEST_CASE("ModulePIMPL : profile_info") {
+    ModulePIMPL p = make_module_pimpl<SubModModule>();
+    p.submods().at("submodule 1").change(make_module<NullModule>());
+    p.run(sde::type::input_map{});
+    std::cout << p.profile_info() << std::endl;
+}
+
 TEST_CASE("ModulePIMPL : hash") {
     SECTION("Inputs not set") {
         auto mod = make_module_pimpl<NotReadyModule>();

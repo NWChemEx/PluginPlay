@@ -16,6 +16,40 @@ TEST_CASE("SubmoduleRequestPIMPL : Default ctor") {
     REQUIRE_FALSE(pimpl.ready());
 }
 
+TEST_CASE("SubmoduleRequestPIMPL : Copy ctor") {
+    SubmoduleRequestPIMPL pimpl1;
+    pimpl1.set_type(null_pt_t, sde::type::input_map{});
+    SubmoduleRequestPIMPL pimpl2(pimpl1);
+    REQUIRE(pimpl2 == pimpl1);
+}
+
+TEST_CASE("SubmoduleRequestPIMPL : Copy assignment") {
+    SubmoduleRequestPIMPL pimpl1;
+    pimpl1.set_type(null_pt_t, sde::type::input_map{});
+    SubmoduleRequestPIMPL pimpl2;
+    auto* ptr = &(pimpl2 = pimpl1);
+    REQUIRE(pimpl2 == pimpl1);
+    REQUIRE(ptr == &pimpl2);
+}
+
+TEST_CASE("SubmoduleRequestPIMPL : Move ctor") {
+    SubmoduleRequestPIMPL pimpl1;
+    pimpl1.set_type(null_pt_t, sde::type::input_map{});
+    SubmoduleRequestPIMPL pimpl3(pimpl1);
+    SubmoduleRequestPIMPL pimpl2(std::move(pimpl1));
+    REQUIRE(pimpl2 == pimpl3);
+}
+
+TEST_CASE("SubmoduleRequestPIMPL : Move assignment") {
+    SubmoduleRequestPIMPL pimpl1;
+    pimpl1.set_type(null_pt_t, sde::type::input_map{});
+    SubmoduleRequestPIMPL pimpl3(pimpl1);
+    SubmoduleRequestPIMPL pimpl2;
+    auto* ptr = &(pimpl2 = std::move(pimpl1));
+    REQUIRE(pimpl2 == pimpl3);
+    REQUIRE(ptr == &pimpl2);
+}
+
 TEST_CASE("SubmoduleRequestPIMPL : clone") {
     SubmoduleRequestPIMPL pimpl1;
     SECTION("Empty") {
@@ -216,36 +250,4 @@ TEST_CASE("SubmoduleRequestPIMPL : comparisons") {
     }
 }
 
-TEST_CASE("SubmoduleRequestPIMPL : Copy ctor") {
-    SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(null_pt_t, sde::type::input_map{});
-    SubmoduleRequestPIMPL pimpl2(pimpl1);
-    REQUIRE(pimpl2 == pimpl1);
-}
 
-TEST_CASE("SubmoduleRequestPIMPL : Copy assignment") {
-    SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(null_pt_t, sde::type::input_map{});
-    SubmoduleRequestPIMPL pimpl2;
-    auto* ptr = &(pimpl2 = pimpl1);
-    REQUIRE(pimpl2 == pimpl1);
-    REQUIRE(ptr == &pimpl2);
-}
-
-TEST_CASE("SubmoduleRequestPIMPL : Move ctor") {
-    SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(null_pt_t, sde::type::input_map{});
-    SubmoduleRequestPIMPL pimpl3(pimpl1);
-    SubmoduleRequestPIMPL pimpl2(std::move(pimpl1));
-    REQUIRE(pimpl2 == pimpl3);
-}
-
-TEST_CASE("SubmoduleRequestPIMPL : Move assignment") {
-    SubmoduleRequestPIMPL pimpl1;
-    pimpl1.set_type(null_pt_t, sde::type::input_map{});
-    SubmoduleRequestPIMPL pimpl3(pimpl1);
-    SubmoduleRequestPIMPL pimpl2;
-    auto* ptr = &(pimpl2 = std::move(pimpl1));
-    REQUIRE(pimpl2 == pimpl3);
-    REQUIRE(ptr == &pimpl2);
-}
