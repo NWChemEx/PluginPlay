@@ -1,11 +1,24 @@
 #include "sde/detail_/module_pimpl.hpp"
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
+#include <regex>
 
 using namespace sde;
 using namespace sde::detail_;
 using namespace testing;
 using not_set_t = typename ModulePIMPL::not_set_type;
+
+/* I don't see how to test the contents of the time stamp returned by time_stamp
+ * without duplicating its contents (and even then there's the possibility that
+ * the second call happens in an entirely new year changing basically every
+ * value). Thus this unit test simply ensures that the resulting string has the
+ * correct format via regex.
+ */
+TEST_CASE("time_stamp"){
+    auto rv = time_stamp();
+    std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d$");
+    REQUIRE(std::regex_search(rv, corr));
+}
 
 TEST_CASE("ModulePIMPL : default ctor") {
     ModulePIMPL p;
@@ -257,8 +270,18 @@ TEST_CASE("ModulePIMPL : citations") {
 TEST_CASE("ModulePIMPL : profile_info") {
     ModulePIMPL p = make_module_pimpl<SubModModule>();
     p.submods().at("submodule 1").change(make_module<NullModule>());
-    p.run(sde::type::input_map{});
-    std::cout << p.profile_info() << std::endl;
+
+    SECTION("Run hasn't been called") {
+        std::regex corr("^  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p.profile_info(), corr));
+    }
+
+    SECTION("Run has been called") {
+        p.run(sde::type::input_map{});
+        std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d : \\d h "
+                        "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p.profile_info(), corr));
+    }
 }
 
 TEST_CASE("ModulePIMPL : hash") {

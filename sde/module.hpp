@@ -544,7 +544,20 @@ public:
      */
     type::result_map run(type::input_map ps = {});
 
-    std::string profile_info()const;
+    /** @brief Returns timing data for this module and all submodules.
+     *
+     *  Each time the run member is called the time for the call (including all
+     *  SDE overhead) is recorded. This also occurs for all calls to submodules'
+     *  run members. This function creates a formatted string with this module's
+     *  timing data, including the breakdown in terms of submodule calls.
+     *
+     *  @return All timing data collected for this module and its submodules as
+     *          a formatted string.
+     *
+     *  @throw std::bad_alloc if there's insufficient memory to allocate the
+     *         return. Strong throw guarantee.
+     */
+    std::string profile_info() const;
 
     /** @brief Computes a hash of the module's state.
      *

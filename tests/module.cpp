@@ -1,5 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
+#include <regex>
 #include <sde/module.hpp>
 
 using namespace sde;
@@ -367,6 +368,23 @@ TEST_CASE("Module : run") {
         auto mod = make_module<ResultModule>();
         REQUIRE(mod->run().at("Result 1").value<int>() == 4);
         SECTION("Locks module") { REQUIRE(mod->locked()); }
+    }
+}
+
+TEST_CASE("Module : profile_info") {
+    auto p = make_module<SubModModule>();
+    p->change_submod("submodule 1", make_module<NullModule>());
+
+    SECTION("Run hasn't been called") {
+        std::regex corr("^  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p->profile_info(), corr));
+    }
+
+    SECTION("Run has been called") {
+        p->run(sde::type::input_map{});
+        std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d : \\d h "
+                        "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p->profile_info(), corr));
     }
 }
 
