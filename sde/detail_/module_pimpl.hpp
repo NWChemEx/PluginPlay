@@ -6,7 +6,7 @@
 
 namespace sde::detail_ {
 
-//TODO: This function doesn't belong here (move unit test too)
+// TODO: This function doesn't belong here (move unit test too)
 /** @brief Creates a string whose contents is a time stamp.
  *
  *  C++ doesn't have a great way to get a time stamp as a string. This function
@@ -20,16 +20,15 @@ namespace sde::detail_ {
  *         string. Strong throw guarantee.
  */
 inline auto time_stamp() {
-    //TODO: Check the returns of these two functions for errors
-    auto t = std::time(nullptr);
+    // TODO: Check the returns of these two functions for errors
+    auto t  = std::time(nullptr);
     auto tm = *std::localtime(&t);
 
     std::stringstream ss;
     ss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
-    //TODO: Make sure ss's bad_bit wasn't set
+    // TODO: Make sure ss's bad_bit wasn't set
     return ss.str();
 }
-
 
 /** @brief The class that actually contains a module's state.
  *
@@ -670,7 +669,7 @@ inline std::string ModulePIMPL::profile_info() const {
     std::stringstream ss;
     ss << m_timer_;
     std::string tab("  ");
-    for(auto [key, submod] : m_submods_){
+    for(auto [key, submod] : m_submods_) {
         ss << tab << key << std::endl;
         auto submod_prof_info = submod.value().profile_info();
         std::stringstream ss2(submod_prof_info);

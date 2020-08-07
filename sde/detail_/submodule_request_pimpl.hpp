@@ -65,7 +65,8 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory for the copy.
      *                        Strong throw guarantee.
      */
-    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs) = default;
+    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs) =
+      default;
 
     /** @brief Takes ownership of another instance's state.
      *
