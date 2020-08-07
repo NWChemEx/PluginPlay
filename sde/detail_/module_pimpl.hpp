@@ -1,8 +1,35 @@
 #pragma once
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
+#include <iomanip> // for put_time
+#include <utilities/timer.hpp>
 
 namespace sde::detail_ {
+
+//TODO: This function doesn't belong here (move unit test too)
+/** @brief Creates a string whose contents is a time stamp.
+ *
+ *  C++ doesn't have a great way to get a time stamp as a string. This function
+ *  wraps the process of making such a string. The resulting string contains
+ *  both the date and the time (to second accuracy).
+ *
+ *  @return A std::string containing the current date and time in the format
+ *          `<day>-<month>-<year> <hour>:<minute>:<second>`
+ *
+ *  @throw std::bad_alloc if there is insufficient memory to allocate the
+ *         string. Strong throw guarantee.
+ */
+inline auto time_stamp() {
+    //TODO: Check the returns of these two functions for errors
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
+    //TODO: Make sure ss's bad_bit wasn't set
+    return ss.str();
+}
+
 
 /** @brief The class that actually contains a module's state.
  *
@@ -412,6 +439,21 @@ public:
      */
     void memoize(type::hasher& h, type::input_map inputs) const;
 
+    /** @brief Returns timing data for this module and all submodules.
+     *
+     *  Each time the run member is called the time for the call (including all
+     *  SDE overhead) is recorded. This also occurs for all calls to submodules'
+     *  run members. This function creates a formatted string with this module's
+     *  timing data, including the breakdown in terms of submodule calls.
+     *
+     *  @return All timing data collected for this module and its submodules as
+     *          a formatted string.
+     *
+     *  @throw std::bad_alloc if there's insufficient memory to allocate the
+     *         return. Strong throw guarantee.
+     */
+    std::string profile_info() const;
+
     /** @brief Checks whether the result of a call is cached.
      *
      *  This function will memoize the provided inputs and determine if the
@@ -520,7 +562,11 @@ private:
     /// The submodules bound to this module
     type::submodule_map m_submods_;
 
+    /// The set of property types that his module satisfies
     std::set<type::rtti> m_property_types_;
+
+    /// Timer used to time runs of this module
+    utilities::Timer m_timer_;
 }; // class ModulePIMPL
 
 //-------------------------------Implementations--------------------------------
@@ -620,7 +666,24 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
+inline std::string ModulePIMPL::profile_info() const {
+    std::stringstream ss;
+    ss << m_timer_;
+    std::string tab("  ");
+    for(auto [key, submod] : m_submods_){
+        ss << tab << key << std::endl;
+        auto submod_prof_info = submod.value().profile_info();
+        std::stringstream ss2(submod_prof_info);
+        std::string token;
+        while(std::getline(ss2, token, '\n'))
+            ss << tab << tab << token << std::endl;
+    }
+    return ss.str();
+}
+
 inline auto ModulePIMPL::run(type::input_map ps) {
+    auto time_now = time_stamp();
+    m_timer_.reset();
     assert_mod_();
     // Check the inputs we were just given
     for(const auto& [k, v] : ps)
@@ -634,14 +697,21 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(false && m_cache_ && m_cache_->count(hv)) return m_cache_->at(hv);
+    if(false && m_cache_ && m_cache_->count(hv)) {
+        m_timer_.record(time_now);
+        return m_cache_->at(hv);
+    }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(true || !m_cache_) return rv;
+    if(true || !m_cache_) {
+        m_timer_.record(time_now);
+        return rv;
+    }
 
     // cache result
     m_cache_->emplace(hv, std::move(rv));
+    m_timer_.record(time_now);
     return m_cache_->at(hv);
 }
 
