@@ -84,9 +84,7 @@ const std::vector<type::description>& Module::citations() const {
     return m_pimpl_->citations();
 }
 
-std::string Module::profile_info() const {
-    return m_pimpl_->profile_info();
-}
+std::string Module::profile_info() const { return m_pimpl_->profile_info(); }
 
 //--------------------------- Private Members --------------------------------/
 
