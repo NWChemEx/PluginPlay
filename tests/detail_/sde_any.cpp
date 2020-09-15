@@ -150,6 +150,12 @@ TEST_CASE("SDEAny : Move assignment") {
     REQUIRE(pa3 == &a3);
 }
 
+TEST_CASE("SDEAny : is_convertible") {
+    SDEAny a{int{3}};
+    REQUIRE(a.is_convertible<int>());
+    REQUIRE_FALSE(a.is_convertible<double>());
+}
+
 TEST_CASE("SDEAnyCast") {
     SDEAny a{int{3}};
     REQUIRE(&a.cast<int&>() == &SDEAnyCast<int&>(a));
