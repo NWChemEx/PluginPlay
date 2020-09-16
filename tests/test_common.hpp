@@ -6,6 +6,16 @@
 
 namespace testing {
 
+struct BaseClass {
+    int x = 0;
+    bool operator==(const BaseClass& rhs) const noexcept {
+        return x == rhs.x;
+    }
+    void hash(sde::Hasher& h) const { return h(x); }
+};
+
+struct DerivedClass : BaseClass {};
+
 // Simplest property type possible
 DECLARE_PROPERTY_TYPE(NullPT);
 PROPERTY_TYPE_INPUTS(NullPT) { return sde::declare_input(); }
@@ -23,6 +33,13 @@ struct OptionalInput : sde::PropertyType<OptionalInput> {
     auto inputs_() { return sde::declare_input().add_field<int>("Option 1", 1); }
     auto results_() { return sde::declare_result().add_field<int>("Result 1"); }
 };
+
+// Property type that takes a polymorphic option
+DECLARE_PROPERTY_TYPE(PolymorphicOptions);
+PROPERTY_TYPE_INPUTS(PolymorphicOptions) {
+    return sde::declare_input().add_field<const BaseClass&>("base");
+}
+PROPERTY_TYPE_RESULTS(PolymorphicOptions) { return sde::declare_result(); }
 
 // Property type for module with one result
 DECLARE_PROPERTY_TYPE(OneOut);
@@ -71,6 +88,13 @@ inline MODULE_CTOR(CiteModule) {
     citation("A citation");
 }
 inline MODULE_RUN(CiteModule, , ) { return results(); }
+
+// Module which takes a polymorphic input
+DECLARE_MODULE(PolymorphicModule);
+inline MODULE_CTOR(PolymorphicModule) {
+    satisfies_property_type<PolymorphicOptions>();
+}
+inline MODULE_RUN(PolymorphicModule, , ) { return results(); }
 
 // A module with int input "Option 1"
 DECLARE_MODULE(NotReadyModule);

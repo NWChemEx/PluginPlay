@@ -94,6 +94,18 @@ public:
      */
     rtti_type type() const noexcept { return type_(); };
 
+    /** @brief Determines if the wrapped instance is convertible to the
+     *         provided type.
+     *
+     * @tparam T The type to try casting to.
+     * @return True if the wrapped instance is convertible to type @p T and
+     *         false otherwise.
+     *
+     * @throw None no throw guarantee.
+     */
+    template<typename T>
+    bool is_convertible() const noexcept;
+
     /**
      *  @brief Allows the SDEAnyBase_ instance to be hashed.
      *
@@ -426,6 +438,11 @@ private:
 };
 
 //-------------------------------Implementations--------------------------------
+
+template<typename T>
+bool SDEAnyWrapperBase::is_convertible() const noexcept {
+    return std::any_cast<T>(&m_value_) != nullptr;
+}
 
 inline bool SDEAnyWrapperBase::operator==(const SDEAnyWrapperBase& rhs) const
   noexcept {
