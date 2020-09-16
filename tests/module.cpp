@@ -344,6 +344,17 @@ TEST_CASE("Module : run_as") {
         auto mod = make_module<ReadyModule>();
         REQUIRE(std::get<0>(mod->run_as<OptionalInput>(42)) == 42);
     }
+    SECTION("Can call use derived classes polymorphically") {
+        auto mod = make_module<PolymorphicModule>();
+        SECTION("Works with base class") {
+            testing::BaseClass b;
+            REQUIRE_NOTHROW(mod->run_as<PolymorphicOptions>(b));
+        }
+        SECTION("Works with derived class") {
+            testing::DerivedClass c;
+            REQUIRE_NOTHROW(mod->run_as<PolymorphicOptions>(c));
+        }
+    }
     SECTION("Works") {
         auto mod = make_module<ResultModule>();
         REQUIRE(std::get<0>(mod->run_as<OneOut>()) == 4);
