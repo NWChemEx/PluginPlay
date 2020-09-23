@@ -696,14 +696,14 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(false && m_cache_ && m_cache_->count(hv)) {
+    if(m_cache_ && m_cache_->count(hv)) {
         m_timer_.record(time_now);
         return m_cache_->at(hv);
     }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(true || !m_cache_) {
+    if(!m_cache_) {
         m_timer_.record(time_now);
         return rv;
     }
