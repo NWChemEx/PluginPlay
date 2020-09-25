@@ -307,7 +307,9 @@ public:
     bool has_value() const noexcept { return m_ptr_ != nullptr; }
 
     template<typename T>
-    bool is_convertible() const { return m_ptr_->is_convertible<T>(); }
+    bool is_convertible() const {
+        return m_ptr_->is_convertible<T>();
+    }
 
     /** @brief Returns the type of the wrapped instance.
      *
