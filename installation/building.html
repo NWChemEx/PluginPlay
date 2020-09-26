@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building the SDE Library &mdash; sde 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Topics" href="../developer/index.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> sde
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sde</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>Building the SDE Library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installation/building.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-the-sde-library">
+<h1>Building the SDE Library<a class="headerlink" href="#building-the-sde-library" title="Permalink to this headline">¶</a></h1>
+<p>SDE is built using <a class="reference external" href="https://github.com/CMakePackagingProject/CMakePackagingProject.git">CPP</a>.
+Assuming you have already installed CPP, that you are on a sane Unix-like
+computer, and you are willing to let SDE build all dependencies, then the
+following will suffice to build SDE:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NWChemEx-Project/SDE.git
+<span class="nb">cd</span> SDE
+cmake -H. <span class="se">\</span>
+      -Bbuild <span class="se">\</span>
+      -DCPP_GITHUB_TOKEN<span class="o">=</span>&lt;your super-secret token&gt; <span class="se">\</span>
+      -DCMAKE_PREFIX_PATH<span class="o">=</span>&lt;where/you/installed/CPP&gt; <span class="se">\</span>
+      -DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;where/you/want/to/install/SDE&gt;
+<span class="nb">cd</span> build
+cmake --build .
+<span class="c1">#May need to run as an admin depending on where you are installing SDE to</span>
+cmake --build . --target install
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The GitHub token is only necessary because, at the moment, utilities is a
+private repository (instructions for generating a token are <a class="reference external" href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line">here</a>).</p>
+</div>
+<p>For finer-grained control over the build we direct the reader to the more
+thorough CPP build instructions located <a class="reference external" href="https://cmakepackagingproject.readthedocs.io/en/latest/end_user/quick_start.html">here</a> and note that SDE
+depends on several other projects:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/NWChemEx-Project/utilities">utilities</a></p></li>
+<li><p><a class="reference external" href="https://github.com/bennybp/BPHash">bphash</a></p></li>
+<li><p><a class="reference external" href="https://github.com/USCiLab/cereal">cereal</a></p></li>
+<li><p><a class="reference external" href="https://github.com/catchorg/Catch2">Catch2</a> (for testing only)</p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../developer/index.html" class="btn btn-neutral float-right" title="Developer Topics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, NWChemEx Team
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

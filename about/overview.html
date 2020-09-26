@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; sde 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../installation/index.html" />
+    <link rel="prev" title="Terminology and Conventions" href="terminology.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> sde
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">About the SDE Project</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="motivations.html">Motivations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_frameworks.html">Other Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Conventions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sde</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">About the SDE Project</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/about/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The simulation development environment, or SDE, is a software framework that was
+designed to make it as easy as possible for an end-user to fine-tune every
+aspect of a scientific simulation, in particular:</p>
+<ul class="simple">
+<li><p>change the algorithm used to compute a result,</p></li>
+<li><p>construct non-conventional workflows (<em>e.g.</em>, use a non-conventional quantity
+as an input for another algorithm),</p></li>
+<li><p>change algorithmic parameters on-the-fly</p></li>
+</ul>
+<p>At the same time the SDE also strives to allow developers to easily extend the
+software. In particular this includes:</p>
+<ul class="simple">
+<li><p>introduce a new algorithm</p></li>
+<li><p>have new algorithms be available wherever relevant</p></li>
+<li><p>leverage external libraries and algorithms</p></li>
+</ul>
+<p>Furthermore, all of the above needs to be implemented in a manner which is
+amenable to high-performance computing. Ideally the resulting framework will
+run on multiple current architectures and will be designed in such a way that
+porting it to new architectures does not require a complete rewrite. This is a
+tall order.</p>
+<p>The SDE’s solution to these design points is to rely heavily on encapsulation
+and standardization. On the encapsulation front, new algorithms are added by
+writing self-contained, functor-like objects called “modules”. Each module must
+define a <code class="docutils literal notranslate"><span class="pre">run</span></code> member, which is used by the SDE to opaquely execute the code
+inside the module. The overall program is then created by stitching modules
+together into a call tree. As defined so far, the resulting program is likely
+to experience strong inter-module coupling. This is because the API of a
+given module is going to be unique to that module. Hence if the results of
+module A sometimes go to module B and other times go to module C, there needs
+to be dispatch code to: choose which module to call, prepare the appropriate
+input, and to process the results of the call.</p>
+<p>This is where standardization comes in. When a module is called, it is called
+because it is capable of computing a result of interest. Within a typical
+domain, there is a limited number of “interesting” results and a plethora of
+means to compute them. In the language of the SDE we term these interesting
+results “properties” and require standardized APIs for each one. The classes
+that implement these APIs are called “property types”. Generally speaking a
+module will compute one, or at most a few, properties. The SDE then requires
+that the final API of the module be a superset of the APIs of each property
+type that it satisfies. This is admittedly one of the more technical points of
+the SDE and is summarized (xxx add link), but for now you can think of it as
+occurring through multiple inheritance (<em>i.e.</em>, the module inherits from each of
+the property types it satisfies). Consequentially, the final call graph is then
+assembled by double dispatch at each function call: one dispatch to determine
+the module to use, and one dispatch to determine which property type to run the
+module as.</p>
+<p>The basic ideas covered here are summarized by the following UML diagram:</p>
+<img alt="../_images/overview.png" src="../_images/overview.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../installation/index.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="terminology.html" class="btn btn-neutral float-left" title="Terminology and Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, NWChemEx Team
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

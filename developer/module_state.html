@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Understanding a Module’s State &mdash; sde 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Developer Topics" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> sde
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Understanding a Module’s State</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#property-type-state">Property Type State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developer-set-module-state">Developer-Set Module State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-set-module-state">User-Set Module State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#copied-module-state">Copied Module State</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sde</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Developer Topics</a> &raquo;</li>
+        
+      <li>Understanding a Module’s State</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developer/module_state.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="understanding-a-module-s-state">
+<h1>Understanding a Module’s State<a class="headerlink" href="#understanding-a-module-s-state" title="Permalink to this headline">¶</a></h1>
+<p>Arguably one of the largest tasks of the SDE is to manage each module’s state.
+This page describes</p>
+<div class="section" id="property-type-state">
+<h2>Property Type State<a class="headerlink" href="#property-type-state" title="Permalink to this headline">¶</a></h2>
+<p>Let’s say that a developer has defined the property type <code class="docutils literal notranslate"><span class="pre">Area</span></code> for modules
+that compute the area of shapes. The state of the <code class="docutils literal notranslate"><span class="pre">Area</span></code> property type is then
+described by the following UML state diagram:</p>
+<img alt="../_images/area_state.png" src="../_images/area_state.png" />
+<p>All property types have three main types of state:</p>
+<ul class="simple">
+<li><p>inputs: the inputs that the property depends on</p></li>
+<li><p>results: the property</p></li>
+<li><p>metadata: stuff describing the property type class itself</p></li>
+</ul>
+<p>For our <code class="docutils literal notranslate"><span class="pre">Area</span></code> property type rather, than explicitly list the actual values
+for the inputs, results, and metadata we have symbolically denoted them with the
+quantities <code class="docutils literal notranslate"><span class="pre">Area_Inputs</span></code>, <code class="docutils literal notranslate"><span class="pre">Area_Results</span></code>, and <code class="docutils literal notranslate"><span class="pre">Area_Metadata</span></code>
+respectively. These values are the same for every instance of the <code class="docutils literal notranslate"><span class="pre">Area</span></code>
+class.</p>
+</div>
+<div class="section" id="developer-set-module-state">
+<h2>Developer-Set Module State<a class="headerlink" href="#developer-set-module-state" title="Permalink to this headline">¶</a></h2>
+<p>Each module contains an algorithm, which depending on the complexity, may
+compute one or more properties. For sake of argument let’s say that a module
+developer has an algorithm that computes both the area and perimeter of a shape
+simultaneously. We’ll call the module encapsulating this algorithm “Algorithm”,
+and encode it in <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class. The following UML state diagram captures
+the state:</p>
+<img alt="../_images/developer_module_state.png" src="../_images/developer_module_state.png" />
+<p>Like each property type the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class has a set of inputs, a set of
+results, and some metadata. <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code>’s inputs/results are the union of the
+inputs/results of each property type it satisfies (here <code class="docutils literal notranslate"><span class="pre">Area</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Perimeter</span></code>) as well as any additional inputs and results that the
+<code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class takes/returns (since they are not usable from any of the
+property type APIs these additional inputs/results are assumed to be trivial
+parameters like printing thresholds). Unlike the inputs/results, the metadata
+for the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class is unique to it and <strong>not</strong> the union of the
+property types it satisfies.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class also picks up two new pieces of state relative to a
+property type: a list of callback points (stored in the <code class="docutils literal notranslate"><span class="pre">submodules</span></code> member
+and set to the collective value <code class="docutils literal notranslate"><span class="pre">Algorithm_Submodules</span></code> in the above figure)
+and the actual callable piece of code (denoted symbolically by the <code class="docutils literal notranslate"><span class="pre">run</span></code>
+member of the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class). This state will be the same for all
+instances of the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class and comprises what we term the developer’s
+default module state.</p>
+</div>
+<div class="section" id="user-set-module-state">
+<h2>User-Set Module State<a class="headerlink" href="#user-set-module-state" title="Permalink to this headline">¶</a></h2>
+<p>The final state of any module has one more layer. This is the layer that holds
+any changes to the module’s state during a run. The following UML state diagram
+describes this state:</p>
+<img alt="../_images/user_module_state.png" src="../_images/user_module_state.png" />
+<p>When a module is added to the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> it is added by a pointer to
+the module base. The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> then constructs a <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>
+instance, we’ll call that instance <code class="docutils literal notranslate"><span class="pre">pimpl1</span></code> and puts it inside a <code class="docutils literal notranslate"><span class="pre">Module</span></code>
+instance, we’ll call that instance <code class="docutils literal notranslate"><span class="pre">module1</span></code>. When the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> does
+this it deep copies the inputs and submodules into the newly created
+<code class="docutils literal notranslate"><span class="pre">module1</span></code> instance. It also stores a pointer to the original <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>
+instance from which it will read metadata and the results (it doesn’t make sense
+for the results to change as doing so implies the algorithm changed).</p>
+<p>The primes on the state of the <code class="docutils literal notranslate"><span class="pre">pimpl1</span></code> instance are meant to indicate that
+the state originates from that of <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>, but may have been changed
+by the user. This is because it is this set of state that can be manipulated by
+the user. It is this user state that is interacted with. For example when you
+call a module it is the values stored in <code class="docutils literal notranslate"><span class="pre">pimpl1</span></code> that are used, not the
+values in a given <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> instance.</p>
+</div>
+<div class="section" id="copied-module-state">
+<h2>Copied Module State<a class="headerlink" href="#copied-module-state" title="Permalink to this headline">¶</a></h2>
+<p>For clarity it is worth describing one other type of module state and that is
+state arising from copying a module. This is described in the following UML
+state diagram:</p>
+<img alt="../_images/copy_module_state.png" src="../_images/copy_module_state.png" />
+<p>For a variety of reasons a user may need a copy of a module (for example to
+change the bound parameters on a locked module, or to run the same module in a
+thread environment with different state). They do this through the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>. In the above diagram the resulting module is the instance
+<code class="docutils literal notranslate"><span class="pre">module2</span></code>, which contains a <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> instance named <code class="docutils literal notranslate"><span class="pre">pimpl2</span></code>. The
+state of <code class="docutils literal notranslate"><span class="pre">pimpl2</span></code> is denoted with two primes to symbolize that it originated
+from <code class="docutils literal notranslate"><span class="pre">pimpl1</span></code>’s state, but may have been changed by the user since the deep
+copy occurred. Of note both <code class="docutils literal notranslate"><span class="pre">module11</span></code> and <code class="docutils literal notranslate"><span class="pre">module2</span></code> contain the same
+instance of <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> (because the state of <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> is the same for
+all instances, there’s no reason for them not to).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Developer Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, NWChemEx Team
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
