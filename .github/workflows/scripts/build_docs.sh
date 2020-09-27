@@ -26,11 +26,12 @@
 #   - This script assumes Sphinx is installed via PIP into a virtual environment
 #     called "venv"
 
-set - e # Exit with error if any command fails
+set -e # Exit with error if any command fails
 
 arch="Linux-x86_64"
 cmake_command=cmake-${cmake_version}-${arch}/bin/cmake
-doc_target="${1}"
+doc_target="$1"
+
 # Step 1: Build the Doxygen documentation
 ${cmake_command} -H. -Bbuild -DBUILD_DOCS=ON -DONLY_BUILD_DOCS=ON
 ${cmake_command} --build build --target "${doc_target}"
