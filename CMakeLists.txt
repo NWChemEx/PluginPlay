@@ -16,6 +16,7 @@ option(
     ONLY_BUILD_DOCS
     "If enabled and BUILD_DOCS is true no libraries will be built" OFF
 )
+
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
 if("${BUILD_DOCS}")
@@ -61,8 +62,6 @@ cpp_add_library(
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
     DEPENDS nwx::utilities cereal bphash::bphash
 )
-
-
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
