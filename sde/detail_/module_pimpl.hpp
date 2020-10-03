@@ -464,6 +464,14 @@ public:
      *  @return True if the cache has the value and false otherwise.
      */
     bool is_cached(const type::input_map& in_inputs);
+    
+    /** @brief Resets cache.
+     *
+     *  This function will reset cache.
+     *
+     */    
+    void reset_cache();
+
 
     /** @brief Actually runs the module
      *
@@ -663,6 +671,10 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     if(!m_cache_) return false;
     auto ps = merge_inputs_(in_inputs);
     return m_cache_->count(get_hash_(ps)) == 1;
+}
+
+inline void ModulePIMPL::reset_cache(){
+    m_cache_.reset();
 }
 
 inline std::string ModulePIMPL::profile_info() const {
