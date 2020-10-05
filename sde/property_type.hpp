@@ -251,11 +251,14 @@ void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
     using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
     constexpr bool is_ref = std::is_reference_v<type>;
     static_assert(std::is_convertible_v<V, type>,
-      "Wrap argument is of incorrect type.");
+                  "Wrap argument is of incorrect type.");
 
     auto key = (builder.begin() + ArgI)->first;
-    if constexpr (is_ref){ rv.at(key).change(static_cast<type>(value)); }
-    else { rv.at(key).change(std::forward<V>(value)); }
+    if constexpr(is_ref) {
+        rv.at(key).change(static_cast<type>(value));
+    } else {
+        rv.at(key).change(std::forward<V>(value));
+    }
     if constexpr(sizeof...(Args) > 0)
         wrap_guts_<ArgI + 1>(std::forward<T>(rv), std::forward<U>(builder),
                              std::forward<Args>(args)...);

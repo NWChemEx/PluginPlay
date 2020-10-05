@@ -29,11 +29,20 @@
 #                               Internal Functions                             #
 ################################################################################
 
+# Wraps getting Boost
+#
+# Usage:
+#   get_boost
 get_boost() {
   sudo apt update
   sudo apt-get install libboost-all-dev
 }
 
+# Wraps getting CBLAS
+#
+# Usage:
+#   get_cblas
+# TODO: Should the libgsl be made into it's own function?
 get_cblas() {
   sudo apt update
   sudo apt-get install libgslcblas0 libgsl-dev
@@ -71,6 +80,10 @@ get_doxygen() {
   sudo apt-get install -f doxygen
 }
 
+# Wraps installing Eigen3
+#
+# Usage:
+#   get_eigen3
 get_eigen3() {
   sudo apt update
   sudo apt-get install libeigen3-dev
@@ -95,10 +108,10 @@ get_gcc() {
   sudo add-apt-repository ppa:ubuntu-toolchain-r/test
   sudo apt-get update
   sudo apt-get install "gcc-${1}" "g++-${1}" "gfortran-${1}"
-  sudo update-alternatives --install ${gcc_no_v} gcc ${gcc_v} 95 --slave\
-                                     ${gxx_no_v} g++ ${gxx_v} --slave\
-                                     ${gfort_no_v} gfortran ${gfort_v} --slave\
-                                     ${gcov_no_v} gcov ${gcov_v}
+  sudo update-alternatives --install "${gcc_no_v}" gcc "${gcc_v}" 95 \
+                           --slave "${gxx_no_v}" g++ "${gxx_v}" \
+                           --slave "${gfort_no_v}" gfortran "${gfort_v}" \
+                           --slave "${gcov_no_v}" gcov "${gcov_v}"
 }
 
 # Wraps installing gcovr
@@ -109,19 +122,43 @@ get_gcovr() {
   pip install gcovr
 }
 
+# Wraps installing LAPACKe
+#
+# Usage:
+#   get_lapacke
+# TODO: Does this need synchronized with the version of BLAS being installed?
 get_lapacke() {
   sudo apt update
   sudo apt-get install liblapacke liblapacke-dev
 }
 
+# Wraps installing OpenBLAS
+#
+# Usage:
+#   get_openblas
 get_openblas() {
   sudo apt update
   sudo apt-get install libopenblas-base libopenblas-dev
 }
 
+# Wraps installing OpenMPI
+#
+# Usage:
+#   get_openmpi
 get_openmpi() {
   sudo apt update
   sudo apt-get install openmpi-bin libopenmpi-dev
+}
+
+# Wraps installing ScaLAPACK
+#
+# Usage:
+#   get_scalapack
+#
+# TODO: We probably need to take the MPI distro into account
+get_scalapack() {
+  sudo apt update
+  sudo apt-get install libscalapack-openmpi-dev
 }
 
 # Wraps installing Sphinx and the ReadTheDocs Theme
@@ -168,6 +205,8 @@ for depend in "$@"; do
     get_openblas
   elif [ "${depend}" = "openmpi" ]; then
     get_openmpi
+  elif [ "${depend}" = "scalapack" ]; then
+    get_scalapack
   elif [ "${depend}" = "sphinx" ]; then
     get_sphinx
   else

@@ -21,20 +21,34 @@
 set -e # Exit with error if any command fails
 
 arch=Linux-x86_64
-cmake_root=`pwd`/cmake-${cmake_version}-${arch}
+cmake_root=$(pwd)/cmake-"${cmake_version}"-"${arch}"
 cmake_command="${cmake_root}/bin/cmake"
 ctest_command="${cmake_root}/bin/ctest"
-toolchain_file=`pwd`/toolchain.cmake
+toolchain_file=$(pwd)/toolchain.cmake
 
 #Step 1: Write toolchain.cmake
-echo "set(BUILD_TESTING ON)" > ${toolchain_file}
-echo "set(BUILD_SHARED_LIBS ON)" >> ${toolchain_file}
-echo "set(CATCH_ENABLE_COVERAGE ON)" >> ${toolchain_file}
-echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -std=c++17")' >> ${toolchain_file}
-echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")' >> ${toolchain_file}
-echo 'set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs")' >> ${toolchain_file}
-echo "set(CPP_GITHUB_TOKEN ${CPP_GITHUB_TOKEN})" >> ${toolchain_file}
-echo 'set(CMAKE_BUILD_TYPE Debug)' >> ${toolchain_file}
+# TODO: Do we really need all this? I Just took what was in all the old files
+#       and combined it here.
+echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
+{
+  echo "set(CMAKE_CXX_STANDARD 17)"
+  echo 'set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)'
+  echo "set(BUILD_SHARED_LIBS ON)"
+  echo "set(CATCH_ENABLE_COVERAGE ON)"
+  echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -std=c++17")'
+  echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOMPI_SKIP_MPICXX")'
+  echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")'
+  echo 'set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs")'
+  echo "set(CPP_GITHUB_TOKEN ${CPP_GITHUB_TOKEN})"
+  echo 'set(CMAKE_BUILD_TYPE Debug)'
+  echo 'set(ENABLE_SCALAPACK ON)'
+  echo 'set(LIBDIR "/usr/lib/x86_64-linux-gnu")'
+  echo 'set(LAPACK_LIBRARIES "-L${LIBDIR} -lblas -llapack")'
+  echo 'set(SCALAPACK_LIBRARIES  "-L${LIBDIR} -lscalapack-openmpi")'
+  echo 'set(blacs_LIBRARIES ${SCALAPACK_LIBRARIES})'
+  echo 'set(scalapack_LIBRARIES ${SCALAPACK_LIBRARIES})'
+  echo 'set(lapack_LIBRARIES ${LAPACK_LIBRARIES})'
+} >> "${toolchain_file}"
 
 #Step 2: Configure
 ${cmake_command} -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE="${toolchain_file}"
@@ -48,7 +62,9 @@ ${ctest_command} -VV
 cd ..
 
 #Step 5: Generate coverage report
-curr_dir=`pwd`
+curr_dir=$(pwd)
 cd ..
-gcovr --root ${curr_dir} --filter ${curr_dir} --exclude ${curr_dir}/tests \
-      --xml ${curr_dir}/coverage.xml
+gcovr --root "${curr_dir}" \
+      --filter "${curr_dir}" \
+      --exclude "${curr_dir}"/tests \
+      --xml "${curr_dir}"/coverage.xml

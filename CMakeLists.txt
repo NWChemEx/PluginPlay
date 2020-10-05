@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
-project(sde VERSION 1.0.0)
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
+project(sde VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
@@ -10,7 +11,23 @@ include(get_cpp)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
+option(BUILD_DOCS "Should we build the documentation?" OFF)
+option(
+    ONLY_BUILD_DOCS
+    "If enabled and BUILD_DOCS is true no libraries will be built" OFF
+)
+
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+
+if("${BUILD_DOCS}")
+    find_package(Doxygen REQUIRED)
+    set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
+    doxygen_add_docs(sde_cxx_api "${CMAKE_CURRENT_LIST_DIR}/sde")
+    if("${ONLY_BUILD_DOCS}")
+        return()
+    endif()
+endif()
+
 
 cpp_find_or_build_dependency(
         utilities
