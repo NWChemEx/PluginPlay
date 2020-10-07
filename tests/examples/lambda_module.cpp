@@ -142,6 +142,35 @@ TEST_CASE("How to use a lambda module") {
         assert(std::abs(volume - 9.0) < 1.0E-10);
     }
 
+    // Below we show how memoization could result in a wrong result
+    // if we enable it for lamdda modules used as submodules.
+    // Note that, by default memoization is disabled for lambda_modules,
+    // so we shoot our leg here by enabling it.
+    {
+        auto mod = mm.at("Prism");
+        auto l = sde::make_lambda<Area>([&](double, double) { return 3.0; });
+        auto l2 = sde::make_lambda<Area>([&](double, double) { return 2.0; });
+        assert(mod.is_memoizable());      
+        assert(!l.is_memoizable());
+        assert(!l2.is_memoizable());
+        l.turn_on_memoization(); 
+        l2.turn_on_memoization();
+        assert(l.is_memoizable());
+        assert(l2.is_memoizable());
+        mod.change_submod("area", std::move(l));
+        std::vector<double> dims{1.0, 2.0, 3.0}; 
+        auto[area, volume] = mod.run_as<PrismVolume>(dims);
+        assert(std::abs(area - 3.0) < 1.0E-10);
+        assert(std::abs(volume - 9.0) < 1.0E-10);
+        
+        auto mod2 = mod.unlocked_copy();
+        assert(mod2.is_memoizable());       
+        mod2.change_submod("area", std::move(l2));
+        auto[area2, volume2] = mod2.run_as<PrismVolume>(dims);
+        assert(area2 == area); // Wrong result
+        assert(volume2 == volume); // Wrong result
+    }
+
     // TUTORIAL_START_SKIP
 }
 // TUTORIAL_STOP_SKIP

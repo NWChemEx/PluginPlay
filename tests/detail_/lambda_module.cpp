@@ -24,3 +24,10 @@ TEST_CASE("LambdaModule : multiple returns") {
     REQUIRE(i == 2);
     REQUIRE(c == 'b');
 }
+
+TEST_CASE("LambdaModule : is_memoizable") {
+    auto l = sde::make_lambda<testing::OneOut>([]() { return 2; });
+    REQUIRE_FALSE(l.is_memoizable());
+    l.turn_on_memoization();
+    REQUIRE(l.is_memoizable());
+}

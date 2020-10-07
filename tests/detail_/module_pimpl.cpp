@@ -305,6 +305,20 @@ TEST_CASE("ModulePIMPL : is_cached") {
     }
 }
 
+TEST_CASE("ModulePIMPL : is_memoizable") {
+    SECTION("memoizable") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.is_memoizable());
+    }
+    SECTION("turn off/on memoization") {
+        auto mod = make_module_pimpl<NullModule>();
+        mod.turn_off_memoization();
+        REQUIRE_FALSE(mod.is_memoizable());
+        mod.turn_on_memoization();
+        REQUIRE(mod.is_memoizable());
+    }
+}
+
 TEST_CASE("ModulePIMPL : run") {
     SECTION("Throws if no implementation") {
         ModulePIMPL p;
