@@ -472,6 +472,37 @@ public:
      */    
     void reset_cache();
 
+    /** @brief Is the module memoizable?
+     *
+     *  Some modules (lambda_modules or modules that have nondetermenistic 
+     *  results) should not be memoized.
+     *
+     *  @return true if the module is memoizable, false otherwise.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_memoizable() const;
+    
+    /** @brief Turn of memoization for this module
+     *
+     *  This function will disable memoization for this module. Note that 
+     *  memoization is on for all modules except lambda_modules by default.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */    
+    void turn_off_memoization();
+
+    /** @brief Turn of memoization for this module
+     *
+     *  This function will enable memoization for this module. Note that 
+     *  memoization is on for all modules except lambda_modules by default.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */    
+    void turn_on_memoization();
 
     /** @brief Actually runs the module
      *
@@ -556,6 +587,9 @@ private:
 
     /// Is the current module locked or not?
     bool m_locked_ = false;
+
+    /// Is the current module memoizable?
+    bool m_memoizable_ = true;
 
     /// The object actually implementing the algorithm
     base_ptr m_base_;
@@ -658,6 +692,11 @@ inline auto& ModulePIMPL::citations() const {
     return m_base_->citations();
 }
 
+inline bool ModulePIMPL::is_memoizable() const {
+    assert_mod_();
+    return m_memoizable_;
+}
+
 inline void ModulePIMPL::memoize(type::hasher& h,
                                  type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
@@ -675,6 +714,16 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
 
 inline void ModulePIMPL::reset_cache(){
     m_cache_.reset();
+}
+
+inline void ModulePIMPL::turn_off_memoization(){
+    assert_mod_();
+    m_memoizable_ = false;
+}
+
+inline void ModulePIMPL::turn_on_memoization(){
+    assert_mod_();
+    m_memoizable_ = true;
 }
 
 inline std::string ModulePIMPL::profile_info() const {
@@ -708,14 +757,15 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(m_cache_ && m_cache_->count(hv)) {
+
+    if(m_memoizable_ && m_cache_ && m_cache_->count(hv)) {
         m_timer_.record(time_now);
         return m_cache_->at(hv);
     }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(!m_cache_) {
+    if(!m_cache_ || !m_memoizable_) {
         m_timer_.record(time_now);
         return rv;
     }

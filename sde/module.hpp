@@ -282,6 +282,35 @@ public:
      */
     bool ready(const type::input_map& inps = type::input_map{}) const;
 
+    /** @brief Is the module memoizable?
+     *
+     *  Some modules (lambda_modules or modules that have nondetermenistic 
+     *  results) should not be memoized.
+     *
+     *  @return true if the module is memoizable, false otherwise.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_memoizable() const;
+
+    /** @brief Turns off memoization for this module
+     *
+     * Memoization is on for all modules except lambda_modules by default. 
+     * This function turns off memoization so that results will not be cached. 
+     * Can be used for modules with nondeterministic results, or lambda_modules.
+     * 
+     */
+    void turn_off_memoization();
+
+    /** @brief Turns on memoization for this module
+     *
+     * Memoization is on for all modules except lambda_modules by default. 
+     * So, this function might be rarely required, but implemented for completeness.
+     * 
+     */
+    void turn_on_memoization();
+    
     /** @brief Locks the module and all submodules
      *
      *  A locked module can no longer have its inputs or submodules modified.
