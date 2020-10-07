@@ -282,6 +282,15 @@ public:
      */
     bool ready(const type::input_map& inps = type::input_map{}) const;
 
+    /** @brief Resets cache.
+     *
+     *  This function will reset cache.
+     *  Note that, this will result in losing all the data
+     *  (for all instances of this module) stored in the cache.
+     *
+     */    
+    void reset_cache();
+
     /** @brief Is the module memoizable?
      *
      *  Some modules (lambda_modules or modules that have nondetermenistic 
@@ -310,7 +319,7 @@ public:
      * 
      */
     void turn_on_memoization();
-    
+
     /** @brief Locks the module and all submodules
      *
      *  A locked module can no longer have its inputs or submodules modified.
