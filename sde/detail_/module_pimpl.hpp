@@ -761,14 +761,14 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     // Check cache
     auto hv = get_hash_(ps);
 
-    if(m_memoizable_ && m_cache_ && m_cache_->count(hv)) {
+    if(is_memoizable() && m_cache_ && m_cache_->count(hv)) {
         m_timer_.record(time_now);
         return m_cache_->at(hv);
     }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(!m_cache_ || !m_memoizable_) {
+    if(!m_cache_ || !is_memoizable()) {
         m_timer_.record(time_now);
         return rv;
     }
