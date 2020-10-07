@@ -285,7 +285,8 @@ public:
     /** @brief Resets cache.
      *
      *  This function will reset cache.
-     *  Note that, this will result in losing all the data
+     * 
+     *  @warning This will result in losing all the data
      *  (for all instances of this module) stored in the cache.
      *
      */    
