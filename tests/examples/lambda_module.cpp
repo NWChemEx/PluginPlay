@@ -169,6 +169,17 @@ TEST_CASE("How to use a lambda module") {
         auto[area2, volume2] = mod2.run_as<PrismVolume>(dims);
         assert(area2 == area); // Wrong result
         assert(volume2 == volume); // Wrong result
+
+        // One way (not a good one) to avoid getting the wrong value
+        // from the cache is to reset the cache to force a recalculation.
+        // Note that, this is not suggested as this will result in losing 
+        // all the data in the cache!
+        auto mod3 = mod2.unlocked_copy();
+        assert(mod3.is_memoizable());       
+        mod3.reset_cache();
+        auto[area3, volume3] = mod3.run_as<PrismVolume>(dims);
+        assert(std::abs(area3 - 2.0) < 1.0E-10); // Right result
+        assert(std::abs(volume3 - 6.0) < 1.0E-10); // Right result
     }
 
     // TUTORIAL_START_SKIP
