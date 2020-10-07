@@ -468,6 +468,8 @@ public:
     /** @brief Resets cache.
      *
      *  This function will reset cache.
+     *  Note that, this will result in losing all the data
+     *  (for all instances of this module) stored in the cache.
      *
      */    
     void reset_cache();
@@ -483,7 +485,7 @@ public:
      *                            implementation. Strong throw guarantee.
      */
     bool is_memoizable() const;
-    
+
     /** @brief Turn of memoization for this module
      *
      *  This function will disable memoization for this module. Note that 
