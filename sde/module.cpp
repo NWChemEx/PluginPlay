@@ -59,7 +59,6 @@ void Module::lock() { m_pimpl_->lock(); }
 
 void Module::change_submod(type::key key, std::shared_ptr<Module> new_module) {
     assert_not_locked_();
-    if (!new_module.get()->is_memoizable()) m_pimpl_->turn_off_memoization();
     m_pimpl_->submods().at(key).change(new_module);
 }
 

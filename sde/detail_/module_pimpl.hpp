@@ -697,7 +697,11 @@ inline auto& ModulePIMPL::citations() const {
 
 inline bool ModulePIMPL::is_memoizable() const {
     assert_mod_();
-    return m_memoizable_;
+    auto memoizable = m_memoizable_;
+    for(const auto& [k, v] : m_submods_){
+        memoizable = v.value().is_memoizable() && memoizable;
+    }
+    return memoizable;
 }
 
 inline void ModulePIMPL::memoize(type::hasher& h,
