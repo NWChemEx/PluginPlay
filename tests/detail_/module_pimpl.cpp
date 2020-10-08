@@ -317,6 +317,19 @@ TEST_CASE("ModulePIMPL : is_memoizable") {
         mod.turn_on_memoization();
         REQUIRE(mod.is_memoizable());
     }
+    SECTION("Submodules"){
+        auto mod  = make_module<SubModModule>();
+        auto mod2 = make_module<NullModule>();
+        auto mod3 = make_module<NullModule>();
+        REQUIRE(mod2.get()->is_memoizable());
+        REQUIRE(mod3.get()->is_memoizable());
+        mod3.get()->turn_off_memoization();
+        REQUIRE_FALSE(mod3.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1",mod3);
+        REQUIRE_FALSE(mod.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1",mod2);
+        REQUIRE(mod.get()->is_memoizable());
+    }
 }
 
 TEST_CASE("ModulePIMPL : run") {
