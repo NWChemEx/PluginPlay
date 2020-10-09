@@ -103,7 +103,7 @@ public:
      *  @throw ??? If the user-provided callback throws. Same guarantee.
      */
     result_map run_(input_map inputs, submodule_map submods) const override;
-    
+
 private:
     /** @brief Unpacks the tuple of returns into PropertyType::wrap_results
      *
@@ -213,7 +213,7 @@ auto LAMBDA_MOD_TYPE::wrap_results_(T&& rvs, std::index_sequence<Is...>) {
 template<typename PropertyType, typename FxnType>
 auto make_lambda(FxnType&& fxn) {
     using lambda_type = detail_::LambdaModule<PropertyType>;
-    auto l = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
+    auto l  = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
     auto lm = Module(std::move(l));
     lm.turn_off_memoization();
     return lm;

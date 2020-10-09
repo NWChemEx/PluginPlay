@@ -1,7 +1,7 @@
 #pragma once
 #include "sde/detail_/field_tuple_traits.hpp"
 #include <functional>
-#include <stdexcept> 
+#include <stdexcept>
 
 namespace sde {
 class ModuleInput;

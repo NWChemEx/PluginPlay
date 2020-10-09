@@ -250,4 +250,3 @@ TEST_CASE("SubmoduleRequestPIMPL : comparisons") {
     }
 }
 
-

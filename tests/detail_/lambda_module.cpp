@@ -20,7 +20,7 @@ TEST_CASE("LambdaModule : single return") {
 TEST_CASE("LambdaModule : multiple returns") {
     auto l = sde::make_lambda<testing::TwoOut>(
       []() { return std::make_tuple(2, 'b'); });
-    auto[i, c] = l.run_as<testing::TwoOut>();
+    auto [i, c] = l.run_as<testing::TwoOut>();
     REQUIRE(i == 2);
     REQUIRE(c == 'b');
 }

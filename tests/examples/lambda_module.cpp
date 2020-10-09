@@ -119,7 +119,7 @@ TEST_CASE("How to use a lambda module") {
         // Run the Prism submodule (note first two elemenst are base's
         // dimensions)
         std::vector<double> dims{1.0, 2.0, 3.0};
-        auto[area, volume] = volume_mod.run_as<PrismVolume>(dims);
+        auto [area, volume] = volume_mod.run_as<PrismVolume>(dims);
         assert(std::abs(volume - 3.0) < 1.0E-10);
     }
 
@@ -138,7 +138,7 @@ TEST_CASE("How to use a lambda module") {
         volume_mod2.change_submod("area", std::move(l));
         std::vector<double> dims{1.0, 2.0,
                                  3.0}; // First two elements are not used
-        auto[area, volume] = volume_mod2.run_as<PrismVolume>(dims);
+        auto [area, volume] = volume_mod2.run_as<PrismVolume>(dims);
         assert(std::abs(volume - 9.0) < 1.0E-10);
     }
 
@@ -148,37 +148,37 @@ TEST_CASE("How to use a lambda module") {
     // so we shoot our leg here by enabling it.
     {
         auto mod = mm.at("Prism");
-        auto l = sde::make_lambda<Area>([&](double, double) { return 3.0; });
-        auto l2 = sde::make_lambda<Area>([&](double, double) { return 2.0; });
-        assert(mod.is_memoizable());      
+        auto l   = sde::make_lambda<Area>([&](double, double) { return 3.0; });
+        auto l2  = sde::make_lambda<Area>([&](double, double) { return 2.0; });
+        assert(mod.is_memoizable());
         assert(!l.is_memoizable());
         assert(!l2.is_memoizable());
-        l.turn_on_memoization(); 
+        l.turn_on_memoization();
         l2.turn_on_memoization();
         assert(l.is_memoizable());
         assert(l2.is_memoizable());
         mod.change_submod("area", std::move(l));
-        std::vector<double> dims{1.0, 2.0, 3.0}; 
-        auto[area, volume] = mod.run_as<PrismVolume>(dims);
+        std::vector<double> dims{1.0, 2.0, 3.0};
+        auto [area, volume] = mod.run_as<PrismVolume>(dims);
         assert(std::abs(area - 3.0) < 1.0E-10);
         assert(std::abs(volume - 9.0) < 1.0E-10);
-        
+
         auto mod2 = mod.unlocked_copy();
-        assert(mod2.is_memoizable());       
+        assert(mod2.is_memoizable());
         mod2.change_submod("area", std::move(l2));
-        auto[area2, volume2] = mod2.run_as<PrismVolume>(dims);
-        assert(area2 == area); // Wrong result
+        auto [area2, volume2] = mod2.run_as<PrismVolume>(dims);
+        assert(area2 == area);     // Wrong result
         assert(volume2 == volume); // Wrong result
 
         // One way (not a good one) to avoid getting the wrong value
         // from the cache is to reset the cache to force a recalculation.
-        // Note that, this is not suggested as this will result in losing 
+        // Note that, this is not suggested as this will result in losing
         // all the data in the cache!
         auto mod3 = mod2.unlocked_copy();
-        assert(mod3.is_memoizable());       
+        assert(mod3.is_memoizable());
         mod3.reset_cache();
-        auto[area3, volume3] = mod3.run_as<PrismVolume>(dims);
-        assert(std::abs(area3 - 2.0) < 1.0E-10); // Right result
+        auto [area3, volume3] = mod3.run_as<PrismVolume>(dims);
+        assert(std::abs(area3 - 2.0) < 1.0E-10);   // Right result
         assert(std::abs(volume3 - 6.0) < 1.0E-10); // Right result
     }
 

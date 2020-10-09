@@ -285,19 +285,19 @@ public:
     /** @brief Resets cache.
      *
      *  This function will reset cache.
-     * 
+     *
      *  @warning This will result in losing all the data
      *  (for all instances of this module) stored in the cache.
      *
-     */    
+     */
     void reset_cache();
 
     /** @brief Is the module memoizable?
      *
-     *  Some modules (lambda_modules or modules that have nondetermenistic 
+     *  Some modules (lambda_modules or modules that have nondetermenistic
      *  results) should not be memoized.
      *
-     *  @return true if the module is memoizable, false otherwise.
+     *  @return true if the module is memoizable,false otherwise.
      *
      *  @throw std::runtime_error if the current module does not have an
      *                            implementation. Strong throw guarantee.
@@ -306,18 +306,19 @@ public:
 
     /** @brief Turns off memoization for this module
      *
-     * Memoization is on for all modules except lambda_modules by default. 
-     * This function turns off memoization so that results will not be cached. 
+     * Memoization is on for all modules except lambda_modules by default.
+     * This function turns off memoization so that results will not be cached.
      * Can be used for modules with nondeterministic results, or lambda_modules.
-     * 
+     *
      */
     void turn_off_memoization();
 
     /** @brief Turns on memoization for this module
      *
-     * Memoization is on for all modules except lambda_modules by default. 
-     * So, this function might be rarely required, but implemented for completeness.
-     * 
+     * Memoization is on for all modules except lambda_modules by default.
+     * So, this function might be rarely required, but implemented for
+     * completeness.
+     *
      */
     void turn_on_memoization();
 

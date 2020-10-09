@@ -14,7 +14,7 @@ using not_set_t = typename ModulePIMPL::not_set_type;
  * value). Thus this unit test simply ensures that the resulting string has the
  * correct format via regex.
  */
-TEST_CASE("time_stamp"){
+TEST_CASE("time_stamp") {
     auto rv = time_stamp();
     std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d$");
     REQUIRE(std::regex_search(rv, corr));
@@ -317,7 +317,7 @@ TEST_CASE("ModulePIMPL : is_memoizable") {
         mod.turn_on_memoization();
         REQUIRE(mod.is_memoizable());
     }
-    SECTION("Submodules"){
+    SECTION("Submodules") {
         auto mod  = make_module<SubModModule>();
         auto mod2 = make_module<NullModule>();
         auto mod3 = make_module<NullModule>();
@@ -325,9 +325,9 @@ TEST_CASE("ModulePIMPL : is_memoizable") {
         REQUIRE(mod3.get()->is_memoizable());
         mod3.get()->turn_off_memoization();
         REQUIRE_FALSE(mod3.get()->is_memoizable());
-        mod.get()->change_submod("Submodule 1",mod3);
+        mod.get()->change_submod("Submodule 1", mod3);
         REQUIRE_FALSE(mod.get()->is_memoizable());
-        mod.get()->change_submod("Submodule 1",mod2);
+        mod.get()->change_submod("Submodule 1", mod2);
         REQUIRE(mod.get()->is_memoizable());
     }
 }

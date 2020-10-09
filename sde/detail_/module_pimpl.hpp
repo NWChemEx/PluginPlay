@@ -464,20 +464,20 @@ public:
      *  @return True if the cache has the value and false otherwise.
      */
     bool is_cached(const type::input_map& in_inputs);
-    
+
     /** @brief Resets cache.
      *
      *  This function will reset cache.
-     *  
+     *
      *  @warning This will result in losing all the data
      *  (for all instances of this module) stored in the cache.
      *
-     */    
+     */
     void reset_cache();
 
     /** @brief Is the module memoizable?
      *
-     *  Some modules (lambda_modules or modules that have nondetermenistic 
+     *  Some modules (lambda_modules or modules that have nondetermenistic
      *  results) should not be memoized.
      *
      *  @return true if the module is memoizable, false otherwise.
@@ -489,22 +489,22 @@ public:
 
     /** @brief Turn of memoization for this module
      *
-     *  This function will disable memoization for this module. Note that 
+     *  This function will disable memoization for this module. Note that
      *  memoization is on for all modules except lambda_modules by default.
      *
      *  @throw std::runtime_error if the current module does not have an
      *                            implementation. Strong throw guarantee.
-     */    
+     */
     void turn_off_memoization();
 
     /** @brief Turn of memoization for this module
      *
-     *  This function will enable memoization for this module. Note that 
+     *  This function will enable memoization for this module. Note that
      *  memoization is on for all modules except lambda_modules by default.
      *
      *  @throw std::runtime_error if the current module does not have an
      *                            implementation. Strong throw guarantee.
-     */    
+     */
     void turn_on_memoization();
 
     /** @brief Actually runs the module
@@ -698,7 +698,7 @@ inline auto& ModulePIMPL::citations() const {
 inline bool ModulePIMPL::is_memoizable() const {
     assert_mod_();
     auto memoizable = m_memoizable_;
-    for(const auto& [k, v] : m_submods_){
+    for(const auto& [k, v] : m_submods_) {
         memoizable = v.value().is_memoizable() && memoizable;
     }
     return memoizable;
@@ -719,16 +719,14 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
-inline void ModulePIMPL::reset_cache(){
-    m_cache_.reset();
-}
+inline void ModulePIMPL::reset_cache() { m_cache_.reset(); }
 
-inline void ModulePIMPL::turn_off_memoization(){
+inline void ModulePIMPL::turn_off_memoization() {
     assert_mod_();
     m_memoizable_ = false;
 }
 
-inline void ModulePIMPL::turn_on_memoization(){
+inline void ModulePIMPL::turn_on_memoization() {
     assert_mod_();
     m_memoizable_ = true;
 }
