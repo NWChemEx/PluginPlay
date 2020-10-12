@@ -285,16 +285,12 @@ TEST_CASE("ModulePIMPL : profile_info") {
 }
 
 TEST_CASE("ModulePIMPL : hash") {
-    SECTION("Inputs not set") {
-        auto mod = make_module_pimpl<NotReadyModule>();
-        //        REQUIRE(hash_objects(mod) ==
-        //        "cbc357ccb763df2852fee8c4fc7d55f2");
-    }
-    SECTION("Input set") {
-        auto mod = make_module_pimpl<NotReadyModule>();
-        mod.inputs().at("Option 1").change(3);
-        //        REQUIRE(hash_objects(mod) ==
-        //        "9a4294b64e60cc012c5ed48db4cd9c48");
+    SECTION("Inputs set vs not set") {
+        auto mod1 = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        REQUIRE(hash_objects(mod1) == hash_objects(mod2));
+        mod1.inputs().at("Option 1").change(3);
+        REQUIRE_FALSE(hash_objects(mod1) == hash_objects(mod2));
     }
 }
 

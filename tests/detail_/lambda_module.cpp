@@ -31,3 +31,9 @@ TEST_CASE("LambdaModule : is_memoizable") {
     l.turn_on_memoization();
     REQUIRE(l.is_memoizable());
 }
+
+TEST_CASE("LambdaModule : same hash for different lambdas") {
+    auto l1 = sde::make_lambda<testing::OneOut>([]() { return 1; });
+    auto l2 = sde::make_lambda<testing::OneOut>([]() { return 2; });
+    REQUIRE(sde::hash_objects(l1)==sde::hash_objects(l2));
+}
