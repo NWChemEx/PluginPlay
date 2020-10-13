@@ -8,9 +8,7 @@ namespace testing {
 
 struct BaseClass {
     int x = 0;
-    bool operator==(const BaseClass& rhs) const noexcept {
-        return x == rhs.x;
-    }
+    bool operator==(const BaseClass& rhs) const noexcept { return x == rhs.x; }
     void hash(sde::Hasher& h) const { return h(x); }
 };
 
@@ -30,7 +28,9 @@ PROPERTY_TYPE_RESULTS(OneIn) { return sde::declare_result(); }
 
 // Property type for module with a defaulted option
 struct OptionalInput : sde::PropertyType<OptionalInput> {
-    auto inputs_() { return sde::declare_input().add_field<int>("Option 1", 1); }
+    auto inputs_() {
+        return sde::declare_input().add_field<int>("Option 1", 1);
+    }
     auto results_() { return sde::declare_result().add_field<int>("Result 1"); }
 };
 
@@ -103,13 +103,13 @@ inline MODULE_RUN(NotReadyModule, , ) { return results(); }
 
 // A module with a defaulted int option
 struct ReadyModule : sde::ModuleBase {
-    ReadyModule(): sde::ModuleBase(this) {
+    ReadyModule() : sde::ModuleBase(this) {
         satisfies_property_type<OptionalInput>();
     }
     sde::type::result_map run_(sde::type::input_map inputs,
                                sde::type::submodule_map) const override {
         auto [opt1] = OptionalInput::unwrap_inputs(inputs);
-        auto rv = results();
+        auto rv     = results();
         return OptionalInput::wrap_results(rv, opt1);
     }
 };
@@ -155,13 +155,33 @@ inline MODULE_CTOR(RealDeal) {
     citation("B. Person. *A So-So Article*. A Journal Everyone Has Heard"
              "Of. 1 (2009).");
 }
-inline MODULE_RUN(RealDeal, , ) { return results(); }
+inline MODULE_RUN(RealDeal, , ) {
+    auto rv = results();
+    return OneOut::wrap_results(rv, int{4});
+}
 
 // Wraps the creation of a module pimpl w/o going through a module manager
 template<typename T>
 auto make_module_pimpl() {
     auto ptr = std::make_shared<T>();
     return sde::detail_::ModulePIMPL(ptr);
+}
+
+// Wraps the creation of a module pimpl (with cache enabled) w/o going through a
+// module manager
+template<typename T>
+auto make_module_pimpl_with_cache() {
+    auto ptr = std::make_shared<T>();
+    /// Type of a cache
+    using cache_type = typename sde::detail_::ModulePIMPL::cache_type;
+    /// Type of a shared cache
+    using shared_cache = std::shared_ptr<cache_type>;
+    /// Type of a map holding caches
+    using cache_map = std::map<std::type_index, shared_cache>;
+    cache_map m_caches;
+    std::type_index type(ptr->type());
+    m_caches[type] = std::make_shared<cache_type>();
+    return sde::detail_::ModulePIMPL(ptr, m_caches[type]);
 }
 
 // Wraps the creation of a module w/o going through a module manager
