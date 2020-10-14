@@ -32,8 +32,10 @@ TEST_CASE("LambdaModule : is_memoizable") {
     REQUIRE(l.is_memoizable());
 }
 
+// Once uniques hashes are available for lambda modules this unit test should be
+// modified to require false for the hash comparison.
 TEST_CASE("LambdaModule : same hash for different lambdas") {
     auto l1 = sde::make_lambda<testing::OneOut>([]() { return 1; });
     auto l2 = sde::make_lambda<testing::OneOut>([]() { return 2; });
-    REQUIRE(sde::hash_objects(l1)==sde::hash_objects(l2));
+    REQUIRE(sde::hash_objects(l1) == sde::hash_objects(l2));
 }

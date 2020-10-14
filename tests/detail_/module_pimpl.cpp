@@ -292,6 +292,7 @@ TEST_CASE("ModulePIMPL : hash") {
         mod1.inputs().at("Option 1").change(3);
         REQUIRE_FALSE(hash_objects(mod1) == hash_objects(mod2));
     }
+
     SECTION("hash") {
         auto mod = make_module_pimpl<NotReadyModule>();
         type::hasher h(bphash::HashType::Hash128);
@@ -306,6 +307,7 @@ TEST_CASE("ModulePIMPL : is_cached") {
         auto mod = make_module_pimpl<NullModule>();
         REQUIRE_FALSE(mod.is_cached(type::input_map{}));
     }
+
     SECTION("With cache") {
         auto mod = make_module_pimpl_with_cache<RealDeal>();
         auto in  = mod.inputs();
@@ -321,25 +323,31 @@ TEST_CASE("ModulePIMPL : is_memoizable") {
     SECTION("memoizable") {
         auto mod = make_module_pimpl<NullModule>();
         REQUIRE(mod.is_memoizable());
+        auto mod2 = make_module_pimpl_with_cache<NullModule>();
+        REQUIRE(mod2.is_memoizable());
     }
     SECTION("turn off/on memoization") {
-        auto mod = make_module_pimpl<NullModule>();
+        auto mod = make_module_pimpl_with_cache<NullModule>();
         mod.turn_off_memoization();
         REQUIRE_FALSE(mod.is_memoizable());
         mod.turn_on_memoization();
         REQUIRE(mod.is_memoizable());
     }
     SECTION("Submodules") {
-        auto mod  = make_module<SubModModule>();
-        auto mod2 = make_module<NullModule>();
-        auto mod3 = make_module<NullModule>();
+        auto mod  = make_module_with_cache<SubModModule>();
+        auto mod2 = make_module_with_cache<NullModule>();
+        auto mod3 = make_module_with_cache<NullModule>();
+        auto mod4 = make_module<NullModule>();
         REQUIRE(mod2.get()->is_memoizable());
         REQUIRE(mod3.get()->is_memoizable());
+        REQUIRE(mod4.get()->is_memoizable());
         mod3.get()->turn_off_memoization();
         REQUIRE_FALSE(mod3.get()->is_memoizable());
         mod.get()->change_submod("Submodule 1", mod3);
         REQUIRE_FALSE(mod.get()->is_memoizable());
         mod.get()->change_submod("Submodule 1", mod2);
+        REQUIRE(mod.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1", mod4);
         REQUIRE(mod.get()->is_memoizable());
     }
 }

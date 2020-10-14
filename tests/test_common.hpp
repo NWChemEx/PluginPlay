@@ -167,7 +167,7 @@ auto make_module_pimpl() {
     return sde::detail_::ModulePIMPL(ptr);
 }
 
-// Wraps the creation of a module pimpl (with cache enabled) w/o going through a
+// Wraps the creation of a module pimpl (with a cache) w/o going through a
 // module manager
 template<typename T>
 auto make_module_pimpl_with_cache() {
@@ -189,6 +189,15 @@ template<typename T>
 auto make_module() {
     return std::make_shared<sde::Module>(
       std::make_unique<sde::detail_::ModulePIMPL>(make_module_pimpl<T>()));
+}
+
+// Wraps the creation of a module (with a cache) w/o going through a module
+// manager
+template<typename T>
+auto make_module_with_cache() {
+    return std::make_shared<sde::Module>(
+      std::make_unique<sde::detail_::ModulePIMPL>(
+        make_module_pimpl_with_cache<T>()));
 }
 
 } // namespace testing
