@@ -292,14 +292,6 @@ TEST_CASE("ModulePIMPL : hash") {
         mod1.inputs().at("Option 1").change(3);
         REQUIRE_FALSE(hash_objects(mod1) == hash_objects(mod2));
     }
-
-    SECTION("hash") {
-        auto mod = make_module_pimpl<NotReadyModule>();
-        type::hasher h(bphash::HashType::Hash128);
-        mod.hash(h);
-        auto hashstr = bphash::hash_to_string(h.finalize());
-        REQUIRE(hash_objects(mod) == hashstr);
-    }
 }
 
 TEST_CASE("ModulePIMPL : is_cached") {
@@ -313,8 +305,6 @@ TEST_CASE("ModulePIMPL : is_cached") {
         auto in  = mod.inputs();
         in.at("Option 1").change(1);
         auto result = mod.run(in).at("Result 1").value<int>();
-        REQUIRE(result == 4);
-        REQUIRE(mod.is_memoizable());
         REQUIRE(mod.is_cached(in));
     }
 }
