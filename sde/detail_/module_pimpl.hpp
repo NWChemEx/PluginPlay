@@ -482,12 +482,15 @@ public:
      *
      *  @return true if the module is memoizable, false otherwise.
      *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if `is_memoizable` is true .
+     *
      *  @throw std::runtime_error if the current module does not have an
      *                            implementation. Strong throw guarantee.
      */
     bool is_memoizable() const;
 
-    /** @brief Turn of memoization for this module
+    /** @brief Turns off memoization for this module
      *
      *  This function will disable memoization for this module. Note that
      *  memoization is on for all modules except lambda_modules by default.
@@ -497,10 +500,10 @@ public:
      */
     void turn_off_memoization();
 
-    /** @brief Turn of memoization for this module
+    /** @brief Turns on memoization for this module
      *
-     *  This function will enable memoization for this module. Note that
-     *  memoization is on for all modules except lambda_modules by default.
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if this function is called and `is_memoizable` is true .
      *
      *  @throw std::runtime_error if the current module does not have an
      *                            implementation. Strong throw guarantee.
