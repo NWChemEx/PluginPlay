@@ -6,6 +6,7 @@ var searchData=
   ['insert',['insert',['../classsde_1_1Cache.html#af075fe7fb7057a7301adb23a1a46fb99',1,'sde::Cache::insert(hash_type &amp;key, T &amp;&amp;data)'],['../classsde_1_1Cache.html#ab259fca52d4dd8a3201f8ec7f1da9590',1,'sde::Cache::insert(T &amp;&amp;data, bphash::HashType htype=bphash::HashType::Hash128)']]],
   ['is_5fcached',['is_cached',['../classsde_1_1detail___1_1ModulePIMPL.html#aef6388d670a5ca22a37f27437651549b',1,'sde::detail_::ModulePIMPL']]],
   ['is_5fconvertible',['is_convertible',['../classsde_1_1detail___1_1SDEAnyWrapperBase.html#a101ab5138252354741f232453503be9b',1,'sde::detail_::SDEAnyWrapperBase']]],
+  ['is_5fmemoizable',['is_memoizable',['../classsde_1_1detail___1_1ModulePIMPL.html#a9a2cf2c9f5c431d8067b72504f044bff',1,'sde::detail_::ModulePIMPL::is_memoizable()'],['../classsde_1_1Module.html#a9955fa552739f6671bd048ac48b2e4fe',1,'sde::Module::is_memoizable()']]],
   ['is_5fnot_5fwrapper_5fv',['is_not_wrapper_v',['../classsde_1_1detail___1_1SDEAnyWrapperBase.html#a0b38bb8e4f3fc6a7019acf2f2bf9e84d',1,'sde::detail_::SDEAnyWrapperBase']]],
   ['is_5foptional',['is_optional',['../classsde_1_1detail___1_1ModuleInputPIMPL.html#ad1cbfe493f7c12dfadeefca1d74ab74e',1,'sde::detail_::ModuleInputPIMPL::is_optional()'],['../classsde_1_1ModuleInput.html#af3e9bf55ba5c9081c3005161e764bfbf',1,'sde::ModuleInput::is_optional()']]],
   ['is_5fready',['is_ready',['../classsde_1_1detail___1_1ModuleInputPIMPL.html#af92b2678320bcaeef2f3af3d7b08a5fb',1,'sde::detail_::ModuleInputPIMPL']]],

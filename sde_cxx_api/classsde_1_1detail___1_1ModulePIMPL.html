@@ -179,6 +179,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aef6388d670a5ca22a37f27437651549b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#aef6388d670a5ca22a37f27437651549b">is_cached</a> (const <a class="el" href="namespacesde_1_1type.html#aead20624a5267fc6d91e3b5fd1a777f0">type::input_map</a> &amp;in_inputs)</td></tr>
 <tr class="memdesc:aef6388d670a5ca22a37f27437651549b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the result of a call is cached.  <a href="#aef6388d670a5ca22a37f27437651549b">More...</a><br /></td></tr>
 <tr class="separator:aef6388d670a5ca22a37f27437651549b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6261a36718638d561d995c588abba670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#a6261a36718638d561d995c588abba670">reset_cache</a> ()</td></tr>
+<tr class="memdesc:a6261a36718638d561d995c588abba670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets cache.  <a href="#a6261a36718638d561d995c588abba670">More...</a><br /></td></tr>
+<tr class="separator:a6261a36718638d561d995c588abba670"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a2cf2c9f5c431d8067b72504f044bff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#a9a2cf2c9f5c431d8067b72504f044bff">is_memoizable</a> () const</td></tr>
+<tr class="memdesc:a9a2cf2c9f5c431d8067b72504f044bff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the module memoizable?  <a href="#a9a2cf2c9f5c431d8067b72504f044bff">More...</a><br /></td></tr>
+<tr class="separator:a9a2cf2c9f5c431d8067b72504f044bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc6860f52627f8d6558d6e49f7694ade"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#abc6860f52627f8d6558d6e49f7694ade">turn_off_memoization</a> ()</td></tr>
+<tr class="memdesc:abc6860f52627f8d6558d6e49f7694ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns off memoization for this module.  <a href="#abc6860f52627f8d6558d6e49f7694ade">More...</a><br /></td></tr>
+<tr class="separator:abc6860f52627f8d6558d6e49f7694ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a539712ba0174b23f01e619a6fbe36c90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#a539712ba0174b23f01e619a6fbe36c90">turn_on_memoization</a> ()</td></tr>
+<tr class="memdesc:a539712ba0174b23f01e619a6fbe36c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns on memoization for this module.  <a href="#a539712ba0174b23f01e619a6fbe36c90">More...</a><br /></td></tr>
+<tr class="separator:a539712ba0174b23f01e619a6fbe36c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac20fb1f526fd26ebcc7b843a2a2e34e9"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1detail___1_1ModulePIMPL.html#ac20fb1f526fd26ebcc7b843a2a2e34e9">run</a> (<a class="el" href="namespacesde_1_1type.html#aead20624a5267fc6d91e3b5fd1a777f0">type::input_map</a> ps)</td></tr>
 <tr class="memdesc:ac20fb1f526fd26ebcc7b843a2a2e34e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actually runs the module.  <a href="#ac20fb1f526fd26ebcc7b843a2a2e34e9">More...</a><br /></td></tr>
 <tr class="separator:ac20fb1f526fd26ebcc7b843a2a2e34e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -685,6 +697,42 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a9a2cf2c9f5c431d8067b72504f044bff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a2cf2c9f5c431d8067b72504f044bff">&#9670;&nbsp;</a></span>is_memoizable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sde::detail_::ModulePIMPL::is_memoizable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Is the module memoizable? </p>
+<p>Some modules (lambda_modules or modules that have nondetermenistic results) should not be memoized.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if the module is memoizable, false otherwise.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the module doesn't have a cache, results will not be cached even if <code>is_memoizable</code> is true .</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the current module does not have an implementation. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac488b9719a6e6ece43ee155a17b6d908"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac488b9719a6e6ece43ee155a17b6d908">&#9670;&nbsp;</a></span>lock()</h2>
 
@@ -1172,6 +1220,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a6261a36718638d561d995c588abba670"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6261a36718638d561d995c588abba670">&#9670;&nbsp;</a></span>reset_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::detail_::ModulePIMPL::reset_cache </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Resets cache. </p>
+<p>This function will reset cache.</p>
+<dl class="section warning"><dt>Warning</dt><dd>This will result in losing all the data (for all instances of this module) stored in the cache. </dd></dl>
+
+</div>
+</div>
 <a id="a8efabc63a7bc1a3adeded08964236400"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8efabc63a7bc1a3adeded08964236400">&#9670;&nbsp;</a></span>results()</h2>
 
@@ -1314,6 +1391,74 @@ Public Member Functions</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if the implementation of this module has not been set. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abc6860f52627f8d6558d6e49f7694ade"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc6860f52627f8d6558d6e49f7694ade">&#9670;&nbsp;</a></span>turn_off_memoization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::detail_::ModulePIMPL::turn_off_memoization </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Turns off memoization for this module. </p>
+<p>This function will disable memoization for this module. Note that memoization is on for all modules except lambda_modules by default.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the current module does not have an implementation. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a539712ba0174b23f01e619a6fbe36c90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a539712ba0174b23f01e619a6fbe36c90">&#9670;&nbsp;</a></span>turn_on_memoization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::detail_::ModulePIMPL::turn_on_memoization </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Turns on memoization for this module. </p>
+<dl class="section warning"><dt>Warning</dt><dd>If the module doesn't have a cache, results will not be cached even if this function is called and <code>is_memoizable</code> is true .</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the current module does not have an implementation. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

@@ -136,6 +136,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a55ce7c4d91ee1c093b6197d2441fc2aa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#a55ce7c4d91ee1c093b6197d2441fc2aa">ready</a> (const <a class="el" href="namespacesde_1_1type.html#aead20624a5267fc6d91e3b5fd1a777f0">type::input_map</a> &amp;inps=<a class="el" href="namespacesde_1_1type.html#aead20624a5267fc6d91e3b5fd1a777f0">type::input_map</a>{}) const</td></tr>
 <tr class="memdesc:a55ce7c4d91ee1c093b6197d2441fc2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if this module is ready to be run given the inputs provided.  <a href="#a55ce7c4d91ee1c093b6197d2441fc2aa">More...</a><br /></td></tr>
 <tr class="separator:a55ce7c4d91ee1c093b6197d2441fc2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac87489e93ef07a76051fd7d27abb1322"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#ac87489e93ef07a76051fd7d27abb1322">reset_cache</a> ()</td></tr>
+<tr class="memdesc:ac87489e93ef07a76051fd7d27abb1322"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets cache.  <a href="#ac87489e93ef07a76051fd7d27abb1322">More...</a><br /></td></tr>
+<tr class="separator:ac87489e93ef07a76051fd7d27abb1322"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9955fa552739f6671bd048ac48b2e4fe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#a9955fa552739f6671bd048ac48b2e4fe">is_memoizable</a> () const</td></tr>
+<tr class="memdesc:a9955fa552739f6671bd048ac48b2e4fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the module memoizable?  <a href="#a9955fa552739f6671bd048ac48b2e4fe">More...</a><br /></td></tr>
+<tr class="separator:a9955fa552739f6671bd048ac48b2e4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02e283309a2544bb115504c697ce12c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#a02e283309a2544bb115504c697ce12c1">turn_off_memoization</a> ()</td></tr>
+<tr class="memdesc:a02e283309a2544bb115504c697ce12c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns off memoization for this module.  <a href="#a02e283309a2544bb115504c697ce12c1">More...</a><br /></td></tr>
+<tr class="separator:a02e283309a2544bb115504c697ce12c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ec1a1fd7ce33447814e632e1328e874"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#a5ec1a1fd7ce33447814e632e1328e874">turn_on_memoization</a> ()</td></tr>
+<tr class="memdesc:a5ec1a1fd7ce33447814e632e1328e874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns on memoization for this module.  <a href="#a5ec1a1fd7ce33447814e632e1328e874">More...</a><br /></td></tr>
+<tr class="separator:a5ec1a1fd7ce33447814e632e1328e874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28bcc7a0e0af3088a3aa8da4525c1b82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsde_1_1Module.html#a28bcc7a0e0af3088a3aa8da4525c1b82">lock</a> ()</td></tr>
 <tr class="memdesc:a28bcc7a0e0af3088a3aa8da4525c1b82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Locks the module and all submodules.  <a href="#a28bcc7a0e0af3088a3aa8da4525c1b82">More...</a><br /></td></tr>
 <tr class="separator:a28bcc7a0e0af3088a3aa8da4525c1b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -780,6 +792,34 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a9955fa552739f6671bd048ac48b2e4fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9955fa552739f6671bd048ac48b2e4fe">&#9670;&nbsp;</a></span>is_memoizable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sde::Module::is_memoizable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Is the module memoizable? </p>
+<p>Some modules (lambda_modules or modules that have nondetermenistic results) should not be memoized.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if the module is memoizable, false otherwise.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the module doesn't have a cache, results will not be cached even if <code>is_memoizable</code> is true .</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the current module does not have an implementation. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9ed2c33f43f1de79679cc2aaa613871f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ed2c33f43f1de79679cc2aaa613871f">&#9670;&nbsp;</a></span>list_not_ready()</h2>
 
@@ -1160,6 +1200,27 @@ template&lt;typename PropertyType &gt; </div>
 
 </div>
 </div>
+<a id="ac87489e93ef07a76051fd7d27abb1322"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac87489e93ef07a76051fd7d27abb1322">&#9670;&nbsp;</a></span>reset_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::Module::reset_cache </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resets cache. </p>
+<p>This function will reset cache.</p>
+<dl class="section warning"><dt>Warning</dt><dd>This will result in losing all the data (for all instances of this module) stored in the cache. </dd></dl>
+
+</div>
+</div>
 <a id="a0dece772a6a9c5b1e2903b9c24445e45"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0dece772a6a9c5b1e2903b9c24445e45">&#9670;&nbsp;</a></span>results()</h2>
 
@@ -1287,6 +1348,52 @@ template&lt;typename property_type , typename... Args&gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if the implementation of this module has not been set. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a02e283309a2544bb115504c697ce12c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02e283309a2544bb115504c697ce12c1">&#9670;&nbsp;</a></span>turn_off_memoization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::Module::turn_off_memoization </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turns off memoization for this module. </p>
+<p>This function turns off memoization so that results will not be cached. Memoization is on for all modules except lambda_modules by default. Can be used for modules with nondeterministic results, or lambda_modules. </p>
+
+</div>
+</div>
+<a id="a5ec1a1fd7ce33447814e632e1328e874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ec1a1fd7ce33447814e632e1328e874">&#9670;&nbsp;</a></span>turn_on_memoization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sde::Module::turn_on_memoization </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turns on memoization for this module. </p>
+<dl class="section warning"><dt>Warning</dt><dd>If the module doesn't have a cache, results will not be cached even if this function is called and <code>is_memoizable</code> is true .</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the current module does not have an implementation. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
