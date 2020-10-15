@@ -465,6 +465,51 @@ public:
      */
     bool is_cached(const type::input_map& in_inputs);
 
+    /** @brief Resets cache.
+     *
+     *  This function will reset cache.
+     *
+     *  @warning This will result in losing all the data
+     *  (for all instances of this module) stored in the cache.
+     *
+     */
+    void reset_cache();
+
+    /** @brief Is the module memoizable?
+     *
+     *  Some modules (lambda_modules or modules that have nondetermenistic
+     *  results) should not be memoized.
+     *
+     *  @return true if the module is memoizable, false otherwise.
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_memoizable() const;
+
+    /** @brief Turns off memoization for this module
+     *
+     *  This function will disable memoization for this module. Note that
+     *  memoization is on for all modules except lambda_modules by default.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    void turn_off_memoization();
+
+    /** @brief Turns on memoization for this module
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if this function is called and `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    void turn_on_memoization();
+
     /** @brief Actually runs the module
      *
      *  This is the function with all of the SDE magic. Ultimately it will call
@@ -548,6 +593,9 @@ private:
 
     /// Is the current module locked or not?
     bool m_locked_ = false;
+
+    /// Is the current module memoizable?
+    bool m_memoizable_ = true;
 
     /// The object actually implementing the algorithm
     base_ptr m_base_;
@@ -650,6 +698,15 @@ inline auto& ModulePIMPL::citations() const {
     return m_base_->citations();
 }
 
+inline bool ModulePIMPL::is_memoizable() const {
+    assert_mod_();
+    auto memoizable = m_memoizable_;
+    for(const auto& [k, v] : m_submods_) {
+        memoizable = v.value().is_memoizable() && memoizable;
+    }
+    return memoizable;
+}
+
 inline void ModulePIMPL::memoize(type::hasher& h,
                                  type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
@@ -663,6 +720,18 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     if(!m_cache_) return false;
     auto ps = merge_inputs_(in_inputs);
     return m_cache_->count(get_hash_(ps)) == 1;
+}
+
+inline void ModulePIMPL::reset_cache() { m_cache_.reset(); }
+
+inline void ModulePIMPL::turn_off_memoization() {
+    assert_mod_();
+    m_memoizable_ = false;
+}
+
+inline void ModulePIMPL::turn_on_memoization() {
+    assert_mod_();
+    m_memoizable_ = true;
 }
 
 inline std::string ModulePIMPL::profile_info() const {
@@ -696,14 +765,15 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(false && m_cache_ && m_cache_->count(hv)) {
+
+    if(is_memoizable() && m_cache_ && m_cache_->count(hv)) {
         m_timer_.record(time_now);
         return m_cache_->at(hv);
     }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(true || !m_cache_) {
+    if(!m_cache_ || !is_memoizable()) {
         m_timer_.record(time_now);
         return rv;
     }

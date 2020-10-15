@@ -131,7 +131,7 @@ public:
 };    // end Area
 
 /* This concludes the property type tutorial. We leave you with the
- * definition of the ``Perimenter`` and ``PrismVolume`` classes which we will
+ * definition of the ``Perimeter`` and ``PrismVolume`` classes which we will
  * need in later tutorials, The definitions for these classes are entirely
  * analogous to that of the ``Area`` class. Nonetheless the reader may want to
  * note:

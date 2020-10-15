@@ -101,8 +101,8 @@ TEST_CASE("Prism Class : run") {
     sde::Module mod(std::make_unique<ModulePIMPL>(std::move(mod_pimpl)));
     submods.at("area").change(std::make_shared<sde::Module>(mod));
 
-    auto out           = r.run(in, submods);
-    auto[area, volume] = PrismVolume::unwrap_results(out);
+    auto out            = r.run(in, submods);
+    auto [area, volume] = PrismVolume::unwrap_results(out);
     REQUIRE(area == Approx(5.6088));
     REQUIRE(volume == Approx(44.253432));
 }

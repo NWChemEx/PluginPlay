@@ -282,6 +282,50 @@ public:
      */
     bool ready(const type::input_map& inps = type::input_map{}) const;
 
+    /** @brief Resets cache.
+     *
+     *  This function will reset cache.
+     *
+     *  @warning This will result in losing all the data
+     *  (for all instances of this module) stored in the cache.
+     *
+     */
+    void reset_cache();
+
+    /** @brief Is the module memoizable?
+     *
+     *  Some modules (lambda_modules or modules that have nondetermenistic
+     *  results) should not be memoized.
+     *
+     *  @return true if the module is memoizable, false otherwise.
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_memoizable() const;
+
+    /** @brief Turns off memoization for this module
+     *
+     * This function turns off memoization so that results will not be cached.
+     * Memoization is on for all modules except lambda_modules by default.
+     * Can be used for modules with nondeterministic results, or lambda_modules.
+     *
+     */
+    void turn_off_memoization();
+
+    /** @brief Turns on memoization for this module
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if this function is called and `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    void turn_on_memoization();
+
     /** @brief Locks the module and all submodules
      *
      *  A locked module can no longer have its inputs or submodules modified.
