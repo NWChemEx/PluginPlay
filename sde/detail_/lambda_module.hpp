@@ -213,8 +213,10 @@ auto LAMBDA_MOD_TYPE::wrap_results_(T&& rvs, std::index_sequence<Is...>) {
 template<typename PropertyType, typename FxnType>
 auto make_lambda(FxnType&& fxn) {
     using lambda_type = detail_::LambdaModule<PropertyType>;
-    auto l = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
-    return Module(std::move(l));
+    auto l  = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
+    auto lm = Module(std::move(l));
+    lm.turn_off_memoization();
+    return lm;
 }
 
 } // namespace sde

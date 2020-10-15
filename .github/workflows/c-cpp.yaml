@@ -4,55 +4,31 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+
+    strategy:
+      matrix:
+        cmake_version: [3.16.3]
+        gcc_version: [9]
+
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
-      with: 
-         python-version: '3.x'
-    - name: get-gcc
-      run: |
-            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-            sudo apt-get update
-            sudo apt-get install gcc-8 g++-8 gfortran-8
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-            gcc  --version
-            g++  --version
-            gfortran --version
-            gcov --version
-    - name: get-openmpi
-      run: |
-            sudo apt-get install openmpi-bin libopenmpi-dev
-            mpicc -show
-            mpiexec --version
-    - name: get-gcovr
-      run:  pip install gcovr
-    - name: get-doxygen
-      run: |
-            sudo apt-get install -f doxygen
-    - name: get-cmake
-      run: |
-            wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
-            yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
-    - name: cmake
-      env:
-            CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
-      run: |
-            export INSTALL_DIR=`pwd`/install
-            cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DCMAKE_PREFIX_PATH=${INSTALL_DIR} -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=TRUE -DCATCH_ENABLE_COVERAGE=ON -DCMAKE_CXX_FLAGS="--coverage -std=c++17" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs" -DCPP_GITHUB_TOKEN=$CPP_GITHUB_TOKEN -DCMAKE_BUILD_TYPE=Debug
-    - name: ctest
-      run: |
-            cd build
-            make
-            make test
-    - name: gcovr
-      run: |
-           cd ..
-           gcovr --root SDE --filter SDE --exclude SDE/tests --xml SDE/coverage.xml
-           ls -al SDE
-    - uses: codecov/codecov-action@v1
-      with:
-         token: ${{ secrets.CODECOV_TOKEN }}
-         file: ./coverage.xml
+     - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+      - name: Get dependencies
+        env:
+          cmake_version: ${{ matrix.cmake_version }}
+          gcc_version: ${{ matrix.gcc_version }}
+        run: >
+          .github/workflows/scripts/get_dependencies.sh gcc gcovr cmake
+      - name: Build and test
+        env:
+          cmake_version: ${{ matrix.cmake_version }}
+          gcc_version: ${{ matrix.gcc_version }}
+          CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
+        run: .github/workflows/scripts/build_and_test.sh
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml

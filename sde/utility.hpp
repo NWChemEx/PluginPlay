@@ -1,12 +1,7 @@
 #pragma once
 #include <iostream>
+#include <memory>
 #include <type_traits>
-
-namespace std {
-// Forward declare shared_ptr so we don't need the header
-template<typename T>
-class shared_ptr;
-} // namespace std
 
 /** @file Utility.hpp
  *

@@ -1,5 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
+#include <regex>
 #include <sde/module.hpp>
 
 using namespace sde;
@@ -343,6 +344,17 @@ TEST_CASE("Module : run_as") {
         auto mod = make_module<ReadyModule>();
         REQUIRE(std::get<0>(mod->run_as<OptionalInput>(42)) == 42);
     }
+    SECTION("Can call use derived classes polymorphically") {
+        auto mod = make_module<PolymorphicModule>();
+        SECTION("Works with base class") {
+            testing::BaseClass b;
+            REQUIRE_NOTHROW(mod->run_as<PolymorphicOptions>(b));
+        }
+        SECTION("Works with derived class") {
+            testing::DerivedClass c;
+            REQUIRE_NOTHROW(mod->run_as<PolymorphicOptions>(c));
+        }
+    }
     SECTION("Works") {
         auto mod = make_module<ResultModule>();
         REQUIRE(std::get<0>(mod->run_as<OneOut>()) == 4);
@@ -367,6 +379,23 @@ TEST_CASE("Module : run") {
         auto mod = make_module<ResultModule>();
         REQUIRE(mod->run().at("Result 1").value<int>() == 4);
         SECTION("Locks module") { REQUIRE(mod->locked()); }
+    }
+}
+
+TEST_CASE("Module : profile_info") {
+    auto p = make_module<SubModModule>();
+    p->change_submod("submodule 1", make_module<NullModule>());
+
+    SECTION("Run hasn't been called") {
+        std::regex corr("^  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p->profile_info(), corr));
+    }
+
+    SECTION("Run has been called") {
+        p->run(sde::type::input_map{});
+        std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d : \\d h "
+                        "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p->profile_info(), corr));
     }
 }
 

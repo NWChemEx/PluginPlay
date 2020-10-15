@@ -307,7 +307,9 @@ public:
     bool has_value() const noexcept { return m_ptr_ != nullptr; }
 
     template<typename T>
-    bool is_convertible() const;
+    bool is_convertible() const {
+        return m_ptr_->is_convertible<T>();
+    }
 
     /** @brief Returns the type of the wrapped instance.
      *
@@ -503,14 +505,6 @@ T SDEAny::cast() const {
     // reason just doing ->cast<T>() calls the non-const version
     const auto* p = m_ptr_.get();
     return p->cast<T>();
-}
-
-template<typename T>
-bool SDEAny::is_convertible() const {
-    try {
-        cast<T>();
-        return true;
-    } catch(...) { return false; }
 }
 
 inline typename SDEAny::rtti_type SDEAny::type() const noexcept {

@@ -1,8 +1,34 @@
 #pragma once
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
+#include <iomanip> // for put_time
+#include <utilities/timer.hpp>
 
 namespace sde::detail_ {
+
+// TODO: This function doesn't belong here (move unit test too)
+/** @brief Creates a string whose contents is a time stamp.
+ *
+ *  C++ doesn't have a great way to get a time stamp as a string. This function
+ *  wraps the process of making such a string. The resulting string contains
+ *  both the date and the time (to second accuracy).
+ *
+ *  @return A std::string containing the current date and time in the format
+ *          `<day>-<month>-<year> <hour>:<minute>:<second>`
+ *
+ *  @throw std::bad_alloc if there is insufficient memory to allocate the
+ *         string. Strong throw guarantee.
+ */
+inline auto time_stamp() {
+    // TODO: Check the returns of these two functions for errors
+    auto t  = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
+    // TODO: Make sure ss's bad_bit wasn't set
+    return ss.str();
+}
 
 /** @brief The class that actually contains a module's state.
  *
@@ -412,6 +438,21 @@ public:
      */
     void memoize(type::hasher& h, type::input_map inputs) const;
 
+    /** @brief Returns timing data for this module and all submodules.
+     *
+     *  Each time the run member is called the time for the call (including all
+     *  SDE overhead) is recorded. This also occurs for all calls to submodules'
+     *  run members. This function creates a formatted string with this module's
+     *  timing data, including the breakdown in terms of submodule calls.
+     *
+     *  @return All timing data collected for this module and its submodules as
+     *          a formatted string.
+     *
+     *  @throw std::bad_alloc if there's insufficient memory to allocate the
+     *         return. Strong throw guarantee.
+     */
+    std::string profile_info() const;
+
     /** @brief Checks whether the result of a call is cached.
      *
      *  This function will memoize the provided inputs and determine if the
@@ -423,6 +464,51 @@ public:
      *  @return True if the cache has the value and false otherwise.
      */
     bool is_cached(const type::input_map& in_inputs);
+
+    /** @brief Resets cache.
+     *
+     *  This function will reset cache.
+     *
+     *  @warning This will result in losing all the data
+     *  (for all instances of this module) stored in the cache.
+     *
+     */
+    void reset_cache();
+
+    /** @brief Is the module memoizable?
+     *
+     *  Some modules (lambda_modules or modules that have nondetermenistic
+     *  results) should not be memoized.
+     *
+     *  @return true if the module is memoizable, false otherwise.
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_memoizable() const;
+
+    /** @brief Turns off memoization for this module
+     *
+     *  This function will disable memoization for this module. Note that
+     *  memoization is on for all modules except lambda_modules by default.
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    void turn_off_memoization();
+
+    /** @brief Turns on memoization for this module
+     *
+     *  @warning If the module doesn't have a cache, results will not be cached
+     *  even if this function is called and `is_memoizable` is true .
+     *
+     *  @throw std::runtime_error if the current module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    void turn_on_memoization();
 
     /** @brief Actually runs the module
      *
@@ -508,6 +594,9 @@ private:
     /// Is the current module locked or not?
     bool m_locked_ = false;
 
+    /// Is the current module memoizable?
+    bool m_memoizable_ = true;
+
     /// The object actually implementing the algorithm
     base_ptr m_base_;
 
@@ -520,7 +609,11 @@ private:
     /// The submodules bound to this module
     type::submodule_map m_submods_;
 
+    /// The set of property types that his module satisfies
     std::set<type::rtti> m_property_types_;
+
+    /// Timer used to time runs of this module
+    utilities::Timer m_timer_;
 }; // class ModulePIMPL
 
 //-------------------------------Implementations--------------------------------
@@ -605,6 +698,15 @@ inline auto& ModulePIMPL::citations() const {
     return m_base_->citations();
 }
 
+inline bool ModulePIMPL::is_memoizable() const {
+    assert_mod_();
+    auto memoizable = m_memoizable_;
+    for(const auto& [k, v] : m_submods_) {
+        memoizable = v.value().is_memoizable() && memoizable;
+    }
+    return memoizable;
+}
+
 inline void ModulePIMPL::memoize(type::hasher& h,
                                  type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
@@ -620,7 +722,36 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
+inline void ModulePIMPL::reset_cache() { m_cache_.reset(); }
+
+inline void ModulePIMPL::turn_off_memoization() {
+    assert_mod_();
+    m_memoizable_ = false;
+}
+
+inline void ModulePIMPL::turn_on_memoization() {
+    assert_mod_();
+    m_memoizable_ = true;
+}
+
+inline std::string ModulePIMPL::profile_info() const {
+    std::stringstream ss;
+    ss << m_timer_;
+    std::string tab("  ");
+    for(auto [key, submod] : m_submods_) {
+        ss << tab << key << std::endl;
+        auto submod_prof_info = submod.value().profile_info();
+        std::stringstream ss2(submod_prof_info);
+        std::string token;
+        while(std::getline(ss2, token, '\n'))
+            ss << tab << tab << token << std::endl;
+    }
+    return ss.str();
+}
+
 inline auto ModulePIMPL::run(type::input_map ps) {
+    auto time_now = time_stamp();
+    m_timer_.reset();
     assert_mod_();
     // Check the inputs we were just given
     for(const auto& [k, v] : ps)
@@ -634,14 +765,22 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     ps = merge_inputs_(ps);
     // Check cache
     auto hv = get_hash_(ps);
-    if(false && m_cache_ && m_cache_->count(hv)) return m_cache_->at(hv);
+
+    if(is_memoizable() && m_cache_ && m_cache_->count(hv)) {
+        m_timer_.record(time_now);
+        return m_cache_->at(hv);
+    }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(true || !m_cache_) return rv;
+    if(!m_cache_ || !is_memoizable()) {
+        m_timer_.record(time_now);
+        return rv;
+    }
 
     // cache result
     m_cache_->emplace(hv, std::move(rv));
+    m_timer_.record(time_now);
     return m_cache_->at(hv);
 }
 

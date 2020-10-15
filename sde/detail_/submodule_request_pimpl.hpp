@@ -50,7 +50,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory for the copy.
      *                        Strong throw guarantee.
      */
-    SubmoduleRequestPIMPL(const SubmoduleRequestPIMPL& rhs);
+    SubmoduleRequestPIMPL(const SubmoduleRequestPIMPL& rhs) = default;
 
     /** @brief Sets the current request's state to a deep copy of @p rhs
      *
@@ -65,7 +65,8 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory for the copy.
      *                        Strong throw guarantee.
      */
-    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs);
+    SubmoduleRequestPIMPL& operator=(const SubmoduleRequestPIMPL& rhs) =
+      default;
 
     /** @brief Takes ownership of another instance's state.
      *
@@ -319,19 +320,6 @@ private:
 }; // class SubmoduleRequestPIMPL
 
 //------------------------------------Implementations---------------------------
-
-inline SubmoduleRequestPIMPL::SubmoduleRequestPIMPL(
-  const SubmoduleRequestPIMPL& rhs) :
-  m_desc_(rhs.m_desc_),
-  m_type_(rhs.m_type_),
-  m_inputs_(rhs.m_inputs_),
-  m_module_(rhs.has_module() ? std::make_shared<Module>(*rhs.m_module_) :
-                               nullptr) {}
-
-inline SubmoduleRequestPIMPL& SubmoduleRequestPIMPL::operator=(
-  const SubmoduleRequestPIMPL& rhs) {
-    return *this = std::move(SubmoduleRequestPIMPL(rhs));
-}
 
 inline auto SubmoduleRequestPIMPL::clone() const {
     return std::make_unique<SubmoduleRequestPIMPL>(*this);

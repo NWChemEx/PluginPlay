@@ -14,7 +14,8 @@ Welcome to SDE's documentation!
    installation/index
    tutorials/index
    developer/index
-   api/library_root
+
+`C++ API <sde_cxx_api/index.html>`_
 
 Indices and tables
 ==================

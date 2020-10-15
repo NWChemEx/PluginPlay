@@ -1,11 +1,24 @@
 #include "sde/detail_/module_pimpl.hpp"
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
+#include <regex>
 
 using namespace sde;
 using namespace sde::detail_;
 using namespace testing;
 using not_set_t = typename ModulePIMPL::not_set_type;
+
+/* I don't see how to test the contents of the time stamp returned by time_stamp
+ * without duplicating its contents (and even then there's the possibility that
+ * the second call happens in an entirely new year changing basically every
+ * value). Thus this unit test simply ensures that the resulting string has the
+ * correct format via regex.
+ */
+TEST_CASE("time_stamp") {
+    auto rv = time_stamp();
+    std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d$");
+    REQUIRE(std::regex_search(rv, corr));
+}
 
 TEST_CASE("ModulePIMPL : default ctor") {
     ModulePIMPL p;
@@ -254,17 +267,30 @@ TEST_CASE("ModulePIMPL : citations") {
     }
 }
 
-TEST_CASE("ModulePIMPL : hash") {
-    SECTION("Inputs not set") {
-        auto mod = make_module_pimpl<NotReadyModule>();
-        //        REQUIRE(hash_objects(mod) ==
-        //        "cbc357ccb763df2852fee8c4fc7d55f2");
+TEST_CASE("ModulePIMPL : profile_info") {
+    ModulePIMPL p = make_module_pimpl<SubModModule>();
+    p.submods().at("submodule 1").change(make_module<NullModule>());
+
+    SECTION("Run hasn't been called") {
+        std::regex corr("^  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p.profile_info(), corr));
     }
-    SECTION("Input set") {
-        auto mod = make_module_pimpl<NotReadyModule>();
-        mod.inputs().at("Option 1").change(3);
-        //        REQUIRE(hash_objects(mod) ==
-        //        "9a4294b64e60cc012c5ed48db4cd9c48");
+
+    SECTION("Run has been called") {
+        p.run(sde::type::input_map{});
+        std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d : \\d h "
+                        "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
+        REQUIRE(std::regex_search(p.profile_info(), corr));
+    }
+}
+
+TEST_CASE("ModulePIMPL : hash") {
+    SECTION("Inputs set vs not set") {
+        auto mod1 = make_module_pimpl<NotReadyModule>();
+        auto mod2 = make_module_pimpl<NotReadyModule>();
+        REQUIRE(hash_objects(mod1) == hash_objects(mod2));
+        mod1.inputs().at("Option 1").change(3);
+        REQUIRE_FALSE(hash_objects(mod1) == hash_objects(mod2));
     }
 }
 
@@ -272,6 +298,47 @@ TEST_CASE("ModulePIMPL : is_cached") {
     SECTION("No cache") {
         auto mod = make_module_pimpl<NullModule>();
         REQUIRE_FALSE(mod.is_cached(type::input_map{}));
+    }
+
+    SECTION("With cache") {
+        auto mod = make_module_pimpl_with_cache<RealDeal>();
+        auto in  = mod.inputs();
+        in.at("Option 1").change(1);
+        auto result = mod.run(in).at("Result 1").value<int>();
+        REQUIRE(mod.is_cached(in));
+    }
+}
+
+TEST_CASE("ModulePIMPL : is_memoizable") {
+    SECTION("memoizable") {
+        auto mod = make_module_pimpl<NullModule>();
+        REQUIRE(mod.is_memoizable());
+        auto mod2 = make_module_pimpl_with_cache<NullModule>();
+        REQUIRE(mod2.is_memoizable());
+    }
+    SECTION("turn off/on memoization") {
+        auto mod = make_module_pimpl_with_cache<NullModule>();
+        mod.turn_off_memoization();
+        REQUIRE_FALSE(mod.is_memoizable());
+        mod.turn_on_memoization();
+        REQUIRE(mod.is_memoizable());
+    }
+    SECTION("Submodules") {
+        auto mod  = make_module_with_cache<SubModModule>();
+        auto mod2 = make_module_with_cache<NullModule>();
+        auto mod3 = make_module_with_cache<NullModule>();
+        auto mod4 = make_module<NullModule>();
+        REQUIRE(mod2.get()->is_memoizable());
+        REQUIRE(mod3.get()->is_memoizable());
+        REQUIRE(mod4.get()->is_memoizable());
+        mod3.get()->turn_off_memoization();
+        REQUIRE_FALSE(mod3.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1", mod3);
+        REQUIRE_FALSE(mod.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1", mod2);
+        REQUIRE(mod.get()->is_memoizable());
+        mod.get()->change_submod("Submodule 1", mod4);
+        REQUIRE(mod.get()->is_memoizable());
     }
 }
 

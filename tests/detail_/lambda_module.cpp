@@ -20,7 +20,22 @@ TEST_CASE("LambdaModule : single return") {
 TEST_CASE("LambdaModule : multiple returns") {
     auto l = sde::make_lambda<testing::TwoOut>(
       []() { return std::make_tuple(2, 'b'); });
-    auto[i, c] = l.run_as<testing::TwoOut>();
+    auto [i, c] = l.run_as<testing::TwoOut>();
     REQUIRE(i == 2);
     REQUIRE(c == 'b');
+}
+
+TEST_CASE("LambdaModule : is_memoizable") {
+    auto l = sde::make_lambda<testing::OneOut>([]() { return 2; });
+    REQUIRE_FALSE(l.is_memoizable());
+    l.turn_on_memoization();
+    REQUIRE(l.is_memoizable());
+}
+
+// Once uniques hashes are available for lambda modules this unit test should be
+// modified to require false for the hash comparison.
+TEST_CASE("LambdaModule : same hash for different lambdas") {
+    auto l1 = sde::make_lambda<testing::OneOut>([]() { return 1; });
+    auto l2 = sde::make_lambda<testing::OneOut>([]() { return 2; });
+    REQUIRE(sde::hash_objects(l1) == sde::hash_objects(l2));
 }

@@ -45,7 +45,15 @@ bool Module::ready(const type::input_map& inps) const {
     return m_pimpl_->ready(inps);
 }
 
+void Module::reset_cache() { m_pimpl_->reset_cache(); }
+
+bool Module::is_memoizable() const { return m_pimpl_->is_memoizable(); }
+
 //--------------------Setters--------------------------------------------------
+
+void Module::turn_on_memoization() { m_pimpl_->turn_on_memoization(); }
+
+void Module::turn_off_memoization() { m_pimpl_->turn_off_memoization(); }
 
 void Module::lock() { m_pimpl_->lock(); }
 
@@ -83,6 +91,8 @@ const type::description& Module::description() const {
 const std::vector<type::description>& Module::citations() const {
     return m_pimpl_->citations();
 }
+
+std::string Module::profile_info() const { return m_pimpl_->profile_info(); }
 
 //--------------------------- Private Members --------------------------------/
 
