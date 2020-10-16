@@ -15,7 +15,7 @@ jobs:
         gcc_version: [9]
 
     steps:
-     - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
         with:
           python-version: '3.x'
