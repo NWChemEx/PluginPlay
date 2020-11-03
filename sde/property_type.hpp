@@ -185,6 +185,46 @@ inline auto declare_result() { return FieldTuple<ModuleResult>{}; }
  */
 #define PROPERTY_TYPE_RESULTS(prop_type) inline auto prop_type::results_()
 
+/** @brief Declares a PropertyType that is templated on one or more types
+ *
+ *  This macro wraps the process of declaring a templated property type. The
+ *  property type will still need to be instantiated. This macro is the
+ *  templated version of `DECLARE_PROPERTY_TYPE`.
+ *
+ *  @param[in] prop_type The name of the property type
+ *  @param[in] ...       The names of the template type parameters
+ *
+ */
+#define DECLARE_TEMPLATED_PROPERTY_TYPE(prop_type, ...)            \
+    struct prop_type : sde::PropertyType<prop_type<__VA_ARGS__>> { \
+        auto inputs_();                                            \
+        auto results_();                                           \
+    }
+
+/** @brief Defines the inputs_() method of a templated PropertyType
+ *
+ *  This macro is the templated version of `PROPERTY_TYPE_INPUTS`. It wraps the
+ *  signature part of the inputs_() method definition.
+ *
+ *  @param[in] prop_type The name of the PropertyType whose inputs_() method is
+ *                       being defined.
+ *  @param[in] ...       The names of the template type parameters.
+ */
+#define TEMPLATED_PROPERTY_TYPE_INPUTS(prop_type, ...) \
+    inline auto prop_type<__VA_ARGS__>::inputs_()
+
+/** @brief Defines the results_() method of a templated PropertyType
+ *
+ *  This macro is the templated version of `PROPERTY_TYPE_RESULTS`. It wraps the
+ *  signature part of the results_() method definition.
+ *
+ *  @param[in] prop_type The name of the PropertyType whose results_() method is
+ *                       being defined.
+ *  @param[in] ...       The names of the template type parameters.
+ */
+#define TEMPLATED_PROPERTY_TYPE_RESULTS(prop_type, ...) \
+    inline auto prop_type<__VA_ARGS__>::results_()
+
 // ----------------------------- Implementations -------------------------------
 #define PROP_TYPE PropertyType<DerivedType>
 
