@@ -1,4 +1,4 @@
-#include "sde/detail_/module_pimpl.hpp"
+#include "src/sde/detail_/module_pimpl.hpp"
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
 #include <regex>

@@ -1,6 +1,7 @@
 #pragma once
 #include <functional> //For comparison functors
 #include <string>
+
 /** @brief Namespace for functors used in bounds checking inputs to a module
  *
  *  Many of the bounds checks we provide for the user are likely to interfere

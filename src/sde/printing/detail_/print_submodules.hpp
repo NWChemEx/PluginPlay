@@ -1,5 +1,5 @@
 #pragma once
-#include "sde/printing/detail_/rest_printer.hpp"
+#include "rest_printer.hpp"
 #include "sde/submodule_request.hpp"
 #include "sde/types.hpp"
 

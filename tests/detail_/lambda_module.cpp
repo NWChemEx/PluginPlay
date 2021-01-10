@@ -1,6 +1,6 @@
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/lambda_module.hpp>
+#include "sde/lambda_module.hpp"
 
 /* Testing strategy.
  *

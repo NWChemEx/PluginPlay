@@ -1,4 +1,4 @@
-#include "sde/detail_/module_input_pimpl.hpp"
+#include "detail_/module_input_pimpl.hpp"
 #include "sde/module_input.hpp"
 
 namespace sde {

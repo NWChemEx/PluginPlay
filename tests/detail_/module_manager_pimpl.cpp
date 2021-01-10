@@ -1,6 +1,6 @@
 #include "tests/examples/writing_a_module.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/module_manager_pimpl.hpp>
+#include "src/sde/detail_/module_manager_pimpl.hpp"
 
 using namespace sde;
 using namespace sde::detail_;

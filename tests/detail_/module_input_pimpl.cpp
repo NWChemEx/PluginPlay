@@ -1,5 +1,6 @@
+#include "src/sde/detail_/module_input_pimpl.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/module_input_pimpl.hpp>
+
 using namespace sde;
 using namespace sde::detail_;
 using check_fxn = typename ModuleInputPIMPL::any_check;

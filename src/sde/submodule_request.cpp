@@ -1,4 +1,4 @@
-#include "sde/detail_/submodule_request_pimpl.hpp"
+#include "detail_/submodule_request_pimpl.hpp"
 
 namespace sde {
 

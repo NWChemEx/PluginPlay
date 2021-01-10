@@ -58,8 +58,8 @@ cpp_find_or_build_dependency(
 
 cpp_add_library(
     sde
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/sde"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/sde"
     DEPENDS nwx::utilities cereal bphash::bphash
 )
 

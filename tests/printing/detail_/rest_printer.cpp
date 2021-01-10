@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <sde/printing/detail_/rest_printer.hpp>
+#include "src/sde/printing/detail_/rest_printer.hpp"
 #include <sstream>
 using namespace sde::printing::detail_;
 

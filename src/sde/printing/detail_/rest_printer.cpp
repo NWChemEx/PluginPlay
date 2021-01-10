@@ -1,4 +1,4 @@
-#include "sde/printing/detail_/rest_printer.hpp"
+#include "rest_printer.hpp"
 #include <iterator>
 #include <sstream>
 

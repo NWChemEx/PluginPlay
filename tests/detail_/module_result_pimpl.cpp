@@ -1,4 +1,4 @@
-#include "sde/detail_/module_result_pimpl.hpp"
+#include "src/sde/detail_/module_result_pimpl.hpp"
 #include <catch2/catch.hpp>
 using namespace sde;
 using namespace sde::detail_;

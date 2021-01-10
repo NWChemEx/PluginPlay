@@ -1,7 +1,7 @@
-#include "sde/printing/detail_/print_inputs.hpp"
-#include "sde/printing/detail_/print_results.hpp"
-#include "sde/printing/detail_/print_submodules.hpp"
-#include "sde/printing/detail_/rest_printer.hpp"
+#include "detail_/print_inputs.hpp"
+#include "detail_/print_results.hpp"
+#include "detail_/print_submodules.hpp"
+#include "detail_/rest_printer.hpp"
 #include "sde/printing/document_module.hpp"
 #include <sstream>
 #include <utilities/printing/demangler.hpp>

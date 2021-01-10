@@ -489,6 +489,7 @@ private:
 #define MODULE_RUN(module_name, inputs, sumbods) \
     sde::type::result_map module_name::run_(     \
       sde::type::input_map inputs, sde::type::submodule_map submods) const
+
 //--------------------------------Implementations-------------------------------
 
 inline type::result_map ModuleBase::run(type::input_map inputs,

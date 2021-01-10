@@ -1,4 +1,4 @@
-#include "sde/printing/detail_/print_inputs.hpp"
+#include "src/sde/printing/detail_/print_inputs.hpp"
 #include <catch2/catch.hpp>
 #include <utilities/printing/word_wrap_stream.hpp>
 

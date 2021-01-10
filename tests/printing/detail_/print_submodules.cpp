@@ -1,4 +1,4 @@
-#include "sde/printing/detail_/print_submodules.hpp"
+#include "src/sde/printing/detail_/print_submodules.hpp"
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
 #include <tests/test_common.hpp>
