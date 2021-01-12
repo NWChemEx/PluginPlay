@@ -1,5 +1,5 @@
-#include "sde/detail_/module_manager_pimpl.hpp"
-#include "sde/detail_/module_pimpl.hpp"
+#include "detail_/module_manager_pimpl.hpp"
+#include "detail_/module_pimpl.hpp"
 #include "sde/module_manager.hpp"
 namespace sde {
 

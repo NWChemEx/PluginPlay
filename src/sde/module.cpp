@@ -1,4 +1,4 @@
-#include "sde/detail_/module_pimpl.hpp"
+#include "detail_/module_pimpl.hpp"
 #include "sde/module.hpp"
 #include <utilities/printing/demangler.hpp>
 

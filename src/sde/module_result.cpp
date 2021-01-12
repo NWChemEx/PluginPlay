@@ -1,4 +1,4 @@
-#include "sde/detail_/module_result_pimpl.hpp"
+#include "detail_/module_result_pimpl.hpp"
 #include "sde/module_result.hpp"
 #include <typeindex>
 

@@ -1,4 +1,4 @@
-#include "sde/printing/detail_/print_results.hpp"
+#include "print_results.hpp"
 #include <utilities/printing/demangler.hpp>
 #include <utilities/printing/table.hpp>
 

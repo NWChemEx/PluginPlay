@@ -1,5 +1,5 @@
 #pragma once
-#include "sde/detail_/module_pimpl.hpp"
+#include "src/sde/detail_/module_pimpl.hpp"
 #include <sde/module.hpp>
 #include <sde/module_base.hpp>
 #include <sde/property_type.hpp>

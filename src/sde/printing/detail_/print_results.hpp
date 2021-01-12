@@ -1,6 +1,6 @@
 #pragma once
 #include "sde/module_result.hpp"
-#include "sde/printing/detail_/rest_printer.hpp"
+#include "rest_printer.hpp"
 #include "sde/types.hpp"
 
 namespace sde::printing::detail_ {

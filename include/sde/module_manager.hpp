@@ -4,9 +4,11 @@
 #include "sde/types.hpp"
 #include <memory>
 namespace sde {
+
 namespace detail_ {
 class ModuleManagerPIMPL;
 }
+
 /** @brief Class responsible for manipulating
  *
  */

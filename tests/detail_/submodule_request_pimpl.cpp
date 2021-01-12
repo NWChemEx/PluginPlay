@@ -1,6 +1,6 @@
 #include "tests/test_common.hpp"
 #include <catch2/catch.hpp>
-#include <sde/detail_/submodule_request_pimpl.hpp>
+#include <src/sde/detail_/submodule_request_pimpl.hpp>
 
 using namespace sde::detail_;
 using module_ptr = typename SubmoduleRequestPIMPL::module_ptr;
