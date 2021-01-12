@@ -21,6 +21,7 @@ venv/
 docs/venv/
 
 # These are common build directory names
+build/
 docs/build
 docs/doxyoutput
 docs/source/api
