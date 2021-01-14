@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 namespace sde {
+// Forward declare ModuleInput for meta-programming
 class ModuleInput;
 
 /** @brief Records the property type's input or result API.
@@ -113,6 +114,16 @@ public:
     template<typename T, typename U>
     auto add_field(type::key key, U&& value);
 
+    /** @brief Sets the default value of the most recently added field.
+     *
+     *  This function is used to set and/or change the default value of the
+     *  most recently added field.
+     *
+     *  @tparam T The type of the default value. @p T must be implicitly
+     *            convertable to the type of the field.
+     *
+     *  @param[in] value The new default for the most recently added field.
+     */
     template<typename T>
     void set_default(T&& value);
 
@@ -215,6 +226,131 @@ private:
     /// The fields that have been added so far
     typename traits_type::template field_array<traits_type::nfields> m_values_;
 };
+
+/** @brief Compares two FieldTuple instances for equality.
+ *  @relates FieldTuple
+ *
+ *  Two FieldTuple instances are equal if they have the fields have the same
+ *  types, keys, and defaults. The fields must appear in the same order as well.
+ *
+ *  @tparam LHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether the FieldTuple is for inputs or results
+ *                  respectively.
+ *  @tparam LHSTypes The types of the fields in the FieldTuple appearing on the
+ *                   left of `operator==`.
+ *  @tparam RHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether the FieldTuple is for inputs or results
+ *                  respectively.
+ *  @tparam RHSTypes The types of the fields in the FieldTuple appearing on the
+ *                   left of the `operator==`
+ *
+ *  @param[in] lhs The FieldTuple on the left of `operator==`
+ *  @param[in] rhs The FieldTuple on the right of `operator==`
+ *
+ *  @return True if the FieldTuple instances are equal and false otherwise.
+ */
+template<typename LHSType, typename... LHSTypes, typename RHSType,
+         typename... RHSTypes>
+bool operator==(const FieldTuple<LHSType, LHSTypes...>& lhs,
+                const FieldTuple<RHSType, RHSTypes...>& rhs) {
+    if constexpr(!std::is_same_v<decltype(lhs), decltype(rhs)>) {
+        return false;
+    } else {
+        return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    }
+}
+
+/** @brief Determines if two FieldTuple instances are different.
+ *  @relates FieldTuple
+ *
+ *  Two FieldTuple instances are equal if they have the fields have the same
+ *  types, keys, and defaults. The fields must appear in the same order as well.
+ *
+ *  @tparam LHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether the FieldTuple is for inputs or results
+ *                  respectively.
+ *  @tparam LHSTypes The types of the fields in the FieldTuple appearing on the
+ *                   left of `operator!=`.
+ *  @tparam RHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether the FieldTuple is for inputs or results
+ *                  respectively.
+ *  @tparam RHSTypes The types of the fields in the FieldTuple appearing on the
+ *                   left of the `operator!=`
+ *
+ *  @param[in] lhs The FieldTuple on the left of `operator!=`
+ *  @param[in] rhs The FieldTuple on the right of `operator!=`
+ *
+ *  @return True if the FieldTuple instances are different and false otherwise.
+ */
+template<typename LHSType, typename... LHSTypes, typename RHSType,
+         typename... RHSTypes>
+bool operator!=(const FieldTuple<LHSType, LHSTypes...>& lhs,
+                const FieldTuple<RHSType, RHSTypes...>& rhs) {
+    return !(lhs == rhs);
+}
+
+/** @brief Implements operator+ for FieldTuple
+ *  @relates FieldTuple.
+ *
+ *  Union of FieldTuple instances is done by recursion. This function wraps the
+ *  recursion logic. Users should go through the public API `operator+`.
+ *
+ *  @tparam LHSType The type of the object on the left of `operator+`. Assumed
+ *                  to be a FieldTuple.
+ *  @tparam RHSType The type of the object on the right of `operator+`. Assumed
+ *                  to be a FieldTuple.
+ *  @tparam depth   The index of the field being added. Must be in the range
+ *                  [0, sizeof(rhs)).
+ *
+ *  @param[in] lhs The object on the left of `operator+`.
+ *  @param[in] rhs The object on the right of `operator+`.
+ *
+ *  @return The FieldTuple resulting from concatenating @p lhs with the last
+ *          sizeof(rhs) - depth fields of @p rhs.
+ */
+template<typename LHSType, typename RHSType, std::size_t depth = 0>
+auto union_guts(LHSType&& lhs, const RHSType& rhs) {
+    if constexpr(rhs.size() == depth) { // End recursion
+        return lhs;
+    } else { // Non-empty RHS
+        auto itr = rhs.begin();
+        std::advance(itr, depth);
+        const auto& [k, v] = *itr;
+        using tuple_type   = typename RHSType::traits_type::tuple_of_fields;
+        using v_type       = std::tuple_element_t<depth, tuple_type>;
+        auto rv            = lhs.template add_field<v_type>(k);
+        if(v.has_value()) { rv.set_default(v.template value<v_type>()); }
+        return union_guts<decltype(rv), RHSType, depth + 1>(std::move(rv), rhs);
+    }
+}
+
+/** @brief Returns the union of two FieldTuple instances.
+ *  @relates FieldTuple
+ *
+ *  This function will take the union of two FieldTuple instances. The resulting
+ *  instance will be of type `FieldTuple<LHSType, LHSTypes..., RHSTypes...>`.
+ *  The order of the fields will be those of @p lhs, in the same order they
+ *  appear in @p lhs, followed by those in @p rhs (also in the same order they
+ *  appear in @p rhs).
+ *
+ *  @tparam LHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether @p lhs is a FieldTuple of inputs or results.
+ *  @tparam LHSTypes The types of the fields appearing in @p lhs.
+ *  @tparam RHSType Assumed to be either ModuleInput or ModuleResult depending
+ *                  on whether @p rhs is a FieldTuple of inputs or results.
+ *  @tparam RHSTypes The types of the fields appearin in @p rhs.
+ *
+ *  @param[in] lhs The FieldTuple on the left side of `operator+`.
+ *  @param[in] rhs The FieldTuple on the right side of `operator+`.
+ *
+ *  @return The union of @p lhs with @p rhs.
+ */
+template<typename LHSType, typename... LHSTypes, typename RHSType,
+         typename... RHSTypes>
+auto operator+(const FieldTuple<LHSType, LHSTypes...>& lhs,
+               const FieldTuple<RHSType, RHSTypes...>& rhs) {
+    return union_guts(FieldTuple<LHSType, LHSTypes...>(lhs), rhs);
+}
 
 /*******************************************************************************
  *                                 Implementations                             *
