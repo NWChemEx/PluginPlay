@@ -5,7 +5,7 @@ namespace sde {
 template<typename DerivedType, typename BaseType>
 auto PROP_TYPE::inputs() {
     DerivedType parent;
-    if constexpr(std::is_same_v<BaseType, std::nullptr_t>) {
+    if constexpr(am_base_pt) {
         return parent.inputs_();
     } else {
         return parent.inputs_() + BaseType::inputs();
@@ -15,7 +15,7 @@ auto PROP_TYPE::inputs() {
 template<typename DerivedType, typename BaseType>
 auto PROP_TYPE::results() {
     DerivedType parent;
-    if constexpr(std::is_same_v<BaseType, std::nullptr_t>) {
+    if constexpr(am_base_pt) {
         return parent.results_();
     } else {
         return parent.results_() + BaseType::results();

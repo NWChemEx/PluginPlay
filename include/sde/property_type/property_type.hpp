@@ -2,8 +2,15 @@
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/property_type/field_tuple.hpp"
+#include "sde/property_type/traits.hpp"
 
 namespace sde {
+namespace detail_ {
+struct BasePropertyType {
+    using bases_t = std::tuple<>;
+};
+
+} // namespace detail_
 
 /** @brief Base class for defining the API a module uses to compute a particular
  * property.
@@ -42,7 +49,7 @@ namespace sde {
  * @tparm BaseType The type of the property type this property type inherits
  *                 from.
  */
-template<typename DerivedType, typename BaseType = std::nullptr_t>
+template<typename DerivedType, typename BaseType = detail_::BasePropertyType>
 class PropertyType {
 private:
     /// Type of this class
@@ -51,7 +58,30 @@ private:
     /// Type of the base class
     using base_type = BaseType;
 
+    /// Is this the most basic PropertyType of the hierarchy
+    static constexpr auto am_base_pt = is_base_property_type_v<my_type>;
+
+    /** @brief Returns a tuple of all the property types this class inherits
+     *         from.
+     *
+     *  This function is used to deduce the type of a tuple containing all of
+     *  the property types this property type derives from. It doesn't actually
+     *  fill that tuple or do anything useful. The type of the return is then
+     *  used to set the `bases_t` member typedef.
+     */
+    static auto make_base_tuple() {
+        if constexpr(am_base_pt) {
+            return std::tuple<>{};
+        } else {
+            std::tuple<BaseType> t;
+            typename BaseType::bases_t u{};
+            return std::tuple_cat(t, u);
+        }
+    }
+
 public:
+    using bases_t = decltype(my_type::make_base_tuple());
+
     ///@{
     /** @name Public APIs for obtaining the fields comprising the API
      *

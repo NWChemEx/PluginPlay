@@ -26,10 +26,16 @@ PROPERTY_TYPE_INPUTS(OneIn) {
 }
 PROPERTY_TYPE_RESULTS(OneIn) { return sde::declare_result(); }
 
-// Derived property type which adds anoter input to OneIn
+// Derived property type which adds another input to OneIn
 DECLARE_DERIVED_PROPERTY_TYPE(TwoIn, OneIn);
 PROPERTY_TYPE_INPUTS(TwoIn) {
     return sde::declare_input().add_field<double>("Option 2");
+}
+
+// Derived property type which adds another input to TwoIn
+DECLARE_DERIVED_PROPERTY_TYPE(ThreeIn, TwoIn);
+PROPERTY_TYPE_INPUTS(ThreeIn) {
+    return sde::declare_input().add_field<std::string>("Option 3");
 }
 
 // Property type for module with a defaulted option
