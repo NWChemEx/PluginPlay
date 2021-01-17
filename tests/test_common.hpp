@@ -1,8 +1,8 @@
 #pragma once
+#include "sde/module.hpp"
+#include "sde/module_base.hpp"
+#include "sde/property_type/property_type.hpp"
 #include "src/sde/detail_/module_pimpl.hpp"
-#include <sde/module.hpp>
-#include <sde/module_base.hpp>
-#include <sde/property_type.hpp>
 
 namespace testing {
 
@@ -25,6 +25,18 @@ PROPERTY_TYPE_INPUTS(OneIn) {
     return sde::declare_input().add_field<int>("Option 1");
 }
 PROPERTY_TYPE_RESULTS(OneIn) { return sde::declare_result(); }
+
+// Derived property type which adds another input to OneIn
+DECLARE_DERIVED_PROPERTY_TYPE(TwoIn, OneIn);
+PROPERTY_TYPE_INPUTS(TwoIn) {
+    return sde::declare_input().add_field<double>("Option 2");
+}
+
+// Derived property type which adds another input to TwoIn
+DECLARE_DERIVED_PROPERTY_TYPE(ThreeIn, TwoIn);
+PROPERTY_TYPE_INPUTS(ThreeIn) {
+    return sde::declare_input().add_field<std::string>("Option 3");
+}
 
 // Property type for module with a defaulted option
 struct OptionalInput : sde::PropertyType<OptionalInput> {

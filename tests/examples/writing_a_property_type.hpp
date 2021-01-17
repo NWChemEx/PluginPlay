@@ -10,7 +10,7 @@
  * API for registering a new property type:
  */
 #pragma once
-#include <sde/property_type.hpp>
+#include <sde/property_type/property_type.hpp>
 
 /* Declaring the Property Type
  * ---------------------------
