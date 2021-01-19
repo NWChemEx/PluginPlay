@@ -40,6 +40,9 @@ public:
      */
     type::size count(type::key key) const noexcept;
 
+    template<typename ModuleType>
+    void add_module(type::key module_key);
+
     /** @brief Used to add a new module to the list
      *
      * @param module_key
@@ -136,5 +139,14 @@ private:
     /// The object that actually implements the ModuleManager
     std::unique_ptr<detail_::ModuleManagerPIMPL> pimpl_;
 }; // End class ModuleManager
+
+//------------------------------------------------------------------------------
+//                          Inline Implementations
+//------------------------------------------------------------------------------
+
+template<typename ModuleType>
+void ModuleManager::add_module(type::key module_key) {
+    add_module(std::move(module_key), std::make_shared<ModuleType>());
+}
 
 } // namespace sde
