@@ -471,6 +471,9 @@ private:
 #define MODULE_CTOR(module_name) \
     module_name::module_name() : sde::ModuleBase(this)
 
+#define TEMPLATED_MODULE_CTOR(module_name, ...) \
+    module_name<__VA_ARGS__>::module_name() : sde::ModuleBase(this)
+
 /** @brief Starts the definition of a module's run hook.
  *
  *  The run hook of a class derived from ModuleBase defines what a module does
@@ -486,8 +489,12 @@ private:
  *                     function. In your function's body use @p submods to
  *                     access the submodules provided to your module.
  */
-#define MODULE_RUN(module_name, inputs, sumbods) \
-    sde::type::result_map module_name::run_(     \
+#define MODULE_RUN(module_name)              \
+    sde::type::result_map module_name::run_( \
+      sde::type::input_map inputs, sde::type::submodule_map submods) const
+
+#define TEMPLATED_MODULE_RUN(module_name, ...)            \
+    sde::type::result_map module_name<__VA_ARGS__>::run_( \
       sde::type::input_map inputs, sde::type::submodule_map submods) const
 
 //--------------------------------Implementations-------------------------------

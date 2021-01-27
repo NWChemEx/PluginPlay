@@ -29,6 +29,9 @@ class ModuleInput;
 template<typename ElementType, typename... FieldTypes>
 class FieldTuple {
 public:
+    /// Is this Field tuple for inputs? If not it's for results.
+    static constexpr bool is_input = std::is_same_v<ElementType, ModuleInput>;
+
     /// The type of the traits class
     using traits_type = detail_::FieldTupleTraits<ElementType, FieldTypes...>;
 
@@ -319,7 +322,9 @@ auto union_guts(LHSType&& lhs, const RHSType& rhs) {
         using tuple_type   = typename RHSType::traits_type::tuple_of_fields;
         using v_type       = std::tuple_element_t<depth, tuple_type>;
         auto rv            = lhs.template add_field<v_type>(k);
-        if(v.has_value()) { rv.set_default(v.template value<v_type>()); }
+        if constexpr(std::decay_t<LHSType>::is_input) {
+            if(v.has_value()) { rv.set_default(v.template value<v_type>()); }
+        }
         return union_guts<decltype(rv), RHSType, depth + 1>(std::move(rv), rhs);
     }
 }

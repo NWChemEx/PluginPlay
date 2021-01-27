@@ -78,12 +78,12 @@ PROPERTY_TYPE_RESULTS(TwoOut) {
 // Module with no property type
 DECLARE_MODULE(NoPTModule);
 inline MODULE_CTOR(NoPTModule) {}
-inline MODULE_RUN(NoPTModule, , ) { return results(); }
+inline MODULE_RUN(NoPTModule) { return results(); }
 
 // Module with just a property type
 DECLARE_MODULE(NullModule);
 inline MODULE_CTOR(NullModule) { satisfies_property_type<NullPT>(); }
-inline MODULE_RUN(NullModule, , ) { return results(); }
+inline MODULE_RUN(NullModule) { return results(); }
 
 // Module with a description "A description"
 DECLARE_MODULE(DescModule);
@@ -91,7 +91,7 @@ inline MODULE_CTOR(DescModule) {
     satisfies_property_type<NullPT>();
     description("A description");
 }
-inline MODULE_RUN(DescModule, , ) { return results(); }
+inline MODULE_RUN(DescModule) { return results(); }
 
 // Module with a citation "A citation"
 DECLARE_MODULE(CiteModule);
@@ -99,19 +99,19 @@ inline MODULE_CTOR(CiteModule) {
     satisfies_property_type<NullPT>();
     citation("A citation");
 }
-inline MODULE_RUN(CiteModule, , ) { return results(); }
+inline MODULE_RUN(CiteModule) { return results(); }
 
 // Module which takes a polymorphic input
 DECLARE_MODULE(PolymorphicModule);
 inline MODULE_CTOR(PolymorphicModule) {
     satisfies_property_type<PolymorphicOptions>();
 }
-inline MODULE_RUN(PolymorphicModule, , ) { return results(); }
+inline MODULE_RUN(PolymorphicModule) { return results(); }
 
 // A module with int input "Option 1"
 DECLARE_MODULE(NotReadyModule);
 inline MODULE_CTOR(NotReadyModule) { satisfies_property_type<OneIn>(); }
-inline MODULE_RUN(NotReadyModule, , ) { return results(); }
+inline MODULE_RUN(NotReadyModule) { return results(); }
 
 // A module with a defaulted int option
 struct ReadyModule : sde::ModuleBase {
@@ -132,12 +132,12 @@ inline MODULE_CTOR(NotReadyModule2) {
     satisfies_property_type<OneIn>();
     add_input<int>("Option 2");
 }
-inline MODULE_RUN(NotReadyModule2, , ) { return results(); }
+inline MODULE_RUN(NotReadyModule2) { return results(); }
 
 // One int result "Result 1" set to 4
 DECLARE_MODULE(ResultModule);
 inline MODULE_CTOR(ResultModule) { satisfies_property_type<OneOut>(); }
-inline MODULE_RUN(ResultModule, , ) {
+inline MODULE_RUN(ResultModule) {
     auto rv = results();
     return OneOut::wrap_results(rv, int{4});
 }
@@ -148,7 +148,7 @@ inline MODULE_CTOR(SubModModule) {
     satisfies_property_type<NullPT>();
     add_submodule<NullPT>("Submodule 1");
 }
-inline MODULE_RUN(SubModModule, , ) { return results(); }
+inline MODULE_RUN(SubModModule) { return results(); }
 
 // Module using every feature
 DECLARE_MODULE(RealDeal);
@@ -167,7 +167,7 @@ inline MODULE_CTOR(RealDeal) {
     citation("B. Person. *A So-So Article*. A Journal Everyone Has Heard"
              "Of. 1 (2009).");
 }
-inline MODULE_RUN(RealDeal, , ) {
+inline MODULE_RUN(RealDeal) {
     auto rv = results();
     return OneOut::wrap_results(rv, int{4});
 }
