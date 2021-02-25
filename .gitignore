@@ -20,6 +20,9 @@
 venv/
 docs/venv/
 
+# This is where Jupyter/IPython store backup files
+.ipynb_checkpoints/
+
 # These are common build directory names
 build/
 docs/build
@@ -28,7 +31,6 @@ docs/source/api
 *-build-*/
 Debug/
 Release/
-build/
 
 # Users commonly store their specific CMake settings in a toolchain file
 toolchain.cmake
