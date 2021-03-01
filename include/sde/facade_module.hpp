@@ -9,6 +9,15 @@ namespace detail_ {
 
 /** @brief Implements a facade module
  *
+ *  A facade module simply returns a value. Notably this means it has no body
+ *  and it ignores the inputs (options and submodules) provided to it. This is
+ *  useful in at least two scenarios:
+ *
+ *  - unit testing: we don't need to hook-up a full fledged module, but can
+ *    simply make a facade module to mimic the call.
+ *  - user input: sometimes the user just wants to specify what a module returns
+ *
+ *  @tparam PropertyType the property type that the module satisfies.
  */
 template<typename PropertyType>
 class FacadeModule : public ModuleBase {
@@ -33,7 +42,15 @@ public:
     using submodule_map = type::submodule_map;
 
     /** @brief Creates a FacadeModule by wrapping the provided arguments.
-
+     *
+     *  This ctor creates the facade module. If the arguments to the ctor are
+     *  not of the right types, or there is too many/few arguments, this class
+     *  will fail to compile.
+     *
+     *  @tparam Args The types of the results that the facade module will
+     *               return. The types must be implicitly convertible to the
+     *               return types of the property type.
+     *  @param[in] args The values that the module will return.
      */
     template<typename... Args>
     explicit FacadeModule(Args&&... args);
@@ -71,6 +88,15 @@ private:
 
 /** @brief Creates a Facade module by wrapping the provided callback in a
  *         FacadeModule instance.
+ *
+ *  @tparam PropertyType The property type that this facade satisfies.
+ *  @tparam Args         The types of the arguments that the facade module will
+ *                       return.
+ *
+ *  @param[in] args The values that the facade module will return. The order of
+ *                  @p args must be the same as the order defined by the
+ *                  property type.
+ *
  *  @return The Facade module.
  */
 template<typename PropertyType, typename... Args>
