@@ -8,10 +8,8 @@
 #include <cereal/types/functional.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
-
 #include <functional>
 #include <memory>
-#include <type_traits> // is_same<>
 #include <utilities/printing/print_stl.hpp>
 
 namespace sde::detail_ {
@@ -486,15 +484,9 @@ private:
      */
     template<typename Archive>
     void save__(Archive& ar) const {
-        if constexpr(
-          cereal::traits::is_output_serializable<T, decltype(ar)>::value &&
-          !std::is_same_v<T,
-                          decltype(std::reference_wrapper<const double>())> &&
-          !std::is_same_v<T, decltype(std::reference_wrapper<const int>())> &&
-          !std::is_same_v<
-            T, decltype(std::reference_wrapper<const std::vector<double>>())> &&
-          !std::is_same_v<
-            T, decltype(std::reference_wrapper<const std::vector<int>>())>) {
+        if constexpr(cereal::traits::is_output_serializable<T, decltype(
+                                                                 ar)>::value &&
+                     !std::is_const_v<T>) {
             ar& cereal::make_nvp("SDEAnyWrapper", value_());
         }
     }
@@ -506,16 +498,9 @@ private:
      */
     template<typename Archive>
     void load__(Archive& ar) {
-        if constexpr(
-          !std::is_const_v<T> &&
-          cereal::traits::is_input_serializable<T, decltype(ar)>::value &&
-          !std::is_same_v<T,
-                          decltype(std::reference_wrapper<const double>())> &&
-          !std::is_same_v<T, decltype(std::reference_wrapper<const int>())> &&
-          !std::is_same_v<
-            T, decltype(std::reference_wrapper<const std::vector<double>>())> &&
-          !std::is_same_v<
-            T, decltype(std::reference_wrapper<const std::vector<int>>())>) {
+        if constexpr(!std::is_const_v<T> &&
+                     cereal::traits::is_input_serializable<T, decltype(
+                                                                ar)>::value) {
             ar& cereal::make_nvp("SDEAnyWrapper", value_());
         }
     }
