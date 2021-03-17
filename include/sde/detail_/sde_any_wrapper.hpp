@@ -3,7 +3,15 @@
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/functional.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
+#include <functional>
 #include <memory>
+#include <type_traits> // is_same<>
 #include <utilities/printing/print_stl.hpp>
 
 namespace sde::detail_ {
@@ -207,6 +215,18 @@ public:
     T cast() {
         return std::any_cast<T>(m_value_);
     }
+
+    /// To be implemented by the derived class
+    virtual void save_(cereal::JSONOutputArchive& ar) const = 0;
+
+    /// To be implemented by the derived class
+    virtual void save_(cereal::BinaryOutputArchive& ar) const = 0;
+
+    /// To be implemented by the derived class
+    virtual void load_(cereal::JSONInputArchive& ar) = 0;
+
+    /// To be implemented by the derived class
+    virtual void load_(cereal::BinaryInputArchive& ar) = 0;
 
 protected:
     /** @brief Deep copies the type-erased value held in @p rhs.
@@ -435,6 +455,70 @@ private:
      *              throw guarantee.
      */
     void hash_(Hasher& h) const override { h(value_()); }
+
+    /** @brief Implements JSON serialization for SDEAnyWrapper pointer
+     *
+     * @tparam Archive object used for serialization.
+     */
+    void save_(cereal::JSONOutputArchive& ar) const override { save__(ar); }
+
+    /** @brief Implements binary serialization for SDEAnyWrapper pointer
+     *
+     * @tparam Archive object used for serialization.
+     */
+    void save_(cereal::BinaryOutputArchive& ar) const override { save__(ar); }
+
+    /** @brief Implements JSON deserialization for SDEAnyWrapper pointer
+     *
+     * @tparam Archive object to be deserialized.
+     */
+    void load_(cereal::JSONInputArchive& ar) override { load__(ar); }
+
+    /** @brief Implements binary deserialization for SDEAnyWrapper pointer
+     *
+     * @tparam Archive object to be deserialized.
+     */
+    void load_(cereal::BinaryInputArchive& ar) override { load__(ar); }
+
+    /** @brief Internal function template to serialize SDEAnyWrapper pointer
+     *
+     * @tparam Archive object for serialization.
+     */
+    template<typename Archive>
+    void save__(Archive& ar) const {
+        if constexpr(
+          cereal::traits::is_output_serializable<T, decltype(ar)>::value &&
+          !std::is_same_v<T,
+                          decltype(std::reference_wrapper<const double>())> &&
+          !std::is_same_v<T, decltype(std::reference_wrapper<const int>())> &&
+          !std::is_same_v<
+            T, decltype(std::reference_wrapper<const std::vector<double>>())> &&
+          !std::is_same_v<
+            T, decltype(std::reference_wrapper<const std::vector<int>>())>) {
+            ar& cereal::make_nvp("SDEAnyWrapper", value_());
+        }
+    }
+
+    /** @brief Internal function template to deserialize for SDEAnyWrapper
+     * pointer
+     *
+     * @tparam Archive object to be deserialized.
+     */
+    template<typename Archive>
+    void load__(Archive& ar) {
+        if constexpr(
+          !std::is_const_v<T> &&
+          cereal::traits::is_input_serializable<T, decltype(ar)>::value &&
+          !std::is_same_v<T,
+                          decltype(std::reference_wrapper<const double>())> &&
+          !std::is_same_v<T, decltype(std::reference_wrapper<const int>())> &&
+          !std::is_same_v<
+            T, decltype(std::reference_wrapper<const std::vector<double>>())> &&
+          !std::is_same_v<
+            T, decltype(std::reference_wrapper<const std::vector<int>>())>) {
+            ar& cereal::make_nvp("SDEAnyWrapper", value_());
+        }
+    }
 };
 
 //-------------------------------Implementations--------------------------------
@@ -444,18 +528,18 @@ bool SDEAnyWrapperBase::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
 
-inline bool SDEAnyWrapperBase::operator==(const SDEAnyWrapperBase& rhs) const
-  noexcept {
+inline bool SDEAnyWrapperBase::operator==(
+  const SDEAnyWrapperBase& rhs) const noexcept {
     return are_equal_(rhs);
 }
 
-inline bool SDEAnyWrapperBase::operator!=(const SDEAnyWrapperBase& rhs) const
-  noexcept {
+inline bool SDEAnyWrapperBase::operator!=(
+  const SDEAnyWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
 template<typename U>
-explicit SDEAnyWrapper(U&& value)->SDEAnyWrapper<std::remove_reference_t<U>>;
+explicit SDEAnyWrapper(U&& value) -> SDEAnyWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
 typename SDEAnyWrapper<T>::wrapper_ptr SDEAnyWrapper<T>::clone_() const {

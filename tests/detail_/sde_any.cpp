@@ -1,7 +1,14 @@
 #include <catch2/catch.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <map>
 #include <sde/detail_/sde_any.hpp>
+#include <string>
 #include <typeindex>
+#include <utility> //std::pair
 #include <vector>
 
 using namespace sde::detail_;
@@ -164,4 +171,31 @@ TEST_CASE("SDEAnyCast") {
 TEST_CASE("make_SDEAny") {
     SDEAny a{int{3}};
     REQUIRE(a == make_SDEAny<int>(3));
+}
+
+TEMPLATE_TEST_CASE(
+  "SDEAny serialization", "[SDEAny][serialization]",
+  (std::pair<cereal::JSONOutputArchive, cereal::JSONInputArchive>),
+  (std::pair<cereal::BinaryOutputArchive, cereal::BinaryInputArchive>)) {
+    std::vector<int> v{3, 1, 4}, v2{0, 0, 0};
+    SDEAny sai{int{33}};
+    SDEAny sad{double{33.}};
+    SDEAny sas{std::string{"thirtythree"}};
+    SDEAny sav{v};
+    // Type and size of the object needs to be known to avoid seg fault during
+    // deserialization.
+    SDEAny sai2{int{}}, sad2{double{}}, sas2{std::string{"xxxxxxxx"}}, sav2{v2};
+    std::stringstream ss;
+    {
+        typename TestType::first_type oarchive(ss);
+        oarchive(sai, sad, sas, sav);
+    }
+    {
+        typename TestType::second_type iarchive(ss);
+        iarchive(sai2, sad2, sas2, sav2);
+    }
+    REQUIRE(sai == sai2);
+    REQUIRE(sad == sad2);
+    REQUIRE(sas == sas2);
+    REQUIRE(sav == sav2);
 }

@@ -422,6 +422,32 @@ private:
 
     /// The object holding the actual value
     wrapper_ptr m_ptr_;
+
+    friend class cereal::access;
+
+    /** @brief Enables serialization for SDEAny instances.
+     *
+     * This function creates an Archive object that includes serialization of
+     * SDEAny instances.
+     *
+     * @tparam Archive object to be used for serialization.
+     */
+    template<typename Archive>
+    void save(Archive& ar) const {
+        m_ptr_->save_(ar);
+    }
+
+    /** @brief Enables deserialization for SDEAny instances.
+     *
+     * This function deserialize an Archive object that includes serialization
+     * of SDEAny instances.
+     *
+     * @tparam Archive object to be deserialized.
+     */
+    template<typename Archive>
+    void load(Archive& ar) {
+        m_ptr_->load_(ar);
+    }
 };
 
 /** @brief Provides access to the value wrapped in an SDEAny instance.
