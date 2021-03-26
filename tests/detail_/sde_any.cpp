@@ -4,6 +4,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/unordered_map.hpp>
+#include <cereal/types/vector.hpp>
 #include <map>
 #include <sde/detail_/sde_any.hpp>
 #include <string>
@@ -177,14 +178,14 @@ TEMPLATE_TEST_CASE(
   "SDEAny serialization", "[SDEAny][serialization]",
   (std::pair<cereal::JSONOutputArchive, cereal::JSONInputArchive>),
   (std::pair<cereal::BinaryOutputArchive, cereal::BinaryInputArchive>)) {
-    std::vector<int> v{3, 1, 4}, v2{0, 0, 0};
+    std::vector<int> v{3, 1, 4}, v2{};
     SDEAny sai{int{33}};
     SDEAny sad{double{33.}};
     SDEAny sas{std::string{"thirtythree"}};
     SDEAny sav{v};
     // Type and size of the object needs to be known to avoid seg fault during
     // deserialization.
-    SDEAny sai2{int{}}, sad2{double{}}, sas2{std::string{"xxxxxxxx"}}, sav2{v2};
+    SDEAny sai2{int{}}, sad2{double{}}, sas2{std::string{}}, sav2{v2};
     std::stringstream ss;
     {
         typename TestType::first_type oarchive(ss);

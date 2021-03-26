@@ -7,6 +7,7 @@
 #include <cereal/archives/json.hpp>
 #include <cereal/types/functional.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
 #include <functional>
 #include <memory>
