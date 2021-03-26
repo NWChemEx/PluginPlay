@@ -56,4 +56,18 @@ bool ModuleResult::operator==(const ModuleResult& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
+template<class Archive>
+inline void ModuleResult::serialize(Archive& ar) {
+    ar(cereal::make_nvp("ModuleResult", pimpl_));
+}
+
+template void ModuleResult::serialize<cereal::JSONOutputArchive>(
+  cereal::JSONOutputArchive&);
+template void ModuleResult::serialize<cereal::JSONInputArchive>(
+  cereal::JSONInputArchive&);
+template void ModuleResult::serialize<cereal::BinaryOutputArchive>(
+  cereal::BinaryOutputArchive&);
+template void ModuleResult::serialize<cereal::BinaryInputArchive>(
+  cereal::BinaryInputArchive&);
+
 } // namespace sde

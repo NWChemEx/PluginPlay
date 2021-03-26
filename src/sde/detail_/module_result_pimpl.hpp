@@ -1,6 +1,14 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
 #include "sde/types.hpp"
+#include <cereal/access.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/optional.hpp> // std::optional
+#include <cereal/types/unordered_map.hpp>
+
 #include <memory>
 #include <typeindex>
 #include <utilities/printing/demangler.hpp>
@@ -182,6 +190,15 @@ private:
 
     /// The RTTI of this field
     std::optional<type::rtti> m_type_;
+
+    friend class cereal::access;
+
+    template<class Archive>
+    void save(Archive& ar) const;
+
+    template<class Archive>
+    void load(Archive& ar);
+
 }; // class ModuleResultPIMPL
 
 //-----------------------------------Implementations----------------------------
@@ -227,4 +244,40 @@ inline bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 
+template<class Archive>
+inline void ModuleResultPIMPL::save(Archive& ar) const {
+    ar& cereal::make_nvp("ModuleResultPIMPL has_description",
+                         has_description());
+    if(has_description())
+        ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
+    ar& cereal::make_nvp("ModuleResultPIMPL has_type", has_type());
+    if(has_type()) {
+        // ar& cereal::make_nvp("ModuleResultPIMPL", m_type_);
+        ar& cereal::make_nvp("ModuleResultPIMPL has_value", has_value());
+        if(has_value()) ar& cereal::make_nvp("ModuleResultPIMPL", m_value_);
+    }
+}
+
+template<class Archive>
+inline void ModuleResultPIMPL::load(Archive& ar) {
+    bool hasdescription, hastype, hasvalue;
+    ar& cereal::make_nvp("ModuleResultPIMPL has_description", hasdescription);
+    if(hasdescription)
+        ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
+    ar& cereal::make_nvp("ModuleResultPIMPL has_type", hastype);
+    if(hastype) {
+        // ar& cereal::make_nvp("ModuleResultPIMPL", m_type_);
+        ar& cereal::make_nvp("ModuleResultPIMPL has_value", hasvalue);
+        // if(hasvalue) ar& cereal::make_nvp("ModuleResultPIMPL", m_value_);
+    }
+}
+
+template void ModuleResultPIMPL::save<cereal::JSONOutputArchive>(
+  cereal::JSONOutputArchive&) const;
+template void ModuleResultPIMPL::load<cereal::JSONInputArchive>(
+  cereal::JSONInputArchive&);
+template void ModuleResultPIMPL::save<cereal::BinaryOutputArchive>(
+  cereal::BinaryOutputArchive&) const;
+template void ModuleResultPIMPL::load<cereal::BinaryInputArchive>(
+  cereal::BinaryInputArchive&);
 } // namespace sde::detail_
