@@ -3,6 +3,11 @@
 #include "sde/detail_/sde_any.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
+#include <cereal/access.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <functional>
 #include <set>
 #include <string>
@@ -566,6 +571,10 @@ private:
 
     /// The object that stores the state of the class.
     std::unique_ptr<detail_::ModuleInputPIMPL> m_pimpl_;
+
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive& ar);
 };
 
 //------------------------------Implementations---------------------------------

@@ -96,4 +96,18 @@ bool ModuleInput::operator==(const ModuleInput& rhs) const noexcept {
     return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
+template<class Archive>
+inline void ModuleInput::serialize(Archive& ar) {
+    ar(cereal::make_nvp("ModuleInput", m_pimpl_));
+}
+
+template void ModuleInput::serialize<cereal::JSONOutputArchive>(
+  cereal::JSONOutputArchive&);
+template void ModuleInput::serialize<cereal::JSONInputArchive>(
+  cereal::JSONInputArchive&);
+template void ModuleInput::serialize<cereal::BinaryOutputArchive>(
+  cereal::BinaryOutputArchive&);
+template void ModuleInput::serialize<cereal::BinaryInputArchive>(
+  cereal::BinaryInputArchive&);
+
 } // namespace sde

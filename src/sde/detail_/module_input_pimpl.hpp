@@ -1,6 +1,14 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
+//#include "sde/detail_/typeindex.hpp"
 #include "sde/types.hpp"
+#include <any>
+#include <cereal/access.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/optional.hpp> // std::optional
+#include <cereal/types/unordered_map.hpp>
 #include <optional>
 #include <typeindex>
 #include <utilities/containers/case_insensitive_map.hpp>
@@ -354,6 +362,14 @@ private:
 
     /// The type of this input
     std::optional<rtti_type> m_type_;
+
+    friend class cereal::access;
+
+    template<class Archive>
+    void save(Archive& ar) const;
+
+    template<class Archive>
+    void load(Archive& ar);
 };
 
 /** @brief Compares two ModuleInputPIMPL instances for equality
@@ -487,4 +503,54 @@ inline bool operator!=(const ModuleInputPIMPL& lhs,
     return !(lhs == rhs);
 }
 
+template<class Archive>
+inline void ModuleInputPIMPL::save(Archive& ar) const {
+    ar& cereal::make_nvp("ModuleInputPIMPL is_optional", m_optional_);
+    ar& cereal::make_nvp("ModuleInputPIMPL is_transparent", m_transparent_);
+    ar& cereal::make_nvp("ModuleInputPIMPL has_description", has_description());
+    if(has_description())
+        ar& cereal::make_nvp("ModuleInputPIMPL description", m_desc_);
+    ar& cereal::make_nvp("ModuleInputPIMPL has_type", has_type());
+    // Cannot serialize std::type_index with cereal
+    // This extension works for serialization but fails at load
+    // https://groups.google.com/g/cerealcpp/c/BJw2kOSmRAw
+    if(has_type()) {
+        // ar& cereal::make_nvp("ModuleResultPIMPL type", m_type_.value());
+        ar& cereal::make_nvp("ModuleInputPIMPL has_value", has_value());
+        if(has_value())
+            ar& cereal::make_nvp("ModuleInputPIMPL value", m_value_);
+    }
+}
+
+template<class Archive>
+inline void ModuleInputPIMPL::load(Archive& ar) {
+    bool hasdescription, hastype, hasvalue;
+    // typename ModuleInputPIMPL::rtti_type mytype;
+    ar& cereal::make_nvp("ModuleInputPIMPL is_optional", m_optional_);
+    ar& cereal::make_nvp("ModuleInputPIMPL is_transparent", m_transparent_);
+    ar& cereal::make_nvp("ModuleInputPIMPL has_description", hasdescription);
+    if(hasdescription)
+        ar& cereal::make_nvp("ModuleInputPIMPL description", m_desc_);
+    ar& cereal::make_nvp("ModuleInputPIMPL has_type", hastype);
+    if(has_type()) {
+        // Cannot serialize std::type_index
+        // ar& cereal::make_nvp("ModuleResultPIMPL type", mytype);
+        // set_type(m_type_.value());
+        if(has_value())
+            ar& cereal::make_nvp("ModuleInputPIMPL has_value", hasvalue);
+        // type::any myvalue{m_type_}; // need to specify type to avoid seg
+        // fault type::any myvalue{}; auto myvalue = std::make_any<int>(0);
+        // type::any myvalue{int{}};
+        // ar& cereal::make_nvp("ModuleInputPIMPL value", myvalue);
+    }
+}
+
+template void ModuleInputPIMPL::save<cereal::JSONOutputArchive>(
+  cereal::JSONOutputArchive&) const;
+template void ModuleInputPIMPL::load<cereal::JSONInputArchive>(
+  cereal::JSONInputArchive&);
+template void ModuleInputPIMPL::save<cereal::BinaryOutputArchive>(
+  cereal::BinaryOutputArchive&) const;
+template void ModuleInputPIMPL::load<cereal::BinaryInputArchive>(
+  cereal::BinaryInputArchive&);
 } // namespace sde::detail_
