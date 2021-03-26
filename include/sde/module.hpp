@@ -2,6 +2,13 @@
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/types.hpp"
+#include <cereal/access.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/functional.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+#include <memory>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace sde {
@@ -673,6 +680,15 @@ private:
 
     /// The instance that actually does everything for us.
     pimpl_ptr m_pimpl_;
+
+    /** @brief Serialize/deserialize module instance
+     *
+     * @param ar The archive object
+     */
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive& ar);
+
 }; // class Module
 
 //-----------------------------Implementations----------------------------------

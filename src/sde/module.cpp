@@ -113,4 +113,18 @@ void Module::check_property_type_(type::rtti prop_type) {
     throw std::runtime_error(msg);
 }
 
+template<class Archive>
+inline void Module::serialize(Archive& ar) {
+    ar(cereal::make_nvp("Module", m_pimpl_));
+}
+
+template void Module::serialize<cereal::JSONOutputArchive>(
+  cereal::JSONOutputArchive&);
+template void Module::serialize<cereal::JSONInputArchive>(
+  cereal::JSONInputArchive&);
+template void Module::serialize<cereal::BinaryOutputArchive>(
+  cereal::BinaryOutputArchive&);
+template void Module::serialize<cereal::BinaryInputArchive>(
+  cereal::BinaryInputArchive&);
+
 } // namespace sde
