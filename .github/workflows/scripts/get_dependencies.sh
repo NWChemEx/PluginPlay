@@ -161,6 +161,14 @@ get_lapacke() {
   ${APT_GET_COMMAND} install liblapacke liblapacke-dev
 }
 
+# Wraps installing numpy
+#
+# Usage:
+#   get_numpy
+get_numpy() {
+  ${PIP_COMMAND} install numpy
+}
+
 # Wraps installing OpenBLAS
 #
 # Usage:
@@ -232,6 +240,8 @@ for depend in "$@"; do
     get_gcovr
   elif [ "${depend}" = "lapacke" ]; then
     get_lapacke
+  elif [ "${depend}" = "numpy" ]; then
+    get_numpy
   elif [ "${depend}" = "openblas" ]; then
     get_openblas
   elif [ "${depend}" = "openmpi" ]; then
