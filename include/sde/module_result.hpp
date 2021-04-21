@@ -218,7 +218,7 @@ public:
      */
     bool operator==(const ModuleResult& rhs) const;
 
-    /** @brief Determines if two ModuleResul instances are different
+    /** @brief Determines if two ModuleResult instances are different
      *
      *  Two ModuleResult instances are equivalent if they hold the same
      *  value, have the same description of that value, and require the same
@@ -231,6 +231,26 @@ public:
      *  @throw ??? Throws if the value's comparison throws. Same guarantee.
      */
     bool operator!=(const ModuleResult& rhs) const { return !((*this) == rhs); }
+
+    /** @brief Enables serialization for ModuleResult instances.
+     *
+     * This function saves the ModuleResult instance into an Archive object.
+     *
+     * @tparam Archive The type of archive used for serialization.
+     * @tparam Anytype The type of the bound value of the ModuleResult instance.
+     */
+    template<class Archive, class Anytype = int>
+    void save(Archive& ar) const;
+
+    /** @brief Enables deserialization for ModuleResult instances.
+     *
+     * This function loads the ModuleResult instance from the Archive object.
+     *
+     * @tparam Archive The type of archive used for deserialization.
+     * @tparam Anytype The type of the bound value of the ModuleResult instance.
+     */
+    template<class Archive, class Anytype = int>
+    void load(Archive& ar);
 
 private:
     /// Implements set_type by deferring to PIMPL
@@ -251,10 +271,6 @@ private:
 
     /// The object that holds the actual state of the instance.
     std::unique_ptr<detail_::ModuleResultPIMPL> pimpl_;
-
-    friend class cereal::access;
-    template<class Archive>
-    void serialize(Archive& ar);
 }; // class ModuleResult
 
 //------------------------------Implementations---------------------------------

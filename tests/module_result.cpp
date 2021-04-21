@@ -1,9 +1,9 @@
+#include "sde/detail_/typeindex.hpp"
 #include "sde/module_result.hpp"
 #include <catch2/catch.hpp>
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/unordered_map.hpp>
+
 using namespace sde;
 
 TEST_CASE("ModuleResult : default ctor") {
@@ -224,19 +224,17 @@ TEST_CASE("ModuleResult : move assignment") {
 
 TEST_CASE("ModuleResult serialization") {
     ModuleResult p, p2;
-    p.set_type<double>();
-    p.change(double{9.9});
-    p2.set_type<double>();
-    cereal::JSONOutputArchive stdout(std::cout);
-    stdout(p);
+    p.set_type<int>();
+    p.set_description("test ModuleResult");
+    p.change(int{7});
     std::stringstream ss;
     {
         cereal::BinaryOutputArchive oarchive(ss);
-        oarchive(p);
+        p.save<cereal::BinaryOutputArchive, int>(oarchive);
     }
     {
         cereal::BinaryInputArchive iarchive(ss);
-        iarchive(p2);
+        p2.load<cereal::BinaryInputArchive, int>(iarchive);
     }
-    // REQUIRE(p == p2);
+    REQUIRE(p == p2);
 }

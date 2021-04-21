@@ -1,14 +1,9 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
 #include "sde/types.hpp"
-#include <cereal/access.hpp>
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
-#include <cereal/types/map.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/optional.hpp> // std::optional
-#include <cereal/types/unordered_map.hpp>
-
+#include <cereal/types/optional.hpp>
 #include <memory>
 #include <typeindex>
 #include <utilities/printing/demangler.hpp>
@@ -181,6 +176,30 @@ public:
      */
     bool operator!=(const ModuleResultPIMPL& rhs) const;
 
+    /** @brief Enables serialization for ModuleResultPIMPL instances.
+     *
+     * This function saves the ModuleResultPIMPL instance into an Archive
+     * object.
+     *
+     * @tparam Archive The type of archive used for serialization.
+     * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
+     * instance.
+     */
+    template<class Archive, class Anytype = double>
+    void save(Archive& ar) const;
+
+    /** @brief Enables deserialization for ModuleResultPIMPL instances.
+     *
+     * This function loads the ModuleResultPIMPL instance from the Archive
+     * object.
+     *
+     * @tparam Archive The type of archive used for deserialization.
+     * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
+     * instance.
+     */
+    template<class Archive, class Anytype = double>
+    void load(Archive& ar);
+
 private:
     /// The type-erased value bound to this field
     shared_any m_value_;
@@ -190,14 +209,6 @@ private:
 
     /// The RTTI of this field
     std::optional<type::rtti> m_type_;
-
-    friend class cereal::access;
-
-    template<class Archive>
-    void save(Archive& ar) const;
-
-    template<class Archive>
-    void load(Archive& ar);
 
 }; // class ModuleResultPIMPL
 
@@ -211,8 +222,12 @@ inline void ModuleResultPIMPL::set_type(type::rtti new_type) {
 
 inline void ModuleResultPIMPL::set_value(shared_any new_value) {
     if(std::type_index(new_value->type()) != type()) {
-        std::string msg{"Value is not of type: "};
+        std::string msg{"Value is expected to be of type: "};
         msg += utilities::printing::Demangler::demangle(type().name());
+        msg += ", but the given set_value type is:";
+        msg +=
+          utilities::printing::Demangler::demangle(new_value->type().name());
+
         throw std::invalid_argument(msg);
     }
     m_value_ = new_value;
@@ -244,7 +259,7 @@ inline bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 
-template<class Archive>
+template<class Archive, class Anytype>
 inline void ModuleResultPIMPL::save(Archive& ar) const {
     ar& cereal::make_nvp("ModuleResultPIMPL has_description",
                          has_description());
@@ -252,13 +267,15 @@ inline void ModuleResultPIMPL::save(Archive& ar) const {
         ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
     ar& cereal::make_nvp("ModuleResultPIMPL has_type", has_type());
     if(has_type()) {
-        // ar& cereal::make_nvp("ModuleResultPIMPL", m_type_);
         ar& cereal::make_nvp("ModuleResultPIMPL has_value", has_value());
-        if(has_value()) ar& cereal::make_nvp("ModuleResultPIMPL", m_value_);
+        if(has_value()) {
+            auto myany = *(value().get());
+            ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
+        }
     }
 }
 
-template<class Archive>
+template<class Archive, class Anytype>
 inline void ModuleResultPIMPL::load(Archive& ar) {
     bool hasdescription, hastype, hasvalue;
     ar& cereal::make_nvp("ModuleResultPIMPL has_description", hasdescription);
@@ -266,18 +283,15 @@ inline void ModuleResultPIMPL::load(Archive& ar) {
         ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
     ar& cereal::make_nvp("ModuleResultPIMPL has_type", hastype);
     if(hastype) {
-        // ar& cereal::make_nvp("ModuleResultPIMPL", m_type_);
+        set_type(std::type_index(typeid(Anytype)));
         ar& cereal::make_nvp("ModuleResultPIMPL has_value", hasvalue);
-        // if(hasvalue) ar& cereal::make_nvp("ModuleResultPIMPL", m_value_);
+        if(hasvalue) {
+            SDEAny myany{Anytype{}};
+            ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
+            set_value(std::make_shared<const type::any>(make_SDEAny<Anytype>(
+              std::forward<Anytype>(myany.cast<Anytype>()))));
+        }
     }
 }
 
-template void ModuleResultPIMPL::save<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&) const;
-template void ModuleResultPIMPL::load<cereal::JSONInputArchive>(
-  cereal::JSONInputArchive&);
-template void ModuleResultPIMPL::save<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&) const;
-template void ModuleResultPIMPL::load<cereal::BinaryInputArchive>(
-  cereal::BinaryInputArchive&);
 } // namespace sde::detail_

@@ -56,18 +56,31 @@ bool ModuleResult::operator==(const ModuleResult& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
-template<class Archive>
-inline void ModuleResult::serialize(Archive& ar) {
-    ar(cereal::make_nvp("ModuleResult", pimpl_));
+template<class Archive, class Anytype>
+inline void ModuleResult::save(Archive& ar) const {
+    pimpl_->save<Archive, Anytype>(ar);
 }
 
-template void ModuleResult::serialize<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&);
-template void ModuleResult::serialize<cereal::JSONInputArchive>(
+template<class Archive, class Anytype>
+inline void ModuleResult::load(Archive& ar) {
+    pimpl_->load<Archive, Anytype>(ar);
+}
+
+template void ModuleResult::save<cereal::JSONOutputArchive, int>(
+  cereal::JSONOutputArchive&) const;
+template void ModuleResult::save<cereal::JSONOutputArchive, double>(
+  cereal::JSONOutputArchive&) const;
+template void ModuleResult::load<cereal::JSONInputArchive, int>(
   cereal::JSONInputArchive&);
-template void ModuleResult::serialize<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&);
-template void ModuleResult::serialize<cereal::BinaryInputArchive>(
+template void ModuleResult::load<cereal::JSONInputArchive, double>(
+  cereal::JSONInputArchive&);
+template void ModuleResult::save<cereal::BinaryOutputArchive, int>(
+  cereal::BinaryOutputArchive&) const;
+template void ModuleResult::save<cereal::BinaryOutputArchive, double>(
+  cereal::BinaryOutputArchive&) const;
+template void ModuleResult::load<cereal::BinaryInputArchive, int>(
+  cereal::BinaryInputArchive&);
+template void ModuleResult::load<cereal::BinaryInputArchive, double>(
   cereal::BinaryInputArchive&);
 
 } // namespace sde
