@@ -56,9 +56,9 @@ bool ModuleResult::operator==(const ModuleResult& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
-template<class Archive, class Anytype>
+template<class Archive>
 inline void ModuleResult::save(Archive& ar) const {
-    pimpl_->save<Archive, Anytype>(ar);
+    pimpl_->save<Archive>(ar);
 }
 
 template<class Archive, class Anytype>
@@ -66,17 +66,13 @@ inline void ModuleResult::load(Archive& ar) {
     pimpl_->load<Archive, Anytype>(ar);
 }
 
-template void ModuleResult::save<cereal::JSONOutputArchive, int>(
-  cereal::JSONOutputArchive&) const;
-template void ModuleResult::save<cereal::JSONOutputArchive, double>(
+template void ModuleResult::save<cereal::JSONOutputArchive>(
   cereal::JSONOutputArchive&) const;
 template void ModuleResult::load<cereal::JSONInputArchive, int>(
   cereal::JSONInputArchive&);
 template void ModuleResult::load<cereal::JSONInputArchive, double>(
   cereal::JSONInputArchive&);
-template void ModuleResult::save<cereal::BinaryOutputArchive, int>(
-  cereal::BinaryOutputArchive&) const;
-template void ModuleResult::save<cereal::BinaryOutputArchive, double>(
+template void ModuleResult::save<cereal::BinaryOutputArchive>(
   cereal::BinaryOutputArchive&) const;
 template void ModuleResult::load<cereal::BinaryInputArchive, int>(
   cereal::BinaryInputArchive&);

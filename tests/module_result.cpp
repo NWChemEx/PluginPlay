@@ -230,7 +230,7 @@ TEST_CASE("ModuleResult serialization") {
     std::stringstream ss;
     {
         cereal::BinaryOutputArchive oarchive(ss);
-        p.save<cereal::BinaryOutputArchive, int>(oarchive);
+        p.save<cereal::BinaryOutputArchive>(oarchive);
     }
     {
         cereal::BinaryInputArchive iarchive(ss);

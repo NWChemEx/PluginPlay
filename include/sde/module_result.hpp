@@ -237,9 +237,8 @@ public:
      * This function saves the ModuleResult instance into an Archive object.
      *
      * @tparam Archive The type of archive used for serialization.
-     * @tparam Anytype The type of the bound value of the ModuleResult instance.
      */
-    template<class Archive, class Anytype = int>
+    template<class Archive>
     void save(Archive& ar) const;
 
     /** @brief Enables deserialization for ModuleResult instances.

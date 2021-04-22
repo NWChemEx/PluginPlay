@@ -182,10 +182,8 @@ public:
      * object.
      *
      * @tparam Archive The type of archive used for serialization.
-     * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
-     * instance.
      */
-    template<class Archive, class Anytype = double>
+    template<class Archive>
     void save(Archive& ar) const;
 
     /** @brief Enables deserialization for ModuleResultPIMPL instances.
@@ -197,7 +195,7 @@ public:
      * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
      * instance.
      */
-    template<class Archive, class Anytype = double>
+    template<class Archive, class Anytype>
     void load(Archive& ar);
 
 private:
@@ -259,7 +257,7 @@ inline bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 
-template<class Archive, class Anytype>
+template<class Archive>
 inline void ModuleResultPIMPL::save(Archive& ar) const {
     ar& cereal::make_nvp("ModuleResultPIMPL has_description",
                          has_description());
