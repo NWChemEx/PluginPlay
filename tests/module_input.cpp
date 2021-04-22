@@ -2,8 +2,6 @@
 #include <catch2/catch.hpp>
 #include <sde/module_input.hpp>
 
-CEREAL_REGISTER_RTTI(int);
-
 using namespace sde;
 using set_t = typename ModuleInput::bounds_check_desc_t;
 
@@ -442,15 +440,10 @@ TEST_CASE("ModuleInput : Equality comparisons") {
 
 TEST_CASE("ModuleInput serialization") {
     ModuleInput i, i2;
-    std::cout << "has type" << i.has_type() << std::endl;
-    std::cout << "has value" << i.has_value() << std::endl;
-
     i.set_type<int>();
-    i.change(int{3});
+    i.change(int{33});
     i.set_description("Hello world");
-    i2.set_type<int>();
-    cereal::JSONOutputArchive stdout(std::cout);
-    stdout(i);
+    // i2.set_type<int>();//Doesn't work in load, why?
     std::stringstream ss;
     {
         cereal::BinaryOutputArchive oarchive(ss);
@@ -460,5 +453,5 @@ TEST_CASE("ModuleInput serialization") {
         cereal::BinaryInputArchive iarchive(ss);
         iarchive(i2);
     }
-    // REQUIRE(i == i2);
+    REQUIRE(i == i2);
 }
