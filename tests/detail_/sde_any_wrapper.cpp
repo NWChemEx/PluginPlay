@@ -53,9 +53,30 @@ inline static void compare_value(T&& w, corr_t corr) {
 
 TEST_CASE("SDEAnyWrapper<POD>(value)") {
     using three_type = decltype(3);
+    using any_type   = SDEAnyWrapper<three_type>;
     SDEAnyWrapper w(3);
-    STATIC_REQUIRE(std::is_same_v<decltype(w), SDEAnyWrapper<three_type>>);
+    STATIC_REQUIRE(std::is_same_v<decltype(w), any_type>);
     compare_value<three_type>(w, 3);
+
+    SECTION("Serialize via base class") {
+        std::stringstream ss;
+
+        SDEAnyWrapperBase* pw = &w;
+        {
+            typename Serializer::binary_archive ar(ss);
+            Serializer s(ar);
+            pw->serialize(s);
+        }
+
+        std::unique_ptr<SDEAnyWrapperBase> pw2;
+        {
+            typename Deserializer::binary_archive ar(ss);
+            Deserializer d(ar);
+            auto temp = SDEAnyWrapperBase::deserialize(d);
+            pw2.swap(temp);
+        }
+        REQUIRE(*pw == *pw2);
+    }
 }
 
 TEST_CASE("SDEAnyWrapper<POD>(reference") {

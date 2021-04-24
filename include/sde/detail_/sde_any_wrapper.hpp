@@ -1,5 +1,6 @@
 #pragma once
 #include "sde/detail_/memoization.hpp"
+#include "sde/detail_/serialization.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
@@ -11,6 +12,16 @@ namespace sde::detail_ {
 /// Forward declare class that will implement the API
 template<typename T>
 class SDEAnyWrapper;
+
+/// This should be moved to the utilities repo
+template<typename T>
+struct IsReferenceWrapper : std::false_type {};
+
+template<typename T>
+struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
+
+template<typename T>
+static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
 
 /**
  * @brief Defines the API for interacting with the type-erased value.
@@ -45,6 +56,8 @@ public:
 
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
+
+    using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
 
     /** @brief Creates an SDEAnyWrapper by forwarding the provided value.
      *
@@ -126,6 +139,14 @@ public:
      *  throw guarantee.
      */
     void hash(Hasher& h) const { hash_(h); }
+
+    void serialize(Serializer& s) const { serialize_(s); }
+
+    static wrapper_ptr deserialize(Deserializer& d) {
+        std::size_t idx;
+        d >> idx;
+        return m_any_maker_.at(idx)(d);
+    }
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -271,15 +292,19 @@ private:
     /// To be implemented by derived class so we can hash
     virtual void hash_(Hasher& h) const = 0;
 
+    virtual void serialize_(Serializer& s) const = 0;
+
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
 
     /// To be implemented by the derived class to define equality
     virtual bool are_equal_(const SDEAnyWrapperBase& rhs) const noexcept = 0;
 
+    static std::map<std::size_t, fxn_type> m_any_maker_;
+
     /// The type-erased value
     std::any m_value_;
-}; // class SDEAnyWrapperBase
+}; // namespace sde::detail_
 
 /** @brief The class responsible for holding the type-erased instance.
  *
@@ -435,6 +460,29 @@ private:
      *              throw guarantee.
      */
     void hash_(Hasher& h) const override { h(value_()); }
+
+    void serialize_(Serializer& s) const override {
+        // Reference wrappers show up for SDEAny instances that are wrapping
+        // inputs. We don't need to serialize inputs
+
+        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+        if constexpr(is_ref_wrapper) {
+            throw std::runtime_error("Are you trying to serialize an input?");
+        } else {
+            std::size_t idx = std::type_index(type_()).hash_code();
+            s << idx;
+            if(!m_any_maker_.count(idx)) {
+                fxn_type l = [](Deserializer& d) {
+                    std::decay_t<T> new_value;
+                    d >> new_value;
+                    return std::make_unique<SDEAnyWrapper<T>>(
+                      std::move(new_value));
+                };
+                m_any_maker_[idx] = l;
+            }
+            s << value_();
+        }
+    }
 };
 
 //-------------------------------Implementations--------------------------------
@@ -444,18 +492,18 @@ bool SDEAnyWrapperBase::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
 
-inline bool SDEAnyWrapperBase::operator==(const SDEAnyWrapperBase& rhs) const
-  noexcept {
+inline bool SDEAnyWrapperBase::operator==(
+  const SDEAnyWrapperBase& rhs) const noexcept {
     return are_equal_(rhs);
 }
 
-inline bool SDEAnyWrapperBase::operator!=(const SDEAnyWrapperBase& rhs) const
-  noexcept {
+inline bool SDEAnyWrapperBase::operator!=(
+  const SDEAnyWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
 template<typename U>
-explicit SDEAnyWrapper(U&& value)->SDEAnyWrapper<std::remove_reference_t<U>>;
+explicit SDEAnyWrapper(U&& value) -> SDEAnyWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
 typename SDEAnyWrapper<T>::wrapper_ptr SDEAnyWrapper<T>::clone_() const {
