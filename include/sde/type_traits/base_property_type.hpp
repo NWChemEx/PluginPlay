@@ -47,17 +47,4 @@ struct PropertyTypeBase<PropertyType<T, U>> {
 template<typename T>
 using base_property_type_t = typename detail_::PropertyTypeBase<T>::type;
 
-/** @brief Global variable indicating whether or not a particular property type
- *         is a base property type.
- *
- *  This variable will be set to true if @p T does not inherit from another
- *  property type and false otherwise. If @p T is not a specialization of the
- *  PropertyType class this variable will fail to compile.
- *
- *  @tparam T The property type whose base-ness is in question.
- */
-template<typename T>
-static constexpr auto is_base_property_type_v =
-  std::is_same_v<base_property_type_t<T>, detail_::BasePropertyType>;
-
 } // namespace sde

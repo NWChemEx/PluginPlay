@@ -21,7 +21,7 @@ namespace detail_ {
  *  @param BasePT The property type that @p T might inherit from. Default is
  *                `BasePropertyType`
  */
-template<typename T, typename BasePT = BasePropertyType>
+template<typename T, typename BasePT = sde::detail_::BasePropertyType>
 struct IsPropertyType {
     /// If T is a property type it inherits from this type
     using base_prop_type = sde::PropertyType<T, BasePT>;
@@ -34,6 +34,7 @@ struct IsPropertyType {
 
 /// Helper for determining if type @p T is the type of a base property type
 template<typename T>
-static constexpr bool is_property_type_v = detail_::IsPropertyType<T>::value;
+static constexpr bool is_base_property_type_v =
+  detail_::IsPropertyType<T>::value;
 
 } // namespace sde

@@ -21,12 +21,3 @@ TEST_CASE("base_property_type_t") {
         STATIC_REQUIRE(std::is_same_v<base_type, corr>);
     }
 }
-
-TEST_CASE("is_base_property_type_v") {
-    SECTION("No base type") {
-        STATIC_REQUIRE(sde::is_base_property_type_v<no_base>);
-    }
-    SECTION("Base == no_base") {
-        STATIC_REQUIRE_FALSE(sde::is_base_property_type_v<a_base>);
-    }
-}

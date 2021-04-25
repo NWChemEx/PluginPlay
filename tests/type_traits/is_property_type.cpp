@@ -48,10 +48,10 @@ TEST_CASE("detail_::IsPropertyType") {
 
 using not_pts = std::tuple<int, std::vector<int>, std::string>;
 
-TEMPLATE_LIST_TEST_CASE("is_property_type_v == false", "", not_pts) {
-    STATIC_REQUIRE_FALSE(sde::is_property_type_v<TestType>);
+TEMPLATE_LIST_TEST_CASE("is_base_property_type_v == false", "", not_pts) {
+    STATIC_REQUIRE_FALSE(sde::is_base_property_type_v<TestType>);
 }
 
 TEST_CASE("is_property_type_v") {
-    STATIC_REQUIRE(sde::is_property_type_v<no_base>);
+    STATIC_REQUIRE(sde::is_base_property_type_v<no_base>);
 }
