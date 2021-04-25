@@ -1,21 +1,9 @@
 #pragma once
-#include <type_traits>
-
-/** @file traits.hpp
- *
- *  Template meta-programming functions and stuff related to the PropertyType
- *  class.
- */
+#include "sde/property_type/property_type_fwd.hpp"
+#include <type_traits> // std::is_same_v
 
 namespace sde {
-
-// Forward declare Property type class so we can use it
-template<typename ImplClass, typename BaseType>
-class PropertyType;
-
 namespace detail_ {
-
-struct BasePropertyType;
 
 /** @brief Struct for determining what property type a property type derives
  *         from.

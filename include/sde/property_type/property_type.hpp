@@ -2,7 +2,7 @@
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/property_type/field_tuple.hpp"
-#include "sde/property_type/traits.hpp"
+#include "sde/type_traits/base_property_type.hpp"
 
 namespace sde {
 namespace detail_ {

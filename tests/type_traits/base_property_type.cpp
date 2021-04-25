@@ -1,11 +1,13 @@
-#include "sde/property_type/traits.hpp"
+#include "sde/type_traits/base_property_type.hpp"
 #include <catch2/catch.hpp>
 #include <type_traits>
 
 // Declare some property types (they don't have to be instantiatable)
+//{
 using no_base = sde::PropertyType<int, sde::detail_::BasePropertyType>;
 
 using a_base = sde::PropertyType<int, no_base>;
+//}
 
 TEST_CASE("base_property_type_t") {
     SECTION("No base type") {
