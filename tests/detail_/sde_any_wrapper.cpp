@@ -104,6 +104,26 @@ TEST_CASE("SDEAnyWrapper<non-POD>(move)") {
     compare_value<vector_t>(w, v2);
 
     REQUIRE(w.cast<vector_t&>().data() == pv);
+
+    SECTION("Serialize via base class") {
+        std::stringstream ss;
+
+        SDEAnyWrapperBase* pw = &w;
+        {
+            typename Serializer::binary_archive ar(ss);
+            Serializer s(ar);
+            pw->serialize(s);
+        }
+
+        std::unique_ptr<SDEAnyWrapperBase> pw2;
+        {
+            typename Deserializer::binary_archive ar(ss);
+            Deserializer d(ar);
+            auto temp = SDEAnyWrapperBase::deserialize(d);
+            pw2.swap(temp);
+        }
+        REQUIRE(*pw == *pw2);
+    }
 }
 
 TEST_CASE("SDEAnyWrapper Comparisons") {
