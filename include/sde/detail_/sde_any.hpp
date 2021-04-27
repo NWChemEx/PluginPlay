@@ -335,6 +335,19 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
+    template<typename Archive>
+    void save(Archive& ar) const {
+        Serializer s(ar);
+        m_ptr_->serialize(s);
+    }
+
+    template<typename Archive>
+    void load(Archive& ar) {
+        Deserializer d(ar);
+        auto temp = m_ptr_->deserialize(d);
+        m_ptr_.swap(temp);
+    }
+
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *

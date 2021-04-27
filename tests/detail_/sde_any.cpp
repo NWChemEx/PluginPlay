@@ -165,3 +165,36 @@ TEST_CASE("make_SDEAny") {
     SDEAny a{int{3}};
     REQUIRE(a == make_SDEAny<int>(3));
 }
+
+TEST_CASE("SDEAny::serialization") {
+    using input_ar = typename Serializer::binary_archive;
+    using out_ar   = typename Deserializer::binary_archive;
+    std::stringstream ss;
+    SECTION("int") {
+        auto a = make_SDEAny<int>(3);
+        {
+            input_ar ar(ss);
+            ar(a);
+        }
+        SDEAny b;
+        {
+            out_ar ar(ss);
+            ar(b);
+        }
+        REQUIRE(a == b);
+    }
+
+    SECTION("std::vector<int>") {
+        auto a = make_SDEAny<std::vector<int>>(std::vector<int>{1, 2, 3});
+        {
+            input_ar ar(ss);
+            ar(a);
+        }
+        SDEAny b;
+        {
+            out_ar ar(ss);
+            ar(b);
+        }
+        REQUIRE(a == b);
+    }
+}
