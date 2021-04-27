@@ -57,6 +57,7 @@ public:
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
 
+    /// Type of the wrapper function for the Deserializer
     using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
 
     /** @brief Creates an SDEAnyWrapper by forwarding the provided value.
@@ -140,8 +141,21 @@ public:
      */
     void hash(Hasher& h) const { hash_(h); }
 
+    /** @brief Enables serialization of the SDEAnyBase_ instance.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error for serializing inputs
+     */
     void serialize(Serializer& s) const { serialize_(s); }
 
+    /** @brief Enables deserialization of the SDEAnyBase_ instance.
+     *
+     *  @param[in] d The Deserializer object that wraps an output archive
+     * object.
+     *
+     */
     static wrapper_ptr deserialize(Deserializer& d) {
         std::size_t idx;
         d >> idx;
@@ -300,6 +314,7 @@ private:
     /// To be implemented by the derived class to define equality
     virtual bool are_equal_(const SDEAnyWrapperBase& rhs) const noexcept = 0;
 
+    /// Static map that stores serialized instances
     static std::map<std::size_t, fxn_type> m_any_maker_;
 
     /// The type-erased value
@@ -461,6 +476,13 @@ private:
      */
     void hash_(Hasher& h) const override { h(value_()); }
 
+    /** @brief Implements serialization for the SDEAnyBase_ class.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error for serializing inputs
+     */
     void serialize_(Serializer& s) const override {
         // Reference wrappers show up for SDEAny instances that are wrapping
         // inputs. We don't need to serialize inputs

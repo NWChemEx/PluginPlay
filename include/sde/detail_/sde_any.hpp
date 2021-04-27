@@ -335,12 +335,26 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
+    /** @brief Enables serialization for SDEAny instances.
+     *
+     * This function creates an Archive object that includes serialization of
+     * SDEAny instances.
+     *
+     * @tparam Archive object to be used for serialization.
+     */
     template<typename Archive>
     void save(Archive& ar) const {
         Serializer s(ar);
         m_ptr_->serialize(s);
     }
 
+    /** @brief Enables deserialization for SDEAny instances.
+     *
+     * This function deserialize an Archive object that includes serialization
+     * of SDEAny instances.
+     *
+     * @tparam Archive object to be deserialized.
+     */
     template<typename Archive>
     void load(Archive& ar) {
         Deserializer d(ar);
