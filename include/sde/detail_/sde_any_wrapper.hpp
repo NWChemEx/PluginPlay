@@ -57,7 +57,10 @@ public:
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
 
-    /// Type of the wrapper function for the Deserializer
+    /// Type of the functions that take a Deserializer instance, deserialize
+    /// from it an object of a specific type, and return, via a
+    /// SDEAnyWrapperBase pointer, the deserialized object wrapped in a
+    /// SDEAnyWrapper instance.
     using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
 
     /** @brief Creates an SDEAnyWrapper by forwarding the provided value.
@@ -146,7 +149,8 @@ public:
      *  @param[in,out] s The Serializer object that wraps an input archive
      * object.
      *
-     *  @throws std::runtime_error for serializing inputs
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput instance.
      */
     void serialize(Serializer& s) const { serialize_(s); }
 
@@ -314,7 +318,9 @@ private:
     /// To be implemented by the derived class to define equality
     virtual bool are_equal_(const SDEAnyWrapperBase& rhs) const noexcept = 0;
 
-    /// Static map that stores serialized instances
+    /// Static map to store the hash_code of type_() as the keys and
+    /// the functions that can return the deserialized object wrapped in a
+    /// SDEAnyWrapper instance as the values.
     static std::map<std::size_t, fxn_type> m_any_maker_;
 
     /// The type-erased value
@@ -481,7 +487,8 @@ private:
      *  @param[in,out] s The Serializer object that wraps an input archive
      * object.
      *
-     *  @throws std::runtime_error for serializing inputs
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput instance.
      */
     void serialize_(Serializer& s) const override {
         // Reference wrappers show up for SDEAny instances that are wrapping
