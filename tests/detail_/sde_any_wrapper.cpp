@@ -64,14 +64,17 @@ TEST_CASE("SDEAnyWrapper<POD>(value)") {
         SDEAnyWrapperBase* pw = &w;
         {
             typename Serializer::binary_archive ar(ss);
-            Serializer s(ar);
+            Serializer::variant_archive var{&ar};
+
+            Serializer s(var);
             pw->serialize(s);
         }
 
         std::unique_ptr<SDEAnyWrapperBase> pw2;
         {
             typename Deserializer::binary_archive ar(ss);
-            Deserializer d(ar);
+            Deserializer::variant_archive var{&ar};
+            Deserializer d(var);
             auto temp = SDEAnyWrapperBase::deserialize(d);
             pw2.swap(temp);
         }
@@ -111,14 +114,18 @@ TEST_CASE("SDEAnyWrapper<non-POD>(move)") {
         SDEAnyWrapperBase* pw = &w;
         {
             typename Serializer::binary_archive ar(ss);
-            Serializer s(ar);
+            Serializer::variant_archive var{&ar};
+
+            Serializer s(var);
             pw->serialize(s);
         }
 
         std::unique_ptr<SDEAnyWrapperBase> pw2;
         {
             typename Deserializer::binary_archive ar(ss);
-            Deserializer d(ar);
+            Deserializer::variant_archive var{&ar};
+
+            Deserializer d(var);
             auto temp = SDEAnyWrapperBase::deserialize(d);
             pw2.swap(temp);
         }
