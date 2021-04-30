@@ -337,10 +337,13 @@ public:
 
     /** @brief Enables serialization for SDEAny instances.
      *
-     * This function creates an Archive object that includes serialization of
-     * SDEAny instances.
+     * This function adds a serialized representation of the current SDEAny to
+     * the provided archive.
      *
-     * @tparam Archive object to be used for serialization.
+     * @param ar[in,out] An archive object to store the serialized
+     * representation.
+     *
+     * @tparam Type of @p ar. Assumed to satisfy Cereal's output archive type.
      */
     template<typename Archive>
     void save(Archive& ar) const {
@@ -351,10 +354,12 @@ public:
 
     /** @brief Enables deserialization for SDEAny instances.
      *
-     * This function deserialize an Archive object that includes serialization
-     * of SDEAny instances.
+     * This function deserialize the SDEAny from the provided archive.
      *
-     * @tparam Archive object to be deserialized.
+     * @param ar[in,out] An archive object that includes the serialized
+     * representation.
+     *
+     * @tparam Type of @p ar. Assumed to satisfy Cereal's input archive type.
      */
     template<typename Archive>
     void load(Archive& ar) {
