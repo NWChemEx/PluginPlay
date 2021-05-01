@@ -30,6 +30,7 @@ docs/source/_build
 docs/doxyoutput
 docs/source/api
 *-build-*/
+_build/
 Debug/
 Release/
 
