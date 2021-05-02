@@ -29,4 +29,33 @@ particularly tight energy convergence criteria is needed not the function which
 is requesting the energy. For these types of parameters it makes sense to make
 them module-specific inputs.
 
-Going back to our electric field example we've been using. If we want to screen
+In our ``ScreenedCoulombsLaw`` example (TODO: Add link) we used a threshold to
+determine when point charges should be screened out. This threshold is really an
+algorithmic detail. Once it has been set (either to the default value or by the
+end-user) it generally won't be touched again. The other option, having this 
+threshold be set by a submodule doesn't really make a whole lot of sense because
+there really isn't an algorithm that can compute it (typically the default value 
+is determined by extensive benchmarking which establishes what value produces a
+tolerable error; while that process could be encapsulated in a module, onece 
+it's been done you might as well just use the value).
+
+Call a Submodule
+----------------
+
+Module-specific inputs are primarily for algorithmic parameters. Submodules are
+used primarily to establish data dependencies among computed properties. For 
+example in our ``ClassicalForce`` tutorial (TODO: add link) we used a submodule 
+to establish that when we compute the force on the particle it will depend on 
+the electric field (which in general must also be computed).  We did this by
+calling a submodule that satisfied the ``ElectricField`` property type. By using
+a submodule instead of a hard-coded call our ``ClassicalForce`` module works
+with both the ``CoulombsLaw`` and ``ScreenedCoulombsLaw`` submodules (as well as
+any other modules users choose to write which satisfy the ``ElectricField``
+property type).
+
+Using a module-specific input, for the electric field, in the ``ClassicalForce``
+module doesn't make a lot of sense because: the value of the electric field is
+system dependent (needs to be computed for every system) and the end-user 
+typically doesn't have the value sitting around (unless they've already called 
+a module satisfying the ``ElectricField`` property type).
+

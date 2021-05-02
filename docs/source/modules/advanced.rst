@@ -161,3 +161,12 @@ parameters.
 .. literalinclude:: ../../../tests/docs/modules/templated_coulombs_law.cpp
    :language: c++
    :lines: 1-6, 21-28,34-37,57-59
+   
+Iterative Modules
+=================
+
+Modules that are meant to be called as part of a loop (typically when optimizing
+a quantity) require special consideration.
+
+
+TODO: Finish this section once issue #160 is taken care of
