@@ -5,7 +5,7 @@ Advanced Module Implementation
 .. |e_field| replace:: :math:`\vec{E}\left(\vec{r}\right)`
 .. |velocity| replace:: :math:`\vec{V}\left(\vec{r}\right)`
 .. |force| replace:: :math:`\vec{F}\left(\vec{r}\right)`
-.. |vec_r| replace:: math:`\vec{r}`
+.. |vec_r| replace:: :math:`\vec{r}`
 
 The previous page covered the basics of writing a module, which is fine for
 many applications. For more complicated algorithms however, there are additional
@@ -30,18 +30,18 @@ than modifying ``CoulombsLaw``. Relative to our ``CoulombsLaw`` module, the new
 parameter slightly modifies the constructor and the ``run_`` member functions. 
 With the new input the constructor becomes:
 
-.. literalinclude:: ../../../tests/docs/modules/screened_coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/screened_coulombs_law.cpp
    :language: c++
-   :lines: 22-29
+   :lines: 23-30
 
 Specifically we declare a new double-precision input called "threshold", with a
 brief description and a default value set to the maximum double value (*i.e.*,
 no screening will occur by default). The relevant change to the ``run_`` member
 is:
 
-.. literalinclude:: ../../../tests/docs/modules/screened_coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/screened_coulombs_law.cpp
    :language: c++
-   :lines: 31-36,58-60
+   :lines: 32-37,59-61
 
 Here the point to note is that our module is responsible for manually unwrapping
 the new input parameter. It will **NOT** automatically be unwrapped by the
@@ -52,79 +52,7 @@ property type.
    Module-specific inputs work best for parameters that are typically set in
    advance versus parameters that would typically be passed as an input.
    
-Submodules
-==========
 
-Coulomb's Law is pretty simple. Most simulation techniques are much more 
-complicated than that and involve an inticate interplay of many different
-properties.
-
-As an example say we are writing a module which computes the force of a moving
-charged particle at a position |vec_r|, |force|. Assuming the particle 
-has a mass :math:`m`, its velocity at |vec_r| is given by |velocity|, and that 
-it has a charge :math:`q`, the |foce| is given by:
-
-.. math::
-
-   \newcommand{\force}{\vec{F}\left(\vec{r}\right)}
-   \newcommand{\velocity}{\vec{V}\left(\vec{r}\right)}
-   \newcommand{\efield}{\vec{E}\left(\vec{r}\right)}
-
-   \force = m\velocity + q\efield
-
-The important point for this tutorial is that :math:`F\left(\vec{r}\right)` can 
-be written in terms of the electric field, |e_field|. To capitialize on all the
-inovations in computing electric fields, we decide to write our force module in
-terms of an electric field submodule.
-
-The declaration of our module is similar to our previous examples:
-
-.. literalinclude:: ../../../tests/docs/modules/modules.hpp
-   :language: c++
-   :lines: 1-4,8,16
-
-What changes is the definition. In the constructor we now need to declare that
-our module uses a submodule and that the submodule must satisfy the property 
-type `ElectricField`. This looks like:
-
-.. literalinclude:: ../../../tests/docs/modules/force.cpp
-   :language: c++
-   :lines: 22-29
-
-The SDE also provide a tag for the submodule (we choose ``"electric field"``) 
-the tag ensures that the module can specify and distinguish between multiple 
-submodules of the same type. When appropriately named, the tag also aids in
-readability of the code. The ``run_`` function for our module looks like:
-
-.. literalinclude:: ../../../tests/docs/modules/force.cpp
-   :language: c++
-   :lines: 31-43
-
-Of note is the line:
-
-.. literalinclude:: ../../../tests/docs/modules/force.cpp
-   :language: c++
-   :lines: 37
-
-which says we are running the submodule tagged with ``"electric field"`` as an
-``efield_type``. We provide the submodule with the point charge's location and
-the list of point charges defining the electric field.
-
-Submodules are integral to the SDE so it is worth noting:
-
-- By using submodules we establish data dependencies (*i.e.* here we stated we 
-  need an electric field, we don't care how it's computed)
-- If tomorrow someone writes a new electric field module, it can immediately be
-  used with our force module without modifying the force module.
-- The submodule that is called can be changed at runtime by the user and our
-  module doesn't have to maintain the logic to do so (*i.e.* our force module
-  doesn't need to maintain a list of all possible submodules and switch between
-  them).
-- If the calculation crashes after computing the electric field, but before the
-  module completes (pretty unlikely given how few operations remain) memoization
-  will avoid the need to recompute the electric field when the calculation is
-  restarted. The module does not have to maintain separate checkpoint/restart
-  logic!!!!!  
 
 Templated Modules
 =================
@@ -146,7 +74,7 @@ module ``TemplatedCoulombsLaw``, which is templated on the floating-point type.
 
 Templating slightly changes how the module is declared:
 
-.. literalinclude:: ../../../tests/docs/modules/modules.hpp
+.. literalinclude:: ../../../tests/docs/modules.hpp
    :language: c++
    :lines: 1-4,10-11,16
 
@@ -158,9 +86,9 @@ macros: ``TEMPLATED_MODULE_CTOR`` and ``TEMPLATED_MODULE_RUN``. In addition to
 taking the name of the module, these macros also take a list of all template
 parameters.
 
-.. literalinclude:: ../../../tests/docs/modules/templated_coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/templated_coulombs_law.cpp
    :language: c++
-   :lines: 1-6, 21-28,34-37,57-59
+   :lines: 1-5, 22-29,35-38,58-60
    
 Iterative Modules
 =================
@@ -170,3 +98,12 @@ a quantity) require special consideration.
 
 
 TODO: Finish this section once issue #160 is taken care of
+
+Satisfying Multiple Property Types
+==================================
+
+Modules are allowed to satisfy multiple property types. In this case the inputs
+and results are the union of the inputs and results from each property type, as
+well as any module-specific inputs.
+
+TODO: Add examples

@@ -23,8 +23,9 @@ located at |r_i|. We further assume that there is a header file
 ``point_charge.hpp`` which defines the class ``PointCharge`` given 
 by:
 
-.. literalinclude:: ../../../tests/docs/modules/point_charge.hpp
+.. literalinclude:: ../../../tests/docs/point_charge.hpp
    :language: c++
+   :lines: 1-13
 
 and that the header file ``electric_field.hpp`` defines a property type 
 ``ElectricField`` with an API:

@@ -14,7 +14,7 @@ Like declaring a module, declaring a property type involves a lot of
 boilerplate. For this reason we have provided macros to faciliate the process.
 To declare our ``ElectricField`` property type the relevant code is:
 
-.. literalinculde:: ../../../tests/docs/modules/electric_field.hpp
+.. literalinclude:: ../../../tests/docs/electric_field.hpp
    :language: c++
    :lines: 1,3,5,7,22
 
@@ -30,8 +30,8 @@ Defining a Property Type
 
 .. warning::
 
-   Property types use and are used in a lot of template meta-programming. In an 
-   attempt to make life easy for developers we have hidden all of this from you 
+   Property types use, and are used in, a lot of template meta-programming. In  
+   an attempt to make life easy for developers we have hidden all of this from
    the user. As long as you follow the pattern laid out in this subsection you 
    can remain ignorant to how we did this for you. If you want to deviate from 
    this pattern you likely will have to do quite a bit of template 
@@ -48,9 +48,9 @@ boilerplate.
 
 The definition of the ``inputs_()`` function looks like:
 
-.. literalinclude:: ../../../tests/docs/modules/electric_field.hpp
+.. literalinclude:: ../../../tests/docs/electric_field.hpp
    :language: c++
-   :lines: 9-21
+   :lines: 9-22
 
 As mentioned at the beginning of this chapter we are only concerning ourselves
 with the scenario in which we want the value of the electric field at a single
@@ -73,7 +73,7 @@ After agreeing on the types we declare the fields. This involves calling
 ``add_field``. ``add_field`` takes one type parameter (the type of the field)
 and a string which will be used as the name of the field. You can think of:
 
-.. literalinclude:: ../../../tests/docs/modules/electric_field.hpp
+.. literalinclude:: ../../../tests/docs/electric_field.hpp
    :language: c++
    :lines: 13-15
 
@@ -104,9 +104,9 @@ The definition of the ``results_()`` function looks very similar to
 ``inputs_()`` and follows the same rules except that we use 
 ``sde::declare_result`` instead of ``sde::declare_inputs``. The definition is:
 
-.. literalinclude:: ../../../tests/docs/modules/electric_field.hpp
+.. literalinclude:: ../../../tests/docs/electric_field.hpp
    :language: c++
-   :lines: 23-25
+   :lines: 24-26
 
 The electric field at a point is simply a vector and we have been modeling 
 vectors with the ``Point`` class. Thus we establish that the return of our
@@ -144,7 +144,7 @@ defining the function:
 The full declaration and definition of the ``ElectricField`` property type is
 shown below:
 
-.. literalinclude:: ../../../tests/docs/modules/electric_field.hpp
+.. literalinclude:: ../../../tests/docs/electric_field.hpp
    :language: c++
 
 

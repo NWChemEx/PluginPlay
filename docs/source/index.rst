@@ -13,6 +13,7 @@ environment designed to facilitate creating modular scientific software.
    installation/index
    modules/index
    property_types/index
+   module_collections/index
    developer/index
 
 `C++ API <sde_cxx_api/index.html>`_

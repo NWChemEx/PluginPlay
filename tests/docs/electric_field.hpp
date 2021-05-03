@@ -18,6 +18,7 @@ PROPERTY_TYPE_INPUTS(ElectricField) {
       "The point where the electric field will be evaluated.");
     rv.at("charges").set_description(
       "The set of point charges giving rise to the electric field.");
+    return rv;
 }
 
 PROPERTY_TYPE_RESULTS(ElectricField) {

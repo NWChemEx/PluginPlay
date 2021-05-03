@@ -2,6 +2,9 @@
 Basics of Writing a Module
 **************************
 
+.. |velocity| replace:: :math:`\vec{V}\left(\vec{r}\right)`
+.. |force| replace:: :math:`\vec{F}\left(\vec{r}\right)`
+.. |vec_r| replace:: :math:`\vec{r}`
 .. |e_field| replace:: :math:`\vec{E}\left(\vec{r}\right)`
 
 This page is intended to walk you through the basics of writing a module. Here
@@ -28,9 +31,9 @@ will compute the electric field via Coulomb's Law so we choose to name our
 module ``CoulombsLaw`` and we store the declaration in a file ``modules.hpp``.
 The relevant lines are:
 
-.. literalinclude:: ../../../tests/docs/modules/modules.hpp
+.. literalinclude:: ../../../tests/docs/modules.hpp
    :language: c++
-   :lines: 1-6,8-
+   :lines: 1-6,15-16
 
 .. note::
    
@@ -57,9 +60,9 @@ to provide a short description about the algorithm implemented in the module.
 
 For our ``CoulombsLaw`` module a basic constructor looks like:
 
-.. literalinclude:: ../../../tests/docs/modules/coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/coulombs_law.cpp
    :language: c++
-   :lines: 6-24
+   :lines: 7-23
 
 One particularly nice feature of the SDE is that it can autogenerate 
 restructured text documentation for modules by scraping the meta-data and fields
@@ -100,9 +103,9 @@ module to aid in defining the module's ``run_`` member function. By convention
 For defining our ``CoulombsLaw::run_`` member the relevant SDE bits of code 
 are:
 
-.. literalinclude:: ../../../tests/docs/modules/coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/coulombs_law.cpp
    :language: c++
-   :lines: 26-27,50-52
+   :lines: 25-29,49-51
 
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
@@ -117,6 +120,74 @@ returns a result map with the type-erased results.
 The full definition of the ``run_`` member (including the source code for
 computing the electric field) is:
 
-.. literalinclude:: ../../../tests/docs/modules/coulombs_law.cpp
+.. literalinclude:: ../../../tests/docs/coulombs_law.cpp
    :language: c++
-   :lines: 26-52
+   :lines: 25-51
+
+Submodules
+==========
+   
+Coulomb's Law is pretty simple. Most simulation techniques are much more 
+complicated than that and involve an inticate interplay of many different
+properties.
+   
+As an example say we are writing a module which computes the force of a moving
+charged particle at a position |vec_r|, |force|. Assuming the particle 
+has a mass :math:`m`, its velocity at |vec_r| is given by |velocity|, and that 
+it has a charge :math:`q`, the |force| is given by:
+   
+.. math::
+
+   \newcommand{\force}{\vec{F}\left(\vec{r}\right)}
+   \newcommand{\velocity}{\vec{V}\left(\vec{r}\right)}
+   \newcommand{\efield}{\vec{E}\left(\vec{r}\right)}
+ 
+   \force = m\velocity + q\efield
+   
+The important point for this tutorial is that :math:`F\left(\vec{r}\right)` can 
+be written in terms of the electric field, |e_field|. To capitialize on all the
+inovations in computing electric fields, we decide to write our force module in
+terms of an electric field submodule.
+   
+Submodules change the definition. In the constructor we now need to declare that
+our module uses a submodule and that the submodule must satisfy the property 
+type `ElectricField`. This looks like:
+   
+.. literalinclude:: ../../../tests/docs/force.cpp
+   :language: c++
+   :lines: 22-29
+   
+The SDE also provide a tag for the submodule (we choose ``"electric field"``) 
+the tag ensures that the module can specify and distinguish between multiple 
+submodules of the same type. When appropriately named, the tag also aids in
+readability of the code. The ``run_`` function for our module looks like:
+   
+.. literalinclude:: ../../../tests/docs/force.cpp
+   :language: c++
+   :lines: 31-43
+   
+Of note is the line:
+   
+.. literalinclude:: ../../../tests/docs/force.cpp
+   :language: c++
+   :lines: 37
+   
+which says we are running the submodule tagged with ``"electric field"`` as an
+``efield_type``. We provide the submodule with the point charge's location and
+the list of point charges defining the electric field.
+   
+Submodules are integral to the SDE so it is worth noting:
+   
+- By using submodules we establish data dependencies (*i.e.* here we stated we 
+  need an electric field, we don't care how it's computed)
+- If tomorrow someone writes a new electric field module, it can immediately be
+  used with our force module without modifying the force module.
+- The submodule that is called can be changed at runtime by the user and our
+  module doesn't have to maintain the logic to do so (*i.e.* our force module
+  doesn't need to maintain a list of all possible submodules and switch between
+  them).
+- If the calculation crashes after computing the electric field, but before the
+  module completes (pretty unlikely given how few operations remain) memoization
+  will avoid the need to recompute the electric field when the calculation is
+  restarted. The module does not have to maintain separate checkpoint/restart
+  logic!!!!!  

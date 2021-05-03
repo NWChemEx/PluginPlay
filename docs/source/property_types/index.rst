@@ -20,3 +20,4 @@ they suffice for our present purposes.
    :caption: Contents:
 
    basics
+   advanced

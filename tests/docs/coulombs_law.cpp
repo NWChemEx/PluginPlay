@@ -4,8 +4,6 @@
 
 namespace sde_examples {
 
-using prop_type = ElectricField;
-
 static constexpr auto module_desc = R"(
 Electric Field From Coulomb's Law
 ---------------------------------
@@ -21,11 +19,11 @@ Coulomb's law according to:
 
 MODULE_CTOR(CoulombsLaw) {
     description(module_desc);
-    satisfies_property_type<prop_type>();
+    satisfies_property_type<ElectricField>();
 }
 
 MODULE_RUN(CoulombsLaw) {
-    const auto& [r, charges] = prop_type::unwrap_inputs(inputs);
+    const auto& [r, charges] = ElectricField::unwrap_inputs(inputs);
 
     // This will be the value of the electric field
     Point E{0.0, 0.0, 0.0};
@@ -49,7 +47,7 @@ MODULE_RUN(CoulombsLaw) {
     }
 
     auto rv = results();
-    return prop_type::wrap_results(rv, E);
+    return ElectricField::wrap_results(rv, E);
 }
 
 } // namespace sde_examples
