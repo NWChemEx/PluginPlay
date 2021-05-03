@@ -9,9 +9,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
     SECTION("Plain-old-data") {
         {
             typename Serializer::binary_archive ar(ss);
-            Serializer::variant_archive var{&ar};
-
-            Serializer s(var);
+            Serializer s(ar);
             s << int{42} << double{3.14} << char{'R'};
         }
 
@@ -21,8 +19,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
 
         {
             typename Deserializer::binary_archive ar(ss);
-            Deserializer::variant_archive var{&ar};
-            Deserializer ds(var);
+            Deserializer ds(ar);
             ds >> i >> d >> c;
         }
         REQUIRE(i == int{42});
@@ -36,9 +33,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
 
         {
             typename Serializer::binary_archive ar(ss);
-            Serializer::variant_archive var{&ar};
-
-            Serializer s(var);
+            Serializer s(ar);
             s << v << m;
         }
 
@@ -46,9 +41,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
         std::map<std::string, double> m2;
         {
             typename Deserializer::binary_archive ar(ss);
-            Deserializer::variant_archive var{&ar};
-
-            Deserializer d(var);
+            Deserializer d(ar);
             d >> v2 >> m2;
         }
         REQUIRE(v2 == v);

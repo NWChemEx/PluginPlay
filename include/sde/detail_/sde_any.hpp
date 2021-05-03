@@ -347,8 +347,7 @@ public:
      */
     template<typename Archive>
     void save(Archive& ar) const {
-        Serializer::variant_archive var{&ar};
-        Serializer s(var);
+        Serializer s(ar);
         m_ptr_->serialize(s);
     }
 
@@ -363,8 +362,7 @@ public:
      */
     template<typename Archive>
     void load(Archive& ar) {
-        Deserializer::variant_archive var{&ar};
-        Deserializer d(var);
+        Deserializer d(ar);
         auto temp = m_ptr_->deserialize(d);
         m_ptr_.swap(temp);
     }
