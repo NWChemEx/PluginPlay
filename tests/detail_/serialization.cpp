@@ -1,18 +1,19 @@
-#include "sde/detail_/serialization.hpp"
+#include "sde/detail_/serializer.hpp"
 #include <catch2/catch.hpp>
 
 using namespace sde::detail_;
 
-TEMPLATE_TEST_CASE(
-  "Serializer", "[serialization][serializer][deserializer]",
-  (std::pair<Serializer::binary_archive, Deserializer::binary_archive>),
-  (std::pair<Serializer::json_archive, Deserializer::json_archive>),
-  (std::pair<Serializer::xml_archive, Deserializer::xml_archive>)) {
+TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
+                   Serializer::binary_archive, Serializer::json_archive,
+                   Serializer::xml_archive) {
+    using output = TestType;
+    using input  = typename Serializer::get_input_from_output<output>::type;
+
     std::stringstream ss;
 
     SECTION("Plain-old-data") {
         {
-            typename TestType::first_type ar(ss);
+            output ar(ss);
             Serializer s(ar);
             s << int{42} << double{3.14} << char{'R'};
         }
@@ -22,12 +23,13 @@ TEMPLATE_TEST_CASE(
         char c;
 
         {
-            typename TestType::second_type ar(ss);
+            input ar(ss);
             Deserializer ds(ar);
             ds >> i >> d >> c;
         }
         REQUIRE(i == int{42});
         REQUIRE(d == double{3.14});
+        REQUIRE_FALSE(d == float{3.14f});
         REQUIRE(c == char{'R'});
     }
 
@@ -36,7 +38,7 @@ TEMPLATE_TEST_CASE(
         std::map<std::string, double> m{{"Hello", 1.23}, {"World", 3.14}};
 
         {
-            typename TestType::first_type ar(ss);
+            output ar(ss);
             Serializer s(ar);
             s << v << m;
         }
@@ -44,7 +46,7 @@ TEMPLATE_TEST_CASE(
         std::vector<int> v2;
         std::map<std::string, double> m2;
         {
-            typename TestType::second_type ar(ss);
+            input ar(ss);
             Deserializer d(ar);
             d >> v2 >> m2;
         }

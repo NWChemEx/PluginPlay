@@ -1,6 +1,7 @@
 #pragma once
 #include "sde/detail_/memoization.hpp"
 #include "sde/detail_/serialization.hpp"
+#include "sde/detail_/serializer.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
