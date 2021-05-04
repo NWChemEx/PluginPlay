@@ -325,7 +325,7 @@ private:
 
     /// The type-erased value
     std::any m_value_;
-}; // namespace sde::detail_
+};
 
 /** @brief The class responsible for holding the type-erased instance.
  *
