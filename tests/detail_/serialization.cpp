@@ -3,12 +3,16 @@
 
 using namespace sde::detail_;
 
-TEST_CASE("Serializer<BinaryArchive>") {
+TEMPLATE_TEST_CASE(
+  "Serializer", "[serialization][serializer][deserializer]",
+  (std::pair<Serializer::binary_archive, Deserializer::binary_archive>),
+  (std::pair<Serializer::json_archive, Deserializer::json_archive>),
+  (std::pair<Serializer::xml_archive, Deserializer::xml_archive>)) {
     std::stringstream ss;
 
     SECTION("Plain-old-data") {
         {
-            typename Serializer::binary_archive ar(ss);
+            typename TestType::first_type ar(ss);
             Serializer s(ar);
             s << int{42} << double{3.14} << char{'R'};
         }
@@ -18,7 +22,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
         char c;
 
         {
-            typename Deserializer::binary_archive ar(ss);
+            typename TestType::second_type ar(ss);
             Deserializer ds(ar);
             ds >> i >> d >> c;
         }
@@ -32,7 +36,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
         std::map<std::string, double> m{{"Hello", 1.23}, {"World", 3.14}};
 
         {
-            typename Serializer::binary_archive ar(ss);
+            typename TestType::first_type ar(ss);
             Serializer s(ar);
             s << v << m;
         }
@@ -40,7 +44,7 @@ TEST_CASE("Serializer<BinaryArchive>") {
         std::vector<int> v2;
         std::map<std::string, double> m2;
         {
-            typename Deserializer::binary_archive ar(ss);
+            typename TestType::second_type ar(ss);
             Deserializer d(ar);
             d >> v2 >> m2;
         }

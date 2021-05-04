@@ -165,36 +165,47 @@ TEST_CASE("make_SDEAny") {
     SDEAny a{int{3}};
     REQUIRE(a == make_SDEAny<int>(3));
 }
-
-TEST_CASE("SDEAny::serialization") {
-    using input_ar = typename Serializer::binary_archive;
-    using out_ar   = typename Deserializer::binary_archive;
+TEMPLATE_TEST_CASE(
+  "SDEAny::serialization", "[serialization][SDEAny]",
+  (std::pair<Serializer::binary_archive, Deserializer::binary_archive>),
+  (std::pair<Serializer::json_archive, Deserializer::json_archive>),
+  (std::pair<Serializer::xml_archive, Deserializer::xml_archive>)) {
+    using input_ar = typename TestType::first_type;
+    using out_ar   = typename TestType::second_type;
     std::stringstream ss;
-    SECTION("int") {
-        auto a = make_SDEAny<int>(3);
+    SECTION("Plain-old-data") {
+        auto i = make_SDEAny<int>(33);
+        auto d = make_SDEAny<double>(9.5);
+        auto c = make_SDEAny<char>('M');
         {
             input_ar ar(ss);
-            ar(a);
+            ar(i, d, c);
         }
-        SDEAny b;
+        SDEAny i2, d2, c2;
         {
             out_ar ar(ss);
-            ar(b);
+            ar(i2, d2, c2);
         }
-        REQUIRE(a == b);
+        REQUIRE(i == i2);
+        REQUIRE(d == d2);
+        REQUIRE(c == c2);
     }
 
-    SECTION("std::vector<int>") {
+    SECTION("Containers") {
         auto a = make_SDEAny<std::vector<int>>(std::vector<int>{1, 2, 3});
+        auto b = make_SDEAny<std::map<std::string, double>>(
+          std::map<std::string, double>{{"Hello", 1.23}, {"World", 3.14}});
+
         {
             input_ar ar(ss);
-            ar(a);
+            ar(a, b);
         }
-        SDEAny b;
+        SDEAny a2, b2;
         {
             out_ar ar(ss);
-            ar(b);
+            ar(a2, b2);
         }
-        REQUIRE(a == b);
+        REQUIRE(a == a2);
+        REQUIRE(b == b2);
     }
 }
