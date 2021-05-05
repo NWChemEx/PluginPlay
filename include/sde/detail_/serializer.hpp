@@ -1,5 +1,5 @@
 #pragma once
-#include "sde/detail_/serialization.hpp"
+#include "sde/serialization.hpp"
 #include <sstream>
 #include <variant>
 
