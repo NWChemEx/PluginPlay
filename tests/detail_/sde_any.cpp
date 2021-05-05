@@ -169,7 +169,7 @@ TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
                    Serializer::binary_archive, Serializer::json_archive,
                    Serializer::xml_archive) {
     using output = TestType;
-    using input  = typename Serializer::get_input_from_output<output>::type;
+    using input  = typename sde::get_input_from_output<output>::type;
 
     std::stringstream ss;
     SECTION("Plain-old-data") {

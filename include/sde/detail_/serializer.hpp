@@ -16,11 +16,7 @@ public:
     using binary_archive = cereal::BinaryOutputArchive;
     using json_archive   = cereal::JSONOutputArchive;
     using xml_archive    = cereal::XMLOutputArchive;
-    template<typename T, typename Archive>
-    using is_serializable = cereal::traits::is_output_serializable<T, Archive>;
-    template<typename Archive>
-    using get_input_from_output =
-      cereal::traits::detail::get_input_from_output<Archive>;
+
     template<typename Archive>
     Serializer(Archive& ar) : m_ar_(&ar) {}
 
@@ -60,11 +56,6 @@ public:
     using binary_archive = cereal::BinaryInputArchive;
     using json_archive   = cereal::JSONInputArchive;
     using xml_archive    = cereal::XMLInputArchive;
-    template<typename T, typename Archive>
-    using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
-    template<typename Archive>
-    using get_output_from_input =
-      cereal::traits::detail::get_output_from_input<Archive>;
 
     template<typename Archive>
     Deserializer(Archive& ar) : m_ar_(&ar) {}
