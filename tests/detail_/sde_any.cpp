@@ -166,8 +166,8 @@ TEST_CASE("make_SDEAny") {
     REQUIRE(a == make_SDEAny<int>(3));
 }
 TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
-                   Serializer::binary_archive, Serializer::json_archive,
-                   Serializer::xml_archive) {
+                   cereal::BinaryOutputArchive, cereal::JSONOutputArchive,
+                   cereal::XMLOutputArchive) {
     using output = TestType;
     using input  = typename sde::get_input_from_output<output>::type;
 

@@ -4,85 +4,80 @@
 #include <variant>
 
 namespace sde::detail_ {
+using binary_output  = cereal::BinaryOutputArchive;
+using json_output    = cereal::JSONOutputArchive;
+using xml_output     = cereal::XMLOutputArchive;
+using variant_output = std::variant<binary_output*, json_output*, xml_output*>;
 
-/** @brief Serializer class enables serialization of objects into various types
- * of archives supported by Cereal.
+using binary_input  = cereal::BinaryInputArchive;
+using json_input    = cereal::JSONInputArchive;
+using xml_input     = cereal::XMLInputArchive;
+using variant_input = std::variant<binary_input*, json_input*, xml_input*>;
+
+/** @brief ArchiveWrapper class enables serialization and deserialization of
+ * objects using various types of archives supported by Cereal.
  *
- *  This class wraps Cereal's serialization API into different output archive
- * types. Required for serialization of SDEAny.
+ *  This class wraps Cereal's API for different output
+ * archive types. Required for serialization of SDEAny.
  */
-class Serializer {
+template<typename VariantArchive>
+class ArchiveWrapper {
 public:
-    using binary_archive = cereal::BinaryOutputArchive;
-    using json_archive   = cereal::JSONOutputArchive;
-    using xml_archive    = cereal::XMLOutputArchive;
-
     template<typename Archive>
-    Serializer(Archive& ar) : m_ar_(&ar) {}
+    ArchiveWrapper(Archive& ar) : m_ar_(&ar) {}
 
     template<typename T>
-    Serializer& operator<<(T&& obj2serial) {
+    ArchiveWrapper& operator<<(T&& obj2serial) {
         if(m_ar_.index() == 0) {
-            if constexpr(is_serializable<T, binary_archive>::value) {
-                auto bar = std::get<binary_archive*>(m_ar_);
+            if constexpr(is_serializable<T, binary_output>::value) {
+                auto bar = std::get<binary_output*>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
-            }
+            } else
+                throw std::runtime_error("Nonserializable type!");
         } else if(m_ar_.index() == 1) {
-            if constexpr(is_serializable<T, json_archive>::value) {
-                auto bar = std::get<json_archive*>(m_ar_);
+            if constexpr(is_serializable<T, json_output>::value) {
+                auto bar = std::get<json_output*>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
-            }
+            } else
+                throw std::runtime_error("Nonserializable type!");
         } else if(m_ar_.index() == 2) {
-            if constexpr(is_serializable<T, xml_archive>::value) {
-                auto bar = std::get<xml_archive*>(m_ar_);
+            if constexpr(is_serializable<T, xml_output>::value) {
+                auto bar = std::get<xml_output*>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
-            }
+            } else
+                throw std::runtime_error("Nonserializable type!");
+        }
+        return *this;
+    }
+
+    template<typename T>
+    ArchiveWrapper& operator>>(T&& serial2obj) {
+        if(m_ar_.index() == 0) {
+            if constexpr(is_deserializable<T, binary_input>::value) {
+                auto bar = std::get<binary_input*>(m_ar_);
+                (*bar)(std::forward<T>(serial2obj));
+            } else
+                throw std::runtime_error("Nonserializable type!");
+        } else if(m_ar_.index() == 1) {
+            if constexpr(is_deserializable<T, json_input>::value) {
+                auto bar = std::get<json_input*>(m_ar_);
+                (*bar)(std::forward<T>(serial2obj));
+            } else
+                throw std::runtime_error("Nonserializable type!");
+        } else if(m_ar_.index() == 2) {
+            if constexpr(is_deserializable<T, xml_input>::value) {
+                auto bar = std::get<xml_input*>(m_ar_);
+                (*bar)(std::forward<T>(serial2obj));
+            } else
+                throw std::runtime_error("Nonserializable type!");
         }
         return *this;
     }
 
 private:
-    std::variant<binary_archive*, json_archive*, xml_archive*> m_ar_;
+    VariantArchive m_ar_;
 };
 
-/** @brief Deserializer class enables deserialization of objects from various
- * types of archives supported by Cereal.
- *
- *  This class wraps Cereal's deserialization API for different archive
- * types. Required for deserialization of SDEAny.
- */
-class Deserializer {
-public:
-    using binary_archive = cereal::BinaryInputArchive;
-    using json_archive   = cereal::JSONInputArchive;
-    using xml_archive    = cereal::XMLInputArchive;
-
-    template<typename Archive>
-    Deserializer(Archive& ar) : m_ar_(&ar) {}
-
-    template<typename T>
-    Deserializer& operator>>(T&& serial2obj) {
-        if(m_ar_.index() == 0) {
-            if constexpr(is_deserializable<T, binary_archive>::value) {
-                auto bar = std::get<binary_archive*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
-            }
-        } else if(m_ar_.index() == 1) {
-            if constexpr(is_deserializable<T, json_archive>::value) {
-                auto bar = std::get<json_archive*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
-            }
-        } else if(m_ar_.index() == 2) {
-            if constexpr(is_deserializable<T, xml_archive>::value) {
-                auto bar = std::get<xml_archive*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
-            }
-        }
-        return *this;
-    }
-
-private:
-    std::variant<binary_archive*, json_archive*, xml_archive*> m_ar_;
-};
-
+using Serializer   = ArchiveWrapper<variant_output>;
+using Deserializer = ArchiveWrapper<variant_input>;
 } // namespace sde::detail_
