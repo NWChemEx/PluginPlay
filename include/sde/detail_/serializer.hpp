@@ -27,47 +27,23 @@ public:
     ArchiveWrapper(Archive& ar) : m_ar_(&ar) {}
 
     template<typename T>
-    ArchiveWrapper& operator<<(T&& obj2serial) {
+    ArchiveWrapper& operator&(T&& obj2serial) {
         if(m_ar_.index() == 0) {
             if constexpr(is_serializable<T, binary_output>::value) {
-                auto bar = std::get<binary_output*>(m_ar_);
+                auto bar = std::get<0>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
             } else
                 throw std::runtime_error("Nonserializable type!");
         } else if(m_ar_.index() == 1) {
             if constexpr(is_serializable<T, json_output>::value) {
-                auto bar = std::get<json_output*>(m_ar_);
+                auto bar = std::get<1>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
             } else
                 throw std::runtime_error("Nonserializable type!");
         } else if(m_ar_.index() == 2) {
             if constexpr(is_serializable<T, xml_output>::value) {
-                auto bar = std::get<xml_output*>(m_ar_);
+                auto bar = std::get<2>(m_ar_);
                 (*bar)(std::forward<T>(obj2serial));
-            } else
-                throw std::runtime_error("Nonserializable type!");
-        }
-        return *this;
-    }
-
-    template<typename T>
-    ArchiveWrapper& operator>>(T&& serial2obj) {
-        if(m_ar_.index() == 0) {
-            if constexpr(is_deserializable<T, binary_input>::value) {
-                auto bar = std::get<binary_input*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
-            } else
-                throw std::runtime_error("Nonserializable type!");
-        } else if(m_ar_.index() == 1) {
-            if constexpr(is_deserializable<T, json_input>::value) {
-                auto bar = std::get<json_input*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
-            } else
-                throw std::runtime_error("Nonserializable type!");
-        } else if(m_ar_.index() == 2) {
-            if constexpr(is_deserializable<T, xml_input>::value) {
-                auto bar = std::get<xml_input*>(m_ar_);
-                (*bar)(std::forward<T>(serial2obj));
             } else
                 throw std::runtime_error("Nonserializable type!");
         }

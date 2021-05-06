@@ -162,7 +162,7 @@ public:
      */
     static wrapper_ptr deserialize(Deserializer& d) {
         std::size_t idx;
-        d >> idx;
+        d& idx;
         return m_any_maker_.at(idx)(d);
     }
 
@@ -499,17 +499,17 @@ private:
             throw std::runtime_error("Are you trying to serialize an input?");
         } else {
             std::size_t idx = std::type_index(type_()).hash_code();
-            s << idx;
+            s& idx;
             if(!m_any_maker_.count(idx)) {
                 fxn_type l = [](Deserializer& d) {
                     std::decay_t<T> new_value;
-                    d >> new_value;
+                    d& new_value;
                     return std::make_unique<SDEAnyWrapper<T>>(
                       std::move(new_value));
                 };
                 m_any_maker_[idx] = l;
             }
-            s << value_();
+            s& value_();
         }
     }
 };

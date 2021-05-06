@@ -15,7 +15,7 @@ TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
         {
             output ar(ss);
             Serializer s(ar);
-            s << int{42} << double{3.14} << char{'R'};
+            s& int{42} & double{3.14} & char{'R'};
         }
 
         int i;
@@ -25,7 +25,7 @@ TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
         {
             input ar(ss);
             Deserializer ds(ar);
-            ds >> i >> d >> c;
+            ds& i& d& c;
         }
         REQUIRE(i == int{42});
         REQUIRE(d == double{3.14});
@@ -40,7 +40,7 @@ TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
         {
             output ar(ss);
             Serializer s(ar);
-            s << v << m;
+            s& v& m;
         }
 
         std::vector<int> v2;
@@ -48,7 +48,7 @@ TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
         {
             input ar(ss);
             Deserializer d(ar);
-            d >> v2 >> m2;
+            d& v2& m2;
         }
         REQUIRE(v2 == v);
         REQUIRE(m2 == m);
