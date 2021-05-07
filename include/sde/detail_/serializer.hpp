@@ -29,23 +29,14 @@ public:
     template<typename T>
     ArchiveWrapper& operator&(T&& obj2serial) {
         if(m_ar_.index() == 0) {
-            if constexpr(is_serializable<T, binary_output>::value) {
-                auto bar = std::get<0>(m_ar_);
-                (*bar)(std::forward<T>(obj2serial));
-            } else
-                throw std::runtime_error("Nonserializable type!");
+            auto bar = std::get<0>(m_ar_);
+            (*bar)(std::forward<T>(obj2serial));
         } else if(m_ar_.index() == 1) {
-            if constexpr(is_serializable<T, json_output>::value) {
-                auto bar = std::get<1>(m_ar_);
-                (*bar)(std::forward<T>(obj2serial));
-            } else
-                throw std::runtime_error("Nonserializable type!");
+            auto bar = std::get<1>(m_ar_);
+            (*bar)(std::forward<T>(obj2serial));
         } else if(m_ar_.index() == 2) {
-            if constexpr(is_serializable<T, xml_output>::value) {
-                auto bar = std::get<2>(m_ar_);
-                (*bar)(std::forward<T>(obj2serial));
-            } else
-                throw std::runtime_error("Nonserializable type!");
+            auto bar = std::get<2>(m_ar_);
+            (*bar)(std::forward<T>(obj2serial));
         }
         return *this;
     }
