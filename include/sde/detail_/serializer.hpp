@@ -32,19 +32,7 @@ public:
 
     template<typename T>
     ArchiveWrapper& operator&(T&& obj) {
-        if(m_ar_.index() == 0) {
-            auto bar = std::get<0>(m_ar_);
-            (*bar)(std::forward<T>(obj));
-        } else if(m_ar_.index() == 1) {
-            auto bar = std::get<1>(m_ar_);
-            (*bar)(std::forward<T>(obj));
-        } else if(m_ar_.index() == 2) {
-            auto bar = std::get<2>(m_ar_);
-            (*bar)(std::forward<T>(obj));
-        } else if(m_ar_.index() == 3) {
-            auto bar = std::get<3>(m_ar_);
-            (*bar)(std::forward<T>(obj));
-        }
+        std::visit([&](auto&& ar) { (*ar)(std::forward<T>(obj)); }, m_ar_);
         return *this;
     }
 
