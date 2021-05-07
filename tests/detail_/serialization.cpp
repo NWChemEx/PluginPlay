@@ -1,4 +1,4 @@
-#include "sde/detail_/serializer.hpp"
+#include "sde/detail_/archive_wrapper.hpp"
 #include <catch2/catch.hpp>
 
 using namespace sde::detail_;
