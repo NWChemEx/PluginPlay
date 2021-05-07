@@ -8,3 +8,4 @@
 #include "sde/facade_module.hpp"
 #include "sde/lambda_module.hpp"
 #include "sde/module_manager.hpp"
+#include "sde/type_traits/type_traits.hpp"
