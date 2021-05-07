@@ -774,7 +774,12 @@ inline auto ModulePIMPL::run(type::input_map ps) {
         if(!v.ready()) throw std::runtime_error("Inputs are not ready");
 
     // Merge with bound and see if we are ready
-    if(!ready(ps)) throw std::runtime_error("Module is not ready to be run");
+    if(!ready(ps)) {
+        // Make a dummy module with this PIMPL so we can print out why it's not
+        // ready.
+        Module dummy(std::make_unique<ModulePIMPL>(*this));
+        throw std::runtime_error(print_not_ready(dummy, ps));
+    }
 
     lock();
 

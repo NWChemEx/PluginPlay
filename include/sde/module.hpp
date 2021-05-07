@@ -691,6 +691,9 @@ private:
 
 }; // class Module
 
+std::string print_not_ready(const Module& mod, const type::input_map& ps = {},
+                            const std::string& indent = "");
+
 //-----------------------------Implementations----------------------------------
 
 inline Module Module::unlocked_copy() const {

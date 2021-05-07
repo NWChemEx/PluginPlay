@@ -2,7 +2,7 @@
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/property_type/field_tuple.hpp"
-#include "sde/property_type/traits.hpp"
+#include "sde/type_traits/is_property_type.hpp"
 
 namespace sde {
 namespace detail_ {
@@ -58,8 +58,13 @@ private:
     /// Type of the base class
     using base_type = BaseType;
 
-    /// Is this the most basic PropertyType of the hierarchy
-    static constexpr auto am_base_pt = is_base_property_type_v<my_type>;
+    /** @brief Determines if this the most basic PropertyType of the hierarchy
+     *
+     *  N.B. can't use is_base_property_type_t<DerivedType> b/c we're in the
+     *  definition of `DerivedType`.
+     */
+    static constexpr auto am_base_pt =
+      std::is_same_v<BaseType, detail_::BasePropertyType>;
 
     /** @brief Returns a tuple of all the property types this class inherits
      *         from.

@@ -113,18 +113,30 @@ void Module::check_property_type_(type::rtti prop_type) {
     throw std::runtime_error(msg);
 }
 
-template<class Archive>
-inline void Module::serialize(Archive& ar) {
-    ar(cereal::make_nvp("Module", m_pimpl_));
+std::string print_not_ready(const Module& mod, const type::input_map& ps,
+                            const std::string& indent) {
+    std::string rv      = "";
+    auto not_readies    = mod.list_not_ready(ps);
+    std::string indent2 = "  " + indent;
+    for(const auto& [desc, not_ready_items] : not_readies) {
+        rv += indent + desc + " that are not ready:\n";
+        for(const auto& not_ready_item : not_ready_items) {
+            if(desc != "Submodules") {
+                rv += indent2 + not_ready_item + "\n";
+            } else {
+                auto submod = mod.submods().at(not_ready_item);
+                rv += indent2 + not_ready_item;
+                if(!submod.has_module()) {
+                    rv += " is not set.\n";
+                } else { // It's set, so recurse to find out why it's not ready
+                    rv += ":\n";
+                    rv += print_not_ready(submod.value(), type::input_map{},
+                                          indent2 + "  ");
+                }
+            }
+        }
+    }
+    return rv;
 }
-
-template void Module::serialize<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&);
-template void Module::serialize<cereal::JSONInputArchive>(
-  cereal::JSONInputArchive&);
-template void Module::serialize<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&);
-template void Module::serialize<cereal::BinaryInputArchive>(
-  cereal::BinaryInputArchive&);
 
 } // namespace sde
