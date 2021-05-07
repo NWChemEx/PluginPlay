@@ -24,7 +24,7 @@ public:
     ArchiveWrapper(Archive& ar) : m_ar_(&ar) {}
 
     template<typename T>
-    ArchiveWrapper& operator&(T&& obj) {
+    ArchiveWrapper& operator()(T&& obj) {
         std::visit([&](auto&& ar) { (*ar)(std::forward<T>(obj)); }, m_ar_);
         return *this;
     }
