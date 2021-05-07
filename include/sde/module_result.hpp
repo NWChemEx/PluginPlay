@@ -1,12 +1,8 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
+#include "sde/serialization.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
-#include <cereal/access.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/map.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/unordered_map.hpp>
 #include <memory>
 #include <string>
 

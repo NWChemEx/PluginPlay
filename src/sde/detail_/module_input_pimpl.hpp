@@ -1,14 +1,9 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
 #include "sde/types.hpp"
-#include <any>
-#include <cereal/access.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/optional.hpp>
 #include <optional>
 #include <typeindex>
 #include <utilities/containers/case_insensitive_map.hpp>
-#include <utilities/printing/demangler.hpp>
 
 namespace sde::detail_ {
 
@@ -359,27 +354,6 @@ private:
 
     /// The type of this input
     std::optional<rtti_type> m_type_;
-
-    friend class cereal::access;
-    /** @brief Enables serialization for ModuleInputPIMPL instances.
-     *
-     * This function saves the ModuleInputPIMPL instance into an Archive
-     * object.
-     *
-     * @tparam Archive The type of archive used for serialization.
-     */
-    template<class Archive>
-    void save(Archive& ar) const;
-
-    /** @brief Enables deserialization for ModuleInputPIMPL instances.
-     *
-     * This function loads the ModuleInputPIMPL instance from the Archive
-     * object.
-     *
-     * @tparam Archive The type of archive used for deserialization.
-     */
-    template<class Archive>
-    void load(Archive& ar);
 };
 
 /** @brief Compares two ModuleInputPIMPL instances for equality
@@ -513,71 +487,4 @@ inline bool operator!=(const ModuleInputPIMPL& lhs,
     return !(lhs == rhs);
 }
 
-template<class Archive>
-inline void ModuleInputPIMPL::save(Archive& ar) const {
-    ar& cereal::make_nvp("ModuleInputPIMPL is_optional", m_optional_);
-    ar& cereal::make_nvp("ModuleInputPIMPL is_transparent", m_transparent_);
-    ar& cereal::make_nvp("ModuleInputPIMPL has_description", has_description());
-    if(has_description())
-        ar& cereal::make_nvp("ModuleInputPIMPL description", m_desc_);
-    ar& cereal::make_nvp("ModuleInputPIMPL has_type", has_type());
-    if(has_type()) {
-        ar& cereal::make_nvp(
-          "ModuleInputPIMPL type name",
-          utilities::printing::Demangler::demangle(type().name()));
-        ar& cereal::make_nvp("ModuleInputPIMPL has_value", has_value());
-        if(has_value())
-            ar& cereal::make_nvp("ModuleInputPIMPL value", m_value_);
-    }
-}
-
-template<class Archive>
-inline void ModuleInputPIMPL::load(Archive& ar) {
-    // Even when a type is set, has_type() is always false in load. Why?
-    // std::cout << "has type" << has_type() << std::endl;
-    bool hasdescription, hastype, hasvalue;
-    ar& cereal::make_nvp("ModuleInputPIMPL is_optional", m_optional_);
-    ar& cereal::make_nvp("ModuleInputPIMPL is_transparent", m_transparent_);
-    ar& cereal::make_nvp("ModuleInputPIMPL has_description", hasdescription);
-    if(hasdescription)
-        ar& cereal::make_nvp("ModuleInputPIMPL description", m_desc_);
-    ar& cereal::make_nvp("ModuleInputPIMPL has_type", hastype);
-    if(hastype) {
-        std::string mytype;
-        ar& cereal::make_nvp("ModuleInputPIMPL type name", mytype);
-        // auto mytype = m_type_.value();
-        ar& cereal::make_nvp("ModuleInputPIMPL has_value", hasvalue);
-        if(hasvalue) {
-            // if(mytype == std::type_index(typeid(double))) {
-            if(mytype == "double") {
-                set_type(std::type_index(typeid(double)));
-                SDEAny myany{double{}};
-                ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
-                set_value(make_SDEAny<double>(
-                  std::forward<double>(myany.cast<double>())));
-            } else if(mytype == "int") {
-                set_type(std::type_index(typeid(int)));
-                SDEAny myany{int{}};
-                ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
-                set_value(
-                  make_SDEAny<int>(std::forward<int>(myany.cast<int>())));
-            } else {
-                std::cout << "Cannot deserialize this type. " << std::endl;
-            }
-        }
-        // } else {
-        //     std::cout << "You need to use set_type() before deserialization!"
-        //               << std::endl;
-        // }
-    }
-}
-
-template void ModuleInputPIMPL::save<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&) const;
-template void ModuleInputPIMPL::load<cereal::JSONInputArchive>(
-  cereal::JSONInputArchive&);
-template void ModuleInputPIMPL::save<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&) const;
-template void ModuleInputPIMPL::load<cereal::BinaryInputArchive>(
-  cereal::BinaryInputArchive&);
 } // namespace sde::detail_

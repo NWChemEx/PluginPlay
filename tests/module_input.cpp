@@ -1,4 +1,3 @@
-#include "sde/detail_/typeindex.hpp"
 #include <catch2/catch.hpp>
 #include <sde/module_input.hpp>
 
@@ -436,22 +435,4 @@ TEST_CASE("ModuleInput : Equality comparisons") {
         REQUIRE_FALSE(i == i2);
         REQUIRE(i != i2);
     }
-}
-
-TEST_CASE("ModuleInput serialization") {
-    ModuleInput i, i2;
-    i.set_type<int>();
-    i.change(int{33});
-    i.set_description("Hello world");
-    // i2.set_type<int>();//Doesn't work in load, why?
-    std::stringstream ss;
-    {
-        cereal::BinaryOutputArchive oarchive(ss);
-        oarchive(i);
-    }
-    {
-        cereal::BinaryInputArchive iarchive(ss);
-        iarchive(i2);
-    }
-    REQUIRE(i == i2);
 }

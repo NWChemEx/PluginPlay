@@ -1,15 +1,7 @@
 #include <catch2/catch.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/unordered_map.hpp>
-#include <cereal/types/vector.hpp>
 #include <map>
 #include <sde/detail_/sde_any.hpp>
-#include <string>
 #include <typeindex>
-#include <utility> //std::pair
 #include <vector>
 
 using namespace sde::detail_;
@@ -173,7 +165,6 @@ TEST_CASE("make_SDEAny") {
     SDEAny a{int{3}};
     REQUIRE(a == make_SDEAny<int>(3));
 }
-
 TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
                    cereal::BinaryOutputArchive,
                    cereal::PortableBinaryOutputArchive,

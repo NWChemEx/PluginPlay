@@ -1,13 +1,6 @@
 #pragma once
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
-#include <cereal/access.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/map.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/optional.hpp> // std::optional
-#include <cereal/types/unordered_map.hpp>
 #include <iomanip> // for put_time
 #include <utilities/timer.hpp>
 
@@ -621,15 +614,6 @@ private:
 
     /// Timer used to time runs of this module
     utilities::Timer m_timer_;
-
-    friend class cereal::access;
-
-    template<class Archive>
-    void save(Archive& ar) const;
-
-    template<class Archive>
-    void load(Archive& ar);
-
 }; // class ModulePIMPL
 
 //-------------------------------Implementations--------------------------------
@@ -847,27 +831,5 @@ inline void ModulePIMPL::assert_mod_() const {
     if(has_module()) return;
     throw std::runtime_error("Module does not contain an implementation");
 }
-
-template<class Archive>
-inline void ModulePIMPL::save(Archive& ar) const {
-    // ar& cereal::make_nvp("ModulePIMPL has_module", has_module());
-    // ar& cereal::make_nvp("ModulePIMPL has_module", has_description());
-    ar& cereal::make_nvp("ModulePIMPL cache", m_cache_);
-    ar& cereal::make_nvp("ModulePIMPL results", results());
-}
-
-template<class Archive>
-inline void ModulePIMPL::load(Archive& ar) {
-    ar& cereal::make_nvp("ModulePIMPL cache", m_cache_);
-}
-
-template void ModulePIMPL::save<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&) const;
-template void ModulePIMPL::load<cereal::JSONInputArchive>(
-  cereal::JSONInputArchive&);
-template void ModulePIMPL::save<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&) const;
-template void ModulePIMPL::load<cereal::BinaryInputArchive>(
-  cereal::BinaryInputArchive&);
 
 } // namespace sde::detail_

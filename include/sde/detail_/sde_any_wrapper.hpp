@@ -4,13 +4,6 @@
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/functional.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/vector.hpp>
-#include <functional>
 #include <memory>
 #include <utilities/printing/print_stl.hpp>
 
@@ -253,18 +246,6 @@ public:
     T cast() {
         return std::any_cast<T>(m_value_);
     }
-
-    /// To be implemented by the derived class
-    virtual void save_(cereal::JSONOutputArchive& ar) const = 0;
-
-    /// To be implemented by the derived class
-    virtual void save_(cereal::BinaryOutputArchive& ar) const = 0;
-
-    /// To be implemented by the derived class
-    virtual void load_(cereal::JSONInputArchive& ar) = 0;
-
-    /// To be implemented by the derived class
-    virtual void load_(cereal::BinaryInputArchive& ar) = 0;
 
 protected:
     /** @brief Deep copies the type-erased value held in @p rhs.

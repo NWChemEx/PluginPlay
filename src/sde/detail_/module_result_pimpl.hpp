@@ -267,8 +267,7 @@ inline void ModuleResultPIMPL::save(Archive& ar) const {
     if(has_type()) {
         ar& cereal::make_nvp("ModuleResultPIMPL has_value", has_value());
         if(has_value()) {
-            auto myany = *(value().get());
-            ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
+            ar& cereal::make_nvp("ModuleResultPIMPL value", value());
         }
     }
 }

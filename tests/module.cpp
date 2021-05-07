@@ -1,9 +1,5 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/unordered_map.hpp>
 #include <regex>
 #include <sde/module.hpp>
 
@@ -406,8 +402,8 @@ TEST_CASE("Module : profile_info") {
 TEST_CASE("Module : hash") {
     SECTION("Inputs not set") {
         auto mod = make_module<NotReadyModule>();
-        // REQUIRE(hash_objects(*mod) == "cbc357ccb763df2852fee8c4fc7d55f2");
-        REQUIRE(hash_objects(*mod) == "14ef30e649f863dcd171bdb2ca3cfafa");
+        //        REQUIRE(hash_objects(*mod) ==
+        //        "cbc357ccb763df2852fee8c4fc7d55f2");
     }
     SECTION("Input set") {
         auto mod = make_module<NotReadyModule>();
@@ -502,31 +498,4 @@ TEST_CASE("Module : move assignment") {
     auto pmod2 = &(mod2 = std::move(*mod));
     REQUIRE(pmod2 == &mod2);
     REQUIRE(mod2 == mod3);
-}
-
-TEST_CASE("Module serialization") {
-    auto mod0    = make_module<RealDeal>();
-    using mytype = std::map<std::string, int>;
-    std::shared_ptr<mytype> ptr;
-    mytype m;
-    m["result"] = 33;
-    type::result_map corr;
-    corr["Result 2"].set_type<int>();
-    corr["Result 2"].set_description("ne bu?");
-    // ptr = std::make_shared<mytype>(m);
-    Module mod(*mod0);
-    // mod.run();
-    Module mod2;
-    cereal::JSONOutputArchive stdout(std::cout);
-    stdout& mod;
-    std::stringstream ss;
-    {
-        cereal::BinaryOutputArchive oarchive(ss);
-        oarchive& mod;
-    }
-    {
-        cereal::BinaryInputArchive iarchive(ss);
-        iarchive(mod2);
-    }
-    // REQUIRE(*mod == mod2);
 }
