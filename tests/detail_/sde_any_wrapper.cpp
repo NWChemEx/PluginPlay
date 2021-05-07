@@ -158,9 +158,7 @@ TEST_CASE("SDEAnyWrapper Comparisons") {
 struct NotPrintable {
     void hash(sde::Hasher&) const noexcept {}
     template<typename Archive>
-    void serialize(Archive& ar) {
-        ar(std::string("NotPrintable"));
-    }
+    void serialize(Archive& ar) {}
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 
