@@ -335,6 +335,38 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
+    /** @brief Enables serialization for SDEAny instances.
+     *
+     * This function adds a serialized representation of the current SDEAny to
+     * the provided archive.
+     *
+     * @param ar[in,out] An archive object to store the serialized
+     * representation.
+     *
+     * @tparam Type of @p ar. Assumed to satisfy Cereal's output archive type.
+     */
+    template<typename Archive>
+    void save(Archive& ar) const {
+        Serializer s(ar);
+        m_ptr_->serialize(s);
+    }
+
+    /** @brief Enables deserialization for SDEAny instances.
+     *
+     * This function deserialize the SDEAny from the provided archive.
+     *
+     * @param ar[in,out] An archive object that includes the serialized
+     * representation.
+     *
+     * @tparam Type of @p ar. Assumed to satisfy Cereal's input archive type.
+     */
+    template<typename Archive>
+    void load(Archive& ar) {
+        Deserializer d(ar);
+        auto temp = m_ptr_->deserialize(d);
+        m_ptr_.swap(temp);
+    }
+
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *
