@@ -1,9 +1,7 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
+#include "sde/serialization.hpp"
 #include "sde/types.hpp"
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/optional.hpp>
 #include <memory>
 #include <typeindex>
 #include <utilities/printing/demangler.hpp>
@@ -195,7 +193,7 @@ public:
      * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
      * instance.
      */
-    template<class Archive, class Anytype>
+    template<class Archive>
     void load(Archive& ar);
 
 private:
@@ -267,12 +265,14 @@ inline void ModuleResultPIMPL::save(Archive& ar) const {
     if(has_type()) {
         ar& cereal::make_nvp("ModuleResultPIMPL has_value", has_value());
         if(has_value()) {
-            ar& cereal::make_nvp("ModuleResultPIMPL value", value());
+            ar& cereal::make_nvp("ModuleResultPIMPL value", m_value_);
+        } else {
+            std::cout << "Warning! Type cannot be serialized." << std::endl;
         }
     }
 }
 
-template<class Archive, class Anytype>
+template<class Archive>
 inline void ModuleResultPIMPL::load(Archive& ar) {
     bool hasdescription, hastype, hasvalue;
     ar& cereal::make_nvp("ModuleResultPIMPL has_description", hasdescription);
@@ -280,13 +280,10 @@ inline void ModuleResultPIMPL::load(Archive& ar) {
         ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
     ar& cereal::make_nvp("ModuleResultPIMPL has_type", hastype);
     if(hastype) {
-        set_type(std::type_index(typeid(Anytype)));
         ar& cereal::make_nvp("ModuleResultPIMPL has_value", hasvalue);
         if(hasvalue) {
-            SDEAny myany{Anytype{}};
-            ar& cereal::make_nvp("ModuleResultPIMPL value", myany);
-            set_value(std::make_shared<const type::any>(make_SDEAny<Anytype>(
-              std::forward<Anytype>(myany.cast<Anytype>()))));
+            ar& cereal::make_nvp("ModuleResultPIMPL value", m_value_);
+            m_type_.emplace(std::type_index(m_value_.get()->type()));
         }
     }
 }

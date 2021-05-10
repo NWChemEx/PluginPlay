@@ -1,8 +1,5 @@
-#include "sde/detail_/typeindex.hpp"
 #include "sde/module_result.hpp"
 #include <catch2/catch.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
 
 using namespace sde;
 
@@ -230,11 +227,11 @@ TEST_CASE("ModuleResult serialization") {
     std::stringstream ss;
     {
         cereal::BinaryOutputArchive oarchive(ss);
-        p.save<cereal::BinaryOutputArchive>(oarchive);
+        oarchive(p);
     }
     {
         cereal::BinaryInputArchive iarchive(ss);
-        p2.load<cereal::BinaryInputArchive, int>(iarchive);
+        iarchive(p2);
     }
     REQUIRE(p == p2);
 }

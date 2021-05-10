@@ -61,22 +61,19 @@ inline void ModuleResult::save(Archive& ar) const {
     pimpl_->save<Archive>(ar);
 }
 
-template<class Archive, class Anytype>
+template<class Archive>
 inline void ModuleResult::load(Archive& ar) {
-    pimpl_->load<Archive, Anytype>(ar);
+    pimpl_->load<Archive>(ar);
 }
 
+// PIMPL requirement: Serialization functions needs to be explicitly
+// instantiated for all potential archive types they will be used with.
 template void ModuleResult::save<cereal::JSONOutputArchive>(
   cereal::JSONOutputArchive&) const;
-template void ModuleResult::load<cereal::JSONInputArchive, int>(
-  cereal::JSONInputArchive&);
-template void ModuleResult::load<cereal::JSONInputArchive, double>(
+template void ModuleResult::load<cereal::JSONInputArchive>(
   cereal::JSONInputArchive&);
 template void ModuleResult::save<cereal::BinaryOutputArchive>(
   cereal::BinaryOutputArchive&) const;
-template void ModuleResult::load<cereal::BinaryInputArchive, int>(
+template void ModuleResult::load<cereal::BinaryInputArchive>(
   cereal::BinaryInputArchive&);
-template void ModuleResult::load<cereal::BinaryInputArchive, double>(
-  cereal::BinaryInputArchive&);
-
 } // namespace sde

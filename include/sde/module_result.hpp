@@ -244,7 +244,7 @@ public:
      * @tparam Archive The type of archive used for deserialization.
      * @tparam Anytype The type of the bound value of the ModuleResult instance.
      */
-    template<class Archive, class Anytype = int>
+    template<class Archive>
     void load(Archive& ar);
 
 private:
