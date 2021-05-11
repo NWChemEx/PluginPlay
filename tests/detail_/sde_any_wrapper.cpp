@@ -53,30 +53,9 @@ inline static void compare_value(T&& w, corr_t corr) {
 
 TEST_CASE("SDEAnyWrapper<POD>(value)") {
     using three_type = decltype(3);
-    using any_type   = SDEAnyWrapper<three_type>;
     SDEAnyWrapper w(3);
-    STATIC_REQUIRE(std::is_same_v<decltype(w), any_type>);
+    STATIC_REQUIRE(std::is_same_v<decltype(w), SDEAnyWrapper<three_type>>);
     compare_value<three_type>(w, 3);
-
-    SECTION("Serialize via base class") {
-        std::stringstream ss;
-
-        SDEAnyWrapperBase* pw = &w;
-        {
-            cereal::BinaryOutputArchive ar(ss);
-            Serializer s(ar);
-            pw->serialize(s);
-        }
-
-        std::unique_ptr<SDEAnyWrapperBase> pw2;
-        {
-            cereal::BinaryInputArchive ar(ss);
-            Deserializer d(ar);
-            auto temp = SDEAnyWrapperBase::deserialize(d);
-            pw2.swap(temp);
-        }
-        REQUIRE(*pw == *pw2);
-    }
 }
 
 TEST_CASE("SDEAnyWrapper<POD>(reference") {
@@ -104,26 +83,6 @@ TEST_CASE("SDEAnyWrapper<non-POD>(move)") {
     compare_value<vector_t>(w, v2);
 
     REQUIRE(w.cast<vector_t&>().data() == pv);
-
-    SECTION("Serialize via base class") {
-        std::stringstream ss;
-
-        SDEAnyWrapperBase* pw = &w;
-        {
-            cereal::BinaryOutputArchive ar(ss);
-            Serializer s(ar);
-            pw->serialize(s);
-        }
-
-        std::unique_ptr<SDEAnyWrapperBase> pw2;
-        {
-            cereal::BinaryInputArchive ar(ss);
-            Deserializer d(ar);
-            auto temp = SDEAnyWrapperBase::deserialize(d);
-            pw2.swap(temp);
-        }
-        REQUIRE(*pw == *pw2);
-    }
 }
 
 TEST_CASE("SDEAnyWrapper Comparisons") {
@@ -157,8 +116,7 @@ TEST_CASE("SDEAnyWrapper Comparisons") {
 
 struct NotPrintable {
     void hash(sde::Hasher&) const noexcept {}
-    template<typename Archive>
-    void serialize(Archive& ar) {}
+
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 
