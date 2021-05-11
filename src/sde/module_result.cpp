@@ -58,12 +58,14 @@ bool ModuleResult::operator==(const ModuleResult& rhs) const {
 
 template<class Archive>
 inline void ModuleResult::save(Archive& ar) const {
-    pimpl_->save<Archive>(ar);
+    sde::detail_::Serializer s(ar);
+    pimpl_->serialize(s);
 }
 
 template<class Archive>
 inline void ModuleResult::load(Archive& ar) {
-    pimpl_->load<Archive>(ar);
+    sde::detail_::Deserializer d(ar);
+    pimpl_->deserialize(d);
 }
 
 // PIMPL requirement: Serialization functions needs to be explicitly

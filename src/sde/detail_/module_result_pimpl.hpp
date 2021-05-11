@@ -1,4 +1,5 @@
 #pragma once
+#include "sde/detail_/archive_wrapper.hpp"
 #include "sde/detail_/sde_any.hpp"
 #include "sde/serialization.hpp"
 #include "sde/types.hpp"
@@ -181,8 +182,7 @@ public:
      *
      * @tparam Archive The type of archive used for serialization.
      */
-    template<class Archive>
-    void save(Archive& ar) const;
+    void serialize(Serializer& s) const;
 
     /** @brief Enables deserialization for ModuleResultPIMPL instances.
      *
@@ -190,11 +190,9 @@ public:
      * object.
      *
      * @tparam Archive The type of archive used for deserialization.
-     * @tparam Anytype The type of the bound value of the ModuleResultPIMPL
      * instance.
      */
-    template<class Archive>
-    void load(Archive& ar);
+    void deserialize(Deserializer& d);
 
 private:
     /// The type-erased value bound to this field
@@ -255,34 +253,31 @@ inline bool ModuleResultPIMPL::operator!=(const ModuleResultPIMPL& rhs) const {
     return !((*this) == rhs);
 }
 
-template<class Archive>
-inline void ModuleResultPIMPL::save(Archive& ar) const {
-    ar& cereal::make_nvp("ModuleResultPIMPL has_description",
-                         has_description());
+inline void ModuleResultPIMPL::serialize(Serializer& s) const {
+    s(cereal::make_nvp("ModuleResultPIMPL has_description", has_description()));
     if(has_description())
-        ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
-    ar& cereal::make_nvp("ModuleResultPIMPL has_type", has_type());
+        s(cereal::make_nvp("ModuleResultPIMPL description", m_desc_));
+    s(cereal::make_nvp("ModuleResultPIMPL has_type", has_type()));
     if(has_type()) {
-        ar& cereal::make_nvp("ModuleResultPIMPL has_value", has_value());
+        s(cereal::make_nvp("ModuleResultPIMPL has_value", has_value()));
         if(has_value()) {
-            ar& cereal::make_nvp("ModuleResultPIMPL value", m_value_);
+            s(cereal::make_nvp("ModuleResultPIMPL value", m_value_));
         } else {
             std::cout << "Warning! Type cannot be serialized." << std::endl;
         }
     }
 }
 
-template<class Archive>
-inline void ModuleResultPIMPL::load(Archive& ar) {
+inline void ModuleResultPIMPL::deserialize(Deserializer& d) {
     bool hasdescription, hastype, hasvalue;
-    ar& cereal::make_nvp("ModuleResultPIMPL has_description", hasdescription);
+    d(cereal::make_nvp("ModuleResultPIMPL has_description", hasdescription));
     if(hasdescription)
-        ar& cereal::make_nvp("ModuleResultPIMPL description", m_desc_);
-    ar& cereal::make_nvp("ModuleResultPIMPL has_type", hastype);
+        d(cereal::make_nvp("ModuleResultPIMPL description", m_desc_));
+    d(cereal::make_nvp("ModuleResultPIMPL has_type", hastype));
     if(hastype) {
-        ar& cereal::make_nvp("ModuleResultPIMPL has_value", hasvalue);
+        d(cereal::make_nvp("ModuleResultPIMPL has_value", hasvalue));
         if(hasvalue) {
-            ar& cereal::make_nvp("ModuleResultPIMPL value", m_value_);
+            d(cereal::make_nvp("ModuleResultPIMPL value", m_value_));
             m_type_.emplace(std::type_index(m_value_.get()->type()));
         }
     }
