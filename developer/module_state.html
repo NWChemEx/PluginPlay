@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Understanding a Module’s State &mdash; sde 1.0.0 documentation</title>
@@ -13,6 +14,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -170,11 +174,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="understanding-a-module-s-state">
+  <section id="understanding-a-module-s-state">
 <h1>Understanding a Module’s State<a class="headerlink" href="#understanding-a-module-s-state" title="Permalink to this headline">¶</a></h1>
 <p>Arguably one of the largest tasks of the SDE is to manage each module’s state.
 This page describes</p>
-<div class="section" id="property-type-state">
+<section id="property-type-state">
 <h2>Property Type State<a class="headerlink" href="#property-type-state" title="Permalink to this headline">¶</a></h2>
 <p>Let’s say that a developer has defined the property type <code class="docutils literal notranslate"><span class="pre">Area</span></code> for modules
 that compute the area of shapes. The state of the <code class="docutils literal notranslate"><span class="pre">Area</span></code> property type is then
@@ -191,8 +195,8 @@ for the inputs, results, and metadata we have symbolically denoted them with the
 quantities <code class="docutils literal notranslate"><span class="pre">Area_Inputs</span></code>, <code class="docutils literal notranslate"><span class="pre">Area_Results</span></code>, and <code class="docutils literal notranslate"><span class="pre">Area_Metadata</span></code>
 respectively. These values are the same for every instance of the <code class="docutils literal notranslate"><span class="pre">Area</span></code>
 class.</p>
-</div>
-<div class="section" id="developer-set-module-state">
+</section>
+<section id="developer-set-module-state">
 <h2>Developer-Set Module State<a class="headerlink" href="#developer-set-module-state" title="Permalink to this headline">¶</a></h2>
 <p>Each module contains an algorithm, which depending on the complexity, may
 compute one or more properties. For sake of argument let’s say that a module
@@ -217,8 +221,8 @@ and the actual callable piece of code (denoted symbolically by the <code class="
 member of the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class). This state will be the same for all
 instances of the <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> class and comprises what we term the developer’s
 default module state.</p>
-</div>
-<div class="section" id="user-set-module-state">
+</section>
+<section id="user-set-module-state">
 <h2>User-Set Module State<a class="headerlink" href="#user-set-module-state" title="Permalink to this headline">¶</a></h2>
 <p>The final state of any module has one more layer. This is the layer that holds
 any changes to the module’s state during a run. The following UML state diagram
@@ -238,8 +242,8 @@ by the user. This is because it is this set of state that can be manipulated by
 the user. It is this user state that is interacted with. For example when you
 call a module it is the values stored in <code class="docutils literal notranslate"><span class="pre">pimpl1</span></code> that are used, not the
 values in a given <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> instance.</p>
-</div>
-<div class="section" id="copied-module-state">
+</section>
+<section id="copied-module-state">
 <h2>Copied Module State<a class="headerlink" href="#copied-module-state" title="Permalink to this headline">¶</a></h2>
 <p>For clarity it is worth describing one other type of module state and that is
 state arising from copying a module. This is described in the following UML
@@ -255,8 +259,8 @@ from <code class="docutils literal notranslate"><span class="pre">pimpl1</span><
 copy occurred. Of note both <code class="docutils literal notranslate"><span class="pre">module11</span></code> and <code class="docutils literal notranslate"><span class="pre">module2</span></code> contain the same
 instance of <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> (because the state of <code class="docutils literal notranslate"><span class="pre">Algorithm</span></code> is the same for
 all instances, there’s no reason for them not to).</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
