@@ -56,26 +56,12 @@ bool ModuleResult::operator==(const ModuleResult& rhs) const {
     return *pimpl_ == *rhs.pimpl_;
 }
 
-template<class Archive>
-inline void ModuleResult::save(Archive& ar) const {
-    sde::detail_::Serializer s(ar);
+void ModuleResult::save_(sde::detail_::Serializer& s) const {
     pimpl_->serialize(s);
 }
 
-template<class Archive>
-inline void ModuleResult::load(Archive& ar) {
-    sde::detail_::Deserializer d(ar);
+void ModuleResult::load_(sde::detail_::Deserializer& d) {
     pimpl_->deserialize(d);
 }
 
-// PIMPL requirement: Serialization functions needs to be explicitly
-// instantiated for all potential archive types they will be used with.
-template void ModuleResult::save<cereal::JSONOutputArchive>(
-  cereal::JSONOutputArchive&) const;
-template void ModuleResult::load<cereal::JSONInputArchive>(
-  cereal::JSONInputArchive&);
-template void ModuleResult::save<cereal::BinaryOutputArchive>(
-  cereal::BinaryOutputArchive&) const;
-template void ModuleResult::load<cereal::BinaryInputArchive>(
-  cereal::BinaryInputArchive&);
 } // namespace sde

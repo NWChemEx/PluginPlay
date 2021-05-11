@@ -1,4 +1,5 @@
 #pragma once
+#include "sde/detail_/archive_wrapper.hpp"
 #include "sde/detail_/sde_any.hpp"
 #include "sde/serialization.hpp"
 #include "sde/types.hpp"
@@ -235,17 +236,22 @@ public:
      * @tparam Archive The type of archive used for serialization.
      */
     template<class Archive>
-    void save(Archive& ar) const;
+    void save(Archive& ar) const {
+        sde::detail_::Serializer s(ar);
+        save_(s);
+    }
 
     /** @brief Enables deserialization for ModuleResult instances.
      *
      * This function loads the ModuleResult instance from the Archive object.
      *
      * @tparam Archive The type of archive used for deserialization.
-     * @tparam Anytype The type of the bound value of the ModuleResult instance.
      */
     template<class Archive>
-    void load(Archive& ar);
+    void load(Archive& ar) {
+        sde::detail_::Deserializer d(ar);
+        load_(d);
+    }
 
 private:
     /// Implements set_type by deferring to PIMPL
@@ -266,6 +272,13 @@ private:
 
     /// The object that holds the actual state of the instance.
     std::unique_ptr<detail_::ModuleResultPIMPL> pimpl_;
+
+    /// Helper function for serilization
+    void save_(sde::detail_::Serializer& s) const;
+
+    /// Helper function for deserilization
+    void load_(sde::detail_::Deserializer& d);
+
 }; // class ModuleResult
 
 //------------------------------Implementations---------------------------------
