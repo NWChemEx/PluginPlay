@@ -71,6 +71,10 @@ public:
      */
     void copy_module(const type::key& old_key, type::key new_key);
 
+    void erase(const type::key& key);
+
+    void rename_module(const type::key& old_key, type::key new_key);
+
     /** @brief Defines the default module for a particular property type
      *
      *  @tparam T The type of the property type the default is for
@@ -147,6 +151,12 @@ private:
 template<typename ModuleType>
 void ModuleManager::add_module(type::key module_key) {
     add_module(std::move(module_key), std::make_shared<ModuleType>());
+}
+
+inline void ModuleManager::rename_module(const type::key& old_key,
+                                         type::key new_key) {
+    copy_module(old_key, std::move(new_key));
+    erase(old_key);
 }
 
 } // namespace sde

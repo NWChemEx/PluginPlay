@@ -91,6 +91,8 @@ struct ModuleManagerPIMPL {
         m_modules.emplace(std::move(key), ptr);
     }
 
+    void erase(const type::key& key) { m_modules.erase(key); }
+
     /** @brief Makes a deep copy of a module
      *
      * This function makes a deep copy of a module. The new module is unlocked
@@ -113,6 +115,11 @@ struct ModuleManagerPIMPL {
      * @return A shared_ptr to the requested module
      */
     shared_module at(const type::key& key) {
+        if(!count(key)) {
+            const std::string msg =
+              "ModuleManager has no module with key: '" + key + "'";
+            throw std::out_of_range(msg);
+        }
         auto mod = m_modules.at(key);
         // Loop over submodules filling them in from the defaults
         for(auto& [k, v] : mod->submods()) {
