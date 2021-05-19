@@ -91,6 +91,17 @@ struct ModuleManagerPIMPL {
         m_modules.emplace(std::move(key), ptr);
     }
 
+    /** @brief Unloads the specified module.
+     *
+     *  This function unloads the module with the specified key. After this
+     *  operation the key is free to be used again. Calling this function does
+     *  NOT clean any data out of the cache. This function is a no-op if @p key
+     *  does not exist.
+     *
+     *  @param[in] key The key for the module which should be erased.
+     *
+     *  @throw None No throw guarantee.
+     */
     void erase(const type::key& key) { m_modules.erase(key); }
 
     /** @brief Makes a deep copy of a module
