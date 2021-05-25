@@ -1,6 +1,7 @@
 #pragma once
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
+#include <chrono>
 #include <iomanip> // for put_time
 #include <utilities/timer.hpp>
 
@@ -11,7 +12,7 @@ namespace sde::detail_ {
  *
  *  C++ doesn't have a great way to get a time stamp as a string. This function
  *  wraps the process of making such a string. The resulting string contains
- *  both the date and the time (to second accuracy).
+ *  both the date and the time (to millisecond accuracy).
  *
  *  @return A std::string containing the current date and time in the format
  *          `<day>-<month>-<year> <hour>:<minute>:<second>`
@@ -20,13 +21,13 @@ namespace sde::detail_ {
  *         string. Strong throw guarantee.
  */
 inline auto time_stamp() {
-    // TODO: Check the returns of these two functions for errors
-    auto t  = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-
+    using namespace std::chrono;
+    const auto now    = system_clock::now();
+    const auto now_tt = system_clock::to_time_t(now);
+    const auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
     std::stringstream ss;
-    ss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
-    // TODO: Make sure ss's bad_bit wasn't set
+    ss << std::put_time(std::localtime(&now_tt), "%d-%m-%Y %H:%M:%S") << '.'
+       << std::setfill('0') << std::setw(3) << ms.count();
     return ss.str();
 }
 
