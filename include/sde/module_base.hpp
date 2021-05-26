@@ -1,7 +1,9 @@
 #pragma once
+#include "sde/detail_/sde_any.hpp"
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/submodule_request.hpp"
+#include <memory>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace sde {
@@ -28,6 +30,12 @@ class ModuleBase {
 public:
     /// The type returned by memoization
     using hash_type = std::string;
+
+    /// The type of the internal cache
+    using cache_type = std::map<std::string, detail_::SDEAny>;
+
+    /// A pointer to a cache
+    using cache_ptr = std::shared_ptr<cache_type>;
 
     /// Deleted to avoid erroneous construction
     ModuleBase() = delete;
@@ -193,6 +201,8 @@ public:
      *  @throw none No throw guarantee.
      */
     const auto& citations() const noexcept { return m_citations_; }
+
+    void set_cache(cache_ptr cache) noexcept { m_cache_ = cache; }
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -395,7 +405,19 @@ protected:
     template<typename property_type>
     void satisfies_property_type();
 
+    template<typename value_type, typename... Args>
+    value_type uncache_data(const std::tuple<Args...>& t) const;
+
+    template<typename value_type, typename... Args, typename DefaultType>
+    value_type uncache_data(const std::tuple<Args...>& t,
+                            DefaultType default_value) const;
+
+    template<typename... Args, typename value_type>
+    void cache_data(const std::tuple<Args...>& t, value_type&& value) const;
+
 private:
+    cache_type& cache_() const;
+
     /** @brief Developer facing API for running the module.
      *
      * This is the member function that the derived class should implement for
@@ -436,6 +458,8 @@ private:
 
     /// A list of literature citations to cite if you use this module
     std::vector<type::description> m_citations_;
+
+    cache_ptr m_cache_;
 }; // class ModuleBase
 
 // -------------------------------- Helper Macros ------------------------------
@@ -558,6 +582,39 @@ void ModuleBase::satisfies_property_type() {
     m_inputs_.insert(inputs.begin(), inputs.end());
     auto results = p.results();
     m_results_.insert(results.begin(), results.end());
+}
+
+template<typename value_type, typename... Args>
+value_type ModuleBase::uncache_data(const std::tuple<Args...>& t) const {
+    auto& cache = cache_();
+    auto hv     = hash_objects(t);
+    if(cache.count(hv)) return cache.at(hv).template cast<value_type>();
+    throw std::out_of_range("Internal cache does contain specified value");
+}
+
+template<typename value_type, typename... Args, typename DefaultValue>
+value_type ModuleBase::uncache_data(const std::tuple<Args...>& t,
+                                    DefaultValue default_value) const {
+    auto& cache = cache_();
+    auto hv     = hash_objects(t);
+    if(cache.count(hv)) return cache.at(hv).template cast<value_type>();
+    return default_value;
+}
+
+template<typename... Args, typename value_type>
+void ModuleBase::cache_data(const std::tuple<Args...>& t,
+                            value_type&& value) const {
+    using clean_type = std::decay_t<value_type>;
+    using sde::detail_::make_SDEAny;
+    auto& cache = cache_();
+    auto hv     = hash_objects(t);
+    cache[hv]   = make_SDEAny<clean_type>(std::forward<value_type>(value));
+}
+
+inline typename ModuleBase::cache_type& ModuleBase::cache_() const {
+    if(!m_cache_)
+        throw std::runtime_error("Module does not have an interal cache");
+    return *m_cache_.get();
 }
 
 } // namespace sde
