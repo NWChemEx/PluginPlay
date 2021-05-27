@@ -16,7 +16,7 @@ using not_set_t = typename ModulePIMPL::not_set_type;
  */
 TEST_CASE("time_stamp") {
     auto rv = time_stamp();
-    std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d$");
+    std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d\\.\\d{3}$");
     REQUIRE(std::regex_search(rv, corr));
 }
 
@@ -278,8 +278,9 @@ TEST_CASE("ModulePIMPL : profile_info") {
 
     SECTION("Run has been called") {
         p.run(sde::type::input_map{});
-        std::regex corr("^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d : \\d h "
-                        "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
+        std::regex corr(
+          "^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d\\.\\d{3} : \\d h "
+          "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
         REQUIRE(std::regex_search(p.profile_info(), corr));
     }
 }
