@@ -44,6 +44,8 @@ topic covered (TODO: add link).
     :caption: Contents:
 
     basics
+    templated
+    iterative
     advanced
     design
     
