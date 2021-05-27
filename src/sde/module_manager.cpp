@@ -24,6 +24,8 @@ void ModuleManager::add_module(type::key key, module_base_ptr base) {
     pimpl_->add_module(std::move(key), base);
 }
 
+void ModuleManager::erase(const type::key& key) { pimpl_->erase(key); }
+
 void ModuleManager::copy_module(const type::key& old_key, type::key new_key) {
     pimpl_->copy_module(old_key, std::move(new_key));
 }

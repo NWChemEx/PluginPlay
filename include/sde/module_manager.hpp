@@ -66,10 +66,42 @@ public:
 
     /** @brief Makes a "deep copy" of a module
      *
-     * @param old_key
-     * @param new_key
+     *  This function will copy the module stored under @p old_key and store the
+     *  copy under @p new_key. The copy will be unlocked, with a deep copy of
+     *  @p old_key 's inputs and submodules. Deep copy in this context meaning
+     *  that changing @p new_key 's inputs or submodules will not affect the
+     *  module stored under @p old_key.
+     *
+     *  @param[in] old_key The key for the module which is being copied.
+     *  @param[in] new_key The key for the resulting copy.
+     *
+     *  @throw std::bad_alloc if an allocation error arises.
      */
     void copy_module(const type::key& old_key, type::key new_key);
+
+    /** @brief Unloads the specified module.
+     *
+     *  This function unloads the module with the specified key. After this
+     *  operation the key is free to be used again. Calling this function does
+     *  NOT clean any data out of the cache. This function is a no-op if @p key
+     *  does not exist.
+     *
+     *  @param[in] key The key for the module which should be erased.
+     */
+    void erase(const type::key& key);
+
+    /** @brief Changes the key a module is stored under.
+     *
+     *  This function can be used to rename the key a module is stored under.
+     *  After a call to this function there will be no module stored under
+     *  @p old_key.
+     *
+     *  @param[in] old_key The key we are renaming.
+     *  @param[in] new_key The value for the new key.
+     *
+     *  @throw std::bad_alloc if there is an allocation error.
+     */
+    void rename_module(const type::key& old_key, type::key new_key);
 
     /** @brief Defines the default module for a particular property type
      *
@@ -147,6 +179,12 @@ private:
 template<typename ModuleType>
 void ModuleManager::add_module(type::key module_key) {
     add_module(std::move(module_key), std::make_shared<ModuleType>());
+}
+
+inline void ModuleManager::rename_module(const type::key& old_key,
+                                         type::key new_key) {
+    copy_module(old_key, std::move(new_key));
+    erase(old_key);
 }
 
 } // namespace sde
