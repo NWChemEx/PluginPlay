@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Other Frameworks &mdash; sde 1.0.0 documentation</title>
+  <title>Module Collections &mdash; sde 1.0.0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Terminology and Conventions" href="terminology.html" />
-    <link rel="prev" title="Motivations" href="motivations.html" /> 
+    <link rel="next" title="About Module Collections" href="overview.html" />
+    <link rel="prev" title="Advanced Property Type Development" href="../property_types/advanced.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,17 +94,15 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">About the SDE Project</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="motivations.html">Motivations</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Other Frameworks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module Collections</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html">About Module Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_modules.html">Loading a Module Collection</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -154,15 +152,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">About the SDE Project</a> &raquo;</li>
-        
-      <li>Other Frameworks</li>
+      <li>Module Collections</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/about/other_frameworks.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/module_collections/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -175,12 +171,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="other-frameworks">
-<h1>Other Frameworks<a class="headerlink" href="#other-frameworks" title="Permalink to this headline">¶</a></h1>
-<p>So why write SDE? Aren’t there other C++ plugin frameworks out there? Well, in
-the interest of transparency it’s worth admitting that the SDE was written
-before checking if other frameworks existed. It’s worth at some point seeing if
-others exist and if so comparing and contrasting the SDE with them.</p>
+  <section id="module-collections">
+<h1>Module Collections<a class="headerlink" href="#module-collections" title="Permalink to this headline">¶</a></h1>
+<p>Typically developers write more than one module. When modules share some common
+theme (for example they all relate to computing electric fields) developers will
+often choose to distribute/bundle these modules together. We term such
+distributions “module collections”. The grouping of modules into collections is
+purely arbitary and for the developer’s convenience. Come runtime, the set of
+modules available to the user wil be the union of all module collections that
+have been loaded.</p>
+<p>The sections in this chapter focus on best practices for maintaining a module
+collection.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">About Module Collections</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#c-set-up">C++ Set-Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#python-set-up">Python Set-Up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="load_modules.html">Loading a Module Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_modules.html#public-api">Public API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_modules.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
@@ -189,8 +205,8 @@ others exist and if so comparing and contrasting the SDE with them.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="terminology.html" class="btn btn-neutral float-right" title="Terminology and Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="motivations.html" class="btn btn-neutral float-left" title="Motivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral float-right" title="About Module Collections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../property_types/advanced.html" class="btn btn-neutral float-left" title="Advanced Property Type Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

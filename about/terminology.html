@@ -98,13 +98,20 @@
 <li class="toctree-l2"><a class="reference internal" href="motivations.html">Motivations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="other_frameworks.html">Other Frameworks</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Terminology and Conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-terms">Basic Terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-state">Module State</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -181,15 +188,28 @@
 as the conventions we follow throughout the documentation.</p>
 <section id="terminology">
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
+<section id="basic-terms">
+<h3>Basic Terms<a class="headerlink" href="#basic-terms" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>module: a self-contained executable piece of code. Modules wrap developer
-provided code in a common API that can be used by the rest of the SDE. End-
-users typically do not work directly with modules, they work with…</p></li>
+<li><p>module: a self-contained piece of code. Modules wrap developer provided code
+in a common API that can be used by the rest of the SDE. End-users typically
+do not work directly with modules, they work with…</p></li>
 <li><p>property type: A property type is a domain-specific quantity of interest. For
 example if your code computes geometric properties of shapes then you may have
 property types for area, volume, and perimeter. Basically these are the
 quantities that users of your code will want to compute and they define the
 manners in which a module can be called.</p></li>
+<li><p>module collection: these are groups of modules that are distributed together.
+In C++ module collections will be libraries, whereas in Python they will be
+Python modules.</p></li>
+<li><p>memoization: A technique where repeated calls to an expensive function, with
+the same input, are avoided by saving the input to the function and the
+result of calling the function.</p></li>
+</ul>
+</section>
+<section id="module-state">
+<h3>Module State<a class="headerlink" href="#module-state" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li><p>bound input: For a particular module, <code class="docutils literal notranslate"><span class="pre">M</span></code>, an input <code class="docutils literal notranslate"><span class="pre">k</span></code> is said to be
 bound if the <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> instance returned by <code class="docutils literal notranslate"><span class="pre">M.inputs().at(&quot;k&quot;)</span></code> has
 a value. When a module is called as a particular property type, all inputs
@@ -203,13 +223,11 @@ printing levels and options that affect the speed at which an algorithm
 computes (block sizes, number of threads, <em>etc.</em>).</p></li>
 <li><p>opaque: The opposite of transparent. An option is “opaque” it changing its
 value changes the result of a module.</p></li>
-<li><p>memoization: A technique where repeated calls to an expensive function, with
-the same input, are avoided by saving the input to the function and the
-result of calling the function.</p></li>
 <li><p>locked: A module is said to be locked if the end-user accessible state can no
 longer be changed. This occurs when a module is run and prevents concurrent
 access from invalidating memoization.</p></li>
 </ul>
+</section>
 </section>
 </section>
 

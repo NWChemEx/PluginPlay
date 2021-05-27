@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Other Frameworks &mdash; sde 1.0.0 documentation</title>
+  <title>Property Type Development &mdash; sde 1.0.0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Terminology and Conventions" href="terminology.html" />
-    <link rel="prev" title="Motivations" href="motivations.html" /> 
+    <link rel="next" title="Basics of Writing a Property Type" href="basics.html" />
+    <link rel="prev" title="Designing a Module" href="../modules/design.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,16 +94,14 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">About the SDE Project</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="motivations.html">Motivations</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Other Frameworks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Property Type Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Property Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html">Advanced Property Type Development</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
@@ -154,15 +152,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">About the SDE Project</a> &raquo;</li>
-        
-      <li>Other Frameworks</li>
+      <li>Property Type Development</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/about/other_frameworks.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/property_types/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -175,12 +171,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="other-frameworks">
-<h1>Other Frameworks<a class="headerlink" href="#other-frameworks" title="Permalink to this headline">¶</a></h1>
-<p>So why write SDE? Aren’t there other C++ plugin frameworks out there? Well, in
-the interest of transparency it’s worth admitting that the SDE was written
-before checking if other frameworks existed. It’s worth at some point seeing if
-others exist and if so comparing and contrasting the SDE with them.</p>
+  <section id="property-type-development">
+<h1>Property Type Development<a class="headerlink" href="#property-type-development" title="Permalink to this headline">¶</a></h1>
+<p>The topics in this chapter will walk you through writing and designing property
+types.Needing to design a property type is common when a project starts and
+becomes less common when an established set of property types already exists
+(because the likelihood that a property type already exists for your property
+increases).</p>
+<p>We continue the electric field example started in the modules chapter, here
+focusing on how we designed the <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type. For simplicity
+we assume that electric fields arise soley from a collection of point charges
+and that users only ever want the value of the electric field at a single point.
+In a production quality code those are unlikely to be valid assumptions, but
+they suffice for our present purposes.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics of Writing a Property Type</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#declaring-a-property-type">Declaring A Property Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#defining-a-property-type">Defining a Property Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Property Type Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#property-type-inheritence">Property Type Inheritence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#templated-property-types">Templated Property Types</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
@@ -189,8 +208,8 @@ others exist and if so comparing and contrasting the SDE with them.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="terminology.html" class="btn btn-neutral float-right" title="Terminology and Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="motivations.html" class="btn btn-neutral float-left" title="Motivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basics.html" class="btn btn-neutral float-right" title="Basics of Writing a Property Type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../modules/design.html" class="btn btn-neutral float-left" title="Designing a Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

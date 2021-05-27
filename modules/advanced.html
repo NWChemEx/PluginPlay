@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Advanced Module Implementation &mdash; sde 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Designing a Module" href="design.html" />
+    <link rel="prev" title="Basics of Writing a Module" href="basics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> sde
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Advanced Module Implementation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-specific-inputs">Module-Specific Inputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#templated-modules">Templated Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iterative-modules">Iterative Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#satisfying-multiple-property-types">Satisfying Multiple Property Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="design.html">Designing a Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sde</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module Development</a> &raquo;</li>
+        
+      <li>Advanced Module Implementation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/advanced.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="advanced-module-implementation">
+<h1>Advanced Module Implementation<a class="headerlink" href="#advanced-module-implementation" title="Permalink to this headline">¶</a></h1>
+<p>The previous page covered the basics of writing a module, which is fine for
+many applications. For more complicated algorithms however, there are additional
+considerations. That is what this page focuses on.</p>
+<section id="module-specific-inputs">
+<h2>Module-Specific Inputs<a class="headerlink" href="#module-specific-inputs" title="Permalink to this headline">¶</a></h2>
+<p>Continuing from our electric field example, the factor of:
+<span class="math notranslate nohighlight">\(||\vec{r} - \vec{r}_i||^2\)</span> means that point charges which are far from
+the evaluation point, <span class="math notranslate nohighlight">\(\vec{r}\)</span>, minimally contributes to the electric
+field (assuming all point charges have approximately the same charge).
+Consequently, we can reduce the computational prefactor slightly by only
+considering point charges “near” <span class="math notranslate nohighlight">\(\vec{r}\)</span>. What constitutes “near” will
+in general be situational (<em>i.e.</em>, depends on magnitudes of point charges
+involved, target precision, <em>etc.</em>). The point of all this is that for
+computational reasons, we would like to add a threshold paramter to our electric
+field module.</p>
+<p>For simplicity we will implement a new module <code class="docutils literal notranslate"><span class="pre">ScreenedCoulombsLaw</span></code> rather
+than modifying <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code>. Relative to our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module, the new
+parameter slightly modifies the constructor and the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member functions.
+With the new input the constructor becomes:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
+    <span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Specifically we declare a new double-precision input called “threshold”, with a
+brief description and a default value set to the maximum double value (<em>i.e.</em>,
+no screening will occur by default). The relevant change to the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member
+is:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">thresh</span>              <span class="o">=</span> <span class="n">inputs</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">).</span><span class="n">value</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="c1">// This will be the value of the electric field</span>
+    <span class="n">Point</span> <span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">};</span>
+    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">results</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here the point to note is that our module is responsible for manually unwrapping
+the new input parameter. It will <strong>NOT</strong> automatically be unwrapped by the
+property type.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Module-specific inputs work best for parameters that are typically set in
+advance versus parameters that would typically be passed as an input.</p>
+</div>
+</section>
+<section id="templated-modules">
+<h2>Templated Modules<a class="headerlink" href="#templated-modules" title="Permalink to this headline">¶</a></h2>
+<p>Our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module hard-coded the floating type to <code class="docutils literal notranslate"><span class="pre">double</span></code>. In
+practice we can get a factor of 2 speed-up by using <code class="docutils literal notranslate"><span class="pre">float</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">double</span></code>. The trade-off is that <code class="docutils literal notranslate"><span class="pre">float</span></code> has reduced precision and is thus
+not applicable in all situations. Nonetheless, if we want to support both
+<code class="docutils literal notranslate"><span class="pre">float</span></code> and <code class="docutils literal notranslate"><span class="pre">double</span></code> the easiest way to do this is by templating our module
+on the floating-point type. To this end, this section looks at how to write a
+module <code class="docutils literal notranslate"><span class="pre">TemplatedCoulombsLaw</span></code>, which is templated on the floating-point type.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In practice, rather than declaring a whole new module
+<code class="docutils literal notranslate"><span class="pre">TemplatedCoulombsLaw</span></code> you would probably just modify the <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code>
+module; however, in order to maintain two separate tutorials we opted to
+create a new module.</p>
+</div>
+<p>Templating slightly changes how the module is declared:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
+<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">);</span>
+<span class="p">}</span> <span class="c1">// namespace sde_examples</span>
+</pre></div>
+</div>
+<p>specifically we need to include a <code class="docutils literal notranslate"><span class="pre">template&lt;typename</span> <span class="pre">FloatingPointType&gt;</span></code>
+statement before the call to <code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>
+(<code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">FloatingPointType&gt;</span></code> would work too). The more significant
+changes are to the definition of the module where we have to use different
+macros: <code class="docutils literal notranslate"><span class="pre">TEMPLATED_MODULE_CTOR</span></code> and <code class="docutils literal notranslate"><span class="pre">TEMPLATED_MODULE_RUN</span></code>. In addition to
+taking the name of the module, these macros also take a list of all template
+parameters.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;electric_field.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;numeric&gt;</span><span class="c1"> // For std::inner_product</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
+<span class="n">TEMPLATED_MODULE_CTOR</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span> <span class="n">FloatingPointType</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
+    <span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
+<span class="n">TEMPLATED_MODULE_RUN</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span> <span class="n">FloatingPointType</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
+
+    <span class="c1">// This will be the value of the electric field</span>
+    <span class="n">Point</span> <span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">};</span>
+    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">results</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="iterative-modules">
+<h2>Iterative Modules<a class="headerlink" href="#iterative-modules" title="Permalink to this headline">¶</a></h2>
+<p>Modules that are meant to be called as part of a loop (typically when optimizing
+a quantity) require special consideration.</p>
+<p>TODO: Finish this section once issue #160 is taken care of</p>
+</section>
+<section id="satisfying-multiple-property-types">
+<h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this headline">¶</a></h2>
+<p>Modules are allowed to satisfy multiple property types. In this case the inputs
+and results are the union of the inputs and results from each property type, as
+well as any module-specific inputs.</p>
+<p>TODO: Add examples</p>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="design.html" class="btn btn-neutral float-right" title="Designing a Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basics.html" class="btn btn-neutral float-left" title="Basics of Writing a Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, NWChemEx Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

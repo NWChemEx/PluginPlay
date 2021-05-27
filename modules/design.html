@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Designing a Module &mdash; sde 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Property Type Development" href="../property_types/index.html" />
+    <link rel="prev" title="Advanced Module Implementation" href="advanced.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> sde
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html">Advanced Module Implementation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Designing a Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#additional-inputs">Additional Inputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-specific-input">Module-Specific Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#call-a-submodule">Call a Submodule</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sde</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module Development</a> &raquo;</li>
+        
+      <li>Designing a Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/design.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="designing-a-module">
+<h1>Designing a Module<a class="headerlink" href="#designing-a-module" title="Permalink to this headline">¶</a></h1>
+<p>The previous pages covered how to actually code up a module. They did not
+provide any guidance on how to design your module.</p>
+<section id="additional-inputs">
+<h2>Additional Inputs<a class="headerlink" href="#additional-inputs" title="Permalink to this headline">¶</a></h2>
+<p>The property type APIs are necessarilly general and rigid. This can pose
+difficulties when your module needs additional input. The SDE provides you
+with two options for obtaining the extra input your module needs:</p>
+<ol class="arabic simple">
+<li><p>Define a module-specific input parameter</p></li>
+<li><p>Call a submodule</p></li>
+</ol>
+<section id="module-specific-input">
+<h3>Module-Specific Input<a class="headerlink" href="#module-specific-input" title="Permalink to this headline">¶</a></h3>
+<p>Many algorithms have algorithmic parameters associated with them such as
+thresholds, tolerances, maximum number of iterations, <strong>etc.</strong>. Generally
+speaking it is best to expose these parameters to the user and not hardcode
+them. These parameters are typically not exposed through the property type and
+thus can not be set by the caller as positional arguments. At the same time it
+is usually the end-user, not the calling function, which wants to manipulate
+these parameters, <strong>e.g.</strong> it is the end-user which has decided that a
+particularly tight energy convergence criteria is needed not the function which
+is requesting the energy. For these types of parameters it makes sense to make
+them module-specific inputs.</p>
+<p>In our <code class="docutils literal notranslate"><span class="pre">ScreenedCoulombsLaw</span></code> example (TODO: Add link) we used a threshold to
+determine when point charges should be screened out. This threshold is really an
+algorithmic detail. Once it has been set (either to the default value or by the
+end-user) it generally won’t be touched again. The other option, having this
+threshold be set by a submodule doesn’t really make a whole lot of sense because
+there really isn’t an algorithm that can compute it (typically the default value
+is determined by extensive benchmarking which establishes what value produces a
+tolerable error; while that process could be encapsulated in a module, onece
+it’s been done you might as well just use the value).</p>
+</section>
+<section id="call-a-submodule">
+<h3>Call a Submodule<a class="headerlink" href="#call-a-submodule" title="Permalink to this headline">¶</a></h3>
+<p>Module-specific inputs are primarily for algorithmic parameters. Submodules are
+used primarily to establish data dependencies among computed properties. For
+example in our <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code> tutorial (TODO: add link) we used a submodule
+to establish that when we compute the force on the particle it will depend on
+the electric field (which in general must also be computed).  We did this by
+calling a submodule that satisfied the <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type. By using
+a submodule instead of a hard-coded call our <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code> module works
+with both the <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> and <code class="docutils literal notranslate"><span class="pre">ScreenedCoulombsLaw</span></code> submodules (as well as
+any other modules users choose to write which satisfy the <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code>
+property type).</p>
+<p>Using a module-specific input, for the electric field, in the <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code>
+module doesn’t make a lot of sense because: the value of the electric field is
+system dependent (needs to be computed for every system) and the end-user
+typically doesn’t have the value sitting around (unless they’ve already called
+a module satisfying the <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type).</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../property_types/index.html" class="btn btn-neutral float-right" title="Property Type Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="advanced.html" class="btn btn-neutral float-left" title="Advanced Module Implementation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, NWChemEx Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
