@@ -94,10 +94,9 @@ Iterative Modules
 =================
 
 Modules that are meant to be called as part of a loop (typically when optimizing
-a quantity) require special consideration.
+a quantity) require special consideration. Generally they will have APIs which
+take the current quantity and return an updated version of it. 
 
-
-TODO: Finish this section once issue #160 is taken care of
 
 Satisfying Multiple Property Types
 ==================================
