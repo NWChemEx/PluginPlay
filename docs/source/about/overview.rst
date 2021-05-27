@@ -16,6 +16,7 @@ software. In particular this includes:
 * introduce a new algorithm
 * have new algorithms be available wherever relevant
 * leverage external libraries and algorithms
+* port algorithms to new platforms
 
 Furthermore, all of the above needs to be implemented in a manner which is
 amenable to high-performance computing. Ideally the resulting framework will
