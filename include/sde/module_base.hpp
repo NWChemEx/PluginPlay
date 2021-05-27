@@ -1,5 +1,5 @@
 #pragma once
-#include "sde/detail_/sde_any.hpp"
+#include "sde/cache/cache.hpp"
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/submodule_request.hpp"
@@ -32,7 +32,7 @@ public:
     using hash_type = std::string;
 
     /// The type of the internal cache
-    using cache_type = std::map<std::string, detail_::SDEAny>;
+    using cache_type = Cache;
 
     /// A pointer to a cache
     using cache_ptr = std::shared_ptr<cache_type>;
@@ -202,7 +202,29 @@ public:
      */
     const auto& citations() const noexcept { return m_citations_; }
 
+    /** @brief Sets where the module can store internal data.
+     *
+     *  @param[in] cache A shared_ptr to a @p cache_type instance which will be
+     *                   used by the module for cacheing internal data.
+     *
+     *  @throw None No throw guarantee.
+     */
     void set_cache(cache_ptr cache) noexcept { m_cache_ = cache; }
+
+    /** @brief Provides the module a place to store internal quantities.
+     *
+     *  Modules may have need of cacheing intermediate quantities which are not
+     *  the main results of the module. Cacheing of the main results is handled
+     *  automatically by the SDE. Module developers are responsible for cacheing
+     *  intermediate quantities. This function can be used to retrieve the place
+     *  where module developers should store these intermediate results.
+     *
+     *  @return The Cache object that the module should use to for cacheing
+     *          internal quantities.
+     *
+     *  @throw std::runtime_error if there is no cache. Strong throw guarantee.
+     */
+    cache_type& get_cache() const;
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -405,19 +427,7 @@ protected:
     template<typename property_type>
     void satisfies_property_type();
 
-    template<typename value_type, typename... Args>
-    value_type uncache_data(const std::tuple<Args...>& t) const;
-
-    template<typename value_type, typename... Args, typename DefaultType>
-    value_type uncache_data(const std::tuple<Args...>& t,
-                            DefaultType default_value) const;
-
-    template<typename... Args, typename value_type>
-    void cache_data(const std::tuple<Args...>& t, value_type&& value) const;
-
 private:
-    cache_type& cache_() const;
-
     /** @brief Developer facing API for running the module.
      *
      * This is the member function that the derived class should implement for
@@ -459,6 +469,7 @@ private:
     /// A list of literature citations to cite if you use this module
     std::vector<type::description> m_citations_;
 
+    /// Where the module can store temporaries and intermediates
     cache_ptr m_cache_;
 }; // class ModuleBase
 
@@ -584,34 +595,7 @@ void ModuleBase::satisfies_property_type() {
     m_results_.insert(results.begin(), results.end());
 }
 
-template<typename value_type, typename... Args>
-value_type ModuleBase::uncache_data(const std::tuple<Args...>& t) const {
-    auto& cache = cache_();
-    auto hv     = hash_objects(t);
-    if(cache.count(hv)) return cache.at(hv).template cast<value_type>();
-    throw std::out_of_range("Internal cache does contain specified value");
-}
-
-template<typename value_type, typename... Args, typename DefaultValue>
-value_type ModuleBase::uncache_data(const std::tuple<Args...>& t,
-                                    DefaultValue default_value) const {
-    auto& cache = cache_();
-    auto hv     = hash_objects(t);
-    if(cache.count(hv)) return cache.at(hv).template cast<value_type>();
-    return default_value;
-}
-
-template<typename... Args, typename value_type>
-void ModuleBase::cache_data(const std::tuple<Args...>& t,
-                            value_type&& value) const {
-    using clean_type = std::decay_t<value_type>;
-    using sde::detail_::make_SDEAny;
-    auto& cache = cache_();
-    auto hv     = hash_objects(t);
-    cache[hv]   = make_SDEAny<clean_type>(std::forward<value_type>(value));
-}
-
-inline typename ModuleBase::cache_type& ModuleBase::cache_() const {
+inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
     if(!m_cache_)
         throw std::runtime_error("Module does not have an interal cache");
     return *m_cache_.get();
