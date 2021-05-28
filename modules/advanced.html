@@ -44,7 +44,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Designing a Module" href="design.html" />
-    <link rel="prev" title="Basics of Writing a Module" href="basics.html" /> 
+    <link rel="prev" title="Iterative Modules" href="iterative.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,11 +99,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templated.html">Templated Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterative.html">Iterative Modules</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Advanced Module Implementation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-specific-inputs">Module-Specific Inputs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#templated-modules">Templated Modules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#iterative-modules">Iterative Modules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#satisfying-multiple-property-types">Satisfying Multiple Property Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lambda-modules">Lambda Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#facade-modules">Facade Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="design.html">Designing a Module</a></li>
@@ -236,74 +238,37 @@ property type.</p>
 advance versus parameters that would typically be passed as an input.</p>
 </div>
 </section>
-<section id="templated-modules">
-<h2>Templated Modules<a class="headerlink" href="#templated-modules" title="Permalink to this headline">¶</a></h2>
-<p>Our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module hard-coded the floating type to <code class="docutils literal notranslate"><span class="pre">double</span></code>. In
-practice we can get a factor of 2 speed-up by using <code class="docutils literal notranslate"><span class="pre">float</span></code> instead of
-<code class="docutils literal notranslate"><span class="pre">double</span></code>. The trade-off is that <code class="docutils literal notranslate"><span class="pre">float</span></code> has reduced precision and is thus
-not applicable in all situations. Nonetheless, if we want to support both
-<code class="docutils literal notranslate"><span class="pre">float</span></code> and <code class="docutils literal notranslate"><span class="pre">double</span></code> the easiest way to do this is by templating our module
-on the floating-point type. To this end, this section looks at how to write a
-module <code class="docutils literal notranslate"><span class="pre">TemplatedCoulombsLaw</span></code>, which is templated on the floating-point type.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In practice, rather than declaring a whole new module
-<code class="docutils literal notranslate"><span class="pre">TemplatedCoulombsLaw</span></code> you would probably just modify the <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code>
-module; however, in order to maintain two separate tutorials we opted to
-create a new module.</p>
-</div>
-<p>Templating slightly changes how the module is declared:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
-
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
-<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">);</span>
-<span class="p">}</span> <span class="c1">// namespace sde_examples</span>
-</pre></div>
-</div>
-<p>specifically we need to include a <code class="docutils literal notranslate"><span class="pre">template&lt;typename</span> <span class="pre">FloatingPointType&gt;</span></code>
-statement before the call to <code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>
-(<code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">FloatingPointType&gt;</span></code> would work too). The more significant
-changes are to the definition of the module where we have to use different
-macros: <code class="docutils literal notranslate"><span class="pre">TEMPLATED_MODULE_CTOR</span></code> and <code class="docutils literal notranslate"><span class="pre">TEMPLATED_MODULE_RUN</span></code>. In addition to
-taking the name of the module, these macros also take a list of all template
-parameters.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;electric_field.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;numeric&gt;</span><span class="c1"> // For std::inner_product</span><span class="cp"></span>
-
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
-<span class="n">TEMPLATED_MODULE_CTOR</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span> <span class="n">FloatingPointType</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
-    <span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
-<span class="n">TEMPLATED_MODULE_RUN</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span> <span class="n">FloatingPointType</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
-
-    <span class="c1">// This will be the value of the electric field</span>
-    <span class="n">Point</span> <span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">};</span>
-    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">results</span><span class="p">();</span>
-    <span class="k">return</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="iterative-modules">
-<h2>Iterative Modules<a class="headerlink" href="#iterative-modules" title="Permalink to this headline">¶</a></h2>
-<p>Modules that are meant to be called as part of a loop (typically when optimizing
-a quantity) require special consideration.</p>
-<p>TODO: Finish this section once issue #160 is taken care of</p>
-</section>
 <section id="satisfying-multiple-property-types">
 <h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this headline">¶</a></h2>
-<p>Modules are allowed to satisfy multiple property types. In this case the inputs
-and results are the union of the inputs and results from each property type, as
-well as any module-specific inputs.</p>
+<p>Sometimes an algorithm will compute more than one property. Reasons why this may
+occur include performance (the two quantities may share many common
+intermediates) and wrapping code not originally designed for the SDE (for
+example calling a library which has a single API that computes many properties).
+This poses no problem as the SDE allows modules to satisfy multiple property
+types.</p>
+<p>If a module satisfies <span class="math notranslate nohighlight">\(n\)</span> property types, the inputs to the module are the
+union of the inputs to the <span class="math notranslate nohighlight">\(n\)</span> property types as well as any
+module-specific inputs that the module declares. Similarly the returns of the
+module are the union of the returns of the <span class="math notranslate nohighlight">\(n\)</span> property types as well as
+any module-specific results that the module returns.</p>
 <p>TODO: Add examples</p>
+</section>
+<section id="lambda-modules">
+<h2>Lambda Modules<a class="headerlink" href="#lambda-modules" title="Permalink to this headline">¶</a></h2>
+<p>Lambda modules are one-off modules which satisfy a single property type. They
+can be used anywhere the property type is needed. Unlike a normal module which
+requires defining a class and metadata, lambda modules can be written inline in
+turn allowing the lambda module to use runtime state in its defintion. Lambda
+functions are generated by wrapping a function (either a free function or a
+lambda function).</p>
+<p>TODO: Add examples</p>
+</section>
+<section id="facade-modules">
+<h2>Facade Modules<a class="headerlink" href="#facade-modules" title="Permalink to this headline">¶</a></h2>
+<p>Facade modules are modules which ignore the arguments they are given and return
+a specified value. They are a simplified version of a lambda module which can
+be created by providing a single value (instead of a function like a lambda
+module, or a class like a normal module).</p>
 </section>
 </section>
 
@@ -314,7 +279,7 @@ well as any module-specific inputs.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="design.html" class="btn btn-neutral float-right" title="Designing a Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="basics.html" class="btn btn-neutral float-left" title="Basics of Writing a Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="iterative.html" class="btn btn-neutral float-left" title="Iterative Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
