@@ -14,8 +14,11 @@ class ModuleManagerPIMPL;
  */
 class ModuleManager {
 public:
-    /// The type used to take in a new module
-    using module_base_ptr = std::shared_ptr<const ModuleBase>;
+    /// The type of a pointer to a read/write module
+    using module_base_ptr = std::shared_ptr<ModuleBase>;
+
+    /// The type of a pointer to a read-only module
+    using const_module_base_ptr = std::shared_ptr<const ModuleBase>;
 
     ///@{
     /** @name Ctors and assignment operators

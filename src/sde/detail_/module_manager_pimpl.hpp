@@ -1,6 +1,7 @@
 #pragma once
 #include "module_pimpl.hpp"
 #include "sde/module_base.hpp"
+#include "sde/module_manager.hpp"
 #include <memory>
 #include <typeindex>
 
@@ -18,17 +19,20 @@ namespace detail_ {
 struct ModuleManagerPIMPL {
     ///@{
     /// Type of a pointer to a module's implemenation
-    using module_base_ptr = std::shared_ptr<const ModuleBase>;
+    using module_base_ptr = typename ModuleManager::module_base_ptr;
+
+    /// Type of a pointer to a read-only module implementation
+    using const_module_base_ptr = typename ModuleManager::const_module_base_ptr;
 
     /// Type of a map from the module implementation's type to the
     /// implementation
-    using base_map = std::map<std::type_index, module_base_ptr>;
+    using base_map = std::map<std::type_index, const_module_base_ptr>;
 
     /// Type of a usable module
     using shared_module = std::shared_ptr<Module>;
 
     /// Type of a map holding usable modules
-    using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
+    using module_map = utilities::CaseInsensitiveMap<shared_module>;
 
     /// Type of a cache
     using cache_type = typename ModulePIMPL::cache_type;
@@ -80,7 +84,9 @@ struct ModuleManagerPIMPL {
      */
     void add_module(type::key key, module_base_ptr base) {
         assert_unique_key_(key);
-
+        using internal_cache_type = typename ModuleBase::cache_type;
+        auto internal_cache       = std::make_shared<internal_cache_type>();
+        base->set_cache(internal_cache);
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
         if(!m_caches.count(type))
