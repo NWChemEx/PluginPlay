@@ -221,6 +221,127 @@ public:
     template<typename ValueType>
     ValueType uncache(const hash_type& key) const;
 
+    /** @brief Function for accessing cached data by key, return default value
+     *         if not cached.
+     *
+     *  This function allows a module to retrieve data that it has previously
+     *  cached by providing the key it is cached under. For API simplicity the
+     *  key must be a single object; however, the caller can use an `std::tuple`
+     *  of objects to satisfy this requirement. This function only participates
+     *  in overload resolution if the type of @p key, @p KeyType, is not
+     *  `hash_type`. If the key is not present in the cache, the default values
+     *  provided are returned.
+     *
+     *  @note Whether an object is retrieved by value or reference is determined
+     *        by the caller, specifically by the caller's choice of
+     *        @p ValueType.
+     *
+     *  @tparam ValueType The type of the value being retrieved. Must be
+     *                    specified by the caller.
+     *  @tparam KeyType The type of the object used as a key.
+     *
+     *  @param[in] key The value that the cached data is stored under.
+     *
+     *  @param[in] default_value The value returned if the key is not found.
+     *
+     *  @return The cached data of default value as an object of type
+     *          @p ValueType.
+     *
+     *  @throw std::out_of_range if the cache does not contain a value under the
+     *                           provided key. Strong throw guarantee.
+     */
+    template<typename ValueType, typename KeyType,
+      typename = disable_if_hash_t<KeyType>>
+    ValueType uncache(const KeyType& key, const ValueType& default_value);
+
+    /** @brief Function for accessing cached data by hash, return default value
+     *         if not cached.
+     *
+     *  This function allows a module to retrieve data that it has previously
+     *  cached by providing the hash it is cached under. This is a convenience
+     *  API for when the caller knows the hash already (thereby avoiding the
+     *  need to hash again). If the key is not present in the cache, the
+     *  default values provided are returned.
+     *
+     *  @note Whether an object is retrieved by value or reference is determined
+     *        by the caller, specifically by the caller's choice of
+     *        @p ValueType.
+     *
+     *  @tparam ValueType The type of the value being retrieved. Must be
+     *                    specified by the caller.
+     *
+     *  @param[in] key The hash that the cached data is stored under.
+     *
+     *  @param[in] default_value The value returned if the key is not found.
+     *
+     *  @return The cached data as an object of type @p ValueType.
+     *
+     *  @throw std::out_of_range if the cache does not contain a value under the
+     *                           provided key. Strong throw guarantee.
+     */
+    template<typename ValueType>
+    ValueType uncache(const hash_type& key, const ValueType& default_value);
+
+    /** @brief Function for accessing read-only cached data by key, return
+     *         default value if not cached.
+     *
+     *  This function allows a module to retrieve data that it has previously
+     *  cached by providing the key it is cached under. For API simplicity the
+     *  key must be a single object; however, the caller can use an `std::tuple`
+     *  of objects to satisfy this requirement. This function only participates
+     *  in overload resolution if the type of @p key, @p KeyType, is not
+     *  `hash_type`. If the key is not present in the cache, the default values
+     *  provided are returned.
+     *
+     *  @note Whether an object is retrieved by value or reference is determined
+     *        by the caller, specifically by the caller's choice of
+     *        @p ValueType.
+     *
+     *  @tparam ValueType The type of the value being retrieved. Must be
+     *                    specified by the caller.
+     *  @tparam KeyType The type of the object used as a key.
+     *
+     *  @param[in] key The value that the cached data is stored under.
+     *
+     *  @param[in] default_value The value returned if the key is not found.
+     *
+     *  @return The cached data as an object of type @p ValueType.
+     *
+     *  @throw std::out_of_range if the cache does not contain a value under the
+     *                           provided key. Strong throw guarantee.
+     */
+    template<typename ValueType, typename KeyType,
+      typename = disable_if_hash_t<KeyType>>
+    ValueType uncache(const KeyType& key, const ValueType& default_value) const;
+
+    /** @brief Function for accessing read-only cached data by hash, return
+     *         default value if not cached.
+     *
+     *  This function allows a module to retrieve data that it has previously
+     *  cached by providing the hash it is cached under. This is a convenience
+     *  API for when the caller knows the hash already (thereby avoiding the
+     *  need to hash again). If the key is not present in the cache, the default
+     *  values provided are returned.
+     *
+     *  @note Whether an object is retrieved by value or reference is determined
+     *        by the caller, specifically by the caller's choice of
+     *        @p ValueType.
+     *
+     *  @tparam ValueType The type of the value being retrieved. Must be
+     *                    specified by the caller.
+     *
+     *  @param[in] key The hash that the cached data is stored under.
+     *
+     *  @param[in] default_value The value returned if the key is not found.
+     *
+     *  @return The cached data as an object of type @p ValueType.
+     *
+     *  @throw std::out_of_range if the cache does not contain a value under the
+     *                           provided key. Strong throw guarantee.
+     */
+    template<typename ValueType>
+    ValueType uncache(const hash_type& key, const ValueType& default_value) const;
+
 private:
     /// The object actually storing all of the cached data
     std::map<hash_type, sde::detail_::SDEAny> m_data_;
@@ -265,6 +386,28 @@ template<typename ValueType>
 ValueType Cache::uncache(const hash_type& key) const {
     if(count(key)) return m_data_.at(key).template cast<ValueType>();
     throw std::out_of_range("Internal cache does contain specified value");
+}
+
+template<typename ValueType, typename KeyType, typename>
+ValueType Cache::uncache(const KeyType& key, const ValueType& default_value) {
+    return uncache<ValueType>(hash_objects(key), default_value);
+}
+
+template<typename ValueType>
+ValueType Cache::uncache(const hash_type& key, const ValueType& default_value) {
+    if(count(key)) return m_data_.at(key).template cast<ValueType>();
+    else return default_value;
+}
+
+template<typename ValueType, typename KeyType, typename>
+ValueType Cache::uncache(const KeyType& key, const ValueType& default_value) const {
+    return uncache<ValueType>(hash_objects(key), default_value);
+}
+
+template<typename ValueType>
+ValueType Cache::uncache(const hash_type& key, const ValueType& default_value) const {
+    if(count(key)) return m_data_.at(key).template cast<ValueType>();
+    else return default_value;
 }
 
 } // namespace sde
