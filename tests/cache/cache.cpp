@@ -121,5 +121,25 @@ TEST_CASE("Cache Class") {
             REQUIRE_THROWS_AS(c.uncache<int>(hv), except);
             REQUIRE_THROWS_AS(std::as_const(c).uncache<int>(int{42}), except);
         }
+
+        SECTION("With default values") {
+            c.cache(int{4}, int{42});
+            SECTION("Normal Behavior") {
+                REQUIRE(c.uncache<int>(int{4}, int{43}) == int{42});
+                REQUIRE(std::as_const(c).uncache<int>(int{4}, int{43}) ==
+                        int{42});
+                auto hv = hash_objects(int{4});
+                REQUIRE(c.uncache<int>(hv, int{43}) == int{42});
+                REQUIRE(std::as_const(c).uncache<int>(hv, int{43}) == int{42});
+            }
+            SECTION("Defaulting") {
+                REQUIRE(c.uncache<int>(int{5}, int{43}) == int{43});
+                REQUIRE(std::as_const(c).uncache<int>(int{5}, int{43}) ==
+                        int{43});
+                auto hv = hash_objects(int{5});
+                REQUIRE(c.uncache<int>(hv, int{43}) == int{43});
+                REQUIRE(std::as_const(c).uncache<int>(hv, int{43}) == int{43});
+            }
+        }
     }
 }
