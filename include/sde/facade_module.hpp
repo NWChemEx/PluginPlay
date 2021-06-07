@@ -2,7 +2,7 @@
 #include "sde/module.hpp"
 #include "sde/module_base.hpp"
 #include "sde/types.hpp"
-#include <utilities/type_traits/is_tuple.hpp>
+#include <utilities/type_traits/tuple/is_tuple.hpp>
 
 namespace sde {
 namespace detail_ {
