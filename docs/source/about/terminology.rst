@@ -1,20 +1,34 @@
+***************************
 Terminology and Conventions
-===========================
+***************************
 
 The purpose of this page is to introduce the terminology used by the SDE as well
 as the conventions we follow throughout the documentation.
 
 Terminology
+===========
+
+Basic Terms
 -----------
 
-* module: a self-contained executable piece of code. Modules wrap developer
-  provided code in a common API that can be used by the rest of the SDE. End-
-  users typically do not work directly with modules, they work with...
+* module: a self-contained piece of code. Modules wrap developer provided code 
+  in a common API that can be used by the rest of the SDE. End-users typically 
+  do not work directly with modules, they work with...
 * property type: A property type is a domain-specific quantity of interest. For
   example if your code computes geometric properties of shapes then you may have
   property types for area, volume, and perimeter. Basically these are the
   quantities that users of your code will want to compute and they define the
   manners in which a module can be called.
+* module collection: these are groups of modules that are distributed together.
+  In C++ module collections will be libraries, whereas in Python they will be
+  Python modules.
+* memoization: A technique where repeated calls to an expensive function, with
+  the same input, are avoided by saving the input to the function and the
+  result of calling the function.
+
+Module State
+------------
+
 * bound input: For a particular module, ``M``, an input ``k`` is said to be
   bound if the ``ModuleInput`` instance returned by ``M.inputs().at("k")`` has
   a value. When a module is called as a particular property type, all inputs
@@ -28,9 +42,6 @@ Terminology
   computes (block sizes, number of threads, *etc.*).
 * opaque: The opposite of transparent. An option is "opaque" it changing its
   value changes the result of a module.
-* memoization: A technique where repeated calls to an expensive function, with
-  the same input, are avoided by saving the input to the function and the
-  result of calling the function.
 * locked: A module is said to be locked if the end-user accessible state can no
   longer be changed. This occurs when a module is run and prevents concurrent
   access from invalidating memoization.

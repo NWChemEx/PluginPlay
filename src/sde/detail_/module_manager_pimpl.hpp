@@ -1,6 +1,7 @@
 #pragma once
 #include "module_pimpl.hpp"
 #include "sde/module_base.hpp"
+#include "sde/module_manager.hpp"
 #include <memory>
 #include <typeindex>
 
@@ -18,17 +19,20 @@ namespace detail_ {
 struct ModuleManagerPIMPL {
     ///@{
     /// Type of a pointer to a module's implemenation
-    using module_base_ptr = std::shared_ptr<const ModuleBase>;
+    using module_base_ptr = typename ModuleManager::module_base_ptr;
+
+    /// Type of a pointer to a read-only module implementation
+    using const_module_base_ptr = typename ModuleManager::const_module_base_ptr;
 
     /// Type of a map from the module implementation's type to the
     /// implementation
-    using base_map = std::map<std::type_index, module_base_ptr>;
+    using base_map = std::map<std::type_index, const_module_base_ptr>;
 
     /// Type of a usable module
     using shared_module = std::shared_ptr<Module>;
 
     /// Type of a map holding usable modules
-    using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
+    using module_map = utilities::CaseInsensitiveMap<shared_module>;
 
     /// Type of a cache
     using cache_type = typename ModulePIMPL::cache_type;
@@ -80,7 +84,9 @@ struct ModuleManagerPIMPL {
      */
     void add_module(type::key key, module_base_ptr base) {
         assert_unique_key_(key);
-
+        using internal_cache_type = typename ModuleBase::cache_type;
+        auto internal_cache       = std::make_shared<internal_cache_type>();
+        base->set_cache(internal_cache);
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
         if(!m_caches.count(type))
@@ -90,6 +96,19 @@ struct ModuleManagerPIMPL {
         auto ptr = std::make_shared<Module>(std::move(pimpl));
         m_modules.emplace(std::move(key), ptr);
     }
+
+    /** @brief Unloads the specified module.
+     *
+     *  This function unloads the module with the specified key. After this
+     *  operation the key is free to be used again. Calling this function does
+     *  NOT clean any data out of the cache. This function is a no-op if @p key
+     *  does not exist.
+     *
+     *  @param[in] key The key for the module which should be erased.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void erase(const type::key& key) { m_modules.erase(key); }
 
     /** @brief Makes a deep copy of a module
      *
@@ -113,6 +132,11 @@ struct ModuleManagerPIMPL {
      * @return A shared_ptr to the requested module
      */
     shared_module at(const type::key& key) {
+        if(!count(key)) {
+            const std::string msg =
+              "ModuleManager has no module with key: '" + key + "'";
+            throw std::out_of_range(msg);
+        }
         auto mod = m_modules.at(key);
         // Loop over submodules filling them in from the defaults
         for(auto& [k, v] : mod->submods()) {

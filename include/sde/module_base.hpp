@@ -1,7 +1,9 @@
 #pragma once
+#include "sde/cache/cache.hpp"
 #include "sde/module_input.hpp"
 #include "sde/module_result.hpp"
 #include "sde/submodule_request.hpp"
+#include <memory>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace sde {
@@ -28,6 +30,12 @@ class ModuleBase {
 public:
     /// The type returned by memoization
     using hash_type = std::string;
+
+    /// The type of the internal cache
+    using cache_type = Cache;
+
+    /// A pointer to a cache
+    using cache_ptr = std::shared_ptr<cache_type>;
 
     /// Deleted to avoid erroneous construction
     ModuleBase() = delete;
@@ -193,6 +201,30 @@ public:
      *  @throw none No throw guarantee.
      */
     const auto& citations() const noexcept { return m_citations_; }
+
+    /** @brief Sets where the module can store internal data.
+     *
+     *  @param[in] cache A shared_ptr to a @p cache_type instance which will be
+     *                   used by the module for cacheing internal data.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_cache(cache_ptr cache) noexcept { m_cache_ = cache; }
+
+    /** @brief Provides the module a place to store internal quantities.
+     *
+     *  Modules may have need of cacheing intermediate quantities which are not
+     *  the main results of the module. Cacheing of the main results is handled
+     *  automatically by the SDE. Module developers are responsible for cacheing
+     *  intermediate quantities. This function can be used to retrieve the place
+     *  where module developers should store these intermediate results.
+     *
+     *  @return The Cache object that the module should use to for cacheing
+     *          internal quantities.
+     *
+     *  @throw std::runtime_error if there is no cache. Strong throw guarantee.
+     */
+    cache_type& get_cache() const;
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -436,6 +468,9 @@ private:
 
     /// A list of literature citations to cite if you use this module
     std::vector<type::description> m_citations_;
+
+    /// Where the module can store temporaries and intermediates
+    cache_ptr m_cache_;
 }; // class ModuleBase
 
 // -------------------------------- Helper Macros ------------------------------
@@ -558,6 +593,12 @@ void ModuleBase::satisfies_property_type() {
     m_inputs_.insert(inputs.begin(), inputs.end());
     auto results = p.results();
     m_results_.insert(results.begin(), results.end());
+}
+
+inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
+    if(!m_cache_)
+        throw std::runtime_error("Module does not have an interal cache");
+    return *m_cache_.get();
 }
 
 } // namespace sde

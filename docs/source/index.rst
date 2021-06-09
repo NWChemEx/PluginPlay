@@ -1,10 +1,9 @@
-.. SDE documentation master file, created by
-   sphinx-quickstart on Fri Feb 15 16:25:36 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+########################################
+Simulation Development Environment (SDE)
+########################################
 
-Welcome to SDE's documentation!
-===============================
+The Simulation Development Environment (SDE) is a software development 
+environment designed to facilitate creating modular scientific software.
 
 .. toctree::
    :maxdepth: 2
@@ -12,7 +11,9 @@ Welcome to SDE's documentation!
 
    about/index
    installation/index
-   tutorials/index
+   modules/index
+   property_types/index
+   module_collections/index
    developer/index
 
 `C++ API <sde_cxx_api/index.html>`_

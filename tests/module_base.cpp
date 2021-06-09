@@ -103,6 +103,20 @@ TEST_CASE("ModuleBase : citations") {
     }
 }
 
+TEST_CASE("ModuleBase : get_cache") {
+    testing::NullModule mod;
+    SECTION("Throws if no cache") {
+        REQUIRE_THROWS_AS(mod.get_cache(), std::runtime_error);
+    }
+
+    SECTION("Works if there's a cache") {
+        auto cache = std::make_shared<sde::Cache>();
+        mod.set_cache(cache);
+        auto& internal_cache = mod.get_cache();
+        REQUIRE(&internal_cache == cache.get());
+    }
+}
+
 TEST_CASE("ModuleBase : Comparisons") {
     testing::NullModule mod;
     SECTION("Same module") {
