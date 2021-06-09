@@ -8,6 +8,10 @@ using Point = std::array<double, 3>;
 struct PointCharge {
     double m_charge;
     Point m_r;
+    template<typename Archive>
+    void serialize(Archive& ar) {
+        ar(m_charge, m_r);
+    }
 };
 
 } // namespace sde_examples
