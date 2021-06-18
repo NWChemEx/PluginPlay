@@ -363,7 +363,7 @@ void Cache::cache(hash_type key, ValueType&& value) {
     using clean_type = std::decay_t<ValueType>;
     using sde::detail_::make_SDEAny;
     auto da_any = make_SDEAny<clean_type>(std::forward<ValueType>(value));
-    m_data_.emplace(std::move(key), std::move(da_any));
+    m_data_[key] = std::move(da_any);
 }
 
 template<typename ValueType, typename KeyType, typename>
