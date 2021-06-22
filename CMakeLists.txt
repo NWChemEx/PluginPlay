@@ -28,7 +28,6 @@ if("${BUILD_DOCS}")
     endif()
 endif()
 
-
 cpp_find_or_build_dependency(
         utilities
         URL github.com/NWChemEx-Project/utilities
@@ -39,28 +38,19 @@ cpp_find_or_build_dependency(
 )
 
 cpp_find_or_build_dependency(
-    cereal
-    URL github.com/USCiLab/cereal
-    BUILD_TARGET cereal
-    FIND_TARGET cereal
-    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
-               SKIP_PORTABILITY_TEST=ON
-)
-
-cpp_find_or_build_dependency(
-    bphash
-    URL github.com/ryanmrichard/BPHash
-    BUILD_TARGET bphash
-    FIND_TARGET bphash::bphash
-    BRANCH cmake_patch
-    CMAKE_ARGS BUILD_TESTING=OFF
+        runtime
+        URL github.com/NWChemEx-Project/runtime
+        PRIVATE TRUE
+        BUILD_TARGET runtime
+        FIND_TARGET nwx::runtime
+        CMAKE_ARGS BUILD_TESTING=OFF
 )
 
 cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/sde"
-    DEPENDS nwx::utilities cereal bphash::bphash
+    DEPENDS nwx::utilities nwx::runtime
 )
 
 if("${BUILD_TESTING}")
