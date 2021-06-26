@@ -78,7 +78,7 @@ type::result_map Module::run(type::input_map ps) {
     return m_pimpl_->run(std::move(ps));
 }
 
-void Module::hash(bphash::Hasher& h) const { m_pimpl_->hash(h); }
+void Module::hash(runtime::Hasher& h) const { m_pimpl_->hash(h); }
 
 bool Module::operator==(const Module& rhs) const {
     return *m_pimpl_ == *rhs.m_pimpl_;

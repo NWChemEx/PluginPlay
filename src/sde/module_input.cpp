@@ -41,7 +41,7 @@ const type::description& ModuleInput::description() const {
     return m_pimpl_->description();
 }
 
-void ModuleInput::hash(Hasher& h) const { return m_pimpl_->hash(h); }
+void ModuleInput::hash(runtime::Hasher& h) const { return m_pimpl_->hash(h); }
 
 ModuleInput& ModuleInput::set_description(type::description desc) noexcept {
     m_pimpl_->set_description(std::move(desc));

@@ -815,7 +815,7 @@ inline void ModulePIMPL::lock() {
 
 /// Code factorization for computing the hash of a module
 inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
-    type::hasher h(bphash::HashType::Hash128);
+    type::hasher h(runtime::HashType::Hash128);
     memoize(h, in_inputs);
     return bphash::hash_to_string(h.finalize());
 }

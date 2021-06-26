@@ -9,7 +9,7 @@ namespace testing {
 struct BaseClass {
     int x = 0;
     bool operator==(const BaseClass& rhs) const noexcept { return x == rhs.x; }
-    void hash(sde::Hasher& h) const { return h(x); }
+    void hash(runtime::Hasher& h) const { return h(x); }
 };
 
 struct DerivedClass : BaseClass {};
