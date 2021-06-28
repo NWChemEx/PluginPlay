@@ -817,7 +817,7 @@ inline void ModulePIMPL::lock() {
 inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
     type::hasher h(runtime::HashType::Hash128);
     memoize(h, in_inputs);
-    return bphash::hash_to_string(h.finalize());
+    return runtime::hash_to_string(h.finalize());
 }
 
 template<typename T>

@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 
 using namespace sde;
-using namespace runtime;
+using runtime::hash_objects;
 
 TEST_CASE("Cache Class") {
     Cache c;
