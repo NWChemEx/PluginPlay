@@ -41,6 +41,7 @@ cpp_find_or_build_dependency(
         runtime
         URL github.com/NWChemEx-Project/runtime
         PRIVATE TRUE
+	VERSION hasher
         BUILD_TARGET runtime
         FIND_TARGET nwx::runtime
         CMAKE_ARGS BUILD_TESTING=OFF
@@ -59,7 +60,7 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-		VERSION v2.13.3
+	VERSION v2.13.3
     )
     cpp_add_tests(
         test_sde
