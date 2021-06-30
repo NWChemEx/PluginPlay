@@ -52,7 +52,7 @@ cpp_find_or_build_dependency(
     URL github.com/ryanmrichard/BPHash
     BUILD_TARGET bphash
     FIND_TARGET bphash::bphash
-    BRANCH cmake_patch
+    BRANCH master
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
