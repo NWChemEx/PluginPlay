@@ -41,7 +41,6 @@ cpp_find_or_build_dependency(
         runtime
         URL github.com/NWChemEx-Project/runtime
         PRIVATE TRUE
-	VERSION hasher
         BUILD_TARGET runtime
         FIND_TARGET nwx::runtime
         CMAKE_ARGS BUILD_TESTING=OFF
