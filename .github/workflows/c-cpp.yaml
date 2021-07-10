@@ -24,7 +24,7 @@ jobs:
           cmake_version: ${{ matrix.cmake_version }}
           gcc_version: ${{ matrix.gcc_version }}
         run: >
-          .github/workflows/scripts/get_dependencies.sh gcc gcovr cmake
+          .github/workflows/scripts/get_dependencies.sh gcc gcovr cmake openmpi
       - name: Build and test
         env:
           cmake_version: ${{ matrix.cmake_version }}
