@@ -6,8 +6,8 @@
  *  header file will include all of the major SDE classes. Developers
  */
 
-#include "sde/detail_/memoization.hpp"
 #include "sde/facade_module.hpp"
+#include "sde/hasher.hpp"
 #include "sde/lambda_module.hpp"
 #include "sde/module_manager.hpp"
 #include "sde/property_type/property_type.hpp"

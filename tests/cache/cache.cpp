@@ -2,6 +2,7 @@
 #include <catch2/catch.hpp>
 
 using namespace sde;
+using sde::hash_objects;
 
 TEST_CASE("Cache Class") {
     Cache c;

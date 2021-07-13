@@ -1,6 +1,7 @@
+#include "sde/detail_/sde_any.hpp"
+#include "sde/hasher.hpp"
 #include <catch2/catch.hpp>
 #include <map>
-#include <sde/detail_/sde_any.hpp>
 #include <typeindex>
 #include <vector>
 

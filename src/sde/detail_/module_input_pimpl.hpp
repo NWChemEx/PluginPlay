@@ -176,7 +176,7 @@ public:
      *  @throws ??? If this instance is opaque and hashing of the value throws.
      *              Same guarantee.
      */
-    void hash(type::hasher& h) const {
+    void hash(Hasher& h) const {
         if(!is_transparent()) h(m_value_);
     }
 

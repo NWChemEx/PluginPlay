@@ -41,13 +41,7 @@ inline static void compare_value(T&& w, corr_t corr) {
     }
 
     SECTION("hashing") {
-        auto h  = sde::make_hasher();
-        auto h2 = sde::make_hasher();
-        h(corr);
-        h2(w);
-        auto corr_hv = bphash::hash_to_string(h.finalize());
-        auto hv      = bphash::hash_to_string(h2.finalize());
-        REQUIRE(corr_hv == hv);
+        REQUIRE(sde::hash_objects(corr) == sde::hash_objects(w));
     }
 }
 
