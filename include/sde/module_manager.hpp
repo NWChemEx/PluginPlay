@@ -20,6 +20,9 @@ public:
     /// The type of a pointer to a read-only module
     using const_module_base_ptr = std::shared_ptr<const ModuleBase>;
 
+    /// Type of a map holding usable modules
+    using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
+    
     ///@{
     /** @name Ctors and assignment operators
      *
@@ -36,6 +39,18 @@ public:
     /// Standard dtor
     ~ModuleManager() noexcept;
 
+    /** @brief Returns an iterator to the first element of the module map
+     *
+     * @return Iterator to the first element of the map
+     */
+    module_map::iterator begin() noexcept;
+
+    /** @brief Returns an iterator to the past-the-end element of the module map
+     *
+     * @return Iterator to the past-the-end element of the map
+     */
+    module_map::iterator end() noexcept;
+    
     /** @brief Used to see if we have a module
      *
      * @param key
