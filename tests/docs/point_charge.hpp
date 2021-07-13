@@ -22,8 +22,7 @@ inline bool operator==(const sde_examples::PointCharge& q0,
     return (q0.m_charge == q1.m_charge) && (q0.m_r == q1.m_r);
 }
 
-inline void hash_object(const sde_examples::PointCharge& q,
-                        runtime::Hasher& h) {
+inline void hash_object(const sde_examples::PointCharge& q, sde::type::hasher& h) {
     h(q.m_charge, q.m_r);
 }
 } // namespace sde_examples

@@ -26,5 +26,5 @@ TEST_CASE("FacadeModule : is_memoizable") {
 TEST_CASE("FacadeModule : different hashes for different facades") {
     auto f1 = sde::make_facade<testing::OneOut>(1);
     auto f2 = sde::make_facade<testing::OneOut>(2);
-    REQUIRE(runtime::hash_objects(f1) == runtime::hash_objects(f2));
+    REQUIRE(pz::hash_objects(f1) == pz::hash_objects(f2));
 }

@@ -14,9 +14,9 @@
  *  file is responsible for including the correct header file for the forwarded
  *  type.
  */
-namespace bphash {
+namespace pz {
 class Hasher;
-} // namespace bphash
+} // namespace pz
 
 namespace sde {
 namespace detail_ {
@@ -50,7 +50,7 @@ using any = detail_::SDEAny;
 using description = std::string;
 
 /// Type of the object that hashes objects.
-using hasher = bphash::Hasher;
+using hasher = pz::Hasher;
 
 /// Type of a map containing inputs
 using input_map = utilities::CaseInsensitiveMap<ModuleInput>;

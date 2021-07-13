@@ -38,11 +38,11 @@ cpp_find_or_build_dependency(
 )
 
 cpp_find_or_build_dependency(
-        runtime
-        URL github.com/NWChemEx-Project/runtime
+        parallelzone
+        URL github.com/NWChemEx-Project/ParallelZone
         PRIVATE TRUE
-        BUILD_TARGET runtime
-        FIND_TARGET nwx::runtime
+        BUILD_TARGET parallelzone
+        FIND_TARGET nwx::parallelzone
         CMAKE_ARGS BUILD_TESTING=OFF
 )
 

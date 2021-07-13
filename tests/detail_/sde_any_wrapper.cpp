@@ -41,7 +41,7 @@ inline static void compare_value(T&& w, corr_t corr) {
     }
 
     SECTION("hashing") {
-        REQUIRE(runtime::hash_objects(corr) == runtime::hash_objects(w));
+        REQUIRE(pz::hash_objects(corr) == pz::hash_objects(w));
     }
 }
 
@@ -109,7 +109,7 @@ TEST_CASE("SDEAnyWrapper Comparisons") {
 }
 
 struct NotPrintable {
-    void hash(runtime::Hasher&) const noexcept {}
+    void hash(type::hasher&) const noexcept {}
 
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };

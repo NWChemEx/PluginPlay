@@ -1,6 +1,6 @@
 #pragma once
 #include "sde/detail_/sde_any.hpp"
-#include <runtime/hasher.hpp>
+#include <paralelzone/hasher.hpp>
 
 namespace sde {
 
@@ -55,7 +55,7 @@ public:
      */
     template<typename KeyType, typename = disable_if_hash_t<KeyType>>
     bool count(const KeyType& key) const {
-        return count(runtime::hash_objects(key));
+        return count(pz::hash_objects(key));
     }
 
     /** @brief Determines whether or not the cache stores a value associated
@@ -356,7 +356,7 @@ inline bool Cache::count(const hash_type& key) const noexcept {
 
 template<typename KeyType, typename ValueType, typename>
 void Cache::cache(const KeyType& key, ValueType&& value) {
-    cache(runtime::hash_objects(key), std::forward<ValueType>(value));
+    cache(pz::hash_objects(key), std::forward<ValueType>(value));
 }
 
 template<typename ValueType>
@@ -369,7 +369,7 @@ void Cache::cache(hash_type key, ValueType&& value) {
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key) {
-    return uncache<ValueType>(runtime::hash_objects(key));
+    return uncache<ValueType>(pz::hash_objects(key));
 }
 
 template<typename ValueType>
@@ -380,7 +380,7 @@ ValueType Cache::uncache(const hash_type& key) {
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key) const {
-    return uncache<ValueType>(runtime::hash_objects(key));
+    return uncache<ValueType>(pz::hash_objects(key));
 }
 
 template<typename ValueType>
@@ -391,7 +391,7 @@ ValueType Cache::uncache(const hash_type& key) const {
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key, const ValueType& default_value) {
-    return uncache<ValueType>(runtime::hash_objects(key), default_value);
+    return uncache<ValueType>(pz::hash_objects(key), default_value);
 }
 
 template<typename ValueType>
@@ -405,7 +405,7 @@ ValueType Cache::uncache(const hash_type& key, const ValueType& default_value) {
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key,
                          const ValueType& default_value) const {
-    return uncache<ValueType>(runtime::hash_objects(key), default_value);
+    return uncache<ValueType>(pz::hash_objects(key), default_value);
 }
 
 template<typename ValueType>

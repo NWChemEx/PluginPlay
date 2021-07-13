@@ -289,10 +289,9 @@ TEST_CASE("ModulePIMPL : hash") {
     SECTION("Inputs set vs not set") {
         auto mod1 = make_module_pimpl<NotReadyModule>();
         auto mod2 = make_module_pimpl<NotReadyModule>();
-        REQUIRE(runtime::hash_objects(mod1) == runtime::hash_objects(mod2));
+        REQUIRE(pz::hash_objects(mod1) == pz::hash_objects(mod2));
         mod1.inputs().at("Option 1").change(3);
-        REQUIRE_FALSE(runtime::hash_objects(mod1) ==
-                      runtime::hash_objects(mod2));
+        REQUIRE_FALSE(pz::hash_objects(mod1) == pz::hash_objects(mod2));
     }
 }
 
