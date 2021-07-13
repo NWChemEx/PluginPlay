@@ -14,9 +14,6 @@
  *  file is responsible for including the correct header file for the forwarded
  *  type.
  */
-namespace pz {
-class Hasher;
-} // namespace pz
 
 namespace sde {
 namespace detail_ {
@@ -48,9 +45,6 @@ using any = detail_::SDEAny;
 
 /// The type of metadata holding a description
 using description = std::string;
-
-/// Type of the object that hashes objects.
-using hasher = pz::Hasher;
 
 /// Type of a map containing inputs
 using input_map = utilities::CaseInsensitiveMap<ModuleInput>;

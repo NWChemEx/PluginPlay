@@ -1,7 +1,7 @@
+#include "sde/detail_/sde_any.hpp"
+#include "sde/hasher.hpp"
 #include <catch2/catch.hpp>
 #include <map>
-#include <parallelzone/hasher.hpp>
-#include <sde/detail_/sde_any.hpp>
 #include <typeindex>
 #include <vector>
 
@@ -11,7 +11,7 @@ TEST_CASE("SDEAny : Default ctor") {
     SDEAny a;
     REQUIRE_FALSE(a.has_value());
     REQUIRE(a.type() == typeid(void));
-    REQUIRE(pz::hash_objects(a) == "cbc357ccb763df2852fee8c4fc7d55f2");
+    REQUIRE(sde::hash_objects(a) == "cbc357ccb763df2852fee8c4fc7d55f2");
     REQUIRE_THROWS_AS(a.cast<double>(), std::bad_any_cast);
     REQUIRE(a.str() == "<empty SDEAny>");
 }
@@ -21,7 +21,7 @@ TEST_CASE("SDEAny : Value ctor") {
         SDEAny a(int{3});
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
-        REQUIRE(pz::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
+        REQUIRE(sde::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -30,7 +30,7 @@ TEST_CASE("SDEAny : Value ctor") {
         SDEAny a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
-        REQUIRE(pz::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
+        REQUIRE(sde::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -39,7 +39,7 @@ TEST_CASE("SDEAny : Value ctor") {
         SDEAny a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(const int));
-        REQUIRE(pz::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
+        REQUIRE(sde::hash_objects(a) == "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -49,7 +49,7 @@ TEST_CASE("SDEAny : Value ctor") {
         SDEAny a(std::move(x));
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(std::vector<int>));
-        REQUIRE(pz::hash_objects(a) == "ad06a09d17cceb43c8d7f0283f889ef6");
+        REQUIRE(sde::hash_objects(a) == "ad06a09d17cceb43c8d7f0283f889ef6");
         REQUIRE(a.cast<std::vector<int>&>().data() == px);
         REQUIRE(a.str() == "[1, 2, 3, 4]");
     }

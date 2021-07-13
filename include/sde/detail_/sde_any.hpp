@@ -333,7 +333,7 @@ public:
      * @par Complexity:
      *  Same as the complexity of hashing the wrapped type.
      */
-    void hash(type::hasher& h) const { h(m_ptr_); }
+    void hash(Hasher& h) const { h(m_ptr_); }
 
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.

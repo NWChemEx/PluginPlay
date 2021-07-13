@@ -1,9 +1,9 @@
 #pragma once
+#include "sde/hasher.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
 #include <memory>
-#include <parallelzone/hasher.hpp>
 #include <utilities/printing/print_stl.hpp>
 
 namespace sde::detail_ {
@@ -126,7 +126,7 @@ public:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *  throw guarantee.
      */
-    void hash(type::hasher& h) const { hash_(h); }
+    void hash(Hasher& h) const { hash_(h); }
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -271,7 +271,7 @@ private:
     virtual rtti_type type_() const noexcept = 0;
 
     /// To be implemented by derived class so we can hash
-    virtual void hash_(type::hasher& h) const = 0;
+    virtual void hash_(Hasher& h) const = 0;
 
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
@@ -438,7 +438,7 @@ private:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *              throw guarantee.
      */
-    void hash_(type::hasher& h) const override { h(value_()); }
+    void hash_(Hasher& h) const override { h(value_()); }
 };
 
 //-------------------------------Implementations--------------------------------

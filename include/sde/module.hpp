@@ -615,7 +615,7 @@ public:
      *
      *  @throw ??? If hashing any of the inputs throws. Same throw guarantee.
      */
-    void hash(type::hasher& h) const;
+    void hash(Hasher& h) const;
 
     /** @brief Compares two Module instances for equality
      *
