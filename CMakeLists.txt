@@ -50,7 +50,7 @@ cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/sde"
-    DEPENDS nwx::utilities nwx::runtime
+    DEPENDS nwx::utilities nwx::parallelzone
 )
 
 if("${BUILD_TESTING}")
