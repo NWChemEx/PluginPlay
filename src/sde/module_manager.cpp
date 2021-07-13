@@ -3,6 +3,7 @@
 #include "sde/module_manager.hpp"
 namespace sde {
 
+using module_map      = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
 using module_base_ptr = typename ModuleManager::module_base_ptr;
 using cache_type      = typename detail_::ModulePIMPL::cache_type;
 template<typename T>
@@ -43,5 +44,13 @@ const Module& ModuleManager::at(const type::key& module_key) const {
 void ModuleManager::set_default_(const std::type_info& type,
                                  type::input_map inps, type::key key) {
     pimpl_->set_default(type, std::move(inps), std::move(key));
+}
+
+module_map::iterator ModuleManager::begin() noexcept {
+    return pimpl_->begin();
+}
+
+module_map::iterator ModuleManager::end() noexcept {
+    return pimpl_->end();
 }
 } // namespace sde
