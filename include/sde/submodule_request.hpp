@@ -313,7 +313,7 @@ public:
      *  @throw ??? If the hash function of the module throws. Same guarantee as
      *             the module's hash function.
      */
-    void hash(type::hasher& h) const;
+    void hash(Hasher& h) const;
 
     /** @brief Compares two SubmoduleRequest instances for equality
      *

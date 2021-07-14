@@ -1,6 +1,6 @@
 #pragma once
-#include "sde/detail_/memoization.hpp"
 #include "sde/detail_/sde_any.hpp"
+#include <sde/hasher.hpp>
 
 namespace sde {
 
@@ -55,7 +55,7 @@ public:
      */
     template<typename KeyType, typename = disable_if_hash_t<KeyType>>
     bool count(const KeyType& key) const {
-        return count(hash_objects(key));
+        return count(sde::hash_objects(key));
     }
 
     /** @brief Determines whether or not the cache stores a value associated
@@ -251,7 +251,7 @@ public:
      *                           provided key. Strong throw guarantee.
      */
     template<typename ValueType, typename KeyType,
-      typename = disable_if_hash_t<KeyType>>
+             typename = disable_if_hash_t<KeyType>>
     ValueType uncache(const KeyType& key, const ValueType& default_value);
 
     /** @brief Function for accessing cached data by hash, return default value
@@ -311,7 +311,7 @@ public:
      *                           provided key. Strong throw guarantee.
      */
     template<typename ValueType, typename KeyType,
-      typename = disable_if_hash_t<KeyType>>
+             typename = disable_if_hash_t<KeyType>>
     ValueType uncache(const KeyType& key, const ValueType& default_value) const;
 
     /** @brief Function for accessing read-only cached data by hash, return
@@ -340,7 +340,8 @@ public:
      *                           provided key. Strong throw guarantee.
      */
     template<typename ValueType>
-    ValueType uncache(const hash_type& key, const ValueType& default_value) const;
+    ValueType uncache(const hash_type& key,
+                      const ValueType& default_value) const;
 
 private:
     /// The object actually storing all of the cached data
@@ -355,20 +356,20 @@ inline bool Cache::count(const hash_type& key) const noexcept {
 
 template<typename KeyType, typename ValueType, typename>
 void Cache::cache(const KeyType& key, ValueType&& value) {
-    cache(hash_objects(key), std::forward<ValueType>(value));
+    cache(sde::hash_objects(key), std::forward<ValueType>(value));
 }
 
 template<typename ValueType>
 void Cache::cache(hash_type key, ValueType&& value) {
     using clean_type = std::decay_t<ValueType>;
     using sde::detail_::make_SDEAny;
-    auto da_any = make_SDEAny<clean_type>(std::forward<ValueType>(value));
-    m_data_.emplace(std::move(key), std::move(da_any));
+    auto da_any  = make_SDEAny<clean_type>(std::forward<ValueType>(value));
+    m_data_[key] = std::move(da_any);
 }
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key) {
-    return uncache<ValueType>(hash_objects(key));
+    return uncache<ValueType>(sde::hash_objects(key));
 }
 
 template<typename ValueType>
@@ -379,7 +380,7 @@ ValueType Cache::uncache(const hash_type& key) {
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key) const {
-    return uncache<ValueType>(hash_objects(key));
+    return uncache<ValueType>(sde::hash_objects(key));
 }
 
 template<typename ValueType>
@@ -390,24 +391,30 @@ ValueType Cache::uncache(const hash_type& key) const {
 
 template<typename ValueType, typename KeyType, typename>
 ValueType Cache::uncache(const KeyType& key, const ValueType& default_value) {
-    return uncache<ValueType>(hash_objects(key), default_value);
+    return uncache<ValueType>(sde::hash_objects(key), default_value);
 }
 
 template<typename ValueType>
 ValueType Cache::uncache(const hash_type& key, const ValueType& default_value) {
-    if(count(key)) return m_data_.at(key).template cast<ValueType>();
-    else return default_value;
+    if(count(key))
+        return m_data_.at(key).template cast<ValueType>();
+    else
+        return default_value;
 }
 
 template<typename ValueType, typename KeyType, typename>
-ValueType Cache::uncache(const KeyType& key, const ValueType& default_value) const {
-    return uncache<ValueType>(hash_objects(key), default_value);
+ValueType Cache::uncache(const KeyType& key,
+                         const ValueType& default_value) const {
+    return uncache<ValueType>(sde::hash_objects(key), default_value);
 }
 
 template<typename ValueType>
-ValueType Cache::uncache(const hash_type& key, const ValueType& default_value) const {
-    if(count(key)) return m_data_.at(key).template cast<ValueType>();
-    else return default_value;
+ValueType Cache::uncache(const hash_type& key,
+                         const ValueType& default_value) const {
+    if(count(key))
+        return m_data_.at(key).template cast<ValueType>();
+    else
+        return default_value;
 }
 
 } // namespace sde

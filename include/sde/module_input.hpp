@@ -219,7 +219,7 @@ public:
      * @throws ??? If the hash function for the wrapped value throws. Same
      *             guarantee.
      */
-    void hash(type::hasher& h) const;
+    void hash(Hasher& h) const;
 
     /** @brief Sets the type of this input field to @p T.
      *

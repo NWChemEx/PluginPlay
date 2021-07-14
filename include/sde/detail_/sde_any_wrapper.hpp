@@ -1,6 +1,6 @@
 #pragma once
 #include "sde/detail_/archive_wrapper.hpp"
-#include "sde/detail_/memoization.hpp"
+#include "sde/hasher.hpp"
 #include "sde/types.hpp"
 #include "sde/utility.hpp"
 #include <any>
@@ -8,7 +8,6 @@
 #include <utilities/printing/print_stl.hpp>
 
 namespace sde::detail_ {
-
 /// Forward declare class that will implement the API
 template<typename T>
 class SDEAnyWrapper;
@@ -26,12 +25,13 @@ static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
 /**
  * @brief Defines the API for interacting with the type-erased value.
  *
- * This class is meant for use with the SDEAny class and can be thought of as a
- * PIMPL for that class. This actual implementation works by holding the value
- * in an std::any instance (thereby differing casting and type checks to it) and
- * leveraging as much of that API as possible. Additional member functions that
- * are part of the SDEAny API, but not std::any's API, are then implemented by
- * a derived class, which knows the type to cast the std::any to.
+ * This class is meant for use with the SDEAny class and can be thought of
+ * as a PIMPL for that class. This actual implementation works by holding
+ * the value in an std::any instance (thereby differing casting and type
+ * checks to it) and leveraging as much of that API as possible. Additional
+ * member functions that are part of the SDEAny API, but not std::any's API,
+ * are then implemented by a derived class, which knows the type to cast the
+ * std::any to.
  */
 class SDEAnyWrapperBase {
 protected:
@@ -65,8 +65,8 @@ public:
 
     /** @brief Creates an SDEAnyWrapper by forwarding the provided value.
      *
-     *  @note This ctor only participates in overload resolution if @p T is not
-     *         SDEAnyWrapperBase or any instanitation of SDEAnyWrapper.
+     *  @note This ctor only participates in overload resolution if @p T is
+     * not SDEAnyWrapperBase or any instanitation of SDEAnyWrapper.
      *
      *  @tparam T The type of the value we are wrapping.
      *
@@ -81,8 +81,9 @@ public:
     /** @brief Cleans up an SDEAnyBase_ instance.
      *
      *  Since SDEAnyBase_ instances have no state this is a null operation.
-     *  However, it is important to mark this function as virtual since we will
-     *  literally always be passing the derived class around by its base type.
+     *  However, it is important to mark this function as virtual since we
+     * will literally always be passing the derived class around by its base
+     * type.
      *
      *  @throws None. No throw guarantee.
      */
@@ -91,13 +92,13 @@ public:
     /**
      *  @brief Makes a polymorphic copy of the wrapper.
      *
-     *  This member calls clone_() in order to get a polymorphic deep copy of
-     *  the wrapper.
+     *  This member calls clone_() in order to get a polymorphic deep copy
+     * of the wrapper.
      *
      *  @return A deep copy, on the heap, of the wrapper.
      *
-     *  @throw ??? If the copy constructor of the wrapped instance throws. Same
-     *             guarantee as the wrapped instance's copy ctor.
+     *  @throw ??? If the copy constructor of the wrapped instance throws.
+     * Same guarantee as the wrapped instance's copy ctor.
      */
     wrapper_ptr clone() const { return clone_(); }
 
@@ -173,14 +174,14 @@ public:
      */
     std::string str() const { return str_(); }
 
-    /** @brief Used to determine if the type-erased value of this instance is
-     *         the same as that of another instance.
+    /** @brief Used to determine if the type-erased value of this instance
+     * is the same as that of another instance.
      *
      *  This function ultimately calls are_equal_ to determine if the two
      *  instances are equal. Equality of the wrapped values is determined by
-     *  the result of calling operator== on the wrapped value. If the wrapped
-     *  instances are different types, as determined by their RTTI, then they
-     *  considered not equal.
+     *  the result of calling operator== on the wrapped value. If the
+     * wrapped instances are different types, as determined by their RTTI,
+     * then they considered not equal.
      *
      *  @param[in] rhs the instance to compare to.
      *
@@ -191,14 +192,14 @@ public:
      */
     bool operator==(const SDEAnyWrapperBase& rhs) const noexcept;
 
-    /** @brief Used to determine if the type-erased value of this instance is
-     *         different from that of another instance.
+    /** @brief Used to determine if the type-erased value of this instance
+     * is different from that of another instance.
      *
      *  This function ultimately negates a call to are_equal_ in order to
-     *  determine if the two instances are different. Equality of the wrapped
-     *  values is determined by the result of calling operator== on the wrapped
-     *  value. If the wrapped instances are different types, as determined by
-     *  their RTTI, then they are considered different.
+     *  determine if the two instances are different. Equality of the
+     * wrapped values is determined by the result of calling operator== on
+     * the wrapped value. If the wrapped instances are different types, as
+     * determined by their RTTI, then they are considered different.
      *
      *  @param[in] rhs the instance to compare to.
      *
@@ -211,8 +212,8 @@ public:
 
     /** @brief Casts the wrapped value back to a readonly type @p T
      *
-     *  This function allows you to retrieve the wrapped value as long as you
-     *  request the value as a type it is implicitly convertible to. This
+     *  This function allows you to retrieve the wrapped value as long as
+     * you request the value as a type it is implicitly convertible to. This
      *  particular overload additionally restricts you to deep copies of the
      *  wrapped value or read-only access.
      *
@@ -220,8 +221,8 @@ public:
      * .
      *  @return The wrapped instance.
      *
-     *  @throw std::bad_any_cast if the wrapped instance is not of type @p T.
-     *                           Strong throw guarantee.
+     *  @throw std::bad_any_cast if the wrapped instance is not of type @p
+     * T. Strong throw guarantee.
      */
     template<typename T>
     T cast() const {
@@ -230,17 +231,17 @@ public:
 
     /** @brief Casts the wrapped value back to a readonly type @p T
      *
-     *  This function allows you to retrieve the wrapped value as long as you
-     *  request the value as a type it is implicitly convertible to. This
-     *  particular overload allows you to get the wrapped value back in a read
-     *  write state.
+     *  This function allows you to retrieve the wrapped value as long as
+     * you request the value as a type it is implicitly convertible to. This
+     *  particular overload allows you to get the wrapped value back in a
+     * read write state.
      *
      *  @tparam T The type to retrieve the wrapped value as.
      * .
      *  @return The wrapped instance.
      *
-     *  @throw std::bad_any_cast if the wrapped instance is not of type @p T.
-     *                           Strong throw guarantee.
+     *  @throw std::bad_any_cast if the wrapped instance is not of type @p
+     * T. Strong throw guarantee.
      */
     template<typename T>
     T cast() {
@@ -262,8 +263,8 @@ protected:
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
-     *  This function is protected so it can be used by the derived class, but
-     *  is not public to avoid accidental slicing.
+     *  This function is protected so it can be used by the derived class,
+     * but is not public to avoid accidental slicing.
      *
      *  @param[in] rhs The instance to move from. After the move operation
      *                 @p rhs is in a valid, but otherwise undefined state.
@@ -274,12 +275,13 @@ protected:
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
-     *  This function is protected so it can be used by the derived class, but
-     *  not public to avoid slicing.
+     *  This function is protected so it can be used by the derived class,
+     * but not public to avoid slicing.
      *
      *  @param[in] rhs The instance to copy.
      *
-     *  @return the current instance containing a deep copy of @p rhs's state.
+     *  @return the current instance containing a deep copy of @p rhs's
+     * state.
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
@@ -288,8 +290,8 @@ protected:
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
      *
-     *  This function is protected so it can be used by the derived class, but
-     *  is not public to avoid accidental slicing.
+     *  This function is protected so it can be used by the derived class,
+     * but is not public to avoid accidental slicing.
      *
      *  @param[in] rhs The instance to move from. After the move operation
      *                 @p rhs is in a valid, but otherwise undefined state.
@@ -329,12 +331,13 @@ private:
 
 /** @brief The class responsible for holding the type-erased instance.
  *
- * The SDEAnyWrapper class holds the wrapped instance for the SDEAnyWrapperBase
- * class.  It also is responsible for implementing all of the abstract methods
+ * The SDEAnyWrapper class holds the wrapped instance for the
+ * SDEAnyWrapperBase class.  It also is responsible for implementing all of
+ * the abstract methods
  *
  *
- * @tparam T The type of the instance to wrap. Must be copyable, hashable, and
- *           have operator== defined.
+ * @tparam T The type of the instance to wrap. Must be copyable, hashable,
+ * and have operator== defined.
  */
 template<typename T>
 class SDEAnyWrapper : public SDEAnyWrapperBase {
@@ -351,8 +354,8 @@ public:
      *
      * @param[in] value The value we are wrapping.
      *
-     * @throw ??? If @p T's ctor throws when @p value is forwarded to it. Strong
-     *            throw guarantee.
+     * @throw ??? If @p T's ctor throws when @p value is forwarded to it.
+     * Strong throw guarantee.
      */
     template<typename U, enable_if_not_wrapper_t<U> = 0>
     explicit SDEAnyWrapper(U&& value) : base_type(std::forward<U>(value)) {}
@@ -382,7 +385,8 @@ protected:
      *
      *  @param[in] rhs The instance to copy.
      *
-     *  @return the current instance containing a deep copy of @p rhs's state.
+     *  @return the current instance containing a deep copy of @p rhs's
+     * state.
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
@@ -448,26 +452,26 @@ private:
     /** @brief Converts the contents to a string.
      *
      *  This function works by using utilties::type_traits::IsPrintable to
-     *  determine if type T can be printed. If it can be printed we then pass it
-     *  to a stringstream and return the result. Otherwise, we print the mangled
-     *  name and address.
+     *  determine if type T can be printed. If it can be printed we then
+     * pass it to a stringstream and return the result. Otherwise, we print
+     * the mangled name and address.
      *
      *  @return A string representation of the wrapped value.
      *
-     *  @throw std::bad_alloc if there is insufficient memory to allocate the
-     *                        string. Strong throw guarantee.
+     *  @throw std::bad_alloc if there is insufficient memory to allocate
+     * the string. Strong throw guarantee.
      */
     std::string str_() const override;
 
     /** @brief Implements the equality comparison for the SDEAny
      *
-     *  Ultimately both operator== and operator!= will call this function (the
-     *  latter will negate the result).
+     *  Ultimately both operator== and operator!= will call this function
+     * (the latter will negate the result).
      *
      *  @param[in] rhs The instance to compare against for equality.
      *
-     *  @return true if the wrapped value compares equal to the value wrapped
-     *          in @p rhs and false otherwise.
+     *  @return true if the wrapped value compares equal to the value
+     * wrapped in @p rhs and false otherwise.
      *
      *  @throw none No throw guarantee.
      */

@@ -53,7 +53,7 @@ const type::description& SubmoduleRequest::description() const {
 
 void SubmoduleRequest::lock() { m_pimpl_->lock(); }
 
-void SubmoduleRequest::hash(type::hasher& h) const {
+void SubmoduleRequest::hash(Hasher& h) const {
     if(m_pimpl_->has_module()) value().hash(h);
 }
 

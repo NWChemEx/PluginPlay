@@ -417,7 +417,7 @@ public:
      *
      *  @throw ??? if any of the hash functions throw. Same throw
      */
-    void hash(type::hasher& h) const { memoize(h, m_inputs_); }
+    void hash(Hasher& h) const { memoize(h, m_inputs_); }
 
     /** @brief computes a hash for a particular invocation of the `run` member.
      *
@@ -437,7 +437,7 @@ public:
      * @throw ??? If the hash function of any input or submodule throws. Strong
      *            throw guarantee.
      */
-    void memoize(type::hasher& h, type::input_map inputs) const;
+    void memoize(Hasher& h, type::input_map inputs) const;
 
     /** @brief Returns timing data for this module and all submodules.
      *
@@ -708,8 +708,7 @@ inline bool ModulePIMPL::is_memoizable() const {
     return memoizable;
 }
 
-inline void ModulePIMPL::memoize(type::hasher& h,
-                                 type::input_map inputs) const {
+inline void ModulePIMPL::memoize(Hasher& h, type::input_map inputs) const {
     inputs = merge_inputs_(std::move(inputs));
     for(const auto& [k, v] : inputs) v.hash(h);
     for(const auto& [k, v] : m_submods_) v.hash(h);
@@ -815,9 +814,9 @@ inline void ModulePIMPL::lock() {
 
 /// Code factorization for computing the hash of a module
 inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
-    type::hasher h(bphash::HashType::Hash128);
+    Hasher h(sde::HashType::Hash128);
     memoize(h, in_inputs);
-    return bphash::hash_to_string(h.finalize());
+    return sde::hash_to_string(h.finalize());
 }
 
 template<typename T>
