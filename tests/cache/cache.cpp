@@ -143,4 +143,10 @@ TEST_CASE("Cache Class") {
             }
         }
     }
+
+    SECTION("Reset cache") {
+        c.cache(int{4}, int{42});
+        c.reset_cache();
+        REQUIRE(c.count(int{4})==0);
+    }
 }

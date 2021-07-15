@@ -343,6 +343,13 @@ public:
     ValueType uncache(const hash_type& key,
                       const ValueType& default_value) const;
 
+    /** @brief Reset the module cache to an empty map
+     *
+     *  This function allows the cache to be emptied of previously store
+     *  results
+     */
+    void reset_cache();
+
 private:
     /// The object actually storing all of the cached data
     std::map<hash_type, sde::detail_::SDEAny> m_data_;
@@ -415,6 +422,10 @@ ValueType Cache::uncache(const hash_type& key,
         return m_data_.at(key).template cast<ValueType>();
     else
         return default_value;
+}
+
+inline void Cache::reset_cache() {
+    m_data_.clear();
 }
 
 } // namespace sde
