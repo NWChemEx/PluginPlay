@@ -226,6 +226,10 @@ public:
      */
     cache_type& get_cache() const;
 
+    /** @brief Reset the modules internal cache.
+     */
+    void reset_internal_cache() const;
+
     /** @brief Compares two ModuleBase instances for equality.
      *
      *  Two ModuleBase instances are equivalent if their algorithm is
@@ -599,6 +603,10 @@ inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
     if(!m_cache_)
         throw std::runtime_error("Module does not have an interal cache");
     return *m_cache_.get();
+}
+
+inline void ModuleBase::reset_internal_cache() const {
+    if(m_cache_) m_cache_->reset_cache();
 }
 
 } // namespace sde
