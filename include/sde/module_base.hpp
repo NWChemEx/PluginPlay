@@ -228,7 +228,7 @@ public:
 
     /** @brief Reset the modules internal cache.
      */
-    void reset_module_cache() const;
+    void reset_internal_cache() const;
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -605,7 +605,7 @@ inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
     return *m_cache_.get();
 }
 
-inline void ModuleBase::reset_module_cache() const {
+inline void ModuleBase::reset_internal_cache() const {
     if(m_cache_) m_cache_->reset_cache();
 }
 

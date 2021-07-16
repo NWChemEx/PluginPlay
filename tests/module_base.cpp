@@ -124,7 +124,7 @@ TEST_CASE("ModuleBase : reset_module_cache") {
         auto cache = std::make_shared<sde::Cache>();
         cache->cache(int{1}, int{2});
         mod.set_cache(cache);
-        mod.reset_module_cache();
+        mod.reset_internal_cache();
         auto& internal_cache = mod.get_cache();
         REQUIRE(internal_cache.count(int{1}) == 0);
     }

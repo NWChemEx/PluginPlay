@@ -722,7 +722,7 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
-inline void ModulePIMPL::reset_cache() { m_cache_.reset(); }
+inline void ModulePIMPL::reset_cache() { m_cache_->clear(); }
 
 inline void ModulePIMPL::turn_off_memoization() {
     assert_mod_();

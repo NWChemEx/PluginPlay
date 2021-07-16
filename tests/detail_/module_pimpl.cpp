@@ -310,6 +310,17 @@ TEST_CASE("ModulePIMPL : is_cached") {
     }
 }
 
+TEST_CASE("ModulePIMPL : reset_cache") {
+    auto mod = make_module_pimpl_with_cache<RealDeal>();
+    auto in  = mod.inputs();
+    in.at("Option 1").change(1);
+    auto result1 = mod.run(in).at("Result 1").value<int>();
+    mod.reset_cache();
+    REQUIRE_FALSE(mod.is_cached(in));
+    auto result2 = mod.run(in).at("Result 1").value<int>();
+    REQUIRE(mod.is_cached(in));
+}
+
 TEST_CASE("ModulePIMPL : is_memoizable") {
     SECTION("memoizable") {
         auto mod = make_module_pimpl<NullModule>();
