@@ -476,6 +476,13 @@ public:
      */
     void reset_cache();
 
+    /** @brief Resets the implementation internal cache.
+     *
+     *  @throw std::runtime_error if this module does not have an implementation
+     *                            set. Strong throw guarantee.
+     */
+    void reset_internal_cache();
+
     /** @brief Is the module memoizable?
      *
      *  Some modules (lambda_modules or modules that have nondetermenistic
@@ -722,7 +729,12 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(get_hash_(ps)) == 1;
 }
 
-inline void ModulePIMPL::reset_cache() { m_cache_->clear(); }
+inline void ModulePIMPL::reset_cache() {if(m_cache_) m_cache_->clear(); }
+
+inline void ModulePIMPL::reset_internal_cache() {
+    assert_mod_();
+    m_base_->reset_internal_cache();
+}
 
 inline void ModulePIMPL::turn_off_memoization() {
     assert_mod_();
