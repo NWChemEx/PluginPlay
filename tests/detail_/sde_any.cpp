@@ -167,9 +167,8 @@ TEST_CASE("make_SDEAny") {
     REQUIRE(a == make_SDEAny<int>(3));
 }
 TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
-                   cereal::BinaryOutputArchive,
-                   cereal::PortableBinaryOutputArchive,
-                   cereal::JSONOutputArchive, cereal::XMLOutputArchive) {
+                   sde::BinaryOutputArchive, sde::PortableBinaryOutputArchive,
+                   sde::JSONOutputArchive, sde::XMLOutputArchive) {
     using output = TestType;
     using input  = typename sde::get_input_from_output<output>::type;
 
@@ -181,12 +180,12 @@ TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
         auto c = make_SDEAny<char>('M');
         {
             output ar(ss);
-            ar(i, f, d, c);
+            ar << i << f << d << c;
         }
         SDEAny i2, f2, d2, c2;
         {
             input ar(ss);
-            ar(i2, f2, d2, c2);
+            ar >> i2 >> f2 >> d2 >> c2;
         }
         REQUIRE(i == i2);
         REQUIRE(f == f2);
@@ -202,12 +201,12 @@ TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
 
         {
             output ar(ss);
-            ar(a, b);
+            ar << a << b;
         }
         SDEAny a2, b2;
         {
             input ar(ss);
-            ar(a2, b2);
+            ar >> a2 >> b2;
         }
         REQUIRE(a == a2);
         REQUIRE(b == b2);

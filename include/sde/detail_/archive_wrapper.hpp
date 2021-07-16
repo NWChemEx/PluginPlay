@@ -4,18 +4,17 @@
 
 namespace sde::detail_ {
 using variant_output =
-  std::variant<cereal::BinaryOutputArchive*,
-               cereal::PortableBinaryOutputArchive*, cereal::JSONOutputArchive*,
-               cereal::XMLOutputArchive*>;
+  std::variant<sde::BinaryOutputArchive*, sde::PortableBinaryOutputArchive*,
+               sde::JSONOutputArchive*, sde::XMLOutputArchive*>;
 using variant_input =
-  std::variant<cereal::BinaryInputArchive*, cereal::PortableBinaryInputArchive*,
-               cereal::JSONInputArchive*, cereal::XMLInputArchive*>;
+  std::variant<sde::BinaryInputArchive*, sde::PortableBinaryInputArchive*,
+               sde::JSONInputArchive*, sde::XMLInputArchive*>;
 
 /** @brief ArchiveWrapper class enables serialization and deserialization of
- * objects using various types of archives supported by Cereal.
+ * objects using various types of archives supported by MADNESS and Cereal.
  *
- *  This class wraps Cereal's API for different output
- * archive types. Required for serialization of SDEAny.
+ *  This class wraps MADNESS/Cereal API for different output archive types.
+ * Required for serialization of SDEAny.
  */
 template<typename VariantArchive>
 class ArchiveWrapper {
@@ -25,7 +24,21 @@ public:
 
     template<typename T>
     ArchiveWrapper& operator()(T&& obj) {
-        std::visit([&](auto&& ar) { (*ar)(std::forward<T>(obj)); }, m_ar_);
+        // MADNESS archive doesn't support `()`, but it supports `&` like Boost
+        // archive.
+        std::visit([&](auto&& ar) { (*ar) & std::forward<T>(obj); }, m_ar_);
+        return *this;
+    }
+
+    template<typename T>
+    ArchiveWrapper& operator<<(T&& obj) {
+        std::visit([&](auto&& ar) { (*ar) << std::forward<T>(obj); }, m_ar_);
+        return *this;
+    }
+
+    template<typename T>
+    ArchiveWrapper& operator>>(T&& obj) {
+        std::visit([&](auto&& ar) { (*ar) >> std::forward<T>(obj); }, m_ar_);
         return *this;
     }
 

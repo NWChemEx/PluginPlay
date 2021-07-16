@@ -4,8 +4,8 @@
 using namespace sde::detail_;
 
 TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
-                   cereal::BinaryOutputArchive, cereal::JSONOutputArchive,
-                   cereal::XMLOutputArchive) {
+                   sde::BinaryOutputArchive, sde::JSONOutputArchive,
+                   sde::XMLOutputArchive) {
     using output = TestType;
     using input  = typename sde::get_input_from_output<output>::type;
 

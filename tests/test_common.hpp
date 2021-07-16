@@ -12,9 +12,7 @@ struct BaseClass {
     void hash(sde::Hasher& h) const { return h(x); }
 
     template<typename Archive>
-    void serialize(Archive& ar) {
-        ar(x);
-    }
+    void serialize(Archive& ar) {}
 };
 
 struct DerivedClass : BaseClass {};

@@ -343,10 +343,11 @@ public:
      * @param ar[in,out] An archive object to store the serialized
      * representation.
      *
-     * @tparam Type of @p ar. Assumed to satisfy Cereal's output archive type.
+     * @tparam Type of output archive, @p ar.
      */
-    template<typename Archive>
-    void save(Archive& ar) const {
+    template<typename Archive,
+             typename = std::enable_if_t<madness::is_output_archive_v<Archive>>>
+    void serialize(Archive ar) const {
         Serializer s(ar);
         m_ptr_->serialize(s);
     }
@@ -358,15 +359,15 @@ public:
      * @param ar[in,out] An archive object that includes the serialized
      * representation.
      *
-     * @tparam Type of @p ar. Assumed to satisfy Cereal's input archive type.
+     * @tparam Type of input archive, @p ar.
      */
-    template<typename Archive>
-    void load(Archive& ar) {
+    template<typename Archive,
+             typename = std::enable_if_t<madness::is_input_archive_v<Archive>>>
+    void serialize(Archive ar) {
         Deserializer d(ar);
         auto temp = m_ptr_->deserialize(d);
         m_ptr_.swap(temp);
     }
-
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *

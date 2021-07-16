@@ -57,14 +57,14 @@ TEST_CASE("SDEAnyWrapper<POD>(value)") {
 
         SDEAnyWrapperBase* pw = &w;
         {
-            cereal::BinaryOutputArchive ar(ss);
+            sde::BinaryOutputArchive ar(ss);
             Serializer s(ar);
             pw->serialize(s);
         }
 
         std::unique_ptr<SDEAnyWrapperBase> pw2;
         {
-            cereal::BinaryInputArchive ar(ss);
+            sde::BinaryInputArchive ar(ss);
             Deserializer d(ar);
             auto temp = SDEAnyWrapperBase::deserialize(d);
             pw2.swap(temp);
@@ -104,14 +104,14 @@ TEST_CASE("SDEAnyWrapper<non-POD>(move)") {
 
         SDEAnyWrapperBase* pw = &w;
         {
-            cereal::BinaryOutputArchive ar(ss);
+            sde::BinaryOutputArchive ar(ss);
             Serializer s(ar);
             pw->serialize(s);
         }
 
         std::unique_ptr<SDEAnyWrapperBase> pw2;
         {
-            cereal::BinaryInputArchive ar(ss);
+            sde::BinaryInputArchive ar(ss);
             Deserializer d(ar);
             auto temp = SDEAnyWrapperBase::deserialize(d);
             pw2.swap(temp);
