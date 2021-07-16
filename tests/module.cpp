@@ -136,6 +136,36 @@ TEST_CASE("Module : ready") {
     }
 }
 
+TEST_CASE("Module : reset_cache") {
+    auto mod_pimpl = make_module_pimpl_with_cache<RealDeal>();
+    auto mod = sde::Module(
+      std::make_unique<sde::detail_::ModulePIMPL>(mod_pimpl));
+
+    auto in = mod.inputs();
+    in.at("Option 1").change(1);
+
+    auto result1 = mod.run(in).at("Result 1").value<int>();
+    REQUIRE(mod_pimpl.is_cached(in));
+    mod.reset_cache();
+    REQUIRE_FALSE(mod_pimpl.is_cached(in));
+    auto result2 = mod.run(in).at("Result 1").value<int>();
+    REQUIRE(mod_pimpl.is_cached(in));
+}
+
+TEST_CASE("Module : reset_internal_cache") {
+    auto mod_base_ptr = std::make_shared<testing::NullModule>();
+    auto mod = sde::Module(
+      std::make_unique<sde::detail_::ModulePIMPL>(mod_base_ptr));
+
+    auto cache = std::make_shared<sde::Cache>();
+    cache->cache(int{1}, int{2});
+    mod_base_ptr->set_cache(cache);
+
+    mod.reset_internal_cache();
+
+    REQUIRE(cache->count(int{1}) == 0);
+}
+
 TEST_CASE("Module : lock") {
     type::input_map inputs;
     SECTION("Can lock if no submodules") {

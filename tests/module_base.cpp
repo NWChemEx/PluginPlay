@@ -117,17 +117,15 @@ TEST_CASE("ModuleBase : get_cache") {
     }
 }
 
-TEST_CASE("ModuleBase : reset_module_cache") {
+TEST_CASE("ModuleBase : reset_internal_cache") {
     testing::NullModule mod;
 
-    SECTION("Reset the cache") {
-        auto cache = std::make_shared<sde::Cache>();
-        cache->cache(int{1}, int{2});
-        mod.set_cache(cache);
-        mod.reset_internal_cache();
-        auto& internal_cache = mod.get_cache();
-        REQUIRE(internal_cache.count(int{1}) == 0);
-    }
+    auto cache = std::make_shared<sde::Cache>();
+    cache->cache(int{1}, int{2});
+    mod.set_cache(cache);
+    mod.reset_internal_cache();
+    auto& internal_cache = mod.get_cache();
+    REQUIRE(internal_cache.count(int{1}) == 0);
 }
 
 TEST_CASE("ModuleBase : Comparisons") {

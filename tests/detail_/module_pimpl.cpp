@@ -322,6 +322,19 @@ TEST_CASE("ModulePIMPL : reset_cache") {
     REQUIRE(mod.is_cached(in));
 }
 
+TEST_CASE("ModulePIMPL : reset_internal_cache") {
+    auto mod_base_ptr = std::make_shared<testing::NullModule>();
+    auto mod_pimpl    = sde::detail_::ModulePIMPL(mod_base_ptr);
+
+    auto cache = std::make_shared<sde::Cache>();
+    cache->cache(int{1}, int{2});
+    mod_base_ptr->set_cache(cache);
+
+    mod_pimpl.reset_internal_cache();
+
+    REQUIRE(cache->count(int{1}) == 0);
+}
+
 TEST_CASE("ModulePIMPL : is_memoizable") {
     SECTION("memoizable") {
         auto mod = make_module_pimpl<NullModule>();
