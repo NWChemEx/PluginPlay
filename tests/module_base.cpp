@@ -119,9 +119,6 @@ TEST_CASE("ModuleBase : get_cache") {
 
 TEST_CASE("ModuleBase : reset_module_cache") {
     testing::NullModule mod;
-    SECTION("Throws if no cache") {
-        REQUIRE_THROWS_AS(mod.get_cache(), std::runtime_error);
-    }
 
     SECTION("Reset the cache") {
         auto cache = std::make_shared<sde::Cache>();

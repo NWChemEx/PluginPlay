@@ -227,8 +227,6 @@ public:
     cache_type& get_cache() const;
 
     /** @brief Reset the modules internal cache.
-     *
-     *  @throw std::runtime_error if there is no cache. Strong throw guarantee.
      */
     void reset_module_cache() const;
 
@@ -608,9 +606,7 @@ inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
 }
 
 inline void ModuleBase::reset_module_cache() const {
-    if(!m_cache_)
-        throw std::runtime_error("Module does not have an interal cache");
-    m_cache_->reset_cache();
+    if(m_cache_) m_cache_->reset_cache();
 }
 
 } // namespace sde
