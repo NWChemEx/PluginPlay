@@ -47,6 +47,8 @@ bool Module::ready(const type::input_map& inps) const {
 
 void Module::reset_cache() { m_pimpl_->reset_cache(); }
 
+void Module::reset_internal_cache() { m_pimpl_->reset_internal_cache(); }
+
 bool Module::is_memoizable() const { return m_pimpl_->is_memoizable(); }
 
 //--------------------Setters--------------------------------------------------

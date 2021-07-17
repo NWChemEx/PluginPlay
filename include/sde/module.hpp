@@ -292,6 +292,16 @@ public:
      */
     void reset_cache();
 
+    /** @brief Resets the implementation internal cache.
+     *
+     *  This function will reset cache.
+     *
+     *  @warning This will result in losing all the data
+     *  (for all instances of this module) stored in the internal cache.
+     *
+     */
+    void reset_internal_cache();
+
     /** @brief Is the module memoizable?
      *
      *  Some modules (lambda_modules or modules that have nondetermenistic
