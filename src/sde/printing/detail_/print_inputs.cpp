@@ -1,6 +1,9 @@
 #include "print_inputs.hpp"
 #include <utilities/printing/table.hpp>
 
+#include <fort.hpp>
+#include "fort_custom_styles.hpp"
+
 namespace sde::printing::detail_ {
 
 using Table = utilities::printing::Table;
@@ -25,25 +28,22 @@ reSTPrinter& input_quick_ref_desc(reSTPrinter& p) {
 }
 
 std::string input_quick_ref_table(const type::input_map& inputs) {
-    using table_data = typename Table::table_type;
+    // Instantiate the table
+    fort::char_table table;
+    table.set_border_style(NWX_RST_STYLE);
 
-    // Take care of the column headers
-    table_data data(inputs.size() + 1);
-    data[0].push_back("Key");
-    data[0].push_back("Default");
-    data[0].push_back("Description");
+    // Add the header
+    table << fort::header << "Key" << "Type" << "Description" << fort::endr;
 
-    std::size_t counter = 1;
-    for(const auto& [name, value] : inputs) {
-        auto& row = data[counter];
-        row.push_back(name);
-        row.push_back(value.has_value() ? value.str() : "N/A");
-        row.push_back(value.has_description() ? value.description() : "N/A");
-        ++counter;
+    // Add all data rows
+    for (const auto& [name, value] : inputs ) {
+	table << name
+	      << (value.has_value() ? value.str() : "N/A")
+	      << (value.has_description() ? value.description() : "N/A")
+	      << fort::endr;
     }
 
-    Table t1(std::move(data));
-    return t1.str();
+    return table.to_string();
 }
 
 reSTPrinter& input_full_list_desc(reSTPrinter& p) {
