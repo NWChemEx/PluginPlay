@@ -30,12 +30,20 @@ endif()
 
 
 cpp_find_or_build_dependency(
-        utilities
-        URL github.com/NWChemEx-Project/utilities
-        PRIVATE TRUE
-        BUILD_TARGET utilities
-        FIND_TARGET nwx::utilities
-        CMAKE_ARGS BUILD_TESTING=OFF
+    utilities
+    URL github.com/NWChemEx-Project/utilities
+    PRIVATE TRUE
+    BUILD_TARGET utilities
+    FIND_TARGET nwx::utilities
+    CMAKE_ARGS BUILD_TESTING=OFF
+)
+
+cpp_find_or_build_dependency(
+    libfort
+    URL github.com/seleznevae/libfort
+    BUILD_TARGET fort
+    FIND_TARGET libfort::fort
+    CMAKE_ARGS FORT_ENABLE_TESTING=OFF
 )
 
 cpp_find_or_build_dependency(
@@ -60,7 +68,7 @@ cpp_add_library(
     sde
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/sde"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/sde"
-    DEPENDS nwx::utilities cereal bphash::bphash
+    DEPENDS nwx::utilities cereal bphash::bphash libfort::fort
 )
 
 if("${BUILD_TESTING}")
