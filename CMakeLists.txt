@@ -46,6 +46,14 @@ cpp_find_or_build_dependency(
 )
 
 cpp_find_or_build_dependency(
+    libfort
+    URL github.com/seleznevae/libfort
+    BUILD_TARGET fort
+    FIND_TARGET libfort::fort
+    CMAKE_ARGS FORT_ENABLE_TESTING=OFF
+)
+
+cpp_find_or_build_dependency(
         parallelzone
         URL github.com/NWChemEx-Project/ParallelZone
         PRIVATE TRUE
