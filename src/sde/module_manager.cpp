@@ -53,4 +53,9 @@ module_map::iterator ModuleManager::begin() noexcept {
 module_map::iterator ModuleManager::end() noexcept {
     return pimpl_->end();
 }
+
+type::size ModuleManager::size() const noexcept {
+    return pimpl_->size();
+}
+
 } // namespace sde

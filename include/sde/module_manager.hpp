@@ -58,6 +58,12 @@ public:
      */
     type::size count(type::key key) const noexcept;
 
+    /** @brief Gets the number of modules loaded.
+     *
+     * @return Number of modules loaded.
+     */
+    type::size size() const noexcept;
+    
     template<typename ModuleType>
     void add_module(type::key module_key);
 
