@@ -59,7 +59,9 @@ reSTPrinter& print_results(reSTPrinter& p, const type::result_map& inputs) {
 
     p << "\n\n";
 
-    p << result_table(inputs) << "\n\n";
+    p.print_verbatim(result_table(inputs));
+
+    p << "\n\n";
 
     p.finish_section(); // end module inputs
 

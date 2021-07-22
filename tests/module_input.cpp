@@ -1,5 +1,10 @@
 #include <catch2/catch.hpp>
 #include <sde/module_input.hpp>
+#include <utilities/printing/demangler.hpp>
+
+#if __has_include(<cxxabi.h>)
+#include <cxxabi.h>
+#endif
 
 using namespace sde;
 using set_t = typename ModuleInput::bounds_check_desc_t;
@@ -125,7 +130,8 @@ TEST_CASE("ModuleInput: set_type") {
         auto pi = &(i.set_type<int>());
         REQUIRE(pi == &i);
         REQUIRE(i.has_type());
-        auto msg = std::string("Type == ") + typeid(int).name();
+        auto msg = std::string("Type == ") +
+	    utilities::printing::Demangler::demangle(typeid(int));
         REQUIRE(i.check_descriptions() == set_t{msg});
     }
 
@@ -133,7 +139,8 @@ TEST_CASE("ModuleInput: set_type") {
         auto pi = &(i.set_type<const int&>());
         REQUIRE(pi == &i);
         REQUIRE(i.has_type());
-        auto msg = std::string("Type == ") + typeid(const int&).name();
+	auto msg = std::string("Type == ") +
+	    utilities::printing::Demangler::demangle(typeid(const int&));
         REQUIRE(i.check_descriptions() == set_t{msg});
     }
 
@@ -271,7 +278,8 @@ TEST_CASE("ModuleInput : set_description") {
 TEST_CASE("ModuleInput : add_check") {
     ModuleInput i;
     i.set_type<int>();
-    set_t s{std::string("Type == ") + typeid(int).name()};
+    set_t s{std::string("Type == ") +
+	    utilities::printing::Demangler::demangle(typeid(int))};
     SECTION("Pre-defined check") {
         auto pi = &(i.add_check(bounds_checking::NotEqualTo<int>(4)));
         REQUIRE(pi == &i);
@@ -395,7 +403,8 @@ TEST_CASE("Module Input : check_descriptions") {
 
     SECTION("Only type description") {
         i.set_type<int>();
-        auto msg = std::string("Type == ") + typeid(int).name();
+        auto msg = std::string("Type == ") +
+	    utilities::printing::Demangler::demangle(typeid(int));
         REQUIRE(i.check_descriptions() == set_t{msg});
     }
 }

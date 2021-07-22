@@ -33,7 +33,7 @@ std::string input_quick_ref_table(const type::input_map& inputs) {
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
-    table << fort::header << "Key" << "Type" << "Description" << fort::endr;
+    table << fort::header << "Key" << "Default" << "Description" << fort::endr;
 
     // Add all data rows
     for (const auto& [name, value] : inputs ) {
@@ -105,7 +105,9 @@ reSTPrinter& print_inputs(reSTPrinter& p, const type::input_map& inputs) {
         p << "The module defines no inputs.\n\n";
     else {
         input_quick_ref_desc(p);
-        p << "\n" << input_quick_ref_table(inputs) << "\n\n";
+        p << "\n";
+	p.print_verbatim(input_quick_ref_table(inputs));
+	p << "\n\n";
     }
     p.finish_section(); // end quick reference
 

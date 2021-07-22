@@ -25,7 +25,8 @@ std::string submod_table(const type::submodule_map& submods) {
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
-    table << fort::header << "Key" << "Type" << "Description" << fort::endr;
+    table << fort::header << "Key" << "Property Type" << "Description"
+	  << fort::endr;
 
     // Add all data rows
     for (const auto& [name, value] : submods ) {
@@ -52,7 +53,7 @@ reSTPrinter& print_submods(reSTPrinter& p, const type::submodule_map& submods) {
 
     submod_desc(p);
 
-    p << submod_table(submods);
+    p.print_verbatim(submod_table(submods));
 
     p.finish_section(); // end submodules
 
