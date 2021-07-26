@@ -3,7 +3,7 @@
 #include "sde/module_manager.hpp"
 namespace sde {
 
-using module_map      = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
+using module_map      = typename ModuleManager::module_map;
 using module_base_ptr = typename ModuleManager::module_base_ptr;
 using cache_type      = typename detail_::ModulePIMPL::cache_type;
 template<typename T>
