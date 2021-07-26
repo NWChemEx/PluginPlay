@@ -2,9 +2,6 @@
 #include <sde/module_input.hpp>
 #include <utilities/printing/demangler.hpp>
 
-#if __has_include(<cxxabi.h>)
-#include <cxxabi.h>
-#endif
 
 using namespace sde;
 using set_t = typename ModuleInput::bounds_check_desc_t;
