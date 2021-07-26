@@ -62,18 +62,14 @@ struct ModuleManagerPIMPL {
      *
      * @return Iterator to the first element of the map
      */
-    module_map::iterator begin() noexcept {
-	return m_modules.begin();
-    };
+    module_map::iterator begin() noexcept { return m_modules.begin(); };
 
     /** @brief Returns an iterator to the past-the-end element of the module map
      *
      * @return Iterator to the past-the-end element of the map
      */
-    module_map::iterator end() noexcept {
-	return m_modules.end();
-    };
-    
+    module_map::iterator end() noexcept { return m_modules.end(); };
+
     /** @brief Sets the default module to use for a given property type
      *
      * When a user requests a module that module initially has no submodules

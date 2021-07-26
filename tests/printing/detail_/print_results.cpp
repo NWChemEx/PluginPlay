@@ -97,7 +97,7 @@ TEST_CASE("print_results") {
                     "+-----------+--------+-------------+\n"
                     "| Results 2 | double | Bye World   |\n"
                     "+-----------+--------+-------------+\n"
-	            "\n\n";
+                    "\n\n";
         REQUIRE(ss.str() == corr);
     }
 }

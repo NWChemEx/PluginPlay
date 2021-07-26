@@ -111,33 +111,32 @@ TEST_CASE("input_full_list") {
                                 "- Opaque? : True\n"
                                 "- Domain Restrictions :\n\n"
                                 "  - Type == ") +
-	            utilities::printing::Demangler::demangle(typeid(int)) +
-	            "\n\n";
+                    utilities::printing::Demangler::demangle(typeid(int)) +
+                    "\n\n";
         REQUIRE(ss.str() == corr);
     }
     SECTION("Two inputs") {
-        auto corr = std::string("########\n"
-                                "Option 1\n"
-                                "########\n\n"
-                                "- Description : Hello World\n"
-                                "- Default Value : 3\n"
-                                "- Optional? : False\n"
-                                "- Opaque? : True\n"
-                                "- Domain Restrictions :\n\n"
-                                "  - Type == ") +
-                    utilities::printing::Demangler::demangle(typeid(int)) +
-	            "\n\n" +
-                    std::string("########\n"
-                                "Option 2\n"
-                                "########\n\n"
-                                "- Description : By World\n"
-                                "- Default Value : 3.14\n"
-                                "- Optional? : False\n"
-                                "- Opaque? : True\n"
-                                "- Domain Restrictions :\n\n"
-                                "  - Type == ") +
-                    utilities::printing::Demangler::demangle(typeid(double)) +
-	            "\n\n";
+        auto corr =
+          std::string("########\n"
+                      "Option 1\n"
+                      "########\n\n"
+                      "- Description : Hello World\n"
+                      "- Default Value : 3\n"
+                      "- Optional? : False\n"
+                      "- Opaque? : True\n"
+                      "- Domain Restrictions :\n\n"
+                      "  - Type == ") +
+          utilities::printing::Demangler::demangle(typeid(int)) + "\n\n" +
+          std::string("########\n"
+                      "Option 2\n"
+                      "########\n\n"
+                      "- Description : By World\n"
+                      "- Default Value : 3.14\n"
+                      "- Optional? : False\n"
+                      "- Opaque? : True\n"
+                      "- Domain Restrictions :\n\n"
+                      "  - Type == ") +
+          utilities::printing::Demangler::demangle(typeid(double)) + "\n\n";
 
         inputs["Option 1"]
           .set_description("Hello World")

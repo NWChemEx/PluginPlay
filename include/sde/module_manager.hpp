@@ -22,7 +22,7 @@ public:
 
     /// Type of a map holding usable modules
     using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
-    
+
     ///@{
     /** @name Ctors and assignment operators
      *
@@ -50,7 +50,7 @@ public:
      * @return Iterator to the past-the-end element of the map
      */
     module_map::iterator end() noexcept;
-    
+
     /** @brief Used to see if we have a module
      *
      * @param key
@@ -63,7 +63,7 @@ public:
      * @return Number of modules loaded.
      */
     type::size size() const noexcept;
-    
+
     template<typename ModuleType>
     void add_module(type::key module_key);
 

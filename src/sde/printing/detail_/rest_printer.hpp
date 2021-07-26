@@ -69,7 +69,7 @@ public:
 
     /** @brief Adds the provided message to the output buffer.
      *
-     *  This function will add the provided text to the underlying output 
+     *  This function will add the provided text to the underlying output
      *  buffer, verbatim, without wrapping lines exceeding 80 characters.
      *
      *  @param[in] message What we should add to the buffer.
@@ -79,7 +79,7 @@ public:
      *  @throw ??? if the underlying std::ostream throws. Weak throw guarantee.
      */
     void print_verbatim(const std::string& message);
-    
+
     /** @brief Adds the provided message to the wrapped buffer.
      *
      *  This function will add the provided text to the underlying buffer,

@@ -1,8 +1,8 @@
 #include "print_inputs.hpp"
 #include <utilities/printing/table.hpp>
 
-#include <fort.hpp>
 #include "fort_custom_styles.hpp"
+#include <fort.hpp>
 
 namespace sde::printing::detail_ {
 
@@ -33,14 +33,15 @@ std::string input_quick_ref_table(const type::input_map& inputs) {
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
-    table << fort::header << "Key" << "Default" << "Description" << fort::endr;
+    table << fort::header << "Key"
+          << "Default"
+          << "Description" << fort::endr;
 
     // Add all data rows
-    for (const auto& [name, value] : inputs ) {
-	table << name
-	      << (value.has_value() ? value.str() : "N/A")
-	      << (value.has_description() ? value.description() : "N/A")
-	      << fort::endr;
+    for(const auto& [name, value] : inputs) {
+        table << name << (value.has_value() ? value.str() : "N/A")
+              << (value.has_description() ? value.description() : "N/A")
+              << fort::endr;
     }
 
     return table.to_string();
@@ -106,8 +107,8 @@ reSTPrinter& print_inputs(reSTPrinter& p, const type::input_map& inputs) {
     else {
         input_quick_ref_desc(p);
         p << "\n";
-	p.print_verbatim(input_quick_ref_table(inputs));
-	p << "\n\n";
+        p.print_verbatim(input_quick_ref_table(inputs));
+        p << "\n\n";
     }
     p.finish_section(); // end quick reference
 

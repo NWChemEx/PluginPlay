@@ -2,8 +2,8 @@
 #include <utilities/printing/demangler.hpp>
 #include <utilities/printing/table.hpp>
 
-#include <fort.hpp>
 #include "fort_custom_styles.hpp"
+#include <fort.hpp>
 
 namespace sde::printing::detail_ {
 
@@ -25,19 +25,20 @@ std::string submod_table(const type::submodule_map& submods) {
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
-    table << fort::header << "Key" << "Property Type" << "Description"
-	  << fort::endr;
+    table << fort::header << "Key"
+          << "Property Type"
+          << "Description" << fort::endr;
 
     // Add all data rows
-    for (const auto& [name, value] : submods ) {
-	table << name
-	      << (value.has_type() ?
-		  utilities::printing::Demangler::demangle(value.type()) :
-		  "N/A")
-	      << (value.has_description() ? value.description() : "N/A")
-	      << fort::endr;
+    for(const auto& [name, value] : submods) {
+        table << name
+              << (value.has_type() ?
+                    utilities::printing::Demangler::demangle(value.type()) :
+                    "N/A")
+              << (value.has_description() ? value.description() : "N/A")
+              << fort::endr;
     }
-    
+
     return table.to_string();
 }
 

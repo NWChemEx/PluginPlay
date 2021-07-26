@@ -34,7 +34,7 @@ void reSTPrinter::finish_section() {
 void reSTPrinter::print_verbatim(const std::string& message) {
     m_os_.get() << message;
 }
-    
+
 reSTPrinter& reSTPrinter::operator<<(const std::string& message) {
     m_wws_ << message;
     return *this;

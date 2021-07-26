@@ -46,16 +46,10 @@ void ModuleManager::set_default_(const std::type_info& type,
     pimpl_->set_default(type, std::move(inps), std::move(key));
 }
 
-module_map::iterator ModuleManager::begin() noexcept {
-    return pimpl_->begin();
-}
+module_map::iterator ModuleManager::begin() noexcept { return pimpl_->begin(); }
 
-module_map::iterator ModuleManager::end() noexcept {
-    return pimpl_->end();
-}
+module_map::iterator ModuleManager::end() noexcept { return pimpl_->end(); }
 
-type::size ModuleManager::size() const noexcept {
-    return pimpl_->size();
-}
+type::size ModuleManager::size() const noexcept { return pimpl_->size(); }
 
 } // namespace sde
