@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
-project(sde VERSION "${VERSION}" LANGUAGES CXX)
+project(pluginplay VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
@@ -19,10 +19,14 @@ option(
 
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
+# Work out the project paths
+set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+
 if("${BUILD_DOCS}")
     find_package(Doxygen REQUIRED)
     set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(sde_cxx_api "${CMAKE_CURRENT_LIST_DIR}/sde")
+    doxygen_add_docs(sde_cxx_api "${project_src_dir}")
     if("${ONLY_BUILD_DOCS}")
         return()
     endif()
@@ -47,9 +51,9 @@ cpp_find_or_build_dependency(
 )
 
 cpp_add_library(
-    sde
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/sde"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/sde"
+    ${PROJECT_NAME}
+    SOURCE_DIR "${project_src_dir}"
+    INCLUDE_DIR "${project_inc_dir}"
     DEPENDS nwx::utilities nwx::parallelzone
 )
 
@@ -59,14 +63,12 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-	VERSION v2.13.3
+	    VERSION v2.13.3
     )
     cpp_add_tests(
-        test_sde
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
-        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/sde"
-        DEPENDS Catch2::Catch2 sde
+        test_${PROJECT_NAME}
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}"
+        INCLUDE_DIR "${project_src_dir}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 endif()
-
-

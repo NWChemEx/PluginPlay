@@ -14,23 +14,23 @@ considerations. That is what this page focuses on.
 Module-Specific Inputs
 ======================
 
-Continuing from our electric field example, the factor of: 
+Continuing from our electric field example, the factor of:
 :math:`||\vec{r} - \vec{r}_i||^2` means that point charges which are far from
-the evaluation point, :math:`\vec{r}`, minimally contributes to the electric 
-field (assuming all point charges have approximately the same charge). 
-Consequently, we can reduce the computational prefactor slightly by only 
+the evaluation point, :math:`\vec{r}`, minimally contributes to the electric
+field (assuming all point charges have approximately the same charge).
+Consequently, we can reduce the computational prefactor slightly by only
 considering point charges "near" :math:`\vec{r}`. What constitutes "near" will
 in general be situational (*i.e.*, depends on magnitudes of point charges
 involved, target precision, *etc.*). The point of all this is that for
-computational reasons, we would like to add a threshold paramter to our electric 
+computational reasons, we would like to add a threshold paramter to our electric
 field module.
 
 For simplicity we will implement a new module ``ScreenedCoulombsLaw`` rather
-than modifying ``CoulombsLaw``. Relative to our ``CoulombsLaw`` module, the new 
-parameter slightly modifies the constructor and the ``run_`` member functions. 
+than modifying ``CoulombsLaw``. Relative to our ``CoulombsLaw`` module, the new
+parameter slightly modifies the constructor and the ``run_`` member functions.
 With the new input the constructor becomes:
 
-.. literalinclude:: ../../../tests/docs/screened_coulombs_law.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/screened_coulombs_law.cpp
    :language: c++
    :lines: 23-30
 
@@ -39,7 +39,7 @@ brief description and a default value set to the maximum double value (*i.e.*,
 no screening will occur by default). The relevant change to the ``run_`` member
 is:
 
-.. literalinclude:: ../../../tests/docs/screened_coulombs_law.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/screened_coulombs_law.cpp
    :language: c++
    :lines: 32-37,59-61
 
@@ -48,24 +48,24 @@ the new input parameter. It will **NOT** automatically be unwrapped by the
 property type.
 
 .. note::
-   
+
    Module-specific inputs work best for parameters that are typically set in
    advance versus parameters that would typically be passed as an input.
-   
+
 Satisfying Multiple Property Types
 ==================================
 
 Sometimes an algorithm will compute more than one property. Reasons why this may
-occur include performance (the two quantities may share many common 
-intermediates) and wrapping code not originally designed for the SDE (for
+occur include performance (the two quantities may share many common
+intermediates) and wrapping code not originally designed for PluginPlay (for
 example calling a library which has a single API that computes many properties).
-This poses no problem as the SDE allows modules to satisfy multiple property 
-types. 
+This poses no problem as PluginPlay allows modules to satisfy multiple property
+types.
 
 If a module satisfies :math:`n` property types, the inputs to the module are the
-union of the inputs to the :math:`n` property types as well as any 
+union of the inputs to the :math:`n` property types as well as any
 module-specific inputs that the module declares. Similarly the returns of the
-module are the union of the returns of the :math:`n` property types as well as 
+module are the union of the returns of the :math:`n` property types as well as
 any module-specific results that the module returns.
 
 TODO: Add examples

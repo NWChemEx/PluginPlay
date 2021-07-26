@@ -1,7 +1,7 @@
 tests Directory
 ===============
 
-This directory contains the unit tests and tutorials for the SDE repository. The
+This directory contains the unit tests and tutorials for the pluginplay repository. The
 unit test file/directory structure follows the same structure as the source
 code. This directory additionally contains the header file `test_common.hpp`,
 which contains facade property types and modules for testing purposes. These

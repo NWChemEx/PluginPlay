@@ -1,9 +1,9 @@
 Motivations
 ===========
 
-While the Simulation Development Environment, or SDE, is general software not
-directly tied to computational science, its motivations derived from
-computational science applications. This page details those motivations.
+PluginPlay, is general software not directly tied to computational science;
+however, its motivations derived from computational science applications.
+This page details those motivations.
 
 In designing a software package for computational science you need to consider
 how that software will interact with four groups of people:
@@ -36,7 +36,6 @@ highlights the need for the resulting software to be flexible and modular. The
 former ensures that the program is up to any challenge and the latter
 facilitates refactoring that may need to occur as a result of a new direction.
 
-
 External Developer
 ------------------
 
@@ -53,7 +52,6 @@ developers are not going to produce software with APIs that are interoperable
 with our package's APIs. Rather our package needs to be capable of adapting to
 the API of the external package with minimal effort. Again, this highlights
 the need for flexible and modular code.
-
 
 Developer
 ---------
@@ -96,7 +94,6 @@ control flow. Every science problem is unique, and consequentially every usage
 of a scientific package will be too. Modularity within the source code helps
 deliver this flexible user-experience.
 
-
 Summary
 -------
 
@@ -105,13 +102,4 @@ and foremost be flexible. This makes a lot of sense given it is being used for
 research, which is an inherently uncertain thing. The other reoccurring theme is
 modularity. Scientific software needs to be Lego-like in the sense that you have
 a lot of fundamental pieces that are interoperable, which can be combined into
-arbitrary designs. These use cases are summarized in the following use-case
-diagram:
-
-.. image:: ../uml/motivations.*
-
-
-
-
-
-
+arbitrary designs.
