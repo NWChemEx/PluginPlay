@@ -1,5 +1,5 @@
-#include <catch2/catch.hpp>
 #include "src/sde/printing/detail_/rest_printer.hpp"
+#include <catch2/catch.hpp>
 #include <sstream>
 using namespace sde::printing::detail_;
 
@@ -49,5 +49,18 @@ TEST_CASE("reSTPrinter : operator<<") {
     const auto sen = "This is a short sentence under 80 characters long";
     p << sen;
     corr << sen;
+    REQUIRE(ss.str() == corr.str());
+}
+
+TEST_CASE("reSTPrinter : print_verbatim") {
+    std::stringstream ss;
+    std::stringstream corr;
+    reSTPrinter p(ss);
+    const auto sen = "This is a sentence longer than 80 characters, "
+                     "but should still be printed on one line.";
+
+    p.print_verbatim(sen);
+    corr << sen;
+
     REQUIRE(ss.str() == corr.str());
 }

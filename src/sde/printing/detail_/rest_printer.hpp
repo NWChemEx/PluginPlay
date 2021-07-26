@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <iostream>
+#include <utilities/printing/word_wrap_stream.hpp>
 
 namespace sde::printing::detail_ {
 
@@ -66,6 +67,19 @@ public:
      */
     void finish_section();
 
+    /** @brief Adds the provided message to the output buffer.
+     *
+     *  This function will add the provided text to the underlying output
+     *  buffer, verbatim, without wrapping lines exceeding 80 characters.
+     *
+     *  @param[in] message What we should add to the buffer.
+     *
+     *  @return The current instance after adding @p message to the buffer
+     *
+     *  @throw ??? if the underlying std::ostream throws. Weak throw guarantee.
+     */
+    void print_verbatim(const std::string& message);
+
     /** @brief Adds the provided message to the wrapped buffer.
      *
      *  This function will add the provided text to the underlying buffer,
@@ -93,6 +107,9 @@ private:
 
     /// The stream we are printing to
     std::reference_wrapper<std::ostream> m_os_;
+
+    /// The WordWrapStream to print to
+    utilities::printing::WordWrapStream m_wws_;
 }; // class reSTPrinter
 
 } // namespace sde::printing::detail_

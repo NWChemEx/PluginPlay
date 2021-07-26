@@ -19,3 +19,4 @@ collection.
    
    overview
    load_modules
+   document_modules
