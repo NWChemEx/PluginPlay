@@ -10,7 +10,7 @@ TEST_CASE("input_quick_ref_table") {
     SECTION("No inputs") {
         auto corr = "+-----+---------+-------------+\n"
                     "| Key | Default | Description |\n"
-                    "+-----+---------+-------------+";
+                    "+-----+---------+-------------+\n";
         REQUIRE(corr == input_quick_ref_table(inputs));
     }
     SECTION("No default or description") {
@@ -18,7 +18,7 @@ TEST_CASE("input_quick_ref_table") {
                     "| Key      | Default | Description |\n"
                     "+==========+=========+=============+\n"
                     "| Option 1 | N/A     | N/A         |\n"
-                    "+----------+---------+-------------+";
+                    "+----------+---------+-------------+\n";
         inputs["Option 1"];
         REQUIRE(corr == input_quick_ref_table(inputs));
     }
@@ -27,7 +27,7 @@ TEST_CASE("input_quick_ref_table") {
                     "| Key      | Default | Description |\n"
                     "+==========+=========+=============+\n"
                     "| Option 1 | N/A     | Hello world |\n"
-                    "+----------+---------+-------------+";
+                    "+----------+---------+-------------+\n";
         inputs["Option 1"].set_description("Hello world");
         REQUIRE(corr == input_quick_ref_table(inputs));
     }
@@ -37,7 +37,7 @@ TEST_CASE("input_quick_ref_table") {
                     "| Key      | Default | Description |\n"
                     "+==========+=========+=============+\n"
                     "| Option 1 | 3       | Hello world |\n"
-                    "+----------+---------+-------------+";
+                    "+----------+---------+-------------+\n";
         inputs["Option 1"].set_type<int>().set_default(int{3}).set_description(
           "Hello world");
         REQUIRE(corr == input_quick_ref_table(inputs));
@@ -49,7 +49,7 @@ TEST_CASE("input_quick_ref_table") {
                     "| Option 1 | 3       | Hello world |\n"
                     "+----------+---------+-------------+\n"
                     "| Option 2 | 3.14    | Bye world   |\n"
-                    "+----------+---------+-------------+";
+                    "+----------+---------+-------------+\n";
         inputs["Option 1"].set_type<int>().set_default(int{3}).set_description(
           "Hello world");
         inputs["Option 2"]
@@ -111,30 +111,32 @@ TEST_CASE("input_full_list") {
                                 "- Opaque? : True\n"
                                 "- Domain Restrictions :\n\n"
                                 "  - Type == ") +
-                    typeid(int).name() + "\n\n";
+                    utilities::printing::Demangler::demangle(typeid(int)) +
+                    "\n\n";
         REQUIRE(ss.str() == corr);
     }
     SECTION("Two inputs") {
-        auto corr = std::string("########\n"
-                                "Option 1\n"
-                                "########\n\n"
-                                "- Description : Hello World\n"
-                                "- Default Value : 3\n"
-                                "- Optional? : False\n"
-                                "- Opaque? : True\n"
-                                "- Domain Restrictions :\n\n"
-                                "  - Type == ") +
-                    typeid(int).name() + "\n\n" +
-                    std::string("########\n"
-                                "Option 2\n"
-                                "########\n\n"
-                                "- Description : By World\n"
-                                "- Default Value : 3.14\n"
-                                "- Optional? : False\n"
-                                "- Opaque? : True\n"
-                                "- Domain Restrictions :\n\n"
-                                "  - Type == ") +
-                    typeid(double).name() + "\n\n";
+        auto corr =
+          std::string("########\n"
+                      "Option 1\n"
+                      "########\n\n"
+                      "- Description : Hello World\n"
+                      "- Default Value : 3\n"
+                      "- Optional? : False\n"
+                      "- Opaque? : True\n"
+                      "- Domain Restrictions :\n\n"
+                      "  - Type == ") +
+          utilities::printing::Demangler::demangle(typeid(int)) + "\n\n" +
+          std::string("########\n"
+                      "Option 2\n"
+                      "########\n\n"
+                      "- Description : By World\n"
+                      "- Default Value : 3.14\n"
+                      "- Optional? : False\n"
+                      "- Opaque? : True\n"
+                      "- Domain Restrictions :\n\n"
+                      "  - Type == ") +
+          utilities::printing::Demangler::demangle(typeid(double)) + "\n\n";
 
         inputs["Option 1"]
           .set_description("Hello World")
@@ -151,9 +153,8 @@ TEST_CASE("input_full_list") {
 
 TEST_CASE("print_inputs") {
     std::stringstream ss;
-    utilities::printing::WordWrapStream s(&ss);
-    reSTPrinter p(s);
-    pluginplay::type::input_map inputs;
+    reSTPrinter p(ss);
+    plugingplay::type::input_map inputs;
 
     SECTION("No inputs") {
         print_inputs(p, inputs);
@@ -227,7 +228,7 @@ TEST_CASE("print_inputs") {
           "+----------+---------+-------------+\n"
           "| Option 2 | 3.14    | By World    |\n"
           "+----------+---------+-------------+\n"
-          "\n"
+          "\n\n"
           "*********************\n"
           "Detailed Descriptions\n"
           "*********************\n"
@@ -257,7 +258,7 @@ TEST_CASE("print_inputs") {
           "- Opaque? : True\n"
           "- Domain Restrictions :\n"
           "\n"
-          "- Type == i\n"
+          "- Type == int\n"
           "\n"
           "Option 2\n"
           "========\n"
@@ -268,7 +269,7 @@ TEST_CASE("print_inputs") {
           "- Opaque? : True\n"
           "- Domain Restrictions :\n"
           "\n"
-          "- Type == d\n";
+          "- Type == double\n";
         print_inputs(p, inputs);
     }
 }

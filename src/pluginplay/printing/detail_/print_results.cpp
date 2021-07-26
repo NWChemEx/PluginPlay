@@ -1,7 +1,8 @@
+#include "fort_custom_styles.hpp"
 #include "print_results.hpp"
+#include <fort.hpp>
 #include <utilities/printing/demangler.hpp>
 #include <utilities/printing/table.hpp>
-
 namespace pluginplay::printing::detail_ {
 
 using Table = utilities::printing::Table;
@@ -21,28 +22,27 @@ reSTPrinter& result_desc(reSTPrinter& p) {
     return p;
 }
 
-std::string result_table(const type::result_map& inputs) {
-    using table_data = typename Table::table_type;
+std::string result_table(const type::result_map& results) {
+    // Instantiate the table
+    fort::char_table table;
+    table.set_border_style(NWX_RST_STYLE);
 
-    // Take care of the column headers
-    table_data data(inputs.size() + 1);
-    data[0].push_back("Key");
-    data[0].push_back("Type");
-    data[0].push_back("Description");
+    // Add the header
+    table << fort::header << "Key"
+          << "Type"
+          << "Description" << fort::endr;
 
-    std::size_t counter = 1;
-    for(const auto& [name, value] : inputs) {
-        auto& row = data[counter];
-        row.push_back(name);
-        row.push_back(value.has_type() ?
-                        utilities::printing::Demangler::demangle(value.type()) :
-                        "N/A");
-        row.push_back(value.has_description() ? value.description() : "N/A");
-        ++counter;
+    // Add all data rows
+    for(const auto& [name, value] : results) {
+        table << name
+              << (value.has_type() ?
+                    utilities::printing::Demangler::demangle(value.type()) :
+                    "N/A")
+              << (value.has_description() ? value.description() : "N/A")
+              << fort::endr;
     }
 
-    Table t1(std::move(data));
-    return t1.str();
+    return table.to_string();
 }
 
 reSTPrinter& print_results(reSTPrinter& p, const type::result_map& inputs) {
@@ -59,7 +59,9 @@ reSTPrinter& print_results(reSTPrinter& p, const type::result_map& inputs) {
 
     p << "\n\n";
 
-    p << result_table(inputs) << "\n\n";
+    p.print_verbatim(result_table(inputs));
+
+    p << "\n\n";
 
     p.finish_section(); // end module inputs
 

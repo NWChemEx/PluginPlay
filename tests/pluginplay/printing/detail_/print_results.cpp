@@ -11,7 +11,7 @@ TEST_CASE("result_table") {
     SECTION("No results") {
         auto corr = "+-----+------+-------------+\n"
                     "| Key | Type | Description |\n"
-                    "+-----+------+-------------+";
+                    "+-----+------+-------------+\n";
         REQUIRE(result_table(results) == corr);
     }
     SECTION("Empty result") {
@@ -20,7 +20,7 @@ TEST_CASE("result_table") {
                     "| Key      | Type | Description |\n"
                     "+==========+======+=============+\n"
                     "| Result 1 | N/A  | N/A         |\n"
-                    "+----------+------+-------------+";
+                    "+----------+------+-------------+\n";
         REQUIRE(result_table(results) == corr);
     }
     SECTION("Has description") {
@@ -29,7 +29,7 @@ TEST_CASE("result_table") {
                     "| Key      | Type | Description |\n"
                     "+==========+======+=============+\n"
                     "| Result 1 | N/A  | Hello World |\n"
-                    "+----------+------+-------------+";
+                    "+----------+------+-------------+\n";
         REQUIRE(result_table(results) == corr);
     }
     SECTION("Has type") {
@@ -38,7 +38,7 @@ TEST_CASE("result_table") {
                     "| Key      | Type   | Description |\n"
                     "+==========+========+=============+\n"
                     "| Result 1 | double | N/A         |\n"
-                    "+----------+--------+-------------+";
+                    "+----------+--------+-------------+\n";
         REQUIRE(result_table(results) == corr);
     }
     SECTION("The whole shebang") {
@@ -47,7 +47,7 @@ TEST_CASE("result_table") {
                     "| Key      | Type   | Description |\n"
                     "+==========+========+=============+\n"
                     "| Result 1 | double | Hello World |\n"
-                    "+----------+--------+-------------+";
+                    "+----------+--------+-------------+\n";
         REQUIRE(result_table(results) == corr);
     }
 }
@@ -55,8 +55,7 @@ TEST_CASE("result_table") {
 TEST_CASE("print_results") {
     pluginplay::type::result_map results;
     std::stringstream ss;
-    utilities::printing::WordWrapStream w(&ss);
-    reSTPrinter p(w);
+    reSTPrinter p(ss);
     SECTION("No results") {
         auto corr = "##############\n"
                     "Module Results\n"
@@ -96,7 +95,8 @@ TEST_CASE("print_results") {
                     "| Results 1 | double | Hello World |\n"
                     "+-----------+--------+-------------+\n"
                     "| Results 2 | double | Bye World   |\n"
-                    "+-----------+--------+-------------+\n\n";
+                    "+-----------+--------+-------------+\n"
+                    "\n\n";
         REQUIRE(ss.str() == corr);
     }
 }

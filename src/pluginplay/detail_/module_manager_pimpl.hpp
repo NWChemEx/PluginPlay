@@ -58,6 +58,18 @@ struct ModuleManagerPIMPL {
     /// Ensures we count the number of modules consistently
     type::size size() const noexcept { return m_modules.size(); }
 
+    /** @brief Returns an iterator to the first element of the module map
+     *
+     * @return Iterator to the first element of the map
+     */
+    module_map::iterator begin() noexcept { return m_modules.begin(); };
+
+    /** @brief Returns an iterator to the past-the-end element of the module map
+     *
+     * @return Iterator to the past-the-end element of the map
+     */
+    module_map::iterator end() noexcept { return m_modules.end(); };
+
     /** @brief Sets the default module to use for a given property type
      *
      * When a user requests a module that module initially has no submodules

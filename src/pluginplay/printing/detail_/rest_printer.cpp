@@ -8,7 +8,8 @@ reSTPrinter::reSTPrinter(std::ostream& os, std::string underline_chars,
                          std::string overline_chars) noexcept :
   m_underline_chars_(std::move(underline_chars)),
   m_overline_chars_(std::move(overline_chars)),
-  m_os_(os) {}
+  m_os_(os),
+  m_wws_(&os) {}
 
 void reSTPrinter::start_section(const std::string& header) {
     if(m_underline_chars_.size() <= m_section_)
@@ -30,8 +31,12 @@ void reSTPrinter::finish_section() {
     --m_section_;
 }
 
-reSTPrinter& reSTPrinter::operator<<(const std::string& message) {
+void reSTPrinter::print_verbatim(const std::string& message) {
     m_os_.get() << message;
+}
+
+reSTPrinter& reSTPrinter::operator<<(const std::string& message) {
+    m_wws_ << message;
     return *this;
 }
 

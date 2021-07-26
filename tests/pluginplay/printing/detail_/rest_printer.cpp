@@ -51,3 +51,16 @@ TEST_CASE("reSTPrinter : operator<<") {
     corr << sen;
     REQUIRE(ss.str() == corr.str());
 }
+
+TEST_CASE("reSTPrinter : print_verbatim") {
+    std::stringstream ss;
+    std::stringstream corr;
+    reSTPrinter p(ss);
+    const auto sen = "This is a sentence longer than 80 characters, "
+                     "but should still be printed on one line.";
+
+    p.print_verbatim(sen);
+    corr << sen;
+
+    REQUIRE(ss.str() == corr.str());
+}

@@ -3,6 +3,7 @@
 #include "pluginplay/detail_/any.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
+#include <utilities/printing/demangler.hpp>
 #include <functional>
 #include <set>
 #include <string>
@@ -746,7 +747,8 @@ auto& ModuleInput::add_type_check_() {
         return new_value.is_convertible<T>() ||
                new_value.is_convertible<std::reference_wrapper<const T>>();
     };
-    auto msg = std::string("Type == ") + typeid(T).name();
+    auto msg = std::string("Type == ") +
+	       utilities::printing::Demangler::demangle(typeid(T));
     return add_check_(check, msg);
 }
 

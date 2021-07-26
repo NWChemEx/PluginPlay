@@ -11,7 +11,7 @@ TEST_CASE("submod_table") {
     SECTION("No submods") {
         auto corr = "+-----+---------------+-------------+\n"
                     "| Key | Property Type | Description |\n"
-                    "+-----+---------------+-------------+";
+                    "+-----+---------------+-------------+\n";
         REQUIRE(submod_table(submods) == corr);
     }
     SECTION("Empty Submod") {
@@ -20,7 +20,7 @@ TEST_CASE("submod_table") {
                     "| Key     | Property Type | Description |\n"
                     "+=========+===============+=============+\n"
                     "| Submod1 | N/A           | N/A         |\n"
-                    "+---------+---------------+-------------+";
+                    "+---------+---------------+-------------+\n";
         REQUIRE(submod_table(submods) == corr);
     }
     SECTION("Has description") {
@@ -29,7 +29,7 @@ TEST_CASE("submod_table") {
                     "| Key     | Property Type | Description |\n"
                     "+=========+===============+=============+\n"
                     "| Submod1 | N/A           | Hello World |\n"
-                    "+---------+---------------+-------------+";
+                    "+---------+---------------+-------------+\n";
         REQUIRE(submod_table(submods) == corr);
     }
     SECTION("Has property type") {
@@ -38,7 +38,7 @@ TEST_CASE("submod_table") {
                     "| Key     | Property Type   | Description |\n"
                     "+=========+=================+=============+\n"
                     "| Submod1 | testing::NullPT | N/A         |\n"
-                    "+---------+-----------------+-------------+";
+                    "+---------+-----------------+-------------+\n";
         REQUIRE(submod_table(submods) == corr);
     }
     SECTION("The whole shebang") {
@@ -48,7 +48,7 @@ TEST_CASE("submod_table") {
                     "| Key     | Property Type   | Description |\n"
                     "+=========+=================+=============+\n"
                     "| Submod1 | testing::NullPT | Hello World |\n"
-                    "+---------+-----------------+-------------+";
+                    "+---------+-----------------+-------------+\n";
         REQUIRE(submod_table(submods) == corr);
     }
 }
@@ -56,8 +56,7 @@ TEST_CASE("submod_table") {
 TEST_CASE("print_submods") {
     pluginplay::type::submodule_map submods;
     std::stringstream ss;
-    utilities::printing::WordWrapStream w(&ss);
-    reSTPrinter p(w);
+    reSTPrinter p(ss);
     SECTION("No submods") {
         auto corr = "##########\n"
                     "Submodules\n"
@@ -93,7 +92,7 @@ TEST_CASE("print_submods") {
                     "| Submod1 | testing::NullPT | Hello World |\n"
                     "+---------+-----------------+-------------+\n"
                     "| Sumbod2 | testing::OneIn  | Bye World   |\n"
-                    "+---------+-----------------+-------------+";
+                    "+---------+-----------------+-------------+\n";
         REQUIRE(ss.str() == corr);
     }
 }

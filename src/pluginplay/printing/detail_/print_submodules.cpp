@@ -1,4 +1,6 @@
+#include "fort_custom_styles.hpp"
 #include "print_submodules.hpp"
+#include <fort.hpp>
 #include <utilities/printing/demangler.hpp>
 #include <utilities/printing/table.hpp>
 
@@ -17,27 +19,26 @@ reSTPrinter& submod_desc(reSTPrinter& p) {
 }
 
 std::string submod_table(const type::submodule_map& submods) {
-    using table_data = typename Table::table_type;
+    // Instantiate the table
+    fort::char_table table;
+    table.set_border_style(NWX_RST_STYLE);
 
-    // Take care of the column headers
-    table_data data(submods.size() + 1);
-    data[0].push_back("Key");
-    data[0].push_back("Property Type");
-    data[0].push_back("Description");
+    // Add the header
+    table << fort::header << "Key"
+          << "Property Type"
+          << "Description" << fort::endr;
 
-    std::size_t counter = 1;
+    // Add all data rows
     for(const auto& [name, value] : submods) {
-        auto& row = data[counter];
-        row.push_back(name);
-        row.push_back(value.has_type() ?
-                        utilities::printing::Demangler::demangle(value.type()) :
-                        "N/A");
-        row.push_back(value.has_description() ? value.description() : "N/A");
-        ++counter;
+        table << name
+              << (value.has_type() ?
+                    utilities::printing::Demangler::demangle(value.type()) :
+                    "N/A")
+              << (value.has_description() ? value.description() : "N/A")
+              << fort::endr;
     }
 
-    Table t1(std::move(data));
-    return t1.str();
+    return table.to_string();
 }
 
 reSTPrinter& print_submods(reSTPrinter& p, const type::submodule_map& submods) {
@@ -52,7 +53,7 @@ reSTPrinter& print_submods(reSTPrinter& p, const type::submodule_map& submods) {
 
     submod_desc(p);
 
-    p << submod_table(submods);
+    p.print_verbatim(submod_table(submods));
 
     p.finish_section(); // end submodules
 
