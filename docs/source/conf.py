@@ -10,7 +10,7 @@ import os
 
 # -- Project information -----------------------------------------------------
 
-project = u'sde'
+project = u'pluginplay'
 copyright = u'2020, NWChemEx Team'
 author = u'NWChemEx Team'
 
@@ -36,7 +36,7 @@ release = version
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
+    #'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
