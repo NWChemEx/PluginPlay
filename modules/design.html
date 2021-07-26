@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Designing a Module &mdash; sde 1.0.0 documentation</title>
+  <title>Designing a Module &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -94,8 +94,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="templated.html">Templated Modules</a></li>
@@ -113,6 +112,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -129,7 +129,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -190,7 +190,7 @@ provide any guidance on how to design your module.</p>
 <section id="additional-inputs">
 <h2>Additional Inputs<a class="headerlink" href="#additional-inputs" title="Permalink to this headline">¶</a></h2>
 <p>The property type APIs are necessarilly general and rigid. This can pose
-difficulties when your module needs additional input. The SDE provides you
+difficulties when your module needs additional input. PluginPlay provides you
 with two options for obtaining the extra input your module needs:</p>
 <ol class="arabic simple">
 <li><p>Define a module-specific input parameter</p></li>
@@ -215,7 +215,7 @@ end-user) it generally won’t be touched again. The other option, having this
 threshold be set by a submodule doesn’t really make a whole lot of sense because
 there really isn’t an algorithm that can compute it (typically the default value
 is determined by extensive benchmarking which establishes what value produces a
-tolerable error; while that process could be encapsulated in a module, onece
+tolerable error; while that process could be encapsulated in a module, once
 it’s been done you might as well just use the value).</p>
 </section>
 <section id="call-a-submodule">

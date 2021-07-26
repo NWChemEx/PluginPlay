@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Building the SDE Library &mdash; sde 1.0.0 documentation</title>
+  <title>Building PluginPlay &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -94,11 +94,11 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the SDE Library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -115,7 +115,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -150,7 +150,7 @@
         
           <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
         
-      <li>Building the SDE Library</li>
+      <li>Building PluginPlay</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -169,39 +169,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="building-the-sde-library">
-<h1>Building the SDE Library<a class="headerlink" href="#building-the-sde-library" title="Permalink to this headline">¶</a></h1>
-<p>SDE is built using <a class="reference external" href="https://github.com/CMakePackagingProject/CMakePackagingProject.git">CPP</a>.
-Assuming you have already installed CPP, that you are on a sane Unix-like
-computer, and you are willing to let SDE build all dependencies, then the
-following will suffice to build SDE:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NWChemEx-Project/SDE.git
-<span class="nb">cd</span> SDE
-cmake -H. <span class="se">\</span>
-      -Bbuild <span class="se">\</span>
-      -DCPP_GITHUB_TOKEN<span class="o">=</span>&lt;your super-secret token&gt; <span class="se">\</span>
-      -DCMAKE_PREFIX_PATH<span class="o">=</span>&lt;where/you/installed/CPP&gt; <span class="se">\</span>
-      -DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;where/you/want/to/install/SDE&gt;
-<span class="nb">cd</span> build
-cmake --build .
-<span class="c1">#May need to run as an admin depending on where you are installing SDE to</span>
-cmake --build . --target install
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The GitHub token is only necessary because, at the moment, utilities is a
-private repository (instructions for generating a token are <a class="reference external" href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line">here</a>).</p>
-</div>
-<p>For finer-grained control over the build we direct the reader to the more
-thorough CPP build instructions located <a class="reference external" href="https://cmakepackagingproject.readthedocs.io/en/latest/end_user/quick_start.html">here</a> and note that SDE
-depends on several other projects:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/NWChemEx-Project/utilities">utilities</a></p></li>
-<li><p><a class="reference external" href="https://github.com/bennybp/BPHash">bphash</a></p></li>
-<li><p><a class="reference external" href="https://github.com/USCiLab/cereal">cereal</a></p></li>
-<li><p><a class="reference external" href="https://github.com/catchorg/Catch2">Catch2</a> (for testing only)</p></li>
-</ul>
+  <section id="building-pluginplay">
+<h1>Building PluginPlay<a class="headerlink" href="#building-pluginplay" title="Permalink to this headline">¶</a></h1>
+<p>TODO: Write me!!!</p>
 </section>
 
 

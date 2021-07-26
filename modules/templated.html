@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Templated Modules &mdash; sde 1.0.0 documentation</title>
+  <title>Templated Modules &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -94,8 +94,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Templated Modules</a></li>
@@ -106,6 +105,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -122,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -194,12 +194,12 @@ create a new module.</p>
 </div>
 <p>Templating slightly changes how the module is declared:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
 <span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">);</span>
-<span class="p">}</span> <span class="c1">// namespace sde_examples</span>
+<span class="p">}</span> <span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 <p>specifically we need to include a <code class="docutils literal notranslate"><span class="pre">template&lt;typename</span> <span class="pre">FloatingPointType&gt;</span></code>
@@ -213,7 +213,7 @@ parameters.</p>
 <span class="cp">#include</span> <span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;numeric&gt;</span><span class="c1"> // For std::inner_product</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span>
 <span class="n">TEMPLATED_MODULE_CTOR</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span> <span class="n">FloatingPointType</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>

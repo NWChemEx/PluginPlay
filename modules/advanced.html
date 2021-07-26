@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Advanced Module Implementation &mdash; sde 1.0.0 documentation</title>
+  <title>Advanced Module Implementation &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -95,8 +95,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="templated.html">Templated Modules</a></li>
@@ -113,6 +112,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -129,7 +129,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -242,9 +242,9 @@ advance versus parameters that would typically be passed as an input.</p>
 <h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes an algorithm will compute more than one property. Reasons why this may
 occur include performance (the two quantities may share many common
-intermediates) and wrapping code not originally designed for the SDE (for
+intermediates) and wrapping code not originally designed for PluginPlay (for
 example calling a library which has a single API that computes many properties).
-This poses no problem as the SDE allows modules to satisfy multiple property
+This poses no problem as PluginPlay allows modules to satisfy multiple property
 types.</p>
 <p>If a module satisfies <span class="math notranslate nohighlight">\(n\)</span> property types, the inputs to the module are the
 union of the inputs to the <span class="math notranslate nohighlight">\(n\)</span> property types as well as any

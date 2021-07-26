@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Basics of Writing a Property Type &mdash; sde 1.0.0 documentation</title>
+  <title>Basics of Writing a Property Type &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -94,8 +94,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Property Type Development</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Basics of Writing a Property Type</a><ul>
@@ -112,6 +111,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -128,7 +128,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -185,17 +185,17 @@
   <section id="basics-of-writing-a-property-type">
 <h1>Basics of Writing a Property Type<a class="headerlink" href="#basics-of-writing-a-property-type" title="Permalink to this headline">¶</a></h1>
 <p>A property type of type <code class="docutils literal notranslate"><span class="pre">T</span></code> is ultimately a class that inherits from
-<code class="docutils literal notranslate"><span class="pre">SDE::PropertyType&lt;T&gt;</span></code>. The property type defines the API for computing the
-associated property. This API has two parts: the positional input arguments and
-the returned value (multiple returns are possible, but rarely needed).</p>
+<code class="docutils literal notranslate"><span class="pre">pluginplay::PropertyType&lt;T&gt;</span></code>. The property type defines the API for computing
+the associated property. This API has two parts: the positional input arguments
+and the returned value (multiple returns are possible, but rarely needed).</p>
 <section id="declaring-a-property-type">
 <h2>Declaring A Property Type<a class="headerlink" href="#declaring-a-property-type" title="Permalink to this headline">¶</a></h2>
 <p>Like declaring a module, declaring a property type involves a lot of
 boilerplate. For this reason we have provided macros to faciliate the process.
 To declare our <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type the relevant code is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 <span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
@@ -229,7 +229,7 @@ boilerplate.</p>
     <span class="c1">// Type of an std::vector filled with PointCharge instances</span>
     <span class="k">using</span> <span class="n">point_charge_vector</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span>
 
-    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
                 <span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
                 <span class="p">.</span><span class="k">template</span> <span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 
@@ -253,14 +253,14 @@ both cases we only need to read the value of the inputs and we opt to take the
 inputs via constant references.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Inputs in the SDE can not be used for returns and must be either by value or
-by constant reference.</p>
+<p>Inputs in PluginPlay can not be used for returns and must be either by value
+or by constant reference.</p>
 </div>
 <p>After agreeing on the types we declare the fields. This involves calling
-<code class="docutils literal notranslate"><span class="pre">sde::delare_input()</span></code> and then chaining to the result two calls to
+<code class="docutils literal notranslate"><span class="pre">pluginplay::delare_input()</span></code> and then chaining to the result two calls to
 <code class="docutils literal notranslate"><span class="pre">add_field</span></code>. <code class="docutils literal notranslate"><span class="pre">add_field</span></code> takes one type parameter (the type of the field)
 and a string which will be used as the name of the field. You can think of:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
                 <span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
                 <span class="p">.</span><span class="k">template</span> <span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 </pre></div>
@@ -286,9 +286,10 @@ is used in the automatically generated documentation.</p>
 <h3>Defining the Result<a class="headerlink" href="#defining-the-result" title="Permalink to this headline">¶</a></h3>
 <p>The definition of the <code class="docutils literal notranslate"><span class="pre">results_()</span></code> function looks very similar to
 <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and follows the same rules except that we use
-<code class="docutils literal notranslate"><span class="pre">sde::declare_result</span></code> instead of <code class="docutils literal notranslate"><span class="pre">sde::declare_inputs</span></code>. The definition is:</p>
+<code class="docutils literal notranslate"><span class="pre">pluginplay::declare_result</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_inputs</span></code>. The
+definition is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -312,7 +313,8 @@ forwent a more detailed description.</p>
 <p>Generally speaking for both the inputs and results follow this pattern when
 defining the function:</p>
 <ul class="simple">
-<li><p>call <code class="docutils literal notranslate"><span class="pre">sde::declare_input()</span></code>/<code class="docutils literal notranslate"><span class="pre">sde::declare_result()</span></code> as appropriate</p></li>
+<li><p>call <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_input()</span></code>/<code class="docutils literal notranslate"><span class="pre">pluginplay::declare_result()</span></code> as
+appropriate</p></li>
 <li><p>chain to that call a call to <code class="docutils literal notranslate"><span class="pre">add_field&lt;T&gt;(std::string)</span></code> to create a field
 that is of type <code class="docutils literal notranslate"><span class="pre">T</span></code> and is tagged with the provided string.</p></li>
 <li><p>repeat the previous step for each additional field (making sure to include
@@ -329,9 +331,9 @@ descriptions and default values.</p></li>
 shown below:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
 <span class="cp">#include</span> <span class="cpf">&quot;point_charge.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 
 <span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span>
 
@@ -339,7 +341,7 @@ shown below:</p>
     <span class="c1">// Type of an std::vector filled with PointCharge instances</span>
     <span class="k">using</span> <span class="n">point_charge_vector</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span>
 
-    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
                 <span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
                 <span class="p">.</span><span class="k">template</span> <span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 
@@ -351,10 +353,10 @@ shown below:</p>
 <span class="p">}</span>
 
 <span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="p">}</span> <span class="c1">// namespace sde_examples</span>
+<span class="p">}</span> <span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 </section>

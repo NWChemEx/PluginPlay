@@ -14,7 +14,7 @@ The atual structure of your source code is arbitary; however, one popular choice
 is to follow typical GNU standards. In this case your module collection's source
 code will look something like:
 
-.. code-block:: 
+.. code-block::
 
    .
    |-- include/
@@ -26,7 +26,7 @@ code will look something like:
            |-- module2.cpp
            |-- modules.hpp
            `-- our_module.cpp
-   
+
 where:
 
 - the ``include/`` directory contains the public API,
@@ -38,7 +38,7 @@ where:
 - ``our_module.cpp`` contains the definition of the ``load_modules`` function.
 
 In practice you will also have build system files, readmes, licenses, unit tests
-(hopefully), etc, but from the perspective of the SDE those are the key parts.
+(hopefully), etc, but from the perspective of the pluginplay those are the key parts.
 
 
 Python Set-Up

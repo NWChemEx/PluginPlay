@@ -1,7 +1,7 @@
 Understanding a Module's State
 ==============================
 
-Arguably one of the largest tasks of the SDE is to manage each module's state.
+Arguably one of the largest tasks of the pluginplay is to manage each module's state.
 This page describes
 
 

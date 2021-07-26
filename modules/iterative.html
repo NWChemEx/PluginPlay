@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Iterative Modules &mdash; sde 1.0.0 documentation</title>
+  <title>Iterative Modules &mdash; pluginplay 1.0.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> sde
+            <a href="../index.html" class="icon icon-home"> pluginplay
           
 
           
@@ -95,8 +95,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About the SDE Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building the SDE Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="templated.html">Templated Modules</a></li>
@@ -107,6 +106,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About PluginPlay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
@@ -123,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">sde</a>
+          <a href="../index.html">pluginplay</a>
         
       </nav>
 
@@ -200,32 +200,33 @@ original computation. In practice we usually delete the intermediates to save
 memory meaning we no longer have access to them. While it is possible to solve
 the memoization problem by recasting iteration as recursion, it is not natural
 in many circumstances and we wish to avoid it.</p>
-<p>The SDE’s solution to this problem is to allow each module to cache intermediate
-results. Here we mean “intermediate” in the sense that they are either not the
-result the module will return or they are not the converged result. Assuming
-that the property type for the iterative module is defined such that it always
-takes the intial inputs, in addition to the current inputs, one can then save
-the intermediate results in the cache unsing the initial value as the key.</p>
+<p>PluginPlay’s solution to this problem is to allow each module to cache
+intermediate results. Here we mean “intermediate” in the sense that they are
+either not the result the module will return or they are not the converged
+result. Assuming that the property type for the iterative module is defined such
+that it always takes the intial inputs, in addition to the current inputs, one
+can then save the intermediate results in the cache unsing the initial value as
+the key.</p>
 <p>As an example we show how to write a simple module for determining a root of the
 cosine function given an interval around the root:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/sde.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 
 <span class="k">using</span> <span class="n">pair_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span> <span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
 
 <span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">);</span>
 
 <span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
                 <span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Initial Interval&quot;</span><span class="p">)</span>
                 <span class="p">.</span><span class="k">template</span> <span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Current Interval&quot;</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">rv</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">sde</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;New interval&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;New interval&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">CosBisection</span><span class="p">);</span>
@@ -278,7 +279,7 @@ cosine function given an interval around the root:</p>
     <span class="k">return</span> <span class="n">RootFinder</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">new_interval</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="p">}</span> <span class="c1">// namespace sde_examples</span>
+<span class="p">}</span> <span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 </section>
