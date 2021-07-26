@@ -1,6 +1,6 @@
 #include "fort_custom_styles.hpp"
 
-namespace sde::printing::detail_ {
+namespace pluginplay::printing::detail_ {
 
 // Internal definition
 static const struct ft_border_style RST_STYLE = {
@@ -25,4 +25,4 @@ static const struct ft_border_style RST_STYLE = {
 
 const struct ft_border_style* const NWX_RST_STYLE = &RST_STYLE;
 
-} // namespace sde::printing::detail_
+} // namespace pluginplay::printing::detail_

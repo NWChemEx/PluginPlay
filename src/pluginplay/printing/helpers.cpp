@@ -1,6 +1,6 @@
 #include "helpers.hpp"
 
-namespace sde::printing {
+namespace pluginplay::printing {
 
 void generate_index_file(std::ostream& os,
                          const std::vector<std::string>& toc) {
@@ -28,4 +28,4 @@ std::string replace_invalid_chars(const std::string& str,
     return valid_str;
 }
 
-} // namespace sde::printing
+} // namespace pluginplay::printing

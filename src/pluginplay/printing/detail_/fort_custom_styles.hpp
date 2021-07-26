@@ -2,7 +2,7 @@
 #include <cstring>
 #include <fort.hpp>
 
-namespace sde::printing::detail_ {
+namespace pluginplay::printing::detail_ {
 
 /** @brief Restructured text table border style for libfort tables.
  *
@@ -15,4 +15,4 @@ namespace sde::printing::detail_ {
  */
 extern const struct ft_border_style* const NWX_RST_STYLE;
 
-} // namespace sde::printing::detail_
+} // namespace pluginplay::printing::detail_

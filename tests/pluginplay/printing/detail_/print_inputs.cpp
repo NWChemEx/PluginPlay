@@ -154,7 +154,7 @@ TEST_CASE("input_full_list") {
 TEST_CASE("print_inputs") {
     std::stringstream ss;
     reSTPrinter p(ss);
-    plugingplay::type::input_map inputs;
+    pluginplay::type::input_map inputs;
 
     SECTION("No inputs") {
         print_inputs(p, inputs);

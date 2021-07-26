@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "sde/module_manager.hpp"
-#include "sde/printing/document_module.hpp"
+#include "pluginplay/module_manager.hpp"
+#include "pluginplay/printing/document_module.hpp"
 
-namespace sde::printing {
+namespace pluginplay::printing {
 
 /** @brief Generate documentation for all modules in a given module manager.
  *
@@ -19,7 +19,7 @@ namespace sde::printing {
  * @param[in] mm Module manager with modules loaded into it.
  * @param[in] docs_path Path to the directory where documentation is output.
  */
-void document_modules(sde::ModuleManager& mm,
+void document_modules(pluginplay::ModuleManager& mm,
                       const std::filesystem::path& docs_path);
 
-} // namespace sde::printing
+} // namespace pluginplay::printing

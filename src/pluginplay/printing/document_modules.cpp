@@ -1,9 +1,9 @@
 #include "helpers.hpp"
-#include "sde/printing/document_modules.hpp"
+#include "pluginplay/printing/document_modules.hpp"
 
-namespace sde::printing {
+namespace pluginplay::printing {
 
-void document_modules(sde::ModuleManager& mm,
+void document_modules(pluginplay::ModuleManager& mm,
                       const std::filesystem::path& docs_path) {
     const std::string INVALID_CHARS = "<>:\"|?*\\/ ";
     const char REPLACEMENT_CHAR     = '_';
@@ -50,4 +50,4 @@ void document_modules(sde::ModuleManager& mm,
     fout.close();
 }
 
-} // namespace sde::printing
+} // namespace pluginplay::printing

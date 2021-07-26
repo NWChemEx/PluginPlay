@@ -6,7 +6,7 @@
 #include <ostream>
 #include <vector>
 
-namespace sde::printing {
+namespace pluginplay::printing {
 
 /** @brief Generate index.rst with table of contents for documentation files.
  *
@@ -33,4 +33,4 @@ std::string replace_invalid_chars(const std::string& str,
                                   const std::string& invalid_chars,
                                   const char& replacement);
 
-} // namespace sde::printing
+} // namespace pluginplay::printing
