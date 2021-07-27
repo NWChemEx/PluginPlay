@@ -1,9 +1,10 @@
-#include "src/sde/printing/helpers.hpp"
 #include <catch2/catch.hpp>
 #include <iostream>
 #include <sstream>
 
-using namespace sde::printing;
+#include "../../../src/pluginplay/printing/helpers.hpp"
+
+using namespace pluginplay::printing;
 
 TEST_CASE("generate_index_string") {
     SECTION("Empty toc") {
