@@ -18,14 +18,14 @@ binary, which we will refer to as ``build_docs`` here. This program must
 include both the ``sde::printing::document_modules`` function and the
 ``load_modules`` function defined for your modules.
 
-.. literalinclude:: ../../../tests/docs/generate_module_documentation.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
    :lines: 1, 3-5
 
 Next, set up a ``sde::ModuleManager`` and load your modules with the
 ``load_modules`` you wrote.
 
-.. literalinclude:: ../../../tests/docs/generate_module_documentation.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
    :lines: 17-21
 
@@ -37,7 +37,7 @@ path is generated is a detail left to the developer's discretion. For simplicity
 in the example below, the first command line argument is assumed to be a valid
 path, although more validation may be necessary.
 
-.. literalinclude:: ../../../tests/docs/generate_module_documentation.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
    :lines: 23-24
 
@@ -50,6 +50,6 @@ The following code is a minimal example program generating documentation for
 the test modules in SDE. Modify the code according to the TODO comments to
 generate documentation for your modules.
 
-.. literalinclude:: ../../../tests/docs/generate_module_documentation.cpp
+.. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
    :lines: 1-29
