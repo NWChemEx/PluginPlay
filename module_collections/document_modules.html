@@ -201,10 +201,10 @@ include both the <code class="docutils literal notranslate"><span class="pre">sd
 <p>Next, set up a <code class="docutils literal notranslate"><span class="pre">sde::ModuleManager</span></code> and load your modules with the
 <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> you wrote.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    <span class="c1">// Set up module manager</span>
-    <span class="n">sde</span><span class="o">::</span><span class="n">ModuleManager</span> <span class="n">mm</span><span class="p">;</span>
+    <span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span> <span class="n">mm</span><span class="p">;</span>
 
     <span class="c1">// TODO: Load your modules</span>
-    <span class="n">sde_examples</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
+    <span class="n">pluginplay_examples</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The final step is to generate documentation through
@@ -215,7 +215,7 @@ path is generated is a detail left to the developer’s discretion. For simplici
 in the example below, the first command line argument is assumed to be a valid
 path, although more validation may be necessary.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    <span class="c1">// Generate module documentation at the given path</span>
-    <span class="n">sde</span><span class="o">::</span><span class="n">printing</span><span class="o">::</span><span class="n">document_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">docs_path</span><span class="p">);</span>
+    <span class="n">pluginplay</span><span class="o">::</span><span class="n">printing</span><span class="o">::</span><span class="n">document_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">docs_path</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -225,14 +225,14 @@ path, although more validation may be necessary.</p>
 the test modules in SDE. Modify the code according to the TODO comments to
 generate documentation for your modules.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;filesystem&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sde/printing/document_modules.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/printing/document_modules.hpp&gt;</span><span class="cp"></span>
 
 <span class="c1">// TODO: Replace with the header containing your ``load_modules`` definition</span>
 <span class="cp">#include</span> <span class="cpf">&quot;load_modules.hpp&quot;</span><span class="cp"></span>
 
 <span class="k">namespace</span> <span class="nn">fs</span> <span class="o">=</span> <span class="nn">std</span><span class="o">::</span><span class="nn">filesystem</span><span class="p">;</span>
 
-<span class="k">namespace</span> <span class="nn">sde_examples</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// Need docs_path</span>
@@ -241,13 +241,13 @@ generate documentation for your modules.</p>
     <span class="n">fs</span><span class="o">::</span><span class="n">path</span> <span class="n">docs_path</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 
     <span class="c1">// Set up module manager</span>
-    <span class="n">sde</span><span class="o">::</span><span class="n">ModuleManager</span> <span class="n">mm</span><span class="p">;</span>
+    <span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span> <span class="n">mm</span><span class="p">;</span>
 
     <span class="c1">// TODO: Load your modules</span>
-    <span class="n">sde_examples</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
+    <span class="n">pluginplay_examples</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
 
     <span class="c1">// Generate module documentation at the given path</span>
-    <span class="n">sde</span><span class="o">::</span><span class="n">printing</span><span class="o">::</span><span class="n">document_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">docs_path</span><span class="p">);</span>
+    <span class="n">pluginplay</span><span class="o">::</span><span class="n">printing</span><span class="o">::</span><span class="n">document_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">docs_path</span><span class="p">);</span>
 
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
