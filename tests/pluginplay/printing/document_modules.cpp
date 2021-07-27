@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 #include <filesystem>
 #include <iterator>
-#include <sde/printing/document_modules.hpp>
+#include <pluginplay/printing/document_modules.hpp>
 
 #include "../docs/load_modules.hpp"
 
@@ -23,13 +23,13 @@ TEST_CASE("document_modules") {
                           fs::directory_iterator{}) == 0); // Empty directory
 
     // Set up module manager
-    sde::ModuleManager mm;
+    pluginplay::ModuleManager mm;
 
     SECTION("Empty Module Manager") {
         int correct = 1; // for index.html
 
         // Generate module documentation at the given path
-        sde::printing::document_modules(mm, docs_path);
+        pluginplay::printing::document_modules(mm, docs_path);
 
         REQUIRE(std::distance(fs::directory_iterator(docs_path),
                               fs::directory_iterator{}) == correct);
@@ -37,10 +37,10 @@ TEST_CASE("document_modules") {
 
     SECTION("Modules Loaded") {
         // Load your modules
-        sde_examples::load_modules(mm);
+        pluginplay_examples::load_modules(mm);
 
         // Generate module documentation at the given path
-        sde::printing::document_modules(mm, docs_path);
+        pluginplay::printing::document_modules(mm, docs_path);
 
         REQUIRE(std::distance(fs::directory_iterator(docs_path),
                               fs::directory_iterator{}) ==
