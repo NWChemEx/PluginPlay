@@ -5,22 +5,21 @@
 
 #include "../docs/load_modules.hpp"
 
-namespace fs = std::filesystem;
-
 TEST_CASE("document_modules") {
     // Need a docs path
-    const fs::path docs_path("./docs");
+    const std::filesystem::path docs_path("./docs");
 
-    fs::remove_all(docs_path);
+    std::filesystem::remove_all(docs_path);
 
     // Create the directory
-    fs::create_directory(docs_path);
+    std::filesystem::create_directory(docs_path);
 
     // Verify the directory exists
-    REQUIRE(fs::exists(docs_path));
-    REQUIRE(fs::is_directory(docs_path));
-    REQUIRE(std::distance(fs::directory_iterator(docs_path),
-                          fs::directory_iterator{}) == 0); // Empty directory
+    REQUIRE(std::filesystem::exists(docs_path));
+    REQUIRE(std::filesystem::is_directory(docs_path));
+    REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                          std::filesystem::directory_iterator{}) ==
+            0); // Empty directory
 
     // Set up module manager
     pluginplay::ModuleManager mm;
@@ -31,8 +30,9 @@ TEST_CASE("document_modules") {
         // Generate module documentation at the given path
         pluginplay::printing::document_modules(mm, docs_path);
 
-        REQUIRE(std::distance(fs::directory_iterator(docs_path),
-                              fs::directory_iterator{}) == correct);
+        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                              std::filesystem::directory_iterator{}) ==
+                correct);
     }
 
     SECTION("Modules Loaded") {
@@ -42,8 +42,8 @@ TEST_CASE("document_modules") {
         // Generate module documentation at the given path
         pluginplay::printing::document_modules(mm, docs_path);
 
-        REQUIRE(std::distance(fs::directory_iterator(docs_path),
-                              fs::directory_iterator{}) ==
+        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                              std::filesystem::directory_iterator{}) ==
                 mm.size() + 1); // +1 for index.rst
     }
 }
