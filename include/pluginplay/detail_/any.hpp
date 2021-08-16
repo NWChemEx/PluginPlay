@@ -339,9 +339,9 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
-    /** @brief Enables serialization for SDEAny instances.
+    /** @brief Enables serialization for Any instances.
      *
-     * This function adds a serialized representation of the current SDEAny to
+     * This function adds a serialized representation of the current Any to
      * the provided archive.
      *
      * @param ar[in,out] An archive object to store the serialized
@@ -356,9 +356,9 @@ public:
         m_ptr_->serialize(s);
     }
 
-    /** @brief Enables deserialization for SDEAny instances.
+    /** @brief Enables deserialization for Any instances.
      *
-     * This function deserialize the SDEAny from the provided archive.
+     * This function deserialize the Any from the provided archive.
      *
      * @param ar[in,out] An archive object that includes the serialized
      * representation.

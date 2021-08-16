@@ -26,4 +26,4 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-} // namespace sde_examples
+} // namespace pluginplay_examples

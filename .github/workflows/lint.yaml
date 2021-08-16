@@ -14,7 +14,7 @@ jobs:
       - name: Get clang-format-9
         run: .github/workflows/scripts/get_dependencies.sh clang_format
       - name: Lint
-        run: .github/workflows/scripts/lint.sh sde
+        run: .github/workflows/scripts/lint.sh pluginplay
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         env:

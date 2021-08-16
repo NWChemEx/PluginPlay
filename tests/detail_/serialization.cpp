@@ -1,13 +1,13 @@
-#include "sde/detail_/archive_wrapper.hpp"
+#include "pluginplay/detail_/archive_wrapper.hpp"
 #include <catch2/catch.hpp>
 
-using namespace sde::detail_;
+using namespace pluginplay::detail_;
 
 TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
-                   sde::BinaryOutputArchive, sde::JSONOutputArchive,
-                   sde::XMLOutputArchive) {
+                   pluginplay::BinaryOutputArchive, pluginplay::JSONOutputArchive,
+                   pluginplay::XMLOutputArchive) {
     using output = TestType;
-    using input  = typename sde::get_input_from_output<output>::type;
+    using input  = typename pluginplay::get_input_from_output<output>::type;
 
     std::stringstream ss;
 

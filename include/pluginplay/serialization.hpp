@@ -1,6 +1,6 @@
 #pragma once
 #include "parallelzone/serialization.hpp"
-namespace sde {
+namespace pluginplay {
 using pz::BinaryInputArchive;
 using pz::BinaryOutputArchive;
 using pz::get_input_from_output;
@@ -13,4 +13,4 @@ using pz::PortableBinaryInputArchive;
 using pz::PortableBinaryOutputArchive;
 using pz::XMLInputArchive;
 using pz::XMLOutputArchive;
-} // namespace sde
+} // namespace pluginplay

@@ -170,23 +170,23 @@ TEST_CASE("make_Any") {
     Any a{int{3}};
     REQUIRE(a == make_Any<int>(3));
 }
-TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
-                   sde::BinaryOutputArchive, sde::PortableBinaryOutputArchive,
-                   sde::JSONOutputArchive, sde::XMLOutputArchive) {
+TEMPLATE_TEST_CASE("Any::serialization", "[serialization][Any]",
+                   pluginplay::BinaryOutputArchive, pluginplay::PortableBinaryOutputArchive,
+                   pluginplay::JSONOutputArchive, pluginplay::XMLOutputArchive) {
     using output = TestType;
-    using input  = typename sde::get_input_from_output<output>::type;
+    using input  = typename pluginplay::get_input_from_output<output>::type;
 
     std::stringstream ss;
     SECTION("Plain-old-data") {
-        auto i = make_SDEAny<int>(33);
-        auto f = make_SDEAny<float>(9.5);
-        auto d = make_SDEAny<double>(9.5);
-        auto c = make_SDEAny<char>('M');
+        auto i = make_Any<int>(33);
+        auto f = make_Any<float>(9.5);
+        auto d = make_Any<double>(9.5);
+        auto c = make_Any<char>('M');
         {
             output ar(ss);
             ar << i << f << d << c;
         }
-        SDEAny i2, f2, d2, c2;
+        Any i2, f2, d2, c2;
         {
             input ar(ss);
             ar >> i2 >> f2 >> d2 >> c2;
@@ -199,15 +199,15 @@ TEMPLATE_TEST_CASE("SDEAny::serialization", "[serialization][SDEAny]",
     }
 
     SECTION("Containers") {
-        auto a = make_SDEAny<std::vector<int>>(std::vector<int>{1, 2, 3});
-        auto b = make_SDEAny<std::map<std::string, double>>(
+        auto a = make_Any<std::vector<int>>(std::vector<int>{1, 2, 3});
+        auto b = make_Any<std::map<std::string, double>>(
           std::map<std::string, double>{{"Hello", 1.23}, {"World", 3.14}});
 
         {
             output ar(ss);
             ar << a << b;
         }
-        SDEAny a2, b2;
+        Any a2, b2;
         {
             input ar(ss);
             ar >> a2 >> b2;

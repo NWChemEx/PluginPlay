@@ -146,7 +146,7 @@ public:
      */
     void hash(Hasher& h) const { hash_(h); }
 
-    /** @brief Enables serialization of the SDEAnyBase_ instance.
+    /** @brief Enables serialization of the AnyBase_ instance.
      *
      *  @param[in,out] s The Serializer object that wraps an input archive
      * object.
@@ -156,7 +156,7 @@ public:
      */
     void serialize(Serializer& s) const { serialize_(s); }
 
-    /** @brief Enables deserialization of the SDEAnyBase_ instance.
+    /** @brief Enables deserialization of the AnyBase_ instance.
      *
      *  @param[in] d The Deserializer object that wraps an output archive
      * object.
@@ -323,7 +323,7 @@ private:
 
     /// Static map to store the hash_code of type_() as the keys and
     /// the functions that can return the deserialized object wrapped in a
-    /// SDEAnyWrapper instance as the values.
+    /// AnyWrapper instance as the values.
     static std::map<std::size_t, fxn_type> m_any_maker_;
 
     /// The type-erased value
@@ -487,7 +487,7 @@ private:
      */
     void hash_(Hasher& h) const override { h(value_()); }
 
-    /** @brief Implements serialization for the SDEAnyBase_ class.
+    /** @brief Implements serialization for the AnyBase_ class.
      *
      *  @param[in,out] s The Serializer object that wraps an input archive
      * object.
@@ -496,7 +496,7 @@ private:
      * reference; this may arise if you try to serialize a ModuleInput instance.
      */
     void serialize_(Serializer& s) const override {
-        // Reference wrappers show up for SDEAny instances that are wrapping
+        // Reference wrappers show up for Any instances that are wrapping
         // inputs. We don't need to serialize inputs
 
         constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
@@ -509,7 +509,7 @@ private:
                 fxn_type l = [](Deserializer& d) {
                     std::decay_t<T> new_value;
                     d(new_value);
-                    return std::make_unique<SDEAnyWrapper<T>>(
+                    return std::make_unique<AnyWrapper<T>>(
                       std::move(new_value));
                 };
                 m_any_maker_[idx] = l;
