@@ -26,4 +26,8 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+<<<<<<< HEAD
 } // namespace pluginplay_examples
+=======
+} // namespace sde_examples
+>>>>>>> master
