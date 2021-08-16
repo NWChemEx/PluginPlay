@@ -346,7 +346,7 @@ private:
     using base_type = AnyWrapperBase;
 
     template<typename U>
-    using enable_if_not_pluginplay_any_t =
+    using enable_if_not_any_t =
       typename base_type::template enable_if_not_wrapper_t<U>;
 
 public:
