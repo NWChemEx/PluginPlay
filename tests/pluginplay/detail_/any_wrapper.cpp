@@ -150,7 +150,8 @@ TEST_CASE("AnyWrapper Comparisons") {
 
 struct NotPrintable {
     void hash(pluginplay::Hasher&) const noexcept {}
-
+    template<typename Archive>
+    void serialize(Archive& ar) {}
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 
