@@ -350,7 +350,7 @@ public:
      * @tparam Type of output archive, @p ar.
      */
     template<typename Archive,
-             typename = std::enable_if_t<madness::is_output_archive_v<Archive>>>
+             typename = std::enable_if_t<is_output_archive_v<Archive>>>
     void serialize(Archive ar) const;
 
     /** @brief Enables deserialization for Any instances.
@@ -363,9 +363,9 @@ public:
      * @tparam Type of input archive, @p ar.
      */
     template<typename Archive,
-             typename = std::enable_if_t<madness::is_input_archive_v<Archive>>>
+             typename = std::enable_if_t<is_input_archive_v<Archive>>>
     void serialize(Archive ar);
-    
+
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *
@@ -581,14 +581,14 @@ Any make_Any(Args&&... args) {
 };
 
 template<typename Archive,
-            typename = std::enable_if_t<madness::is_output_archive_v<Archive>>>
+            typename = std::enable_if_t<is_output_archive_v<Archive>>>
 inline void Any::serialize(Archive ar) const {
     Serializer s(ar);
     m_ptr_->serialize(s);
 }
 
 template<typename Archive,
-            typename = std::enable_if_t<madness::is_input_archive_v<Archive>>>
+            typename = std::enable_if_t<is_input_archive_v<Archive>>>
 inline void Any::serialize(Archive ar) {
     Deserializer d(ar);
     auto temp = m_ptr_->deserialize(d);
