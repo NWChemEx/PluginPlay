@@ -162,11 +162,7 @@ public:
      * object.
      *
      */
-    static wrapper_ptr deserialize(Deserializer& d) {
-        std::size_t idx;
-        d(idx);
-        return m_any_maker_.at(idx)(d);
-    }
+    static wrapper_ptr deserialize(Deserializer& d);
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -534,6 +530,12 @@ inline bool AnyWrapperBase::operator==(
 inline bool AnyWrapperBase::operator!=(
   const AnyWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
+}
+
+inline AnyWrapperBase::wrapper_ptr AnyWrapperBase::deserialize(Deserializer& d) {
+    std::size_t idx;
+    d(idx);
+    return m_any_maker_.at(idx)(d);
 }
 
 template<typename U>
