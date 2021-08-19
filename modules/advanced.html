@@ -204,29 +204,29 @@ field module.</p>
 than modifying <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code>. Relative to our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module, the new
 parameter slightly modifies the constructor and the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member functions.
 With the new input the constructor becomes:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
-    <span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
-    <span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Specifically we declare a new double-precision input called “threshold”, with a
 brief description and a default value set to the maximum double value (<em>i.e.</em>,
 no screening will occur by default). The relevant change to the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member
 is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
-    <span class="k">auto</span> <span class="n">thresh</span>              <span class="o">=</span> <span class="n">inputs</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">).</span><span class="n">value</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">thresh</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">).</span><span class="n">value</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// This will be the value of the electric field</span>
-    <span class="n">Point</span> <span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">};</span>
-    <span class="k">auto</span> <span class="n">rv</span> <span class="o">=</span> <span class="n">results</span><span class="p">();</span>
-    <span class="k">return</span> <span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Here the point to note is that our module is responsible for manually unwrapping

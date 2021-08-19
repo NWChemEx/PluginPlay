@@ -75,10 +75,10 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;pluginplay/detail_/any.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;pluginplay/types.hpp&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;pluginplay/utility.hpp&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;utilities/printing/demangler.hpp&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;utilities/printing/demangler.hpp&gt;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>pluginplay {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>detail_ {</div>
@@ -384,7 +384,7 @@ $(function() {
 <div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;               new_value.is_convertible&lt;std::reference_wrapper&lt;const T&gt;&gt;();</div>
 <div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;    };</div>
 <div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;    <span class="keyword">auto</span> msg = std::string(<span class="stringliteral">&quot;Type == &quot;</span>) +</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;           utilities::printing::Demangler::demangle(<span class="keyword">typeid</span>(T));</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;               utilities::printing::Demangler::demangle(<span class="keyword">typeid</span>(T));</div>
 <div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;    <span class="keywordflow">return</span> add_check_(check, msg);</div>
 <div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;}</div>
 <div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160; </div>

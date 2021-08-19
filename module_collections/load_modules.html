@@ -184,9 +184,9 @@
 user starts a run with PluginPlay one of the first things they do is initialize
 a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance. The code to do this looks something like:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Initialize ModuleManager</span>
-<span class="n">ModuleManager</span> <span class="n">mm</span><span class="p">;</span>
-<span class="n">library1</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
-<span class="n">library2</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span>
+<span class="n">ModuleManager</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span><span class="w"></span>
+<span class="n">library1</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span><span class="w"></span>
+<span class="n">library2</span><span class="o">::</span><span class="n">load_modules</span><span class="p">(</span><span class="n">mm</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">load_modules(mm)</span></code> calls load the module collections provided by the
@@ -195,13 +195,13 @@ various libraries.</p>
 <h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
 <p>As far as the public API for <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> goes, the declaration is simple:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span> <span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span> <span class="n">mm</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mm</span><span class="p">);</span><span class="w"></span>
 
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>In particular note that by forward declaring the <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function it is
@@ -229,20 +229,20 @@ module requires more detailed set-up other overloads exist that will bind to
 existing instances.</p>
 <p>Continuing with our electric field examples, adding our modules to the
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;load_modules.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;load_modules.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span> <span class="n">mm</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">using</span> <span class="n">coulombs_law_float</span> <span class="o">=</span> <span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">coulombs_law_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="p">}</span> <span class="c1">// namespace pluginplay_examples</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 <p>Once you have added all your modules the next step is to set the default
@@ -256,7 +256,7 @@ modules; their keys are:</p>
 </ul>
 <p>If by default we want the <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code> module we loaded under the key
 “Force” to use a <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module we can accomplish this by:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    <span class="n">mm</span><span class="p">.</span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">,</span> <span class="s">&quot;electric field&quot;</span><span class="p">,</span> <span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -267,22 +267,22 @@ can compute you would not set that submodule. In this case, it will be the
 responsability of the caller to set the submodule.</p>
 </div>
 <p>The entire implementation of our <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;load_modules.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;load_modules.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="nn">pluginplay_examples</span> <span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span> <span class="n">mm</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">using</span> <span class="n">coulombs_law_float</span> <span class="o">=</span> <span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span>
-    <span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">load_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">coulombs_law_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span><span class="w"></span>
 
-    <span class="n">mm</span><span class="p">.</span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">,</span> <span class="s">&quot;electric field&quot;</span><span class="p">,</span> <span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">mm</span><span class="p">.</span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="p">}</span> <span class="c1">// namespace pluginplay_examples</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 </section>
