@@ -13,6 +13,8 @@ using pz::PortableBinaryInputArchive;
 using pz::PortableBinaryOutputArchive;
 using pz::XMLInputArchive;
 using pz::XMLOutputArchive;
+using pz::is_output_archive;
+using pz::is_input_archive;
 using pz::is_output_archive_v;
 using pz::is_input_archive_v;
 } // namespace pluginplay

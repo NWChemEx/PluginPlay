@@ -26,6 +26,21 @@ TEST_CASE("Any : Value ctor") {
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
+    SECTION("Serialize any") {
+        std::stringstream ss;
+
+        Any a(int{3}),a2;
+        {
+            pluginplay::BinaryOutputArchive ar(ss);
+            ar & a;
+        }
+
+        {
+            pluginplay::BinaryInputArchive ar(ss);
+            ar & a2;
+        }
+        REQUIRE(a == a2);
+    }
     SECTION("POD by reference") {
         int x{3};
         Any a(x);
