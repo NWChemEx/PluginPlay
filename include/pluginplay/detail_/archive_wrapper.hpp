@@ -4,10 +4,12 @@
 
 namespace pluginplay::detail_ {
 using variant_output =
-  std::variant<pluginplay::BinaryOutputArchive*, pluginplay::PortableBinaryOutputArchive*,
+  std::variant<pluginplay::BinaryOutputArchive*,
+               pluginplay::PortableBinaryOutputArchive*,
                pluginplay::JSONOutputArchive*, pluginplay::XMLOutputArchive*>;
 using variant_input =
-  std::variant<pluginplay::BinaryInputArchive*, pluginplay::PortableBinaryInputArchive*,
+  std::variant<pluginplay::BinaryInputArchive*,
+               pluginplay::PortableBinaryInputArchive*,
                pluginplay::JSONInputArchive*, pluginplay::XMLInputArchive*>;
 
 /** @brief ArchiveWrapper class enables serialization and deserialization of

@@ -29,15 +29,15 @@ TEST_CASE("Any : Value ctor") {
     SECTION("Serialize any") {
         std::stringstream ss;
 
-        Any a(int{3}),a2;
+        Any a(int{3}), a2;
         {
             pluginplay::BinaryOutputArchive ar(ss);
-            ar & a;
+            ar& a;
         }
 
         {
             pluginplay::BinaryInputArchive ar(ss);
-            ar & a2;
+            ar& a2;
         }
         REQUIRE(a == a2);
     }

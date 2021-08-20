@@ -4,7 +4,8 @@
 using namespace pluginplay::detail_;
 
 TEMPLATE_TEST_CASE("Serializer", "[serialization][serializer][deserializer]",
-                   pluginplay::BinaryOutputArchive, pluginplay::JSONOutputArchive,
+                   pluginplay::BinaryOutputArchive,
+                   pluginplay::JSONOutputArchive,
                    pluginplay::XMLOutputArchive) {
     using output = TestType;
     using input  = typename pluginplay::get_input_from_output<output>::type;

@@ -581,14 +581,14 @@ Any make_Any(Args&&... args) {
 };
 
 template<typename Archive,
-            typename = std::enable_if_t<is_output_archive_v<Archive>>>
+         typename = std::enable_if_t<is_output_archive_v<Archive>>>
 inline void Any::serialize(Archive ar) const {
     Serializer s(ar);
     m_ptr_->serialize(s);
 }
 
 template<typename Archive,
-            typename = std::enable_if_t<is_input_archive_v<Archive>>>
+         typename = std::enable_if_t<is_input_archive_v<Archive>>>
 inline void Any::serialize(Archive ar) {
     Deserializer d(ar);
     auto temp = m_ptr_->deserialize(d);

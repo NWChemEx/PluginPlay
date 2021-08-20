@@ -532,7 +532,8 @@ inline bool AnyWrapperBase::operator!=(
     return !((*this) == rhs);
 }
 
-inline AnyWrapperBase::wrapper_ptr AnyWrapperBase::deserialize(Deserializer& d) {
+inline AnyWrapperBase::wrapper_ptr AnyWrapperBase::deserialize(
+  Deserializer& d) {
     std::size_t idx;
     d(idx);
     return m_any_maker_.at(idx)(d);
