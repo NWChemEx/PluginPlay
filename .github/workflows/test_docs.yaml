@@ -23,4 +23,3 @@ jobs:
         env:
           cmake_version: ${{ matrix.cmake_version }}
         run: .github/workflows/scripts/build_docs.sh pluginplay_cxx_api
-
