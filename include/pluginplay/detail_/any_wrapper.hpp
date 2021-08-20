@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/archive_wrapper.hpp"
 #include "pluginplay/hasher.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
@@ -10,6 +11,16 @@ namespace pluginplay::detail_ {
 /// Forward declare class that will implement the API
 template<typename T>
 class AnyWrapper;
+
+/// This should be moved to the utilities repo
+template<typename T>
+struct IsReferenceWrapper : std::false_type {};
+
+template<typename T>
+struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
+
+template<typename T>
+static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
 
 /**
  * @brief Defines the API for interacting with the type-erased value.
@@ -45,6 +56,12 @@ public:
 
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
+
+    /// Type of the functions that take a Deserializer instance, deserialize
+    /// from it an object of a specific type, and return, via a
+    /// AnyWrapperBase pointer, the deserialized object wrapped in a
+    /// AnyWrapper instance.
+    using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
 
     /** @brief Creates an AnyWrapper by forwarding the provided value.
      *
@@ -128,6 +145,24 @@ public:
      *  throw guarantee.
      */
     void hash(Hasher& h) const { hash_(h); }
+
+    /** @brief Enables serialization of the AnyBase_ instance.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput instance.
+     */
+    void serialize(Serializer& s) const { serialize_(s); }
+
+    /** @brief Enables deserialization of the AnyBase_ instance.
+     *
+     *  @param[in] d The Deserializer object that wraps an output archive
+     * object.
+     *
+     */
+    static wrapper_ptr deserialize(Deserializer& d);
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -274,11 +309,18 @@ private:
     /// To be implemented by derived class so we can hash
     virtual void hash_(Hasher& h) const = 0;
 
+    virtual void serialize_(Serializer& s) const = 0;
+
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
 
     /// To be implemented by the derived class to define equality
     virtual bool are_equal_(const AnyWrapperBase& rhs) const noexcept = 0;
+
+    /// Static map to store the hash_code of type_() as the keys and
+    /// the functions that can return the deserialized object wrapped in a
+    /// AnyWrapper instance as the values.
+    static std::map<std::size_t, fxn_type> m_any_maker_;
 
     /// The type-erased value
     std::any m_value_;
@@ -300,7 +342,7 @@ private:
     using base_type = AnyWrapperBase;
 
     template<typename U>
-    using enable_if_not_pluginplay_any_t =
+    using enable_if_not_any_t =
       typename base_type::template enable_if_not_wrapper_t<U>;
 
 public:
@@ -440,6 +482,37 @@ private:
      *              throw guarantee.
      */
     void hash_(Hasher& h) const override { h(value_()); }
+
+    /** @brief Implements serialization for the AnyBase_ class.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput instance.
+     */
+    void serialize_(Serializer& s) const override {
+        // Reference wrappers show up for Any instances that are wrapping
+        // inputs. We don't need to serialize inputs
+
+        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+        if constexpr(is_ref_wrapper) {
+            throw std::runtime_error("Are you trying to serialize an input?");
+        } else {
+            std::size_t idx = std::type_index(type_()).hash_code();
+            s(idx);
+            if(!m_any_maker_.count(idx)) {
+                fxn_type l = [](Deserializer& d) {
+                    std::decay_t<T> new_value;
+                    d(new_value);
+                    return std::make_unique<AnyWrapper<T>>(
+                      std::move(new_value));
+                };
+                m_any_maker_[idx] = l;
+            }
+            s(value_());
+        }
+    }
 };
 
 //-------------------------------Implementations--------------------------------
@@ -457,6 +530,12 @@ inline bool AnyWrapperBase::operator==(
 inline bool AnyWrapperBase::operator!=(
   const AnyWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
+}
+
+inline AnyWrapperBase::wrapper_ptr AnyWrapperBase::deserialize(Deserializer& d) {
+    std::size_t idx;
+    d(idx);
+    return m_any_maker_.at(idx)(d);
 }
 
 template<typename U>

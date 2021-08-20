@@ -339,6 +339,33 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
+    /** @brief Enables serialization for Any instances.
+     *
+     * This function adds a serialized representation of the current Any to
+     * the provided archive.
+     *
+     * @param ar[in,out] An archive object to store the serialized
+     * representation.
+     *
+     * @tparam Type of output archive, @p ar.
+     */
+    template<typename Archive,
+             typename = std::enable_if_t<is_output_archive_v<Archive>>>
+    void serialize(Archive ar) const;
+
+    /** @brief Enables deserialization for Any instances.
+     *
+     * This function deserialize the Any from the provided archive.
+     *
+     * @param ar[in,out] An archive object that includes the serialized
+     * representation.
+     *
+     * @tparam Type of input archive, @p ar.
+     */
+    template<typename Archive,
+             typename = std::enable_if_t<is_input_archive_v<Archive>>>
+    void serialize(Archive ar);
+
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *
@@ -552,4 +579,19 @@ Any make_Any(Args&&... args) {
     a.emplace<T>(std::forward<Args>(args)...);
     return a;
 };
+
+template<typename Archive,
+            typename = std::enable_if_t<is_output_archive_v<Archive>>>
+inline void Any::serialize(Archive ar) const {
+    Serializer s(ar);
+    m_ptr_->serialize(s);
+}
+
+template<typename Archive,
+            typename = std::enable_if_t<is_input_archive_v<Archive>>>
+inline void Any::serialize(Archive ar) {
+    Deserializer d(ar);
+    auto temp = m_ptr_->deserialize(d);
+    m_ptr_.swap(temp);
+}
 } // namespace pluginplay::detail_

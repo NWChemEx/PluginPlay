@@ -10,6 +10,8 @@ struct BaseClass {
     int x = 0;
     bool operator==(const BaseClass& rhs) const noexcept { return x == rhs.x; }
     void hash(pluginplay::Hasher& h) const { return h(x); }
+    template<typename Archive>
+    void serialize(Archive& ar) {}
 };
 
 struct DerivedClass : BaseClass {};

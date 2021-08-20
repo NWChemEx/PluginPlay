@@ -50,6 +50,26 @@ TEST_CASE("AnyWrapper<POD>(value)") {
     AnyWrapper w(3);
     STATIC_REQUIRE(std::is_same_v<decltype(w), AnyWrapper<three_type>>);
     compare_value<three_type>(w, 3);
+
+    SECTION("Serialize via base class") {
+        std::stringstream ss;
+
+        AnyWrapperBase* pw = &w;
+        {
+            pluginplay::BinaryOutputArchive ar(ss);
+            Serializer s(ar);
+            pw->serialize(s);
+        }
+
+        std::unique_ptr<AnyWrapperBase> pw2;
+        {
+            pluginplay::BinaryInputArchive ar(ss);
+            Deserializer d(ar);
+            auto temp = AnyWrapperBase::deserialize(d);
+            pw2.swap(temp);
+        }
+        REQUIRE(*pw == *pw2);
+    }
 }
 
 TEST_CASE("AnyWrapper<POD>(reference") {
@@ -77,6 +97,26 @@ TEST_CASE("AnyWrapper<non-POD>(move)") {
     compare_value<vector_t>(w, v2);
 
     REQUIRE(w.cast<vector_t&>().data() == pv);
+
+    SECTION("Serialize via base class") {
+        std::stringstream ss;
+
+        AnyWrapperBase* pw = &w;
+        {
+            pluginplay::BinaryOutputArchive ar(ss);
+            Serializer s(ar);
+            pw->serialize(s);
+        }
+
+        std::unique_ptr<AnyWrapperBase> pw2;
+        {
+            pluginplay::BinaryInputArchive ar(ss);
+            Deserializer d(ar);
+            auto temp = AnyWrapperBase::deserialize(d);
+            pw2.swap(temp);
+        }
+        REQUIRE(*pw == *pw2);
+    }
 }
 
 TEST_CASE("AnyWrapper Comparisons") {
@@ -110,7 +150,8 @@ TEST_CASE("AnyWrapper Comparisons") {
 
 struct NotPrintable {
     void hash(pluginplay::Hasher&) const noexcept {}
-
+    template<typename Archive>
+    void serialize(Archive& ar) {}
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 
