@@ -6,7 +6,7 @@
  * This header file will include all of the major pluginplay classes. Developers
  */
 
-#include "point_charge.hpp"
 #include "electric_field.hpp"
 #include "force.hpp"
-~                                                       
+#include "point_charge.hpp"
+~
