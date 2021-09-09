@@ -1,4 +1,4 @@
-from PlugInPlay import *
+from pluginplay import *
 cppyy.include("point_charge.hpp")
 cppyy.include("force.hpp")
 cppyy.include("electric_field.hpp")

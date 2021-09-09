@@ -69,7 +69,11 @@ if(BUILD_PYBINDINGS)
     include(nwx_python_mods)
     find_package(Python3 REQUIRED)
     find_package(Cppyy REQUIRED)
-    cppyy_make_python_package(pluginplay NAMESPACE pluginplay PREFIX pluginplay)
+    cppyy_make_python_package(PACKAGENAME pluginplay
+                              DEPENDSON utilities fort
+                              HEADERS pluginplay
+                              NAMESPACES pluginplay
+                              DEPNAMESPACES parallelzone )
 endif()   
 
 if("${BUILD_TESTING}")
