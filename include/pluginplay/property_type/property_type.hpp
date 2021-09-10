@@ -46,7 +46,7 @@ struct BasePropertyType {
  * @tparam DerivedType Must be default constructable and define the functions
  *         listed in the above description.
  *
- * @tparm BaseType The type of the property type this property type inherits
+ * @tparam BaseType The type of the property type this property type inherits
  *                 from.
  */
 template<typename DerivedType, typename BaseType = detail_::BasePropertyType>
