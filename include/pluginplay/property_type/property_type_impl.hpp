@@ -53,7 +53,17 @@ auto PROP_TYPE::unwrap_inputs(T&& rv) {
 template<typename DerivedType, typename BaseType>
 template<typename T>
 auto PROP_TYPE::unwrap_results(T&& rv) {
-    return unwrap_(results(), std::forward<T>(rv));
+    // If there are no results to unwrap we return an empty tuple
+    using result_type                 = decltype(DerivedType::results());
+    using traits_type                 = typename result_type::traits_type;
+    using result_tuple                = typename traits_type::tuple_of_fields;
+    static constexpr bool has_results = traits_type::nfields > 0;
+
+    if constexpr(has_results) {
+        return unwrap_(results(), std::forward<T>(rv));
+    } else {
+        return result_tuple{};
+    }
 }
 
 template<typename DerivedType, typename BaseType>
