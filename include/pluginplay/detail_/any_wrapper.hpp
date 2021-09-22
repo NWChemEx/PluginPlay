@@ -54,6 +54,9 @@ protected:
     template<typename T>
     using enable_if_not_wrapper_t = std::enable_if_t<is_not_wrapper_v<T>, int>;
 
+    static constexpr bool is_input  = std::is_same_v<AnyTag, AnyInput>;
+    static constexpr bool is_output = std::is_same_v<AnyTag, AnyOutput>;
+
 public:
     /// Type of a unique_ptr to the wrapper
     using wrapper_ptr = std::unique_ptr<AnyWrapperBase<AnyTag>>;
@@ -148,7 +151,10 @@ public:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *  throw guarantee.
      */
-    void hash(Hasher& h) const { hash_(h); }
+    void hash(Hasher& h) const {
+        static_assert(is_input, "Not input");
+        hash_(h);
+    }
 
     /** @brief Enables serialization of the AnyBase_ instance.
      *
@@ -158,7 +164,10 @@ public:
      *  @throws std::runtime_error if this instance holds a type-erased
      * reference; this may arise if you try to serialize a ModuleInput instance.
      */
-    void serialize(Serializer& s) const { serialize_(s); }
+    void serialize(Serializer& s) const {
+        static_assert(is_output, "Not output");
+        serialize_(s);
+    }
 
     /** @brief Enables deserialization of the AnyBase_ instance.
      *
@@ -272,7 +281,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase(AnyWrapperBase&&) noexcept = default;
+    AnyWrapperBase(AnyWrapperBase<AnyTag>&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -360,7 +369,8 @@ public:
      * @throw ??? If @p T's ctor throws when @p value is forwarded to it.
      * Strong throw guarantee.
      */
-    template<typename U, enable_if_not_wrapper_t<U> = 0>
+    template<typename U,
+             AnyWrapperBase<AnyInput>::enable_if_not_wrapper_t<U> = 0>
     explicit AnyWrapper(U&& value) : base_type(std::forward<U>(value)) {}
 
 protected:
