@@ -537,27 +537,7 @@ private:
      * instance.
      */
     std::enable_if_t<is_output_type_v<AnyTag>> serialize_(
-      Serializer& s) const override {
-        // Reference wrappers show up for Any instances that are wrapping
-        // inputs. We don't need to serialize inputs
-
-        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
-        if constexpr(is_ref_wrapper) {
-            throw std::runtime_error("Are you trying to serialize an input?");
-        } else {
-            std::size_t idx = std::type_index(type_()).hash_code();
-            s(idx);
-            if(!base_type::m_any_maker_->count(idx)) {
-                typename base_type::fxn_type l = [](Deserializer& d) {
-                    std::decay_t<T> new_value;
-                    d(new_value);
-                    return std::make_unique<AnyWrapper>(std::move(new_value));
-                };
-                base_type::m_any_maker_[idx] = l;
-            }
-            s(value_());
-        }
-    }
+      Serializer& s) const override;
 };
 
 //-------------------------------Implementations--------------------------------
@@ -589,6 +569,30 @@ AnyWrapperBase<AnyTag>::deserialize(Deserializer& d) {
 
 template<typename U>
 explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
+
+template<typename T, typename AnyTag>
+std::enable_if_t<is_output_type_v<AnyTag>> AnyWrapper<T, AnyTag>::serialize_(
+  Serializer& s) const {
+    // Reference wrappers show up for Any instances that are wrapping
+    // inputs. We don't need to serialize inputs
+
+    constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+    if constexpr(is_ref_wrapper) {
+        throw std::runtime_error("Are you trying to serialize an input?");
+    } else {
+        std::size_t idx = std::type_index(base_type::type()).hash_code();
+        s(idx);
+        if(!base_type::m_any_maker_.count(idx)) {
+            typename base_type::fxn_type l = [](Deserializer& d) {
+                std::decay_t<T> new_value;
+                d(new_value);
+                return std::make_unique<AnyWrapper>(std::move(new_value));
+            };
+            base_type::m_any_maker_[idx] = l;
+        }
+        s(value_());
+    }
+}
 
 template<typename T, typename AnyTag>
 typename AnyWrapper<T, AnyTag>::wrapper_ptr AnyWrapper<T, AnyTag>::clone_()
