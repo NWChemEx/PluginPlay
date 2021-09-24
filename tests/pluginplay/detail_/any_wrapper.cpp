@@ -54,18 +54,18 @@ TEST_CASE("AnyWrapper<POD>(value)") {
     SECTION("Serialize via base class") {
         std::stringstream ss;
 
-        AnyWrapperBase* pw = &w;
+        AnyWrapperBase<>* pw = &w;
         {
             pluginplay::BinaryOutputArchive ar(ss);
             Serializer s(ar);
             pw->serialize(s);
         }
 
-        std::unique_ptr<AnyWrapperBase> pw2;
+        std::unique_ptr<AnyWrapperBase<>> pw2;
         {
             pluginplay::BinaryInputArchive ar(ss);
             Deserializer d(ar);
-            auto temp = AnyWrapperBase::deserialize(d);
+            auto temp = AnyWrapperBase<>::deserialize(d);
             pw2.swap(temp);
         }
         REQUIRE(*pw == *pw2);
@@ -101,18 +101,18 @@ TEST_CASE("AnyWrapper<non-POD>(move)") {
     SECTION("Serialize via base class") {
         std::stringstream ss;
 
-        AnyWrapperBase* pw = &w;
+        AnyWrapperBase<>* pw = &w;
         {
             pluginplay::BinaryOutputArchive ar(ss);
             Serializer s(ar);
             pw->serialize(s);
         }
 
-        std::unique_ptr<AnyWrapperBase> pw2;
+        std::unique_ptr<AnyWrapperBase<>> pw2;
         {
             pluginplay::BinaryInputArchive ar(ss);
             Deserializer d(ar);
-            auto temp = AnyWrapperBase::deserialize(d);
+            auto temp = AnyWrapperBase<>::deserialize(d);
             pw2.swap(temp);
         }
         REQUIRE(*pw == *pw2);

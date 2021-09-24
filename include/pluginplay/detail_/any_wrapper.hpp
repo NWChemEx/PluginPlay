@@ -12,6 +12,7 @@ namespace pluginplay::detail_ {
 
 class AnyInput {};
 class AnyOutput {};
+class AnyGeneral {};
 
 template<typename T, typename AnyTag>
 class AnyWrapper;
@@ -25,18 +26,42 @@ struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
 template<typename T>
 static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
 
+template<typename T>
+struct is_input_type : std::false_type {};
+template<>
+struct is_input_type<AnyInput> : std::true_type {};
+template<>
+struct is_input_type<AnyGeneral> : std::true_type {};
+template<typename T>
+struct is_output_type : std::false_type {};
+template<>
+struct is_output_type<AnyOutput> : std::true_type {};
+template<>
+struct is_output_type<AnyGeneral> : std::true_type {};
+
+template<typename T>
+static constexpr bool is_input_type_v = is_input_type<T>::value;
+template<typename T>
+static constexpr bool is_output_type_v = is_output_type<T>::value;
+
+// template<typename T, typename U = void>
+// using enable_if_input_type_t = std::enable_if_t<is_input_type_v<T>, U>;
+
+// template<typename T, typename U = void>
+// using enable_if_output_type_t = std::enable_if_t<is_output_type_v<T>, U>;
+
 /**
  * @brief Defines the API for interacting with the type-erased value.
  *
  * This class is meant for use with the Any class and can be thought
- * of as a PIMPL for that class. This actual implementation works by holding the
- * value in an std::any instance (thereby differing casting and type checks to
- * it) and leveraging as much of that API as possible. Additional member
- * functions that are part of the Any API, but not std::any's API, are
- * then implemented by a derived class, which knows the type to cast the
+ * of as a PIMPL for that class. This actual implementation works by holding
+ * the value in an std::any instance (thereby differing casting and type
+ * checks to it) and leveraging as much of that API as possible. Additional
+ * member functions that are part of the Any API, but not std::any's API,
+ * are then implemented by a derived class, which knows the type to cast the
  * std::any to.
  */
-template<typename AnyTag>
+template<typename AnyTag = AnyGeneral>
 class AnyWrapperBase {
 protected:
     /// My type
@@ -54,9 +79,6 @@ protected:
     template<typename T>
     using enable_if_not_wrapper_t = std::enable_if_t<is_not_wrapper_v<T>, int>;
 
-    static constexpr bool is_input  = std::is_same_v<AnyTag, AnyInput>;
-    static constexpr bool is_output = std::is_same_v<AnyTag, AnyOutput>;
-
 public:
     /// Type of a unique_ptr to the wrapper
     using wrapper_ptr = std::unique_ptr<AnyWrapperBase<AnyTag>>;
@@ -69,6 +91,8 @@ public:
     /// AnyWrapperBase pointer, the deserialized object wrapped in a
     /// AnyWrapper instance.
     using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
+
+    using io_type = AnyTag;
 
     /** @brief Creates an AnyWrapper by forwarding the provided value.
      *
@@ -90,8 +114,8 @@ public:
      *
      *  Since AnyBase_ instances have no state this is a null
      * operation. However, it is important to mark this function as virtual
-     * since we will literally always be passing the derived class around by its
-     * base type.
+     * since we will literally always be passing the derived class around by
+     * its base type.
      *
      *  @throws None. No throw guarantee.
      */
@@ -151,8 +175,8 @@ public:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *  throw guarantee.
      */
-    void hash(Hasher& h) const {
-        static_assert(is_input, "Not input");
+
+    std::enable_if_t<is_input_type_v<AnyTag>> hash(Hasher& h) const {
         hash_(h);
     }
 
@@ -162,10 +186,10 @@ public:
      * object.
      *
      *  @throws std::runtime_error if this instance holds a type-erased
-     * reference; this may arise if you try to serialize a ModuleInput instance.
+     * reference; this may arise if you try to serialize a ModuleInput
+     * instance.
      */
-    void serialize(Serializer& s) const {
-        static_assert(is_output, "Not output");
+    std::enable_if_t<is_output_type_v<AnyTag>> serialize(Serializer& s) const {
         serialize_(s);
     }
 
@@ -321,9 +345,11 @@ private:
     virtual rtti_type type_() const noexcept = 0;
 
     /// To be implemented by derived class so we can hash
-    virtual void hash_(Hasher& h) const = 0;
+    virtual std::enable_if_t<is_input_type_v<AnyTag>> hash_(
+      Hasher& h) const = 0;
 
-    virtual void serialize_(Serializer& s) const = 0;
+    virtual std::enable_if_t<is_output_type_v<AnyTag>> serialize_(
+      Serializer& s) const = 0;
 
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
@@ -351,7 +377,7 @@ private:
  * @tparam T The type of the instance to wrap. Must be copyable, hashable,
  * and have operator== defined.
  */
-template<typename T, typename AnyTag = AnyInput>
+template<typename T, typename AnyTag = AnyGeneral>
 class AnyWrapper : public AnyWrapperBase<AnyTag> {
 private:
     using base_type = AnyWrapperBase<AnyTag>;
@@ -370,7 +396,7 @@ public:
      * Strong throw guarantee.
      */
     template<typename U,
-             AnyWrapperBase<AnyInput>::enable_if_not_wrapper_t<U> = 0>
+             typename = typename base_type::template enable_if_not_wrapper_t<U>>
     explicit AnyWrapper(U&& value) : base_type(std::forward<U>(value)) {}
 
 protected:
@@ -381,7 +407,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper(const AnyWrapper<T>& rhs) = default;
+    AnyWrapper(const AnyWrapper& rhs) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -391,7 +417,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper(AnyWrapper<T>&&) noexcept = default;
+    AnyWrapper(AnyWrapper&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -403,7 +429,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper<T>& operator=(const AnyWrapper<T>&) = default;
+    AnyWrapper& operator=(const AnyWrapper&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -415,7 +441,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper<T>& operator=(AnyWrapper<T>&&) noexcept = default;
+    AnyWrapper& operator=(AnyWrapper&&) noexcept = default;
 
 private:
     /// Type of a unique_ptr to the base
@@ -430,7 +456,7 @@ private:
      *
      *  @throw none No throw guarantee (because we know the type).
      */
-    T& value_() noexcept { return cast<T&>(); }
+    T& value_() noexcept { return this->template cast<T&>(); }
 
     /** @brief Code factorization for casting to a read-only reference
      *
@@ -438,7 +464,7 @@ private:
      *
      *  @throw none No throw guarantee (because we know the type).
      */
-    const T& value_() const noexcept { return cast<const T&>(); }
+    const T& value_() const noexcept { return this->template cast<const T&>(); }
 
     /** @brief Deep copies the wrapped value into another
      *
@@ -497,7 +523,9 @@ private:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *              throw guarantee.
      */
-    void hash_(Hasher& h) const override { h(value_()); }
+    std::enable_if_t<is_input_type_v<AnyTag>> hash_(Hasher& h) const override {
+        h(value_());
+    }
 
     /** @brief Implements serialization for the AnyBase_ class.
      *
@@ -505,9 +533,11 @@ private:
      * object.
      *
      *  @throws std::runtime_error if this instance holds a type-erased
-     * reference; this may arise if you try to serialize a ModuleInput instance.
+     * reference; this may arise if you try to serialize a ModuleInput
+     * instance.
      */
-    void serialize_(Serializer& s) const override {
+    std::enable_if_t<is_output_type_v<AnyTag>> serialize_(
+      Serializer& s) const override {
         // Reference wrappers show up for Any instances that are wrapping
         // inputs. We don't need to serialize inputs
 
@@ -517,14 +547,13 @@ private:
         } else {
             std::size_t idx = std::type_index(type_()).hash_code();
             s(idx);
-            if(!m_any_maker_.count(idx)) {
-                fxn_type l = [](Deserializer& d) {
+            if(!base_type::m_any_maker_->count(idx)) {
+                typename base_type::fxn_type l = [](Deserializer& d) {
                     std::decay_t<T> new_value;
                     d(new_value);
-                    return std::make_unique<AnyWrapper<T>>(
-                      std::move(new_value));
+                    return std::make_unique<AnyWrapper>(std::move(new_value));
                 };
-                m_any_maker_[idx] = l;
+                base_type::m_any_maker_[idx] = l;
             }
             s(value_());
         }
@@ -533,7 +562,8 @@ private:
 
 //-------------------------------Implementations--------------------------------
 
-template<typename T, typename AnyTag = AnyInput>
+template<typename AnyTag>
+template<typename T>
 bool AnyWrapperBase<AnyTag>::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
@@ -550,8 +580,8 @@ inline bool AnyWrapperBase<AnyTag>::operator!=(
 }
 
 template<typename AnyTag>
-inline AnyWrapperBase<AnyTag>::wrapper_ptr AnyWrapperBase<AnyTag>::deserialize(
-  Deserializer& d) {
+inline typename AnyWrapperBase<AnyTag>::wrapper_ptr
+AnyWrapperBase<AnyTag>::deserialize(Deserializer& d) {
     std::size_t idx;
     d(idx);
     return m_any_maker_.at(idx)(d);
@@ -560,13 +590,14 @@ inline AnyWrapperBase<AnyTag>::wrapper_ptr AnyWrapperBase<AnyTag>::deserialize(
 template<typename U>
 explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
 
-template<typename T>
-typename AnyWrapper<T>::wrapper_ptr AnyWrapper<T>::clone_() const {
-    return std::make_unique<AnyWrapper<T>>(value_());
+template<typename T, typename AnyTag>
+typename AnyWrapper<T, AnyTag>::wrapper_ptr AnyWrapper<T, AnyTag>::clone_()
+  const {
+    return std::make_unique<AnyWrapper<T, AnyTag>>(value_());
 }
 
-template<typename T>
-std::string AnyWrapper<T>::str_() const {
+template<typename T, typename AnyTag>
+std::string AnyWrapper<T, AnyTag>::str_() const {
     std::stringstream ss;
     using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {
@@ -577,11 +608,11 @@ std::string AnyWrapper<T>::str_() const {
     return ss.str();
 }
 
-template<typename T, typename AnyTag = AnyInput>
-bool AnyWrapper<T>::are_equal_(
+template<typename T, typename AnyTag>
+bool AnyWrapper<T, AnyTag>::are_equal_(
   const AnyWrapperBase<AnyTag>& rhs) const noexcept {
     try {
-        return value_() == rhs.cast<const T&>();
+        return value_() == rhs.template cast<const T&>();
     } catch(...) {
         // Means the cast failed, so @p rhs holds a different type
         return false;
