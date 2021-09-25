@@ -337,6 +337,11 @@ protected:
     AnyWrapperBase<AnyTag>& operator=(AnyWrapperBase<AnyTag>&&) noexcept =
       default;
 
+    /// Static map to store the hash_code of type_() as the keys and
+    /// the functions that can return the deserialized object wrapped in a
+    /// AnyWrapper instance as the values.
+    static std::map<std::size_t, fxn_type> m_any_maker_;
+
 private:
     /// To be implemented by derived class in order for copying to work
     virtual wrapper_ptr clone_() const = 0;
@@ -357,11 +362,6 @@ private:
     /// To be implemented by the derived class to define equality
     virtual bool are_equal_(
       const AnyWrapperBase<AnyTag>& rhs) const noexcept = 0;
-
-    /// Static map to store the hash_code of type_() as the keys and
-    /// the functions that can return the deserialized object wrapped in a
-    /// AnyWrapper instance as the values.
-    static std::map<std::size_t, fxn_type> m_any_maker_;
 
     /// The type-erased value
     std::any m_value_;
