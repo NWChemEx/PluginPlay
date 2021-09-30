@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pluginplay: pluginplay::detail_::AnyWrapperBase Class Reference</title>
+<title>pluginplay: pluginplay::detail_::AnyWrapperBase&lt; Tag &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(function() {
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
 <a href="classpluginplay_1_1detail___1_1AnyWrapperBase-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">pluginplay::detail_::AnyWrapperBase Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">pluginplay::detail_::AnyWrapperBase&lt; Tag &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -85,104 +85,109 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:afd86bdf273611e7cf6b0f61c5b9c5b12"><td class="memItemLeft" align="right" valign="top"><a id="afd86bdf273611e7cf6b0f61c5b9c5b12"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#afd86bdf273611e7cf6b0f61c5b9c5b12">wrapper_ptr</a> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &gt;</td></tr>
-<tr class="memdesc:afd86bdf273611e7cf6b0f61c5b9c5b12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a unique_ptr to the wrapper. <br /></td></tr>
-<tr class="separator:afd86bdf273611e7cf6b0f61c5b9c5b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6234076fd8f38c87aecc279e3524c888"><td class="memItemLeft" align="right" valign="top"><a id="a6234076fd8f38c87aecc279e3524c888"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a6234076fd8f38c87aecc279e3524c888">rtti_type</a> = const std::type_info &amp;</td></tr>
-<tr class="memdesc:a6234076fd8f38c87aecc279e3524c888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the RTTI of the wrapped instance. <br /></td></tr>
-<tr class="separator:a6234076fd8f38c87aecc279e3524c888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab587f6998b4c8bc21c1608749c863942"><td class="memItemLeft" align="right" valign="top"><a id="ab587f6998b4c8bc21c1608749c863942"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab587f6998b4c8bc21c1608749c863942">wrapper_ptr</a> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &gt;</td></tr>
+<tr class="memdesc:ab587f6998b4c8bc21c1608749c863942"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a unique_ptr to the wrapper. <br /></td></tr>
+<tr class="separator:ab587f6998b4c8bc21c1608749c863942"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a950b086e1fef9e84b2f89ba0b6d37a23"><td class="memItemLeft" align="right" valign="top"><a id="a950b086e1fef9e84b2f89ba0b6d37a23"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a950b086e1fef9e84b2f89ba0b6d37a23">rtti_type</a> = const std::type_info &amp;</td></tr>
+<tr class="memdesc:a950b086e1fef9e84b2f89ba0b6d37a23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the RTTI of the wrapped instance. <br /></td></tr>
+<tr class="separator:a950b086e1fef9e84b2f89ba0b6d37a23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8aee59b21cbb3b6ac562b0b541b4372d"><td class="memTemplParams" colspan="2">template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </td></tr>
-<tr class="memitem:a8aee59b21cbb3b6ac562b0b541b4372d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8aee59b21cbb3b6ac562b0b541b4372d">AnyWrapperBase</a> (T &amp;&amp;value)</td></tr>
-<tr class="memdesc:a8aee59b21cbb3b6ac562b0b541b4372d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapper.html" title="Forward declare class that will implement the API.">AnyWrapper</a> by forwarding the provided value.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8aee59b21cbb3b6ac562b0b541b4372d">More...</a><br /></td></tr>
-<tr class="separator:a8aee59b21cbb3b6ac562b0b541b4372d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae37c3d9ceab71d15a804a2f8bd1dc29a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ae37c3d9ceab71d15a804a2f8bd1dc29a">~AnyWrapperBase</a> ()=default</td></tr>
-<tr class="memdesc:ae37c3d9ceab71d15a804a2f8bd1dc29a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up an AnyBase_ instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ae37c3d9ceab71d15a804a2f8bd1dc29a">More...</a><br /></td></tr>
-<tr class="separator:ae37c3d9ceab71d15a804a2f8bd1dc29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada71ae28ad050d678d7f137b549ffd39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#afd86bdf273611e7cf6b0f61c5b9c5b12">wrapper_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ada71ae28ad050d678d7f137b549ffd39">clone</a> () const</td></tr>
-<tr class="memdesc:ada71ae28ad050d678d7f137b549ffd39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a polymorphic copy of the wrapper.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ada71ae28ad050d678d7f137b549ffd39">More...</a><br /></td></tr>
-<tr class="separator:ada71ae28ad050d678d7f137b549ffd39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a953be7cc863db22432df78948ed17d4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a6234076fd8f38c87aecc279e3524c888">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a953be7cc863db22432df78948ed17d4e">type</a> () const noexcept</td></tr>
-<tr class="memdesc:a953be7cc863db22432df78948ed17d4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the RTTI of the wrapped class.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a953be7cc863db22432df78948ed17d4e">More...</a><br /></td></tr>
-<tr class="separator:a953be7cc863db22432df78948ed17d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e20dab76b2268899242cf4628b3ba61"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9e20dab76b2268899242cf4628b3ba61"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a9e20dab76b2268899242cf4628b3ba61">is_convertible</a> () const noexcept</td></tr>
-<tr class="memdesc:a9e20dab76b2268899242cf4628b3ba61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the wrapped instance is convertible to the provided type.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a9e20dab76b2268899242cf4628b3ba61">More...</a><br /></td></tr>
-<tr class="separator:a9e20dab76b2268899242cf4628b3ba61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08a646dc29e810d47a46e6bdbd63b24e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a08a646dc29e810d47a46e6bdbd63b24e">hash</a> (Hasher &amp;h) const</td></tr>
-<tr class="memdesc:a08a646dc29e810d47a46e6bdbd63b24e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows the AnyBase_ instance to be hashed.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a08a646dc29e810d47a46e6bdbd63b24e">More...</a><br /></td></tr>
-<tr class="separator:a08a646dc29e810d47a46e6bdbd63b24e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75fe453a87f8f2732204c8bf077f035b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a75fe453a87f8f2732204c8bf077f035b">str</a> () const</td></tr>
-<tr class="memdesc:a75fe453a87f8f2732204c8bf077f035b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string representation of the object stored in the any.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a75fe453a87f8f2732204c8bf077f035b">More...</a><br /></td></tr>
-<tr class="separator:a75fe453a87f8f2732204c8bf077f035b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d72cf2cfd26ca076924dece3a728cfa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8d72cf2cfd26ca076924dece3a728cfa">operator==</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;rhs) const noexcept</td></tr>
-<tr class="memdesc:a8d72cf2cfd26ca076924dece3a728cfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if the type-erased value of this instance is the same as that of another instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8d72cf2cfd26ca076924dece3a728cfa">More...</a><br /></td></tr>
-<tr class="separator:a8d72cf2cfd26ca076924dece3a728cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a238b55b39266ce5eb026b15c8842b54d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a238b55b39266ce5eb026b15c8842b54d">operator!=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;rhs) const noexcept</td></tr>
-<tr class="memdesc:a238b55b39266ce5eb026b15c8842b54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if the type-erased value of this instance is different from that of another instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a238b55b39266ce5eb026b15c8842b54d">More...</a><br /></td></tr>
-<tr class="separator:a238b55b39266ce5eb026b15c8842b54d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06afcc3559497bb29d3aa31e55ff77d9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a06afcc3559497bb29d3aa31e55ff77d9"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a06afcc3559497bb29d3aa31e55ff77d9">cast</a> () const</td></tr>
-<tr class="memdesc:a06afcc3559497bb29d3aa31e55ff77d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Casts the wrapped value back to a readonly type <code>T</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a06afcc3559497bb29d3aa31e55ff77d9">More...</a><br /></td></tr>
-<tr class="separator:a06afcc3559497bb29d3aa31e55ff77d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ee081ce893c8466b1257551ec724b10"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9ee081ce893c8466b1257551ec724b10"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a9ee081ce893c8466b1257551ec724b10">cast</a> ()</td></tr>
-<tr class="memdesc:a9ee081ce893c8466b1257551ec724b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Casts the wrapped value back to a readonly type <code>T</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a9ee081ce893c8466b1257551ec724b10">More...</a><br /></td></tr>
-<tr class="separator:a9ee081ce893c8466b1257551ec724b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e409e0a55d1ce6304d24b315bf008d"><td class="memTemplParams" colspan="2">template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </td></tr>
+<tr class="memitem:a50e409e0a55d1ce6304d24b315bf008d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a50e409e0a55d1ce6304d24b315bf008d">AnyWrapperBase</a> (T &amp;&amp;value)</td></tr>
+<tr class="memdesc:a50e409e0a55d1ce6304d24b315bf008d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapper.html" title="Forward declare class that will implement the API.">AnyWrapper</a> by forwarding the provided value.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a50e409e0a55d1ce6304d24b315bf008d">More...</a><br /></td></tr>
+<tr class="separator:a50e409e0a55d1ce6304d24b315bf008d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab42bcc3845ba7293bfa54b74d5b2ca89"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab42bcc3845ba7293bfa54b74d5b2ca89">~AnyWrapperBase</a> ()=default</td></tr>
+<tr class="memdesc:ab42bcc3845ba7293bfa54b74d5b2ca89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up an AnyBase_ instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab42bcc3845ba7293bfa54b74d5b2ca89">More...</a><br /></td></tr>
+<tr class="separator:ab42bcc3845ba7293bfa54b74d5b2ca89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3ccd95f6777d11e422e325bec6f875a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab587f6998b4c8bc21c1608749c863942">wrapper_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ad3ccd95f6777d11e422e325bec6f875a">clone</a> () const</td></tr>
+<tr class="memdesc:ad3ccd95f6777d11e422e325bec6f875a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a polymorphic copy of the wrapper.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ad3ccd95f6777d11e422e325bec6f875a">More...</a><br /></td></tr>
+<tr class="separator:ad3ccd95f6777d11e422e325bec6f875a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7840599eb2cc5e2d5f80f0ffd1a33d61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a950b086e1fef9e84b2f89ba0b6d37a23">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a7840599eb2cc5e2d5f80f0ffd1a33d61">type</a> () const noexcept</td></tr>
+<tr class="memdesc:a7840599eb2cc5e2d5f80f0ffd1a33d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the RTTI of the wrapped class.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a7840599eb2cc5e2d5f80f0ffd1a33d61">More...</a><br /></td></tr>
+<tr class="separator:a7840599eb2cc5e2d5f80f0ffd1a33d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc2e276002aecb1958531fca443d441f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:abc2e276002aecb1958531fca443d441f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#abc2e276002aecb1958531fca443d441f">is_convertible</a> () const noexcept</td></tr>
+<tr class="memdesc:abc2e276002aecb1958531fca443d441f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the wrapped instance is convertible to the provided type.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#abc2e276002aecb1958531fca443d441f">More...</a><br /></td></tr>
+<tr class="separator:abc2e276002aecb1958531fca443d441f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="memItemLeft" align="right" valign="top">enable_if_input_type_t&lt; Tag &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a5e2e1707d7a5c5d54d83098d6d35e48e">hash</a> (Hasher &amp;h) const</td></tr>
+<tr class="memdesc:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows the AnyBase_ instance to be hashed.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a5e2e1707d7a5c5d54d83098d6d35e48e">More...</a><br /></td></tr>
+<tr class="separator:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdc505ef7e0d10319dbf3d239022e381"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#acdc505ef7e0d10319dbf3d239022e381">str</a> () const</td></tr>
+<tr class="memdesc:acdc505ef7e0d10319dbf3d239022e381"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string representation of the object stored in the any.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#acdc505ef7e0d10319dbf3d239022e381">More...</a><br /></td></tr>
+<tr class="separator:acdc505ef7e0d10319dbf3d239022e381"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a334797022765eb2eacf98fa46f04f06a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a334797022765eb2eacf98fa46f04f06a">operator==</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;rhs) const noexcept</td></tr>
+<tr class="memdesc:a334797022765eb2eacf98fa46f04f06a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if the type-erased value of this instance is the same as that of another instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a334797022765eb2eacf98fa46f04f06a">More...</a><br /></td></tr>
+<tr class="separator:a334797022765eb2eacf98fa46f04f06a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af924b8d80d3bac0156bb2171469cd9a2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#af924b8d80d3bac0156bb2171469cd9a2">operator!=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;rhs) const noexcept</td></tr>
+<tr class="memdesc:af924b8d80d3bac0156bb2171469cd9a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if the type-erased value of this instance is different from that of another instance.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#af924b8d80d3bac0156bb2171469cd9a2">More...</a><br /></td></tr>
+<tr class="separator:af924b8d80d3bac0156bb2171469cd9a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa173b8bb340318066f7b83aa8f6cd6bf"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aa173b8bb340318066f7b83aa8f6cd6bf"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa173b8bb340318066f7b83aa8f6cd6bf">cast</a> () const</td></tr>
+<tr class="memdesc:aa173b8bb340318066f7b83aa8f6cd6bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Casts the wrapped value back to a readonly type <code>T</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa173b8bb340318066f7b83aa8f6cd6bf">More...</a><br /></td></tr>
+<tr class="separator:aa173b8bb340318066f7b83aa8f6cd6bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af47e8ac4b01c768e1d16dc6163347a2e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af47e8ac4b01c768e1d16dc6163347a2e"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#af47e8ac4b01c768e1d16dc6163347a2e">cast</a> ()</td></tr>
+<tr class="memdesc:af47e8ac4b01c768e1d16dc6163347a2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Casts the wrapped value back to a readonly type <code>T</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#af47e8ac4b01c768e1d16dc6163347a2e">More...</a><br /></td></tr>
+<tr class="separator:af47e8ac4b01c768e1d16dc6163347a2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
 Protected Types</h2></td></tr>
-<tr class="memitem:a3ee895299715553cf665ab2b52f953a5"><td class="memItemLeft" align="right" valign="top"><a id="a3ee895299715553cf665ab2b52f953a5"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a3ee895299715553cf665ab2b52f953a5">my_type</a> = <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a></td></tr>
-<tr class="memdesc:a3ee895299715553cf665ab2b52f953a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">My type. <br /></td></tr>
-<tr class="separator:a3ee895299715553cf665ab2b52f953a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c84e52b0f9cf433b46beeee2033436f"><td class="memTemplParams" colspan="2"><a id="a8c84e52b0f9cf433b46beeee2033436f"></a>
+<tr class="memitem:aa555841f06854c03e15be03a0fa99696"><td class="memItemLeft" align="right" valign="top"><a id="aa555841f06854c03e15be03a0fa99696"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa555841f06854c03e15be03a0fa99696">my_type</a> = <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt;</td></tr>
+<tr class="memdesc:aa555841f06854c03e15be03a0fa99696"><td class="mdescLeft">&#160;</td><td class="mdescRight">My type. <br /></td></tr>
+<tr class="separator:aa555841f06854c03e15be03a0fa99696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ed03582b0007fcbde511c773f5bc9b1"><td class="memTemplParams" colspan="2"><a id="a8ed03582b0007fcbde511c773f5bc9b1"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a8c84e52b0f9cf433b46beeee2033436f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8c84e52b0f9cf433b46beeee2033436f">is_wrapper</a> = std::is_base_of&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a3ee895299715553cf665ab2b52f953a5">my_type</a>, T &gt;</td></tr>
-<tr class="memdesc:a8c84e52b0f9cf433b46beeee2033436f"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for determining if <code>T</code> inherits from us <br /></td></tr>
-<tr class="separator:a8c84e52b0f9cf433b46beeee2033436f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77335a8544aae98786d2fb839485c8a5"><td class="memTemplParams" colspan="2"><a id="a77335a8544aae98786d2fb839485c8a5"></a>
+<tr class="memitem:a8ed03582b0007fcbde511c773f5bc9b1"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8ed03582b0007fcbde511c773f5bc9b1">is_wrapper</a> = std::is_base_of&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa555841f06854c03e15be03a0fa99696">my_type</a>, T &gt;</td></tr>
+<tr class="memdesc:a8ed03582b0007fcbde511c773f5bc9b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for determining if <code>T</code> inherits from us <br /></td></tr>
+<tr class="separator:a8ed03582b0007fcbde511c773f5bc9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0ea726bb66489280ff9391bac4bc2ed"><td class="memTemplParams" colspan="2"><a id="ad0ea726bb66489280ff9391bac4bc2ed"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a77335a8544aae98786d2fb839485c8a5"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a77335a8544aae98786d2fb839485c8a5">enable_if_not_wrapper_t</a> = std::enable_if_t&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a956b1db967b85e988b644f48e67055d3">is_not_wrapper_v</a>&lt; T &gt;, int &gt;</td></tr>
-<tr class="memdesc:a77335a8544aae98786d2fb839485c8a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for enabling a function if <code>T</code> does not stem from us <br /></td></tr>
-<tr class="separator:a77335a8544aae98786d2fb839485c8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0ea726bb66489280ff9391bac4bc2ed"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ad0ea726bb66489280ff9391bac4bc2ed">enable_if_not_wrapper_t</a> = std::enable_if_t&lt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa1777a2fe52fd930abf86b174abb2dad">is_not_wrapper_v</a>&lt; T &gt;, int &gt;</td></tr>
+<tr class="memdesc:ad0ea726bb66489280ff9391bac4bc2ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for enabling a function if <code>T</code> does not stem from us <br /></td></tr>
+<tr class="separator:ad0ea726bb66489280ff9391bac4bc2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a970841be585b191c7470906831233b62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a970841be585b191c7470906831233b62">AnyWrapperBase</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;)=default</td></tr>
-<tr class="memdesc:a970841be585b191c7470906831233b62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep copies the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a970841be585b191c7470906831233b62">More...</a><br /></td></tr>
-<tr class="separator:a970841be585b191c7470906831233b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adabfbcb997442e628665aed277bb1ec3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#adabfbcb997442e628665aed277bb1ec3">AnyWrapperBase</a> (<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&amp;) noexcept=default</td></tr>
-<tr class="memdesc:adabfbcb997442e628665aed277bb1ec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes ownership of the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#adabfbcb997442e628665aed277bb1ec3">More...</a><br /></td></tr>
-<tr class="separator:adabfbcb997442e628665aed277bb1ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a633a372d107805def5ef9cd654f35d72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a633a372d107805def5ef9cd654f35d72">operator=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;)=default</td></tr>
-<tr class="memdesc:a633a372d107805def5ef9cd654f35d72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current state to a deep copy of <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a633a372d107805def5ef9cd654f35d72">More...</a><br /></td></tr>
-<tr class="separator:a633a372d107805def5ef9cd654f35d72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6b10c163e52bb8200076e6d87f08d22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac6b10c163e52bb8200076e6d87f08d22">operator=</a> (<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&amp;) noexcept=default</td></tr>
-<tr class="memdesc:ac6b10c163e52bb8200076e6d87f08d22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces the current state with the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac6b10c163e52bb8200076e6d87f08d22">More...</a><br /></td></tr>
-<tr class="separator:ac6b10c163e52bb8200076e6d87f08d22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac571701cba4f0cac1f542f9805e867a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac571701cba4f0cac1f542f9805e867a8">AnyWrapperBase</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;)=default</td></tr>
+<tr class="memdesc:ac571701cba4f0cac1f542f9805e867a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep copies the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac571701cba4f0cac1f542f9805e867a8">More...</a><br /></td></tr>
+<tr class="separator:ac571701cba4f0cac1f542f9805e867a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27291117ff9f99038a5ae2008ecda9cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a27291117ff9f99038a5ae2008ecda9cf">AnyWrapperBase</a> (<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:a27291117ff9f99038a5ae2008ecda9cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes ownership of the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a27291117ff9f99038a5ae2008ecda9cf">More...</a><br /></td></tr>
+<tr class="separator:a27291117ff9f99038a5ae2008ecda9cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd38e2178dda0cc69436626ee00cec9e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#afd38e2178dda0cc69436626ee00cec9e">operator=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;)=default</td></tr>
+<tr class="memdesc:afd38e2178dda0cc69436626ee00cec9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current state to a deep copy of <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#afd38e2178dda0cc69436626ee00cec9e">More...</a><br /></td></tr>
+<tr class="separator:afd38e2178dda0cc69436626ee00cec9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac27bd7f8a7a4c602f4f1ef5f509383be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac27bd7f8a7a4c602f4f1ef5f509383be">operator=</a> (<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:ac27bd7f8a7a4c602f4f1ef5f509383be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces the current state with the type-erased value held in <code>rhs</code>.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ac27bd7f8a7a4c602f4f1ef5f509383be">More...</a><br /></td></tr>
+<tr class="separator:ac27bd7f8a7a4c602f4f1ef5f509383be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
-<tr class="memitem:a956b1db967b85e988b644f48e67055d3"><td class="memTemplParams" colspan="2"><a id="a956b1db967b85e988b644f48e67055d3"></a>
+<tr class="memitem:aa1777a2fe52fd930abf86b174abb2dad"><td class="memTemplParams" colspan="2"><a id="aa1777a2fe52fd930abf86b174abb2dad"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a956b1db967b85e988b644f48e67055d3"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a956b1db967b85e988b644f48e67055d3">is_not_wrapper_v</a> = std::negation_v&lt;<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8c84e52b0f9cf433b46beeee2033436f">is_wrapper</a>&lt;T&gt;&gt;</td></tr>
-<tr class="memdesc:a956b1db967b85e988b644f48e67055d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">does <code>T</code> does not inherit from us? <br /></td></tr>
-<tr class="separator:a956b1db967b85e988b644f48e67055d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1777a2fe52fd930abf86b174abb2dad"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#aa1777a2fe52fd930abf86b174abb2dad">is_not_wrapper_v</a> = std::negation_v&lt;<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a8ed03582b0007fcbde511c773f5bc9b1">is_wrapper</a>&lt;T&gt;&gt;</td></tr>
+<tr class="memdesc:aa1777a2fe52fd930abf86b174abb2dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">does <code>T</code> does not inherit from us? <br /></td></tr>
+<tr class="separator:aa1777a2fe52fd930abf86b174abb2dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Defines the API for interacting with the type-erased value. </p>
+<div class="textblock"><h3>template&lt;AnyTag Tag = AnyTag::General&gt;<br />
+class pluginplay::detail_::AnyWrapperBase&lt; Tag &gt;</h3>
+
+<p>Defines the API for interacting with the type-erased value. </p>
 <p>This class is meant for use with the <a class="el" href="classpluginplay_1_1detail___1_1Any.html" title="The Any class is capable of holding an instance of any type in a type-safe manner.">Any</a> class and can be thought of as a PIMPL for that class. This actual implementation works by holding the value in an std::any instance (thereby differing casting and type checks to it) and leveraging as much of that API as possible. Additional member functions that are part of the <a class="el" href="classpluginplay_1_1detail___1_1Any.html" title="The Any class is capable of holding an instance of any type in a type-safe manner.">Any</a> API, but not std::any's API, are then implemented by a derived class, which knows the type to cast the std::any to. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8aee59b21cbb3b6ac562b0b541b4372d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8aee59b21cbb3b6ac562b0b541b4372d">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[1/3]</span></h2>
+<a id="a50e409e0a55d1ce6304d24b315bf008d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50e409e0a55d1ce6304d24b315bf008d">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <div class="memtemplate">
 template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
 <table class="mlabels">
@@ -190,7 +195,7 @@ template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">pluginplay::detail_::AnyWrapperBase::AnyWrapperBase </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> </td>
           <td>(</td>
           <td class="paramtype">T &amp;&amp;&#160;</td>
           <td class="paramname"><em>value</em></td><td>)</td>
@@ -227,17 +232,19 @@ template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
 
 </div>
 </div>
-<a id="ae37c3d9ceab71d15a804a2f8bd1dc29a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae37c3d9ceab71d15a804a2f8bd1dc29a">&#9670;&nbsp;</a></span>~AnyWrapperBase()</h2>
+<a id="ab42bcc3845ba7293bfa54b74d5b2ca89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab42bcc3845ba7293bfa54b74d5b2ca89">&#9670;&nbsp;</a></span>~AnyWrapperBase()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual pluginplay::detail_::AnyWrapperBase::~AnyWrapperBase </td>
+          <td class="memname">virtual <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::~<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -261,19 +268,21 @@ template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
 
 </div>
 </div>
-<a id="a970841be585b191c7470906831233b62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a970841be585b191c7470906831233b62">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[2/3]</span></h2>
+<a id="ac571701cba4f0cac1f542f9805e867a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac571701cba4f0cac1f542f9805e867a8">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">pluginplay::detail_::AnyWrapperBase::AnyWrapperBase </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -302,19 +311,21 @@ template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
 
 </div>
 </div>
-<a id="adabfbcb997442e628665aed277bb1ec3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adabfbcb997442e628665aed277bb1ec3">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[3/3]</span></h2>
+<a id="a27291117ff9f99038a5ae2008ecda9cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27291117ff9f99038a5ae2008ecda9cf">&#9670;&nbsp;</a></span>AnyWrapperBase() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">pluginplay::detail_::AnyWrapperBase::AnyWrapperBase </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::<a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -344,11 +355,13 @@ template&lt;typename T , enable_if_not_wrapper_t&lt; T &gt;  = 0&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9ee081ce893c8466b1257551ec724b10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ee081ce893c8466b1257551ec724b10">&#9670;&nbsp;</a></span>cast() <span class="overload">[1/2]</span></h2>
+<a id="af47e8ac4b01c768e1d16dc6163347a2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af47e8ac4b01c768e1d16dc6163347a2e">&#9670;&nbsp;</a></span>cast() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -356,7 +369,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T pluginplay::detail_::AnyWrapperBase::cast </td>
+          <td class="memname">T <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::cast </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -387,11 +400,13 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a06afcc3559497bb29d3aa31e55ff77d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06afcc3559497bb29d3aa31e55ff77d9">&#9670;&nbsp;</a></span>cast() <span class="overload">[2/2]</span></h2>
+<a id="aa173b8bb340318066f7b83aa8f6cd6bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa173b8bb340318066f7b83aa8f6cd6bf">&#9670;&nbsp;</a></span>cast() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -399,7 +414,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T pluginplay::detail_::AnyWrapperBase::cast </td>
+          <td class="memname">T <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::cast </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -430,17 +445,19 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ada71ae28ad050d678d7f137b549ffd39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada71ae28ad050d678d7f137b549ffd39">&#9670;&nbsp;</a></span>clone()</h2>
+<a id="ad3ccd95f6777d11e422e325bec6f875a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3ccd95f6777d11e422e325bec6f875a">&#9670;&nbsp;</a></span>clone()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#afd86bdf273611e7cf6b0f61c5b9c5b12">wrapper_ptr</a> pluginplay::detail_::AnyWrapperBase::clone </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab587f6998b4c8bc21c1608749c863942">wrapper_ptr</a> <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::clone </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -465,17 +482,19 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a08a646dc29e810d47a46e6bdbd63b24e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08a646dc29e810d47a46e6bdbd63b24e">&#9670;&nbsp;</a></span>hash()</h2>
+<a id="a5e2e1707d7a5c5d54d83098d6d35e48e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e2e1707d7a5c5d54d83098d6d35e48e">&#9670;&nbsp;</a></span>hash()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void pluginplay::detail_::AnyWrapperBase::hash </td>
+          <td class="memname">enable_if_input_type_t&lt;Tag&gt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::hash </td>
           <td>(</td>
           <td class="paramtype">Hasher &amp;&#160;</td>
           <td class="paramname"><em>h</em></td><td>)</td>
@@ -508,11 +527,13 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a9e20dab76b2268899242cf4628b3ba61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e20dab76b2268899242cf4628b3ba61">&#9670;&nbsp;</a></span>is_convertible()</h2>
+<a id="abc2e276002aecb1958531fca443d441f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc2e276002aecb1958531fca443d441f">&#9670;&nbsp;</a></span>is_convertible()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -520,7 +541,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool pluginplay::detail_::AnyWrapperBase::is_convertible</td>
+          <td class="memname">bool <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::is_convertible</td>
         </tr>
       </table>
   </td>
@@ -547,19 +568,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a238b55b39266ce5eb026b15c8842b54d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a238b55b39266ce5eb026b15c8842b54d">&#9670;&nbsp;</a></span>operator!=()</h2>
+<a id="af924b8d80d3bac0156bb2171469cd9a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af924b8d80d3bac0156bb2171469cd9a2">&#9670;&nbsp;</a></span>operator!=()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool pluginplay::detail_::AnyWrapperBase::operator!= </td>
+          <td class="memname">bool <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::operator!= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&#160;</td>
           <td class="paramname"><em>rhs</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -589,19 +612,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ac6b10c163e52bb8200076e6d87f08d22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6b10c163e52bb8200076e6d87f08d22">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+<a id="ac27bd7f8a7a4c602f4f1ef5f509383be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac27bd7f8a7a4c602f4f1ef5f509383be">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&amp; pluginplay::detail_::AnyWrapperBase::operator= </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt;Tag&gt;&amp; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::operator= </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -631,19 +656,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a633a372d107805def5ef9cd654f35d72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a633a372d107805def5ef9cd654f35d72">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+<a id="afd38e2178dda0cc69436626ee00cec9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd38e2178dda0cc69436626ee00cec9e">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&amp; pluginplay::detail_::AnyWrapperBase::operator= </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&amp; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::operator= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -673,19 +700,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a8d72cf2cfd26ca076924dece3a728cfa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d72cf2cfd26ca076924dece3a728cfa">&#9670;&nbsp;</a></span>operator==()</h2>
+<a id="a334797022765eb2eacf98fa46f04f06a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a334797022765eb2eacf98fa46f04f06a">&#9670;&nbsp;</a></span>operator==()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool pluginplay::detail_::AnyWrapperBase::operator== </td>
+          <td class="memname">bool <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::operator== </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">AnyWrapperBase</a>&lt; Tag &gt; &amp;&#160;</td>
           <td class="paramname"><em>rhs</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -715,17 +744,19 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a75fe453a87f8f2732204c8bf077f035b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75fe453a87f8f2732204c8bf077f035b">&#9670;&nbsp;</a></span>str()</h2>
+<a id="acdc505ef7e0d10319dbf3d239022e381"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdc505ef7e0d10319dbf3d239022e381">&#9670;&nbsp;</a></span>str()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string pluginplay::detail_::AnyWrapperBase::str </td>
+          <td class="memname">std::string <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::str </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -743,17 +774,19 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a953be7cc863db22432df78948ed17d4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a953be7cc863db22432df78948ed17d4e">&#9670;&nbsp;</a></span>type()</h2>
+<a id="a7840599eb2cc5e2d5f80f0ffd1a33d61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7840599eb2cc5e2d5f80f0ffd1a33d61">&#9670;&nbsp;</a></span>type()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a6234076fd8f38c87aecc279e3524c888">rtti_type</a> pluginplay::detail_::AnyWrapperBase::type </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a950b086e1fef9e84b2f89ba0b6d37a23">rtti_type</a> <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::type </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
