@@ -9,36 +9,62 @@
 #
 # :Additional Named Arguments:
 #     * NAMESPACE - The C++ namespace that your bindings live in. 
-#     * PACKAGENAME - Package name to used as an alternative to NAMESPACE.  
-#     * DEPENDSON - List of modules this module depends on.
+#     * DEPNAMESPACES - The C++ namespaceis that your bindings require,
+#       i.e. previous Python package builds.
+#     * PACKAGE - Package name to used as an alternative to NAMESPACE.  
+#     * DEPENDS - List of modules this module depends on.
+#     * PYTHONIZE - Add special function to Pythonize class with more complex 
+#       arguments. Helps LibChemist.
 #
 function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
+    #-----------------------Make sure we have cppyy installed-------------------
+    #---------------------------------------------------------------------------
+    if (NOT BUILD_PYBINDINGS)
+        return()
+    endif()
+    #---------------------------------------------------------------------------
+    #-----------------------Make sure we have cppyy installed-------------------
+    #---------------------------------------------------------------------------
+    find_package(Cppyy REQUIRED)
+    #---------------------------------------------------------------------------
     #--------------------------Argument Parsing---------------------------------
     #---------------------------------------------------------------------------
-    set(options NOTUSED)
-    set(oneValueArgs PACKAGENAME)
-    set(multiValueArgs DEPENDSON HEADERS NAMESPACES DEPNAMESPACES)
+    set(options MPI PYTHONIZE)
+    set(oneValueArgs PACKAGE)
+    set(multiValueArgs NAMESPACES DEPNAMESPACES)
     cmake_parse_arguments(install_data "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     #---------------------------------------------------------------------------
     #--------------------------Get include directories--------------------------
     #---------------------------------------------------------------------------
-    get_target_property(include_dirs ${install_data_PACKAGENAME} INCLUDE_DIRECTORIES)
-    foreach(item ${install_data_DEPENDSON})
-        if ("${item}" STREQUAL "MPI")
-           list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})
-           set(init_with_mpi ${item})
-        else()
-           get_target_property(include_item ${item} INCLUDE_DIRECTORIES)
-           list(APPEND include_dirs ${include_item})
-        endif()
+    get_target_property(include_dirs ${install_data_PACKAGE} INTERFACE_INCLUDE_DIRECTORIES)
+    get_target_property(link_libs ${install_data_PACKAGE} INTERFACE_LINK_LIBRARIES)
+    foreach(item ${link_libs})
+        get_target_property(include_item ${item} INTERFACE_INCLUDE_DIRECTORIES)
+        list(APPEND include_dirs ${include_item})
     endforeach()
+    if (install_data_MPI)
+        list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})
+    endif()
+    #---------------------------------------------------------------------------
+    #--------------------------Get headers to includer--------------------------
+    #---------------------------------------------------------------------------
+    get_target_property(include_headers ${install_data_PACKAGE} PUBLIC_HEADER)
+    get_filename_component(header_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
     #---------------------------------------------------------------------------
     #------------Collect the information we need off the target-----------------
     #---------------------------------------------------------------------------
-    #List of include directories, usually a generator
-    set(target_lib "$<TARGET_FILE_NAME:${install_data_PACKAGENAME}>")
-    set(output_dir "${CMAKE_BINARY_DIR}/${install_data_PACKAGENAME}")
+    set(target_lib "$<TARGET_FILE_NAME:${install_data_PACKAGE}>")
+    set(output_dir "${CMAKE_BINARY_DIR}/${install_data_PACKAGE}")
+    #---------------------------------------------------------------------------
+    #------------Defines in BTAS and Madness at runtime are needed by cppyy-----
+    #---------------------------------------------------------------------------
+    set(python_defines_file "${output_dir}/python_defines.hpp")
+    set(python_defines "#define MADNESS_HAS_CEREAL\n")
+    if(BTAS_USE_BLAS_LAPACK)
+        set(python_defines "#define BTAS_HAS_BLAS_LAPACK\n")
+    endif()
+    file(GENERATE OUTPUT ${python_defines_file} CONTENT "${python_defines}")
     #---------------------------------------------------------------------------
     #-----------------Generate _init__.py file contents------------------------
     #---------------------------------------------------------------------------
@@ -47,12 +73,15 @@ function(cppyy_make_python_package)
     foreach(depnamespace ${install_data_DEPNAMESPACES})
         set(init_file "${init_file}from ${depnamespace} import \*\n")
     endforeach()
-    set(init_file "${init_file}\nimport os\n")
-    set(init_file "${init_file}paths = \"${include_dirs}\".split(';')\n")
+    set(init_file "${init_file}import os\n")
+    set(init_file "${init_file}paths = list(set(\"${include_dirs}\".split(';')))\n")
     set(init_file "${init_file}for p in paths:\n")
     set(init_file "${init_file}    if p and p!=\"\":\n")
     set(init_file "${init_file}        cppyy.add_include_path(p)\n")
-    if ("${init_with_mpi}" STREQUAL "MPI")
+    #---------------------------------------------------------------------------
+    #--Temporary band-aid for MADworld MPI threads fixed in future cling/cppyy---
+    #---------------------------------------------------------------------------
+    if (install_data_MPI)
         set(init_file "${init_file}cppyy.cppdef(\"\"\"\\ \n")
         set(init_file "${init_file}\#define thread_local\n")
         set(init_file "${init_file}\#define is_server_thread \*_cling_is_server_thread()\n")
@@ -60,14 +89,35 @@ function(cppyy_make_python_package)
         set(init_file "${init_file}\#undef thread_local\n")
         set(init_file "${init_file}\"\"\")\n")
     endif()
-    foreach(header ${install_data_HEADERS})
-        set(init_file "${init_file}cppyy.include(\"${install_data_PACKAGENAME}/${header}.hpp\")\n")
-    endforeach()
+    #---------------------------------------------------------------------------
+    #--End of temporary band-aid------------------------------------------------
+    #---------------------------------------------------------------------------
+    set(init_file "${init_file}cppyy.include(\"${python_defines_file}\")\n")
+    set(init_file "${init_file}headers = \"${include_headers}\".split(';')\n")
+    set(init_file "${init_file}for h in headers:\n")
+    set(init_file "${init_file}    inc = os.path.join(\"${header_PREFIX}\",h)\n")
+    set(init_file "${init_file}    cppyy.include(inc)\n")
     set(init_file "${init_file}\ncppyy.load_library(\"${CMAKE_BINARY_DIR}/${target_lib}\")\n\n")
     foreach(namespace ${install_data_NAMESPACES})
         set(init_file "${init_file}from cppyy.gbl import ${namespace}\n")
     endforeach()
     set(init_file "${init_file}from cppyy.gbl.std import array, vector, make_shared\n\n")
+    if(install_data_PYTHONIZE)
+        set(_cmpp_file "${_cmpp_file}def pythonize_class(klass, name):\n")
+        set(_cmpp_file "${_cmpp_file}    def x_init(self, *args, **kwds):\n")
+        set(_cmpp_file "${_cmpp_file}        newargs = list(args)\n")
+        set(_cmpp_file "${_cmpp_file}        for kw, value in kwds.items():\n")
+        set(_cmpp_file "${_cmpp_file}            try:\n")
+        set(_cmpp_file "${_cmpp_file}                newargs.append(getattr(klass, kw)(value))\n")
+        set(_cmpp_file "${_cmpp_file}            except AttributeError as e:\n")
+        set(_cmpp_file "${_cmpp_file}                break\n")
+        set(_cmpp_file "${_cmpp_file}        else:\n")
+        set(_cmpp_file "${_cmpp_file}            return self.__orig_init__(*newargs)\n")
+        set(_cmpp_file "${_cmpp_file}        raise TypeError(\"__init__\(\) got an unexpected keyword argument \'\%s\'\" \% kw)\n\n")
+        set(_cmpp_file "${_cmpp_file}    klass.__orig_init__ = klass.__init__\n")
+        set(_cmpp_file "${_cmpp_file}    klass.__init__ = x_init\n\n")
+        set(_cmpp_file "${_cmpp_file}cppyy.py.add_pythonization(pythonize_class, \"${namespace}\")\n")
+    endif()
     #Write it out
     file(GENERATE OUTPUT ${init_file_name} CONTENT "${init_file}")
 endfunction()

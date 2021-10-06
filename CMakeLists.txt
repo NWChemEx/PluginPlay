@@ -65,16 +65,8 @@ cpp_add_library(
     DEPENDS nwx::utilities nwx::parallelzone libfort::fort
 )
 
-if(BUILD_PYBINDINGS)
-    include(nwx_python_mods)
-    find_package(Python3 REQUIRED)
-    find_package(Cppyy REQUIRED)
-    cppyy_make_python_package(PACKAGENAME pluginplay
-                              DEPENDSON utilities fort
-                              HEADERS pluginplay
-                              NAMESPACES pluginplay
-                              DEPNAMESPACES parallelzone )
-endif()   
+include(nwx_python_mods)
+cppyy_make_python_package(PACKAGE pluginplay NAMESPACES pluginplay DEPNAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
