@@ -66,7 +66,7 @@ cpp_add_library(
 )
 
 include(nwx_python_mods)
-cppyy_make_python_package(PACKAGE pluginplay NAMESPACES pluginplay DEPNAMESPACES parallelzone )
+cppyy_make_python_package(PACKAGE pluginplay NAMESPACES pluginplay DEPPACKAGES parallelzone )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
