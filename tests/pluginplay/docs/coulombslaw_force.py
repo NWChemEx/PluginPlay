@@ -44,8 +44,8 @@ class ClassicalForce(pluginplay.ModuleBase):
 
 mm = pluginplay.ModuleManager()
 
-mm.add_module("Force", make_shared[ClassicalForce]())
-mm.add_module("Coulomb's Law", make_shared[CoulombsLaw]())
+mm.add_module[ClassicalForce]("Force")
+mm.add_module[CoulombsLaw]("Coulomb's Law")
 mm.change_submod("Force", "electric field", "Coulomb's Law")
 
 r = Point([0.0,0.0,0.0])
