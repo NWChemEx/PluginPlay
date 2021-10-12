@@ -149,4 +149,31 @@ TEST_CASE("Cache Class") {
         c.reset_cache();
         REQUIRE(c.count(int{4}) == 0);
     }
+
+    SECTION("Prune cache") {
+        auto key     = "key";
+        auto hashkey = hash_objects(key);
+        c.cache(hashkey, int{42});
+        c.prune_cache();
+        REQUIRE(c.count(hashkey) == 1);
+        auto tempkey     = "tempkey";
+        auto hashtempkey = hash_objects(tempkey);
+        c.cache(hashtempkey, int{33}, Temporary);
+        REQUIRE(c.count(hashtempkey) == 1);
+        c.prune_cache();
+        REQUIRE(c.count(hashtempkey) == 0);
+        REQUIRE(c.count(hashkey) == 1);
+        c.set_temporary(hashkey);
+        c.prune_cache();
+        REQUIRE(c.count(hashkey) == 0);
+        c.cache(hashkey, int{42});
+        REQUIRE(c.count(hashkey) == 1);
+        c.set_temporary(hashkey);
+        c.set_permanent(hashkey);
+        c.prune_cache();
+        REQUIRE(c.count(hashkey) == 1);
+        c.set_temporary(hashkey);
+        c.prune_cache();
+        REQUIRE(c.count(hashkey) == 0);
+    }
 }
