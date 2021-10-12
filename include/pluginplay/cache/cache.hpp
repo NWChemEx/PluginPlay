@@ -4,7 +4,7 @@
 
 namespace pluginplay {
 
-enum CacheTag { Permenant, Temporary };
+enum class CacheTag { Permenant, Temporary };
 /** @brief An object for storing data which may be needed after a module has run
  *
  */
@@ -99,7 +99,7 @@ public:
     template<typename KeyType, typename ValueType,
              typename = disable_if_hash_t<KeyType>>
     void cache(const KeyType& key, ValueType&& value,
-               const CacheTag& tag = Permenant);
+               const CacheTag& tag = CacheTag::Permenant);
 
     /** @brief Stores a value under the provided hash value.
      *
@@ -120,7 +120,7 @@ public:
      */
     template<typename ValueType>
     void cache(hash_type key, ValueType&& value,
-               const CacheTag& tag = Permenant);
+               const CacheTag& tag = CacheTag::Permenant);
 
     /** @brief Function for accessing cached data by key.
      *
@@ -399,7 +399,7 @@ void Cache::cache(hash_type key, ValueType&& value, const CacheTag& tag) {
     using pluginplay::detail_::make_Any;
     auto da_any  = make_Any<clean_type>(std::forward<ValueType>(value));
     m_data_[key] = std::move(da_any);
-    if(tag == Temporary && !m_temp_.count(key)) m_temp_.insert(key);
+    if(tag == CacheTag::Temporary && !m_temp_.count(key)) m_temp_.insert(key);
 }
 
 template<typename ValueType, typename KeyType, typename>

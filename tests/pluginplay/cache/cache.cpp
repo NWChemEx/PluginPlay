@@ -158,7 +158,7 @@ TEST_CASE("Cache Class") {
         REQUIRE(c.count(hashkey) == 1);
         auto tempkey     = "tempkey";
         auto hashtempkey = hash_objects(tempkey);
-        c.cache(hashtempkey, int{33}, Temporary);
+        c.cache(hashtempkey, int{33}, CacheTag::Temporary);
         REQUIRE(c.count(hashtempkey) == 1);
         c.prune_cache();
         REQUIRE(c.count(hashtempkey) == 0);
