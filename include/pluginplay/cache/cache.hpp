@@ -90,6 +90,7 @@ public:
      *
      *  @param[in] key The object the data will be associated with.
      *  @param[in] value The data to store under the key.
+     *  @param[in] tag The tag for the key.
      *
      *  @throw std::bad_alloc if there is a memory error allocating the storage.
      *                        Strong throw guarantee.
@@ -97,7 +98,8 @@ public:
      */
     template<typename KeyType, typename ValueType,
              typename = disable_if_hash_t<KeyType>>
-    void cache(const KeyType& key, ValueType&& value, CacheTag tag = Permenant);
+    void cache(const KeyType& key, ValueType&& value,
+               const CacheTag& tag = Permenant);
 
     /** @brief Stores a value under the provided hash value.
      *
@@ -111,12 +113,14 @@ public:
      *
      *  @param[in] key The hash the data will be associated with.
      *  @param[in] value The data to store under the key.
+     *  @param[in] tag The tag for the key.
      *
      *  @throw std::bad_alloc if there is a memory error allocating the storage.
      *                        Strong throw guarantee.
      */
     template<typename ValueType>
-    void cache(hash_type key, ValueType&& value, CacheTag tag = Permenant);
+    void cache(hash_type key, ValueType&& value,
+               const CacheTag& tag = Permenant);
 
     /** @brief Function for accessing cached data by key.
      *
@@ -344,6 +348,20 @@ public:
     ValueType uncache(const hash_type& key,
                       const ValueType& default_value) const;
 
+    /** @brief Set a given cache key as temporary
+     *
+     *  This function sets a given cache key as temporary
+     *  @param[in] key The hash that the cached data is stored under.
+     */
+    void set_temporary(const hash_type& key);
+
+    /** @brief Set a given cache key as permanent
+     *
+     *  This function sets a given cache key as permanent
+     *  @param[in] key The hash that the cached data is stored under.
+     */
+    void set_permanent(const hash_type& key);
+
     /** @brief Deletes temporary values in the cache
      *
      *  This function deletes the cache values tagged as temporary
@@ -371,12 +389,12 @@ inline bool Cache::count(const hash_type& key) const noexcept {
 }
 
 template<typename KeyType, typename ValueType, typename>
-void Cache::cache(const KeyType& key, ValueType&& value, CacheTag tag) {
+void Cache::cache(const KeyType& key, ValueType&& value, const CacheTag& tag) {
     cache(pluginplay::hash_objects(key), std::forward<ValueType>(value), tag);
 }
 
 template<typename ValueType>
-void Cache::cache(hash_type key, ValueType&& value, CacheTag tag) {
+void Cache::cache(hash_type key, ValueType&& value, const CacheTag& tag) {
     using clean_type = std::decay_t<ValueType>;
     using pluginplay::detail_::make_Any;
     auto da_any  = make_Any<clean_type>(std::forward<ValueType>(value));
@@ -433,6 +451,10 @@ ValueType Cache::uncache(const hash_type& key,
     else
         return default_value;
 }
+
+inline void Cache::set_temporary(const hash_type& key) { m_temp_.insert(key); }
+
+inline void Cache::set_permanent(const hash_type& key) { m_temp_.erase(key); }
 
 inline void Cache::prune_cache() {
     for(auto const& key : m_temp_) m_data_.erase(key);
