@@ -4,6 +4,7 @@
 
 namespace pluginplay {
 
+enum CacheTag { Permenant, Temporary };
 /** @brief An object for storing data which may be needed after a module has run
  *
  */
@@ -96,7 +97,7 @@ public:
      */
     template<typename KeyType, typename ValueType,
              typename = disable_if_hash_t<KeyType>>
-    void cache(const KeyType& key, ValueType&& value);
+    void cache(const KeyType& key, ValueType&& value, CacheTag tag = Permenant);
 
     /** @brief Stores a value under the provided hash value.
      *
@@ -115,7 +116,7 @@ public:
      *                        Strong throw guarantee.
      */
     template<typename ValueType>
-    void cache(hash_type key, ValueType&& value);
+    void cache(hash_type key, ValueType&& value, CacheTag tag = Permenant);
 
     /** @brief Function for accessing cached data by key.
      *
@@ -343,9 +344,15 @@ public:
     ValueType uncache(const hash_type& key,
                       const ValueType& default_value) const;
 
+    /** @brief Deletes temporary values in the cache
+     *
+     *  This function deletes the cache values tagged as temporary
+     */
+    void prune_cache();
+
     /** @brief Reset the module cache to an empty map
      *
-     *  This function allows the cache to be emptied of previously store
+     *  This function allows the cache to be emptied of previously stored
      *  results
      */
     void reset_cache();
@@ -353,6 +360,8 @@ public:
 private:
     /// The object actually storing all of the cached data
     std::map<hash_type, pluginplay::detail_::Any> m_data_;
+    /// The set storing the hash keys of temporary values in the cache
+    std::set<hash_type> m_temp_;
 }; // class Cache
 
 // ------------------------------ Implementations ------------------------------
@@ -362,16 +371,17 @@ inline bool Cache::count(const hash_type& key) const noexcept {
 }
 
 template<typename KeyType, typename ValueType, typename>
-void Cache::cache(const KeyType& key, ValueType&& value) {
-    cache(pluginplay::hash_objects(key), std::forward<ValueType>(value));
+void Cache::cache(const KeyType& key, ValueType&& value, CacheTag tag) {
+    cache(pluginplay::hash_objects(key), std::forward<ValueType>(value), tag);
 }
 
 template<typename ValueType>
-void Cache::cache(hash_type key, ValueType&& value) {
+void Cache::cache(hash_type key, ValueType&& value, CacheTag tag) {
     using clean_type = std::decay_t<ValueType>;
     using pluginplay::detail_::make_Any;
     auto da_any  = make_Any<clean_type>(std::forward<ValueType>(value));
     m_data_[key] = std::move(da_any);
+    if(tag == Temporary && !m_temp_.count(key)) m_temp_.insert(key);
 }
 
 template<typename ValueType, typename KeyType, typename>
@@ -422,6 +432,10 @@ ValueType Cache::uncache(const hash_type& key,
         return m_data_.at(key).template cast<ValueType>();
     else
         return default_value;
+}
+
+inline void Cache::prune_cache() {
+    for(auto const& key : m_temp_) m_data_.erase(key);
 }
 
 inline void Cache::reset_cache() { m_data_.clear(); }
