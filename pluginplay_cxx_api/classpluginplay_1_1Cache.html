@@ -96,14 +96,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a23113a1e7ce07656e122e3e8c3a20da6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a23113a1e7ce07656e122e3e8c3a20da6">count</a> (const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;key) const noexcept</td></tr>
 <tr class="memdesc:a23113a1e7ce07656e122e3e8c3a20da6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether or not the cache stores a value associated with the provided hash.  <a href="classpluginplay_1_1Cache.html#a23113a1e7ce07656e122e3e8c3a20da6">More...</a><br /></td></tr>
 <tr class="separator:a23113a1e7ce07656e122e3e8c3a20da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4653d18424c69f488a3333fdf204f0a"><td class="memTemplParams" colspan="2">template&lt;typename KeyType , typename ValueType , typename  = disable_if_hash_t&lt;KeyType&gt;&gt; </td></tr>
-<tr class="memitem:ab4653d18424c69f488a3333fdf204f0a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#ab4653d18424c69f488a3333fdf204f0a">cache</a> (const KeyType &amp;key, ValueType &amp;&amp;value)</td></tr>
-<tr class="memdesc:ab4653d18424c69f488a3333fdf204f0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a value under the provided key.  <a href="classpluginplay_1_1Cache.html#ab4653d18424c69f488a3333fdf204f0a">More...</a><br /></td></tr>
-<tr class="separator:ab4653d18424c69f488a3333fdf204f0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a898472fad6b4976558eebe68ca9e55a4"><td class="memTemplParams" colspan="2">template&lt;typename ValueType &gt; </td></tr>
-<tr class="memitem:a898472fad6b4976558eebe68ca9e55a4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a898472fad6b4976558eebe68ca9e55a4">cache</a> (<a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> key, ValueType &amp;&amp;value)</td></tr>
-<tr class="memdesc:a898472fad6b4976558eebe68ca9e55a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a value under the provided hash value.  <a href="classpluginplay_1_1Cache.html#a898472fad6b4976558eebe68ca9e55a4">More...</a><br /></td></tr>
-<tr class="separator:a898472fad6b4976558eebe68ca9e55a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97a1c0401808d986be8bc7edfd2ee578"><td class="memTemplParams" colspan="2">template&lt;typename KeyType , typename ValueType , typename  = disable_if_hash_t&lt;KeyType&gt;&gt; </td></tr>
+<tr class="memitem:a97a1c0401808d986be8bc7edfd2ee578"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a97a1c0401808d986be8bc7edfd2ee578">cache</a> (const KeyType &amp;key, ValueType &amp;&amp;value, const CacheTag &amp;tag=CacheTag::Permenant)</td></tr>
+<tr class="memdesc:a97a1c0401808d986be8bc7edfd2ee578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a value under the provided key.  <a href="classpluginplay_1_1Cache.html#a97a1c0401808d986be8bc7edfd2ee578">More...</a><br /></td></tr>
+<tr class="separator:a97a1c0401808d986be8bc7edfd2ee578"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29b9c0dd90feffb3569b728f33e01869"><td class="memTemplParams" colspan="2">template&lt;typename ValueType &gt; </td></tr>
+<tr class="memitem:a29b9c0dd90feffb3569b728f33e01869"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a29b9c0dd90feffb3569b728f33e01869">cache</a> (<a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> key, ValueType &amp;&amp;value, const CacheTag &amp;tag=CacheTag::Permenant)</td></tr>
+<tr class="memdesc:a29b9c0dd90feffb3569b728f33e01869"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a value under the provided hash value.  <a href="classpluginplay_1_1Cache.html#a29b9c0dd90feffb3569b728f33e01869">More...</a><br /></td></tr>
+<tr class="separator:a29b9c0dd90feffb3569b728f33e01869"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ee18aa2136878476b64e1a21ef12967"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename KeyType , typename  = disable_if_hash_t&lt;KeyType&gt;&gt; </td></tr>
 <tr class="memitem:a1ee18aa2136878476b64e1a21ef12967"><td class="memTemplItemLeft" align="right" valign="top">ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a1ee18aa2136878476b64e1a21ef12967">uncache</a> (const KeyType &amp;key)</td></tr>
 <tr class="memdesc:a1ee18aa2136878476b64e1a21ef12967"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for accessing cached data by key.  <a href="classpluginplay_1_1Cache.html#a1ee18aa2136878476b64e1a21ef12967">More...</a><br /></td></tr>
@@ -136,6 +136,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a53493d304fb88eed1041b841b7b3b26f"><td class="memTemplItemLeft" align="right" valign="top">ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a53493d304fb88eed1041b841b7b3b26f">uncache</a> (const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;key, const ValueType &amp;default_value) const</td></tr>
 <tr class="memdesc:a53493d304fb88eed1041b841b7b3b26f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for accessing read-only cached data by hash, return default value if not cached.  <a href="classpluginplay_1_1Cache.html#a53493d304fb88eed1041b841b7b3b26f">More...</a><br /></td></tr>
 <tr class="separator:a53493d304fb88eed1041b841b7b3b26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbe00589b3a6338b98a41ba688f5cfd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#acbe00589b3a6338b98a41ba688f5cfd5">set_temporary</a> (const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;key)</td></tr>
+<tr class="memdesc:acbe00589b3a6338b98a41ba688f5cfd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a given cache key as temporary.  <a href="classpluginplay_1_1Cache.html#acbe00589b3a6338b98a41ba688f5cfd5">More...</a><br /></td></tr>
+<tr class="separator:acbe00589b3a6338b98a41ba688f5cfd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af203dd006b311660a1c6e067f34ff799"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#af203dd006b311660a1c6e067f34ff799">set_permanent</a> (const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;key)</td></tr>
+<tr class="memdesc:af203dd006b311660a1c6e067f34ff799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a given cache key as permanent.  <a href="classpluginplay_1_1Cache.html#af203dd006b311660a1c6e067f34ff799">More...</a><br /></td></tr>
+<tr class="separator:af203dd006b311660a1c6e067f34ff799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7a6ec0338db4feb77f4fe5f2774d032"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#aa7a6ec0338db4feb77f4fe5f2774d032">prune_cache</a> ()</td></tr>
+<tr class="memdesc:aa7a6ec0338db4feb77f4fe5f2774d032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes temporary values in the cache.  <a href="classpluginplay_1_1Cache.html#aa7a6ec0338db4feb77f4fe5f2774d032">More...</a><br /></td></tr>
+<tr class="separator:aa7a6ec0338db4feb77f4fe5f2774d032"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6071ca40eeab03469beb59f828721ddb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Cache.html#a6071ca40eeab03469beb59f828721ddb">reset_cache</a> ()</td></tr>
 <tr class="memdesc:a6071ca40eeab03469beb59f828721ddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the module cache to an empty map.  <a href="classpluginplay_1_1Cache.html#a6071ca40eeab03469beb59f828721ddb">More...</a><br /></td></tr>
 <tr class="separator:a6071ca40eeab03469beb59f828721ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,8 +152,8 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An object for storing data which may be needed after a module has run. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab4653d18424c69f488a3333fdf204f0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4653d18424c69f488a3333fdf204f0a">&#9670;&nbsp;</a></span>cache() <span class="overload">[1/2]</span></h2>
+<a id="a97a1c0401808d986be8bc7edfd2ee578"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97a1c0401808d986be8bc7edfd2ee578">&#9670;&nbsp;</a></span>cache() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -161,7 +170,13 @@ template&lt;typename KeyType , typename ValueType , typename &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ValueType &amp;&amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const CacheTag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>CacheTag::Permenant</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -184,7 +199,8 @@ template&lt;typename KeyType , typename ValueType , typename &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The object the data will be associated with. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The data to store under the key.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The data to store under the key. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tag</td><td>The tag for the key.</td></tr>
   </table>
   </dd>
 </dl>
@@ -198,8 +214,8 @@ template&lt;typename KeyType , typename ValueType , typename &gt; </div>
 
 </div>
 </div>
-<a id="a898472fad6b4976558eebe68ca9e55a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a898472fad6b4976558eebe68ca9e55a4">&#9670;&nbsp;</a></span>cache() <span class="overload">[2/2]</span></h2>
+<a id="a29b9c0dd90feffb3569b728f33e01869"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29b9c0dd90feffb3569b728f33e01869">&#9670;&nbsp;</a></span>cache() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -216,7 +232,13 @@ template&lt;typename ValueType &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ValueType &amp;&amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const CacheTag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>CacheTag::Permenant</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -237,7 +259,8 @@ template&lt;typename ValueType &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The hash the data will be associated with. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The data to store under the key.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The data to store under the key. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tag</td><td>The tag for the key.</td></tr>
   </table>
   </dd>
 </dl>
@@ -343,6 +366,34 @@ template&lt;typename KeyType , typename  = disable_if_hash_t&lt;KeyType&gt;&gt; 
 
 </div>
 </div>
+<a id="aa7a6ec0338db4feb77f4fe5f2774d032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7a6ec0338db4feb77f4fe5f2774d032">&#9670;&nbsp;</a></span>prune_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::Cache::prune_cache </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deletes temporary values in the cache. </p>
+<p>This function deletes the cache values tagged as temporary </p>
+
+</div>
+</div>
 <a id="a6071ca40eeab03469beb59f828721ddb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6071ca40eeab03469beb59f828721ddb">&#9670;&nbsp;</a></span>reset_cache()</h2>
 
@@ -367,7 +418,75 @@ template&lt;typename KeyType , typename  = disable_if_hash_t&lt;KeyType&gt;&gt; 
 </div><div class="memdoc">
 
 <p>Reset the module cache to an empty map. </p>
-<p>This function allows the cache to be emptied of previously store results </p>
+<p>This function allows the cache to be emptied of previously stored results </p>
+
+</div>
+</div>
+<a id="af203dd006b311660a1c6e067f34ff799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af203dd006b311660a1c6e067f34ff799">&#9670;&nbsp;</a></span>set_permanent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::Cache::set_permanent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set a given cache key as permanent. </p>
+<p>This function sets a given cache key as permanent </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The hash that the cached data is stored under. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acbe00589b3a6338b98a41ba688f5cfd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbe00589b3a6338b98a41ba688f5cfd5">&#9670;&nbsp;</a></span>set_temporary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::Cache::set_temporary </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1Cache.html#af69d1d916bd054028a21dd73acdc2cff">hash_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set a given cache key as temporary. </p>
+<p>This function sets a given cache key as temporary </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The hash that the cached data is stored under. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

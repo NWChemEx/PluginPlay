@@ -13,5 +13,6 @@ var searchData=
   ['propertytype_124',['PropertyType',['../classpluginplay_1_1PropertyType.html',1,'pluginplay']]],
   ['propertytypebase_125',['PropertyTypeBase',['../structpluginplay_1_1detail___1_1PropertyTypeBase.html',1,'pluginplay::detail_']]],
   ['propertytypebase_3c_20propertytype_3c_20t_2c_20u_20_3e_20_3e_126',['PropertyTypeBase&lt; PropertyType&lt; T, U &gt; &gt;',['../structpluginplay_1_1detail___1_1PropertyTypeBase_3_01PropertyType_3_01T_00_01U_01_4_01_4.html',1,'pluginplay::detail_']]],
-  ['type_127',['type',['../namespacepluginplay_1_1type.html',1,'pluginplay']]]
+  ['prune_5fcache_127',['prune_cache',['../classpluginplay_1_1Cache.html#aa7a6ec0338db4feb77f4fe5f2774d032',1,'pluginplay::Cache']]],
+  ['type_128',['type',['../namespacepluginplay_1_1type.html',1,'pluginplay']]]
 ];
