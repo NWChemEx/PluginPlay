@@ -4,7 +4,7 @@
 namespace pluginplay::detail_ {
 
 // Enumerates template arguments that can be used to specialize AnyWrapper
-enum AnyTag { Input, Output, General };
+enum class AnyTag { Input, Output, General };
 
 template<AnyTag T>
 struct is_input_type : std::false_type {};
