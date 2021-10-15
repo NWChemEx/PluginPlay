@@ -14,16 +14,6 @@ namespace pluginplay::detail_ {
 template<typename T, AnyTag Tag>
 class AnyWrapper;
 
-/// This should be moved to the utilities repo
-template<typename T>
-struct IsReferenceWrapper : std::false_type {};
-
-template<typename T>
-struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
-
-template<typename T>
-static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
-
 /**
  * @brief Defines the API for interacting with the type-erased value.
  *
@@ -306,8 +296,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase<Tag>& operator=(AnyWrapperBase<Tag>&&) noexcept =
-      default;
+    AnyWrapperBase<Tag>& operator=(AnyWrapperBase<Tag>&&) noexcept = default;
 
     /// Static map to store the hash_code of type_() as the keys and
     /// the functions that can return the deserialized object wrapped in a
@@ -506,22 +495,17 @@ private:
         // Reference wrappers show up for Any instances that are wrapping
         // inputs. We don't need to serialize inputs
 
-        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
-        if constexpr(is_ref_wrapper) {
-            throw std::runtime_error("Are you trying to serialize an input?");
-        } else {
-            std::size_t idx = std::type_index(base_type::type()).hash_code();
-            s(idx);
-            if(!base_type::m_any_maker_.count(idx)) {
-                typename base_type::fxn_type l = [](Deserializer& d) {
-                    std::decay_t<T> new_value;
-                    d(new_value);
-                    return std::make_unique<AnyWrapper>(std::move(new_value));
-                };
-                base_type::m_any_maker_[idx] = l;
-            }
-            s(value_());
+        std::size_t idx = std::type_index(base_type::type()).hash_code();
+        s(idx);
+        if(!base_type::m_any_maker_.count(idx)) {
+            typename base_type::fxn_type l = [](Deserializer& d) {
+                std::decay_t<T> new_value;
+                d(new_value);
+                return std::make_unique<AnyWrapper>(std::move(new_value));
+            };
+            base_type::m_any_maker_[idx] = l;
         }
+        s(value_());
     }
 };
 
@@ -556,33 +540,8 @@ AnyWrapperBase<Tag>::deserialize(Deserializer& d) {
 template<typename U>
 explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
 
-// template<typename T, AnyTag Tag>
-// enable_if_input_type_t<Tag> AnyWrapper<T, Tag>::serialize_(
-//   Serializer& s) const {
-//     // Reference wrappers show up for Any instances that are wrapping
-//     // inputs. We don't need to serialize inputs
-
-//     constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
-//     if constexpr(is_ref_wrapper) {
-//         throw std::runtime_error("Are you trying to serialize an input?");
-//     } else {
-//         std::size_t idx = std::type_index(base_type::type()).hash_code();
-//         s(idx);
-//         if(!base_type::m_any_maker_.count(idx)) {
-//             typename base_type::fxn_type l = [](Deserializer& d) {
-//                 std::decay_t<T> new_value;
-//                 d(new_value);
-//                 return std::make_unique<AnyWrapper>(std::move(new_value));
-//             };
-//             base_type::m_any_maker_[idx] = l;
-//         }
-//         s(value_());
-//     }
-// }
-
 template<typename T, AnyTag Tag>
-typename AnyWrapper<T, Tag>::wrapper_ptr AnyWrapper<T, Tag>::clone_()
-  const {
+typename AnyWrapper<T, Tag>::wrapper_ptr AnyWrapper<T, Tag>::clone_() const {
     return std::make_unique<AnyWrapper<T, Tag>>(value_());
 }
 
