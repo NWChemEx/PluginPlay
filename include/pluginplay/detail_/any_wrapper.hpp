@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/any_tag.hpp"
 #include "pluginplay/detail_/archive_wrapper.hpp"
 #include "pluginplay/hasher.hpp"
 #include "pluginplay/types.hpp"
@@ -8,14 +9,11 @@
 #include <utilities/printing/print_stl.hpp>
 
 namespace pluginplay::detail_ {
+
 /// Forward declare class that will implement the API
-
-class AnyInput {};
-class AnyOutput {};
-class AnyGeneral {};
-
-template<typename T, typename AnyTag>
+template<typename T, AnyTag Tag>
 class AnyWrapper;
+
 /// This should be moved to the utilities repo
 template<typename T>
 struct IsReferenceWrapper : std::false_type {};
@@ -25,30 +23,6 @@ struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
 
 template<typename T>
 static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
-
-template<typename T>
-struct is_input_type : std::false_type {};
-template<>
-struct is_input_type<AnyInput> : std::true_type {};
-template<>
-struct is_input_type<AnyGeneral> : std::true_type {};
-template<typename T>
-struct is_output_type : std::false_type {};
-template<>
-struct is_output_type<AnyOutput> : std::true_type {};
-template<>
-struct is_output_type<AnyGeneral> : std::true_type {};
-
-template<typename T>
-static constexpr bool is_input_type_v = is_input_type<T>::value;
-template<typename T>
-static constexpr bool is_output_type_v = is_output_type<T>::value;
-
-// template<typename T, typename U = void>
-// using enable_if_input_type_t = std::enable_if_t<is_input_type_v<T>, U>;
-
-// template<typename T, typename U = void>
-// using enable_if_output_type_t = std::enable_if_t<is_output_type_v<T>, U>;
 
 /**
  * @brief Defines the API for interacting with the type-erased value.
@@ -61,11 +35,11 @@ static constexpr bool is_output_type_v = is_output_type<T>::value;
  * are then implemented by a derived class, which knows the type to cast the
  * std::any to.
  */
-template<typename AnyTag = AnyGeneral>
+template<AnyTag Tag = AnyTag::General>
 class AnyWrapperBase {
 protected:
     /// My type
-    using my_type = AnyWrapperBase<AnyTag>;
+    using my_type = AnyWrapperBase<Tag>;
 
     /// type for determining if @p T inherits from us
     template<typename T>
@@ -81,7 +55,7 @@ protected:
 
 public:
     /// Type of a unique_ptr to the wrapper
-    using wrapper_ptr = std::unique_ptr<AnyWrapperBase<AnyTag>>;
+    using wrapper_ptr = std::unique_ptr<AnyWrapperBase<Tag>>;
 
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
@@ -176,9 +150,7 @@ public:
      *  throw guarantee.
      */
 
-    std::enable_if_t<is_input_type_v<AnyTag>> hash(Hasher& h) const {
-        hash_(h);
-    }
+    enable_if_input_type_t<Tag> hash(Hasher& h) const { hash_(h); }
 
     /** @brief Enables serialization of the AnyBase_ instance.
      *
@@ -189,7 +161,7 @@ public:
      * reference; this may arise if you try to serialize a ModuleInput
      * instance.
      */
-    std::enable_if_t<is_output_type_v<AnyTag>> serialize(Serializer& s) const {
+    enable_if_output_type_t<Tag> serialize(Serializer& s) const {
         serialize_(s);
     }
 
@@ -224,7 +196,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator==(const AnyWrapperBase<AnyTag>& rhs) const noexcept;
+    bool operator==(const AnyWrapperBase<Tag>& rhs) const noexcept;
 
     /** @brief Used to determine if the type-erased value of this instance
      * is different from that of another instance.
@@ -242,7 +214,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator!=(const AnyWrapperBase<AnyTag>& rhs) const noexcept;
+    bool operator!=(const AnyWrapperBase<Tag>& rhs) const noexcept;
 
     /** @brief Casts the wrapped value back to a readonly type @p T
      *
@@ -293,7 +265,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase(const AnyWrapperBase<AnyTag>&) = default;
+    AnyWrapperBase(const AnyWrapperBase<Tag>&) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -305,7 +277,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase(AnyWrapperBase<AnyTag>&&) noexcept = default;
+    AnyWrapperBase(AnyWrapperBase<Tag>&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -319,7 +291,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase& operator=(const AnyWrapperBase<AnyTag>&) = default;
+    AnyWrapperBase& operator=(const AnyWrapperBase<Tag>&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -334,7 +306,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase<AnyTag>& operator=(AnyWrapperBase<AnyTag>&&) noexcept =
+    AnyWrapperBase<Tag>& operator=(AnyWrapperBase<Tag>&&) noexcept =
       default;
 
     /// Static map to store the hash_code of type_() as the keys and
@@ -350,19 +322,15 @@ private:
     virtual rtti_type type_() const noexcept = 0;
 
     /// To be implemented by derived class so we can hash
-    virtual std::enable_if_t<is_input_type_v<AnyTag>> hash_(
-      Hasher& h) const = 0;
+    virtual enable_if_input_type_t<Tag> hash_(Hasher& h) const = 0;
 
-    virtual std::enable_if_t<is_output_type_v<AnyTag>> serialize_(
-      Serializer& s) const = 0;
+    virtual enable_if_output_type_t<Tag> serialize_(Serializer& s) const = 0;
 
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
 
     /// To be implemented by the derived class to define equality
-    virtual bool are_equal_(
-      const AnyWrapperBase<AnyTag>& rhs) const noexcept = 0;
-
+    virtual bool are_equal_(const AnyWrapperBase<Tag>& rhs) const noexcept = 0;
     /// The type-erased value
     std::any m_value_;
 }; // class AnyWrapperBase
@@ -377,10 +345,10 @@ private:
  * @tparam T The type of the instance to wrap. Must be copyable, hashable,
  * and have operator== defined.
  */
-template<typename T, typename AnyTag = AnyGeneral>
-class AnyWrapper : public AnyWrapperBase<AnyTag> {
+template<typename T, AnyTag Tag = AnyTag::General>
+class AnyWrapper : public AnyWrapperBase<Tag> {
 private:
-    using base_type = AnyWrapperBase<AnyTag>;
+    using base_type = AnyWrapperBase<Tag>;
 
     template<typename U>
     using enable_if_not_any_t =
@@ -514,7 +482,7 @@ private:
      *
      *  @throw none No throw guarantee.
      */
-    bool are_equal_(const AnyWrapperBase<AnyTag>& rhs) const noexcept override;
+    bool are_equal_(const AnyWrapperBase<Tag>& rhs) const noexcept override;
 
     /** @brief Implements hashing for the AnyBase_ class.
      *
@@ -523,9 +491,7 @@ private:
      *  @throws ??? if the wrapped instance's hash function throws.  Strong
      *              throw guarantee.
      */
-    std::enable_if_t<is_input_type_v<AnyTag>> hash_(Hasher& h) const override {
-        h(value_());
-    }
+    enable_if_input_type_t<Tag> hash_(Hasher& h) const override { h(value_()); }
 
     /** @brief Implements serialization for the AnyBase_ class.
      *
@@ -536,32 +502,52 @@ private:
      * reference; this may arise if you try to serialize a ModuleInput
      * instance.
      */
-    std::enable_if_t<is_output_type_v<AnyTag>> serialize_(
-      Serializer& s) const override;
+    enable_if_output_type_t<Tag> serialize_(Serializer& s) const override {
+        // Reference wrappers show up for Any instances that are wrapping
+        // inputs. We don't need to serialize inputs
+
+        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+        if constexpr(is_ref_wrapper) {
+            throw std::runtime_error("Are you trying to serialize an input?");
+        } else {
+            std::size_t idx = std::type_index(base_type::type()).hash_code();
+            s(idx);
+            if(!base_type::m_any_maker_.count(idx)) {
+                typename base_type::fxn_type l = [](Deserializer& d) {
+                    std::decay_t<T> new_value;
+                    d(new_value);
+                    return std::make_unique<AnyWrapper>(std::move(new_value));
+                };
+                base_type::m_any_maker_[idx] = l;
+            }
+            s(value_());
+        }
+    }
 };
 
 //-------------------------------Implementations--------------------------------
 
-template<typename AnyTag>
+template<AnyTag Tag>
 template<typename T>
-bool AnyWrapperBase<AnyTag>::is_convertible() const noexcept {
+bool AnyWrapperBase<Tag>::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
 
-template<typename AnyTag>
-inline bool AnyWrapperBase<AnyTag>::operator==(
+template<AnyTag Tag>
+inline bool AnyWrapperBase<Tag>::operator==(
   const AnyWrapperBase& rhs) const noexcept {
     return are_equal_(rhs);
 }
-template<typename AnyTag>
-inline bool AnyWrapperBase<AnyTag>::operator!=(
+
+template<AnyTag Tag>
+inline bool AnyWrapperBase<Tag>::operator!=(
   const AnyWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
-template<typename AnyTag>
-inline typename AnyWrapperBase<AnyTag>::wrapper_ptr
-AnyWrapperBase<AnyTag>::deserialize(Deserializer& d) {
+template<AnyTag Tag>
+inline typename AnyWrapperBase<Tag>::wrapper_ptr
+AnyWrapperBase<Tag>::deserialize(Deserializer& d) {
     std::size_t idx;
     d(idx);
     return m_any_maker_.at(idx)(d);
@@ -570,38 +556,38 @@ AnyWrapperBase<AnyTag>::deserialize(Deserializer& d) {
 template<typename U>
 explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
 
-template<typename T, typename AnyTag>
-std::enable_if_t<is_output_type_v<AnyTag>> AnyWrapper<T, AnyTag>::serialize_(
-  Serializer& s) const {
-    // Reference wrappers show up for Any instances that are wrapping
-    // inputs. We don't need to serialize inputs
+// template<typename T, AnyTag Tag>
+// enable_if_input_type_t<Tag> AnyWrapper<T, Tag>::serialize_(
+//   Serializer& s) const {
+//     // Reference wrappers show up for Any instances that are wrapping
+//     // inputs. We don't need to serialize inputs
 
-    constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
-    if constexpr(is_ref_wrapper) {
-        throw std::runtime_error("Are you trying to serialize an input?");
-    } else {
-        std::size_t idx = std::type_index(base_type::type()).hash_code();
-        s(idx);
-        if(!base_type::m_any_maker_.count(idx)) {
-            typename base_type::fxn_type l = [](Deserializer& d) {
-                std::decay_t<T> new_value;
-                d(new_value);
-                return std::make_unique<AnyWrapper>(std::move(new_value));
-            };
-            base_type::m_any_maker_[idx] = l;
-        }
-        s(value_());
-    }
-}
+//     constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+//     if constexpr(is_ref_wrapper) {
+//         throw std::runtime_error("Are you trying to serialize an input?");
+//     } else {
+//         std::size_t idx = std::type_index(base_type::type()).hash_code();
+//         s(idx);
+//         if(!base_type::m_any_maker_.count(idx)) {
+//             typename base_type::fxn_type l = [](Deserializer& d) {
+//                 std::decay_t<T> new_value;
+//                 d(new_value);
+//                 return std::make_unique<AnyWrapper>(std::move(new_value));
+//             };
+//             base_type::m_any_maker_[idx] = l;
+//         }
+//         s(value_());
+//     }
+// }
 
-template<typename T, typename AnyTag>
-typename AnyWrapper<T, AnyTag>::wrapper_ptr AnyWrapper<T, AnyTag>::clone_()
+template<typename T, AnyTag Tag>
+typename AnyWrapper<T, Tag>::wrapper_ptr AnyWrapper<T, Tag>::clone_()
   const {
-    return std::make_unique<AnyWrapper<T, AnyTag>>(value_());
+    return std::make_unique<AnyWrapper<T, Tag>>(value_());
 }
 
-template<typename T, typename AnyTag>
-std::string AnyWrapper<T, AnyTag>::str_() const {
+template<typename T, AnyTag Tag>
+std::string AnyWrapper<T, Tag>::str_() const {
     std::stringstream ss;
     using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {
@@ -612,9 +598,9 @@ std::string AnyWrapper<T, AnyTag>::str_() const {
     return ss.str();
 }
 
-template<typename T, typename AnyTag>
-bool AnyWrapper<T, AnyTag>::are_equal_(
-  const AnyWrapperBase<AnyTag>& rhs) const noexcept {
+template<typename T, AnyTag Tag>
+bool AnyWrapper<T, Tag>::are_equal_(
+  const AnyWrapperBase<Tag>& rhs) const noexcept {
     try {
         return value_() == rhs.template cast<const T&>();
     } catch(...) {
