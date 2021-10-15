@@ -340,7 +340,7 @@ protected:
     /// Static map to store the hash_code of type_() as the keys and
     /// the functions that can return the deserialized object wrapped in a
     /// AnyWrapper instance as the values.
-    static std::map<std::size_t, fxn_type> m_any_maker_;
+    inline static std::map<std::size_t, fxn_type> m_any_maker_;
 
 private:
     /// To be implemented by derived class in order for copying to work
