@@ -1,9 +1,5 @@
 from pluginplay import *
-cppyy.include("point_charge.hpp")
-cppyy.include("force.hpp")
-cppyy.include("electric_field.hpp")
-#cppyy.include("pluginplay_examples_all.hpp")
-from cppyy.gbl import pluginplay_examples 
+from pluginplay_examples import *
 from cppyy.gbl.pluginplay_examples import ElectricField, Force, Point, PointCharge
 from math import sqrt
 
@@ -44,11 +40,22 @@ class ClassicalForce(pluginplay.ModuleBase):
 
 mm = pluginplay.ModuleManager()
 
-mm.add_module[ClassicalForce]("Force")
-mm.add_module[CoulombsLaw]("Coulomb's Law")
+mm.add_module("Force", make_shared[ClassicalForce]())
+mm.add_module("Coulomb's Law", make_shared[CoulombsLaw]())
+
+# Continued work to de-C++ Python
+#mm.add_module[ClassicalForce]("Force")
+#mm.add_module[CoulombsLaw]("Coulomb's Law")
+
 mm.change_submod("Force", "electric field", "Coulomb's Law")
 
 r = Point([0.0,0.0,0.0])
+
+# Continued work to de-C++ Python
+#p1 = PointCharge(1.0, [2.0, 3.0, 3.0])
+#p2 = PointCharge(0.5, [-1.0, 4.0, 0.0])
+#pvc = [p1, p2]
+
 pvc = vector[PointCharge]([PointCharge(1.0, [2.0, 3.0, 3.0]), PointCharge(0.5, [-1.0, 4.0, 0.0])])
 field = mm.at("Coulomb's Law").run_as[ElectricField](r, pvc)
 
