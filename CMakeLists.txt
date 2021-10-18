@@ -69,6 +69,16 @@ include(nwx_python_mods)
 cppyy_make_python_package(PACKAGE pluginplay NAMESPACES pluginplay DEPPACKAGES parallelzone )
 
 if("${BUILD_TESTING}")
+    set(tests_src_dir "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}")
+    set(examples_src_dir "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}/docs")
+    cpp_add_library(
+        ${PROJECT_NAME}_examples
+        SOURCE_DIR ${examples_src_dir}
+        INCLUDE_DIR ${examples_src_dir}
+        DEPENDS ${PROJECT_NAME}
+    )
+    include(nwx_python_mods)
+        cppyy_make_python_package(PACKAGE ${PROJECT_NAME}_examples NAMESPACES pluginplay_examples DEPPACKAGES pluginplay)
     cpp_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -78,8 +88,8 @@ if("${BUILD_TESTING}")
     )
     cpp_add_tests(
         test_${PROJECT_NAME}
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}"
-        INCLUDE_DIR "${project_src_dir}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+        SOURCE_DIR ${tests_src_dir}
+        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}_examples
     )
 endif()
