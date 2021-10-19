@@ -306,8 +306,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase<Tag>& operator=(AnyWrapperBase<Tag>&&) noexcept =
-      default;
+    AnyWrapperBase<Tag>& operator=(AnyWrapperBase<Tag>&&) noexcept = default;
 
     /// Static map to store the hash_code of type_() as the keys and
     /// the functions that can return the deserialized object wrapped in a
@@ -581,8 +580,7 @@ explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
 // }
 
 template<typename T, AnyTag Tag>
-typename AnyWrapper<T, Tag>::wrapper_ptr AnyWrapper<T, Tag>::clone_()
-  const {
+typename AnyWrapper<T, Tag>::wrapper_ptr AnyWrapper<T, Tag>::clone_() const {
     return std::make_unique<AnyWrapper<T, Tag>>(value_());
 }
 
