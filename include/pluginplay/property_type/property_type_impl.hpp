@@ -1,3 +1,5 @@
+#pragma once
+
 namespace pluginplay {
 // ----------------------------- Implementations -------------------------------
 #define PROP_TYPE PropertyType<DerivedType, BaseType>
