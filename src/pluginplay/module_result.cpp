@@ -4,7 +4,7 @@
 
 namespace pluginplay {
 
-using shared_any = typename ModuleResult::shared_any;
+using shared_any_result = typename ModuleResult::shared_any_result;
 using pimpl_t    = detail_::ModuleResultPIMPL;
 
 ModuleResult::ModuleResult() : pimpl_(std::make_unique<pimpl_t>()) {}
@@ -31,11 +31,11 @@ ModuleResult& ModuleResult::set_type_(const std::type_info& rtti) {
     return *this;
 }
 
-void ModuleResult::change_(type::any new_value) {
-    pimpl_->set_value(std::make_shared<type::any>(std::move(new_value)));
+void ModuleResult::change_(type::any_result new_value) {
+    pimpl_->set_value(std::make_shared<type::any_result>(std::move(new_value)));
 }
 
-void ModuleResult::change_(shared_any new_value) {
+void ModuleResult::change_(shared_any_result new_value) {
     pimpl_->set_value(new_value);
 }
 
@@ -46,7 +46,7 @@ ModuleResult& ModuleResult::set_description(type::description desc) noexcept {
 
 type::rtti ModuleResult::type() const { return pimpl_->type(); }
 
-const shared_any& ModuleResult::at_() const { return pimpl_->value(); }
+const shared_any_result& ModuleResult::at_() const { return pimpl_->value(); }
 
 const type::description& ModuleResult::description() const {
     return pimpl_->description();

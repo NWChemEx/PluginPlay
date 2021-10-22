@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_result.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
 #include <memory>
@@ -25,7 +25,7 @@ class ModuleResultPIMPL;
 class ModuleResult {
 public:
     /// The type of a `shared_ptr` to a type-erased value
-    using shared_any = std::shared_ptr<const type::any>;
+    using shared_any_result = std::shared_ptr<const type::any_result>;
 
     /** @brief Creates and empty ModuleResult instance.
      *
@@ -170,7 +170,7 @@ public:
      *
      *  - U
      *  - const U&
-     *  - std::shared_ptr<const pluginplay::any>
+     *  - std::shared_ptr<const pluginplay::detail_::any_result>
      *
      *  If no value is currently bound then an error will be raised.
      *
@@ -232,17 +232,17 @@ private:
     ModuleResult& set_type_(const std::type_info& type);
 
     /// Retrieves the type-erased value from the PIMPL
-    const shared_any& at_() const;
+    const shared_any_result& at_() const;
 
     // Implements change when we are only given a value
-    void change_(type::any new_value);
+    void change_(type::any_result new_value);
 
     // Implements change when we are given a shared_ptr to a value
-    void change_(shared_any new_value);
+    void change_(shared_any_result new_value);
 
-    /// Helper function for wrapping a value of type @p T in an pluginplayAny
+    /// Helper function for wrapping a value of type @p T in an pluginplay AnyResult
     template<typename T>
-    static type::any wrap_value_(T&& new_value);
+    static type::any_result wrap_value_(T&& new_value);
 
     /// The object that holds the actual state of the instance.
     std::unique_ptr<detail_::ModuleResultPIMPL> pimpl_;
@@ -264,10 +264,10 @@ auto& ModuleResult::set_type() {
 template<typename T>
 void ModuleResult::change(T&& new_value) {
     using clean_T = std::decay_t<T>;
-    constexpr bool is_shared_any =
-      std::is_same_v<clean_T, shared_any> || // is shared_ptr<const any>
-      std::is_same_v<clean_T, std::shared_ptr<type::any>>; // no const
-    if constexpr(is_shared_any)
+    constexpr bool is_shared_any_result =
+      std::is_same_v<clean_T, shared_any_result> || // is shared_ptr<const any>
+      std::is_same_v<clean_T, std::shared_ptr<type::any_result>>; // no const
+    if constexpr(is_shared_any_result)
         change_(new_value);
     else
         change_(std::move(wrap_value_(std::forward<T>(new_value))));
@@ -276,19 +276,19 @@ void ModuleResult::change(T&& new_value) {
 template<typename T>
 T ModuleResult::value() const {
     using clean_T = std::decay_t<T>;
-    if constexpr(std::is_same_v<shared_any, clean_T>)
+    if constexpr(std::is_same_v<shared_any_result, clean_T>)
         return at_();
     else if constexpr(detail_::IsSharedPtr<clean_T>::value) {
         using type = typename clean_T::element_type;
         return T(at_(), &value<type&>());
     } else
-        return detail_::AnyCast<T>(*at_());
+        return detail_::AnyResultCast<T>(*at_());
 }
 
 template<typename T>
-type::any ModuleResult::wrap_value_(T&& new_value) {
+type::any_result ModuleResult::wrap_value_(T&& new_value) {
     using clean_T = std::decay_t<T>;
-    return detail_::make_Any<clean_T>(std::forward<T>(new_value));
+    return detail_::make_AnyResult<clean_T>(std::forward<T>(new_value));
 }
 
 } // namespace pluginplay

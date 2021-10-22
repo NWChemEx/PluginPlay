@@ -72,20 +72,20 @@ TEST_CASE("ModuleResult : change") {
     SECTION("Throws if given share_any with wrong type") {
         p.set_type<int>();
         auto any =
-          std::make_shared<type::any>(pluginplay::detail_::make_Any<double>(v));
+          std::make_shared<type::any_result>(pluginplay::detail_::make_AnyResult<double>(v));
         REQUIRE_THROWS_AS(p.change(any), std::invalid_argument);
     }
     SECTION("Can set with shared_any to read/write value") {
         p.set_type<double>();
         auto any =
-          std::make_shared<type::any>(pluginplay::detail_::make_Any<double>(v));
+          std::make_shared<type::any_result>(pluginplay::detail_::make_AnyResult<double>(v));
         p.change(any);
         REQUIRE(p.value<double>() == v);
     }
     SECTION("Can set with shared_any to read-only value") {
         p.set_type<double>();
-        auto any = std::make_shared<const type::any>(
-          pluginplay::detail_::make_Any<double>(v));
+        auto any = std::make_shared<const type::any_result>(
+          pluginplay::detail_::make_AnyResult<double>(v));
         p.change(any);
         REQUIRE(p.value<double>() == v);
     }
@@ -124,7 +124,7 @@ TEST_CASE("ModuleResult : value") {
     }
     SECTION("Can get value as shared_ptr") {
         p.change(double{3.14});
-        auto ptr = p.value<std::shared_ptr<const type::any>>();
+        auto ptr = p.value<std::shared_ptr<const type::any_result>>();
         REQUIRE(ptr->cast<double>() == 3.14);
     }
 }

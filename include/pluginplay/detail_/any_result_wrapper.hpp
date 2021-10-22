@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/archive_wrapper.hpp"
 #include "pluginplay/hasher.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
@@ -9,23 +10,33 @@
 namespace pluginplay::detail_ {
 /// Forward declare class that will implement the API
 template<typename T>
-class AnyWrapper;
+class AnyResultWrapper;
+
+/// This should be moved to the utilities repo
+template<typename T>
+struct IsReferenceWrapper : std::false_type {};
+
+template<typename T>
+struct IsReferenceWrapper<std::reference_wrapper<T>> : std::true_type {};
+
+template<typename T>
+static constexpr bool is_reference_wrapper_v = IsReferenceWrapper<T>::value;
 
 /**
  * @brief Defines the API for interacting with the type-erased value.
  *
- * This class is meant for use with the Any class and can be thought
- * of as a PIMPL for that class. This actual implementation works by holding the
- * value in an std::any instance (thereby differing casting and type checks to
- * it) and leveraging as much of that API as possible. Additional member
- * functions that are part of the Any API, but not std::any's API, are
- * then implemented by a derived class, which knows the type to cast the
+ * This class is meant for use with the AnyResult class and can be thought
+ * of as a PIMPL for that class. This actual implementation works by holding
+ * the value in an std::any instance (thereby differing casting and type
+ * checks to it) and leveraging as much of that API as possible. Additional
+ * member functions that are part of the AnyResult API, but not std::any's API,
+ * are then implemented by a derived class, which knows the type to cast the
  * std::any to.
  */
-class AnyWrapperBase {
+class AnyResultWrapperBase {
 protected:
     /// My type
-    using my_type = AnyWrapperBase;
+    using my_type = AnyResultWrapperBase;
 
     /// type for determining if @p T inherits from us
     template<typename T>
@@ -41,16 +52,22 @@ protected:
 
 public:
     /// Type of a unique_ptr to the wrapper
-    using wrapper_ptr = std::unique_ptr<AnyWrapperBase>;
+    using wrapper_ptr = std::unique_ptr<AnyResultWrapperBase>;
 
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
 
-    /** @brief Creates an AnyWrapper by forwarding the provided value.
+    /// Type of the functions that take a Deserializer instance, deserialize
+    /// from it an object of a specific type, and return, via a
+    /// AnyResultWrapperBase pointer, the deserialized object wrapped in a
+    /// AnyResultWrapper instance.
+    using fxn_type = std::function<wrapper_ptr(Deserializer&)>;
+
+    /** @brief Creates an AnyResultWrapper by forwarding the provided value.
      *
      *  @note This ctor only participates in overload resolution if @p T is
-     * not AnyWrapperBase or any instanitation of
-     * AnyWrapper.
+     * not AnyResultWrapperBase or any instanitation of
+     * AnyResultWrapper.
      *
      *  @tparam T The type of the value we are wrapping.
      *
@@ -60,18 +77,18 @@ public:
      *             Same throw guarantee.
      */
     template<typename T, enable_if_not_wrapper_t<T> = 0>
-    explicit AnyWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
+    explicit AnyResultWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
 
-    /** @brief Cleans up an AnyBase_ instance.
+    /** @brief Cleans up an AnyResultBase_ instance.
      *
-     *  Since AnyBase_ instances have no state this is a null
+     *  Since AnyResultBase_ instances have no state this is a null
      * operation. However, it is important to mark this function as virtual
-     * since we will literally always be passing the derived class around by its
-     * base type.
+     * since we will literally always be passing the derived class around by
+     * its base type.
      *
      *  @throws None. No throw guarantee.
      */
-    virtual ~AnyWrapperBase() = default;
+    virtual ~AnyResultWrapperBase() = default;
 
     /**
      *  @brief Makes a polymorphic copy of the wrapper.
@@ -109,7 +126,7 @@ public:
     bool is_convertible() const noexcept;
 
     /**
-     *  @brief Allows the AnyBase_ instance to be hashed.
+     *  @brief Allows the AnyResultBase_ instance to be hashed.
      *
      *  This function simply delegates to the protected hash_ member
      *  function (following the suggestion on BPHash's website).
@@ -128,6 +145,27 @@ public:
      *  throw guarantee.
      */
     void hash(Hasher& h) const { hash_(h); }
+
+    /** @brief Enables serialization of the AnyResultBase_ instance.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput
+     * instance.
+     */
+    void serialize(Serializer& s) const {
+        serialize_(s);
+    }
+
+    /** @brief Enables deserialization of the AnyResultBase_ instance.
+     *
+     *  @param[in] d The Deserializer object that wraps an output archive
+     * object.
+     *
+     */
+    static wrapper_ptr deserialize(Deserializer& d);
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -152,7 +190,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator==(const AnyWrapperBase& rhs) const noexcept;
+    bool operator==(const AnyResultWrapperBase& rhs) const noexcept;
 
     /** @brief Used to determine if the type-erased value of this instance
      * is different from that of another instance.
@@ -170,7 +208,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator!=(const AnyWrapperBase& rhs) const noexcept;
+    bool operator!=(const AnyResultWrapperBase& rhs) const noexcept;
 
     /** @brief Casts the wrapped value back to a readonly type @p T
      *
@@ -221,7 +259,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase(const AnyWrapperBase&) = default;
+    AnyResultWrapperBase(const AnyResultWrapperBase&) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -233,7 +271,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase(AnyWrapperBase&&) noexcept = default;
+    AnyResultWrapperBase(AnyResultWrapperBase&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -247,7 +285,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase& operator=(const AnyWrapperBase&) = default;
+    AnyResultWrapperBase& operator=(const AnyResultWrapperBase&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -262,7 +300,12 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase& operator=(AnyWrapperBase&&) noexcept = default;
+    AnyResultWrapperBase& operator=(AnyResultWrapperBase&&) noexcept = default;
+
+    /// Static map to store the hash_code of type_() as the keys and
+    /// the functions that can return the deserialized object wrapped in a
+    /// AnyResultWrapper instance as the values.
+    inline static std::map<std::size_t, fxn_type> m_any_maker_;
 
 private:
     /// To be implemented by derived class in order for copying to work
@@ -274,20 +317,22 @@ private:
     /// To be implemented by derived class so we can hash
     virtual void hash_(Hasher& h) const = 0;
 
+    virtual void serialize_(Serializer& s) const = 0;
+
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
 
     /// To be implemented by the derived class to define equality
-    virtual bool are_equal_(const AnyWrapperBase& rhs) const noexcept = 0;
+    virtual bool are_equal_(const AnyResultWrapperBase& rhs) const noexcept = 0;
 
     /// The type-erased value
     std::any m_value_;
-}; // class AnyWrapperBase
+}; // class AnyResultWrapperBase
 
 /** @brief The class responsible for holding the type-erased instance.
  *
- * The AnyWrapper class holds the wrapped instance for the
- * AnyWrapperBase class.  It also is responsible for implementing all
+ * The AnyResultWrapper class holds the wrapped instance for the
+ * AnyResultWrapperBase class.  It also is responsible for implementing all
  * of the abstract methods
  *
  *
@@ -295,17 +340,17 @@ private:
  * and have operator== defined.
  */
 template<typename T>
-class AnyWrapper : public AnyWrapperBase {
+class AnyResultWrapper : public AnyResultWrapperBase {
 private:
-    using base_type = AnyWrapperBase;
+    using base_type = AnyResultWrapperBase;
 
     template<typename U>
-    using enable_if_not_pluginplay_any_t =
+    using enable_if_not_any_t =
       typename base_type::template enable_if_not_wrapper_t<U>;
 
 public:
     /**
-     * @brief Creates a new AnyWrapper with the provided value
+     * @brief Creates a new AnyResultWrapper with the provided value
      *
      * @param[in] value The value we are wrapping.
      *
@@ -313,7 +358,7 @@ public:
      * Strong throw guarantee.
      */
     template<typename U, enable_if_not_wrapper_t<U> = 0>
-    explicit AnyWrapper(U&& value) : base_type(std::forward<U>(value)) {}
+    explicit AnyResultWrapper(U&& value) : base_type(std::forward<U>(value)) {}
 
 protected:
     /** @brief Deep copies the type-erased value held in @p rhs.
@@ -323,7 +368,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper(const AnyWrapper<T>& rhs) = default;
+    AnyResultWrapper(const AnyResultWrapper<T>& rhs) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -333,7 +378,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper(AnyWrapper<T>&&) noexcept = default;
+    AnyResultWrapper(AnyResultWrapper<T>&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -345,7 +390,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper<T>& operator=(const AnyWrapper<T>&) = default;
+    AnyResultWrapper<T>& operator=(const AnyResultWrapper<T>&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -357,7 +402,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper<T>& operator=(AnyWrapper<T>&&) noexcept = default;
+    AnyResultWrapper<T>& operator=(AnyResultWrapper<T>&&) noexcept = default;
 
 private:
     /// Type of a unique_ptr to the base
@@ -386,7 +431,7 @@ private:
      *
      *  This function ultimately invokes the wrapped instances copy ctor.
      *
-     *  @return A newly allocated AnyBase_ instance.
+     *  @return A newly allocated AnyResultBase_ instance.
      *
      *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
      *             T's copy constructor.
@@ -418,7 +463,7 @@ private:
      */
     std::string str_() const override;
 
-    /** @brief Implements the equality comparison for the Any
+    /** @brief Implements the equality comparison for the AnyResult
      *
      *  Ultimately both operator== and operator!= will call this function
      * (the latter will negate the result).
@@ -430,9 +475,9 @@ private:
      *
      *  @throw none No throw guarantee.
      */
-    bool are_equal_(const AnyWrapperBase& rhs) const noexcept override;
+    bool are_equal_(const AnyResultWrapperBase& rhs) const noexcept override;
 
-    /** @brief Implements hashing for the AnyBase_ class.
+    /** @brief Implements hashing for the AnyResultBase_ class.
      *
      *  @param[in,out] h The hasher instance to use for the hashing.
      *
@@ -440,35 +485,73 @@ private:
      *              throw guarantee.
      */
     void hash_(Hasher& h) const override { h(value_()); }
+
+    /** @brief Implements serialization for the AnyResultBase_ class.
+     *
+     *  @param[in,out] s The Serializer object that wraps an input archive
+     * object.
+     *
+     *  @throws std::runtime_error if this instance holds a type-erased
+     * reference; this may arise if you try to serialize a ModuleInput
+     * instance.
+     */
+    void serialize_(Serializer& s) const override {
+        // Reference wrappers show up for AnyResult instances that are wrapping
+        // inputs. We don't need to serialize inputs
+
+        constexpr bool is_ref_wrapper = is_reference_wrapper_v<T>;
+        if constexpr(is_ref_wrapper) {
+            throw std::runtime_error("Are you trying to serialize an input?");
+        } else {
+            std::size_t idx = std::type_index(base_type::type()).hash_code();
+            s(idx);
+            if(!base_type::m_any_maker_.count(idx)) {
+                typename base_type::fxn_type l = [](Deserializer& d) {
+                    std::decay_t<T> new_value;
+                    d(new_value);
+                    return std::make_unique<AnyResultWrapper>(std::move(new_value));
+                };
+                base_type::m_any_maker_[idx] = l;
+            }
+            s(value_());
+        }
+    }
 };
 
 //-------------------------------Implementations--------------------------------
 
 template<typename T>
-bool AnyWrapperBase::is_convertible() const noexcept {
+bool AnyResultWrapperBase::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
 
-inline bool AnyWrapperBase::operator==(
-  const AnyWrapperBase& rhs) const noexcept {
+inline bool AnyResultWrapperBase::operator==(
+  const AnyResultWrapperBase& rhs) const noexcept {
     return are_equal_(rhs);
 }
 
-inline bool AnyWrapperBase::operator!=(
-  const AnyWrapperBase& rhs) const noexcept {
+inline bool AnyResultWrapperBase::operator!=(
+  const AnyResultWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
+inline typename AnyResultWrapperBase::wrapper_ptr
+AnyResultWrapperBase::deserialize(Deserializer& d) {
+    std::size_t idx;
+    d(idx);
+    return m_any_maker_.at(idx)(d);
+}
+
 template<typename U>
-explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
+explicit AnyResultWrapper(U&& value) -> AnyResultWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
-typename AnyWrapper<T>::wrapper_ptr AnyWrapper<T>::clone_() const {
-    return std::make_unique<AnyWrapper<T>>(value_());
+typename AnyResultWrapper<T>::wrapper_ptr AnyResultWrapper<T>::clone_() const {
+    return std::make_unique<AnyResultWrapper<T>>(value_());
 }
 
 template<typename T>
-std::string AnyWrapper<T>::str_() const {
+std::string AnyResultWrapper<T>::str_() const {
     std::stringstream ss;
     using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {
@@ -480,7 +563,7 @@ std::string AnyWrapper<T>::str_() const {
 }
 
 template<typename T>
-bool AnyWrapper<T>::are_equal_(const AnyWrapperBase& rhs) const noexcept {
+bool AnyResultWrapper<T>::are_equal_(const AnyResultWrapperBase& rhs) const noexcept {
     try {
         return value_() == rhs.cast<const T&>();
     } catch(...) {

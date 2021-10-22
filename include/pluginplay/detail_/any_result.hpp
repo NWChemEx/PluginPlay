@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any_wrapper.hpp"
+#include "pluginplay/detail_/any_result_wrapper.hpp"
 #include "pluginplay/utility.hpp"
 #include <iostream>
 #include <memory>
@@ -7,57 +7,57 @@
 
 namespace pluginplay::detail_ {
 
-/** @brief The Any class is capable of holding an instance of any type
+/** @brief The AnyResult class is capable of holding an instance of any type
  * in a type-safe manner.
  *
  *  This class is used extensively through the pluginplay to avoid needing to
  * know the types of inputs and results to a property type or module API. Under
  * the hood it works by wrapping an std::any and casting that any to implement
- * the additional functions which are part of the Any's API, but not
+ * the additional functions which are part of the AnyResult's API, but not
  * the std::any's API.
  */
-class Any {
+class AnyResult {
 private:
-    /// Trait to see if @p T is an Any
+    /// Trait to see if @p T is an AnyResult
     template<typename T>
-    using is_any = std::is_same<Any, std::decay_t<T>>;
+    using is_any = std::is_same<AnyResult, std::decay_t<T>>;
 
-    /// True if @p T is an Any
+    /// True if @p T is an AnyResult
     template<typename T>
     static constexpr bool is_any_v = is_any<T>::value;
 
-    /// True if @p T is not an Any
+    /// True if @p T is not an AnyResult
     template<typename T>
     static constexpr bool not_an_any_v = std::negation_v<is_any<T>>;
 
-    /// Enables a function if @p T is an Any
+    /// Enables a function if @p T is an AnyResult
     template<typename T>
     using enable_if_any_t = std::enable_if_t<is_any_v<T>, int>;
 
-    /// Enables a function if @p T is not an Any
+    /// Enables a function if @p T is not an AnyResult
     template<typename T>
     using enable_if_not_an_any_t = std::enable_if_t<not_an_any_v<T>, int>;
 
 public:
     /// The type of rtti returned by the `type` function
-    using rtti_type = typename AnyWrapperBase::rtti_type;
+    using rtti_type = typename AnyResultWrapperBase::rtti_type;
 
     /// The type of the pointer holding the value
-    using wrapper_ptr = typename AnyWrapperBase::wrapper_ptr;
+    using wrapper_ptr = typename AnyResultWrapperBase::wrapper_ptr;
 
-    /** @brief Makes an empty Any instance.
+    /** @brief Makes an empty AnyResult instance.
      *
-     *  The resulting Any instance wraps no object.  An object can be
+     *  The resulting AnyResult instance wraps no object.  An object can be
      * added to this instance by calling the member function emplace, by
-     * assigning to this instance another Any instance (containing a
-     * value), or by moving from another Any instance containing a
+     * assigning to this instance another AnyResult instance (containing a
+     * value), or by moving from another AnyResult instance containing a
      * value.
      *
      *  @throw None. No throw guarantee.
      */
-    Any() noexcept = default;
+    AnyResult() noexcept = default;
 
-    /** @brief Used to construct an Any instance holding a particular
+    /** @brief Used to construct an AnyResult instance holding a particular
      * value.
      *
      * This ctor forwards the provided value to the underlying std::any. If an
@@ -77,24 +77,24 @@ public:
      *             as @p T's ctor.
      */
     template<typename T, enable_if_not_an_any_t<T> = 0>
-    explicit Any(T&& value);
+    explicit AnyResult(T&& value);
 
     /**
-     * @brief Makes a new Any instance by deep copying the instance
-     * wrapped in another Any instance.
+     * @brief Makes a new AnyResult instance by deep copying the instance
+     * wrapped in another AnyResult instance.
      *
      * From the perspective of this class the copy ctor always makes a deep
      * copy. Whether it actually is a deep copy or not depends on the copy
      * constructor of the wrapped class.
      *
-     * @param[in] rhs The Any instance to copy.
+     * @param[in] rhs The AnyResult instance to copy.
      *
      * @throw std::bad_alloc if there is insufficient memory to copy the
      *                       instance stored in @p rhs.  Strong throw guarantee.
      * @throw ??? if the wrapped type's copy ctor throws.  Same guarantee as
      *            the wrapped type's copy ctor
      */
-    Any(const Any& rhs) : m_ptr_(rhs.clone_()) {}
+    AnyResult(const AnyResult& rhs) : m_ptr_(rhs.clone_()) {}
 
     /**
      * @brief Sets the current instance to a copy of another instance.
@@ -120,13 +120,13 @@ public:
      * @throws ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    Any& operator=(const Any& r) { return *this = std::move(Any(r)); }
+    AnyResult& operator=(const AnyResult& r) { return *this = std::move(AnyResult(r)); }
 
     /**
-     * @brief Causes the current Any instance to take ownership of
+     * @brief Causes the current AnyResult instance to take ownership of
      * another instance.
      *
-     * @param[in] rhs The Any instance to take ownership of. After
+     * @param[in] rhs The AnyResult instance to take ownership of. After
      * calling this constructor @p rhs is in a valid, but undefined state.
      *
      * @par Complexity:
@@ -138,13 +138,13 @@ public:
      *
      * @throws None. No throw guarantee.
      */
-    Any(Any&& rhs) noexcept = default;
+    AnyResult(AnyResult&& rhs) noexcept = default;
 
     /**
-     * @brief Sets the current instance to the state of another Any
+     * @brief Sets the current instance to the state of another AnyResult
      * instance.
      *
-     * @param[in] rhs The Any instance we are taking the state of.
+     * @param[in] rhs The AnyResult instance we are taking the state of.
      * After this call @p rhs is in a valid, but otherwise undefined state.
      *
      * @par Complexity:
@@ -158,16 +158,16 @@ public:
      * @return The current instance possessing the state of @p rhs.
      * @throw None. No throw guarantee.
      */
-    Any& operator=(Any&& rhs) noexcept = default;
+    AnyResult& operator=(AnyResult&& rhs) noexcept = default;
 
-    /** @brief Frees up the memory wrapped by the Any instance.
+    /** @brief Frees up the memory wrapped by the AnyResult instance.
      *
      *  This is a default dtor. After calling it all references to the
      *  underlying type-erased instance are no longer valid.
      *
      *  @throw None. No throw guarantee.
      */
-    ~Any() = default;
+    ~AnyResult() = default;
 
     /**
      * @brief Initializes the wrapped value by forwarding the provided arguments
@@ -181,11 +181,11 @@ public:
      * be invoked.
      *
      * This function is admittedly a bit intimidating until you see it in
-     * action.  Let's say you have an Any instance and you want it to
+     * action.  Let's say you have an AnyResult instance and you want it to
      * wrap a double, this could be done like:
      *
      * @code
-     * Any my_any;
+     * AnyResult my_any;
      * double& wrapped_value = my_any.emplace<double>(3.14);
      * @endcode
      *
@@ -193,13 +193,13 @@ public:
      * do:
      *
      * @code
-     * Any my_any;
+     * AnyResult my_any;
      * std:vector<double> vec1{1.1, 1.2, 1.3};
      *
      * // Makes a copy of vec1
      * auto& wrapped_ve1 = my_any.emplace<std::vector<double>>(vec1);
      *
-     * // ...makes vec1, inside the Any, without the copy
+     * // ...makes vec1, inside the AnyResult, without the copy
      * auto& wrapped_v2 = my_any.emplace<std::vector<double>>({1.1, 1.2, 1.3});
      * @endcode
      *
@@ -229,38 +229,38 @@ public:
     /** @brief Releases the wrapped value freeing up the memory associated with
      *         it.
      *
-     *  Any instances own the memory they are wrapping.  This member
-     * function can be used to release the memory before the Any
+     *  AnyResult instances own the memory they are wrapping.  This member
+     * function can be used to release the memory before the AnyResult
      * instance goes out of scope. Following normal RAII practices the
-     * Any will release any held memory in its dtor meaning users need
-     * not call this function before letting an Any instance go out of
+     * AnyResult will release any held memory in its dtor meaning users need
+     * not call this function before letting an AnyResult instance go out of
      * scope.
      *
      * @throw None. No throw guarantee.
      */
     void reset() noexcept { m_ptr_.reset(); }
 
-    /** @brief Swaps the states of two Any instances.
+    /** @brief Swaps the states of two AnyResult instances.
      *
      *  After a call to this function, the current instance will contain
      *  @p rhs's state and @p rhs will contain the current instance's state.
      *
-     * @param[in,out] rhs The Any instance to swap contents with.
+     * @param[in,out] rhs The AnyResult instance to swap contents with.
      * After this call @p rhs will contain the current instance's state.
      *
      * @throw None. No throw guarantee.
      *
      * @par Complexity constant.
      */
-    void swap(Any& rhs) noexcept { m_ptr_.swap(rhs.m_ptr_); }
+    void swap(AnyResult& rhs) noexcept { m_ptr_.swap(rhs.m_ptr_); }
 
-    /** @brief Used to retrieve the value wrapped in the Any.
+    /** @brief Used to retrieve the value wrapped in the AnyResult.
      *
-     *  The canonical way to retrieve the value from an Any is to use
-     *  AnyCast. This function is the implementation for the cast and
+     *  The canonical way to retrieve the value from an AnyResult is to use
+     *  AnyResultCast. This function is the implementation for the cast and
      * can be called directly if the user wants.
      *
-     * @tparam T The type to cast the wrapped Any instance to. Should
+     * @tparam T The type to cast the wrapped AnyResult instance to. Should
      * include cv qualifiers and include reference/pointer designations if so
      *         desired.
      *
@@ -273,14 +273,14 @@ public:
     template<typename T>
     T cast();
 
-    /** @brief Used to retrieve the value wrapped in a read-only Any.
+    /** @brief Used to retrieve the value wrapped in a read-only AnyResult.
      *
-     *  The canonical way to retrieve the value from an Any is to use
-     *  AnyCast. This function is the implementation for the cast and
+     *  The canonical way to retrieve the value from an AnyResult is to use
+     *  AnyResultCast. This function is the implementation for the cast and
      * can be called directly if the user wants. This overload will only allow
      * you to retrieve the value in a read-only state.
      *
-     * @tparam T The type to cast the wrapped Any instance to. Should
+     * @tparam T The type to cast the wrapped AnyResult instance to. Should
      * include cv qualifiers and include reference/pointer designations if so
      *         desired.
      *
@@ -293,10 +293,10 @@ public:
     template<typename T>
     T cast() const;
 
-    /** @brief Returns true if the current Any instance is presently
+    /** @brief Returns true if the current AnyResult instance is presently
      * wrapping a value.
      *
-     *  An Any can either be holding a type-erased value or not. This
+     *  An AnyResult can either be holding a type-erased value or not. This
      *  function is used to determine which it is.
      *
      * @return True if the current instance is holding a value and false
@@ -339,10 +339,37 @@ public:
      */
     void hash(Hasher& h) const { h(m_ptr_); }
 
+    /** @brief Enables serialization for AnyResult instances.
+     *
+     * This function adds a serialized representation of the current AnyResult to
+     * the provided archive.
+     *
+     * @param ar[in,out] An archive object to store the serialized
+     * representation.
+     *
+     * @tparam Type of output archive, @p ar.
+     */
+    template<typename Archive,
+             typename = std::enable_if_t<is_output_archive_v<Archive>>>
+    void serialize(Archive ar) const;
+
+    /** @brief Enables deserialization for AnyResult instances.
+     *
+     * This function deserialize the AnyResult from the provided archive.
+     *
+     * @param ar[in,out] An archive object that includes the serialized
+     * representation.
+     *
+     * @tparam Type of input archive, @p ar.
+     */
+    template<typename Archive,
+             typename = std::enable_if_t<is_input_archive_v<Archive>>>
+    void serialize(Archive ar);
+
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *
-     *  This function ultimately works by printing "<empty Any>" if
+     *  This function ultimately works by printing "<empty AnyResult>" if
      * the current instance does not contain a value, or the result of
      * forwarding the wrapped value to `std::ostream::operator<<`. Overloads of
      * this operator for STL containers are leveraged.
@@ -354,36 +381,36 @@ public:
      */
     std::string str() const;
 
-    /** @brief Compares two Any instances for equality.
+    /** @brief Compares two AnyResult instances for equality.
      *
-     * Two Any instances are equal if they both hold a value (or do
+     * Two AnyResult instances are equal if they both hold a value (or do
      * not hold a value) and, in the case that they both hold a value, the
      * wrapped values compare equal.
      *
      * @param[in] rhs The instance to compare to
      *
-     * @return true if the Any instances are equal and false
+     * @return true if the AnyResult instances are equal and false
      * otherwise.
      *
      * @throw None. All comparisons are no throw guarantee.
      */
-    bool operator==(const Any& rhs) const noexcept;
+    bool operator==(const AnyResult& rhs) const noexcept;
 
-    /** @brief Compares two Any instances to see if they are
+    /** @brief Compares two AnyResult instances to see if they are
      * different.
      *
-     * Two Any instances are equal if they both hold a value (or do
+     * Two AnyResult instances are equal if they both hold a value (or do
      * not hold a value) and, in the case that they both hold a value, the
      * wrapped values compare equal.
      *
      * @param[in] rhs The instance to compare to
      *
-     * @return false if the Any instances are equal and true
+     * @return false if the AnyResult instances are equal and true
      * otherwise.
      *
      * @throw None. All comparisons are no throw guarantee.
      */
-    bool operator!=(const Any& rhs) const noexcept;
+    bool operator!=(const AnyResult& rhs) const noexcept;
 
 private:
     /** @brief Code factorization for copying the wrapper.
@@ -408,7 +435,7 @@ private:
      *  arguments to @p T's ctor. The resulting @p T is then moved into the
      *  internal wrapper.
      *
-     * @tparam T The cv qualified type that this Any instance will be
+     * @tparam T The cv qualified type that this AnyResult instance will be
      *           wrapping.
      *
      * @tparam Args The types of the arguments that will be provided to @p T's
@@ -416,7 +443,7 @@ private:
      *
      * @param[in] args The arguments to forward to @p T's ctor.
      *
-     * @return A unique_ptr containing an AnyWrapperBase instance
+     * @return A unique_ptr containing an AnyResultWrapperBase instance
      * which wraps the newly created @p T instance.
      *
      * @throws std::bad_alloc if there is insufficient memory to allocate a
@@ -431,15 +458,15 @@ private:
     wrapper_ptr m_ptr_;
 };
 
-/** @brief Provides access to the value wrapped in an Any instance.
+/** @brief Provides access to the value wrapped in an AnyResult instance.
  *
- * @relates Any
+ * @relates AnyResult
  *
- * @tparam T The type of the value wrapped in the Any instance.
- * @tparam U The type of the Any instance itself. Should be at most
- *           cv-qualified Any.
+ * @tparam T The type of the value wrapped in the AnyResult instance.
+ * @tparam U The type of the AnyResult instance itself. Should be at most
+ *           cv-qualified AnyResult.
  *
- * @param[in] da_any The Any instance to retrieve the value from.
+ * @param[in] da_any The AnyResult instance to retrieve the value from.
  *
  * @return The value wrapped by @p da_any.
  *
@@ -450,32 +477,32 @@ private:
  * @par Complexity: Constant.
  */
 template<typename T, typename U>
-T AnyCast(U&& da_any) {
+T AnyResultCast(U&& da_any) {
     return da_any.template cast<T>();
 }
 
-/** @brief Makes an Any instance by forwarding the arguments to the
+/** @brief Makes an AnyResult instance by forwarding the arguments to the
  * wrapped instance's constructor.
  *
- *  @relates Any
+ *  @relates AnyResult
  *
- *  This is a convenience function for directly populating an Any
+ *  This is a convenience function for directly populating an AnyResult
  * instance so that the user does not have to first construct a temporary and
- * then forward that temporary to an Any instance.
+ * then forward that temporary to an AnyResult instance.
  *
- *  @tparam T The type of the object that the Any should wrap.
+ *  @tparam T The type of the object that the AnyResult should wrap.
  *  @tparam Args The types of the arguments that are being forwarded.
  *
  *  @param[in] args The values to forward to @p T's ctor.
  *
- *  @return An Any instance containing a newly created wrapped @p T
+ *  @return An AnyResult instance containing a newly created wrapped @p T
  * instance.
  *
  *  @par Data Races:
  *  The values of @p args are forwarded to T's ctor and data races may occur if
  *  the values of args are concurrently modified.
  *
- *  @throw std::bad_alloc if there is insufficient memory for the Any
+ *  @throw std::bad_alloc if there is insufficient memory for the AnyResult
  * to create the wrapper.  Strong throw guarantee.
  *  @throw ??? If @p T's constructor throws.  Same guarantee as T's constructor.
  *
@@ -484,30 +511,30 @@ T AnyCast(U&& da_any) {
  *
  */
 template<typename T, typename... Args>
-Any make_Any(Args&&... args);
+AnyResult make_AnyResult(Args&&... args);
 
 //--------------------------Implementations-------------------------------------
 
-template<typename T, typename Any::enable_if_not_an_any_t<T>>
-Any::Any(T&& value) :
+template<typename T, typename AnyResult::enable_if_not_an_any_t<T>>
+AnyResult::AnyResult(T&& value) :
   m_ptr_(wrap_ptr_<std::conditional_t<std::is_reference_v<T>,
                                       std::remove_reference_t<T>, T>>(
     std::forward<T>(value))) {}
 
 template<typename T, typename... Args>
-T& Any::emplace(Args&&... args) {
+T& AnyResult::emplace(Args&&... args) {
     wrap_ptr_<T>(std::forward<Args>(args)...).swap(m_ptr_);
     return m_ptr_->cast<T&>();
 };
 
 template<typename T>
-T Any::cast() {
+T AnyResult::cast() {
     if(!has_value()) throw std::bad_any_cast();
     return m_ptr_->cast<T>();
 }
 
 template<typename T>
-T Any::cast() const {
+T AnyResult::cast() const {
     if(!has_value()) throw std::bad_any_cast();
     // Not sure if it's a compiler bug or I'm missing something, but for some
     // reason just doing ->cast<T>() calls the non-const version
@@ -515,41 +542,56 @@ T Any::cast() const {
     return p->cast<T>();
 }
 
-inline typename Any::rtti_type Any::type() const noexcept {
+inline typename AnyResult::rtti_type AnyResult::type() const noexcept {
     return has_value() ? m_ptr_->type() : typeid(void);
 }
 
-inline std::string Any::str() const {
+inline std::string AnyResult::str() const {
     if(has_value()) return m_ptr_->str();
-    return "<empty Any>";
+    return "<empty AnyResult>";
 }
 
-inline bool Any::operator==(const Any& rhs) const noexcept {
+inline bool AnyResult::operator==(const AnyResult& rhs) const noexcept {
     if(has_value() != rhs.has_value()) return false;
     if(!has_value()) return true;
     return (*m_ptr_) == (*rhs.m_ptr_);
 }
 
-inline bool Any::operator!=(const Any& rhs) const noexcept {
+inline bool AnyResult::operator!=(const AnyResult& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
-inline typename Any::wrapper_ptr Any::clone_() const {
+inline typename AnyResult::wrapper_ptr AnyResult::clone_() const {
     return has_value() ? m_ptr_->clone() : wrapper_ptr{};
 }
 
 template<typename T, typename... Args>
-typename Any::wrapper_ptr Any::wrap_ptr_(Args&&... args) {
+typename AnyResult::wrapper_ptr AnyResult::wrap_ptr_(Args&&... args) {
     static_assert(!std::is_reference_v<T>, "T should not be a reference");
 
     T temp(std::forward<Args>(args)...);
-    return std::make_unique<AnyWrapper<T>>(std::move(temp));
+    return std::make_unique<AnyResultWrapper<T>>(std::move(temp));
 }
 
 template<typename T, typename... Args>
-Any make_Any(Args&&... args) {
-    Any a;
+AnyResult make_AnyResult(Args&&... args) {
+    AnyResult a;
     a.emplace<T>(std::forward<Args>(args)...);
     return a;
 };
+
+template<typename Archive,
+         typename = std::enable_if_t<is_output_archive_v<Archive>>>
+inline void AnyResult::serialize(Archive ar) const {
+    Serializer s(ar);
+    m_ptr_->serialize(s);
+}
+
+template<typename Archive,
+         typename = std::enable_if_t<is_input_archive_v<Archive>>>
+inline void AnyResult::serialize(Archive ar) {
+    Deserializer d(ar);
+    auto temp = m_ptr_->deserialize(d);
+    m_ptr_.swap(temp);
+}
 } // namespace pluginplay::detail_

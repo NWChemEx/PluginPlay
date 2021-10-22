@@ -18,6 +18,8 @@
 namespace pluginplay {
 namespace detail_ {
 class Any;
+class AnyResult;
+
 } // namespace detail_
 
 class ModuleInput;
@@ -42,6 +44,9 @@ namespace pluginplay::type {
 
 /// The type of our type-erased holder class
 using any = detail_::Any;
+
+/// The type of our type-erased holder class for results (serializable)
+using any_result = detail_::AnyResult;
 
 /// The type of metadata holding a description
 using description = std::string;

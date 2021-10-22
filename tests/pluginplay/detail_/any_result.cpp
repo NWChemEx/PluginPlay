@@ -1,4 +1,4 @@
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_result.hpp"
 #include "pluginplay/hasher.hpp"
 #include <catch2/catch.hpp>
 #include <map>
@@ -7,18 +7,18 @@
 
 using namespace pluginplay::detail_;
 
-TEST_CASE("Any : Default ctor") {
-    Any a;
+TEST_CASE("AnyResult : Default ctor") {
+    AnyResult a;
     REQUIRE_FALSE(a.has_value());
     REQUIRE(a.type() == typeid(void));
     REQUIRE(pluginplay::hash_objects(a) == "cbc357ccb763df2852fee8c4fc7d55f2");
     REQUIRE_THROWS_AS(a.cast<double>(), std::bad_any_cast);
-    REQUIRE(a.str() == "<empty Any>");
+    REQUIRE(a.str() == "<empty AnyResult>");
 }
 
-TEST_CASE("Any : Value ctor") {
+TEST_CASE("AnyResult : Value ctor") {
     SECTION("POD by value") {
-        Any a(int{3});
+        AnyResult a(int{3});
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
         REQUIRE(pluginplay::hash_objects(a) ==
@@ -26,9 +26,24 @@ TEST_CASE("Any : Value ctor") {
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
+    SECTION("Serialize any_result") {
+        std::stringstream ss;
+
+        AnyResult a(int{3}), a2;
+        {
+            pluginplay::BinaryOutputArchive ar(ss);
+            ar& a;
+        }
+
+        {
+            pluginplay::BinaryInputArchive ar(ss);
+            ar& a2;
+        }
+        REQUIRE(a == a2);
+    }
     SECTION("POD by reference") {
         int x{3};
-        Any a(x);
+        AnyResult a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
         REQUIRE(pluginplay::hash_objects(a) ==
@@ -38,7 +53,7 @@ TEST_CASE("Any : Value ctor") {
     }
     SECTION("POD by const reference") {
         const int x{3};
-        Any a(x);
+        AnyResult a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(const int));
         REQUIRE(pluginplay::hash_objects(a) ==
@@ -49,7 +64,7 @@ TEST_CASE("Any : Value ctor") {
     SECTION("Non-POD by move") {
         std::vector<int> x{1, 2, 3, 4};
         auto px = x.data();
-        Any a(std::move(x));
+        AnyResult a(std::move(x));
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(std::vector<int>));
         REQUIRE(pluginplay::hash_objects(a) ==
@@ -59,65 +74,65 @@ TEST_CASE("Any : Value ctor") {
     }
 }
 
-TEST_CASE("Any : Comparisons") {
-    Any a(int{3});
-    SECTION("Two empty anys") {
-        Any a2, a3;
+TEST_CASE("AnyResult : Comparisons") {
+    AnyResult a(int{3});
+    SECTION("Two empty any_results") {
+        AnyResult a2, a3;
         REQUIRE(a2 == a3);
         REQUIRE_FALSE(a2 != a3);
     }
-    SECTION("Same any") {
-        Any a2(int{3});
+    SECTION("Same any_result") {
+        AnyResult a2(int{3});
         REQUIRE(a == a2);
         REQUIRE_FALSE(a != a2);
     }
     SECTION("Different full-ness") {
-        Any a2;
+        AnyResult a2;
         REQUIRE_FALSE(a == a2);
         REQUIRE(a != a2);
     }
     SECTION("Different values") {
-        Any a2(int{4});
+        AnyResult a2(int{4});
         REQUIRE_FALSE(a == a2);
         REQUIRE(a != a2);
     }
     SECTION("Different types") {
-        Any a2(std::vector<int>{3, 4, 5});
+        AnyResult a2(std::vector<int>{3, 4, 5});
         REQUIRE_FALSE(a == a2);
         REQUIRE(a != a2);
     }
 }
 
-TEST_CASE("Any : emplace") {
+TEST_CASE("AnyResult : emplace") {
     std::vector<int> x{1, 2, 3, 4};
-    Any a(x), a2;
+    AnyResult a(x), a2;
     a2.emplace<std::vector<int>>(x);
     REQUIRE(a == a2);
 }
 
-TEST_CASE("Any : reset") {
-    Any a(int{3});
+TEST_CASE("AnyResult : reset") {
+    AnyResult a(int{3});
     a.reset();
-    REQUIRE(a == Any{});
+    REQUIRE(a == AnyResult{});
 }
 
-TEST_CASE("Any : swap") {
-    Any a(int{3}), a2;
+TEST_CASE("AnyResult : swap") {
+    AnyResult a(int{3}), a2;
     a.swap(a2);
-    REQUIRE(a == Any{});
-    REQUIRE(a2 == Any{int{3}});
+    REQUIRE(a == AnyResult{});
+    REQUIRE(a2 == AnyResult{int{3}});
 }
 
-TEST_CASE("Any : cast") {
-    SECTION("non-const Any") {
-        Any a(int{3});
+TEST_CASE("AnyResult : cast") {
+    SECTION("non-const AnyResult") {
+        AnyResult a(int{3});
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.cast<int&>() == 3);
         REQUIRE(a.cast<const int&>() == 3);
         REQUIRE_THROWS_AS(a.cast<double>(), std::bad_any_cast);
     }
-    SECTION("const Any") {
-        const Any a(int{3});
+    SECTION("const AnyResult") {
+        const AnyResult a(int{3});
         REQUIRE(a.cast<int>() == 3);
         // a.cast<int&>() //Should trip a static assert if uncommented
         REQUIRE(a.cast<const int&>() == 3);
@@ -125,48 +140,48 @@ TEST_CASE("Any : cast") {
     }
 }
 
-TEST_CASE("Any : Copy ctor") {
-    Any a(int{3});
-    Any a2(a);
+TEST_CASE("AnyResult : Copy ctor") {
+    AnyResult a(int{3});
+    AnyResult a2(a);
     REQUIRE(a == a2);
 }
 
-TEST_CASE("Any : Copy assignment") {
-    Any a(int{3});
-    Any a2;
+TEST_CASE("AnyResult : Copy assignment") {
+    AnyResult a(int{3});
+    AnyResult a2;
     auto pa2 = &(a2 = a);
     REQUIRE(a == a2);
     REQUIRE(pa2 == &a2);
 }
 
-TEST_CASE("Any : Move ctor") {
-    Any a(int{3});
-    Any a2(a);
-    Any a3(std::move(a));
+TEST_CASE("AnyResult : Move ctor") {
+    AnyResult a(int{3});
+    AnyResult a2(a);
+    AnyResult a3(std::move(a));
     REQUIRE(a2 == a3);
 }
 
-TEST_CASE("Any : Move assignment") {
-    Any a(int{3});
-    Any a2(a);
-    Any a3;
+TEST_CASE("AnyResult : Move assignment") {
+    AnyResult a(int{3});
+    AnyResult a2(a);
+    AnyResult a3;
     auto pa3 = &(a3 = std::move(a));
     REQUIRE(a2 == a3);
     REQUIRE(pa3 == &a3);
 }
 
-TEST_CASE("Any : is_convertible") {
-    Any a{int{3}};
+TEST_CASE("AnyResult : is_convertible") {
+    AnyResult a{int{3}};
     REQUIRE(a.is_convertible<int>());
     REQUIRE_FALSE(a.is_convertible<double>());
 }
 
-TEST_CASE("AnyCast") {
-    Any a{int{3}};
-    REQUIRE(&a.cast<int&>() == &AnyCast<int&>(a));
+TEST_CASE("AnyResultCast") {
+    AnyResult a{int{3}};
+    REQUIRE(&a.cast<int&>() == &AnyResultCast<int&>(a));
 }
 
-TEST_CASE("make_Any") {
-    Any a{int{3}};
-    REQUIRE(a == make_Any<int>(3));
+TEST_CASE("make_AnyResult") {
+    AnyResult a{int{3}};
+    REQUIRE(a == make_AnyResult<int>(3));
 }
