@@ -40,10 +40,10 @@ private:
 
 public:
     /// The type of rtti returned by the `type` function
-    using rtti_type = typename AnyWrapperBase<>::rtti_type;
+    using rtti_type = typename AnyWrapperBase::rtti_type;
 
     /// The type of the pointer holding the value
-    using wrapper_ptr = typename AnyWrapperBase<>::wrapper_ptr;
+    using wrapper_ptr = typename AnyWrapperBase::wrapper_ptr;
 
     /** @brief Makes an empty Any instance.
      *
