@@ -77,7 +77,8 @@ public:
      *             Same throw guarantee.
      */
     template<typename T, enable_if_not_wrapper_t<T> = 0>
-    explicit AnyResultWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
+    explicit AnyResultWrapperBase(T&& value) :
+      m_value_(std::forward<T>(value)) {}
 
     /** @brief Cleans up an AnyResultBase_ instance.
      *
@@ -155,9 +156,7 @@ public:
      * reference; this may arise if you try to serialize a ModuleInput
      * instance.
      */
-    void serialize(Serializer& s) const {
-        serialize_(s);
-    }
+    void serialize(Serializer& s) const { serialize_(s); }
 
     /** @brief Enables deserialization of the AnyResultBase_ instance.
      *
@@ -509,7 +508,8 @@ private:
                 typename base_type::fxn_type l = [](Deserializer& d) {
                     std::decay_t<T> new_value;
                     d(new_value);
-                    return std::make_unique<AnyResultWrapper>(std::move(new_value));
+                    return std::make_unique<AnyResultWrapper>(
+                      std::move(new_value));
                 };
                 base_type::m_any_maker_[idx] = l;
             }
@@ -543,7 +543,8 @@ AnyResultWrapperBase::deserialize(Deserializer& d) {
 }
 
 template<typename U>
-explicit AnyResultWrapper(U&& value) -> AnyResultWrapper<std::remove_reference_t<U>>;
+explicit AnyResultWrapper(U&& value)
+  -> AnyResultWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
 typename AnyResultWrapper<T>::wrapper_ptr AnyResultWrapper<T>::clone_() const {
@@ -563,7 +564,8 @@ std::string AnyResultWrapper<T>::str_() const {
 }
 
 template<typename T>
-bool AnyResultWrapper<T>::are_equal_(const AnyResultWrapperBase& rhs) const noexcept {
+bool AnyResultWrapper<T>::are_equal_(
+  const AnyResultWrapperBase& rhs) const noexcept {
     try {
         return value_() == rhs.cast<const T&>();
     } catch(...) {

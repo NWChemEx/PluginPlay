@@ -71,14 +71,14 @@ TEST_CASE("ModuleResult : change") {
     }
     SECTION("Throws if given share_any with wrong type") {
         p.set_type<int>();
-        auto any =
-          std::make_shared<type::any_result>(pluginplay::detail_::make_AnyResult<double>(v));
+        auto any = std::make_shared<type::any_result>(
+          pluginplay::detail_::make_AnyResult<double>(v));
         REQUIRE_THROWS_AS(p.change(any), std::invalid_argument);
     }
     SECTION("Can set with shared_any to read/write value") {
         p.set_type<double>();
-        auto any =
-          std::make_shared<type::any_result>(pluginplay::detail_::make_AnyResult<double>(v));
+        auto any = std::make_shared<type::any_result>(
+          pluginplay::detail_::make_AnyResult<double>(v));
         p.change(any);
         REQUIRE(p.value<double>() == v);
     }
