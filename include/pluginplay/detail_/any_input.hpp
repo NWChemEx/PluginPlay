@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any_wrapper.hpp"
+#include "pluginplay/detail_/any_input_wrapper.hpp"
 #include "pluginplay/utility.hpp"
 #include <iostream>
 #include <memory>

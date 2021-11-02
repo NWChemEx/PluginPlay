@@ -1,6 +1,6 @@
 #pragma once
 #include "pluginplay/bounds_checking.hpp"
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_input.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
 #include <functional>

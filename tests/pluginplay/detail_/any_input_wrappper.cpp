@@ -1,4 +1,4 @@
-#include "pluginplay/detail_/any_wrapper.hpp"
+#include "pluginplay/detail_/any_input_wrapper.hpp"
 #include <catch2/catch.hpp>
 #include <sstream>
 

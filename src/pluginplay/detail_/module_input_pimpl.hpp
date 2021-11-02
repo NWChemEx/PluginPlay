@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_input.hpp"
 #include "pluginplay/types.hpp"
 #include <optional>
 #include <typeindex>
