@@ -21,7 +21,7 @@ public:
     using rtti_type = std::type_index;
 
     /// The type of the type-erased functors used for checking a value
-    using any_check = std::function<bool(const type::any&)>;
+    using any_check = std::function<bool(const type::any_input&)>;
 
     /// The type used to return the descriptions of the bounds checks
     using check_description_type = std::set<type::description>;
@@ -160,7 +160,7 @@ public:
      *  @throw std::runtime_error if the type of the input has not been set by
      *                            the developer. Strong throw guarantee.
      */
-    bool is_valid(const type::any& new_value) const;
+    bool is_valid(const type::any_input& new_value) const;
 
     /** @brief Hashes the current input value if it is opaque.
      *
@@ -207,7 +207,7 @@ public:
      * @throw std::invalid_argument if @p any fails one or more bounds checks.
      *                              Strong throw gurantee.
      */
-    void set_value(type::any any);
+    void set_value(type::any_input any);
 
     /** @brief Sets the human-readable description of this input field.
      *
@@ -299,12 +299,12 @@ public:
      *  This function can be used to retrieve the value bound to this input
      *  field.
      *
-     *  @return A read-only reference to the pluginplayAny stored in this input.
+     *  @return A read-only reference to the AnyInput stored in this input.
      *
      *  @throw std::runtime_error if no value is bound to this input field.
      *                            Strong throw guarantee.
      */
-    const type::any& value() const;
+    const type::any_input& value() const;
 
     /** @brief Used to retrieve the description of what this option is used for.
      *
@@ -338,7 +338,7 @@ private:
     void assert_value_set_() const;
 
     /// The value bound to this input
-    type::any m_value_;
+    type::any_input m_value_;
 
     /// A human-readable description of this input
     std::optional<type::description> m_desc_;
@@ -398,7 +398,7 @@ bool operator!=(const ModuleInputPIMPL& lhs,
 
 //-----------------------------Implementations----------------------------------
 
-inline bool ModuleInputPIMPL::is_valid(const type::any& new_value) const {
+inline bool ModuleInputPIMPL::is_valid(const type::any_input& new_value) const {
     assert_type_set_();
     for(const auto& [k, v] : m_checks_)
         if(!v(new_value)) return false;
@@ -412,7 +412,7 @@ inline void ModuleInputPIMPL::set_type(
     m_type_ = type;
 }
 
-inline void ModuleInputPIMPL::set_value(Any any) {
+inline void ModuleInputPIMPL::set_value(AnyInput any) {
     assert_type_set_();
     if(!is_valid(any)) {
         std::string msg("Input value has failed bounds checks: ");
@@ -445,7 +445,7 @@ inline typename ModuleInputPIMPL::rtti_type ModuleInputPIMPL::type() const {
     return m_type_.value();
 }
 
-inline const type::any& ModuleInputPIMPL::value() const {
+inline const type::any_input& ModuleInputPIMPL::value() const {
     assert_value_set_();
     return m_value_;
 }

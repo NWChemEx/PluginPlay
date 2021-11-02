@@ -45,64 +45,64 @@ inline static void compare_value(T&& w, corr_t corr) {
     }
 }
 
-TEST_CASE("AnyWrapper<POD>(value)") {
+TEST_CASE("AnyInputWrapper<POD>(value)") {
     using three_type = decltype(3);
-    AnyWrapper w(3);
-    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyWrapper<three_type>>);
+    AnyInputWrapper w(3);
+    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyInputWrapper<three_type>>);
     compare_value<three_type>(w, 3);
 }
 
-TEST_CASE("AnyWrapper<POD>(reference") {
+TEST_CASE("AnyInputWrapper<POD>(reference") {
     int x = 3;
-    AnyWrapper w(x);
-    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyWrapper<int>>);
+    AnyInputWrapper w(x);
+    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyInputWrapper<int>>);
     compare_value<int>(w, 3);
 }
 
-TEST_CASE("AnyWrapper<POD>(const reference") {
+TEST_CASE("AnyInputWrapper<POD>(const reference") {
     const int x = 3;
-    AnyWrapper w(x);
-    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyWrapper<const int>>);
+    AnyInputWrapper w(x);
+    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyInputWrapper<const int>>);
     compare_value<const int>(w, 3);
 }
 
-TEST_CASE("AnyWrapper<non-POD>(move)") {
+TEST_CASE("AnyInputWrapper<non-POD>(move)") {
     using vector_t = std::vector<double>;
     vector_t v{1.1, 2.2, 3.3};
     vector_t v2(v);
     const double* pv = v.data();
 
-    AnyWrapper w(std::move(v));
-    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyWrapper<vector_t>>);
+    AnyInputWrapper w(std::move(v));
+    STATIC_REQUIRE(std::is_same_v<decltype(w), AnyInputWrapper<vector_t>>);
     compare_value<vector_t>(w, v2);
 
     REQUIRE(w.cast<vector_t&>().data() == pv);
 }
 
-TEST_CASE("AnyWrapper Comparisons") {
-    AnyWrapper w(3);
+TEST_CASE("AnyInputWrapper Comparisons") {
+    AnyInputWrapper w(3);
 
     SECTION("Identical") {
-        AnyWrapper w2(3);
+        AnyInputWrapper w2(3);
         REQUIRE(w == w2);
         REQUIRE_FALSE(w != w2);
     }
 
     SECTION("Different value") {
-        AnyWrapper w2(4);
+        AnyInputWrapper w2(4);
         REQUIRE(w != w2);
         REQUIRE_FALSE(w == w2);
     }
 
     SECTION("Different type") {
-        AnyWrapper w2(1.234);
+        AnyInputWrapper w2(1.234);
         REQUIRE(w != w2);
         REQUIRE_FALSE(w == w2);
     }
 
     SECTION("Different const-ness") {
         const int x = 3;
-        AnyWrapper w2(x);
+        AnyInputWrapper w2(x);
         REQUIRE(w == w2);
         REQUIRE_FALSE(w != w2);
     }
@@ -114,13 +114,13 @@ struct NotPrintable {
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 
-TEST_CASE("AnyWrapper : str") {
+TEST_CASE("AnyInputWrapper : str") {
     SECTION("printable type") {
-        AnyWrapper w(int{3});
+        AnyInputWrapper w(int{3});
         REQUIRE(w.str() == "3");
     }
     SECTION("non-printable") {
-        AnyWrapper w(NotPrintable{});
+        AnyInputWrapper w(NotPrintable{});
         auto* p = &w.cast<NotPrintable&>();
         std::stringstream ss;
         ss << "<" << typeid(NotPrintable).name() << " " << p << ">";
@@ -128,16 +128,16 @@ TEST_CASE("AnyWrapper : str") {
     }
 }
 
-TEST_CASE("AnyWrapper : cast") {
+TEST_CASE("AnyInputWrapper : cast") {
     SECTION("non-const wrapper") {
-        AnyWrapper w(int{3});
+        AnyInputWrapper w(int{3});
         REQUIRE(w.cast<int>() == 3);
         REQUIRE(w.cast<int&>() == 3);
         REQUIRE(w.cast<const int&>() == 3);
         REQUIRE_THROWS_AS(w.cast<double>(), std::bad_any_cast);
     }
     SECTION("const wrapper") {
-        const AnyWrapper w(int{3});
+        const AnyInputWrapper w(int{3});
         REQUIRE(w.cast<int>() == 3);
         // The following line should trip a static assert
         // w.cast<int&>()

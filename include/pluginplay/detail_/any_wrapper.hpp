@@ -9,7 +9,7 @@
 namespace pluginplay::detail_ {
 /// Forward declare class that will implement the API
 template<typename T>
-class AnyWrapper;
+class AnyInputWrapper;
 
 /**
  * @brief Defines the API for interacting with the type-erased value.
@@ -22,10 +22,10 @@ class AnyWrapper;
  * then implemented by a derived class, which knows the type to cast the
  * std::any to.
  */
-class AnyWrapperBase {
+class AnyInputWrapperBase {
 protected:
     /// My type
-    using my_type = AnyWrapperBase;
+    using my_type = AnyInputWrapperBase;
 
     /// type for determining if @p T inherits from us
     template<typename T>
@@ -41,16 +41,16 @@ protected:
 
 public:
     /// Type of a unique_ptr to the wrapper
-    using wrapper_ptr = std::unique_ptr<AnyWrapperBase>;
+    using wrapper_ptr = std::unique_ptr<AnyInputWrapperBase>;
 
     /// Type of the RTTI of the wrapped instance
     using rtti_type = const std::type_info&;
 
-    /** @brief Creates an AnyWrapper by forwarding the provided value.
+    /** @brief Creates an AnyInputWrapper by forwarding the provided value.
      *
      *  @note This ctor only participates in overload resolution if @p T is
-     * not AnyWrapperBase or any instanitation of
-     * AnyWrapper.
+     * not AnyInputWrapperBase or any instanitation of
+     * AnyInputWrapper.
      *
      *  @tparam T The type of the value we are wrapping.
      *
@@ -60,7 +60,7 @@ public:
      *             Same throw guarantee.
      */
     template<typename T, enable_if_not_wrapper_t<T> = 0>
-    explicit AnyWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
+    explicit AnyInputWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
 
     /** @brief Cleans up an AnyBase_ instance.
      *
@@ -71,7 +71,7 @@ public:
      *
      *  @throws None. No throw guarantee.
      */
-    virtual ~AnyWrapperBase() = default;
+    virtual ~AnyInputWrapperBase() = default;
 
     /**
      *  @brief Makes a polymorphic copy of the wrapper.
@@ -152,7 +152,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator==(const AnyWrapperBase& rhs) const noexcept;
+    bool operator==(const AnyInputWrapperBase& rhs) const noexcept;
 
     /** @brief Used to determine if the type-erased value of this instance
      * is different from that of another instance.
@@ -170,7 +170,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    bool operator!=(const AnyWrapperBase& rhs) const noexcept;
+    bool operator!=(const AnyInputWrapperBase& rhs) const noexcept;
 
     /** @brief Casts the wrapped value back to a readonly type @p T
      *
@@ -221,7 +221,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase(const AnyWrapperBase&) = default;
+    AnyInputWrapperBase(const AnyInputWrapperBase&) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -233,7 +233,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase(AnyWrapperBase&&) noexcept = default;
+    AnyInputWrapperBase(AnyInputWrapperBase&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -247,7 +247,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapperBase& operator=(const AnyWrapperBase&) = default;
+    AnyInputWrapperBase& operator=(const AnyInputWrapperBase&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -262,7 +262,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapperBase& operator=(AnyWrapperBase&&) noexcept = default;
+    AnyInputWrapperBase& operator=(AnyInputWrapperBase&&) noexcept = default;
 
 private:
     /// To be implemented by derived class in order for copying to work
@@ -278,16 +278,16 @@ private:
     virtual std::string str_() const = 0;
 
     /// To be implemented by the derived class to define equality
-    virtual bool are_equal_(const AnyWrapperBase& rhs) const noexcept = 0;
+    virtual bool are_equal_(const AnyInputWrapperBase& rhs) const noexcept = 0;
 
     /// The type-erased value
     std::any m_value_;
-}; // class AnyWrapperBase
+}; // class AnyInputWrapperBase
 
 /** @brief The class responsible for holding the type-erased instance.
  *
- * The AnyWrapper class holds the wrapped instance for the
- * AnyWrapperBase class.  It also is responsible for implementing all
+ * The AnyInputWrapper class holds the wrapped instance for the
+ * AnyInputWrapperBase class.  It also is responsible for implementing all
  * of the abstract methods
  *
  *
@@ -295,9 +295,9 @@ private:
  * and have operator== defined.
  */
 template<typename T>
-class AnyWrapper : public AnyWrapperBase {
+class AnyInputWrapper : public AnyInputWrapperBase {
 private:
-    using base_type = AnyWrapperBase;
+    using base_type = AnyInputWrapperBase;
 
     template<typename U>
     using enable_if_not_pluginplay_any_t =
@@ -305,7 +305,7 @@ private:
 
 public:
     /**
-     * @brief Creates a new AnyWrapper with the provided value
+     * @brief Creates a new AnyInputWrapper with the provided value
      *
      * @param[in] value The value we are wrapping.
      *
@@ -313,7 +313,7 @@ public:
      * Strong throw guarantee.
      */
     template<typename U, enable_if_not_wrapper_t<U> = 0>
-    explicit AnyWrapper(U&& value) : base_type(std::forward<U>(value)) {}
+    explicit AnyInputWrapper(U&& value) : base_type(std::forward<U>(value)) {}
 
 protected:
     /** @brief Deep copies the type-erased value held in @p rhs.
@@ -323,7 +323,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper(const AnyWrapper<T>& rhs) = default;
+    AnyInputWrapper(const AnyInputWrapper<T>& rhs) = default;
 
     /** @brief Takes ownership of the type-erased value held in @p rhs.
      *
@@ -333,7 +333,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper(AnyWrapper<T>&&) noexcept = default;
+    AnyInputWrapper(AnyInputWrapper<T>&&) noexcept = default;
 
     /** @brief Sets the current state to a deep copy of @p rhs.
      *
@@ -345,7 +345,7 @@ protected:
      *
      *  @throw ??? if the copying the value throws. Same guarantee.
      */
-    AnyWrapper<T>& operator=(const AnyWrapper<T>&) = default;
+    AnyInputWrapper<T>& operator=(const AnyInputWrapper<T>&) = default;
 
     /** @brief Replaces the current state with the type-erased value held
      *        in @p rhs.
@@ -357,7 +357,7 @@ protected:
      *
      *  @throw none No throw guarantee.
      */
-    AnyWrapper<T>& operator=(AnyWrapper<T>&&) noexcept = default;
+    AnyInputWrapper<T>& operator=(AnyInputWrapper<T>&&) noexcept = default;
 
 private:
     /// Type of a unique_ptr to the base
@@ -430,7 +430,7 @@ private:
      *
      *  @throw none No throw guarantee.
      */
-    bool are_equal_(const AnyWrapperBase& rhs) const noexcept override;
+    bool are_equal_(const AnyInputWrapperBase& rhs) const noexcept override;
 
     /** @brief Implements hashing for the AnyBase_ class.
      *
@@ -445,30 +445,30 @@ private:
 //-------------------------------Implementations--------------------------------
 
 template<typename T>
-bool AnyWrapperBase::is_convertible() const noexcept {
+bool AnyInputWrapperBase::is_convertible() const noexcept {
     return std::any_cast<T>(&m_value_) != nullptr;
 }
 
-inline bool AnyWrapperBase::operator==(
-  const AnyWrapperBase& rhs) const noexcept {
+inline bool AnyInputWrapperBase::operator==(
+  const AnyInputWrapperBase& rhs) const noexcept {
     return are_equal_(rhs);
 }
 
-inline bool AnyWrapperBase::operator!=(
-  const AnyWrapperBase& rhs) const noexcept {
+inline bool AnyInputWrapperBase::operator!=(
+  const AnyInputWrapperBase& rhs) const noexcept {
     return !((*this) == rhs);
 }
 
 template<typename U>
-explicit AnyWrapper(U&& value) -> AnyWrapper<std::remove_reference_t<U>>;
+explicit AnyInputWrapper(U&& value) -> AnyInputWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
-typename AnyWrapper<T>::wrapper_ptr AnyWrapper<T>::clone_() const {
-    return std::make_unique<AnyWrapper<T>>(value_());
+typename AnyInputWrapper<T>::wrapper_ptr AnyInputWrapper<T>::clone_() const {
+    return std::make_unique<AnyInputWrapper<T>>(value_());
 }
 
 template<typename T>
-std::string AnyWrapper<T>::str_() const {
+std::string AnyInputWrapper<T>::str_() const {
     std::stringstream ss;
     using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {
@@ -480,7 +480,7 @@ std::string AnyWrapper<T>::str_() const {
 }
 
 template<typename T>
-bool AnyWrapper<T>::are_equal_(const AnyWrapperBase& rhs) const noexcept {
+bool AnyInputWrapper<T>::are_equal_(const AnyInputWrapperBase& rhs) const noexcept {
     try {
         return value_() == rhs.cast<const T&>();
     } catch(...) {

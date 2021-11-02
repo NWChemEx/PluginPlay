@@ -17,7 +17,7 @@
 
 namespace pluginplay {
 namespace detail_ {
-class Any;
+class AnyInput;
 class AnyResult;
 
 } // namespace detail_
@@ -43,7 +43,10 @@ class SubmoduleRequest;
 namespace pluginplay::type {
 
 /// The type of our type-erased holder class
-using any = detail_::Any;
+using any = detail_::AnyInput;
+
+/// The type of our type-erased holder class
+using any_input = detail_::AnyInput;
 
 /// The type of our type-erased holder class for results (serializable)
 using any_result = detail_::AnyResult;

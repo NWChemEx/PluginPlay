@@ -13,7 +13,7 @@ TEST_CASE("ModuleInputPIMPL : Default ctor") {
     REQUIRE_FALSE(pimpl.is_optional());
     REQUIRE_FALSE(pimpl.is_transparent());
     REQUIRE_FALSE(pimpl.is_ready());
-    REQUIRE_THROWS_AS(pimpl.is_valid(make_Any<double>(double{3})),
+    REQUIRE_THROWS_AS(pimpl.is_valid(make_AnyInput<double>(double{3})),
                       std::runtime_error);
 }
 
@@ -31,7 +31,7 @@ TEST_CASE("ModuleInputPIMPL : has_value") {
     SECTION("No value") { REQUIRE_FALSE(p.has_value()); }
     SECTION("Has value") {
         p.set_type(std::type_index(typeid(int)));
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         REQUIRE(p.has_value());
     }
 }
@@ -73,22 +73,22 @@ TEST_CASE("ModuleInputPIMPL : is_ready") {
     }
     SECTION("Has value") {
         p.set_type(std::type_index(typeid(int)));
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         REQUIRE(p.is_ready());
     }
 }
 
 TEST_CASE("ModuleInputPIMPL : is_valid") {
     ModuleInputPIMPL p;
-    REQUIRE_THROWS_AS(p.is_valid(make_Any<int>(3)), std::runtime_error);
+    REQUIRE_THROWS_AS(p.is_valid(make_AnyInput<int>(3)), std::runtime_error);
     p.set_type(std::type_index(typeid(int)));
 
-    SECTION("No checks") { REQUIRE(p.is_valid(make_Any<double>(1.1))); }
+    SECTION("No checks") { REQUIRE(p.is_valid(make_AnyInput<double>(1.1))); }
 
     SECTION("Has checks") {
-        p.add_check([](const Any& any) { return any.has_value(); });
-        REQUIRE(p.is_valid(make_Any<int>(3)));
-        REQUIRE_FALSE(p.is_valid(Any{}));
+        p.add_check([](const AnyInput& any) { return any.has_value(); });
+        REQUIRE(p.is_valid(make_AnyInput<int>(3)));
+        REQUIRE_FALSE(p.is_valid(AnyInput{}));
     }
 }
 
@@ -100,12 +100,12 @@ TEST_CASE("ModuleInputPIMPL : hash") {
                 "cbc357ccb763df2852fee8c4fc7d55f2");
     }
     SECTION("has value") {
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         REQUIRE(pluginplay::hash_objects(p) ==
                 "9a4294b64e60cc012c5ed48db4cd9c48");
     }
     SECTION("is transparent") {
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         p.make_transparent();
         REQUIRE(pluginplay::hash_objects(p) ==
                 "00000000000000000000000000000000");
@@ -128,13 +128,13 @@ TEST_CASE("ModuleInputPIMPL : set_type") {
     }
     SECTION("Can change type to same type even w/value") {
         p.set_type(t1);
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         p.set_type(t1);
         REQUIRE(p.type() == t1);
     }
     SECTION("Can't change type after value has been set") {
         p.set_type(t1);
-        p.set_value(make_Any<int>(3));
+        p.set_value(make_AnyInput<int>(3));
         REQUIRE_THROWS_AS(p.set_type(t2), std::runtime_error);
     }
 }
@@ -142,7 +142,7 @@ TEST_CASE("ModuleInputPIMPL : set_type") {
 TEST_CASE("ModuleInputPIMPL : set_value") {
     ModuleInputPIMPL p;
     const auto t1 = std::type_index(typeid(int));
-    auto any      = make_Any<int>(3);
+    auto any      = make_AnyInput<int>(3);
     SECTION("Can't set value w/o setting type") {
         REQUIRE_THROWS_AS(p.set_value(any), std::runtime_error);
     }
@@ -153,8 +153,8 @@ TEST_CASE("ModuleInputPIMPL : set_value") {
     }
     SECTION("Can't set to an invalid value") {
         p.set_type(t1);
-        p.add_check([](const type::any& a) { return a.has_value(); });
-        REQUIRE_THROWS_AS(p.set_value(type::any{}), std::invalid_argument);
+        p.add_check([](const type::any_input& a) { return a.has_value(); });
+        REQUIRE_THROWS_AS(p.set_value(type::any_input{}), std::invalid_argument);
     }
 }
 
@@ -168,8 +168,8 @@ TEST_CASE("ModuleInputPIMPL : set_description") {
 TEST_CASE("ModuleInputPIMPL : add_check") {
     ModuleInputPIMPL p;
     p.set_type(std::type_index(typeid(int)));
-    auto any = make_Any<int>(4);
-    auto l   = [](const Any& a) { return a.cast<int>() != 4; };
+    auto any = make_AnyInput<int>(4);
+    auto l   = [](const AnyInput& a) { return a.cast<int>() != 4; };
     SECTION("Add a check") {
         p.add_check(l, "a check");
         REQUIRE(p.check_descriptions() == std::set<std::string>{"a check"});
@@ -254,7 +254,7 @@ TEST_CASE("ModuleInputPIMPL : type") {
 TEST_CASE("ModuleInputPIMPL : value") {
     ModuleInputPIMPL p;
     p.set_type(std::type_index(typeid(int)));
-    auto any = make_Any<int>(3);
+    auto any = make_AnyInput<int>(3);
 
     SECTION("Throws if value is not set") {
         REQUIRE_THROWS_AS(p.value(), std::runtime_error);
@@ -280,7 +280,7 @@ TEST_CASE("ModuleInputPIMPL : description") {
 TEST_CASE("ModuleInputPIMPL : check_descriptions") {
     ModuleInputPIMPL p;
     using set_t = typename ModuleInputPIMPL::check_description_type;
-    auto l      = [](const Any&) { return true; };
+    auto l      = [](const AnyInput&) { return true; };
     SECTION("No descriptions") { REQUIRE(p.check_descriptions() == set_t{}); }
     SECTION("No description provided") {
         p.add_check(l);
@@ -307,8 +307,8 @@ TEST_CASE("ModuleInputPIMPL : Equality comparisons") {
     SECTION("Different values") {
         p2.set_type(std::type_index(typeid(int)));
         p.set_type(std::type_index(typeid(int)));
-        p2.set_value(make_Any<int>(4));
-        p.set_value(make_Any<int>(3));
+        p2.set_value(make_AnyInput<int>(4));
+        p.set_value(make_AnyInput<int>(3));
         REQUIRE_FALSE(p == p2);
         REQUIRE(p != p2);
     }

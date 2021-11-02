@@ -16,7 +16,7 @@ class ModuleInputPIMPL;
 /** @brief Holds an input value for a module in a type-erased form.
  *
  *  When a module gets its input parameters they come as instances of this
- *  class. As part of its state, the ModuleInput class contains an pluginplayAny
+ *  class. As part of its state, the ModuleInput class contains an AnyInput
  *  instance, which wraps the value. The value can be retrieved via the `value`
  *  member, assuming the caller knows the correct type. In addition to the
  *  actual value, this class also stores various metadata about the input
@@ -53,7 +53,7 @@ public:
     using validity_check = std::function<bool(const T&)>;
 
     /// Type of a check that operates on a type-erased value
-    using any_check = validity_check<type::any>;
+    using any_check = validity_check<type::any_input>;
 
     /** @brief Makes a new, null ModuleInput instance
      *
@@ -526,16 +526,16 @@ public:
 
 private:
     /// Retrieves the any from the PIMPL
-    type::any& get_();
+    type::any_input& get_();
 
     /// Retrieves a read-only any from the PIMPL
-    const type::any& get_() const;
+    const type::any_input& get_() const;
 
     /// Forwards a new value to the PIMPL
-    void change_(type::any new_value);
+    void change_(type::any_input new_value);
 
     /// Checks with the PIMPL if the value is valid
-    bool is_valid_(const type::any& new_value) const;
+    bool is_valid_(const type::any_input& new_value) const;
 
     /// Tells the PIMPL to set the type
     void set_type_(const std::type_info& type);
@@ -547,17 +547,17 @@ private:
     template<typename T>
     auto& add_type_check_();
 
-    /// Unwraps an pluginplayAny that contains a const reference
+    /// Unwraps an AnyInput that contains a const reference
     template<typename T>
-    static T unwrap_cref_(const type::any& the_value);
+    static T unwrap_cref_(const type::any_input& the_value);
 
-    /// Wraps a value into a reference_wrapper wrapped in an pluginplayAny
+    /// Wraps a value into a reference_wrapper wrapped in an AnyInput
     template<typename T>
     static auto wrap_cref_(T&& new_value);
 
-    /// Wraps a value in an pluginplayAny
+    /// Wraps a value in an AnyInput
     template<typename T>
-    static type::any wrap_value_(T&& new_value);
+    static type::any_input wrap_value_(T&& new_value);
 
     /// Keeps track of whether the user requested we store a const reference
     bool m_is_cref_ = false;
@@ -604,13 +604,13 @@ T ModuleInput::value() {
     // return read/write ref
     if(m_is_cref_) throw std::bad_any_cast();
 
-    return detail_::AnyCast<T>(get_());
+    return detail_::AnyInputCast<T>(get_());
 }
 
 template<typename T>
 T ModuleInput::value() const {
     return m_is_actually_cref_ ? unwrap_cref_<T>(get_()) :
-                                 detail_::AnyCast<T>(get_());
+                                 detail_::AnyInputCast<T>(get_());
 }
 
 template<typename T, typename U>
@@ -636,7 +636,7 @@ auto& ModuleInput::add_check(bounds_checking::InRange<T> check,
 
 template<typename T>
 auto& ModuleInput::add_check(validity_check<T> check, type::description desc) {
-    any_check temp = [check{std::move(check)}](const type::any& new_value) {
+    any_check temp = [check{std::move(check)}](const type::any_input& new_value) {
         return check(new_value.is_convertible<T>() ?
                        new_value.cast<T>() :
                        ModuleInput::unwrap_cref_<T>(new_value));
@@ -656,7 +656,7 @@ auto& ModuleInput::set_type() {
     // Make sure it is not a pointer
     static_assert(!std::is_pointer_v<T>, "T should't be a pointer");
 
-    // We need to clean-up the type for the pluginplayAny, basically we need to
+    // We need to clean-up the type for the AnyInput, basically we need to
     // get it down to just cv qualifified.
     using no_ref = std::remove_reference_t<T>;
 
@@ -674,7 +674,7 @@ auto& ModuleInput::change(T&& new_value) {
         constexpr bool is_value = std::is_same_v<T, std::decay_t<T>>;
         constexpr bool is_rref  = std::is_rvalue_reference_v<T>;
 
-        type::any da_any;
+        type::any_input da_any;
 
         /* Fun time. The pluginplay supports modules taking arguments in one of
          * two ways:
@@ -695,11 +695,11 @@ auto& ModuleInput::change(T&& new_value) {
          * wrapper around it, otherwise we copy it.
          */
         if constexpr(is_value || is_rref) { // User gave us the input by value
-            da_any              = wrap_value_(std::forward<T>(new_value));
+            da_any            = wrap_value_(std::forward<T>(new_value));
             m_is_actually_cref_ = false;
         } else {
             if(m_is_cref_) {
-                da_any              = wrap_cref_(std::forward<T>(new_value));
+                da_any        = wrap_cref_(std::forward<T>(new_value));
                 m_is_actually_cref_ = true;
             } else
                 da_any = wrap_value_(std::forward<T>(new_value));
@@ -725,19 +725,19 @@ inline type::any& ModuleInput::get_() {
 
 template<typename T>
 T ModuleInput::unwrap_cref_(const type::any& the_value) {
-    return detail_::AnyCast<cref_wrapper<T>>(the_value);
+    return detail_::AnyInputCast<cref_wrapper<T>>(the_value);
 }
 
 template<typename T>
 auto ModuleInput::wrap_cref_(T&& new_value) {
-    return detail_::make_Any<cref_wrapper<T>>(
+    return detail_::make_AnyInput<cref_wrapper<T>>(
       std::cref(std::forward<T>(new_value)));
 }
 
 template<typename T>
 type::any ModuleInput::wrap_value_(T&& new_value) {
     using clean_T = std::remove_reference_t<T>;
-    return detail_::make_Any<clean_T>(std::forward<T>(new_value));
+    return detail_::make_AnyInput<clean_T>(std::forward<T>(new_value));
 }
 
 template<typename T>
