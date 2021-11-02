@@ -120,7 +120,9 @@ public:
      * @throws ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    AnyResult& operator=(const AnyResult& r) { return *this = std::move(AnyResult(r)); }
+    AnyResult& operator=(const AnyResult& r) {
+        return *this = std::move(AnyResult(r));
+    }
 
     /**
      * @brief Causes the current AnyResult instance to take ownership of
@@ -341,8 +343,8 @@ public:
 
     /** @brief Enables serialization for AnyResult instances.
      *
-     * This function adds a serialized representation of the current AnyResult to
-     * the provided archive.
+     * This function adds a serialized representation of the current AnyResult
+     * to the provided archive.
      *
      * @param ar[in,out] An archive object to store the serialized
      * representation.

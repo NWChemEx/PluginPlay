@@ -240,7 +240,8 @@ private:
     // Implements change when we are given a shared_ptr to a value
     void change_(shared_any_result new_value);
 
-    /// Helper function for wrapping a value of type @p T in an pluginplay AnyResult
+    /// Helper function for wrapping a value of type @p T in an pluginplay
+    /// AnyResult
     template<typename T>
     static type::any_result wrap_value_(T&& new_value);
 

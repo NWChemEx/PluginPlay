@@ -5,7 +5,7 @@
 namespace pluginplay {
 
 using shared_any_result = typename ModuleResult::shared_any_result;
-using pimpl_t    = detail_::ModuleResultPIMPL;
+using pimpl_t           = detail_::ModuleResultPIMPL;
 
 ModuleResult::ModuleResult() : pimpl_(std::make_unique<pimpl_t>()) {}
 
