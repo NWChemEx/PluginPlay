@@ -36,7 +36,8 @@ private:
 
     /// Enables a function if @p T is not an AnyInput
     template<typename T>
-    using enable_if_not_an_any_input_t = std::enable_if_t<not_an_any_input_v<T>, int>;
+    using enable_if_not_an_any_input_t =
+      std::enable_if_t<not_an_any_input_v<T>, int>;
 
 public:
     /// The type of rtti returned by the `type` function
@@ -120,7 +121,9 @@ public:
      * @throws ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    AnyInput& operator=(const AnyInput& r) { return *this = std::move(AnyInput(r)); }
+    AnyInput& operator=(const AnyInput& r) {
+        return *this = std::move(AnyInput(r));
+    }
 
     /**
      * @brief Causes the current AnyInput instance to take ownership of
@@ -200,7 +203,8 @@ public:
      * auto& wrapped_ve1 = my_any_input.emplace<std::vector<double>>(vec1);
      *
      * // ...makes vec1, inside the AnyInput, without the copy
-     * auto& wrapped_v2 = my_any_input.emplace<std::vector<double>>({1.1, 1.2, 1.3});
+     * auto& wrapped_v2 =
+     * my_any_input.emplace<std::vector<double>>({1.1, 1.2, 1.3});
      * @endcode
      *
      * @tparam T The type of the object to wrap.
@@ -444,8 +448,8 @@ private:
  * @return The value wrapped by @p da_any_input.
  *
  * @throw std::bad_any_cast if the value wrapped by @p da_any_input is not
- *                          convertible to type @p T or if @p da_any_input does not
- *                          contain a value.  Strong throw guarantee.
+ *                          convertible to type @p T or if @p da_any_input does
+ * not contain a value.  Strong throw guarantee.
  *
  * @par Complexity: Constant.
  */

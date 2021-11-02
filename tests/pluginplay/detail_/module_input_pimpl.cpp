@@ -154,7 +154,8 @@ TEST_CASE("ModuleInputPIMPL : set_value") {
     SECTION("Can't set to an invalid value") {
         p.set_type(t1);
         p.add_check([](const type::any_input& a) { return a.has_value(); });
-        REQUIRE_THROWS_AS(p.set_value(type::any_input{}), std::invalid_argument);
+        REQUIRE_THROWS_AS(p.set_value(type::any_input{}),
+                          std::invalid_argument);
     }
 }
 

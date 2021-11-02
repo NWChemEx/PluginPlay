@@ -60,7 +60,8 @@ public:
      *             Same throw guarantee.
      */
     template<typename T, enable_if_not_wrapper_t<T> = 0>
-    explicit AnyInputWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
+    explicit AnyInputWrapperBase(T&& value) :
+      m_value_(std::forward<T>(value)) {}
 
     /** @brief Cleans up an AnyBase_ instance.
      *
@@ -460,7 +461,8 @@ inline bool AnyInputWrapperBase::operator!=(
 }
 
 template<typename U>
-explicit AnyInputWrapper(U&& value) -> AnyInputWrapper<std::remove_reference_t<U>>;
+explicit AnyInputWrapper(U&& value)
+  -> AnyInputWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
 typename AnyInputWrapper<T>::wrapper_ptr AnyInputWrapper<T>::clone_() const {
@@ -480,7 +482,8 @@ std::string AnyInputWrapper<T>::str_() const {
 }
 
 template<typename T>
-bool AnyInputWrapper<T>::are_equal_(const AnyInputWrapperBase& rhs) const noexcept {
+bool AnyInputWrapper<T>::are_equal_(
+  const AnyInputWrapperBase& rhs) const noexcept {
     try {
         return value_() == rhs.cast<const T&>();
     } catch(...) {
