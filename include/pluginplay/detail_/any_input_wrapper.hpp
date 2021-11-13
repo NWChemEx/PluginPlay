@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/any_field_wrapper.hpp"
 #include "pluginplay/hasher.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
@@ -11,279 +12,6 @@ namespace pluginplay::detail_ {
 template<typename T>
 class AnyInputWrapper;
 
-/**
- * @brief Defines the API for interacting with the type-erased value.
- *
- * This class is meant for use with the Any class and can be thought
- * of as a PIMPL for that class. This actual implementation works by holding the
- * value in an std::any instance (thereby differing casting and type checks to
- * it) and leveraging as much of that API as possible. Additional member
- * functions that are part of the Any API, but not std::any's API, are
- * then implemented by a derived class, which knows the type to cast the
- * std::any to.
- */
-class AnyInputWrapperBase {
-protected:
-    /// My type
-    using my_type = AnyInputWrapperBase;
-
-    /// type for determining if @p T inherits from us
-    template<typename T>
-    using is_wrapper = std::is_base_of<my_type, T>;
-
-    /// does @p T does not inherit from us?
-    template<typename T>
-    static constexpr bool is_not_wrapper_v = std::negation_v<is_wrapper<T>>;
-
-    /// type for enabling a function if @p T does not stem from us
-    template<typename T>
-    using enable_if_not_wrapper_t = std::enable_if_t<is_not_wrapper_v<T>, int>;
-
-public:
-    /// Type of a unique_ptr to the wrapper
-    using wrapper_ptr = std::unique_ptr<AnyInputWrapperBase>;
-
-    /// Type of the RTTI of the wrapped instance
-    using rtti_type = const std::type_info&;
-
-    /** @brief Creates an AnyInputWrapper by forwarding the provided value.
-     *
-     *  @note This ctor only participates in overload resolution if @p T is
-     * not AnyInputWrapperBase or any instanitation of
-     * AnyInputWrapper.
-     *
-     *  @tparam T The type of the value we are wrapping.
-     *
-     *  @param[in] value The value we are wrapping.
-     *
-     *  @throw ??? throws if forwarding @p value to std::any's ctor throws.
-     *             Same throw guarantee.
-     */
-    template<typename T, enable_if_not_wrapper_t<T> = 0>
-    explicit AnyInputWrapperBase(T&& value) : m_value_(std::forward<T>(value)) {}
-
-    /** @brief Cleans up an AnyBase_ instance.
-     *
-     *  Since AnyBase_ instances have no state this is a null
-     * operation. However, it is important to mark this function as virtual
-     * since we will literally always be passing the derived class around by its
-     * base type.
-     *
-     *  @throws None. No throw guarantee.
-     */
-    virtual ~AnyInputWrapperBase() = default;
-
-    /**
-     *  @brief Makes a polymorphic copy of the wrapper.
-     *
-     *  This member calls clone_() in order to get a polymorphic deep copy
-     * of the wrapper.
-     *
-     *  @return A deep copy, on the heap, of the wrapper.
-     *
-     *  @throw ??? If the copy constructor of the wrapped instance throws.
-     * Same guarantee as the wrapped instance's copy ctor.
-     */
-    wrapper_ptr clone() const { return clone_(); }
-
-    /** @brief Provides the RTTI of the wrapped class.
-     *
-     * This member calls type_ to get the RTTI of the wrapped instance.
-     *
-     * @return The RTTI of the wrapped class.
-     *
-     * @throw None No throw guarantee.
-     */
-    rtti_type type() const noexcept { return type_(); };
-
-    /** @brief Determines if the wrapped instance is convertible to the
-     *         provided type.
-     *
-     * @tparam T The type to try casting to.
-     * @return True if the wrapped instance is convertible to type @p T and
-     *         false otherwise.
-     *
-     * @throw None no throw guarantee.
-     */
-    template<typename T>
-    bool is_convertible() const noexcept;
-
-    /**
-     *  @brief Allows the AnyBase_ instance to be hashed.
-     *
-     *  This function simply delegates to the protected hash_ member
-     *  function (following the suggestion on BPHash's website).
-     *
-     *  @param[in, out] h A Hasher instance to use for the hashing.
-     *
-     *  @par Complexity:
-     *  Same as the complexity of hashing the wrapped type.
-     *
-     *  @par Data Races:
-     *  The state of the current instance will be accessed and data races
-     *  may
-     *  result if it is concurrently modified.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Strong
-     *  throw guarantee.
-     */
-    void hash(Hasher& h) const { hash_(h); }
-
-    /** @brief Returns the string representation of the object stored in the
-     *         any.
-     *
-     * @return A string representation of the
-     */
-    std::string str() const { return str_(); }
-
-    /** @brief Used to determine if the type-erased value of this instance
-     * is the same as that of another instance.
-     *
-     *  This function ultimately calls are_equal_ to determine if the two
-     *  instances are equal. Equality of the wrapped values is determined by
-     *  the result of calling operator== on the wrapped value. If the
-     * wrapped instances are different types, as determined by their RTTI,
-     * then they considered not equal.
-     *
-     *  @param[in] rhs the instance to compare to.
-     *
-     *  @return true if the wrapped instances compare equivalent and false
-     *          otherwise.
-     *
-     *  @throw none No throw guarantee.
-     */
-    bool operator==(const AnyInputWrapperBase& rhs) const noexcept;
-
-    /** @brief Used to determine if the type-erased value of this instance
-     * is different from that of another instance.
-     *
-     *  This function ultimately negates a call to are_equal_ in order to
-     *  determine if the two instances are different. Equality of the
-     * wrapped values is determined by the result of calling operator== on
-     * the wrapped value. If the wrapped instances are different types, as
-     * determined by their RTTI, then they are considered different.
-     *
-     *  @param[in] rhs the instance to compare to.
-     *
-     *  @return false if the wrapped instances compare equivalent and true
-     *          otherwise.
-     *
-     *  @throw none No throw guarantee.
-     */
-    bool operator!=(const AnyInputWrapperBase& rhs) const noexcept;
-
-    /** @brief Casts the wrapped value back to a readonly type @p T
-     *
-     *  This function allows you to retrieve the wrapped value as long as
-     * you request the value as a type it is implicitly convertible to. This
-     *  particular overload additionally restricts you to deep copies of the
-     *  wrapped value or read-only access.
-     *
-     *  @tparam T The type to retrieve the wrapped value as.
-     * .
-     *  @return The wrapped instance.
-     *
-     *  @throw std::bad_any_cast if the wrapped instance is not of type @p
-     * T. Strong throw guarantee.
-     */
-    template<typename T>
-    T cast() const {
-        return std::any_cast<T>(m_value_);
-    }
-
-    /** @brief Casts the wrapped value back to a readonly type @p T
-     *
-     *  This function allows you to retrieve the wrapped value as long as
-     * you request the value as a type it is implicitly convertible to. This
-     *  particular overload allows you to get the wrapped value back in a
-     * read write state.
-     *
-     *  @tparam T The type to retrieve the wrapped value as.
-     * .
-     *  @return The wrapped instance.
-     *
-     *  @throw std::bad_any_cast if the wrapped instance is not of type @p
-     * T. Strong throw guarantee.
-     */
-    template<typename T>
-    T cast() {
-        return std::any_cast<T>(m_value_);
-    }
-
-protected:
-    /** @brief Deep copies the type-erased value held in @p rhs.
-     *
-     *  This function is protected so it can be used by the derived class to
-     *  implement clone_. Making it public opens us up to slicing, which we
-     *  wish to avoid in the event that the derived class ever has state.
-     *
-     *  @param[in] rhs The instance to copy.
-     *
-     *  @throw ??? if the copying the value throws. Same guarantee.
-     */
-    AnyInputWrapperBase(const AnyInputWrapperBase&) = default;
-
-    /** @brief Takes ownership of the type-erased value held in @p rhs.
-     *
-     *  This function is protected so it can be used by the derived class,
-     * but is not public to avoid accidental slicing.
-     *
-     *  @param[in] rhs The instance to move from. After the move operation
-     *                 @p rhs is in a valid, but otherwise undefined state.
-     *
-     *  @throw none No throw guarantee.
-     */
-    AnyInputWrapperBase(AnyInputWrapperBase&&) noexcept = default;
-
-    /** @brief Sets the current state to a deep copy of @p rhs.
-     *
-     *  This function is protected so it can be used by the derived class,
-     * but not public to avoid slicing.
-     *
-     *  @param[in] rhs The instance to copy.
-     *
-     *  @return the current instance containing a deep copy of @p rhs's
-     * state.
-     *
-     *  @throw ??? if the copying the value throws. Same guarantee.
-     */
-    AnyInputWrapperBase& operator=(const AnyInputWrapperBase&) = default;
-
-    /** @brief Replaces the current state with the type-erased value held
-     *        in @p rhs.
-     *
-     *  This function is protected so it can be used by the derived class,
-     * but is not public to avoid accidental slicing.
-     *
-     *  @param[in] rhs The instance to move from. After the move operation
-     *                 @p rhs is in a valid, but otherwise undefined state.
-     *
-     *  @return The current instance set containing @p rhs's state.
-     *
-     *  @throw none No throw guarantee.
-     */
-    AnyInputWrapperBase& operator=(AnyInputWrapperBase&&) noexcept = default;
-
-private:
-    /// To be implemented by derived class in order for copying to work
-    virtual wrapper_ptr clone_() const = 0;
-
-    /// To be implemented by derived class so we can retrieve the RTTI
-    virtual rtti_type type_() const noexcept = 0;
-
-    /// To be implemented by derived class so we can hash
-    virtual void hash_(Hasher& h) const = 0;
-
-    /// To be implemented by derived class to make a string representation
-    virtual std::string str_() const = 0;
-
-    /// To be implemented by the derived class to define equality
-    virtual bool are_equal_(const AnyInputWrapperBase& rhs) const noexcept = 0;
-
-    /// The type-erased value
-    std::any m_value_;
-}; // class AnyInputWrapperBase
-
 /** @brief The class responsible for holding the type-erased instance.
  *
  * The AnyInputWrapper class holds the wrapped instance for the
@@ -295,9 +23,9 @@ private:
  * and have operator== defined.
  */
 template<typename T>
-class AnyInputWrapper : public AnyInputWrapperBase {
+class AnyInputWrapper : public AnyFieldWrapperBase {
 private:
-    using base_type = AnyInputWrapperBase;
+    using base_type = AnyFieldWrapperBase;
 
     template<typename U>
     using enable_if_not_pluginplay_any_t =
@@ -430,7 +158,7 @@ private:
      *
      *  @throw none No throw guarantee.
      */
-    bool are_equal_(const AnyInputWrapperBase& rhs) const noexcept override;
+    bool are_equal_(const AnyFieldWrapperBase& rhs) const noexcept override;
 
     /** @brief Implements hashing for the AnyBase_ class.
      *
@@ -444,23 +172,9 @@ private:
 
 //-------------------------------Implementations--------------------------------
 
-template<typename T>
-bool AnyInputWrapperBase::is_convertible() const noexcept {
-    return std::any_cast<T>(&m_value_) != nullptr;
-}
-
-inline bool AnyInputWrapperBase::operator==(
-  const AnyInputWrapperBase& rhs) const noexcept {
-    return are_equal_(rhs);
-}
-
-inline bool AnyInputWrapperBase::operator!=(
-  const AnyInputWrapperBase& rhs) const noexcept {
-    return !((*this) == rhs);
-}
-
 template<typename U>
-explicit AnyInputWrapper(U&& value) -> AnyInputWrapper<std::remove_reference_t<U>>;
+explicit AnyInputWrapper(U&& value)
+  -> AnyInputWrapper<std::remove_reference_t<U>>;
 
 template<typename T>
 typename AnyInputWrapper<T>::wrapper_ptr AnyInputWrapper<T>::clone_() const {
@@ -480,7 +194,8 @@ std::string AnyInputWrapper<T>::str_() const {
 }
 
 template<typename T>
-bool AnyInputWrapper<T>::are_equal_(const AnyInputWrapperBase& rhs) const noexcept {
+bool AnyInputWrapper<T>::are_equal_(
+  const AnyFieldWrapperBase& rhs) const noexcept {
     try {
         return value_() == rhs.cast<const T&>();
     } catch(...) {

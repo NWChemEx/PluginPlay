@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/any_field.hpp"
 #include "pluginplay/detail_/any_input_wrapper.hpp"
 #include "pluginplay/utility.hpp"
 #include <iostream>
@@ -16,7 +17,7 @@ namespace pluginplay::detail_ {
  * the additional functions which are part of the AnyInput's API, but not
  * the std::any's API.
  */
-class AnyInput {
+class AnyInput : public AnyField {
 private:
     /// Trait to see if @p T is an AnyInput
     template<typename T>
@@ -36,14 +37,15 @@ private:
 
     /// Enables a function if @p T is not an AnyInput
     template<typename T>
-    using enable_if_not_an_any_input_t = std::enable_if_t<not_an_any_input_v<T>, int>;
+    using enable_if_not_an_any_input_t =
+      std::enable_if_t<not_an_any_input_v<T>, int>;
 
 public:
     /// The type of rtti returned by the `type` function
-    using rtti_type = typename AnyInputWrapperBase::rtti_type;
+    // using rtti_type = typename AnyFieldWrapperBase::rtti_type;
 
-    /// The type of the pointer holding the value
-    using wrapper_ptr = typename AnyInputWrapperBase::wrapper_ptr;
+    // /// The type of the pointer holding the value
+    // using wrapper_ptr = typename AnyFieldWrapperBase::wrapper_ptr;
 
     /** @brief Makes an empty AnyInput instance.
      *
@@ -120,7 +122,9 @@ public:
      * @throws ??? if the wrapped type's constructor throws.  Strong throw
      * guarantee.
      */
-    AnyInput& operator=(const AnyInput& r) { return *this = std::move(AnyInput(r)); }
+    AnyInput& operator=(const AnyInput& r) {
+        return *this = std::move(AnyInput(r));
+    }
 
     /**
      * @brief Causes the current AnyInput instance to take ownership of
@@ -200,7 +204,8 @@ public:
      * auto& wrapped_ve1 = my_any_input.emplace<std::vector<double>>(vec1);
      *
      * // ...makes vec1, inside the AnyInput, without the copy
-     * auto& wrapped_v2 = my_any_input.emplace<std::vector<double>>({1.1, 1.2, 1.3});
+     * auto& wrapped_v2 =
+     * my_any_input.emplace<std::vector<double>>({1.1, 1.2, 1.3});
      * @endcode
      *
      * @tparam T The type of the object to wrap.
@@ -444,8 +449,8 @@ private:
  * @return The value wrapped by @p da_any_input.
  *
  * @throw std::bad_any_cast if the value wrapped by @p da_any_input is not
- *                          convertible to type @p T or if @p da_any_input does not
- *                          contain a value.  Strong throw guarantee.
+ *                          convertible to type @p T or if @p da_any_input does
+ * not contain a value.  Strong throw guarantee.
  *
  * @par Complexity: Constant.
  */
