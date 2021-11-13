@@ -636,11 +636,12 @@ auto& ModuleInput::add_check(bounds_checking::InRange<T> check,
 
 template<typename T>
 auto& ModuleInput::add_check(validity_check<T> check, type::description desc) {
-    any_check temp = [check{std::move(check)}](const type::any_input& new_value) {
-        return check(new_value.is_convertible<T>() ?
-                       new_value.cast<T>() :
-                       ModuleInput::unwrap_cref_<T>(new_value));
-    };
+    any_check temp =
+      [check{std::move(check)}](const type::any_input& new_value) {
+          return check(new_value.is_convertible<T>() ?
+                         new_value.cast<T>() :
+                         ModuleInput::unwrap_cref_<T>(new_value));
+      };
     return add_check_(std::move(temp), std::move(desc));
 }
 
@@ -695,11 +696,11 @@ auto& ModuleInput::change(T&& new_value) {
          * wrapper around it, otherwise we copy it.
          */
         if constexpr(is_value || is_rref) { // User gave us the input by value
-            da_any            = wrap_value_(std::forward<T>(new_value));
+            da_any              = wrap_value_(std::forward<T>(new_value));
             m_is_actually_cref_ = false;
         } else {
             if(m_is_cref_) {
-                da_any        = wrap_cref_(std::forward<T>(new_value));
+                da_any              = wrap_cref_(std::forward<T>(new_value));
                 m_is_actually_cref_ = true;
             } else
                 da_any = wrap_value_(std::forward<T>(new_value));
