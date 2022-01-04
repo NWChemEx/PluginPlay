@@ -5,8 +5,8 @@
 
 int main(){
     const std::filesystem::path out("@ppgmd_OUTPUT_DIR@");
-    //std::filesystem::remove_all(out);
-    //std::filesystem::create_directory(out);
+    std::filesystem::remove_all(out);
+    std::filesystem::create_directory(out);
 
     pluginplay::ModuleManager mm;
     @ppgmd_LOAD_MODULES_FXN@(mm);
