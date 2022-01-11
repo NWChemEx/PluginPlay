@@ -103,7 +103,7 @@ create a new module.</p>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
 <span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
@@ -120,13 +120,13 @@ parameters.</p>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;numeric&gt;</span><span class="c1"> // For std::inner_product</span><span class="cp"></span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
 <span class="n">TEMPLATED_MODULE_CTOR</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span><span class="w"> </span><span class="n">FloatingPointType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
-<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FloatingPointType</span><span class="o">&gt;</span><span class="w"></span>
 <span class="n">TEMPLATED_MODULE_RUN</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span><span class="w"> </span><span class="n">FloatingPointType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
 
