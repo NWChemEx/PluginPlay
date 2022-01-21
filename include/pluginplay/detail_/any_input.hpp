@@ -42,10 +42,10 @@ private:
 
 public:
     /// The type of rtti returned by the `type` function
-     using rtti_type = typename AnyInputWrapperBase::rtti_type;
+    using rtti_type = typename AnyInputWrapperBase::rtti_type;
 
     // /// The type of the pointer holding the value
-     using wrapper_ptr = typename AnyInputWrapperBase::wrapper_ptr;
+    using wrapper_ptr = typename AnyInputWrapperBase::wrapper_ptr;
 
     /** @brief Makes an empty AnyInput instance.
      *
