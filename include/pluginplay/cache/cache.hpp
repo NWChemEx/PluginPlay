@@ -375,6 +375,15 @@ public:
      */
     void reset_cache();
 
+    /** @brief Serialize/deserialize cache
+     *
+     * @param ar The archive object
+     */
+    template<typename Archive>
+    void serialize(Archive& ar) {
+        ar& m_data_;
+    }
+
 private:
     /// The object actually storing all of the cached data
     std::map<hash_type, pluginplay::detail_::AnyResult> m_data_;
