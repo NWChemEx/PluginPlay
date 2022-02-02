@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/detail_/any_field.hpp"
 #include "pluginplay/detail_/any_result_wrapper.hpp"
 #include "pluginplay/utility.hpp"
 #include <iostream>
@@ -16,7 +17,7 @@ namespace pluginplay::detail_ {
  * the additional functions which are part of the AnyResult's API, but not
  * the std::any's API.
  */
-class AnyResult {
+class AnyResult : public AnyField {
 private:
     /// Trait to see if @p T is an AnyResult
     template<typename T>
