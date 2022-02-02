@@ -502,18 +502,18 @@ private:
         if constexpr(is_ref_wrapper) {
             throw std::runtime_error("Are you trying to serialize an input?");
         } else {
-            std::size_t idx = std::type_index(base_type::type()).hash_code();
-            s(idx);
-            if(!base_type::m_any_maker_.count(idx)) {
-                typename base_type::fxn_type l = [](Deserializer& d) {
-                    std::decay_t<T> new_value;
-                    d(new_value);
-                    return std::make_unique<AnyResultWrapper>(
-                      std::move(new_value));
-                };
-                base_type::m_any_maker_[idx] = l;
-            }
-            s(value_());
+            // std::size_t idx = std::type_index(base_type::type()).hash_code();
+            // s(idx);
+            // if(!base_type::m_any_maker_.count(idx)) {
+            //     typename base_type::fxn_type l = [](Deserializer& d) {
+            //         std::decay_t<T> new_value;
+            //         d(new_value);
+            //         return std::make_unique<AnyResultWrapper>(
+            //           std::move(new_value));
+            //     };
+            //     base_type::m_any_maker_[idx] = l;
+            // }
+            // s(value_());
         }
     }
 };

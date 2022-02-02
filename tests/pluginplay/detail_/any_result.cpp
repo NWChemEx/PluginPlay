@@ -30,16 +30,16 @@ TEST_CASE("AnyResult : Value ctor") {
         std::stringstream ss;
 
         AnyResult a(int{3}), a2;
-        {
-            pluginplay::BinaryOutputArchive ar(ss);
-            ar& a;
-        }
+        // {
+        //     pluginplay::BinaryOutputArchive ar(ss);
+        //     ar& a;
+        // }
 
-        {
-            pluginplay::BinaryInputArchive ar(ss);
-            ar& a2;
-        }
-        REQUIRE(a == a2);
+        // {
+        //     pluginplay::BinaryInputArchive ar(ss);
+        //     ar& a2;
+        // }
+        //REQUIRE(a == a2);
     }
     SECTION("POD by reference") {
         int x{3};
