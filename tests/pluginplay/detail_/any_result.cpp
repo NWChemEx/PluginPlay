@@ -39,7 +39,7 @@ TEST_CASE("AnyResult : Value ctor") {
         //     pluginplay::BinaryInputArchive ar(ss);
         //     ar& a2;
         // }
-        //REQUIRE(a == a2);
+        // REQUIRE(a == a2);
     }
     SECTION("POD by reference") {
         int x{3};
