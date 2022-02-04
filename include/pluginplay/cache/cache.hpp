@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_result.hpp"
 #include <pluginplay/hasher.hpp>
 
 namespace pluginplay {
@@ -84,7 +84,7 @@ public:
      *  @tparam KeyType The type of the object being used as a key. Must be
      *                  hashable.
      *  @tparam ValueType The type of the data being stored. Must be
-     *                    type-erasable via an pluginplayAny.
+     *                    type-erasable via an AnyResult.
      *  @tparam <Anonymous> Template type parameter used to disable overload
      *                      when @p KeyType is the same as `hash_type`.
      *
@@ -109,7 +109,7 @@ public:
      *  `hash_type`.
      *
      *  @tparam ValueType The type of the data being stored. Must be
-     *                    type-erasable via an pluginplayAny.
+     *                    type-erasable via an AnyResult.
      *
      *  @param[in] key The hash the data will be associated with.
      *  @param[in] value The data to store under the key.
@@ -375,9 +375,18 @@ public:
      */
     void reset_cache();
 
+    /** @brief Serialize/deserialize cache
+     *
+     * @param ar The archive object
+     */
+    template<typename Archive>
+    void serialize(Archive& ar) {
+        ar& m_data_;
+    }
+
 private:
     /// The object actually storing all of the cached data
-    std::map<hash_type, pluginplay::detail_::Any> m_data_;
+    std::map<hash_type, pluginplay::detail_::AnyResult> m_data_;
     /// The set storing the hash keys of temporary values in the cache
     std::set<hash_type> m_temp_;
 }; // class Cache
@@ -396,8 +405,8 @@ void Cache::cache(const KeyType& key, ValueType&& value, const CacheTag& tag) {
 template<typename ValueType>
 void Cache::cache(hash_type key, ValueType&& value, const CacheTag& tag) {
     using clean_type = std::decay_t<ValueType>;
-    using pluginplay::detail_::make_Any;
-    auto da_any  = make_Any<clean_type>(std::forward<ValueType>(value));
+    using pluginplay::detail_::make_AnyResult;
+    auto da_any  = make_AnyResult<clean_type>(std::forward<ValueType>(value));
     m_data_[key] = std::move(da_any);
     if(tag == CacheTag::Temporary && !m_temp_.count(key)) m_temp_.insert(key);
 }
