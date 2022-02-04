@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/detail_/any_result.hpp"
 #include "pluginplay/types.hpp"
 #include <memory>
 #include <typeindex>
@@ -18,8 +18,8 @@ namespace pluginplay::detail_ {
  */
 class ModuleResultPIMPL {
 public:
-    /// The type of a shared_ptr to a read-only pluginplayAny
-    using shared_any = std::shared_ptr<const type::any>;
+    /// The type of a shared_ptr to a read-only pluginplay AnyResult
+    using shared_any_result = std::shared_ptr<const type::any_result>;
 
     /** @brief Makes a deep copy of the PIMPL on the heap.
      *
@@ -94,7 +94,7 @@ public:
      * @throw std::invalid_argument if @p new_value does not have the correct
      *                              type. Strong throw guarantee.
      */
-    void set_value(shared_any new_value);
+    void set_value(shared_any_result new_value);
 
     /** @brief Sets this result field's description.
      *
@@ -175,7 +175,7 @@ public:
 
 private:
     /// The type-erased value bound to this field
-    shared_any m_value_;
+    shared_any_result m_value_;
 
     /// A human-readable description of what this field is
     std::optional<type::description> m_desc_;
@@ -192,7 +192,7 @@ inline void ModuleResultPIMPL::set_type(type::rtti new_type) {
     m_type_.emplace(std::type_index(new_type));
 }
 
-inline void ModuleResultPIMPL::set_value(shared_any new_value) {
+inline void ModuleResultPIMPL::set_value(shared_any_result new_value) {
     if(std::type_index(new_value->type()) != type()) {
         std::string msg{"Value is not of type: "};
         msg += utilities::printing::Demangler::demangle(type().name());
