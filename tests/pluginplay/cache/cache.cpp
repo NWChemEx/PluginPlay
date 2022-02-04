@@ -176,4 +176,25 @@ TEST_CASE("Cache Class") {
         c.prune_cache();
         REQUIRE(c.count(hashkey) == 0);
     }
+
+    SECTION("Cache serialization") {
+        c.cache(int{0}, int{42});
+        using vector_type = std::vector<int>;
+        vector_type data{1, 2, 3, 4};
+        c.cache(int{1}, data);
+        Cache c2;
+        std::stringstream ss;
+        {
+            parallelzone::BinaryOutputArchive oarchive(ss);
+            oarchive << c;
+        }
+        {
+            parallelzone::BinaryInputArchive iarchive(ss);
+            iarchive >> c2;
+        }
+        REQUIRE(c2.count(int{0}));
+        REQUIRE(c.count(int{1}));
+        auto& cached_data = c.uncache<vector_type&>(int{1});
+        REQUIRE(cached_data == data);
+    }
 }

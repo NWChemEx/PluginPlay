@@ -2,12 +2,12 @@
 #include <catch2/catch.hpp>
 using namespace pluginplay;
 using namespace pluginplay::detail_;
-using shared_any = typename ModuleResultPIMPL::shared_any;
+using shared_any_result = typename ModuleResultPIMPL::shared_any_result;
 
 template<typename T, typename U>
 static auto wrap_value(U&& value) {
-    return std::make_shared<const type::any>(
-      make_Any<T>(std::forward<U>(value)));
+    return std::make_shared<const type::any_result>(
+      make_AnyResult<T>(std::forward<U>(value)));
 }
 
 static const std::type_index d(typeid(double));
