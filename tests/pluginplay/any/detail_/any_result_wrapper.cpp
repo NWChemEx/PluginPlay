@@ -2,6 +2,8 @@
 #include <catch2/catch.hpp>
 #include <map>
 
+#include "../test_any.hpp"
+
 using namespace pluginplay::detail_;
 
 /* Testing Strategy:
@@ -15,28 +17,13 @@ using namespace pluginplay::detail_;
 
 using types2test = std::tuple<int, double, std::string, std::vector<double>>;
 
-template<typename T>
-auto default_value() {
-    if constexpr(std::is_same_v<int, T>) {
-        return int{42};
-    } else if constexpr(std::is_same_v<double, T>) {
-        return double{3.14};
-    } else if constexpr(std::is_same_v<std::string, T>) {
-        return std::string{"Hello World"};
-    } else if constexpr(std::is_same_v<std::vector<double>, T>) {
-        return std::vector<double>{1.2, 2.3, 3.4};
-    } else {
-        static_assert(std::is_same_v<T, int>, "Register your type!!!!");
-    }
-}
-
 TEMPLATE_LIST_TEST_CASE("AnyResultWrapper", "", types2test) {
     using type                = TestType;
     using result_wrapper_type = AnyResultWrapper<type>;
     using rtti_type           = typename result_wrapper_type::rtti_type;
 
     rtti_type rtti(typeid(type));
-    auto value = default_value<type>();
+    auto value = testing::non_default_value<type>();
 
     // ---------- uncomment to verify state_asserts on types -------------------
     // AnyResultWrapper<const type> is_const(value);
@@ -47,13 +34,35 @@ TEMPLATE_LIST_TEST_CASE("AnyResultWrapper", "", types2test) {
     result_wrapper_type has_value(value);
 
     SECTION("Value CTor") {
-        REQUIRE(defaulted.has_value());
-        REQUIRE(has_value.has_value());
         REQUIRE(defaulted.type() == rtti);
         REQUIRE(has_value.type() == rtti);
+
+        // If it's the vector make sure we can wrap it without a copy
+        if constexpr(std::is_same_v<type, std::vector<double>>) {
+            const auto pvalue = value.data();
+            result_wrapper_type moved(std::move(value));
+            const auto pmoved = moved.template cast<const type&>().data();
+            REQUIRE(pmoved == pvalue);
+        }
     }
 
-    SECTION("Clone") {}
+    SECTION("Copy CTor") {
+        result_wrapper_type defaulted2(defaulted);
+        REQUIRE(defaulted2.are_equal(defaulted));
+
+        result_wrapper_type has_value2(has_value);
+        REQUIRE(has_value2.are_equal(has_value));
+    }
+
+    SECTION("Clone") {
+        auto pdefaulted2 = defaulted.clone();
+        REQUIRE(pdefaulted2->type() == rtti);
+        REQUIRE(defaulted.are_equal(*pdefaulted2));
+
+        auto phas_value2 = has_value.clone();
+        REQUIRE(phas_value2->type() == rtti);
+        REQUIRE(has_value.are_equal(*phas_value2));
+    }
 
     SECTION("are_equal") {
         // Wraps the same type, but with different values
