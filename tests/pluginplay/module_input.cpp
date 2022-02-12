@@ -103,25 +103,25 @@ TEST_CASE("ModuleInput : is_valid") {
     }
 }
 
-TEST_CASE("ModuleInput : hash") {
-    ModuleInput i;
-    i.set_type<int>();
-    SECTION("Empty") {
-        REQUIRE(pluginplay::hash_objects(i) ==
-                "cbc357ccb763df2852fee8c4fc7d55f2");
-    }
-    SECTION("Has value and opaque") {
-        i.change(int{3});
-        REQUIRE(pluginplay::hash_objects(i) ==
-                "9a4294b64e60cc012c5ed48db4cd9c48");
-    }
-    SECTION("Has value and transparent") {
-        i.change(int{3});
-        i.make_transparent();
-        REQUIRE(pluginplay::hash_objects(i) ==
-                "00000000000000000000000000000000");
-    }
-}
+// TEST_CASE("ModuleInput : hash") {
+//     ModuleInput i;
+//     i.set_type<int>();
+//     SECTION("Empty") {
+//         REQUIRE(pluginplay::hash_objects(i) ==
+//                 "cbc357ccb763df2852fee8c4fc7d55f2");
+//     }
+//     SECTION("Has value and opaque") {
+//         i.change(int{3});
+//         REQUIRE(pluginplay::hash_objects(i) ==
+//                 "9a4294b64e60cc012c5ed48db4cd9c48");
+//     }
+//     SECTION("Has value and transparent") {
+//         i.change(int{3});
+//         i.make_transparent();
+//         REQUIRE(pluginplay::hash_objects(i) ==
+//                 "00000000000000000000000000000000");
+//     }
+// }
 
 TEST_CASE("ModuleInput: set_type") {
     ModuleInput i;
