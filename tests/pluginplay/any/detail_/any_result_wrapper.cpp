@@ -1,5 +1,4 @@
 #include "pluginplay/any/detail_/any_result_wrapper.hpp"
-#include <catch2/catch.hpp>
 #include <map>
 
 #include "../test_any.hpp"
@@ -15,9 +14,7 @@ using namespace pluginplay::detail_;
  * functions overriden elsewhere in the hierarchy.
  */
 
-using types2test = std::tuple<int, double, std::string, std::vector<double>>;
-
-TEMPLATE_LIST_TEST_CASE("AnyResultWrapper", "", types2test) {
+TEMPLATE_LIST_TEST_CASE("AnyResultWrapper", "", testing::types2test) {
     using type                = TestType;
     using result_wrapper_type = AnyResultWrapper<type>;
     using rtti_type           = typename result_wrapper_type::rtti_type;

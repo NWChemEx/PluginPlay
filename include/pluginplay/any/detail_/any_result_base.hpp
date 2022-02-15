@@ -83,9 +83,9 @@ protected:
     using AnyFieldBase::AnyFieldBase;
 
 private:
-    /// Is type @p T an allowed type
+    /// Is type @p T an allowed return type
     template<typename T>
-    static constexpr bool is_allowed_type =
+    static constexpr bool is_allowed_return_type =
       base_type::is_by_value<T> || base_type::is_const_value<T> ||
       base_type::is_const_ref<T>;
 
@@ -109,14 +109,14 @@ T AnyResultBase::cast() const {
 template<typename T>
 bool AnyResultBase::is_convertible() const noexcept {
     // For cast to work must be by value or by const ref
-    if(!is_allowed_type<T>) return false;
+    if(!is_allowed_return_type<T>) return false;
     return std::any_cast<std::decay_t<T>>(&m_value_) != nullptr;
 }
 
 template<typename T>
 void AnyResultBase::assert_convertible_() const {
     static_assert(
-      is_allowed_type<T>,
+      is_allowed_return_type<T>,
       "Results must be retrieved by value or by read-only reference.");
     if(is_convertible<T>()) return;
     std::string msg = "Can not cast AnyResult to type: ";

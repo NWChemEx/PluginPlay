@@ -1,9 +1,12 @@
 #pragma once
+#include <catch2/catch.hpp>
 #include <string>
 #include <type_traits>
 #include <vector>
 
 namespace testing {
+
+using types2test = std::tuple<int, double, std::string, std::vector<double>>;
 
 // Creates an instance of a given type whose value is not the default value.
 template<typename T>
