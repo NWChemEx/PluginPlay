@@ -41,7 +41,12 @@ inline static void compare_value(T&& w, corr_t corr) {
     }
 
     SECTION("hashing") {
+#ifdef BPHASH_USE_TYPEID
+        REQUIRE_FALSE(pluginplay::hash_objects(corr) ==
+                      pluginplay::hash_objects(w));
+#else
         REQUIRE(pluginplay::hash_objects(corr) == pluginplay::hash_objects(w));
+#endif
     }
 }
 
