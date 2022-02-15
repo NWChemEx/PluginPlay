@@ -32,6 +32,19 @@ public:
     /// How polymorphic instances will be returned
     using input_base_pointer = typename any_input_type::input_base_pointer;
 
+    /** @brief Public API for polymorphically copying the wrapped value.
+     *
+     *  This method is implemented by the clone_ function. The derived class is
+     *  responsible for overriding the clone_ function so that it returns a new
+     *  AnyInputBase instance wrapping a deep copy of value wrapped by this
+     *  instance.
+     *
+     *  @return A pointer to another AnyInputBase instance which contains a
+     *          polymorphic deep copy.
+     *
+     *  @throw ??? If there is a problem copying the value. Same throw guarantee
+     *
+     */
     input_base_pointer clone() const { return clone_(); }
 
     template<typename T>
@@ -42,18 +55,29 @@ public:
 
     /** @brief Public API for hashing the wrapped value.
      *
+     *  This method is implemented by the hash_ function. The derived class is
+     *  responsible for overriding the hash_ function so that it hashes the
+     *  wrapped value. Regardless of how the value is held it will be hashed as
+     *  if it is held as a read-only reference. This is relevant for hashers
+     *  which include the type of the object in the hashing process.
+     *
+     *  N.B. This function is named do_hash so that it is not automatically
+     *  grabbed by the Hasher object. We don't want to grab the type of the
+     *  wrapper in the PIMPL in the hash, we just want to hash the value.
+     *
      *  @param[in,out] h The Hasher object to use for hashing. After calling
      *                   this function the internal buffer of @p h will be
      *                   updated with a hash of the wrapped value.
      */
-    void hash(hasher_reference h) const { hash_(h); }
+    void do_hash(hasher_reference h) const { hash_(h); }
 
     /** @brief Used to determine if we are holding a reference to the input
      *         value.
      *
      *  AnyInputs can be either own their value or hold a read-only reference to
      *  it. This function is used to determine if this particular AnyInput is
-     *  wrapping a read-only reference.
+     *  wrapping a read-only reference. The derived class is responsible for
+     *  implementing storing_const_ref_ to implement this function.
      *
      *  N.B. AnyInputs can't hold mutable references.
      *
@@ -62,7 +86,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    bool storing_reference() const noexcept { return storing_reference_(); }
+    bool storing_const_ref() const noexcept { return storing_const_ref_(); }
 
     bool storing_const_value() const noexcept { return storing_const_value_(); }
 
@@ -70,20 +94,20 @@ protected:
     /// Same ctors as the base
     using AnyFieldBase::AnyFieldBase;
 
+    template<typename T>
+    void assert_convertible_() const;
+
 private:
     virtual input_base_pointer clone_() const = 0;
 
     /// Used by derived class to signal if we are holding by read-only reference
-    virtual bool storing_reference_() const noexcept = 0;
+    virtual bool storing_const_ref_() const noexcept = 0;
 
     /// Used by the derived class to signal if we are holding by read-only value
     virtual bool storing_const_value_() const noexcept = 0;
 
     /// Used by the derived class to implement hash
     virtual void hash_(hasher_reference h) const = 0;
-
-    template<typename T>
-    void assert_convertible_() const;
 };
 
 // -- Inline Implementations ---------------------------------------------------
@@ -92,7 +116,7 @@ template<typename T>
 T AnyInputBase::cast() const {
     assert_convertible_<T>();
     using clean_type = std::decay_t<T>;
-    if(storing_reference_()) {
+    if(storing_const_ref()) {
         using ref_type = std::reference_wrapper<const clean_type>;
         return std::any_cast<ref_type>(m_value_).get();
     }
@@ -106,10 +130,10 @@ bool AnyInputBase::is_convertible() const noexcept {
 
     // Short circuit if trying to get by value, but it's an unsupported type
     if(by_ref) {
-        if(storing_reference() || storing_const_value())
+        if(storing_const_ref() || storing_const_value())
             return false; // Can't get back by reference
     }
-    if(storing_reference()) {
+    if(storing_const_ref()) {
         using ref_type = std::reference_wrapper<const clean_type>;
         return std::any_cast<ref_type>(&m_value_) != nullptr;
     }

@@ -55,7 +55,7 @@ private:
      */
     template<typename U, typename V = void>
     using disable_if_any_input_wrapper_t =
-      std::enable_if<!is_any_input_wrapper<U>::value, V>;
+      std::enable_if_t<!is_any_input_wrapper<U>::value, V>;
 
     /// Are we wrapping a const reference
     static constexpr bool wrap_const_ref_v =
@@ -74,24 +74,73 @@ public:
     /// This is the type of the object actually in the std::any
     using wrapped_type = std::conditional_t<wrap_const_ref_v, ref_wrapper_t, T>;
 
-    template<typename U, typename = disable_if_any_input_wrapper_t<U>>
+    /** @brief Makes an AnyInputWrapper by wrapping the provided value.
+     *
+     *  @tparam U Type of the value we are wrapping. @p U must be implicitly
+     *            convertible to @p T.
+     *  @tparam <anonymous> Used to disable this function via SFINAE when @p U
+     *                      is an instantiation of an input wrapper.
+     *
+     *  This ctor wraps the provided value in a newly created AnyInputWrapper.
+     *  Exactly how this is done depends on how @p value2wrap is passed and the
+     *  exact type of @p T.
+     *
+     *  - When T is a value or const value the resulting AnyInputWrapper
+     *    instance will own the wrapped value. This means the wrapped value will
+     *    be a copy of @p value2wrap if @p value2wrap was passed by reference
+     *    and it will take ownership of @p value2wrap if it was passed by value
+     *    or rvalue.
+     *  - When T is a const reference AnyInputWrapper will only alias
+     *    @p value2wrap and the user is responsible for keeping @p value2wrap
+     *    alive for the lifetime of the AnyInputWrapper.
+     *
+     *  N.B. if @p U is not an implicityly convertible to type @p T you will get
+     *  a compiler error saying there is no valid std::any ctor for @p U.
+     *
+     *  @param[in] value2wrap The object being passed as an input.
+     *
+     *  @throw ??? If wrapping @p value2wrap in a std::any throws. Same throw
+     *             guarantee.
+     */
+    template<typename U,
+             typename = disable_if_any_input_wrapper_t<std::decay_t<U>>>
     AnyInputWrapper(U&& value2wrap);
 
+    /** @brief Creates a new AnyInputWrapper by deep copying another
+     *         AnyInputWrapper instance.
+     *
+     *  This ctor creates a new AnyInputWrapper by deep copying from another
+     *  instance. Exactly what deep copy means depends on the type being
+     *  wrapped. When @p T is a value (or const value) it will be whatever the
+     *  type @p T defines a deep copy as. When @p T is a read-only reference the
+     *  read-only reference will be deep copied; in turn, the resulting read-
+     *  only reference will still alias the original value.
+     *
+     *  @param[in] other The instance being copied.
+     *
+     *  @throw ??? If copying throws. Same throw guarantee.
+     */
     AnyInputWrapper(const AnyInputWrapper& other) = default;
 
 protected:
+    /// Implements polymorphic clone
     input_base_pointer clone_() const override;
 
+    /// Implements polymorphic equality comparisons
     bool are_equal_(const AnyFieldBase& rhs) const noexcept override;
 
 private:
-    bool storing_reference_() const noexcept override;
+    /// Implements storing_const_ref
+    bool storing_const_ref_() const noexcept override;
 
+    /// Implements storing_const_value
     bool storing_const_value_() const noexcept override;
 
+    /// Code factorization for wrapping an object of type @p U in a std::any
     template<typename U>
     std::any wrap_value_(U&& value2wrap) const;
 
+    /// Implements hash
     void hash_(hasher_reference h) const override;
 };
 
@@ -118,7 +167,7 @@ bool ANY_INPUT_WRAPPER::are_equal_(const AnyFieldBase& rhs) const noexcept {
 }
 
 TEMPLATE_PARAMS
-bool ANY_INPUT_WRAPPER::storing_reference_() const noexcept {
+bool ANY_INPUT_WRAPPER::storing_const_ref_() const noexcept {
     return base_type::template is_const_ref<T>;
 }
 
@@ -129,7 +178,9 @@ bool ANY_INPUT_WRAPPER::storing_const_value_() const noexcept {
 
 TEMPLATE_PARAMS
 void ANY_INPUT_WRAPPER::hash_(hasher_reference h) const {
-    h(base_type::template cast<const std::decay_t<T>&>());
+    using const_ref = const std::decay_t<T>&;
+    const_ref v     = base_type::template cast<const_ref>();
+    h(v);
 }
 
 TEMPLATE_PARAMS
