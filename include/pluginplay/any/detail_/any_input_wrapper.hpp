@@ -33,6 +33,16 @@ struct is_any_input_wrapper : std::false_type {};
 template<typename T>
 struct is_any_input_wrapper<AnyInputWrapper<T>> : std::true_type {};
 
+/** @brief Implements input-specific methods of the any class.
+ *
+ *  @tparam T The type of the wrapped object. Expected to be by value, by const
+ *            value, or by const reference.
+ *
+ *  This is the most derived class of the AnyInput implementation. It is
+ *  responsible for implementing the input specific functionality. Functionality
+ *  common to both AnyInput and AnyResult is implemented in the AnyFieldWrapper
+ *  base class.
+ */
 template<typename T>
 class AnyInputWrapper : public AnyFieldWrapper<T, AnyInputBase> {
 private:
