@@ -40,6 +40,20 @@ TEMPLATE_LIST_TEST_CASE("AnyResult", "", testing::types2test) {
         }
     }
 
+    SECTION("swap") {
+        defaulted.swap(has_value);
+        REQUIRE(has_value.are_equal(result_type{}));
+        REQUIRE(defaulted.are_equal(make_any_result<type>(value)));
+    }
+
+    SECTION("reset") {
+        defaulted.reset();
+        REQUIRE_FALSE(defaulted.has_value());
+
+        has_value.reset();
+        REQUIRE_FALSE(has_value.has_value());
+    }
+
     SECTION("has_value") {
         // Ensure defaulted instance registers as not having a value
         REQUIRE_FALSE(defaulted.has_value());

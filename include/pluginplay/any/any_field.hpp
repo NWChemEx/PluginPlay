@@ -1,5 +1,6 @@
 #pragma once
 #include <exception>
+#include <memory>
 #include <ostream>
 #include <typeindex>
 
@@ -22,6 +23,8 @@ public:
 
     /// Default polymorphic dtor
     virtual ~AnyField() noexcept = default;
+
+    void reset() noexcept { reset_(); }
 
     /** @brief Retrieves the RTTI of the wrapped type.
      *
@@ -75,25 +78,36 @@ public:
     bool has_value() const noexcept { return has_value_(); }
 
 protected:
+    /// Type of the PIMPL providing the API to an AnyFieldWrapper
     using field_base = detail_::AnyFieldBase;
 
-    /// Mutable reference to the base class common to the wrappers
+    /// Mutable pointer to the base class common to the wrappers
     using field_base_reference = field_base&;
 
     /// Read-only reference to the base class common to the wrappers
     using const_field_base_reference = const field_base&;
 
+    /// Users shouldn't be creating AnyField instances
+    ///@{
+    AnyField() noexcept           = default;
+    AnyField(const AnyField&)     = default;
+    AnyField(AnyField&&) noexcept = default;
+    AnyField& operator=(const AnyField&) = default;
+    AnyField& operator=(AnyField&&) noexcept = default;
+    ///@}
+
     /// Throws if there's no wrapped value
     void assert_value_() const;
 
-    /// Derived class should override to indicate whether it wraps a value
+    virtual void reset_() noexcept = 0;
+
     virtual bool has_value_() const noexcept = 0;
 
     /// Derived classes implement it to return the mutable wrapped value
-    virtual field_base_reference base_pimpl_() = 0;
+    virtual field_base_reference base_pimpl_() noexcept = 0;
 
     /// Derived classes implement it to return the read-only wrapped value
-    virtual const_field_base_reference base_pimpl_() const = 0;
+    virtual const_field_base_reference base_pimpl_() const noexcept = 0;
 };
 
 /** @brief Allows stream insertion of AnyField instances.

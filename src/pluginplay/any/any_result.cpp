@@ -8,14 +8,39 @@ AnyResult::AnyResult() noexcept = default;
 AnyResult::AnyResult(result_base_pointer pimpl) noexcept :
   m_pimpl_(std::move(pimpl)) {}
 
+AnyResult::AnyResult(const AnyResult& other) :
+  m_pimpl_(other.has_value() ? other.m_pimpl_->clone() : nullptr) {}
+
+AnyResult::AnyResult(AnyResult&& other) noexcept :
+  m_pimpl_(std::move(other.m_pimpl_)) {}
+
+AnyResult& AnyResult::operator=(const AnyResult& rhs) {
+    if(this == &rhs) return *this;
+    AnyResult(rhs).swap(*this);
+    return *this;
+}
+
+AnyResult& AnyResult::operator=(AnyResult&& rhs) noexcept {
+    if(this == &rhs) return *this;
+    m_pimpl_ = std::move(rhs.m_pimpl_);
+    return *this;
+}
+
 AnyResult::~AnyResult() noexcept = default;
 
-typename AnyResult::field_base_reference AnyResult::base_pimpl_() {
+void AnyResult::reset_() noexcept { m_pimpl_.reset(); }
+
+bool AnyResult::has_value_() const noexcept {
+    return static_cast<bool>(m_pimpl_);
+}
+
+typename AnyResult::field_base_reference AnyResult::base_pimpl_() noexcept {
     assert_value_();
     return *m_pimpl_;
 }
 
-typename AnyResult::const_field_base_reference AnyResult::base_pimpl_() const {
+typename AnyResult::const_field_base_reference AnyResult::base_pimpl_()
+  const noexcept {
     assert_value_();
     return *m_pimpl_;
 }

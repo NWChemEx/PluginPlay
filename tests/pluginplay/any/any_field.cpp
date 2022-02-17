@@ -70,9 +70,4 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
             }
         }
     }
-
-    SECTION("has_value") {
-        REQUIRE_FALSE(rdefault.has_value());
-        REQUIRE(rvalue.has_value());
-    }
 }
