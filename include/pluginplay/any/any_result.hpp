@@ -24,6 +24,9 @@ public:
     /// Type of a mutable reference to a result_base instance
     using result_base_reference = result_base&;
 
+    /// Type of a read-only reference to a a result_base instance
+    using const_result_base_reference = const result_base&;
+
     /// Type of a mutable pointer to a result_base instance
     using result_base_pointer = std::unique_ptr<detail_::AnyResultBase>;
 
