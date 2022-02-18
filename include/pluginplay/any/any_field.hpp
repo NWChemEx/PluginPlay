@@ -6,16 +6,20 @@
 
 namespace pluginplay {
 namespace detail_ {
-class AnyFieldBase;
+class AnyFieldBase; // Forward declare the PIMPL
 }
 
 /** @brief Base class of Any hierarchy.
  *
- *  This class will be fleshed out in a later commit. For right now it's only
- *  used to set the types for the hierarchy.
+ *  This class holds methods common to both the AnyInput and AnyResult class.
+ *  For the most part these methods are utility methods (e.g., comparisons,
+ *  printing) or related to general inquiries (e.g., is it currently wrapping a
+ *  value, what is the RTTI of the wrapped value).
  *
+ *  Generally speaking this class serves as code factorization, meaning users
+ *  for the most part will not be dealing with AnyField instances directly.
+ *  Instead most code will either take AnyInput or AnyResult instances.
  */
-
 class AnyField {
 public:
     /// Type used for runtime type information (RTTI) purposes
@@ -24,6 +28,22 @@ public:
     /// Default polymorphic dtor
     virtual ~AnyField() noexcept = default;
 
+    /** @brief Restores the AnyField to a default initialized state.
+     *
+     *  This method can be used to release the held pointer. For AnyResult
+     *  instances, and AnyInput's which own their wrapped value, this will
+     *  delete the wrapped value. For AnyInput instances which only alias there
+     *  value this will only stop the current instance from aliasing the
+     *  original value, i.e. the original value will continue to exist. If the
+     *  current AnyField instance does not hold a value this is no-op.
+     *
+     *  To avoid storing the PIMPL in this class (and thus the derived class
+     *  having to downcast to use it), this function is implemented by calling a
+     *  virtual function reset_. Derived classes are responsible for
+     *  implementing `reset_` so that it releases the PIMPL.
+     *
+     *  @throw None No throw guarantee.
+     */
     void reset() noexcept { reset_(); }
 
     /** @brief Retrieves the RTTI of the wrapped type.
@@ -75,6 +95,21 @@ public:
      */
     std::ostream& print(std::ostream& os) const;
 
+    /** @brief Does this AnyField currently wrap a value?
+     *
+     *  At any time an AnyField either wraps a value or does not. This function
+     *  is used to determine if the AnyField wraps a value.
+     *
+     *  Like `reset`, this function relies on a virtual function `has_value_` to
+     *  determine if the derived class actually wraps a value. Derived classes
+     *  are responsible for implementing `has_value_` so that it returns true
+     *  when the derived class holds a value and false otherwise.
+     *
+     *  @return True if the derived class holds a value (even if that value is
+     *          a defaulted value) and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     bool has_value() const noexcept { return has_value_(); }
 
 protected:
@@ -87,7 +122,7 @@ protected:
     /// Read-only reference to the base class common to the wrappers
     using const_field_base_reference = const field_base&;
 
-    /// Users shouldn't be creating AnyField instances
+    /// Users shouldn't be creating AnyField instances directly
     ///@{
     AnyField() noexcept           = default;
     AnyField(const AnyField&)     = default;
@@ -99,15 +134,20 @@ protected:
     /// Throws if there's no wrapped value
     void assert_value_() const;
 
+    /// Derived classes override this to compare derived state (including type)
+    virtual bool are_equal_(const AnyField& rhs) const noexcept;
+
+    /// Derived classes implement this to reset the PIMPL
     virtual void reset_() noexcept = 0;
 
+    /// Derived classes implement this to indicate if there is a PIMPL
     virtual bool has_value_() const noexcept = 0;
 
     /// Derived classes implement it to return the mutable wrapped value
-    virtual field_base_reference base_pimpl_() noexcept = 0;
+    virtual field_base_reference base_pimpl_() = 0;
 
     /// Derived classes implement it to return the read-only wrapped value
-    virtual const_field_base_reference base_pimpl_() const noexcept = 0;
+    virtual const_field_base_reference base_pimpl_() const = 0;
 };
 
 /** @brief Allows stream insertion of AnyField instances.

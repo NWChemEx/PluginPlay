@@ -28,19 +28,25 @@ AnyResult& AnyResult::operator=(AnyResult&& rhs) noexcept {
 
 AnyResult::~AnyResult() noexcept = default;
 
+// -- Protected Methods --------------------------------------------------------
+
+bool AnyResult::are_equal_(const base_type& rhs) const noexcept {
+    auto p = dynamic_cast<const AnyResult*>(&rhs);
+    return p == nullptr ? false : base_type::are_equal_(rhs);
+}
+
 void AnyResult::reset_() noexcept { m_pimpl_.reset(); }
 
 bool AnyResult::has_value_() const noexcept {
     return static_cast<bool>(m_pimpl_);
 }
 
-typename AnyResult::field_base_reference AnyResult::base_pimpl_() noexcept {
+typename AnyResult::field_base_reference AnyResult::base_pimpl_() {
     assert_value_();
     return *m_pimpl_;
 }
 
-typename AnyResult::const_field_base_reference AnyResult::base_pimpl_()
-  const noexcept {
+typename AnyResult::const_field_base_reference AnyResult::base_pimpl_() const {
     assert_value_();
     return *m_pimpl_;
 }

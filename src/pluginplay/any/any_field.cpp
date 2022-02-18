@@ -10,8 +10,13 @@ typename AnyField::rtti_type AnyField::type() const noexcept {
 }
 
 bool AnyField::are_equal(const AnyField& rhs) const noexcept {
+    return are_equal_(rhs) && rhs.are_equal_(*this);
+}
+
+bool AnyField::are_equal_(const AnyField& rhs) const noexcept {
     // Take care of xor condition (which means they're not equal)
     if(has_value() != rhs.has_value()) return false;
+
     if(!has_value()) return true; // Both of them must not have a value
 
     // Getting here means they both have a value, compare it

@@ -38,6 +38,81 @@ TEMPLATE_LIST_TEST_CASE("AnyResult", "", testing::types2test) {
             REQUIRE(has_value.type() == rtti_type(typeid(type)));
             REQUIRE(any_cast<type>(has_value) == value);
         }
+
+        SECTION("Copy Ctor") {
+            result_type copied_default(defaulted);
+            REQUIRE(copied_default.are_equal(defaulted));
+
+            result_type copied_value(has_value);
+            REQUIRE(copied_value.are_equal(has_value));
+
+            // This is a check that they are deep copied and not just aliases
+            if constexpr(std::is_same_v<type, std::vector<int>>) {
+                auto pcopy = any_cast<const type&>(copied_default).data();
+                auto pval  = any_cast<const type&>(has_value).data();
+                REQUIRE(pcopy != pval);
+            }
+        }
+
+        SECTION("Move Ctor") {
+            result_type copied_default(defaulted);
+            result_type moved_default(std::move(defaulted));
+            REQUIRE(copied_default.are_equal(moved_default));
+
+            result_type copied_value(has_value);
+            result_type moved_value(std::move(has_value));
+            REQUIRE(copied_value.are_equal(moved_value));
+
+            // This is a check that they are actually moving and not copying
+            if constexpr(std::is_same_v<type, std::vector<int>>) {
+                auto pcopy = any_cast<const type&>(copied_default).data();
+                result_type moved2(std::move(copied_default));
+                auto pval = any_cast<const type&>(moved2).data();
+                REQUIRE(pcopy == pval);
+            }
+        }
+
+        SECTION("Copy Assignment") {
+            result_type copied_default;
+            auto pcopied = &(copied_default = defaulted);
+            REQUIRE(pcopied == &copied_default);
+            REQUIRE(copied_default.are_equal(defaulted));
+
+            result_type copied_value;
+            pcopied = &(copied_value = has_value);
+            REQUIRE(pcopied == &copied_value);
+            REQUIRE(copied_value.are_equal(has_value));
+
+            // This is a check that they are deep copied and not just aliases
+            if constexpr(std::is_same_v<type, std::vector<int>>) {
+                auto pcopy = any_cast<const type&>(copied_default).data();
+                auto pval  = any_cast<const type&>(has_value).data();
+                REQUIRE(pcopy != pval);
+            }
+        }
+
+        SECTION("Move assignment") {
+            result_type copied_default(defaulted);
+            result_type moved_default;
+            auto pmoved = &(moved_default = std::move(defaulted));
+            REQUIRE(pmoved == &moved_default);
+            REQUIRE(copied_default.are_equal(moved_default));
+
+            result_type copied_value(has_value);
+            result_type moved_value;
+            pmoved = &(moved_value = std::move(has_value));
+            REQUIRE(pmoved == &moved_value);
+            REQUIRE(copied_value.are_equal(moved_value));
+
+            // This is a check that they are actually moving and not copying
+            if constexpr(std::is_same_v<type, std::vector<int>>) {
+                auto pcopy = any_cast<const type&>(copied_default).data();
+                result_type moved2;
+                moved2    = std::move(copied_default);
+                auto pval = any_cast<const type&>(moved2).data();
+                REQUIRE(pcopy == pval);
+            }
+        }
     }
 
     SECTION("swap") {

@@ -29,9 +29,19 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
     AnyResult rdefault;
     auto rvalue = make_any_result<type>(value);
 
+    AnyInput idefault;
+    auto ivalue = make_any_input<type>(value);
+    auto icval  = make_any_input<const type>(value);
+    auto icref  = make_any_input<const type&>(value);
+
     SECTION("type") {
         REQUIRE(rdefault.type() == rtti_type(typeid(nullptr)));
         REQUIRE(rvalue.type() == rtti_type(typeid(type)));
+
+        REQUIRE(idefault.type() == rtti_type(typeid(nullptr)));
+        REQUIRE(ivalue.type() == rtti_type(typeid(type)));
+        REQUIRE(icval.type() == rtti_type(typeid(type)));
+        REQUIRE(icref.type() == rtti_type(typeid(type)));
     }
 
     SECTION("are_equal") {
@@ -41,11 +51,40 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         // Non-default and default AnyResult instances
         REQUIRE_FALSE(rdefault.are_equal(rvalue));
 
+        // AnyResult with same wrapped values
+        REQUIRE(rvalue.are_equal(make_any_result<type>(value)));
+
         // AnyResult instances with different wrapped values
         REQUIRE_FALSE(rvalue.are_equal(make_any_result<type>(type{})));
 
         // AnyResult instances with different wrapped types
         REQUIRE_FALSE(rvalue.are_equal(make_any_result<map_type>(map_type{})));
+
+        // Defaulted AnyResult and defaulted AnyInput
+        REQUIRE_FALSE(rdefault.are_equal(idefault));
+
+        // Two default AnyInputs
+        REQUIRE(idefault.are_equal(AnyInput{}));
+
+        // AnyInputs with same values
+        REQUIRE(ivalue.are_equal(make_any_input<type>(value)));
+
+        // AnyInputs with different values
+        REQUIRE_FALSE(ivalue.are_equal(make_any_input<type>(type{})));
+
+        // AnyInputs with same read-only value
+        REQUIRE(icval.are_equal(make_any_input<const type>(value)));
+
+        // AnyInputs with same read-only reference
+        REQUIRE(icref.are_equal(make_any_input<const type&>(value)));
+
+        // AnyInputs that hold the value differently
+        REQUIRE_FALSE(ivalue.are_equal(icval));
+        REQUIRE_FALSE(ivalue.are_equal(icref));
+        REQUIRE_FALSE(icval.are_equal(icref));
+
+        // AnyInputs with different wrapped types
+        REQUIRE_FALSE(ivalue.are_equal(make_any_input<map_type>(map_type{})));
     }
 
     SECTION("print") {
@@ -59,6 +98,25 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
 
         SECTION("AnyResult w/ value") {
             auto pss = &rvalue.print(ss);
+            REQUIRE(pss == &ss); // Returns ss for chaining
+
+            if constexpr(std::is_same_v<type, int>) {
+                REQUIRE(ss.str() == "42");
+            } else if constexpr(std::is_same_v<type, double>) {
+                REQUIRE(ss.str() == "3.14");
+            } else if constexpr(std::is_same_v<type, std::string>) {
+                REQUIRE(ss.str() == "Hello World");
+            }
+        }
+
+        SECTION("default AnyInput") {
+            auto pss = &idefault.print(ss);
+            REQUIRE(pss == &ss); // Returns ss for chaining
+            REQUIRE(ss.str() == "");
+        }
+
+        SECTION("AnyInputw/ value") {
+            auto pss = &ivalue.print(ss);
             REQUIRE(pss == &ss); // Returns ss for chaining
 
             if constexpr(std::is_same_v<type, int>) {
