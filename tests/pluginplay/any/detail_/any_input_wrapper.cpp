@@ -147,13 +147,13 @@ TEMPLATE_LIST_TEST_CASE("AnyInputWrapper", "", testing::types2test) {
         // Default != value
         REQUIRE(h_default != h_value);
 
-        // Value != const Value
+        // Value == const Value
         REQUIRE(h_value == h_cval);
 
-        // Value != const ref
+        // Value == const ref
         REQUIRE(h_value == h_cref);
 
-        // const value != const ref
+        // const value == const ref
         REQUIRE(h_cval == h_cref);
     }
 
