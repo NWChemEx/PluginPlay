@@ -38,7 +38,7 @@ cpp_find_or_build_dependency(
     PRIVATE TRUE
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
-    CMAKE_ARGS BUILD_TESTING=OFF
+    CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
 )
 
 cpp_find_or_build_dependency(
@@ -46,7 +46,7 @@ cpp_find_or_build_dependency(
     URL github.com/seleznevae/libfort
     BUILD_TARGET fort
     FIND_TARGET libfort::fort
-    CMAKE_ARGS FORT_ENABLE_TESTING=OFF
+    CMAKE_ARGS FORT_ENABLE_TESTING=${FORT_BUILD_TESTING}
 )
 
 cpp_find_or_build_dependency(
@@ -55,7 +55,7 @@ cpp_find_or_build_dependency(
         PRIVATE TRUE
         BUILD_TARGET parallelzone
         FIND_TARGET nwx::parallelzone
-        CMAKE_ARGS BUILD_TESTING=OFF
+        CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
 cpp_add_library(
