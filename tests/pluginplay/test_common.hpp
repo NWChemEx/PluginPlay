@@ -31,19 +31,13 @@ DECLARE_DERIVED_PROPERTY_TYPE(TwoIn, OneIn);
 PROPERTY_TYPE_INPUTS(TwoIn) {
     return pluginplay::declare_input().add_field<double>("Option 2");
 }
+PROPERTY_TYPE_RESULTS(TwoIn) { return pluginplay::declare_result(); }
 
 // Derived property type which adds another input to TwoIn
 DECLARE_DERIVED_PROPERTY_TYPE(ThreeIn, TwoIn);
 PROPERTY_TYPE_INPUTS(ThreeIn) {
     return pluginplay::declare_input().add_field<std::string>("Option 3");
 }
-
-// Property type for module with two options (not derived, so we don't need to define base result)
-DECLARE_PROPERTY_TYPE(TwoIn2);
-PROPERTY_TYPE_INPUTS(TwoIn2) {
-    return pluginplay::declare_input().add_field<int>("Option 1").add_field<double>("Option 2");
-}
-PROPERTY_TYPE_RESULTS(TwoIn2) { return pluginplay::declare_result(); }
 
 // Property type for module with a defaulted option
 struct OptionalInput : pluginplay::PropertyType<OptionalInput> {
