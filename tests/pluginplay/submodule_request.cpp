@@ -160,6 +160,10 @@ TEST_CASE("SubmoduleRequest : run_as") {
         r.set_type<testing::NullPT>();
         REQUIRE_THROWS_AS(r.run_as<testing::OneIn>(3), std::invalid_argument);
     }
+    SECTION("Trips static assert if arguments not convertible to correct types") {
+        //r.run_as<testing::TwoIn2>(3,"4"); // uncomment to trip static assert
+        //r.run_as<testing::TwoIn2>("3",4); // uncomment to trip static assert
+    }
     SECTION("Throws if module is not set") {
         r.set_type<testing::NullPT>();
         REQUIRE_THROWS_AS(r.run_as<testing::NullPT>(), std::runtime_error);

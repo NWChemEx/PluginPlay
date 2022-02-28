@@ -74,8 +74,7 @@ void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
     using tuple_of_fields = typename traits_type::tuple_of_fields;
     using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
     constexpr bool is_ref = std::is_reference_v<type>;
-    static_assert(std::is_convertible_v<V, type>,
-                  "Wrap argument is of incorrect type.");
+    detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE<V, type, ArgI>();
 
     auto key = (builder.begin() + ArgI)->first;
     if constexpr(is_ref) {
