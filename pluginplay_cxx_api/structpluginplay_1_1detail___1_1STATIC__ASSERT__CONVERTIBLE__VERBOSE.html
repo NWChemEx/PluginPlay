@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pluginplay: include/pluginplay/property_type Directory Reference</title>
+<title>pluginplay: pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,18 +62,37 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_970edf345eec2bf0d6ca125401c0f58a.html">pluginplay</a></li><li class="navelem"><a class="el" href="dir_5598b3d8737ea9125eecbd5ca3db4540.html">property_type</a></li>  </ul>
+<li class="navelem"><b>pluginplay</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html">STATIC_ASSERT_CONVERTIBLE_VERBOSE</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">property_type Directory Reference</div>  </div>
+<div class="title">pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="subdirs"></a>
-Directories</h2></td></tr>
-</table>
+
+<p>Struct that provides clearer error message when types are not convertible.  
+ <a href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="static__assert__convertible__verbose_8hpp_source.html">static_assert_convertible_verbose.hpp</a>&gt;</code></p>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T1, typename T2, std::size_t I&gt;<br />
+struct pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt;</h3>
+
+<p>Struct that provides clearer error message when types are not convertible. </p>
+<p>This allows the replacement of a static assert of the form: <code>static_assert(std::is_convertible_v&lt;T1,T2&gt;)</code> with instantiation of a templated struct as: <code><a class="el" href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html" title="Struct that provides clearer error message when types are not convertible.">STATIC_ASSERT_CONVERTIBLE_VERBOSE</a>&lt;T1, T2, I&gt;()</code> where <code>I</code> is intended to be used as an index describing the position of the argument that should have type <code>T2</code></p>
+<p>The only advantage of using this over the simple <code>static_assert</code> is that it will give a slightly simpler error message showing a smaller set of template parameters.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T1</td><td>The type of the object to convert from </td></tr>
+    <tr><td class="paramname">T2</td><td>The type of the object to convert to </td></tr>
+    <tr><td class="paramname">I</td><td>position of the argument in some argument list </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/pluginplay/property_type/detail_/<a class="el" href="static__assert__convertible__verbose_8hpp_source.html">static_assert_convertible_verbose.hpp</a></li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
