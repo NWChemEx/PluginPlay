@@ -31,6 +31,7 @@ DECLARE_DERIVED_PROPERTY_TYPE(TwoIn, OneIn);
 PROPERTY_TYPE_INPUTS(TwoIn) {
     return pluginplay::declare_input().add_field<double>("Option 2");
 }
+PROPERTY_TYPE_RESULTS(TwoIn) { return pluginplay::declare_result(); }
 
 // Derived property type which adds another input to TwoIn
 DECLARE_DERIVED_PROPERTY_TYPE(ThreeIn, TwoIn);
