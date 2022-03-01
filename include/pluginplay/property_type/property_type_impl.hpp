@@ -1,4 +1,5 @@
 #pragma once
+#include "pluginplay/property_type/detail_/static_assert_convertible_verbose.hpp"
 
 namespace pluginplay {
 // ----------------------------- Implementations -------------------------------
