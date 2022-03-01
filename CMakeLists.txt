@@ -11,6 +11,8 @@ include(get_cpp)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
+option(PARALLELZONE_BUILD_TESTING "Should we build the tests for ParallelZone?" OFF)
+option(UTILITIES_BUILD_TESTING "Should we build the tests for Utilities?" OFF)
 option(BUILD_DOCS "Should we build the documentation?" OFF)
 option(
     ONLY_BUILD_DOCS
@@ -38,7 +40,7 @@ cpp_find_or_build_dependency(
     PRIVATE TRUE
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
-    CMAKE_ARGS BUILD_TESTING=OFF
+    CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
 )
 
 cpp_find_or_build_dependency(
@@ -55,7 +57,7 @@ cpp_find_or_build_dependency(
         PRIVATE TRUE
         BUILD_TARGET parallelzone
         FIND_TARGET nwx::parallelzone
-        CMAKE_ARGS BUILD_TESTING=OFF
+        CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
 cpp_add_library(
