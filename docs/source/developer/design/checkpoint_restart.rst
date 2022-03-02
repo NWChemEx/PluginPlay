@@ -4,7 +4,12 @@
 Checkpoint/Restart
 ##################
 
-Checkpoint/restart (C/R)
+The need for checkpoint/restart (C/R) was briefly touched upon in
+:ref:`memoization_design` with a full discussion deferred to this section. From
+the PluginPlay perspective C/R is a subset of the memoization needs, more
+specifically C/R amounts to avoiding recomputation by using a previously created
+checkpoint. In PluginPlay C/R is unified with memoization by using the
+checkpoint to create a Cache instance.
 
 ************
 What is C/R?
@@ -32,11 +37,21 @@ can be expensive or cheap (depends on what is being checkpointed and how the
 developer does the checkpointing), and allows other actions to occur between the
 checkpoint and the restart.
 
+For the purposes of this page, we take C/R to encompass not only fault
+resilience, but also reloading a previously successful program invocation. The
+unifying theme here is C/R is a mechanism for restarting the program at a state
+other than the initial state.
+
 *******************
 Why Do We Need C/R?
 *******************
 
 - Fault rates are expected to increase substantially with exascale computing
+- Runtim
+- Users may want to resume runs to continue their data analysis
+- If a runtime error occurs, sometimes it is possible to modify an option to the
+  failing module and retry. Having C/R means we don't need to need to rerun
+  functions prior to the error.
 
 ******************
 C/R Considerations
@@ -48,16 +63,24 @@ Object Considerations
 - The amount of data to checkpoint can be formidable
 - Will need to checkpoint distributed objects
 - May need to checkpoint different objects at different frequencies
+
+  - To minimize checkpointing overhead larger objects may be checkpointed less
+    frequently than smaller objects.
+
 - Serialization is the primary means of disassembling/assembling objects and
-  thus intimately related
+  thus intimately related to C/R
 
 Hardware Considerations
 =======================
 
 - Exascale machines include memory hierarchies that need checkpointed (e.g.
   burst buffers, nonvolatile memory)
-- Should be a system portable solution and not require access to the same system
-  to restart.
+- Should checkpoints be hardware-specific (e.g. checkpoint may assume access to
+  a certain number of processes)
+
+  - For immediate restart, hardware-specific checkpoints make sense, but for
+    long-term archival the storage format needs to be platform agnostic
+
 
 PluginPlay Specific Considerations
 ==================================
@@ -71,21 +94,8 @@ PluginPlay Specific Considerations
   previous calculation by relying on memoization.
 - Converting from C/R format to memoized format may be necessary since the two
   have different target time ranges.
+- Module developers may want to do their own C/R.
 
 ***********************
 Potential C/R Solutions
 ***********************
-
-- disk based checkpointing
-
-  - In the context of PluginPlay this amounts to dumping the cache to disk
-  - Highly resilient, but very expensive for large objects
-  - Will likely want a variety of possible file backends (e.g. JSON for making
-    it human-readable, or HDF5 for performance)
-  - Need to consider both serial and parallel file systems.
-
-- in memory checkpointing
-
-  - Primarily for resiliency since memory is volatile (although nonvolatile
-    memory also exists)
-  -

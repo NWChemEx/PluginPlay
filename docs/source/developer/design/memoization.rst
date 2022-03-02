@@ -1,6 +1,8 @@
-###########
-Memoization
-###########
+.. _memoization_design:
+
+##################
+Memoization Design
+##################
 
 This page documents the design process and decisions affecting memoization in
 PluginPlay.
@@ -30,26 +32,28 @@ submodule is only run once for each unique input.
 
 Memoization was originally added to PluginPlay to avoid expensive recomputation;
 however, it was later realized that memoization could play a dual role by also
-facilitating checkpoint/restart. Very briefly, the idea is that we assume we can
-save/load the memoization details to disk. If we load a previous run's
+facilitating checkpoint/restart (C/R). Very briefly, the idea is that we assume
+we can save/load the memoization details to disk. If we load a previous run's
 memoization details and then run a previously run module (with an input it has
-already seen) the program will use memoization to quickly achieve parity wit its
-previous run (*i.e.*, all module calls will be memoized until control finds the
-first module which hasn't run yet). The exact design details pertaining to
-checkpoint/restart are beyond this section (see
-:ref:`_design_checkpoint_restart` for the full discussion), rather our point
-here is that in PluginPlay, memoization is coupled to checkpoint/restart and
-discussions of either need to consider the other.
+already seen) the program will use memoization to quickly achieve parity with
+its previous run (*i.e.*, all module calls will be memoized until control finds
+the first module which hasn't run yet). In fact, it is difficult to concieve of
+a C/R strategy that doesn't use memoization, as at its core C/R is a type of
+memoization (one is ultimately avoiding recomputing something by reading it
+from the checkpoint). The exact design details pertaining to C/R are beyond this
+section (see :ref:`_design_checkpoint_restart` for the full discussion), rather
+our point here is that in PluginPlay, we consider C/R part of the overall
+memoization strategy.
 
 **************************
 Memoization Considerations
 **************************
 
-Considerations Pertaining to When Memoization Is Used
-=====================================================
+The following list contains considerations related to either how the process of
+memoization is implemented in PluginPlay or how the memoized data is used.
 
 - Ideally the use of memoization is under the hood of PluginPlay and largely
-  transparent to the user.
+  hidden from the user.
 - Assuming automation, PluginPlay needs to know whether a module is memoizable
   or not.
 
@@ -77,46 +81,53 @@ Considerations Pertaining to When Memoization Is Used
     is not worth considering. Failing to consider it simply means we miss a
     memoization opportunity.
 
-Considerations Pertaining to How Memoization is Used
-====================================================
+- Failing to memoize when appropriate will affect performance
+- Memoizing when not appropriate will compromise the integrity of the scientific
+  answer.
+- Memoizing iterative (recursive) function requires special considerations
 
-- Memoizing iterative functions requires special considerations (vide infra)
+  - Memoizing an iterative (recursive) function is possible
+  - Say ``I`` is the initial input to an iterative function ``f``, and ``R_0``
+    is the initial result. Calling ``f`` with ``R_0`` generates ``R_1``, calling
+    ``f`` again with ``R_1`` generates ``R_2`` etc. If we want to jump from
+    ``I`` to the last result (say ``R_n``) we need to store the ``n`` proceeding
+    function calls in addition to the call which generates ``R_n``.
+  - For recursion the situation is similar except that ``n`` tracks depth
+    instead of iteration.
+  - For memory intensive results storing all of the intermediates is expensive
+    and we will need an option to avoid it.
+
 - Memoization will need to occur in a parallel setting
 
+  - Will need to memoize parallel objects
+  - Will need to worry about data races to get memoized data.
 
 - Comparing objects can be expensive (think about distributed tensors)
 
+  - Hashing is a possible solution, but relying on hashing alone can
+    theoretically lead to memoizing when not appropriate (although if
+    implemented correctly the odds are astronomical)
 
-- Memoization only needs to remain valid on a short time frame (the current run
-  or a restart immediately following the run). Long term archival falls to
-  checkpoint/restart
+- Need to decide how long memoized data is valid for.
+
+  - Requiring memoized data to be valid long term means that memoization can
+    also directly be used for checkpoint/restart
+  - Assuming memoized data need only be valid short term, checkpoint/restart
+    becomes a separate issue.
+
 - May make sense to build resiliency into the memoization solution
 
-
-**********************************************
-Considerations for Memoizing Iterative Modules
-**********************************************
-
-Within PluginPlay it is somewhat natural to write a module which encapsulates
-one iteration of an iterative process and to then call the module in a loop.
-Let's say ``I`` was the initial input to the module and ``R_0`` was the initial
-result, the the repeated calls to an iterative module play out something like:
-given input ``I`` return ``R_0``, given ``R_0`` return ``R_1``, given ``R_1``...
-In general ``R_i`` is the input to iteration :math:`i+1` and the result of
-iteration :math:`i`. In this case attempting to memoize a second loop set of
-iterations, given ``I``, would only work if all intermediate results are
-memoized. In such case control looks like: Give module ``I`` get back memoized
-``R_0``, give module ``R_0`` get back memoized ``R_1``, etc. Particularly for
-large results, we may not be able to afford storing all the intermediates.
-
+  - Hardware failures could lead to pieces of a distributed object being non
+    recoverable and preventing memoization of the object.
 
 ***************************
 Memoization Implementations
 ***************************
 
 Since memoization will occur under the hood of PluginPlay it is possible to
-incorporate existing solutions if they are written in C or C++. A quick search
-for C++ Memoization libraries turned up the following options:
+incorporate existing memoization solutions into PluginPlay if they are written
+in C or C++. A quick search for C++ Memoization libraries turned up the
+following options:
 
 - memo
 
@@ -146,7 +157,9 @@ for C++ Memoization libraries turned up the following options:
 
 The search also returned a number of StackOverflow and blog posts pertaining to
 memoization in C++. Generally speaking these posts all detail how to memoize
-functions by wrapping them and in manners akin to how the above libraries do so.
+functions by wrapping them using techniques akin to how the above libraries
+perform memoizations. Most of our considerations seem to be out of scope for
+the resources I found.
 
 .. note::
 
@@ -155,59 +168,74 @@ functions by wrapping them and in manners akin to how the above libraries do so.
    libraries so the descriptions may be inaccurate. Update, star, and watcher
    information was accurate as of March 2022 and may have changed since then.
 
-*******************************
-Potential Memoization Solutions
-*******************************
+********************
+Memoization Strategy
+********************
 
 With the lack of well supported, feature-rich memoization libraries writing our
 own memoization routine seems like the best route. Conceptually the actual
 memoization process is straightforward since the ``Module`` class's ``run``
 method already wraps the actual invocation of the ``ModuleBase`` class's
 ``run`` method (the latter is what actually implements the module's algorithm).
-The actual memoization process more or less amounts to adding code before the
-call to ``ModuleBase::run`` which checks to see if we've seen thes inputs before
-(returning the cached results if we have), and code after the call to
-``ModuleBase::run`` which caches the results.
+The actual memoization process more or less amounts to the following pseudocode:
 
-For PluginPlay, the complexity associated with memoization comes from storing
-and retrieiveng the memoized results. Even if we used one of the existing
-memoization libraries we'd still have to tackle these considerations ourselves.
-As far as the remaining memoization considerations are concerned:
+.. code-block:: c++
 
-- Not all modules are memoizable. A module must be "referentially transparent"
-  in order to be memoized (always computes the same value for the same inputs,
-  and has no side-effects).
+   if(this->is_memoizable() && has_result(inputs))
+       return get_memoized_result(inputs);
 
-  - PluginPlay has no way of knowing what the algorithm inside a module does and
-    thus can not determine if the module is referentially transparent or not. As
-    a result we must rely on module developers to tell us whether a module
-    should be memoized or not. In PluginPlay this is handled by having the
-    developer call ``ModuleBase::turn_off_memoization`` in the module's ctor.
+   auto result = this->ModuleBase::run(inputs);
 
-- Memoization is a time for space trade-off meaning we save time at the cost of
-  storing additional data.
+   add_memoized_result(inputs, result);
 
-  - For coarse-grained control the ``Module`` class exposes
-    ``turn_off_memoization`` which the user can call to disable memoization for
-    that module.
-
-- Comparing objects can be expensive (think about distributed tensors)
-
-  - Since every module call can potentially be memoized, the object comparisons
-    will likely happen often enough that we need to worry abou this. The
-    standard solution here is
-
-- Memoizing iterative functions requires special considerations (vide infra)
+   return get_memoized_resutl(inputs);
 
 
-- Memoization will need to occur in a parallel setting
-- When memoizing it only makes sense to consider results computed by other
-  module implementations of the same type.
+In the first line we rely on the ``Module::is_memoizable()`` method to determine
+if the user and the module developer have okayed memoization, if they have we
+somehow figure out if we've already seen this result (in the pseudocode this is
+the job of the opaque ``has_result()`` function). Assuming the first line is
+true we somehow map the inputs to the returned value (in the pseudocode this is
+the job of the opaque ``get_memoized_result`` function). If memoization fails,
+we run the module's algorithm, store the results (the job of the otherwise
+opaque ``add_memoized_result`` function), and then return the memoized results.
 
-  - Type here is not "property type", but rather the literal class type which
-    derives from ``ModuleBase``
+This pseudocode addresses the following considerations explicitly and punts the
+remaining considerations to the opaque functions:
 
-- Memoization only needs to remain valid on a short time frame (the current run
-  or a restart immediately following the run). Long term archival falls to
-  checkpoint/restart
-- May make sense to build resiliency into the memoization solution
+- Ideally the use of memoization is under the hood of PluginPlay and largely
+  hidden from the user.
+
+  - The above pseudocode is in ``Module::run`` and hidden from the user.
+
+- Assuming automation, PluginPlay needs to know whether a module is memoizable
+  or not.
+
+  - Handled by ``Module::is_memoizable``.
+
+- Memoization is a time for space trade-off meaning cost of storing data will
+  play a role in whether memoization can/should occur.
+
+  - Technically not shown explicitly, but users can use
+    ``Module::turn_off_memoization`` to disable memoizing a specific module.
+    Calling ``Module::turn_off_memoization`` impacts the value returned by
+    ``Module::is_memoizable``.
+
+
+The opaque functions are consistent with the API of an associative container,
+hence the remainder of our memoization strategy is to implement an associative
+container which additionally addresses the remaining concerns. We term this
+container the ``Cache`` and its design is described elsewhere.
+
+**************************
+Memoization Implementation
+**************************
+
+The actual implementation of memoization requires:
+
+- Adding ``turn_off_memoization``, ``turn_on_memoization``, and
+  ``is_memoizable`` functions to ``Module`` and ``ModuleBase`` (both also need
+  a member to track whether the instance is memoizable)
+- Writing the ``Cache`` class
+- Ensuring the ``Cache`` instance is accessible through the ``ModuleManager``
+- Ensuring the cache is accessible inside ``Module::run``

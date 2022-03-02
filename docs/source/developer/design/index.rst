@@ -10,4 +10,5 @@ the design) of PluginPlay.
    :caption: Contents:
 
    memoization
+   cache
    checkpoint_restart
