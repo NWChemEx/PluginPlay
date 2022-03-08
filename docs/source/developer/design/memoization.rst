@@ -99,7 +99,9 @@ memoization is implemented in PluginPlay or how the memoized data is used.
 
 - Memoization will need to occur in a parallel setting
 
-  - Will need to memoize parallel objects
+  - Will need to memoize parallel objects, which means knowing that not only
+    that the local input is the same, but also that the rest of the object is
+    the same.
   - Will need to worry about data races to get memoized data.
 
 - Comparing objects can be expensive (think about distributed tensors)
@@ -225,7 +227,8 @@ remaining considerations to the opaque functions:
 The opaque functions are consistent with the API of an associative container,
 hence the remainder of our memoization strategy is to implement an associative
 container which additionally addresses the remaining concerns. We term this
-container the ``Cache`` and its design is described elsewhere.
+container the ``Cache`` and the design of which can be found at
+:ref:`cache_design`.
 
 **************************
 Memoization Implementation

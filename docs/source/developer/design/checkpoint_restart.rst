@@ -25,9 +25,9 @@ prolonged period of time.
 
 C/R is typically handled in one of two ways: by the operating system (OS) or by
 the application. While OS-based C/R is automatic (from the application
-developer's perspective) its of limited utility in that its extremely expensive
-(the OS more or less snapshots the state of all running programs and all
-memory). The main application of OS-based C/R is suspending/hibernating the
+developer's perspective) it's of limited utility in that it's extremely
+expensive (the OS more or less snapshots the state of all running programs and
+all memory). The main application of OS-based C/R is suspending/hibernating the
 current user's session. OS-based C/R is typically not designed for transferring
 the checkpoint state to other devices and the next user action after a
 checkpoint is expected to be resuming the session (albeit with possibly a
@@ -47,7 +47,6 @@ Why Do We Need C/R?
 *******************
 
 - Fault rates are expected to increase substantially with exascale computing
-- Runtim
 - Users may want to resume runs to continue their data analysis
 - If a runtime error occurs, sometimes it is possible to modify an option to the
   failing module and retry. Having C/R means we don't need to need to rerun
@@ -61,7 +60,16 @@ Object Considerations
 =====================
 
 - The amount of data to checkpoint can be formidable
+
+  - Need ways to control what is checkpointed
+  - Does the ability to turn on/off memoization suffice?
+
 - Will need to checkpoint distributed objects
+
+  - For traditional memoization want to keep the object distributed.
+  - For C/R likely will want to pull the objects back to a single (or small
+    number of files)
+
 - May need to checkpoint different objects at different frequencies
 
   - To minimize checkpointing overhead larger objects may be checkpointed less
@@ -96,6 +104,25 @@ PluginPlay Specific Considerations
   have different target time ranges.
 - Module developers may want to do their own C/R.
 
-***********************
-Potential C/R Solutions
-***********************
+************
+C/R Strategy
+************
+
+C/R is a form of memoization and we intend for it to occur in PluginPlay via the
+cache concept. Thus we punt almost all of the C/R considerations to the cache
+discussion in :ref:`cache_design`. The exceptions are the following
+considerations which we address here:
+
+- The amount of data to checkpoint can be formidable
+
+  - With the current strategy turning on/off memoization also turns off C/R.
+
+- Generally speaking, in PluginPlay most data that needs checkpointed will live
+  in the cache.
+
+  - This is the primary motivation behind unify the two.
+
+- Reloading a cache will allow PluginPlay to quickly regain parity with the
+  previous calculation by relying on memoization.
+
+  - The current C/R strategy relies heavily on this consideration
