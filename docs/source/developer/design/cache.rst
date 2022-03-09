@@ -124,8 +124,8 @@ Cons:
 - Hashes can be very fragile
 
   - For a deterministic hash algorithm, one needs to prepare the input in the
-    exact same state in order to guarantee the same hash. This can be difficult
-    for a variety of reasons:
+    same state in order to guarantee the same hash. This can be difficult for a
+    variety of reasons:
 
     - Operations which are equivalent in infinite precision arithmetic are in
       general not equivalent with finite precision arithmetic
