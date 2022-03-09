@@ -123,8 +123,16 @@ Cons:
 - All objects must be hashable. Places additional burden on object developers.
 - Hashes can be very fragile
 
-  - In practice it's very difficult to guarantee that the exact same input will
-    produce the exact same hash in all situations.
+  - For a deterministic hash algorithm, one needs to prepare the input in the
+    exact same state in order to guarantee the same hash. This can be difficult
+    for a variety of reasons:
+
+    - Operations which are equivalent in infinite precision arithmetic are in
+      general not equivalent with finite precision arithmetic
+    - Objects may have slightly different representations depending on the
+      compiler, compiler settings, computing platform, etc.
+    - Precision may be lost as a result of checkpointing (e.g. lossy
+      compression, string to float conversions)
 
 - Hash collisions are possible, albeit extremely unlikely with modern algorithms
 
