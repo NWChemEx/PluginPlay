@@ -14,7 +14,7 @@
 
 TEST_CASE("LambdaModule : single return") {
     auto l = pluginplay::make_lambda<testing::OneOut>([]() { return 2; });
-    REQUIRE(std::get<0>(l.run_as<testing::OneOut>()) == 2);
+    REQUIRE(l.run_as<testing::OneOut>() == 2);
 }
 
 TEST_CASE("LambdaModule : multiple returns") {

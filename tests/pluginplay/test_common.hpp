@@ -126,8 +126,8 @@ struct ReadyModule : pluginplay::ModuleBase {
     pluginplay::type::result_map run_(
       pluginplay::type::input_map inputs,
       pluginplay::type::submodule_map) const override {
-        auto [opt1] = OptionalInput::unwrap_inputs(inputs);
-        auto rv     = results();
+        auto opt1 = OptionalInput::unwrap_inputs(inputs);
+        auto rv   = results();
         return OptionalInput::wrap_results(rv, opt1);
     }
 };

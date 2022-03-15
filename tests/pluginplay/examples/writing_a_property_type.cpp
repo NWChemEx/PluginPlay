@@ -49,7 +49,8 @@ TEST_CASE("Area Property Type") {
         }
 
         SECTION("Unwrap Auto Wrapped Results") {
-            auto [area] = Area::unwrap_results(results);
+            //auto [area] = Area::unwrap_results(results);
+            auto area = Area::unwrap_results(results);
             REQUIRE(area == 1.23);
         }
     }
@@ -97,7 +98,8 @@ TEST_CASE("Perimeter Property Type") {
         }
 
         SECTION("Unwrap Auto Wrapped Results") {
-            auto [area] = Perimeter::unwrap_results(results);
+            //auto [area] = Perimeter::unwrap_results(results);
+            auto area = Perimeter::unwrap_results(results);
             REQUIRE(area == 1.23);
         }
     }
@@ -122,8 +124,10 @@ TEST_CASE("PrismVolume Property Type") {
             REQUIRE(&pdims == &dims);
         }
         SECTION("Auto unwrap Inputs") {
-            const auto& [pdims] = PrismVolume::unwrap_inputs(inputs);
+            //const auto& [pdims] = PrismVolume::unwrap_inputs(inputs);
+            const auto& pdims = PrismVolume::unwrap_inputs(inputs);
             REQUIRE(&pdims == &dims);
+
         }
     }
 

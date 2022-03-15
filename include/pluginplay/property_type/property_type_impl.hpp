@@ -96,10 +96,10 @@ auto PROP_TYPE::unwrap_(T&& builder, U&& rv) {
     using tuple_type            = decltype(results);
     constexpr std::size_t nargs = std::tuple_size_v<tuple_type>;
     if constexpr(nargs == 0) return;
-    //        else if constexpr(nargs == 1){
-    //            using type = std::tuple_element_t <0, tuple_type>;
-    //            return std::forward<type>(std::get<0>(results));
-    //        }
+    else if constexpr(nargs == 1){
+        using type = std::tuple_element_t <0, tuple_type>;
+        return std::forward<type>(std::get<0>(results));
+    }
     else
         return results;
 }

@@ -298,7 +298,7 @@ private:
     pluginplay::type::result_map run_(
       pluginplay::type::input_map inputs,
       pluginplay::type::submodule_map submods) const override {
-        const auto& [dims] = PrismVolume::unwrap_inputs(inputs);
+        const auto& dims = PrismVolume::unwrap_inputs(inputs);
 
         /* Like inputs, the submodules to use will be provided to your module's
          * ``run_`` function at runtime. You retrieve the relevant submodule
@@ -310,7 +310,7 @@ private:
          * Similarly, you will get an error if you try to assign the result of
          * the call to an identifier of the wrong type.
          */
-        auto [area] = submods.at("area").run_as<Area>(dims[0], dims[1]);
+        auto area = submods.at("area").run_as<Area>(dims[0], dims[1]);
 
         /* This concludes the module tutorial. The remainder of the code
          * finishes the implementation of the ``Prism`` class and presents

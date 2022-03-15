@@ -110,7 +110,7 @@ TEST_CASE("How to use a lambda module") {
 
         // Make the lambda module that wraps it
         auto l = pluginplay::make_lambda<Area>([&](double b, double h) {
-            return 0.5 * std::get<0>(area_mod.run_as<Area>(b, h));
+            return 0.5 * area_mod.run_as<Area>(b, h);
         });
 
         // Tell the Prism submodule to use our lambda module
