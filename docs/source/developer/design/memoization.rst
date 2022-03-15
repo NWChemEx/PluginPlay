@@ -41,7 +41,7 @@ the first module which hasn't run yet). In fact, it is difficult to concieve of
 a C/R strategy that doesn't use memoization, as at its core C/R is a type of
 memoization (one is ultimately avoiding recomputing something by reading it
 from the checkpoint). The exact design details pertaining to C/R are beyond this
-section (see :ref:`_design_checkpoint_restart` for the full discussion), rather
+section (see :ref:`design_checkpoint_restart` for the full discussion), rather
 our point here is that in PluginPlay, we consider C/R part of the overall
 memoization strategy.
 

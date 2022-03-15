@@ -61,19 +61,19 @@ Object Considerations
 
 - The amount of data to checkpoint can be formidable
 
-  - Need ways to control what is checkpointed
-  - Does the ability to turn on/off memoization suffice?
+   - Need ways to control what is checkpointed
+   - Does the ability to turn on/off memoization suffice?
 
 - Will need to checkpoint distributed objects
 
-  - For traditional memoization want to keep the object distributed.
-  - For C/R likely will want to pull the objects back to a single (or small
-    number of files)
+   - For traditional memoization want to keep the object distributed.
+   - For C/R likely will want to pull the objects back to a single (or small
+     number of files)
 
 - May need to checkpoint different objects at different frequencies
 
-  - To minimize checkpointing overhead larger objects may be checkpointed less
-    frequently than smaller objects.
+   - To minimize checkpointing overhead larger objects may be checkpointed less
+     frequently than smaller objects.
 
 - Serialization is the primary means of disassembling/assembling objects and
   thus intimately related to C/R
@@ -86,8 +86,8 @@ Hardware Considerations
 - Should checkpoints be hardware-specific (e.g. checkpoint may assume access to
   a certain number of processes)
 
-  - For immediate restart, hardware-specific checkpoints make sense, but for
-    long-term archival the storage format needs to be platform agnostic
+   - For immediate restart, hardware-specific checkpoints make sense, but for
+     long-term archival the storage format needs to be platform agnostic
 
 
 PluginPlay Specific Considerations
@@ -103,6 +103,46 @@ PluginPlay Specific Considerations
 - Converting from C/R format to memoized format may be necessary since the two
   have different target time ranges.
 - Module developers may want to do their own C/R.
+
+*******************
+C/R Implementations
+*******************
+
+- DMTCP
+
+  - https://github.com/dmtcp/dmtcp
+  - Monitors a program's processes and threads to automatically checkpoint it
+  - Not at all clear how this works (grabbing all memory?)
+  - LGPLv3
+  - Active development. 291 stars and 27 watchers.
+
+- SCR
+
+   - https://github.com/LLNL/scr
+   - Appears to primarily be used to save to a parallel filesystem in the
+     background.
+   - Looks like user is still responsible for writing the files and interacting
+     with MPI.
+   - Appears to require user to call program through SCR wrapper
+   - BSD License.
+   - Active development. 76 stars and 21 watchers.
+
+- VELOC
+
+   - https://github.com/ECP-VeloC/VELOC
+   - Looks like it's designed to replace SCR
+   - Supports monitoring memory regions, will automatically C/R said regions
+   - For more complex objects, has a file API. Like SCR users seem to be
+     responsible for manually filling in/reading from the file.
+   - MIT License
+   - Active development. 35 stars and 11 watchers.
+
+
+.. note::
+
+   We do not have experience using any of these libraries. Notes are based on
+   readmes and documentation, and may or may not actually reflect the features/
+   state of the libraries. Stars and watchers were accurate as of March 2022.
 
 ************
 C/R Strategy

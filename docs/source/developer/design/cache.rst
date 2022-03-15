@@ -341,31 +341,55 @@ ensures there's a single source of truth for the program. The ``Cache`` will be
 hierarchical since memoization only makes sense for modules of the same C++
 type. The ``Cache`` refers to the entire cache object, whereas ``ModuleCache``
 refers to the cache for all modules of the same C++ type. Thus ``Cache`` can
-be thought of as a map from C++ type to ``ModuleCache`` instances.
+be thought of as a map from C++ type to ``ModuleCache`` instances. In lieu of
+the actual C++ module type, we define a concept called the module ID. For now
+the Module ID is simply the module key that a module was originally registered
+under, but in the future may be expanded to include for example version
+information. Each ``ModuleCache`` is thought of as a map from a set of inputs to
+a set of results.
 
-From a feature perspective most of the databases are capable of doing what we
-want for ``ModuleCache``. Furthermore, many of the databases are heavily used
-and widely supported. Whether the databases can do what we want, in a high-
-performance computing setting is a different story. It is our opinion that
-relying on a database for ``ModuleCache`` could potentially save a lot of
-development time. Since the database will live under the hood of
-``ModuleCache``, worst case scenario, we could swap out the database with
-minimal disruptions to the remainder of the stack. We anticipate that reality
-will be such that we can use the database for 90% of our needs and will need to
-dispatch for the other 10%; assuming this is the case, using a database seems to
-be a huge win. We defer the discussion of which database to use to (TODO: link
-to discussion).
+Under the hood of ``ModuleCache`` we introduce a class ``Database`` which is
+responsible for storing the actual data. From the user's perspective the
+``Database`` class implements the ``Cache`` class and ``ModuleCache`` instances
+are slices of the ``Database``. In practice we accomplish this by having the
+keys of the database be pairs whose first element is the module ID and the
+second element is the input set (values in the database are the result sets).
+``Database`` is implemented by a polymorphic PIMPL. Additional PIMPLs can be
+added to cover different database backends and/or nested for more comlicated C/R
+scenarios.
 
-``std::type_index`` will suffice for the keys to ``Cache`` since we are only
-trying to determine if modules have the same type. A major remaining decision is
-shat to use for the keys to ``ModuleCache``? The financial burden of (properly)
-assigning DOIs to inputs, and the need to synchronize those DOIs with the
-International DOI Foundation, makes true DOIs impractical. UUIDs are more or
-less DOIs without the central authority or financial burden. The biggest problem
-with UUIDs is that if we wanted all processes to agree on the UUID we'd have to
-synchronize the values. This could become burdensome as such a synchronization
-would need to occur everytime the data changes. One seemingly promising solution
-is to combine the value and hashing options to try to get the best of both.
+
+
+Our initial C/R strategy is realtively simple and relies on two ``Database``
+PIMPLs. The lowest level PIMPL is the ``SerializedPIMPL`` which serializes
+its input into the wrapped database instance (initially a RocksDB database).
+The second PIMPL in our C/R strategy is ``PerModuleObjectPIMPL``.
+Each ``ModuleCache`` gets a different instance of the ``PerModuleObjectPIMPL``
+which contains the same ``Database`` instance containing the
+``SerializedPIMPL``. In addition to the ``Database``, the
+``PerModuleObjectPIMPL`` instances contain: the module ID associated with the
+``ModuleCache`` and a ``std::map`` from inputs to results. In practice when a
+result gets cached it lives in the ``PerModuleObjectPIMPL``, allowing us to get
+the results back quicky without having to deserialize them. When ``backup()``,
+or ``dump()``, is called the contents of the ``std::map`` are copied/moved to
+the ``Database`` wrapped in the ``PerModuleObjectPIMPL``.
+
+By default the databases will always try to read from the database below it if
+a particular key is not found. This ensures that results will be read back in
+the event of a restart. At all levels of the Cache we have opted to use the
+actual input values as the keys. This is the most straightforward
+implementation. It is our opinion that slow comparisons should be optimized in
+the classes being compared (as other places will likely benefit from the speed
+up). Where this strategy may run into problems is in terms of storage, namely
+the same input may end up being an input to more than one module, and our
+current strategy will save that input multiple times. Many of our structures
+use shared_ptrs for shared state so this should not initially be as bad as it
+sounds. Below in the Future Directions section, we discuss how this may be
+addressed if the need arises.
+
+
+
+
 
 ModuleCache Key Strategy
 ========================
