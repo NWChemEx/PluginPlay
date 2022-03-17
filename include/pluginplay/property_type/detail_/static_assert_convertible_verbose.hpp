@@ -2,7 +2,8 @@
 
 namespace pluginplay::detail_ {
 
-/** @brief Struct that provides clearer error message when types are not convertible.
+/** @brief Struct that provides clearer error message when types are not
+ * convertible.
  *
  * This allows the replacement of a static assert of the form:
  * `static_assert(std::is_convertible_v<T1,T2>)`
@@ -20,10 +21,9 @@ namespace pluginplay::detail_ {
  * @tparam I position of the argument in some argument list
  */
 template<typename T1, typename T2, std::size_t I>
-struct STATIC_ASSERT_CONVERTIBLE_VERBOSE
-{
-    static_assert(std::is_convertible_v<T1,T2>,
-    R"(
+struct STATIC_ASSERT_CONVERTIBLE_VERBOSE {
+    static_assert(std::is_convertible_v<T1, T2>,
+                  R"(
 
     Incorrect argument type; type T1 not convertible to type T2 at position I.
     For values of T1, T2, and I, see compiler output formatted as:
