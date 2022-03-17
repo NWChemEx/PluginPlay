@@ -17,11 +17,15 @@ What is C/R?
 
 C/R is the high-performance computing equivalent of saving/loading. In
 conventional usage C/R primarily targets fault resilience (being able to resume
-a program when something goes wrong). In this typical usage, the time from the
-checkpoint to the restart is usually short and long term data archival
-considerations can usually be ignored. On the contrary, saving/loading usually
-attempts to store data in such a way that it can be used to resume work after a
-prolonged period of time.
+a program when something goes wrong) and is typically done in the background of
+the program's execution. Typical C/R usage usually has a short turn around time
+from the checkpoint action to restarting. On the contrary, saving/loading is
+typically a manual process (the chooses to save; although the program may also
+maintain an autosave back-up as a convenience) and usually strives to store the
+data in a manner ammenable to resuming work after a prolonged period of time. In
+modern practice the exact distinction between save/load and C/R is fuzzy at
+best and for our purposes we consider them together under the unified concept of
+C/R.
 
 C/R is typically handled in one of two ways: by the operating system (OS) or by
 the application. While OS-based C/R is automatic (from the application
@@ -37,24 +41,27 @@ can be expensive or cheap (depends on what is being checkpointed and how the
 developer does the checkpointing), and allows other actions to occur between the
 checkpoint and the restart.
 
-For the purposes of this page, we take C/R to encompass not only fault
-resilience, but also reloading a previously successful program invocation. The
-unifying theme here is C/R is a mechanism for restarting the program at a state
-other than the initial state.
-
 *******************
 Why Do We Need C/R?
 *******************
 
-- Fault rates are expected to increase substantially with exascale computing
-- Users may want to resume runs to continue their data analysis
-- If a runtime error occurs, sometimes it is possible to modify an option to the
-  failing module and retry. Having C/R means we don't need to need to rerun
-  functions prior to the error.
+Historically many electronic structure packages have had limited or no C/R
+capabilities. However, fault rates are expected to increase substantially with
+exascale computing making it prudent for us to consider C/R if for no other
+reason than resliancy. Arguably the more important reason to have C/R is for
+scientific integrity. It should be possible to reload previous results and
+verify/build upon them in some manner. Another reason is user friendliness.
+Users have come to expect their state to be saved in most serious programs.
+Having C/R means a user doesn't need to rerun the entire program just because
+an error occurred.
 
 ******************
 C/R Considerations
 ******************
+
+There are a number of C/R considerations which we have grouped based on whether
+they pertain to the objects being C/R, the hardware being used to C/R, or the
+design of PluginPlay.
 
 Object Considerations
 =====================
@@ -108,6 +115,13 @@ PluginPlay Specific Considerations
 C/R Implementations
 *******************
 
+Saving/loading is an ubiquitous aspect of the modern user experience. For this
+reason we expected to find a number of existing C/R candidates; however, we
+were only able to locate a few existing libraries. It is possible that we are
+not using the correct terminology (we tried both the C/R and save/load
+terminology), or that C/R is just so intimately tied to a program's design that
+no good general solution exists.
+
 - DMTCP
 
   - https://github.com/dmtcp/dmtcp
@@ -147,6 +161,12 @@ C/R Implementations
 ************
 C/R Strategy
 ************
+
+The existing C/R libraries do not seem to be widely used. Perhaps the larger
+problem with the existing C/R libraries is that it is not clear what they have
+to offer (unless our program is so simple we can just tell it what memory
+addresses to monitor). For this reason, we have opted to implement our own C/R
+solution.
 
 C/R is a form of memoization and we intend for it to occur in PluginPlay via the
 cache concept. Thus we punt almost all of the C/R considerations to the cache

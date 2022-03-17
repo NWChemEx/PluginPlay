@@ -63,146 +63,6 @@ array concept.
     - Could do something in between
 
 *********************
-Choosing the Key Type
-*********************
-
-Ultimately the cache is an associative array mapping inputs to results. To
-determine if we have results for a set of inputs we ultimately need to map the
-inputs to a key, and determine if the key exists. There's a number of possible
-key types:
-
-Using the Values as Keys
-========================
-
-Conceptually the simplest option, we use the set of inputs themselves as the key
-(i.e., the mapping from inputs to keys is a trivial identity mapping). This has
-the following advantages:
-
-- human-readable keys (to the extent that the objects themselves are
-  human-readable).
-- Preservation of input values.
-- Assuming a value comparison is implemented correctly, will never incorrectly
-  memoize a call.
-
-and the following disadvantages:
-
-- May lead to very costly comparisons (think large distributed data structures).
-
-  - Ultimately it falls to the object writer to optimize the comparisons for
-    their object; however, it's not always feasible to count on developers to be
-    willing to further optimize their objects.
-
-- Memory consumption may be a large issue.
-
-  - Storing the literal values will result in copies of the objects
-  - Can store references/pointers, but lifetime management becomes an issue.
-
-- Value comparisons are sensitive to floating-point values
-
-  - Could allow users to provide custom comparison operators thereby allowing
-    them to choose what to do in such cases.
-  - Object developers may have already considered this in the design of the
-    comparison operators.
-
-Using Hashes as Keys
-====================
-
-Another option is to treat the associative array as a hash table and to use
-hashes as keys.
-
-Pros:
-
-- Short look-up times (can be constant depending on the specific associative
-  array implementation)
-- Hash collisions aside, with the right hash algorithm the same object will
-  always generate the same hash (i.e., we don't have to store the inputs, just
-  the hashes)
-
-Cons:
-
-- All objects must be hashable. Places additional burden on object developers.
-- Hashes can be very fragile
-
-  - For a deterministic hash algorithm, one needs to prepare the input in the
-    same state in order to guarantee the same hash. This can be difficult for a
-    variety of reasons:
-
-    - Operations which are equivalent in infinite precision arithmetic are in
-      general not equivalent with finite precision arithmetic
-    - Objects may have slightly different representations depending on the
-      compiler, compiler settings, computing platform, etc.
-    - Precision may be lost as a result of checkpointing (e.g. lossy
-      compression, string to float conversions)
-
-- Hash collisions are possible, albeit extremely unlikely with modern algorithms
-
-  - Can perform a value comparison to guarantee the keys really are equal
-    (requires storing the actual inputs too)
-  - A notable exception to collision rarity occurs when two different objects
-    have an unintentionally symmetric state. A common example is empty
-    containers of different types; if one simply hashes the elements in the
-    containers by looping over the container, and if the types of the containers
-    are not hashed, the resulting hash value will be equal.
-
-- Hashes are not human-readable (i.e. dumping a hash table is unlikely to be
-  useful for anything other than memoization)
-
-  - Combined with the fragility aspect, hashing is not suitable for long-term
-    data archival
-
-- Generally speaking, hashes can not be inverted, i.e., given just the hash it's
-  not possible to determine what object was hashed.
-- Distributed objects can be tricky
-
-  - Can have each process hash its local part, requires no synchronization
-  - Hashing the entire object requires synchrnoization
-
-
-Universally Unique ID Considerations
-====================================
-
-Pros:
-
-- Usage does not require the objects to be hashable
-- Comparisons of UUIDs are quick
-- Relatively straightforward to guarantee that the same UUID is not given to
-  different objects.
-- Could be potentially useful for data-archival purposes
-
-Cons:
-
-- Requires bookkeeping to maintain the association between the UUID and the
-  object it was generated for.
-
-  - Adding a member to the class avoids needing to store a map from instance to
-    UUID, but complicates the object's semantics (the UUID needs updated when
-    the data changes).
-  - Easy enough to automate with a mix-in
-
-- Not human-readable
-- Can not be inverted
-- Requires synchronization to assign the same UUID in all processes.
-
-Digital Object Identifier
-=========================
-
-UUIDs are conceptually similar to DOIs. So another possibility is to use DOIs as
-the keys:
-
-Pros:
-
-- Widely used to identify journal articles, research reports, and data sets
-- Uniquely identifies an object
-- Through the DOI site allows users to easily obtain the actual object
-
-Cons:
-
-- Object needs to be registered with the International DOI Foundation to be a
-  true DOI
-- Costs money to get a DOI
-
-
-*********************
 Cache Implementations
 *********************
 
@@ -325,7 +185,7 @@ Next are C libraries on GitHub with the ``associative-array`` tag:
 Databases
 =========
 
-While we've focused on associative arrays up to this point, but what we're after
+While we've focused on associative arrays up to this point, what we're after
 can also be considered a database. The advantage of moving to databases is that
 we get some real heavy-hitters contributing software. Putting the cart before
 the horse, our current cacheing strategy will rely on databases for a number of
@@ -336,7 +196,20 @@ conversation to :ref:`database_design`.
 Cache Strategy
 **************
 
-Each ``ModuleManager`` instance can have at most one ``Cache`` instance. This
+Ultimately a lot of the Cache's implementation will get punted to an underlying
+class ``Database``. The design of that class, and how it addresses the ``Cache``
+considerations is beyond our current scope, but can be found
+:ref:`here <database_design>`. This discussion focuses on the design of the API
+wrapping the ``Database`` class.
+
+.. _fig_cache_design:
+.. figure:: cache_design.png
+
+   Main design points of the ``Cache`` and ``ModuleCache`` classes.
+
+
+:numref:`fig_cache_design` summarizes the design of the ``Cache`` class. Each
+``ModuleManager`` instance can have at most one ``Cache`` instance. This
 ensures there's a single source of truth for the program. The ``Cache`` will be
 hierarchical since memoization only makes sense for modules of the same C++
 type. The ``Cache`` refers to the entire cache object, whereas ``ModuleCache``
@@ -348,125 +221,45 @@ under, but in the future may be expanded to include for example version
 information. Each ``ModuleCache`` is thought of as a map from a set of inputs to
 a set of results.
 
-Under the hood of ``ModuleCache`` we introduce a class ``Database`` which is
-responsible for storing the actual data. From the user's perspective the
-``Database`` class implements the ``Cache`` class and ``ModuleCache`` instances
-are slices of the ``Database``. In practice we accomplish this by having the
-keys of the database be pairs whose first element is the module ID and the
-second element is the input set (values in the database are the result sets).
-``Database`` is implemented by a polymorphic PIMPL. Additional PIMPLs can be
-added to cover different database backends and/or nested for more comlicated C/R
-scenarios.
+Under the hood of ``ModuleCache`` we use the ``Database`` class to store the
+actual data. From the user's perspective the ``Database`` class implements the
+``Cache`` class and ``ModuleCache`` instances are slices of the ``Database``. We
+accomplish this by having the keys of the database be pairs whose first element
+is the module ID and the second element is the input set (values in the database
+are the result sets). ``Database`` is implemented by a polymorphic PIMPL.
+Additional PIMPLs can be added to cover different database backends and/or
+nested for more comlicated C/R scenarios.
+
+It is worth noting that in this design the ``Cache`` class is very similar to
+the ``Database`` class and could at this stage just be a ``Database``; however,
+we maintain separate classes because ``Cache`` is the public API and
+``Database`` will be an implementation detail.
+
+So far this strategy does not address how iterative modules will be memoized
+yet, nor will the database help on this issue. The primary problem to solve is
+how to avoid needing to store all of the intermediate results. Our current
+strategy is to more or less punt and make module developers do it. More
+specifically the ``Cache`` class will maintain a second module to
+``ModuleCache`` mapping (these ``ModuleCache`` instances will actually be held
+as instances of the derived ``UserCache`` class). Module developers are
+able to access the ``UserCache`` through the ``ModuleBase`` class and are free
+to cache/uncache whatever values they want.
 
 
-
-Our initial C/R strategy is realtively simple and relies on two ``Database``
-PIMPLs. The lowest level PIMPL is the ``SerializedPIMPL`` which serializes
-its input into the wrapped database instance (initially a RocksDB database).
-The second PIMPL in our C/R strategy is ``PerModuleObjectPIMPL``.
-Each ``ModuleCache`` gets a different instance of the ``PerModuleObjectPIMPL``
-which contains the same ``Database`` instance containing the
-``SerializedPIMPL``. In addition to the ``Database``, the
-``PerModuleObjectPIMPL`` instances contain: the module ID associated with the
-``ModuleCache`` and a ``std::map`` from inputs to results. In practice when a
-result gets cached it lives in the ``PerModuleObjectPIMPL``, allowing us to get
-the results back quicky without having to deserialize them. When ``backup()``,
-or ``dump()``, is called the contents of the ``std::map`` are copied/moved to
-the ``Database`` wrapped in the ``PerModuleObjectPIMPL``.
-
-By default the databases will always try to read from the database below it if
-a particular key is not found. This ensures that results will be read back in
-the event of a restart. At all levels of the Cache we have opted to use the
-actual input values as the keys. This is the most straightforward
-implementation. It is our opinion that slow comparisons should be optimized in
-the classes being compared (as other places will likely benefit from the speed
-up). Where this strategy may run into problems is in terms of storage, namely
-the same input may end up being an input to more than one module, and our
-current strategy will save that input multiple times. Many of our structures
-use shared_ptrs for shared state so this should not initially be as bad as it
-sounds. Below in the Future Directions section, we discuss how this may be
-addressed if the need arises.
-
-
-
-
-
-ModuleCache Key Strategy
-========================
-
-Our solution is to maintain a map from input values to hashes, and then map the
-hashes to the results. The use of the auxiliary map serves several purposes:
-
-#. it preserves the input values in a way ammenable to human-readable-ness
-#. it prevents memoization from incorrectly occuring (assuming the value
-   comparisons are correctly implemented) since we have to do a value comparison
-   to get the hash
-#. the hashes can serve as checksums for data integrity (rehash key and compare
-   it to the stored hash)
-#. there is a mechanism for the user to decide when data is "close enough" for
-   reuse.
-
-   - e.g. say the input is a floating point value, the user can override the key
-     comparison so that the floating point values compare equal as long as they
-     agree to within some tolerance.
-
-#. we "factor out" the value
-
-   - If we just had the value to result map, the value-based keys could end up
-     requiring us to store copies of the same input in multiple keys
-
-Arguably the largest problem with using hashes is avoiding collisions between
-objects with different types, but otherwise symmetric states. In our present
-strategy note that:
-
-- ``ModuleCache`` instances are per module ``std::type_index``
-- Each ``std::type_index`` maps to a set input API
-- The types of the inputs being hashed have already been checked against the
-  input API (and an error raised if they had a wrong type)
-- The auxiliary map allows us to map each input to a hash
-- Results are stored under a tuple of hashes (the :math:`i`-th hash being
-  the hash for the :math:`i`-th poisitonal argument)
-
-Then we have established a one-to-one map from the original input values to the
-tuple of hashes and can confidently return the results. There are two cavets to
-this:
-
-#. The input to hash map must be one-to-one, i.e., we must detect legitimate
-   hash collisions (easily done by ensuring a hash is not already in the map
-   before inserting it, if it is in the map we crash and tell the user to go
-   buy a lottery ticket because odds are that won't happen again before the
-   heat death of the universe...).
-#. Since module instances set their APIs at runtime, it's entirely possible
-   for two module instances to have different input APIs.
-
-   - The default in PluginPlay is to make modules via the default ctor, in part
-     to avoid this problem. So if the user wanted to use conditional logic to
-     switch the API, they would have to do somewhat creatively. Point is, for
-     now it probably suffices to just tell the user it's a big no-no to have
-     different APIs for different instances of the same module.
-
-Cache and Iterative Modules
-===========================
-
-This strategy does not address how iterative modules will be memoized yet, nor
-will the database likely help on this issue. The primary problem to solve is how
-to avoid needing to store all of the intermediate results. Our current strategy
-is to more or less punt and make module developers do it. More specifically we
-actually store two ``ModuleCache`` instances for each C++ module type. This
-second instance is referred to as the module's internal cache. The module is
-free to put whatever values it wants in the internal cache under whatever keys
-it wants.
-
-In practice iterative modules take the initial input and the current input.
-Internally, before returning, iterative modules cache the result computed from
-the current input under the initial input. When the initial input is the same as
-the current input we know one of two things is happening: it's the true first
-iteration (known becuase there is no value cached under the initial input) or we
-are restarting (known because we have a partial result cached). The key
-difference compared to normal memoization is that the module developer is
-overriding the memoized value every iteration. N.B. that when a module developer
-is going to do their own memoization they should turn off memoization for the
-module otherwise PluginPlay will still memoize the outer call.
+The use of the ``UserCache`` with iterative modules has a potential pitfall. In
+general the ``UserCache`` will wrap the same ``Database`` as the ``ModuleCache``
+(this facilitates using a single C/R backend).  Furthermore, a lot of times the
+inputs to the iterative module are the same as the inputs used to tag
+intermediate results (and the intermediate results are often the same type as
+the module's results). In turn restarting an iterative module that has not
+converged may lead to the iterative module being memoized to the last
+intermediate even though it has not converged. To prevent this, ``UserCache``
+tags its entries before dumping them, whereas ``ModuleCache`` does not.
+When attempting to memoize an iterative module, tagged cache entries will not be
+considered. If no untagged enteries are found control goes into the module.
+Inside the module, the user checks the ``UserCache`` instance (which in turn
+only considers tagged entries) and the module is able to restart using the last
+intermediate.
 
 Cache Considerations Addressed
 ==============================
@@ -482,43 +275,47 @@ considerations:
 
 - Failing to memoize when appropriate will affect performance
 
-  - There's only so much we can do here. The auxiliary value-to-hash map will
-    allow the user to force memoziation to occur whenever they want.
+  - There's only so much we can do here. Ultimately it's up to the database
+    backend to determine if a set of inputs has been seen or not. Concievably,
+    the database could use special comparisons to determine if two objects are
+    equal.
 
 - Memoizing when not appropriate will compromise the integrity of the scientific
   answer.
 
-  - Assuming value comparison is implemented correctly for each object, the
-    one-to-one mapping from input value to results established in this strategy
-    should prevent this.
+  - Again this is up to the database backend. In our initial design two objects
+    must compare value equal to be considered the same. If value equality is
+    implemented correctly there is no reason why false memoization will occur.
 
 - Memoizing iterative (recursive) function requires special considerations
 
-  - Addressed by having an internal cache.
+  - Addressed by having ``UserCache``
 
 - Comparing objects can be expensive (think about distributed tensors)
 
-  - We still have value comparisons, but the majority of the comparisons will
-    now be done by hashes. If the few value comparisons that remain become a
-    bottleneck we assume this is indicative of the value comparisons needing
-    further optimization.
+  - It's our opinion that optimizing value comparison is easier than trying to
+    implement a general comparison solution based on hashing or the like. Object
+    developers are of course free to use hashing inside their object's value
+    comparisons as an optimization.
 
 - Module developers may want to do their own C/R.
 
-  - Addresed by having an internal cache. Module developers can put whatever
+  - Addresed by having a ``UserCache``. Module developers can put whatever
     they want in that cache and have it be checkpointed.
-  - Module developers are also free to ignore that cache and do something else
-    if they would like.
+  - Module developers are also free to ignore the ``UserCache`` and do something
+    else if they would like.
 
 - Since memoization occurs per type ``T`` (``T`` derived from ``ModuleBase``)
   the actual cache will be a nested associative array (``T`` maps to an
   associative array ``A`` and ``A`` actually maps the inputs to results)
 
-  - The ``Cache`` nested ``CacheModule`` addresses this.
+  - The ``Cache`` and ``ModuleCache`` classes addresses this.
 
 - What are the keys? Input values? Hashes? Universally Unique IDs (UUIDs)?
 
-  - The final decision is a hybrid of values and hashes.
+  - From the perspective of the ``Cache`` the keys are input values. The
+    ``Database`` implementation is free to map the input values to proxy objects
+    such as UUIDs if it so likes.
 
 - How many entries do we expect in a module's cache? 10s? 100s? 1000s?
 
@@ -527,13 +324,3 @@ considerations:
     process, or a very fundamental and frequently called module.
   - 1000+ calls is not unfathomable, but probably rare enough to justify
     treating it separately
-
-- Checksums for data validity?
-
-  - The hashes can serve as checksums
-
-*********************
-Cache Class Hierarchy
-*********************
-
-TODO: Write me.

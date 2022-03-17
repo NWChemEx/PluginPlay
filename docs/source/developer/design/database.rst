@@ -109,6 +109,7 @@ Object Storage
 - Want a quick access (not serialized) and a long-term serialized form
 - May not want to serialize all objects at the same frequency
 - Compression (presumably of the serialized objects)
+- Avoid storing multiple copies of the same key/value
 
 Other
 =====
@@ -118,6 +119,151 @@ Other
 
    - Checkpoint the original state and the changes to the original state needed
      to make the current state
+
+
+****************************
+Choosing the Key/Value Types
+****************************
+
+We will use the database as an associative array. This means we need to choose
+how the keys and values are stored in the array. There are a number of possible
+representations which we list here.
+
+Using the Literal Values
+========================
+
+Conceptually the simplest option is to use the literal values of the objects we
+are storing.
+
+Pros:
+
+- human-readable keys (to the extent that the objects themselves are
+  human-readable).
+- Exact preservation of input values.
+- Assuming value comparisons are implemented correctly, will never incorrectly
+  memoize a call.
+
+Cons:
+
+- May lead to very costly comparisons (think large distributed data structures).
+
+  - Ultimately it falls to the object writer to optimize the comparisons for
+    their object; however, it's not always feasible to count on developers to be
+    willing to further optimize their objects.
+
+- Memory consumption may be a large issue.
+
+  - Storing the literal values will result in copies of the objects
+  - Can store references/pointers, but lifetime management becomes an issue.
+
+- Value comparisons are sensitive to floating-point values
+
+  - Could allow users to provide custom comparison operators thereby allowing
+    them to choose what to do in such cases.
+  - Object developers may have already considered this in the design of the
+    comparison operators.
+
+Using Hashes
+============
+
+Another option is to replace the objects with their hash representation.
+
+Pros:
+
+- Short look-up times (can be constant depending on the specific associative
+  array implementation)
+- Hash collisions aside, with the right hash algorithm the same object will
+  always generate the same hash (i.e., we don't have to store the inputs, just
+  the hashes)
+
+Cons:
+
+- All objects must be hashable. Places additional burden on object developers.
+- Hashes can be very fragile
+
+  - For a deterministic hash algorithm, one needs to prepare the input in the
+    same state in order to guarantee the same hash. This can be difficult for a
+    variety of reasons:
+
+    - Operations which are equivalent in infinite precision arithmetic are in
+      general not equivalent with finite precision arithmetic
+    - Objects may have slightly different representations depending on the
+      compiler, compiler settings, computing platform, etc.
+    - Precision may be lost as a result of checkpointing (e.g. lossy
+      compression, string to float conversions)
+
+- Hash collisions are possible, albeit extremely unlikely with modern algorithms
+
+  - Can perform a value comparison to guarantee the keys really are equal
+    (requires storing the actual inputs too)
+  - A notable exception to collision rarity occurs when two different objects
+    have an unintentionally symmetric state. A common example is empty
+    containers of different types; if one simply hashes the elements in the
+    containers by looping over the container, and if the types of the containers
+    are not hashed, the resulting hash value will be equal.
+
+- Hashes are not human-readable (i.e. dumping a hash table is unlikely to be
+  useful for anything other than memoization)
+
+  - Combined with the fragility aspect, hashing is not suitable for long-term
+    data archival
+
+- Generally speaking, hashes can not be inverted, i.e., given just the hash it's
+  not possible to determine what object was hashed.
+- Distributed objects can be tricky
+
+  - Can have each process hash its local part, requires no synchronization
+  - Hashing the entire object requires synchrnoization
+
+
+Universally Unique IDs (UUIDs)
+==============================
+
+UUIDs typically use some hardware-specific information combined with temporal
+information to create a unique ID. Associating the UUID with a specific object
+in effect creates a global memory address for the object.
+
+Pros:
+
+- Usage does not require the objects to be hashable
+- Comparisons of UUIDs are quick
+- Relatively straightforward to guarantee that the same UUID is not given to
+  different objects.
+- Could potentially serve as a sort of DOI for data-archival purposes
+
+Cons:
+
+- Requires bookkeeping to maintain the association between the UUID and the
+  object it was generated for.
+
+  - Adding a member to the class avoids needing to store a map from instance to
+    UUID, but complicates the object's semantics (the UUID needs updated when
+    the data changes).
+  - Easy enough to automate with a mix-in
+
+- Not human-readable
+- Can not be inverted
+- Requires synchronization to assign the same UUID to an object viewable by
+  multiple processes
+
+Digital Object Identifier
+-------------------------
+
+UUIDs are conceptually similar to DOIs, except that DOIs are issued by an
+organization.
+
+Pros:
+
+- Widely used to identify journal articles, research reports, and data sets
+- Uniquely identifies an object
+- Using the DOI website allows users to easily obtain the actual object
+
+Cons:
+
+- Object needs to be registered with the International DOI Foundation to be a
+  true DOI
+- Costs money to get a DOI
+
 
 ************************
 Database Implementations
@@ -644,11 +790,16 @@ Database Strategy
    on most browsers you can "open image in a new tab" to easily zoom in.
 
 Ultimately none of the databases we considered have all of the features we want.
-Our current Database strategy grafts the missing functionality onto RocksDB. The
-class structure for our ``Database`` class is summarized in
+Our current Database strategy grafts the missing functionality onto RocksDB.
+The class structure for our ``Database`` class is summarized in
 :numref:`fig_db_design`. The general design strategy is to rely on nesting
-polymorphic PIMPLs to acheive a Database with the desired properties. Our
-initial database PIMPL has four levels.
+polymorphic PIMPLs to acheive an implementation with the desired properties. Our
+initial database PIMPL has four levels. For our first pass we only worry about
+storing keys/values locally. That is each process's ``Database`` will be
+responsible for storing the local piece of distributed objects, or copies of
+replicated objects. In general this means each process's ``Database`` instance
+will have a different state. Additional parallel considerations can be tackled
+by implementing additional backends, and  will be left for future work.
 
 The most fundamental PIMPL is the ``RocksDB`` class. This class is a thin
 wrapper around the RocksDB library. Keys/values in the ``RocksDB`` database need
@@ -681,7 +832,6 @@ what happens after flushing the ``PerModuleObjectDatabase`` (or even how the
 more ``DatabasePIMPL`` objects. The overall initial structure of the
 ``DatabasePIMPL`` used to implement the ``Database`` in the Cache is shown in
 :numref:`fig_db_pimpl_design`.
-
 
 Database Considerations Addressed
 =================================
@@ -741,8 +891,9 @@ considerations raised in the :ref:`database_considerations` section.
 
 - Will need to serialize the objects
 
-   - Happens in ``SerializedDB``, will require all `AnyField`` instances to be
+   - Happens in ``SerializedDB``, will require all ``AnyField`` instances to be
      serializable.
+   - May need different serializations (only the local part, entire object)
 
 - Want a quick access (not serialized) and a long-term serialized form
 
@@ -756,6 +907,11 @@ considerations raised in the :ref:`database_considerations` section.
 - Compression (presumably of the serialized objects)
 
    - Native RocksDB feature
+
+- Avoid storing multiple copies of the same key/value
+
+   - ProxyObjectDatabase addresses this by assigning UUIDs to each input and
+     result.
 
 - Automatic backups
 
@@ -774,7 +930,8 @@ design will punt on some aspects. We collect those aspects here for future
 reference.
 
 - data races: not all classes are thread-safe
-- storing distributed objects: may want backend which replicates the object
+- storing distributed objects: may want a global database, the ability to synch
+  UUIDs etc.
 - HPC memory hierarchies: we will need new backends to use specialized hardware
 - different frequence serialization: will require a new backend
 - Automatic backups: will need a new backend

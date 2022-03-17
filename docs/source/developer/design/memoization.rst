@@ -17,6 +17,8 @@ called with already cached inputs, the cached results are returned without
 actually recomputing the function. Memoization thus represents a time-for-space
 trade off.
 
+.. _why_memoization:
+
 *************************************
 Why does PluginPlay Need Memoization?
 *************************************
@@ -49,8 +51,9 @@ memoization strategy.
 Memoization Considerations
 **************************
 
-The following list contains considerations related to either how the process of
-memoization is implemented in PluginPlay or how the memoized data is used.
+This section lists the considerations which went into the memoization design for
+PluginPlay.  These points relate to how the process of memoization is
+implemented or how the memoized data is used.
 
 - Ideally the use of memoization is under the hood of PluginPlay and largely
   hidden from the user.
@@ -106,9 +109,18 @@ memoization is implemented in PluginPlay or how the memoized data is used.
 
 - Comparing objects can be expensive (think about distributed tensors)
 
+  - Needed to determine if inputs have beein the previous section n seen before
   - Hashing is a possible solution, but relying on hashing alone can
     theoretically lead to memoizing when not appropriate (although if
     implemented correctly the odds are astronomical)
+
+- The same input may be used as an input to many modules
+
+  - Memoization requires stores the inputs and results somewhere
+  - If the same input is passed to different modules we can end up storing
+    multiple copies of an expensive object
+  - Returning the same result from different modules is also possible, but
+    anticipated to be far less likely.
 
 - Need to decide how long memoized data is valid for.
 
@@ -126,10 +138,10 @@ memoization is implemented in PluginPlay or how the memoized data is used.
 Memoization Implementations
 ***************************
 
-Since memoization will occur under the hood of PluginPlay it is possible to
-incorporate existing memoization solutions into PluginPlay if they are written
-in C or C++. A quick search for C++ Memoization libraries turned up the
-following options:
+Having PluginPlay automate memoization means it happens under the hood of
+PluginPlay. In turn, it is possible to incorporate existing memoization
+solutions into PluginPlay if they are written in C or C++. A quick search for
+C++ Memoization libraries turned up the following options:
 
 - memo
 
@@ -161,7 +173,8 @@ The search also returned a number of StackOverflow and blog posts pertaining to
 memoization in C++. Generally speaking these posts all detail how to memoize
 functions by wrapping them using techniques akin to how the above libraries
 perform memoizations. Most of our considerations seem to be out of scope for
-the resources I found.
+the resources I found. Furthermore, these projects are not widely utilized/
+supported. Using them thus runs the risk of adopting vaporware.
 
 .. note::
 
@@ -169,6 +182,8 @@ the resources I found.
    quick skimming of the source code. I do not have experience with any of the
    libraries so the descriptions may be inaccurate. Update, star, and watcher
    information was accurate as of March 2022 and may have changed since then.
+
+.. _memoization_strategy:
 
 ********************
 Memoization Strategy
