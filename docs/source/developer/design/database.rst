@@ -110,6 +110,7 @@ Object Storage
 - May not want to serialize all objects at the same frequency
 - Compression (presumably of the serialized objects)
 - Avoid storing multiple copies of the same key/value
+- Users may want to customize the storage
 
 Other
 =====
@@ -369,6 +370,16 @@ stable and widely used (although a few seem to be moving in that direction).
    - According to README it's still in early stages of development.
    - Apache 2
    - Likely abandoned (last commit Nov 2017). 91 stars and 17 watchers.
+
+- memcached
+
+  - https://github.com/memcached/memcached
+  - effectively a distributed key/value database
+  - AFAIK memcached is a server (an executable) so would need a C/C++ client
+    to call it for cacheing purposes.
+  - Documentation appears to be heavily web-based
+  - BSD
+  - Actively maintained. 11.6k stars and 704 watchers.
 
 LevelDB
 =======
@@ -720,11 +731,21 @@ this end we have enumerated a set of features we are looking for.
 
 #. Disk.
 
-   - Is the database disk-based as opposed to IP-based?
+   - Is the database's location based off a filesystem/disk location or an IP?
    - It seems like a lot of commercial applications want to use IP
      addresses for specifying the location of the database, i.e. the
      client-server model.
-   - We want the database to be disk native.
+   - Parallel filesystems, for example, usually use disk locations
+   - IP-based databases usually have some support for local hosts.
+   - At least on Linux, you can use something like SSHFS to mount remote
+     files, but it requires admin privileges.
+   - With some indirection it should be possible to use IP and disk-based
+     databases interchangeably,
+   - Given how most supercomputers mount parallel filesystem, we prefer
+     disk-based APIs over IP-based, if only because it doesn't require
+     workarounds. Conceivably we worry that privileges may prohibit use of
+     IP-based databases on supercomputers, although how founded this worry is,
+     is not clear.
 
 #. ACID
 
@@ -859,15 +880,21 @@ considerations raised in the :ref:`database_considerations` section.
      depends on how ``RocksDB`` is set-up and on how serialization is
      implemented.
    - ``RocksDB`` ultimately writes to whatever file it's told to. The two main
-     choices are to have each process write to a different file, or to have all
-     processes write to the same file (presumably on a parallel filesystem)
+     choices are to have each process/node write to a different file, or to have
+     all processes/nodes write to the same file (presumably on a parallel
+     filesystem)
    - If serialization only serializes the local part, ``RocksDB`` should be
-     set up so each process writes to a different file.
+     set up so each node writes to either a single file or different files
    - If serialization serializes the entire distributed state, then ``RocksDB``
-     should be setup to write to the same file.
+     should be setup to write to the same file to avoid duplication.
    - We leave it to the user to setup the backend correctly (with the aid of
      convenience functions we provide).
-   - We can add more backends to deal with other scenarios.
+   - For SPSD (single-process, single-data) and (single-process, multiple-data)
+     having per node databases either means all of the databases are the same
+     or they are effectively the same as long as the data distribution doesn't
+     change (including on restart).
+   - We're primarily targeting SPMD and can add more backends to deal with other
+     scenarios at a later point.
 
 - May want to use parallel filesystems for the checkpoint
 
@@ -913,6 +940,15 @@ considerations raised in the :ref:`database_considerations` section.
    - ProxyObjectDatabase addresses this by assigning UUIDs to each input and
      result.
 
+- Users may want to customize the storage
+
+   - Exactly how objects get cached can be controlled by the PIMPL. Our plan is
+     to provide convenience functions for common scenarios (e.g. our default
+     cacheing strategy, no long-term backups, no memoization whatsoever)
+   - No memoization can be implemented by not instantiating a Cache
+   - Similarly "no long term" backup can be iimplemented by leaving off the
+     ``SerializedDB`` part of the PIMPL.
+
 - Automatic backups
 
   - Can be done with a new backend
@@ -933,6 +969,7 @@ reference.
 - storing distributed objects: may want a global database, the ability to synch
   UUIDs etc.
 - HPC memory hierarchies: we will need new backends to use specialized hardware
-- different frequence serialization: will require a new backend
+- different frequency serialization: will require a new backend
 - Automatic backups: will need a new backend
 - Diff support: will need a new backend
+- Other backends: design should allow for other backends beside RocksDB
