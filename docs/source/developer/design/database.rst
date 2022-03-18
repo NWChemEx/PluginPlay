@@ -371,15 +371,27 @@ stable and widely used (although a few seem to be moving in that direction).
    - Apache 2
    - Likely abandoned (last commit Nov 2017). 91 stars and 17 watchers.
 
+
+
+MemCached
+=========
+
 - memcached
 
   - https://github.com/memcached/memcached
   - effectively a distributed key/value database
-  - AFAIK memcached is a server (an executable) so would need a C/C++ client
-    to call it for cacheing purposes.
+  - AFAIK this is the server, clients are distributed elsewhere
   - Documentation appears to be heavily web-based
   - BSD
   - Actively maintained. 11.6k stars and 704 watchers.
+
+ - libmemcached
+
+  - https://libmemcached.org
+  - C/C++ client library
+  - Based on downloads page last release was 1.0.18 in 2014.
+  - Release information link says it's downloading an RSS feed and spools
+    forever (well at least a minute, I didn't wait longer)
 
 LevelDB
 =======
