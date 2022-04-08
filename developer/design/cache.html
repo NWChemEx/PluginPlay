@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cache Design &mdash; pluginplay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Database Design" href="database.html" />
+    <link rel="prev" title="Checkpoint/Restart" href="checkpoint_restart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pluginplay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Module Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cache Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cache-considerations">Cache Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cache-implementations">Cache Implementations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cache-strategy">Cache Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../module_state.html">Understanding a Module’s State</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pluginplay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
+          <li><a href="index.html">Design Topics</a> &raquo;</li>
+      <li>Cache Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/cache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cache-design">
+<span id="id1"></span><h1>Cache Design<a class="headerlink" href="#cache-design" title="Permalink to this headline"></a></h1>
+<p>As a consequence of our <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> strategy we have decided to
+implement an associative container, called “the cache”, to address the
+remaining memoization considerations. As was briefly noted in the memoization
+section, and explicitly called out in <a class="reference internal" href="checkpoint_restart.html#design-checkpoint-restart"><span class="std std-ref">Checkpoint/Restart</span></a>
+checkpoint/restart (C/R) will also be handled by the cache.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We use the convention that “cache” or “the cache” refers to the concept and
+that <code class="docutils literal notranslate"><span class="pre">Cache</span></code> refers to the class.</p>
+</div>
+<section id="cache-considerations">
+<h2>Cache Considerations<a class="headerlink" href="#cache-considerations" title="Permalink to this headline"></a></h2>
+<p>The considerations for the cache are really the union of the memoization
+considerations not considered in the <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section with the
+union of the checkpoint/restart (C/R) considerations not considered in
+<a class="reference internal" href="checkpoint_restart.html#design-checkpoint-restart"><span class="std std-ref">Checkpoint/Restart</span></a>. The memoization considerations focus on using
+the cache to avoid recomputing quantities, whereas the C/R considerations focus
+on how we should save the cache so that it can be reloaded and resued at a later
+time.</p>
+<p>In the <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section it was decided that at the core of the
+cache is a high-performance associative array. The remainder of this section
+focuses on enumerating considerations pertaining to how one can unify the
+considerations in the <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section with the associative
+array concept.</p>
+<ul class="simple">
+<li><p>Since memoization occurs per type <code class="docutils literal notranslate"><span class="pre">T</span></code> (<code class="docutils literal notranslate"><span class="pre">T</span></code> derived from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>)
+the actual cache will be a nested associative array (<code class="docutils literal notranslate"><span class="pre">T</span></code> maps to an
+associative array <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">A</span></code> actually maps the inputs to results)</p></li>
+<li><p>Will likely want to compress values and/or dump them to disk</p></li>
+<li><p>What are the keys? Input values? Hashes? Universally Unique IDs (UUIDs)?</p></li>
+<li><p>How many entries do we expect in a module’s cache? 10s? 100s? 1000s?</p>
+<ul>
+<li><p>Cache entries are ultimately calls to a module. In a given run, a module
+probably gets called less than 10 times, maybe in the 100s for an iterative
+process, or a very fundamental and frequently called module.</p></li>
+<li><p>1000+ calls is not unfathomable, but probably rare enough to justify
+treating it separately</p></li>
+</ul>
+</li>
+<li><p>There’s a number of associative array types; which one(s) do we want?</p>
+<ul>
+<li><p>Certain structures excel at determining if an entry exists. Others excel
+at being able to add entries.</p></li>
+</ul>
+</li>
+<li><p>Checksums for data validity?</p></li>
+<li><p>Needs to operate in a distributed environment</p>
+<ul>
+<li><p>Each process gets its own cache?</p></li>
+<li><p>For traditional memoization, distributed objects will stay distributed</p></li>
+<li><p>For C/R less clear</p>
+<ul>
+<li><p>Could do a checkpoint per process</p></li>
+<li><p>Could do a single, sycnhronized, checkpoint</p></li>
+<li><p>Could do something in between</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cache-implementations">
+<h2>Cache Implementations<a class="headerlink" href="#cache-implementations" title="Permalink to this headline"></a></h2>
+<p>At its heart the cache involves associative arrays and conceptually we may be
+able to use an existing high-performance C/C++ library to implement it. This
+section explores the available options, their features, and ultimately their
+suitability for our <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notes on these libraries are primarily based off of documentation. I do
+not have experience with any of the libraries so the descriptions may be
+inaccurate. Activity, star, and watcher information was accurate as of March
+2022 and may have changed since then.</p>
+</div>
+<section id="c-associative-container-libraries">
+<h3>C++ Associative Container Libraries<a class="headerlink" href="#c-associative-container-libraries" title="Permalink to this headline"></a></h3>
+<p>First up are the C++ libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
+<ul class="simple">
+<li><p>HArray</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/Bazist/HArray">https://github.com/Bazist/HArray</a></p></li>
+<li><p>Uses a trie (instead of hash table or binary tree)</p></li>
+<li><p>Prefix compression</p></li>
+<li><p>Save/load to disk</p></li>
+<li><p>GPLv3</p></li>
+<li><p>Appears to be abandoned (last commit July 2021). 88 stars and 12 watchers.</p></li>
+</ul>
+</li>
+<li><p>AVL Array</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/mpaland/avl_array">https://github.com/mpaland/avl_array</a></p></li>
+<li><p>Fixed size array (designed for embedded systems)</p></li>
+<li><p>MIT License</p></li>
+<li><p>Appears abandoned (last commit March 2020). 28 stars and 4 watchers.</p></li>
+</ul>
+</li>
+<li><p>uCDB</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/JulStrat/uCDB">https://github.com/JulStrat/uCDB</a></p></li>
+<li><p>Designed for Arduino (apparently a competior of Raspberry Pi)</p></li>
+<li><p>Seems like it can only read from existing databases</p></li>
+<li><p>Not licensed.</p></li>
+<li><p>Active development. 5 stars and 1 watcher.</p></li>
+</ul>
+</li>
+<li><p>Vista</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/breese/vista">https://github.com/breese/vista</a></p></li>
+<li><p>Implements various span classes (including an associative array one)</p></li>
+<li><p>Operate on existing contiguous memory.</p></li>
+<li><p>Does not appear to allow modification.</p></li>
+<li><p>No license.</p></li>
+<li><p>Likely abandoned (last commit May 2020). 4 stars and 3 watchers.</p></li>
+</ul>
+</li>
+<li><p>ceres</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/ceresBakalite/ceres">https://github.com/ceresBakalite/ceres</a></p></li>
+<li><p>It looks like it’s an example project.</p></li>
+<li><p>Appears to just wrap <code class="docutils literal notranslate"><span class="pre">std::map</span></code></p></li>
+<li><p>GPLv3</p></li>
+<li><p>Likely abandoned (last commit April 2021). 0 star and 1 watcher.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="c-libraries-for-assoicative-containers">
+<h3>C Libraries for Assoicative Containers<a class="headerlink" href="#c-libraries-for-assoicative-containers" title="Permalink to this headline"></a></h3>
+<p>Next are C libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
+<ul class="simple">
+<li><p>libdict</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/fmela/libdict">https://github.com/fmela/libdict</a></p></li>
+<li><p>Looks like it’s just implementations of common data structures with C APIs
+(no special features)</p></li>
+<li><p>BSD</p></li>
+<li><p>Likely abandoned (last commit May 2019). 255 stars and 28 watchers.</p></li>
+</ul>
+</li>
+<li><p>thmap</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/rmind/thmap">https://github.com/rmind/thmap</a></p></li>
+<li><p>Concurrent implementation of a trie-hash map</p></li>
+<li><p>BSD</p></li>
+<li><p>Likely abandoned (last commit April 2020). 63 stars and 7 watchers.</p></li>
+</ul>
+</li>
+<li><p>rhashmap</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/rmind/rhashmap">https://github.com/rmind/rhashmap</a></p></li>
+<li><p>Hash map that uses robin hood hashing</p></li>
+<li><p>BSD</p></li>
+<li><p>Last commit September 2021. 40 stars and 5 watchers.</p></li>
+</ul>
+</li>
+<li><p>cdict</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/mkostoevr/cdict">https://github.com/mkostoevr/cdict</a></p></li>
+<li><p>Seems like a limited functionality replacement for std::map (in C)</p></li>
+<li><p>MIT</p></li>
+<li><p>Last commit November 2021. 2 stars and 1 watcher.</p></li>
+</ul>
+</li>
+<li><p>core-array</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/Johns-Q/core-array">https://github.com/Johns-Q/core-array</a></p></li>
+<li><p>Appears to be a simple map class which can only have integer keys and
+integer values.</p></li>
+<li><p>AGPLv3</p></li>
+<li><p>Last commit September 2021. 1 star and 1 watcher.</p></li>
+</ul>
+</li>
+<li><p>c_vector_map</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/michael105/c_vector_map">https://github.com/michael105/c_vector_map</a></p></li>
+<li><p>Maps strings to integers.</p></li>
+<li><p>Documentation says it was designed/optimized for a highly-specific usecase.</p></li>
+<li><p>BSD</p></li>
+<li><p>Last commit April 2021. 0 star and 1 watcher.</p></li>
+</ul>
+</li>
+<li><p>Data-Structures-C</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/chivington/Data-Structures-C">https://github.com/chivington/Data-Structures-C</a></p></li>
+<li><p>Appears to be someone’s toy project to learn about data structures.</p></li>
+<li><p>Documentation states it’s not production ready</p></li>
+<li><p>DO_WHATEVER_YOU_WANT license</p></li>
+<li><p>Likely abandoned (last commit July 2019). 0 stars and 0 watchers.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="databases">
+<h3>Databases<a class="headerlink" href="#databases" title="Permalink to this headline"></a></h3>
+<p>While we’ve focused on associative arrays up to this point, what we’re after
+can also be considered a database. The advantage of moving to databases is that
+we get some real heavy-hitters contributing software. Putting the cart before
+the horse, our current cacheing strategy will rely on databases for a number of
+the considerations. The full design discussion is lengthy and we defer that
+conversation to <a class="reference internal" href="database.html#database-design"><span class="std std-ref">Database Design</span></a>.</p>
+</section>
+</section>
+<section id="cache-strategy">
+<h2>Cache Strategy<a class="headerlink" href="#cache-strategy" title="Permalink to this headline"></a></h2>
+<p>Ultimately a lot of the Cache’s implementation will get punted to an underlying
+class <code class="docutils literal notranslate"><span class="pre">Database</span></code>. The design of that class, and how it addresses the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>
+considerations is beyond our current scope, but can be found
+<a class="reference internal" href="database.html#database-design"><span class="std std-ref">here</span></a>. This discussion focuses on the design of the API
+wrapping the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class.</p>
+<figure class="align-default" id="id2">
+<span id="fig-cache-design"></span><img alt="../../_images/cache_design.png" src="../../_images/cache_design.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 1</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance can have at most one <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance. This
+ensures there’s a single source of truth for the program. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> will be
+hierarchical since memoization only makes sense for modules of the same C++
+type. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> refers to the entire cache object, whereas <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code>
+refers to the cache for all modules of the same C++ type. Thus <code class="docutils literal notranslate"><span class="pre">Cache</span></code> can
+be thought of as a map from C++ type to <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> instances. In lieu of
+the actual C++ module type, we define a concept called the module ID. For now
+the Module ID is simply the module key that a module was originally registered
+under, but in the future may be expanded to include for example version
+information. Each <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> is thought of as a map from a set of inputs to
+a set of results.</p>
+<p>Under the hood of <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> we use the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class to store the
+actual data. From the user’s perspective the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class implements the
+<code class="docutils literal notranslate"><span class="pre">Cache</span></code> class and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> instances are slices of the <code class="docutils literal notranslate"><span class="pre">Database</span></code>. We
+accomplish this by having the keys of the database be pairs whose first element
+is the module ID and the second element is the input set (values in the database
+are the result sets). <code class="docutils literal notranslate"><span class="pre">Database</span></code> is implemented by a polymorphic PIMPL.
+Additional PIMPLs can be added to cover different database backends and/or
+nested for more comlicated C/R scenarios.</p>
+<p>It is worth noting that in this design the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class is very similar to
+the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class and could at this stage just be a <code class="docutils literal notranslate"><span class="pre">Database</span></code>; however,
+we maintain separate classes because <code class="docutils literal notranslate"><span class="pre">Cache</span></code> is the public API and
+<code class="docutils literal notranslate"><span class="pre">Database</span></code> will be an implementation detail.</p>
+<p>So far this strategy does not address how iterative modules will be memoized
+yet, nor will the database help on this issue. The primary problem to solve is
+how to avoid needing to store all of the intermediate results. Our current
+strategy is to more or less punt and make module developers do it. More
+specifically the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class will maintain a second module to
+<code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> mapping (these <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> instances will actually be held
+as instances of the derived <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> class). Module developers are
+able to access the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> through the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class and are free
+to cache/uncache whatever values they want.</p>
+<p>The use of the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> with iterative modules has a potential pitfall. In
+general the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> will wrap the same <code class="docutils literal notranslate"><span class="pre">Database</span></code> as the <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code>
+(this facilitates using a single C/R backend).  Furthermore, a lot of times the
+inputs to the iterative module are the same as the inputs used to tag
+intermediate results (and the intermediate results are often the same type as
+the module’s results). In turn restarting an iterative module that has not
+converged may lead to the iterative module being memoized to the last
+intermediate even though it has not converged. To prevent this, <code class="docutils literal notranslate"><span class="pre">UserCache</span></code>
+tags its entries before dumping them, whereas <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> does not.
+When attempting to memoize an iterative module, tagged cache entries will not be
+considered. If no untagged enteries are found control goes into the module.
+Inside the module, the user checks the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> instance (which in turn
+only considers tagged entries) and the module is able to restart using the last
+intermediate.</p>
+<section id="cache-considerations-addressed">
+<h3>Cache Considerations Addressed<a class="headerlink" href="#cache-considerations-addressed" title="Permalink to this headline"></a></h3>
+<p>With respect to the cache considerations this strategy addresses the following
+considerations:</p>
+<ul class="simple">
+<li><p>Each class <code class="docutils literal notranslate"><span class="pre">T</span></code> deriving from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> is assumed to wrap a unique
+algorithm. When memoizing it thus only makes sense to consider results
+computed by other <code class="docutils literal notranslate"><span class="pre">T</span></code> instances.</p>
+<ul>
+<li><p>Addressed by <code class="docutils literal notranslate"><span class="pre">Cache</span></code> vs <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code></p></li>
+</ul>
+</li>
+<li><p>Failing to memoize when appropriate will affect performance</p>
+<ul>
+<li><p>There’s only so much we can do here. Ultimately it’s up to the database
+backend to determine if a set of inputs has been seen or not. Concievably,
+the database could use special comparisons to determine if two objects are
+equal.</p></li>
+</ul>
+</li>
+<li><p>Memoizing when not appropriate will compromise the integrity of the scientific
+answer.</p>
+<ul>
+<li><p>Again this is up to the database backend. In our initial design two objects
+must compare value equal to be considered the same. If value equality is
+implemented correctly there is no reason why false memoization will occur.</p></li>
+</ul>
+</li>
+<li><p>Memoizing iterative (recursive) function requires special considerations</p>
+<ul>
+<li><p>Addressed by having <code class="docutils literal notranslate"><span class="pre">UserCache</span></code></p></li>
+</ul>
+</li>
+<li><p>Comparing objects can be expensive (think about distributed tensors)</p>
+<ul>
+<li><p>It’s our opinion that optimizing value comparison is easier than trying to
+implement a general comparison solution based on hashing or the like. Object
+developers are of course free to use hashing inside their object’s value
+comparisons as an optimization.</p></li>
+</ul>
+</li>
+<li><p>Module developers may want to do their own C/R.</p>
+<ul>
+<li><p>Addresed by having a <code class="docutils literal notranslate"><span class="pre">UserCache</span></code>. Module developers can put whatever
+they want in that cache and have it be checkpointed.</p></li>
+<li><p>Module developers are also free to ignore the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> and do something
+else if they would like.</p></li>
+</ul>
+</li>
+<li><p>Since memoization occurs per type <code class="docutils literal notranslate"><span class="pre">T</span></code> (<code class="docutils literal notranslate"><span class="pre">T</span></code> derived from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>)
+the actual cache will be a nested associative array (<code class="docutils literal notranslate"><span class="pre">T</span></code> maps to an
+associative array <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">A</span></code> actually maps the inputs to results)</p>
+<ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes addresses this.</p></li>
+</ul>
+</li>
+<li><p>What are the keys? Input values? Hashes? Universally Unique IDs (UUIDs)?</p>
+<ul>
+<li><p>From the perspective of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> the keys are input values. The
+<code class="docutils literal notranslate"><span class="pre">Database</span></code> implementation is free to map the input values to proxy objects
+such as UUIDs if it so likes.</p></li>
+</ul>
+</li>
+<li><p>How many entries do we expect in a module’s cache? 10s? 100s? 1000s?</p>
+<ul>
+<li><p>Cache entries are ultimately calls to a module. In a given run, a module
+probably gets called less than 10 times, maybe in the 100s for an iterative
+process, or a very fundamental and frequently called module.</p></li>
+<li><p>1000+ calls is not unfathomable, but probably rare enough to justify
+treating it separately</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="checkpoint_restart.html" class="btn btn-neutral float-left" title="Checkpoint/Restart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database.html" class="btn btn-neutral float-right" title="Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Design &mdash; pluginplay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Understanding a Module’s State" href="../module_state.html" />
+    <link rel="prev" title="Cache Design" href="cache.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pluginplay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Module Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Database Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-database">What is a Database?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-considerations">Database Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#choosing-the-key-value-types">Choosing the Key/Value Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-implementations">Database Implementations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-implementation-comparsions">Database Implementation Comparsions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-strategy">Database Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#future-directions">Future Directions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../module_state.html">Understanding a Module’s State</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pluginplay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
+          <li><a href="index.html">Design Topics</a> &raquo;</li>
+      <li>Database Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/database.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="database-design">
+<span id="id1"></span><h1>Database Design<a class="headerlink" href="#database-design" title="Permalink to this headline"></a></h1>
+<p>This section explores the design considerations that went into selecting a
+database backend for the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. The TL;DR version is we’re moving
+forward with RocksDB.</p>
+<section id="what-is-a-database">
+<h2>What is a Database?<a class="headerlink" href="#what-is-a-database" title="Permalink to this headline"></a></h2>
+<p>The usual definition is something along the lines of: a database is an organized
+collection of data stored and accessed electronically. What really sets a
+database apart from say a <code class="docutils literal notranslate"><span class="pre">std::map</span></code>, or a spreadsheet, is that databases are
+designed to contain a lot of data and to be accessed concurrently by a
+potentially large number of users. The secret behind database performance is
+that users do not directly interact with the a database, but rather they
+interact with a database management system (DBMS). The DBMS is responsible for
+managing access and memory based on user requests.</p>
+<p>From the perspective of PluginPlay, the imporant things to note about most
+modern databases are:</p>
+<ul class="simple">
+<li><p>API suports use as a key-value containers,</p></li>
+<li><p>designed with big data in mind, and</p></li>
+<li><p>your typical DBMS provides loads of features related to data retention,
+processing, and access.</p></li>
+</ul>
+<section id="database-terminology">
+<h3>Database Terminology<a class="headerlink" href="#database-terminology" title="Permalink to this headline"></a></h3>
+<p>The reader new to databases will quickly be inundated with jargon. This
+subsection provides a small glossery of the most common terms.</p>
+<dl class="simple">
+<dt>ACID</dt><dd><p>Stands for atomicity, consistency, isolation, and durability. Each
+transaction on a database must minimally satisfy these four properties for
+the database to be considered reliable.</p>
+</dd>
+<dt>CRUD</dt><dd><p>Stands for create, read, update, and delete. These are the four foundational
+operations of any database.</p>
+</dd>
+<dt>DBMS</dt><dd><p>Database management system. The library providing the API for interacting
+with a database.</p>
+</dd>
+<dt>MVCC</dt><dd><p>Stands for multiversion concurrency control. MVCC avoids locks by storing
+multiple copies of the data. When data is updated a new version is added
+alongside older versions which may still be in use.</p>
+</dd>
+<dt>ODBC</dt><dd><p>Open database connectivity. A standardized API for expressing database
+operations. The API is DBMS independent. Library developers can write their
+code using the ODBC API and it will work with whatever DBMS, the ODBC driver
+manager supports.</p>
+</dd>
+<dt>ORM</dt><dd><p>Stands for object-relational mapping. Many common databases only support
+primitive data types like integers, floats, and strings. ORM is a technique
+where the objects are maintained in a virtual database and their members are
+mapped to enteries in the real database.</p>
+</dd>
+<dt>RDBMS</dt><dd><p>Relational DBMS. A DBMS that specifically deals with relational databases.
+Relational databases are typically thought of as being tables with columns
+and rows.</p>
+</dd>
+<dt>SQL</dt><dd><p>Structured query language. The de facto standard language for interacting
+with RDBMS.</p>
+</dd>
+<dt>WAL</dt><dd><p>Stands for write-ahead logging. Techniques for the AC of ACID. Changes are
+first recorded in a log. The log is written to stable storage before being
+applied to the database. In the event of a restart the database can be
+compared to the log to figure out what operations need to be done still.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="database-considerations">
+<span id="id2"></span><h2>Database Considerations<a class="headerlink" href="#database-considerations" title="Permalink to this headline"></a></h2>
+<p>The database backend is the lowest level of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and is responsible for
+addressing all memoization and checkpoint/restart (C/R) design considerations
+which were not handled by <a class="reference internal" href="cache.html#cache-design"><span class="std std-ref">Cache Design</span></a>. Summarily they are:</p>
+<section id="parallel-nature-of-pluginplay">
+<h3>Parallel Nature of PluginPlay<a class="headerlink" href="#parallel-nature-of-pluginplay" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Avoid data races</p></li>
+<li><p>Will need to store parallel objects, sometimes in their distributed form and
+sometimes in a serialized form</p></li>
+<li><p>May want to use parallel filesystems for the checkpoint</p></li>
+<li><p>May want multiple checkpoint files</p></li>
+<li><p>Parallel systems may have more complicated memory hierarchies and we want to
+use them effectively.</p></li>
+<li><p>Resiliency to deal with hardware failures</p></li>
+</ul>
+</section>
+<section id="object-storage">
+<h3>Object Storage<a class="headerlink" href="#object-storage" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Will need to serialize the objects</p></li>
+<li><p>Want a quick access (not serialized) and a long-term serialized form</p></li>
+<li><p>May not want to serialize all objects at the same frequency</p></li>
+<li><p>Compression (presumably of the serialized objects)</p></li>
+<li><p>Avoid storing multiple copies of the same key/value</p></li>
+<li><p>Users may want to customize the storage</p></li>
+</ul>
+</section>
+<section id="other">
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this headline"></a></h3>
+<ul>
+<li><p>Automatic backups</p></li>
+<li><p>Diff support</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Checkpoint the original state and the changes to the original state needed
+to make the current state</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="choosing-the-key-value-types">
+<h2>Choosing the Key/Value Types<a class="headerlink" href="#choosing-the-key-value-types" title="Permalink to this headline"></a></h2>
+<p>We will use the database as an associative array. This means we need to choose
+how the keys and values are stored in the array. There are a number of possible
+representations which we list here.</p>
+<section id="using-the-literal-values">
+<h3>Using the Literal Values<a class="headerlink" href="#using-the-literal-values" title="Permalink to this headline"></a></h3>
+<p>Conceptually the simplest option is to use the literal values of the objects we
+are storing.</p>
+<p>Pros:</p>
+<ul class="simple">
+<li><p>human-readable keys (to the extent that the objects themselves are
+human-readable).</p></li>
+<li><p>Exact preservation of input values.</p></li>
+<li><p>Assuming value comparisons are implemented correctly, will never incorrectly
+memoize a call.</p></li>
+</ul>
+<p>Cons:</p>
+<ul class="simple">
+<li><p>May lead to very costly comparisons (think large distributed data structures).</p>
+<ul>
+<li><p>Ultimately it falls to the object writer to optimize the comparisons for
+their object; however, it’s not always feasible to count on developers to be
+willing to further optimize their objects.</p></li>
+</ul>
+</li>
+<li><p>Memory consumption may be a large issue.</p>
+<ul>
+<li><p>Storing the literal values will result in copies of the objects</p></li>
+<li><p>Can store references/pointers, but lifetime management becomes an issue.</p></li>
+</ul>
+</li>
+<li><p>Value comparisons are sensitive to floating-point values</p>
+<ul>
+<li><p>Could allow users to provide custom comparison operators thereby allowing
+them to choose what to do in such cases.</p></li>
+<li><p>Object developers may have already considered this in the design of the
+comparison operators.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="using-hashes">
+<h3>Using Hashes<a class="headerlink" href="#using-hashes" title="Permalink to this headline"></a></h3>
+<p>Another option is to replace the objects with their hash representation.</p>
+<p>Pros:</p>
+<ul class="simple">
+<li><p>Short look-up times (can be constant depending on the specific associative
+array implementation)</p></li>
+<li><p>Hash collisions aside, with the right hash algorithm the same object will
+always generate the same hash (i.e., we don’t have to store the inputs, just
+the hashes)</p></li>
+</ul>
+<p>Cons:</p>
+<ul class="simple">
+<li><p>All objects must be hashable. Places additional burden on object developers.</p></li>
+<li><p>Hashes can be very fragile</p>
+<ul>
+<li><p>For a deterministic hash algorithm, one needs to prepare the input in the
+same state in order to guarantee the same hash. This can be difficult for a
+variety of reasons:</p>
+<ul>
+<li><p>Operations which are equivalent in infinite precision arithmetic are in
+general not equivalent with finite precision arithmetic</p></li>
+<li><p>Objects may have slightly different representations depending on the
+compiler, compiler settings, computing platform, etc.</p></li>
+<li><p>Precision may be lost as a result of checkpointing (e.g. lossy
+compression, string to float conversions)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Hash collisions are possible, albeit extremely unlikely with modern algorithms</p>
+<ul>
+<li><p>Can perform a value comparison to guarantee the keys really are equal
+(requires storing the actual inputs too)</p></li>
+<li><p>A notable exception to collision rarity occurs when two different objects
+have an unintentionally symmetric state. A common example is empty
+containers of different types; if one simply hashes the elements in the
+containers by looping over the container, and if the types of the containers
+are not hashed, the resulting hash value will be equal.</p></li>
+</ul>
+</li>
+<li><p>Hashes are not human-readable (i.e. dumping a hash table is unlikely to be
+useful for anything other than memoization)</p>
+<ul>
+<li><p>Combined with the fragility aspect, hashing is not suitable for long-term
+data archival</p></li>
+</ul>
+</li>
+<li><p>Generally speaking, hashes can not be inverted, i.e., given just the hash it’s
+not possible to determine what object was hashed.</p></li>
+<li><p>Distributed objects can be tricky</p>
+<ul>
+<li><p>Can have each process hash its local part, requires no synchronization</p></li>
+<li><p>Hashing the entire object requires synchrnoization</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="universally-unique-ids-uuids">
+<h3>Universally Unique IDs (UUIDs)<a class="headerlink" href="#universally-unique-ids-uuids" title="Permalink to this headline"></a></h3>
+<p>UUIDs typically use some hardware-specific information combined with temporal
+information to create a unique ID. Associating the UUID with a specific object
+in effect creates a global memory address for the object.</p>
+<p>Pros:</p>
+<ul class="simple">
+<li><p>Usage does not require the objects to be hashable</p></li>
+<li><p>Comparisons of UUIDs are quick</p></li>
+<li><p>Relatively straightforward to guarantee that the same UUID is not given to
+different objects.</p></li>
+<li><p>Could potentially serve as a sort of DOI for data-archival purposes</p></li>
+</ul>
+<p>Cons:</p>
+<ul class="simple">
+<li><p>Requires bookkeeping to maintain the association between the UUID and the
+object it was generated for.</p>
+<ul>
+<li><p>Adding a member to the class avoids needing to store a map from instance to
+UUID, but complicates the object’s semantics (the UUID needs updated when
+the data changes).</p></li>
+<li><p>Easy enough to automate with a mix-in</p></li>
+</ul>
+</li>
+<li><p>Not human-readable</p></li>
+<li><p>Can not be inverted</p></li>
+<li><p>Requires synchronization to assign the same UUID to an object viewable by
+multiple processes</p></li>
+</ul>
+<section id="digital-object-identifier">
+<h4>Digital Object Identifier<a class="headerlink" href="#digital-object-identifier" title="Permalink to this headline"></a></h4>
+<p>UUIDs are conceptually similar to DOIs, except that DOIs are issued by an
+organization.</p>
+<p>Pros:</p>
+<ul class="simple">
+<li><p>Widely used to identify journal articles, research reports, and data sets</p></li>
+<li><p>Uniquely identifies an object</p></li>
+<li><p>Using the DOI website allows users to easily obtain the actual object</p></li>
+</ul>
+<p>Cons:</p>
+<ul class="simple">
+<li><p>Object needs to be registered with the International DOI Foundation to be a
+true DOI</p></li>
+<li><p>Costs money to get a DOI</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="database-implementations">
+<h2>Database Implementations<a class="headerlink" href="#database-implementations" title="Permalink to this headline"></a></h2>
+<p>Databases are some of the most important software elements and are used in a ton
+of applications. Thus it should come as no surprise that there are a lot of C++
+options for databases. We have grouped the options based on whether they are
+stand alone, or if they extend an existing database. This section is meant to be
+a list of options with some notes, rather than an extensive comparison. The
+next section provides a head-to-head comparison of the most promising options.</p>
+<section id="stand-alone-options">
+<h3>Stand Alone Options<a class="headerlink" href="#stand-alone-options" title="Permalink to this headline"></a></h3>
+<p>For the most part these are database projects which do not seem to be part of a
+wider ecosystem. In many cases they are one-off projects, but in some cases the
+lack of a wider ecosystem is simply because the project itself is all inclusive.
+Ultimately, at the time of writing, none of the stand-alone options seem to be
+stable and widely used (although a few seem to be moving in that direction).</p>
+<ul>
+<li><p>ClickHouse</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/ClickHouse/clickhouse-cpp">https://github.com/ClickHouse/clickhouse-cpp</a></p></li>
+<li><p>C++ client library for ClickHouse</p></li>
+<li><p>column-oriened DBMS</p></li>
+<li><p>data compression</p></li>
+<li><p>disk storage</p></li>
+<li><p>C++ API seems poorly documented and to rely on string parsing</p></li>
+<li><p>Limited type support</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Appears to be actively maintained. 143 stars and 22 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Sophia</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/pmwkaa/sophia">https://github.com/pmwkaa/sophia</a></p></li>
+<li><p>MVCC key-value database</p></li>
+<li><p>RAM-disk hybrid</p></li>
+<li><p>Compression</p></li>
+<li><p>BSD</p></li>
+<li><p>Likely abandoned (last commit January 2019). 1.8K stars and 106 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>TileDB</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/TileDB-Inc/TileDB">https://github.com/TileDB-Inc/TileDB</a></p></li>
+<li><p>Support for dense and sparse arrays, dataframes, key-value stores</p></li>
+<li><p>Parallel I/O</p></li>
+<li><p>Compression</p></li>
+<li><p>Data versioning</p></li>
+<li><p>Threaded</p></li>
+<li><p>I/O and RAM versions</p></li>
+<li><p>MIT License</p></li>
+<li><p>Actively maintained. 1.3K stars and 61 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Bedrock</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Expensify/Bedrock">https://github.com/Expensify/Bedrock</a></p></li>
+<li><p>Networking and distributed transaction layer built atop SQLite</p></li>
+<li><p>Does not appear to be a SQLite client</p></li>
+<li><p>LGPL-3.0 License</p></li>
+<li><p>Active development. 801 stars and 70 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>upscaledb</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://upscaledb.com/">https://upscaledb.com/</a></p></li>
+<li><p>Key-value based</p></li>
+<li><p>Supports compression</p></li>
+<li><p>can run in-memory database</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Last commit Aug 2021. 521 stars and 40 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>simdb</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/LiveAsynchronousVisualizedArchitecture/simdb">https://github.com/LiveAsynchronousVisualizedArchitecture/simdb</a></p></li>
+<li><p>single-file library</p></li>
+<li><p>hash based key-value</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Likely abandoned (last commit April 2018). 425 stars and 42 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>ObjectBox</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://objectbox.io/">https://objectbox.io/</a></p></li>
+<li><p>Designed for embedded devices, internet of things, and mobile</p></li>
+<li><p>Looks very invasive (have to wrap data members so ObjectBox knows about
+them)</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Active development. 119 stars and 12 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>DTL</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="http://dtemplatelib.sourceforge.net/">http://dtemplatelib.sourceforge.net/</a></p></li>
+<li><p>Likely abandoned (last updated April 2013)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>EasyQTSql</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/kramolnic/EasyQtSql">https://github.com/kramolnic/EasyQtSql</a></p></li>
+<li><p>Appears to be a wrapper around Qt’s SQL library</p></li>
+<li><p>Likely abandoned (last commit May 2019). 37 stars and 3 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>librethinkdbxx</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/AtnNn/librethinkdbxx">https://github.com/AtnNn/librethinkdbxx</a></p></li>
+<li><p>According to README it’s still in early stages of development.</p></li>
+<li><p>Apache 2</p></li>
+<li><p>Likely abandoned (last commit Nov 2017). 91 stars and 17 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="memcached">
+<h3>MemCached<a class="headerlink" href="#memcached" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>memcached</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/memcached/memcached">https://github.com/memcached/memcached</a></p></li>
+<li><p>effectively a distributed key/value database</p></li>
+<li><p>AFAIK this is the server, clients are distributed elsewhere</p></li>
+<li><p>Documentation appears to be heavily web-based</p></li>
+<li><p>BSD</p></li>
+<li><p>Actively maintained. 11.6k stars and 704 watchers.</p></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>libmemcached</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://libmemcached.org">https://libmemcached.org</a></p></li>
+<li><p>C/C++ client library</p></li>
+<li><p>Based on downloads page last release was 1.0.18 in 2014.</p></li>
+<li><p>Release information link says it’s downloading an RSS feed and spools
+forever (well at least a minute, I didn’t wait longer)</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="leveldb">
+<h3>LevelDB<a class="headerlink" href="#leveldb" title="Permalink to this headline"></a></h3>
+<p>LevelDB is a Google project which is widely used. Facebook used LevelDB for the
+guts of its (also widely used) RockDB project. We are aware of three databases
+which are part of the LevelDB ecosystem:</p>
+<ul>
+<li><p>LevelDB</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/google/leveldb">https://github.com/google/leveldb</a></p></li>
+<li><p>key/value arbitrary byte data</p></li>
+<li><p>automatic compression</p></li>
+<li><p>support for threaded access</p></li>
+<li><p>can get snapshots (immutable representations)</p></li>
+<li><p>Disk based (using mulitple files)</p></li>
+<li><p>Checksums for data integrity</p></li>
+<li><p>Appears to be actively maintained. 28.5K stars and 1.3K watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>RocksDB</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/facebook/rocksdb">https://github.com/facebook/rocksdb</a></p></li>
+<li><p>Built on LevelDB</p></li>
+<li><p>Designed for storing data on flash drives</p></li>
+<li><p>Can adapt to pure memory</p></li>
+<li><p>Supports backups and checkpoints</p></li>
+<li><p>GPLv2 or Apache 2.0</p></li>
+<li><p>Appears to be actively maintained. 22K stars and 1K watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>BerylDB</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/beryldb/beryldb">https://github.com/beryldb/beryldb</a></p></li>
+<li><p>Built on RocksDB</p></li>
+<li><p>Supports storing lists, sets, multimaps, and keys</p></li>
+<li><p>BSD</p></li>
+<li><p>Last commit November 2021. 197 stars and 6 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>With the exception of BerylDB, these databases are quite well supported and seem
+to be widely used.</p>
+</section>
+<section id="lmdb">
+<h3>LMDB<a class="headerlink" href="#lmdb" title="Permalink to this headline"></a></h3>
+<p>The lightning memory-mapped databse seems to have a small niche community
+associated with it. While LMDB (and its derivatives) may be capable of high
+performance, the seeming lack of wide usage makes us hesitant to use any of
+these databases in our initial design.</p>
+<ul>
+<li><p>Lightning Memory-Mapped Database</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.symas.com/lmdb">https://www.symas.com/lmdb</a></p></li>
+<li><p>Developed as part of the <cite>OpenLDAP project &lt;https://www.openldap.org/&gt;</cite></p></li>
+<li><p>key-value based</p></li>
+<li><p>Webpages is a bit of a maze</p></li>
+<li><p>OpenLDAP Public License</p></li>
+<li><p>GitHub mirror hasn’t been updated since Jun 2021. 1.9K stars and
+158 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>libmdbx</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/erthink/libmdbx">https://github.com/erthink/libmdbx</a></p></li>
+<li><p>Descendant of LMDB</p></li>
+<li><p>Appears to be in a transition period to MithrilDB</p></li>
+<li><p>OpenLDAP Public License</p></li>
+<li><p>Active development. 1K stars and 48 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>lmdbxx</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/drycpp/lmdbxx">https://github.com/drycpp/lmdbxx</a></p></li>
+<li><p>C++ wrapper for LMDB</p></li>
+<li><p>Single header</p></li>
+<li><p>Unlicense license</p></li>
+<li><p>Likely abandoned (last commit Feb 2016). 247 stars and 17 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="mysql">
+<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this headline"></a></h3>
+<p>MySQL is one of the most popular databases in use; however, the only C++-client
+we are aware of does not seem to be well utilized.</p>
+<ul>
+<li><p>MySQL++</p>
+<blockquote>
+<div><ul>
+<li><p><a class="reference external" href="https://github.com/tangentsoft/mysqlpp">https://github.com/tangentsoft/mysqlpp</a></p></li>
+<li><p>LGPLv2</p></li>
+<li><p>Last commit Dec 2021. 44 stars and 4 watchers.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>GitHub repo is an official mirror (so statistics may not be accurate)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="mongodb">
+<h3>MongoDB<a class="headerlink" href="#mongodb" title="Permalink to this headline"></a></h3>
+<p>MongoDB is a database which has been growing in popularity. Its primary feature
+of interest seems to be that it describes data in a JSON-like manner, which
+makes it immediately applicable to object-oriented programming.</p>
+<ul>
+<li><p>mongo-cxx-driver</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mongodb/mongo-cxx-driver">https://github.com/mongodb/mongo-cxx-driver</a></p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Actively maintained. 869 stars and 131 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>mongo-c-driver</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mongodb/mongo-c-driver">https://github.com/mongodb/mongo-c-driver</a></p></li>
+<li><p>Same organization as the C++ driver</p></li>
+<li><p>Likely has a similar feature set to the C++ driver</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Actively maintained. 716 stars and 81 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="postgresql">
+<h3>PostgreSQL<a class="headerlink" href="#postgresql" title="Permalink to this headline"></a></h3>
+<p>Not sure what features of PostgreSQL set it apart from say Redis, but it seems
+to be a widely used SQL database.</p>
+<ul>
+<li><p>libpqxx</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="http://pqxx.org/development/libpqxx/">http://pqxx.org/development/libpqxx/</a></p></li>
+<li><p>Official C++ API for PostgreSQL</p></li>
+<li><p>BSD</p></li>
+<li><p>Active development. 606 stars and 36 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>pgfe</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/dmitigr/pgfe/">https://github.com/dmitigr/pgfe/</a></p></li>
+<li><p>Zlib License</p></li>
+<li><p>Active development. 111 stars and 10 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>taoPQ</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/taocpp/taopq">https://github.com/taocpp/taopq</a></p></li>
+<li><p>Boost Software License</p></li>
+<li><p>Active development. 191 stars and 17 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>While none of these libaries appear to widely used, we note that PostgreSQL is
+itself widely used, and libpqxx is the official C++ PostgreSQL implementation.
+The implication is that libpqxx appears to have support for the immediate
+future at least.</p>
+</section>
+<section id="redis">
+<h3>Redis<a class="headerlink" href="#redis" title="Permalink to this headline"></a></h3>
+<p>Like PostgreSQL, I’m not sure what really sets Redis apart; however, it seems to
+be another popular choice.</p>
+<ul>
+<li><p>Hiredis</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/redis/hiredis">https://github.com/redis/hiredis</a></p></li>
+<li><p>C client library for interacting with a Redis database</p></li>
+<li><p>BSD</p></li>
+<li><p>Actively maintained. 5.2K stars and 303 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>cpp_redis</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/cpp-redis/cpp_redis">https://github.com/cpp-redis/cpp_redis</a></p></li>
+<li><p>C++11 Asynchronous multi-platform lightweight Redis client</p></li>
+<li><p>MIT license</p></li>
+<li><p>Last commit Aug 2021. 478 stars and 29 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>redis-cpp</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/tdv/redis-cpp/">https://github.com/tdv/redis-cpp/</a></p></li>
+<li><p>Based on hiredis</p></li>
+<li><p>MIT License</p></li>
+<li><p>Last commit Nov 2021. 61 stars and 10 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>redis-plus-plus</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/sewenew/redis-plus-plus">https://github.com/sewenew/redis-plus-plus</a></p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Active development. 743 stars and 25 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>redis3m</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/luca3m/redis3m">https://github.com/luca3m/redis3m</a></p></li>
+<li><p>Wraps hiredis in a C++ API</p></li>
+<li><p>Apache 2.0 License</p></li>
+<li><p>Likely abandoned (last commit May 2019). 182 stars and 30 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>cpp-bredis</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/basiliscos/cpp-bredis">https://github.com/basiliscos/cpp-bredis</a></p></li>
+<li><p>header-only</p></li>
+<li><p>synchronous and asynchronous APIs</p></li>
+<li><p>MIT</p></li>
+<li><p>Last commit December 2021. 140 stars and 11 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>aredis</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/lordoffox/aredis">https://github.com/lordoffox/aredis</a></p></li>
+<li><p>No documentation, just a short code snippet.</p></li>
+<li><p>Boost Software License</p></li>
+<li><p>Likely abandoned (last commit May 2018). 26 stars and 5 watchers</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>While Redis seems to have the most libraries, Hiredis and redis-plus-plus seem
+to be the only two being widely used.</p>
+</section>
+<section id="sqlite">
+<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this headline"></a></h3>
+<p>Again I’m not sure what sets SQLite apart, but it seems to be pretty popular.</p>
+<ul>
+<li><p>SQLiteC++</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/SRombauts/SQLiteCpp">https://github.com/SRombauts/SQLiteCpp</a></p></li>
+<li><p>Actively maintained. 1.4K stars and 75 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>SQLite ORM</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/fnc12/sqlite_orm">https://github.com/fnc12/sqlite_orm</a></p></li>
+<li><p>Supports custom types</p></li>
+<li><p>STL compatible</p></li>
+<li><p>Supports memory and disk databases</p></li>
+<li><p>GNU Affero General Public License</p></li>
+<li><p>Last commit December 2021. 1.5K stars and 61 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>sqlite modern cpp wrapper</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>MIT License</p></li>
+<li><p>Doesn’t seem to support custom types</p></li>
+<li><p>Likely abandoned (last commit November 2020). 671 stars and 58 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>hiberlite</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ORM for SQLite relying on a Boost Serialization-like API</p></li>
+<li><p>Aside from the serialization-like API not sure what other features it has</p></li>
+<li><p>BSD</p></li>
+<li><p>Likely abandoned (last commit June 2018). 614 stars and 58 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>VSQLite++</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/vinzenz/vsqlite">https://github.com/vinzenz/vsqlite</a>–</p></li>
+<li><p>C++ wrapper for SQLite3</p></li>
+<li><p>Little documentation.</p></li>
+<li><p>BSD</p></li>
+<li><p>Likely abandoned (last commit Nov 2020). 27 stars and 5 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Like Redis, the majority of the libraries associated with SQLite do not seem to
+be widely supported. SQLiteC++ and SQLite ORM are the exceptions; however, the
+license of SQLite ORM means it’s not viable for our purposes.</p>
+</section>
+<section id="multiple-databases">
+<h3>Multiple Databases<a class="headerlink" href="#multiple-databases" title="Permalink to this headline"></a></h3>
+<p>The options in this category provide interfaces to more than one database type.
+For the most part we didn’t give these libraries too much consideration instead
+opting to focus on a single backend.</p>
+<ul>
+<li><p>nanodbc</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/nanodbc/nanodbc">https://github.com/nanodbc/nanodbc</a></p></li>
+<li><p>Interacts with multiple DBMS through the ODBC C API.</p></li>
+<li><p>MIT license</p></li>
+<li><p>Active development. 228 stars and 17 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>ODB</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.codesynthesis.com/products/odb/">https://www.codesynthesis.com/products/odb/</a></p></li>
+<li><p>Interface to MySQL, SQLite, PostgreSQL, Oracle, and Microsoft SQL.</p></li>
+<li><p>GPLv2</p></li>
+<li><p>Actively maintained.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>OTL</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="http://otl.sourceforge.net/">http://otl.sourceforge.net/</a></p></li>
+<li><p>C++ template library for interacting with Oracle, ODBC, DB2-CLI</p></li>
+<li><p>Actively maintained.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>QTL</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/znone/qtl">https://github.com/znone/qtl</a></p></li>
+<li><p>Supports MySQL, SQLite, PostgreSQL, and ODBC</p></li>
+<li><p>Apache 2.0</p></li>
+<li><p>Last commit Oct 2021. 130 stars and 10 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>QxORM</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.qxorm.com/qxorm_en/home.html">https://www.qxorm.com/qxorm_en/home.html</a></p></li>
+<li><p>SQLite, MySQL, PostgreSQL, Oracle, Microsoft SQL, MongoDB</p></li>
+<li><p>GPLv3 or under the QxORM Propietary License (if you pay)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>SOCI</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/SOCI/soci">https://github.com/SOCI/soci</a></p></li>
+<li><p>Common API for a number of backend databases including: DB2, Firebird,
+MySQL, ODBC, Oracle, PostgreSQL, and SQLite 3</p></li>
+<li><p>Boost Software License</p></li>
+<li><p>Actively maintaiend. 1.1K stars and 100 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>SQLAPI++</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.sqlapi.com/">https://www.sqlapi.com/</a></p></li>
+<li><p>Propietary interface to Oracle, SQL Server, DB2, Sybase, MySQL, MariaDB,
+PostgreSQL, SQLite, Informix, Interbase, Firebird, SQLBase, SQL Anywhere,
+and ODBC</p></li>
+<li><p>SQLAPI++ Library License</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>sqlpp11</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/rbock/sqlpp11">https://github.com/rbock/sqlpp11</a></p></li>
+<li><p>MariaDB, MySQL, PostgreSQL, SQLite3, and SQLCipher</p></li>
+<li><p>BSD</p></li>
+<li><p>Active development. 1.9K stars and 115 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Tntdb</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/maekitalo/tntdb">https://github.com/maekitalo/tntdb</a></p></li>
+<li><p>Supports SQLite, MySQL, Postgresql, and Oracle</p></li>
+<li><p>LGPL-2.1</p></li>
+<li><p>Actively maintained. 30 stars and 13 watchers.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="database-implementation-comparsions">
+<h2>Database Implementation Comparsions<a class="headerlink" href="#database-implementation-comparsions" title="Permalink to this headline"></a></h2>
+<p>The goal of this section is to come to a decision on what database to use. To
+this end we have enumerated a set of features we are looking for.</p>
+<ol class="arabic simple">
+<li><p>Widely supported</p>
+<ul class="simple">
+<li><p>The database is going to be an integral part of PluginPlay. We don’t want
+to adopt a solution which looses support in a few years.</p></li>
+</ul>
+</li>
+<li><p>Stable.</p>
+<ul class="simple">
+<li><p>While new products can be exciting, we’re looking for something with an
+API which isn’t constantly changing.</p></li>
+</ul>
+</li>
+<li><p>License.</p>
+<ul class="simple">
+<li><p>We use Apache 2.0 so whatever we pick needs to be licensed in such a
+manner that it works with our license.</p></li>
+</ul>
+</li>
+<li><p>Thread.</p>
+<ul class="simple">
+<li><p>The DBMS should handled thread concurrency for us. This can often be
+handled more effeciently closer to the database than the DBMS API allows
+us to get.</p></li>
+<li><p>Technically this is probably part of ACID</p></li>
+<li><p>Process concurrency is nice, but it’s not clear we’re going to find it.</p></li>
+</ul>
+</li>
+<li><p>Object-oriented programming (OOP).</p>
+<ul class="simple">
+<li><p>Should support storing objects in their native form when they are in
+memory and serializing/deserializing them to put them on disk.</p></li>
+<li><p>This is probably a nice to have, not a requirement because we can keep
+the objects in a buffer if need be.</p></li>
+</ul>
+</li>
+<li><p>Disk.</p>
+<ul class="simple">
+<li><p>Is the database’s location based off a filesystem/disk location or an IP?</p></li>
+<li><p>It seems like a lot of commercial applications want to use IP
+addresses for specifying the location of the database, i.e. the
+client-server model.</p></li>
+<li><p>Parallel filesystems, for example, usually use disk locations</p></li>
+<li><p>IP-based databases usually have some support for local hosts.</p></li>
+<li><p>At least on Linux, you can use something like SSHFS to mount remote
+files, but it requires admin privileges.</p></li>
+<li><p>With some indirection it should be possible to use IP and disk-based
+databases interchangeably,</p></li>
+<li><p>Given how most supercomputers mount parallel filesystem, we prefer
+disk-based APIs over IP-based, if only because it doesn’t require
+workarounds. Conceivably we worry that privileges may prohibit use of
+IP-based databases on supercomputers, although how founded this worry is,
+is not clear.</p></li>
+</ul>
+</li>
+<li><p>ACID</p>
+<ul class="simple">
+<li><p>Databases which are ACID compliant will take care of resiliency for us.</p></li>
+</ul>
+</li>
+<li><p>Binary.</p>
+<ul class="simple">
+<li><p>Generally speaking objects will not be directly supported by most
+databases.</p></li>
+<li><p>Schema are the usual way around this, but only practical for small to
+medium-sized objects</p></li>
+<li><p>For large objects want to be able to dump the binary representation</p></li>
+</ul>
+</li>
+</ol>
+<p>The previous section listed a lot of C++ database solutions. Our focus on
+solutions which are widely supported, stable, and licensed compatibly with
+PluginPlay narrows the field considerably. The following table summarizes how
+the viable databases stack up.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As a disclaimer, at this time we do not have any experience with the
+databases on this list and the comparisons are being done off the provided
+documentation, and in some instances a quick perusal of the source code. This
+means the various DBMS may actually have (or not have) features that the
+table says they do not have. It should also be noted that unless we found
+some evidence that a DBMS has a feature we assumed it did not.</p>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 16%" />
+<col style="width: 10%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Database Name</p></th>
+<th class="head"><p>Thread</p></th>
+<th class="head"><p>OOP</p></th>
+<th class="head"><p>Disk</p></th>
+<th class="head"><p>ACID</p></th>
+<th class="head"><p>Binary</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>LevelDB</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>RocksDB</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>mongo-cxx-driver</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>libpqxx</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Hiredis</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>redis-plus-plus</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>SQLiteC++</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+<p>On the basis of the head-to-head comparison the most promising choices seem to
+be RocksDB, or SQLiteC++. In our opinion RocksDB is a better choice than
+SQLiteC++ because mapping the key-value API of RocksDB to our application is
+more straightforward than mapping the SQL-based API of SQLiteC++.</p>
+</section>
+<section id="database-strategy">
+<h2>Database Strategy<a class="headerlink" href="#database-strategy" title="Permalink to this headline"></a></h2>
+<figure class="align-default" id="id3">
+<span id="fig-db-design"></span><img alt="../../_images/database_design.png" src="../../_images/database_design.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Class diagram for the <code class="docutils literal notranslate"><span class="pre">Database</span></code> backend implementing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>. N.B.
+on most browsers you can “open image in a new tab” to easily zoom in.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>Ultimately none of the databases we considered have all of the features we want.
+Our current Database strategy grafts the missing functionality onto RocksDB.
+The class structure for our <code class="docutils literal notranslate"><span class="pre">Database</span></code> class is summarized in
+<a class="reference internal" href="#fig-db-design"><span class="std std-numref">Fig. 2</span></a>. The general design strategy is to rely on nesting
+polymorphic PIMPLs to acheive an implementation with the desired properties. Our
+initial database PIMPL has four levels. For our first pass we only worry about
+storing keys/values locally. That is each process’s <code class="docutils literal notranslate"><span class="pre">Database</span></code> will be
+responsible for storing the local piece of distributed objects, or copies of
+replicated objects. In general this means each process’s <code class="docutils literal notranslate"><span class="pre">Database</span></code> instance
+will have a different state. Additional parallel considerations can be tackled
+by implementing additional backends, and  will be left for future work.</p>
+<p>The most fundamental PIMPL is the <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> class. This class is a thin
+wrapper around the RocksDB library. Keys/values in the <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> database need
+to be binary. To go from C++ objects to binary we introduce the <code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code>
+PIMPL. This PIMPL is responsible for serializing data into the database it wraps
+and deserializing data upon request. Our design has two PIMPLs which wrap
+<code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code> instances; the first, is the <code class="docutils literal notranslate"><span class="pre">UUIDDatabase</span></code>, and the second
+is the <code class="docutils literal notranslate"><span class="pre">ProxyObjectDatabase</span></code>. The <code class="docutils literal notranslate"><span class="pre">UUIDDatabase</span></code> class is responsible for
+mapping its keys to UUIDs. The UUIDs will ultimately be used as proxies for the
+actual module inputs/results (each set of inputs/results is replaced with a
+<code class="docutils literal notranslate"><span class="pre">std::vector</span></code> of UUIDs). The <code class="docutils literal notranslate"><span class="pre">ProxyObjectDatabase</span></code> wraps two databases: a
+<code class="docutils literal notranslate"><span class="pre">UUIDDatabase</span></code> (defining the actual input/result to UUID mapping) and a
+<code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code> instance which defines (via the proxy objects) the input set to
+result set mappings. Finally the <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> stores an in-memory
+mapping from the input set to the result set (for a specific module).</p>
+<figure class="align-default" id="id4">
+<span id="fig-db-pimpl-design"></span><img alt="../../_images/db_pimpl_design.png" src="../../_images/db_pimpl_design.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Structure of the PIMPL implementing the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class. See text for more
+details.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>In practice, as results are put into the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> they first go into the
+<code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code>. This allows fast retrieval of memoized
+inputs/results. When checkpointing is needed, or space is an issue, the
+<code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> object flushes its memoized results to the wrapped
+database (which presently is a <code class="docutils literal notranslate"><span class="pre">ProxyObjectDatabase</span></code>). The exact behavior of
+what happens after flushing the <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> (or even how the
+<code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> works) can be modified by creating (and nesting)
+more <code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> objects. The overall initial structure of the
+<code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> used to implement the <code class="docutils literal notranslate"><span class="pre">Database</span></code> in the Cache is shown in
+<a class="reference internal" href="#fig-db-pimpl-design"><span class="std std-numref">Fig. 3</span></a>.</p>
+<section id="database-considerations-addressed">
+<h3>Database Considerations Addressed<a class="headerlink" href="#database-considerations-addressed" title="Permalink to this headline"></a></h3>
+<p>This section explains how our current database strategy addresses the
+considerations raised in the <a class="reference internal" href="#database-considerations"><span class="std std-ref">Database Considerations</span></a> section.</p>
+<ul>
+<li><p>Avoid data races</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>RocksDB is designed to avoid data races</p></li>
+<li><p>To the extent that the underlying <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> instance is the single source
+of truth, data races should be largely avoidable in the other PIMPL classes
+too.</p></li>
+<li><p>The notable exception is the <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> which contains a
+<code class="docutils literal notranslate"><span class="pre">std::map</span></code> that is not thread-safe. Data races here may lead to missed
+memoization opportunities. If profiling reveals this to be an issue we will
+return to this issue.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Will need to store parallel objects, sometimes in their distributed form and
+sometimes in a serialized form</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> only stores the local piece of distributed
+objects. For pure memoization this is what you want.</p></li>
+<li><p>With our design how an object is stored under <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code>
+depends on how <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> is set-up and on how serialization is
+implemented.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> ultimately writes to whatever file it’s told to. The two main
+choices are to have each process/node write to a different file, or to have
+all processes/nodes write to the same file (presumably on a parallel
+filesystem)</p></li>
+<li><p>If serialization only serializes the local part, <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code> should be
+set up so each node writes to either a single file or different files</p></li>
+<li><p>If serialization serializes the entire distributed state, then <code class="docutils literal notranslate"><span class="pre">RocksDB</span></code>
+should be setup to write to the same file to avoid duplication.</p></li>
+<li><p>We leave it to the user to setup the backend correctly (with the aid of
+convenience functions we provide).</p></li>
+<li><p>For SPSD (single-process, single-data) and (single-process, multiple-data)
+having per node databases either means all of the databases are the same
+or they are effectively the same as long as the data distribution doesn’t
+change (including on restart).</p></li>
+<li><p>We’re primarily targeting SPMD and can add more backends to deal with other
+scenarios at a later point.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>May want to use parallel filesystems for the checkpoint</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>RocksDB writes the database to the provided file. Providing a filename that
+is located on a parallel filesystem will result in the database being
+written to the parallel filesystem.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>May want multiple checkpoint files</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Again this can be controlled by what file RocksDB writes to.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Parallel systems may have more complicated memory hierarchies and we want to
+use them effectively.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Additional PIMPLs can be added to say put objects in non-volatile memory
+before going to disk if need be.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Resiliency to deal with hardware failures</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Built into RocksDB</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Will need to serialize the objects</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Happens in <code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code>, will require all <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> instances to be
+serializable.</p></li>
+<li><p>May need different serializations (only the local part, entire object)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Want a quick access (not serialized) and a long-term serialized form</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Quick-access is provided by <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code>, long-term by
+RocksDB</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>May not want to serialize all objects at the same frequency</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Additional dispatch options can be built into the PIMPLs as needed.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Compression (presumably of the serialized objects)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Native RocksDB feature</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Avoid storing multiple copies of the same key/value</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ProxyObjectDatabase addresses this by assigning UUIDs to each input and
+result.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Users may want to customize the storage</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Exactly how objects get cached can be controlled by the PIMPL. Our plan is
+to provide convenience functions for common scenarios (e.g. our default
+cacheing strategy, no long-term backups, no memoization whatsoever)</p></li>
+<li><p>No memoization can be implemented by not instantiating a Cache</p></li>
+<li><p>Similarly “no long term” backup can be iimplemented by leaving off the
+<code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code> part of the PIMPL.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Automatic backups</p>
+<ul class="simple">
+<li><p>Can be done with a new backend</p></li>
+</ul>
+</li>
+<li><p>Diff support</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Requires a new backend</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="future-directions">
+<h2>Future Directions<a class="headerlink" href="#future-directions" title="Permalink to this headline"></a></h2>
+<p>While our design addresses all of the considerations to some extent, our initial
+design will punt on some aspects. We collect those aspects here for future
+reference.</p>
+<ul class="simple">
+<li><p>data races: not all classes are thread-safe</p></li>
+<li><p>storing distributed objects: may want a global database, the ability to synch
+UUIDs etc.</p></li>
+<li><p>HPC memory hierarchies: we will need new backends to use specialized hardware</p></li>
+<li><p>different frequency serialization: will require a new backend</p></li>
+<li><p>Automatic backups: will need a new backend</p></li>
+<li><p>Diff support: will need a new backend</p></li>
+<li><p>Other backends: design should allow for other backends beside RocksDB</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cache.html" class="btn btn-neutral float-left" title="Cache Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../module_state.html" class="btn btn-neutral float-right" title="Understanding a Module’s State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

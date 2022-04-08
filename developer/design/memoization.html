@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memoization Design &mdash; pluginplay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Checkpoint/Restart" href="checkpoint_restart.html" />
+    <link rel="prev" title="Design Topics" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pluginplay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Module Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Memoization Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-memoization">What is Memoization?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-does-pluginplay-need-memoization">Why does PluginPlay Need Memoization?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memoization-considerations">Memoization Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memoization-implementations">Memoization Implementations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memoization-strategy">Memoization Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memoization-implementation">Memoization Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../module_state.html">Understanding a Module’s State</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pluginplay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
+          <li><a href="index.html">Design Topics</a> &raquo;</li>
+      <li>Memoization Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/memoization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memoization-design">
+<span id="id1"></span><h1>Memoization Design<a class="headerlink" href="#memoization-design" title="Permalink to this headline"></a></h1>
+<p>This page documents the design process and decisions affecting memoization in
+PluginPlay.</p>
+<section id="what-is-memoization">
+<h2>What is Memoization?<a class="headerlink" href="#what-is-memoization" title="Permalink to this headline"></a></h2>
+<p>Memoization is a run-time optimization technique used to speed up a program by
+storing the inputs and results of function calls (cacheing). When a function is
+called with already cached inputs, the cached results are returned without
+actually recomputing the function. Memoization thus represents a time-for-space
+trade off.</p>
+</section>
+<section id="why-does-pluginplay-need-memoization">
+<span id="why-memoization"></span><h2>Why does PluginPlay Need Memoization?<a class="headerlink" href="#why-does-pluginplay-need-memoization" title="Permalink to this headline"></a></h2>
+<p>PluginPlay relies on rigid property type APIs to define what data is directly
+passed to and from modules. Inevitably, users will have modules for which these
+APIs fail to provide all of the necessary inputs. PluginPlay’s solution to this
+is to allow module developers to call submodules. In this scenario, the module
+developer gets the additional input by calling the submodule. Depending on what
+this additional data is, this solution can be expensive if the submodule is
+used to recompute the same value multiple times. Memoization ensures that the
+submodule is only run once for each unique input.</p>
+<p>Memoization was originally added to PluginPlay to avoid expensive recomputation;
+however, it was later realized that memoization could play a dual role by also
+facilitating checkpoint/restart (C/R). Very briefly, the idea is that we assume
+we can save/load the memoization details to disk. If we load a previous run’s
+memoization details and then run a previously run module (with an input it has
+already seen) the program will use memoization to quickly achieve parity with
+its previous run (<em>i.e.</em>, all module calls will be memoized until control finds
+the first module which hasn’t run yet). In fact, it is difficult to concieve of
+a C/R strategy that doesn’t use memoization, as at its core C/R is a type of
+memoization (one is ultimately avoiding recomputing something by reading it
+from the checkpoint). The exact design details pertaining to C/R are beyond this
+section (see <a class="reference internal" href="checkpoint_restart.html#design-checkpoint-restart"><span class="std std-ref">Checkpoint/Restart</span></a> for the full discussion), rather
+our point here is that in PluginPlay, we consider C/R part of the overall
+memoization strategy.</p>
+</section>
+<section id="memoization-considerations">
+<h2>Memoization Considerations<a class="headerlink" href="#memoization-considerations" title="Permalink to this headline"></a></h2>
+<p>This section lists the considerations which went into the memoization design for
+PluginPlay.  These points relate to how the process of memoization is
+implemented or how the memoized data is used.</p>
+<ul class="simple">
+<li><p>Ideally the use of memoization is under the hood of PluginPlay and largely
+hidden from the user.</p></li>
+<li><p>Assuming automation, PluginPlay needs to know whether a module is memoizable
+or not.</p>
+<ul>
+<li><p>Not all modules are memoizable. A module must be “referentially transparent”
+in order to be memoized (always computes the same value for the same inputs,
+and has no side-effects).</p></li>
+</ul>
+</li>
+<li><p>Memoization is a time for space trade-off meaning cost of storing data will
+play a role in whether memoization can/should occur.</p>
+<ul>
+<li><p>User will likely need some control, automation is unlikely to cover all use
+cases.</p></li>
+<li><p>Since memoization occurs when calling modules, letting the user manually
+turn off memoization for select modules provides them full control.</p></li>
+</ul>
+</li>
+<li><p>Each class <code class="docutils literal notranslate"><span class="pre">T</span></code> deriving from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> is assumed to wrap a unique
+algorithm. When memoizing it thus only makes sense to consider results
+computed by other <code class="docutils literal notranslate"><span class="pre">T</span></code> instances.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code> here is not a “property type”, but rather the literal class type which
+derives from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code></p></li>
+<li><p>The uniqueness of <code class="docutils literal notranslate"><span class="pre">T</span></code> is guaranteed by the one-definition rule.</p></li>
+<li><p>In theory users could write exactly the same algorithm in two different
+derived classes. In practice, this is likely to be an extreme edge case that
+is not worth considering. Failing to consider it simply means we miss a
+memoization opportunity.</p></li>
+</ul>
+</li>
+<li><p>Failing to memoize when appropriate will affect performance</p></li>
+<li><p>Memoizing when not appropriate will compromise the integrity of the scientific
+answer.</p></li>
+<li><p>Memoizing iterative (recursive) function requires special considerations</p>
+<ul>
+<li><p>Memoizing an iterative (recursive) function is possible</p></li>
+<li><p>Say <code class="docutils literal notranslate"><span class="pre">I</span></code> is the initial input to an iterative function <code class="docutils literal notranslate"><span class="pre">f</span></code>, and <code class="docutils literal notranslate"><span class="pre">R_0</span></code>
+is the initial result. Calling <code class="docutils literal notranslate"><span class="pre">f</span></code> with <code class="docutils literal notranslate"><span class="pre">R_0</span></code> generates <code class="docutils literal notranslate"><span class="pre">R_1</span></code>, calling
+<code class="docutils literal notranslate"><span class="pre">f</span></code> again with <code class="docutils literal notranslate"><span class="pre">R_1</span></code> generates <code class="docutils literal notranslate"><span class="pre">R_2</span></code> etc. If we want to jump from
+<code class="docutils literal notranslate"><span class="pre">I</span></code> to the last result (say <code class="docutils literal notranslate"><span class="pre">R_n</span></code>) we need to store the <code class="docutils literal notranslate"><span class="pre">n</span></code> proceeding
+function calls in addition to the call which generates <code class="docutils literal notranslate"><span class="pre">R_n</span></code>.</p></li>
+<li><p>For recursion the situation is similar except that <code class="docutils literal notranslate"><span class="pre">n</span></code> tracks depth
+instead of iteration.</p></li>
+<li><p>For memory intensive results storing all of the intermediates is expensive
+and we will need an option to avoid it.</p></li>
+</ul>
+</li>
+<li><p>Memoization will need to occur in a parallel setting</p>
+<ul>
+<li><p>Will need to memoize parallel objects, which means knowing that not only
+that the local input is the same, but also that the rest of the object is
+the same.</p></li>
+<li><p>Will need to worry about data races to get memoized data.</p></li>
+</ul>
+</li>
+<li><p>Comparing objects can be expensive (think about distributed tensors)</p>
+<ul>
+<li><p>Needed to determine if inputs have beein the previous section n seen before</p></li>
+<li><p>Hashing is a possible solution, but relying on hashing alone can
+theoretically lead to memoizing when not appropriate (although if
+implemented correctly the odds are astronomical)</p></li>
+</ul>
+</li>
+<li><p>The same input may be used as an input to many modules</p>
+<ul>
+<li><p>Memoization requires stores the inputs and results somewhere</p></li>
+<li><p>If the same input is passed to different modules we can end up storing
+multiple copies of an expensive object</p></li>
+<li><p>Returning the same result from different modules is also possible, but
+anticipated to be far less likely.</p></li>
+</ul>
+</li>
+<li><p>Need to decide how long memoized data is valid for.</p>
+<ul>
+<li><p>Requiring memoized data to be valid long term means that memoization can
+also directly be used for checkpoint/restart</p></li>
+<li><p>Assuming memoized data need only be valid short term, checkpoint/restart
+becomes a separate issue.</p></li>
+</ul>
+</li>
+<li><p>May make sense to build resiliency into the memoization solution</p>
+<ul>
+<li><p>Hardware failures could lead to pieces of a distributed object being non
+recoverable and preventing memoization of the object.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="memoization-implementations">
+<h2>Memoization Implementations<a class="headerlink" href="#memoization-implementations" title="Permalink to this headline"></a></h2>
+<p>Having PluginPlay automate memoization means it happens under the hood of
+PluginPlay. In turn, it is possible to incorporate existing memoization
+solutions into PluginPlay if they are written in C or C++. A quick search for
+C++ Memoization libraries turned up the following options:</p>
+<ul class="simple">
+<li><p>memo</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/jimporter/memo">https://github.com/jimporter/memo</a></p></li>
+<li><p>Provides a metafunction <code class="docutils literal notranslate"><span class="pre">memoize</span></code> which takes a function and returns a
+wrapped function object. Calls to the wrapped function object (which has
+the same API as the original function) get memoized.</p></li>
+<li><p>The implementation is quite simple and stores copies of the inputs and
+results in a <code class="docutils literal notranslate"><span class="pre">std::map</span></code></p></li>
+<li><p>Appears to still be maintained (although the author likely views it as
+feature complete). 16 stars and 2 watchers.</p></li>
+</ul>
+</li>
+<li><p>MemoizationLibCpp</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/guhetier/MemoizationLibCpp">https://github.com/guhetier/MemoizationLibCpp</a></p></li>
+<li><p>Provides a class <cite>Memo</cite> which wraps a function.</p></li>
+<li><p>Uses a hash table under the hood. Type of the hash table can be customized.</p></li>
+<li><p>Likely abandoned. Last update was February 2016. 0 stars and 1 watcher.</p></li>
+</ul>
+</li>
+<li><p>memoizer</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/nordlow/memoizer">https://github.com/nordlow/memoizer</a></p></li>
+<li><p>Actually an executable that can be used to memoize system calls made by the
+wrapped process.</p></li>
+<li><p>Does not memoize C++ calls like we need.</p></li>
+<li><p>Likely abandoned. Last update was March 2017. 1 star and 3 watchers.</p></li>
+</ul>
+</li>
+</ul>
+<p>The search also returned a number of StackOverflow and blog posts pertaining to
+memoization in C++. Generally speaking these posts all detail how to memoize
+functions by wrapping them using techniques akin to how the above libraries
+perform memoizations. Most of our considerations seem to be out of scope for
+the resources I found. Furthermore, these projects are not widely utilized/
+supported. Using them thus runs the risk of adopting vaporware.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notes on the memoization libraries are based off of documentation and
+quick skimming of the source code. I do not have experience with any of the
+libraries so the descriptions may be inaccurate. Update, star, and watcher
+information was accurate as of March 2022 and may have changed since then.</p>
+</div>
+</section>
+<section id="memoization-strategy">
+<span id="id2"></span><h2>Memoization Strategy<a class="headerlink" href="#memoization-strategy" title="Permalink to this headline"></a></h2>
+<p>With the lack of well supported, feature-rich memoization libraries writing our
+own memoization routine seems like the best route. Conceptually the actual
+memoization process is straightforward since the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class’s <code class="docutils literal notranslate"><span class="pre">run</span></code>
+method already wraps the actual invocation of the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class’s
+<code class="docutils literal notranslate"><span class="pre">run</span></code> method (the latter is what actually implements the module’s algorithm).
+The actual memoization process more or less amounts to the following pseudocode:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_memoizable</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">has_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">get_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">ModuleBase</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">add_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">return</span><span class="w"> </span><span class="n">get_memoized_resutl</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In the first line we rely on the <code class="docutils literal notranslate"><span class="pre">Module::is_memoizable()</span></code> method to determine
+if the user and the module developer have okayed memoization, if they have we
+somehow figure out if we’ve already seen this result (in the pseudocode this is
+the job of the opaque <code class="docutils literal notranslate"><span class="pre">has_result()</span></code> function). Assuming the first line is
+true we somehow map the inputs to the returned value (in the pseudocode this is
+the job of the opaque <code class="docutils literal notranslate"><span class="pre">get_memoized_result</span></code> function). If memoization fails,
+we run the module’s algorithm, store the results (the job of the otherwise
+opaque <code class="docutils literal notranslate"><span class="pre">add_memoized_result</span></code> function), and then return the memoized results.</p>
+<p>This pseudocode addresses the following considerations explicitly and punts the
+remaining considerations to the opaque functions:</p>
+<ul class="simple">
+<li><p>Ideally the use of memoization is under the hood of PluginPlay and largely
+hidden from the user.</p>
+<ul>
+<li><p>The above pseudocode is in <code class="docutils literal notranslate"><span class="pre">Module::run</span></code> and hidden from the user.</p></li>
+</ul>
+</li>
+<li><p>Assuming automation, PluginPlay needs to know whether a module is memoizable
+or not.</p>
+<ul>
+<li><p>Handled by <code class="docutils literal notranslate"><span class="pre">Module::is_memoizable</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Memoization is a time for space trade-off meaning cost of storing data will
+play a role in whether memoization can/should occur.</p>
+<ul>
+<li><p>Technically not shown explicitly, but users can use
+<code class="docutils literal notranslate"><span class="pre">Module::turn_off_memoization</span></code> to disable memoizing a specific module.
+Calling <code class="docutils literal notranslate"><span class="pre">Module::turn_off_memoization</span></code> impacts the value returned by
+<code class="docutils literal notranslate"><span class="pre">Module::is_memoizable</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p>The opaque functions are consistent with the API of an associative container,
+hence the remainder of our memoization strategy is to implement an associative
+container which additionally addresses the remaining concerns. We term this
+container the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and the design of which can be found at
+<a class="reference internal" href="cache.html#cache-design"><span class="std std-ref">Cache Design</span></a>.</p>
+</section>
+<section id="memoization-implementation">
+<h2>Memoization Implementation<a class="headerlink" href="#memoization-implementation" title="Permalink to this headline"></a></h2>
+<p>The actual implementation of memoization requires:</p>
+<ul class="simple">
+<li><p>Adding <code class="docutils literal notranslate"><span class="pre">turn_off_memoization</span></code>, <code class="docutils literal notranslate"><span class="pre">turn_on_memoization</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">is_memoizable</span></code> functions to <code class="docutils literal notranslate"><span class="pre">Module</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> (both also need
+a member to track whether the instance is memoizable)</p></li>
+<li><p>Writing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class</p></li>
+<li><p>Ensuring the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance is accessible through the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code></p></li>
+<li><p>Ensuring the cache is accessible inside <code class="docutils literal notranslate"><span class="pre">Module::run</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Design Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="checkpoint_restart.html" class="btn btn-neutral float-right" title="Checkpoint/Restart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

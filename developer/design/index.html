@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Topics &mdash; pluginplay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Memoization Design" href="memoization.html" />
+    <link rel="prev" title="Developer Topics" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pluginplay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Module Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_collections/index.html">Module Collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Design Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../module_state.html">Understanding a Module’s State</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pluginplay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
+      <li>Design Topics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="design-topics">
+<h1>Design Topics<a class="headerlink" href="#design-topics" title="Permalink to this headline"></a></h1>
+<p>The topics in this section explain the design (and the decisions that went into
+the design) of PluginPlay.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="memoization.html">Memoization Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#what-is-memoization">What is Memoization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#why-does-pluginplay-need-memoization">Why does PluginPlay Need Memoization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#memoization-considerations">Memoization Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#memoization-implementations">Memoization Implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#memoization-strategy">Memoization Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoization.html#memoization-implementation">Memoization Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="checkpoint_restart.html#what-is-c-r">What is C/R?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkpoint_restart.html#why-do-we-need-c-r">Why Do We Need C/R?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkpoint_restart.html#c-r-considerations">C/R Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkpoint_restart.html#c-r-implementations">C/R Implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkpoint_restart.html#c-r-strategy">C/R Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cache.html">Cache Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#cache-considerations">Cache Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#cache-implementations">Cache Implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#cache-strategy">Cache Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="database.html#what-is-a-database">What is a Database?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database-considerations">Database Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#choosing-the-key-value-types">Choosing the Key/Value Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database-implementations">Database Implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database-implementation-comparsions">Database Implementation Comparsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database-strategy">Database Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#future-directions">Future Directions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Developer Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memoization.html" class="btn btn-neutral float-right" title="Memoization Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
