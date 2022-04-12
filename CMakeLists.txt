@@ -11,15 +11,18 @@ include(get_cpp)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(PARALLELZONE_BUILD_TESTING "Should we build the tests for ParallelZone?" OFF)
+option(
+    PARALLELZONE_BUILD_TESTING
+    "Should we build the tests for ParallelZone?" OFF
+)
 option(UTILITIES_BUILD_TESTING "Should we build the tests for Utilities?" OFF)
 option(BUILD_DOCS "Should we build the documentation?" OFF)
 option(
     ONLY_BUILD_DOCS
     "If enabled and BUILD_DOCS is true no libraries will be built" OFF
 )
-
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_ROCKSDB "Should we build the RocksDB backend?" ON)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -60,11 +63,33 @@ cpp_find_or_build_dependency(
         CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
+set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
+if("${BUILD_ROCKSDB}")
+    find_package(RocksDB REQUIRED)
+    # TODO: We need to do a superbuild for RocksDB
+    # cpp_find_or_build_dependency(
+    #     RocksDB
+    #     URL github.com/facebook/rocksdb
+    #     VERSION v7.0.4
+    #     BUILD_TARGET rocksdb-shared
+    #     FIND_TARGET ${ROCKSDB_TARGET}
+    #     CMAKE_ARGS CMAKE_BUILD_TYPE=Release
+    #                ROCKSDB_BUILD_SHARED=On
+    #                WITH_BENCHMARK_TOOLS=Off
+    #                WITH_GFLAGS=Off
+    #                WITH_TOOLS=OFF
+    #                JNI=OFF
+    #                WITH_TESTS=OFF
+    # )
+else()
+    add_library(${ROCKSDB_TARGET} INTERFACE)
+endif()
+
 cpp_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS nwx::utilities nwx::parallelzone libfort::fort
+    DEPENDS nwx::utilities nwx::parallelzone libfort::fort ${ROCKSDB_TARGET}
 )
 
 include(nwx_python_mods)
