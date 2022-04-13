@@ -1,25 +1,31 @@
-#include "rocksdb_pimpl.hpp"
-
-/* RocksDB is designed to be an optional dependency. To accomplish this we
- * hide all RocksDB-specific calls in this file behind the compiler definition
- * "BUILD_ROCKS_DB". If that definition is found the RocksDBPIMPL instance that
- * is defined will be fully functioning, if it's not any call to the RocksDB
- * PIMPL will raise an exception.
- */
-
-#ifdef BUILD_ROCKS_DB
-#include "rocksdb_pimpl.hpp"
-#else
-#include "rocksdb_pimpl_stub.hpp"
-#endif
-
+// This file is meant only for inclusion from rocksdb_pimpl.hpp
 namespace pluginplay::database::detail_ {
 
-#define TPARAMS template<typename KeyType, typename ValueType>
-#define ROCKS_DB RocksDB<KeyType, ValueType>
+// Macro which hides inline, but could be used to hid template parameters
+#define TPARAMS inline
+
+// Macro which hides the class name (including template parameters if added)
+#define ROCKSDB_PIMPL RocksDBPIMPL
 
 TPARAMS
-void ROCKS_DB::insert_(KeyType key, ValueType value) {
+ROCKSDB_PIMPL::ROCKSDB_PIMPL(const_path_reference path) :
+  m_db_(allocate_(path, options_())) {}
+
+TPARAMS
+bool ROCKSDB_PIMPL::count(const_key_reference key) const noexcept {
+    assert_ptr_();
+    auto opts = rocksdb::ReadOptions();
+
+    // Rule out that it definitely doesn't exist
+    if(!m_db_->KeyMayExist(opts, key, nullptr)) return false;
+
+    mapped_type buffer;
+    auto status = m_db_->Get(opts, key, &buffer);
+    return mapped_type{} != buffer;
+}
+
+TPARAMS
+void ROCKSDB_PIMPL::insert(key_type key, mapped_type value) {
     assert_ptr_();
     if(value.size() > m_max_value_size_) {
         large_value_insert_(std::move(key), std::move(value));
@@ -31,7 +37,7 @@ void ROCKS_DB::insert_(KeyType key, ValueType value) {
 }
 
 TPARAMS
-void ROCKS_DB::free_(const_key_reference key) {
+void ROCKSDB_PIMPL::free(const_key_reference key) {
     assert_ptr_();
     auto opts   = rocksdb::WriteOptions();
     auto status = m_db_->Delete(opts, std::move(key));
@@ -39,29 +45,45 @@ void ROCKS_DB::free_(const_key_reference key) {
 }
 
 TPARAMS
-typename ROCKS_DB::const_mapped_reference ROCKS_DB::at_(
+typename ROCKSDB_PIMPL::const_mapped_reference ROCKSDB_PIMPL::at(
   const_key_reference key) const {
     assert_ptr_();
     if(m_split_values_.count(key)) { return large_value_at_(key); }
 
     auto opts = rocksdb::ReadOptions();
-    ValueType buffer;
+    mapped_type buffer;
     auto status = m_db_->Get(opts, key, &buffer);
     assert(status.ok());
     return const_mapped_reference(std::move(buffer));
 }
 
 TPARAMS
-void ROCKS_DB::assert_ptr_() const {
+typename ROCKSDB_PIMPL::options_type ROCKSDB_PIMPL::options_() {
+    options_type options;
+    options.create_if_missing = true; // Make DB if it DNE
+    return options;
+}
+
+TPARAMS
+typename ROCKSDB_PIMPL::raw_db_pointer ROCKSDB_PIMPL::allocate_(
+  const_path_reference path, options_type opts) {
+    raw_db_pointer db;
+    auto status = rocksdb::DB::Open(std::move(opts), path, &db);
+    assert(status.ok());
+    return db;
+}
+
+TPARAMS
+void ROCKSDB_PIMPL::assert_ptr_() const {
     if(m_db_) return;
     throw std::runtime_error("No allocated database. Was this PIMPL moved from"
                              " or default allocated?");
 }
 
 TPARAMS
-auto ROCKS_DB::split_value_(ValueType& value) {
+auto ROCKSDB_PIMPL::split_value_(mapped_reference value) {
     // We just make iterator pairs in this function to avoid copies
-    using itr_type  = typename ValueType::iterator;
+    using itr_type  = typename mapped_type::iterator;
     using pair_type = std::pair<itr_type, itr_type>;
     std::vector<pair_type> new_vals;
     std::size_t chunk_end = m_max_value_size_;
@@ -79,35 +101,33 @@ auto ROCKS_DB::split_value_(ValueType& value) {
 }
 
 TPARAMS
-void ROCKS_DB::large_value_insert_(KeyType key, ValueType value) {
+void ROCKSDB_PIMPL::large_value_insert_(key_type key, mapped_type value) {
     auto chunks = split_value_(value);
 
     // TODO: Use better sub keys (e.g. UUIDs)
-    std::vector<KeyType> sub_keys(chunks.size(), key);
+    std::vector<key_type> sub_keys(chunks.size(), key);
 
     for(std::size_t i = 0; i < chunks.size(); ++i) {
         auto& [begin, end] = chunks[i];
         sub_keys[i] += std::to_string(i);
-        // TODO: Can we avoid the creation of a new ValueType?
-        insert_(sub_keys[i], ValueType(begin, end));
+        // TODO: Can we avoid the creation of a new mapped_type?
+        insert(sub_keys[i], mapped_type(begin, end));
     }
     m_split_values_.emplace(std::move(key), std::move(sub_keys));
 }
 
 TPARAMS
-typename ROCKS_DB::const_mapped_reference ROCKS_DB::large_value_at_(
+typename ROCKSDB_PIMPL::const_mapped_reference ROCKSDB_PIMPL::large_value_at_(
   const_key_reference key) const {
-    ValueType buffer;
+    mapped_type buffer;
     for(const auto& sub_key : m_split_values_.at(key)) {
-        auto sub_value = at_(sub_key);
+        auto sub_value = at(sub_key);
         buffer += std::move(sub_value.get());
     }
     return const_mapped_reference(std::move(buffer));
 }
 
+#undef ROCKSDB_PIMPL
 #undef TPARAMS
-#undef ROCKS_DB
-
-template class RocksDB<std::string, std::string>;
 
 } // namespace pluginplay::database::detail_

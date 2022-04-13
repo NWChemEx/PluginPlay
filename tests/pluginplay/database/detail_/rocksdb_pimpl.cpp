@@ -1,21 +1,20 @@
+#ifdef BUILD_ROCKS_DB
 #include <catch2/catch.hpp>
-#include <iostream>
 #include <pluginplay/database/detail_/rocksdb_pimpl.hpp>
-
 using namespace pluginplay::database::detail_;
 
-TEST_CASE("RocksDB") {
-    RocksDB<std::string, std::string> db("test.db");
-    db.insert("Hello", "World");
-    auto x = db["Hello"];
-    REQUIRE(x.get() == "World");
-    std::cout << x.get() << std::endl;
-
-    const bool do_large_value = true;
+TEST_CASE("RocksDBPIMPL") {
     // There are concerns about storing values large than 4 GB in a RocksDB
-    // instance, this unit test will verify that said values work. Obviously it
-    // uses a large amount of memory so it should only be turned on if you've
-    // got the memory/time.
+    // instance, this variable can be used to enable unit tests which will
+    // verify that large values work. Obviously it uses a large amount of memory
+    // so it should only be turned on if you've got the memory/time.
+    const bool do_large_value = false;
+
+    RocksDBPIMPL db("test.db");
+    db.insert("Hello", "World");
+    auto x = db.at("Hello");
+    REQUIRE(x.get() == "World");
+
     if(do_large_value) {
         // We note that the problem presumably comes from using 32 bit integers,
         // which themselves can only express offsets of 2^2 * 2^30, where 2^30
@@ -34,7 +33,8 @@ TEST_CASE("RocksDB") {
         srand(time(NULL));
         while(buffer.size() < 5E9) { buffer += std::to_string(rand()); }
         db.insert("large value", buffer);
-        auto large_value = db["large value"];
+        auto large_value = db.at("large value");
         REQUIRE(large_value.get() == buffer);
     }
 }
+#endif

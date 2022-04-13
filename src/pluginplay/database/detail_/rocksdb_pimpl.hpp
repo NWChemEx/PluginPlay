@@ -4,59 +4,53 @@ namespace pluginplay::database::detail_ {
 
 class RocksDBPIMPL {
 public:
-    using db_type    = rocksdb::DB;
-    using db_pointer = db_type*;
-
-    using options_type = rocksdb::Options;
-
     using parent_type = RocksDB<std::string, std::string>;
 
+    using const_path_reference = typename parent_type::const_path_reference;
+
     using key_type = typename parent_type::key_type;
+
+    using const_key_reference = typename parent_type::const_key_reference;
 
     using mapped_type = typename parent_type::mapped_type;
 
     using mapped_reference = mapped_type&;
 
-    using const_path_reference = typename parent_type::const_path_reference;
+    using const_mapped_reference = typename parent_type::const_mapped_reference;
 
     RocksDBPIMPL(const_path_reference path);
 
-    auto options() {
-        options_type options;
-        options.create_if_missing = true; // Make DB if it DNE
-        return options;
-    }
+    bool count(const_key_reference key) const noexcept;
 
-    auto allocate(const_path_reference path, options_type opts) {
-        db_pointer db;
-        auto status = rocksdb::DB::Open(std::move(opts), path, &db);
-        assert(status.ok());
-        return db;
-    }
+    void insert(key_type key, mapped_type value);
+
+    void free(const_key_reference key);
+
+    const_mapped_reference at(const_key_reference key) const;
 
 private:
+    /// Type RocksDB uses for databases
+    using db_type = rocksdb::DB;
+
+    /// Type of a raw pointer to a RocksDB database
+    using raw_db_pointer = db_type*;
+
+    /// Allows us to use RAII to ensure the RocksDB database is closed correctly
     struct Deleter {
-        void operator()(db_pointer db) const {
+        void operator()(raw_db_pointer db) const {
             db->Close();
             delete db;
         }
     };
 
-    std::unique_ptr<db_type, Deleter> m_db_;
+    /// Type of the pointer holding a RocksDB database
+    using db_pointer = std::unique_ptr<db_type, Deleter>;
 
-    /** @brief Maximum size a value can be.
-     *
-     *  RocksDB can't handle values which are larger than 4 GB; they recommend
-     *  that values be less than 3 GB. To circumvent this we split large values
-     *  into @p m_max_value_size_ chunks (values for RocksDB are always things
-     *  that adhere to random-access containers so this is no problem). This
-     *  attribute controls the chunk size and could concievably be set as part
-     *  of the API for the class if desired. For now it's just hard-coded to
-     *  3 GB.
-     */
-    const std::size_t m_max_value_size_ = 3E9;
+    using options_type = rocksdb::Options;
 
-    std::unique_ptr<RocksDBPIMPL> m_pimpl_;
+    options_type options_();
+
+    raw_db_pointer allocate_(const_path_reference path, options_type opts);
 
     void assert_ptr_() const;
 
@@ -76,22 +70,25 @@ private:
 
     const_mapped_reference large_value_at_(const_key_reference key) const;
 
+    /** @brief Maximum size a value can be.
+     *
+     *  RocksDB can't handle values which are larger than 4 GB; they recommend
+     *  that values be less than 3 GB. To circumvent this we split large values
+     *  into @p m_max_value_size_ chunks (values for RocksDB are always things
+     *  that adhere to random-access containers so this is no problem). This
+     *  attribute controls the chunk size and could concievably be set as part
+     *  of the API for the class if desired. For now it's just hard-coded to
+     *  3 GB.
+     */
+    const std::size_t m_max_value_size_ = 3E9;
+
+    /// The pointer to the RocksDB database
+    db_pointer m_db_;
+
+    /// Maps keys for large values to the keys for the pieces
     std::map<key_type, std::vector<key_type>> m_split_values_;
 };
 
-inline RocksDBPIMPL::RocksDBPIMPL(const_path_reference path) :
-  m_db_(allocate(path, options())) {}
-
-inline bool RocksDBPIMPL::count_(const_key_reference key) const noexcept {
-    assert_ptr_();
-    auto opts = rocksdb::ReadOptions();
-
-    // Rule out that it definitely doesn't exist
-    if(!m_db_->KeyMayExist(opts, key, nullptr)) return false;
-
-    ValueType buffer;
-    auto status = m_db_->Get(opts, key, &buffer);
-    return ValueType{} != buffer;
-}
-
 } // namespace pluginplay::database::detail_
+
+#include "rocksdb_pimpl.ipp"
