@@ -81,6 +81,7 @@ if("${BUILD_ROCKSDB}")
     #                JNI=OFF
     #                WITH_TESTS=OFF
     # )
+    target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
 else()
     add_library(${ROCKSDB_TARGET} INTERFACE)
 endif()

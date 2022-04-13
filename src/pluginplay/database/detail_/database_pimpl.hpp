@@ -6,9 +6,11 @@ namespace pluginplay::database::detail_ {
 template<typename KeyType, typename ValueType>
 class DatabasePIMPL {
 public:
-    using const_key_reference = const KeyType&;
+    using key_type = KeyType;
 
-    using mapped_type = KeyType;
+    using const_key_reference = const key_type&;
+
+    using mapped_type = ValueType;
 
     using mapped_reference = Value<mapped_type>;
 
