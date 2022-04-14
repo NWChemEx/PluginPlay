@@ -1,19 +1,68 @@
 #ifdef BUILD_ROCKS_DB
 #include <catch2/catch.hpp>
+#include <filesystem>
 #include <pluginplay/database/detail_/rocksdb_pimpl.hpp>
 using namespace pluginplay::database::detail_;
+
+/* Testing notes:
+ *
+ * Warning!!! The database is not purged between sections since its state is
+ *            persistant on disk. Care needs to be taken when writing the unit
+ *            tests to not rely on sections to undo behavior.
+ */
 
 TEST_CASE("RocksDBPIMPL") {
     // There are concerns about storing values large than 4 GB in a RocksDB
     // instance, this variable can be used to enable unit tests which will
     // verify that large values work. Obviously it uses a large amount of memory
     // so it should only be turned on if you've got the memory/time.
+    //
+    // FWIW the large value will contain 5E9 characters (so it should be about
+    // 5GB). The test stores a copy of it, then retrieves the copy, and finally
+    // compares the copy to the original. This means minimally the test needs
+    // about 10 GB of memory (watching top it looks it's more like 15 to 20 GB).
     const bool do_large_value = false;
 
-    RocksDBPIMPL db("test.db");
+    std::filesystem::path file("test.db");
+    auto p = std::filesystem::current_path() / file;
+
+    RocksDBPIMPL db(p.string());
     db.insert("Hello", "World");
-    auto x = db.at("Hello");
-    REQUIRE(x.get() == "World");
+
+    SECTION("CTor") { REQUIRE(std::filesystem::exists(p)); }
+
+    SECTION("count") {
+        REQUIRE_FALSE(db.count("not a key"));
+        REQUIRE(db.count("Hello"));
+    }
+
+    SECTION("insert/at") {
+        // One insert, nothing special
+        REQUIRE(db.at("Hello").get() == "World");
+
+        // Repeated inserts do nothing
+        db.insert("Hello", "World");
+        auto val = db.at("Hello");
+        REQUIRE(val.get() == "World");
+
+        // Can be used to override a value
+        db.insert("Hello", "Universe");
+        auto val2 = db.at("Hello");
+        REQUIRE(val2.get() == "Universe");
+
+        REQUIRE_THROWS_AS(db.at("Not a key"), std::out_of_range);
+    }
+
+    SECTION("free") {
+        // Can delete an existing key
+        REQUIRE(db.count("Hello"));
+        db.free("Hello");
+        REQUIRE_FALSE(db.count("Hello"));
+
+        // Can delete a non-existing key
+        db.free("Hello");
+        REQUIRE_FALSE(db.count("Hello"));
+    }
 
     if(do_large_value) {
         // We note that the problem presumably comes from using 32 bit integers,
@@ -30,11 +79,19 @@ TEST_CASE("RocksDBPIMPL") {
 
         std::string buffer;
         REQUIRE(buffer.max_size() > 5E9); // Make sure the test actually can run
+
+        // This fills buffer with random numbers (as strings) until we have more
+        // than 5E9 characters in buffer
         srand(time(NULL));
         while(buffer.size() < 5E9) { buffer += std::to_string(rand()); }
+
+        // Now insert a copy of buffer
         db.insert("large value", buffer);
-        auto large_value = db.at("large value");
-        REQUIRE(large_value.get() == buffer);
+
+        // Get the copy of the large value back and compare it to buffer
+        auto val = db.at("large value");
+        REQUIRE(val.get() == buffer);
     }
+    std::filesystem::remove_all(p);
 }
 #endif

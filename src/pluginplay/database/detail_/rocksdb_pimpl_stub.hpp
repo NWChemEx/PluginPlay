@@ -1,5 +1,6 @@
 #include "rocksdb.hpp"
 #include <stdexcept>
+
 namespace pluginplay::database::detail_ {
 
 /** @brief This class is a stub API for the RocksDBPIMPL

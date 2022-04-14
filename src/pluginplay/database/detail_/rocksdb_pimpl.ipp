@@ -16,10 +16,11 @@ bool ROCKSDB_PIMPL::count(const_key_reference key) const noexcept {
     assert_ptr_();
     auto opts = rocksdb::ReadOptions();
 
-    // Rule out that it definitely doesn't exist
-    if(!m_db_->KeyMayExist(opts, key, nullptr)) return false;
-
     mapped_type buffer;
+
+    // Rule out that it definitely doesn't exist
+    if(!m_db_->KeyMayExist(opts, key, &buffer)) return false;
+
     auto status = m_db_->Get(opts, key, &buffer);
     return mapped_type{} != buffer;
 }
@@ -53,7 +54,8 @@ typename ROCKSDB_PIMPL::const_mapped_reference ROCKSDB_PIMPL::at(
     auto opts = rocksdb::ReadOptions();
     mapped_type buffer;
     auto status = m_db_->Get(opts, key, &buffer);
-    assert(status.ok());
+
+    if(!status.ok()) throw std::out_of_range(status.ToString());
     return const_mapped_reference(std::move(buffer));
 }
 

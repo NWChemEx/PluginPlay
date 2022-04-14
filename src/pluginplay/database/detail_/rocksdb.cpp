@@ -1,8 +1,9 @@
-/* RocksDB is designed to be an optional dependency. To accomplish this we
- * hide all RocksDB-specific calls in the PIMPL. This file then chooses between
- * the real and the stub PIMPL implementations based on whether or not
- * BUILD_ROCKS_DB is defined. N.B. The stub PIMPL will crash if a user tries to
- * instantiate it.
+/* RocksDB is designed to be an optional dependency. To accomplish this we need
+ * to use preprocessor macros. Our goal is to localize them as much as possible.
+ * To that end, we define two PIMPL implementations, rocksdb_pimpl.hpp contains
+ * the real one which gets included when BUILD_ROCKS_DB is defined and
+ * rocksdb_pimpl_stub.hpp gets included otherwise. The dispatch between the two
+ * happens here (away from the API of the RocksDB class).
  */
 
 #ifdef BUILD_ROCKS_DB
