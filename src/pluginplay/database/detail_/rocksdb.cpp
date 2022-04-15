@@ -29,7 +29,8 @@ ROCKS_DB::~RocksDB() noexcept = default;
 
 TPARAMS
 bool ROCKS_DB::count_(const_key_reference key) const noexcept {
-    return pimpl_().count(key);
+    if(!m_pimpl_) return false;
+    return m_pimpl_->count(key);
 }
 
 TPARAMS

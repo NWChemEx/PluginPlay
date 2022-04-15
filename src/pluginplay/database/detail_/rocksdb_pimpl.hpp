@@ -56,7 +56,7 @@ public:
      *  @throws None No throw guarantee. At the moment, if an error occurs an
      *               assertion is tripped.
      */
-    RocksDBPIMPL(const_path_reference path);
+    explicit RocksDBPIMPL(const_path_reference path);
 
     /** @brief Returns the number of times a key appears in the database.
      *
