@@ -82,12 +82,85 @@ public:
      */
     bool count(const_key_reference key) const noexcept { return count_(key); }
 
+    /** @brief Public API for adding a key/value pair to the database.
+     *
+     *  Databases are viewed as key/value stores. This method is used to add a
+     *  key/value pair to the database. If @p key is not currently being used as
+     *  a key, then a new entry will be created using @p key as the key and
+     *  @p value as the mapped value. If @p key is currently in use, then
+     *  @p value will overwrite the value currently associated with @p key.
+     *
+     *  N.B. The implementation will own a copy of @p key and @p value. If you
+     *       don't want to give up ownership of @p key and @p value let the
+     *       API make a copy. Otherwise, make sure you `std::move` @p key and
+     *       @p value into this function to avoid (potentially costly) copies.
+     *
+     *  N.B. This function is implemented by insert_
+     *
+     *  @param[in] key The label @p value will be stored under.
+     *  @param[in] value The object being stored under @p key.
+     *
+     *  @throw ??? Throws if the backend throws. Same guarantee as the backend.
+     */
     void insert(KeyType key, ValueType value);
 
+    /** @brief Public API for releasing a key.
+     *
+     *  This method will delete the specified key and the value associated with
+     *  it. If @p key is not in use this is a no-op. After calling this method
+     *  @p key will not be a valid key for this database (and if applicable, any
+     *  subdatabases). In general calling this method will also invalidate all
+     *  references obtained via `at` or `operator[]`, although it may not happen
+     *  immediately.
+     *
+     *  N.B. This function is implemented by free_
+     *
+     *  @param[in] key The database will forget that this key (and its
+     *                 associated value) ever existed.
+     *
+     *  @throw ??? Throws if the backend throws. Backends are encouraged to
+     *             implement free in a manner which is no-throw guarantee, but
+     *             this may not always be possible.
+     */
     void free(const_key_reference key) { free_(key); }
 
+    /** @brief Returns the value associated with a key, throwing if the key is
+     *         not valid.
+     *
+     *  This function is the same as operator[], but will throw if there is no
+     *  value stored under @p key.
+     *
+     *  N.B. This function's implementation relies on count_ and at_.
+     *
+     *  @param[in] key The label of the value we want.
+     *
+     *  @return An object whose `.get()` method returns an immutable reference
+     *          to the value associated with @p key.
+     *
+     *  @throw std::out_of_range if @p key is not currently associated with a
+     *                           value in the database. Strong throw guarantee.
+     */
     const_mapped_reference at(const_key_reference key) const;
 
+    /** @brief Returns the value associated with a key.
+     *
+     *  This method is used to retrieve the value associated with @p key. The
+     *  backend is encouraged to do so without performing a bounds check (i.e.,
+     *  ensuring @p key is assigned to a value) so that users can prefer this
+     *  method over `at` when they know that @p key is valid. That said,
+     *  depending on the backend's implementation, looking for the @p key can
+     *  itself amount to a bounds check. In these cases the backend may still
+     *  throw if the @p key is not found. Even if the backend doesn't throw,
+     *  attempting to use the value returned by an invalid key is undefined
+     *  behavior.
+     *
+     *  @param[in] key The label of the value we want.
+     *
+     *  @return An object whose `.get()` method returns an immutable reference
+     *          to the value associated with @p key.
+     *
+     *  @throw ??? Throws if the backend throws. Same throw guarantee.
+     */
     const_mapped_reference operator[](const_key_reference key) const;
 
     void backup() { backup_(); }
@@ -98,7 +171,7 @@ protected:
     /** @brief Hook for derived class to implement count.
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consisten with the description of DatabasePIMPL::count.
+     *  definition consistent with the description of DatabasePIMPL::count.
      *
      *  @param[in] key The key the user is looking for.
      *
@@ -108,10 +181,39 @@ protected:
      */
     virtual bool count_(const_key_reference key) const noexcept = 0;
 
+    /** @brief Hook for derived class to implement insert
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabasePIMPL::insert.
+     *
+     *  @param[in] key The key that @p value will be stored under.
+     *  @param[in] value The object to store under @p key.
+     *
+     *  @throw ??? Backend may choose to throw for a variety of reasons, many of
+     *             which can not be anticipated by this API.
+     */
     virtual void insert_(KeyType key, ValueType value) = 0;
 
+    /** @brief Hook for derived class to implement free
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabasePIMPL::free.
+     *
+     *  @param[in] key The key for the key/value pair to delete.
+     *
+     *  @throw ??? The backend may choose to throw if appropriate.
+     */
     virtual void free_(const_key_reference key) = 0;
 
+    /** @brief Hook for derived class to implement operator[]
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabasePIMPL::operator[].
+     *
+     *  @param[in] key The key whose associated value will be returned.
+     *
+     *  @throw ??? The backend may choose to throw if appropriate.
+     */
     virtual const_mapped_reference at_(const_key_reference key) const = 0;
 
     virtual void backup_() = 0;

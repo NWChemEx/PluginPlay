@@ -201,6 +201,8 @@ private:
      */
     const_mapped_reference large_value_at_(const_key_reference key) const;
 
+    void large_value_free_(const_key_reference key);
+
     /** @brief Maximum size a value can be.
      *
      *  RocksDB can't handle values which are larger than 4 GB; they recommend

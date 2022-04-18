@@ -14,6 +14,7 @@ ROCKSDB_PIMPL::ROCKSDB_PIMPL(const_path_reference path) :
 TPARAMS
 bool ROCKSDB_PIMPL::count(const_key_reference key) const noexcept {
     assert_ptr_();
+    if(m_split_values_.count(key)) return true;
     auto opts = rocksdb::ReadOptions();
 
     mapped_type buffer;
@@ -40,6 +41,10 @@ void ROCKSDB_PIMPL::insert(key_type key, mapped_type value) {
 TPARAMS
 void ROCKSDB_PIMPL::free(const_key_reference key) {
     assert_ptr_();
+    if(m_split_values_.count(key)) {
+        large_value_free_(key);
+        return;
+    }
     auto opts   = rocksdb::WriteOptions();
     auto status = m_db_->Delete(opts, std::move(key));
     assert(status.ok());
@@ -127,6 +132,12 @@ typename ROCKSDB_PIMPL::const_mapped_reference ROCKSDB_PIMPL::large_value_at_(
         buffer += std::move(sub_value.get());
     }
     return const_mapped_reference(std::move(buffer));
+}
+
+TPARAMS
+void ROCKSDB_PIMPL::large_value_free_(const_key_reference key) {
+    for(const auto& sub_key : m_split_values_.at(key)) free(sub_key);
+    m_split_values_.erase(key);
 }
 
 #undef ROCKSDB_PIMPL
