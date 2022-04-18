@@ -22,7 +22,7 @@ option(
     "If enabled and BUILD_DOCS is true no libraries will be built" OFF
 )
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
-option(BUILD_ROCKSDB "Should we build the RocksDB backend?" ON)
+option(BUILD_ROCKSDB "Should we build the RocksDB backend?" OFF)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -63,8 +63,9 @@ cpp_find_or_build_dependency(
         CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
-set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
+set(ROCKSDB_TARGET "")
 if("${BUILD_ROCKSDB}")
+    set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
     find_package(RocksDB REQUIRED)
     # TODO: We need to do a superbuild for RocksDB
     # cpp_find_or_build_dependency(
@@ -82,8 +83,6 @@ if("${BUILD_ROCKSDB}")
     #                WITH_TESTS=OFF
     # )
     target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
-else()
-    add_library(${ROCKSDB_TARGET} INTERFACE)
 endif()
 
 cpp_add_library(

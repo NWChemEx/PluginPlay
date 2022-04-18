@@ -163,8 +163,36 @@ public:
      */
     const_mapped_reference operator[](const_key_reference key) const;
 
+    /** @brief Checkpoints the database.
+     *
+     *  This function is called when the user wants the database to be
+     *  checkpointed, but is not done with the data in the database. Think of
+     *  this as "save". Exactly what this means is up to the derived class, but
+     *  in general after a successful call to this method, the database instance
+     *  will still have the same keys and values, but the data in it will be
+     *  backed-up.
+     *
+     * N.B. This function's implementation relies on backup_
+     *
+     * @throw ??? Throws if the backend throws. The backend is encouraged to try
+     *            to implement this method in a no throw manner if at all
+     *            possible.
+     */
     void backup() { backup_(); }
 
+    /** @brief Checkpoints and erases the database's contents.
+     *
+     *  This method is intended to be more or less backup(), followed by freeing
+     *  up the key/values in the database. The actual data is stored and can be
+     *  reloaded and the memory is freed up. This is it's own function (and not
+     *  implemented in terms of backup_ and free_) so that the backend can
+     *  guarantee that data isn't loss.
+     *
+     *  N.B. This function's implementation relies on dump_
+     *
+     *  @throw ??? Throws if the backend throws. The backend is encouraged to
+     *             implement this in a no throw manner if at all possible.
+     */
     void dump() { dump_(); }
 
 protected:
@@ -216,8 +244,22 @@ protected:
      */
     virtual const_mapped_reference at_(const_key_reference key) const = 0;
 
+    /** @brief Hook for derived class to implement backup
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabasePIMPL::backup.
+     *
+     *  @throw ??? The backend may choose to throw if appropriate.
+     */
     virtual void backup_() = 0;
 
+    /** @brief Hook for derived class to implement dump
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabasePIMPL::dump.
+     *
+     *  @throw ??? The backend may choose to throw if appropriate.
+     */
     virtual void dump_() = 0;
 };
 
