@@ -1,5 +1,6 @@
 #pragma once
 #include "../value.hpp"
+#include <stdexcept>
 
 namespace pluginplay::database::detail_ {
 
