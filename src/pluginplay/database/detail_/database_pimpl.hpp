@@ -1,6 +1,7 @@
 #pragma once
 #include "../value.hpp"
 #include <stdexcept>
+
 namespace pluginplay::database::detail_ {
 
 /** @brief Implements a Database object.
