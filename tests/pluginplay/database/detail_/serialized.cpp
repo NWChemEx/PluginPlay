@@ -1,5 +1,6 @@
-#include "map.hpp"
+#include "../lexical_cast.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/database/detail_/native.hpp>
 #include <pluginplay/database/detail_/serialized.hpp>
 #include <sstream>
 
@@ -23,25 +24,6 @@ using si_pair    = std::pair<std::string, int>;
 using ss_pair    = std::pair<std::string, std::string>;
 using test_types = std::tuple<ii_pair, is_pair, si_pair, ss_pair>;
 
-namespace {
-
-// Allows us to use strings of numbers as key/values regardless of what types
-// the keys/values actually are
-template<typename T>
-T lexical_cast(const std::string& input) {
-    if constexpr(std::is_same_v<T, std::string>) {
-        return input;
-    } else {
-        std::stringstream ss;
-        ss << input;
-        T out;
-        ss >> out;
-        return out;
-    }
-}
-
-} // namespace
-
 TEMPLATE_LIST_TEST_CASE("Serialized", "", test_types) {
     // Unwrap the types for this test
     using value_type  = TestType;
@@ -53,16 +35,16 @@ TEMPLATE_LIST_TEST_CASE("Serialized", "", test_types) {
 
     // Work out the type of the wrapped database
     using binary_type = typename serialized_type::binary_type;
-    using sub_db_type = testing::Map<binary_type, binary_type>;
+    using sub_db_type = Native<binary_type, binary_type>;
 
     // Make the database wrapped by the Serialized instance
     auto pdb = std::make_unique<sub_db_type>();
 
     // Make some keys and values to put into the instance
     key_type key0;
-    auto key1 = lexical_cast<key_type>("1");
+    auto key1 = testing::lexical_cast<key_type>("1");
     mapped_type value0;
-    auto value1 = lexical_cast<mapped_type>("42");
+    auto value1 = testing::lexical_cast<mapped_type>("42");
 
     // Make the Serialized instance
     serialized_type smap(std::move(pdb));
