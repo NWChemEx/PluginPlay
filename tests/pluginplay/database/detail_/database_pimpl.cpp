@@ -1,6 +1,8 @@
-#include "map.hpp"
 #include <catch2/catch.hpp>
 #include <pluginplay/database/detail_/database_pimpl.hpp>
+#include <pluginplay/database/detail_/native.hpp>
+
+using namespace pluginplay::database::detail_;
 
 /* Testing Strategy:
  *
@@ -13,7 +15,7 @@
  */
 
 TEST_CASE("DatabasePIMPL") {
-    testing::Map<std::string, std::string> m;
+    Native<std::string, std::string> m;
     m.insert("Hello", "World");
 
     SECTION("at") {

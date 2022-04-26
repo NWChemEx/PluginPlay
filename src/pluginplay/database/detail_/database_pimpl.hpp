@@ -73,6 +73,13 @@ public:
      *  require that the database keys be unique, which in turn means that the
      *  result of calling this function is either 0 or 1, i.e., false or true.
      *
+     *  For hierarchical databases, and at this point in time, count is NOT
+     *  recursive. For example say you have a database which stores things in
+     *  memory, but when asked can back the memory database up to a database on
+     *  disk. Say @p key is a key in the memory database, after calling dump
+     *  calling `count(key)` on the memory database will return false, but
+     *  calling `count(key)` on the disk subdatabase will return true.
+     *
      *  N.B. This function is actually implemented by count_
      *
      *  @return The number of times @p key appears in the database. Since keys
@@ -90,6 +97,10 @@ public:
      *  a key, then a new entry will be created using @p key as the key and
      *  @p value as the mapped value. If @p key is currently in use, then
      *  @p value will overwrite the value currently associated with @p key.
+     *
+     *  For hierarchical databases insert will only add the new element to the
+     *  database insert was called on, i.e., the elements will not be added to
+     *  any subdatabases until backup and/or dump is called.
      *
      *  N.B. The implementation will own a copy of @p key and @p value. If you
      *       don't want to give up ownership of @p key and @p value let the
@@ -109,10 +120,13 @@ public:
      *
      *  This method will delete the specified key and the value associated with
      *  it. If @p key is not in use this is a no-op. After calling this method
-     *  @p key will not be a valid key for this database (and if applicable, any
-     *  subdatabases). In general calling this method will also invalidate all
-     *  references obtained via `at` or `operator[]`, although it may not happen
-     *  immediately.
+     *  @p key will not be a valid key for this database. In general calling
+     *  this method will also invalidate all references obtained via `at` or
+     *  `operator[]`, although it may not happen immediately.
+     *
+     *  For hierarchical databases free only releases the key/value pair from
+     *  the database it was called on. If the key/value pair was backed up to a
+     *  subdatabase it will still exist there.
      *
      *  N.B. This function is implemented by free_
      *
@@ -155,6 +169,12 @@ public:
      *  attempting to use the value returned by an invalid key is undefined
      *  behavior.
      *
+     *  For hierarchical databases this function only retrieves the value from
+     *  the database it was called on. In other words, this function will not
+     *  check any subdatabases for @p key. This behavior is consistent with
+     *  `count`, which will return false if @p key only exists in the
+     *  subdatabase.
+     *
      *  @param[in] key The label of the value we want.
      *
      *  @return An object whose `.get()` method returns an immutable reference
@@ -167,13 +187,16 @@ public:
     /** @brief Checkpoints the database.
      *
      *  This function is called when the user wants the database to be
-     *  checkpointed, but is not done with the data in the database. Think of
-     *  this as "save". Exactly what this means is up to the derived class, but
-     *  in general after a successful call to this method, the database instance
-     *  will still have the same keys and values, but the data in it will be
-     *  backed-up.
+     *  checkpointed, but the user is not done with the data in the database.
+     *  Think of this as "save". Exactly what this means is up to the derived
+     *  class, but in general after a successful call to this method, the
+     *  database instance will still have the same keys and values, but the
+     *  data in it will be backed-up as defined by the implementation.
      *
-     * N.B. This function's implementation relies on backup_
+     *  For hierarchical databases this function will usually copy the data into
+     *  the subdatabase.
+     *
+     *  N.B. This function's implementation relies on backup_
      *
      * @throw ??? Throws if the backend throws. The backend is encouraged to try
      *            to implement this method in a no throw manner if at all
@@ -184,9 +207,9 @@ public:
     /** @brief Checkpoints and erases the database's contents.
      *
      *  This method is intended to be more or less backup(), followed by freeing
-     *  up the key/values in the database. The actual data is stored and can be
-     *  reloaded and the memory is freed up. This is it's own function (and not
-     *  implemented in terms of backup_ and free_) so that the backend can
+     *  up the key/values in the database. Hence it's sort of "save and exit".
+     *  This is it's own function (and not implemented in terms of backup_ and
+     *  free_) so that the backend can do this in an optimized manner and
      *  guarantee that data isn't loss.
      *
      *  N.B. This function's implementation relies on dump_

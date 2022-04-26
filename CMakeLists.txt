@@ -63,6 +63,8 @@ cpp_find_or_build_dependency(
         CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
+find_package(Boost REQUIRED)
+
 set(ROCKSDB_TARGET "")
 if("${BUILD_ROCKSDB}")
     set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
@@ -90,6 +92,7 @@ cpp_add_library(
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
     DEPENDS nwx::utilities nwx::parallelzone libfort::fort ${ROCKSDB_TARGET}
+            Boost::boost
 )
 
 include(nwx_python_mods)
