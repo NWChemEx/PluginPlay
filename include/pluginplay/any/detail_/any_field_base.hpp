@@ -31,6 +31,21 @@ public:
      */
     field_base_pointer clone() const { return clone_(); }
 
+    /** @brief Polymorphic copy
+     *
+     *  This method returns a pointer to a newly allocated AnyFieldBase instance
+     *  which contains a deep copy of this instance's state. The copied state is
+     *  not only the state in the AnyFieldBase class, but also the state in the
+     *  derived class as well.
+     *
+     *  @return A pointer to a newly allocated, polymorphic deep copy of this
+     *          instance.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the new state.
+     *                        Strong throw guarantee.
+     */
+    field_base_pointer clone() const { return clone_(); }
+
     /// Standard polymorphic dtor
     virtual ~AnyFieldBase() noexcept = default;
 
@@ -242,9 +257,9 @@ protected:
 private:
     /// Deleted to avoid slicing
     ///@{
-    AnyFieldBase(AnyFieldBase&& other) = delete;
+    AnyFieldBase(AnyFieldBase&& other)           = delete;
     AnyFieldBase& operator=(const AnyFieldBase&) = delete;
-    AnyFieldBase& operator=(AnyFieldBase&&) = delete;
+    AnyFieldBase& operator=(AnyFieldBase&&)      = delete;
     ///@}
 
     /// To be overriddent to implement clone
