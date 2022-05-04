@@ -1,76 +1,195 @@
-#include "pluginplay/any/detail_/any_input_wrapper.hpp"
-#include "pluginplay/any/detail_/any_result_wrapper.hpp"
+#include "../test_any.hpp"
+#include "pluginplay/any/detail_/any_field_wrapper.hpp"
 #include <sstream>
 
-#include "../test_any.hpp"
-
-using namespace pluginplay::detail_;
+using namespace pluginplay::any::detail_;
 
 /* Testing Strategy:
  *
- * All of the base classes in the any hierarchy are abstract except for the
- * most derived ones. Hence we need to create instances of the most derived
- * classes to test the base classes. In this file we only unit test functions
- * which are overriden in the AnyFieldWrapper and use other files to unit test
- * functions overriden elsewhere in the hierarchy. We test the AnyFieldWrapper
+ * AnyFieldWrapper implements AnyFieldBase. Functions implemented in
+ * AnyFieldBase are tested in AnyFieldBase.cpp and do not need to be retested
+ * here. The unit tests here focus on methods implemented in AnyFieldBase.
+ *
+ * Considerations:
+ * - several wrapped types via testing::types2test
+ * - wrapping by value, const value, const reference
+ * - instances wrap types T and U such that std::decay_t<T> != std::decay_t<U>
  */
 
 TEMPLATE_LIST_TEST_CASE("AnyFieldWrapper", "", testing::types2test) {
-    using type                = TestType;
-    using result_wrapper_type = AnyResultWrapper<type>;
-    using input_wrapper_type  = AnyInputWrapper<type>;
-    using cval_input_wrapper  = AnyInputWrapper<const type>;
-    using cref_input_wrapper  = AnyInputWrapper<const type&>;
-    using rtti_type           = typename result_wrapper_type::rtti_type;
+    using type              = TestType;
+    using wrapper_type      = AnyFieldWrapper<type>;
+    using cval_wrapper      = AnyFieldWrapper<const type>;
+    using cref_wrapper      = AnyFieldWrapper<const type&>;
+    using rtti_type         = typename wrapper_type::rtti_type;
+    using different_type    = std::map<int, double>; // A type no in types2test
+    using different_wrapper = AnyFieldWrapper<different_type>;
 
     rtti_type rtti(typeid(type));
 
+    type default_value{};
     auto value = testing::non_default_value<type>();
 
-    result_wrapper_type rdefaulted(type{});
-    result_wrapper_type rhas_value(value);
+    wrapper_type defaulted(default_value);
+    wrapper_type has_value(value);
+    cval_wrapper const_val(value);
+    cref_wrapper const_ref(value);
+    different_wrapper diff(different_type{});
 
-    input_wrapper_type idefaulted(type{});
-    input_wrapper_type ihas_value(value);
-    cval_input_wrapper const_val(value);
-    cref_input_wrapper const_ref(value);
+    SECTION("Value CTor") {
+        REQUIRE(defaulted.type() == rtti);
+        REQUIRE(has_value.type() == rtti);
+        REQUIRE(const_val.type() == rtti);
+        REQUIRE(const_ref.type() == rtti);
+
+        REQUIRE(defaulted.template cast<const type&>() == default_value);
+        REQUIRE(has_value.template cast<const type&>() == value);
+        REQUIRE(const_val.template cast<const type&>() == value);
+        REQUIRE(&const_ref.template cast<const type&>() == &value);
+
+        // Ensure we can move complicated types when stored by value
+        if constexpr(std::is_same_v<type, std::vector<int>>) {
+            const auto corr = value.data();
+            wrapper_type moved(std::move(value));
+            auto p = moved.template cast<const type&>().data();
+            REQURIE(corr == p);
+        }
+    }
+
+    SECTION("clone") {
+        auto defaulted2 = defaulted.clone();
+        REQUIRE(defaulted2->are_equal(defaulted));
+
+        auto has_value2 = has_value.clone();
+        REQUIRE(has_value2->are_equal(has_value));
+
+        auto const_val2 = const_val.clone();
+        REQUIRE(const_val2->value_equal(const_val));
+
+        auto const_ref2 = const_ref.clone();
+        REQUIRE(const_ref2->value_equal(const_ref));
+
+        // Is deep copy
+        auto corr = &const_ref.template cast<const type&>();
+        REQUIRE(corr == &value);
+        REQUIRE(&const_ref2->template cast<const type&>() != corr);
+        REQUIRE(const_ref2->template cast<const type&>() == value);
+    }
+
+    SECTION("are_equal") {
+        // Defaults are equal
+        REQUIRE(defaulted.are_equal(wrapper_type(default_value)));
+
+        // Values are equal
+        REQUIRE(has_value.are_equal(wrapper_type(value)));
+
+        // Default != value
+        REQUIRE_FALSE(defaulted.are_equal(has_value));
+
+        // Value != const Value
+        REQUIRE_FALSE(has_value.are_equal(const_val));
+
+        // Value != const ref
+        REQUIRE_FALSE(has_value.are_equal(const_ref));
+
+        // const value != const ref
+        REQUIRE_FALSE(const_val.are_equal(const_ref));
+
+        // Different types
+        REQUIRE_FALSE(defaulted.are_equal(diff));
+    }
+
+    SECTION("value_equal") {
+        REQUIRE(defaulted.value_equal(wrapper_type(default_value)));
+        REQUIRE_FALSE(defaulted.value_equal(has_value));
+        REQUIRE_FALSE(defaulted.value_equal(const_val));
+        REQUIRE_FALSE(defaulted.value_equal(const_ref));
+        REQUIRE_FALSE(defaulted.value_equal(diff));
+
+        REQUIRE_FALSE(has_value.value_equal(defaulted));
+        REQUIRE(has_value.value_equal(wrapper_type(value)));
+        REQUIRE(has_value.value_equal(const_val));
+        REQUIRE(has_value.value_equal(const_ref));
+        REQUIRE_FALSE(has_value.value_equal(diff));
+
+        REQUIRE_FALSE(const_val.value_equal(defaulted));
+        REQUIRE(const_val.value_equal(has_value));
+        REQUIRE(const_val.value_equal(cval_wrapper(value)));
+        REQUIRE(const_val.value_equal(const_ref));
+        REQUIRE_FALSE(const_val.value_equal(diff));
+
+        REQUIRE_FALSE(const_ref.value_equal(defaulted));
+        REQUIRE(const_ref.value_equal(has_value));
+        REQUIRE(const_ref.value_equal(const_val));
+        REQUIRE(const_val.value_equal(cref_wrapper(value)));
+        REQUIRE_FALSE(const_val.value_equal(diff));
+    }
+
+    SECTION("value_less") {
+        // N.B. for all types considered, the default constructed type compares
+        // less than our non-default value.
+
+        // This is what comparing different types should yield
+        bool corr = rtti < typeid(different_type);
+
+        REQUIRE_FALSE(defaulted.value_less(wrapper_type(default_value)));
+        REQUIRE(defaulted.value_less(has_value));
+        REQUIRE(defaulted.value_less(const_val));
+        REQUIRE(defaulted.value_less(const_ref));
+        REQUIRE(defaulted.value_less(diff) == corr);
+
+        REQUIRE_FALSE(has_value.value_less(defaulted));
+        REQUIRE_FALSE(has_value.value_less(wrapper_type(value)));
+        REQUIRE_FALSE(has_value.value_less(const_val));
+        REQUIRE_FALSE(has_value.value_less(const_ref));
+        REQUIRE(has_value.value_less(diff) == corr);
+
+        REQUIRE_FALSE(const_val.value_less(defaulted));
+        REQUIRE_FALSE(const_val.value_less(has_value));
+        REQUIRE_FALSE(const_val.value_less(cval_wrapper(value)));
+        REQUIRE_FALSE(const_val.value_less(const_ref));
+        REQUIRE(const_val.value_less(diff) == corr);
+
+        REQUIRE_FALSE(const_ref.value_less(defaulted));
+        REQUIRE_FALSE(const_ref.value_less(has_value));
+        REQUIRE_FALSE(const_ref.value_less(const_val));
+        REQUIRE_FALSE(const_val.value_less(cref_wrapper(value)));
+        REQUIRE(const_val.value_less(diff) == corr);
+    }
 
     SECTION("type") {
-        REQUIRE(rdefaulted.type() == rtti);
-        REQUIRE(rhas_value.type() == rtti);
-        REQUIRE(idefaulted.type() == rtti_type(typeid(type)));
-        REQUIRE(ihas_value.type() == rtti_type(typeid(type)));
-        REQUIRE(const_val.type() == rtti_type(typeid(const type)));
-        REQUIRE(const_ref.type() == rtti_type(typeid(const type&)));
+        REQUIRE(defaulted.type() == rtti);
+        REQUIRE(has_value.type() == rtti);
+        REQUIRE(const_val.type() == rtti);
+        REQUIRE(const_ref.type() == rtti);
     }
 
     SECTION("print") {
         std::stringstream ss;
 
-        SECTION("input") {
-            auto pss = &(ihas_value.print(ss));
-            REQUIRE(pss == &ss);
+        auto pss = &(has_value.print(ss));
+        REQUIRE(pss == &ss);
 
-            if constexpr(std::is_same_v<type, int>) {
-                REQUIRE(ss.str() == "42");
-            } else if constexpr(std::is_same_v<type, double>) {
-                REQUIRE(ss.str() == "3.14");
-            } else if constexpr(std::is_same_v<type, std::string>) {
-                REQUIRE(ss.str() == "Hello World");
-            }
+        if constexpr(std::is_same_v<type, int>) {
+            REQUIRE(ss.str() == "42");
+        } else if constexpr(std::is_same_v<type, double>) {
+            REQUIRE(ss.str() == "3.14");
+        } else if constexpr(std::is_same_v<type, std::string>) {
+            REQUIRE(ss.str() == "Hello World");
         }
+    }
 
-        SECTION("result") {
-            auto pss = &(rhas_value.print(ss));
-            REQUIRE(pss == &ss);
+    SECTION("storing_const_reference") {
+        REQUIRE_FALSE(defaulted.storing_const_reference());
+        REQUIRE_FALSE(has_value.storing_const_reference());
+        REQUIRE_FALSE(const_val.storing_const_reference());
+        REQUIRE(const_ref.storing_const_reference());
+    }
 
-            if constexpr(std::is_same_v<type, int>) {
-                REQUIRE(ss.str() == "42");
-            } else if constexpr(std::is_same_v<type, double>) {
-                REQUIRE(ss.str() == "3.14");
-            } else if constexpr(std::is_same_v<type, std::string>) {
-                REQUIRE(ss.str() == "Hello World");
-            }
-        }
+    SECTION("storing_const_value") {
+        REQUIRE_FALSE(defaulted.storing_const_value());
+        REQUIRE_FALSE(has_value.storing_const_value());
+        REQUIRE(const_val.storing_const_value());
+        REQUIRE_FALSE(const_ref.storing_const_value());
     }
 }

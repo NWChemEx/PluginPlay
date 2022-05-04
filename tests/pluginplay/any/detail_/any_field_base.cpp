@@ -1,41 +1,41 @@
-#include "pluginplay/any/detail_/any_input_wrapper.hpp"
-#include <map>
-
 #include "../test_any.hpp"
+#include "pluginplay/any/detail_/any_field_wrapper.hpp"
+#include <sstream>
 
-using namespace pluginplay::detail_;
+using namespace pluginplay::any::detail_;
 
 /* Testing Strategy:
  *
- * All of the base classes in the any hierarchy are abstract except for the
- * most derived ones. Hence we need to create instances of the most derived
- * classes to test the base classes. In this file we only unit test functions
- * which are defined in the AnyInputBase class and use other files to unit test
- * functions overriden elsewhere in the hierarchy.
+ * AnyFieldBase is abstract so we need to make a derived instance and test
+ * through that. Here we only test functions which are fully implemented in
+ * AnyFieldBase.
  */
 
-TEMPLATE_LIST_TEST_CASE("AnyInputBase", "", testing::types2test) {
-    using type               = TestType;
-    using input_wrapper_type = AnyInputWrapper<type>;
-    using cval_input_wrapper = AnyInputWrapper<const type>;
-    using cref_input_wrapper = AnyInputWrapper<const type&>;
-    using rtti_type          = typename input_wrapper_type::rtti_type;
-    using map_type           = std::map<int, int>;
+TEMPLATE_LIST_TEST_CASE("AnyFieldBase", "", testing::types2test) {
+    using type         = TestType;
+    using wrapper_type = AnyFieldWrapper<type>;
+    using cval_wrapper = AnyFieldWrapper<const type>;
+    using cref_wrapper = AnyFieldWrapper<const type&>;
+    using rtti_type    = typename wrapper_type::rtti_type;
+    using map_type     = std::map<int, double>; // Type we know it won't contain
 
+    rtti_type rtti(typeid(type));
+
+    type default_value{};
     auto value = testing::non_default_value<type>();
 
-    input_wrapper_type defaulted(type{});
-    input_wrapper_type has_value(value);
-    cval_input_wrapper const_val(value);
-    cref_input_wrapper const_ref(value);
+    wrapper_type defaulted(default_value);
+    wrapper_type has_value(value);
+    cval_wrapper const_val(value);
+    cref_wrapper const_ref(value);
 
     SECTION("cast") {
         using error_t = std::runtime_error;
 
-        REQUIRE(defaulted.template cast<type>() == type{});
-        REQUIRE(defaulted.template cast<const type>() == type{});
-        REQUIRE(defaulted.template cast<type&>() == type{});
-        REQUIRE(defaulted.template cast<const type&>() == type{});
+        REQUIRE(defaulted.template cast<type>() == default_value);
+        REQUIRE(defaulted.template cast<const type>() == default_value);
+        REQUIRE(defaulted.template cast<type&>() == default_value);
+        REQUIRE(defaulted.template cast<const type&>() == default_value);
         REQUIRE_THROWS_AS(defaulted.template cast<map_type>(), error_t);
 
         REQUIRE(has_value.template cast<type>() == value);
@@ -61,9 +61,9 @@ TEMPLATE_LIST_TEST_CASE("AnyInputBase", "", testing::types2test) {
         using error_t = std::runtime_error;
 
         const auto& cdefault = std::as_const(defaulted);
-        REQUIRE(cdefault.template cast<type>() == type{});
-        REQUIRE(cdefault.template cast<const type>() == type{});
-        REQUIRE(cdefault.template cast<const type&>() == type{});
+        REQUIRE(cdefault.template cast<type>() == default_value);
+        REQUIRE(cdefault.template cast<const type>() == default_value);
+        REQUIRE(cdefault.template cast<const type&>() == default_value);
         REQUIRE_THROWS_AS(cdefault.template cast<map_type>(), error_t);
 
         const auto& cval = std::as_const(has_value);
@@ -84,10 +84,10 @@ TEMPLATE_LIST_TEST_CASE("AnyInputBase", "", testing::types2test) {
         REQUIRE(cref.template cast<const type&>() == value);
         REQUIRE_THROWS_AS(cref.template cast<map_type>(), error_t);
 
-        // Trying to get a mutable reference back from a read-only AnyInputBase
+        // Trying to get a mutable reference back from a read-only AnyFieldBase
         // will trip a static assert (and it should). Uncomment this line to
         // check it
-        // REQUIRE(cdefault.template cast<type&>() == type{});
+        // REQUIRE(cdefault.template cast<type&>() == default_value);
     }
 
     SECTION("is_convertible") {
