@@ -409,36 +409,6 @@ public:
      */
     auto& citations() const;
 
-    /** @brief Computes the hash of the current instance using the bound params.
-     *
-     *  This function simply calls memoize with the currently bound inputs.
-     *
-     *  @param[in,out] h The hasher to use for hashing.
-     *
-     *  @throw ??? if any of the hash functions throw. Same throw
-     */
-    void hash(Hasher& h) const { memoize(h, m_inputs_); }
-
-    /** @brief computes a hash for a particular invocation of the `run` member.
-     *
-     *  For a deterministic module providing the module the same inputs must
-     *  return the same outputs. We need a way to determine if we have already
-     *  called the module with a particular set of inputs; that's where this
-     *  function comes in. This function takes a set of input values, as well as
-     *  the set of submodules to use, and maps them to a hash value. Barring the
-     *  universe conspiring against us, that hash value is a concise and unique
-     *  representation of the input state.
-     *
-     * @param[in,out] h The hasher instance to use
-     * @param[in] inputs The values of the inputs to hash
-     *
-     * @throw std::bad_alloc if there is insufficient memory to merge the
-     *                       inputs. Strong throw guarantee.
-     * @throw ??? If the hash function of any input or submodule throws. Strong
-     *            throw guarantee.
-     */
-    void memoize(Hasher& h, type::input_map inputs) const;
-
     /** @brief Returns timing data for this module and all submodules.
      *
      *  Each time the run member is called the time for the call (including all
@@ -590,9 +560,6 @@ private:
      */
     type::input_map merge_inputs_(type::input_map in_inputs) const;
 
-    /// Code factorization for computing the hash of a module
-    std::string get_hash_(const type::input_map& in_inputs);
-
     /// Code factorization for checking if things in a map are ready
     template<typename T>
     std::set<type::key> not_set_guts_(T&& map) const;
@@ -716,18 +683,11 @@ inline bool ModulePIMPL::is_memoizable() const {
     return memoizable;
 }
 
-inline void ModulePIMPL::memoize(Hasher& h, type::input_map inputs) const {
-    inputs = merge_inputs_(std::move(inputs));
-    for(const auto& [k, v] : inputs) v.hash(h);
-    for(const auto& [k, v] : m_submods_) v.hash(h);
-    // This is not a great way of hashing the class name...
-    h(m_base_->type().name());
-}
-
 inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     if(!m_cache_) return false;
     auto ps = merge_inputs_(in_inputs);
-    return m_cache_->count(get_hash_(ps)) == 1;
+    return false;
+    // return m_cache_->count(ps) == 1;
 }
 
 inline void ModulePIMPL::reset_cache() {
@@ -783,13 +743,11 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     lock();
 
     ps = merge_inputs_(ps);
-    // Check cache
-    auto hv = get_hash_(ps);
 
-    if(is_memoizable() && m_cache_ && m_cache_->count(hv)) {
-        m_timer_.record(time_now);
-        return m_cache_->at(hv);
-    }
+    // if(is_memoizable() && m_cache_ && m_cache_->count(ps)) {
+    //     m_timer_.record(time_now);
+    //     return m_cache_->at(hv);
+    // }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
@@ -799,9 +757,9 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     }
 
     // cache result
-    m_cache_->emplace(hv, std::move(rv));
-    m_timer_.record(time_now);
-    return m_cache_->at(hv);
+    // m_cache_->emplace(ps, std::move(rv));
+    // m_timer_.record(time_now);
+    // return m_cache_->at(ps);
 }
 
 inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
@@ -825,13 +783,6 @@ inline type::input_map ModulePIMPL::merge_inputs_(
 inline void ModulePIMPL::lock() {
     for(auto& [k, v] : m_submods_) v.lock();
     m_locked_ = true;
-}
-
-/// Code factorization for computing the hash of a module
-inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
-    Hasher h(pluginplay::HashType::Hash128);
-    memoize(h, in_inputs);
-    return pluginplay::hash_to_string(h.finalize());
 }
 
 template<typename T>

@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/any/any.hpp"
 #include "pluginplay/types.hpp"
 #include <optional>
 #include <typeindex>
@@ -161,24 +161,6 @@ public:
      *                            the developer. Strong throw guarantee.
      */
     bool is_valid(const type::any& new_value) const;
-
-    /** @brief Hashes the current input value if it is opaque.
-     *
-     *  If this instance is opaque this function will pass the value to the
-     *  hasher. If the value is transparent this function does nothing.
-     *
-     *  @param[in,out] h The object to use for hashing the value. If the current
-     *                   instance is opaque @p h 's internal state will be
-     *                   updated with a hash of this instance.
-     *
-     *  @throws none If this instance is transparent this function is no throw
-     *               guarantee.
-     *  @throws ??? If this instance is opaque and hashing of the value throws.
-     *              Same guarantee.
-     */
-    void hash(Hasher& h) const {
-        if(!is_transparent()) h(m_value_);
-    }
 
     /// Setters
     ///@{
@@ -412,7 +394,7 @@ inline void ModuleInputPIMPL::set_type(
     m_type_ = type;
 }
 
-inline void ModuleInputPIMPL::set_value(Any any) {
+inline void ModuleInputPIMPL::set_value(type::any any) {
     assert_type_set_();
     if(!is_valid(any)) {
         std::string msg("Input value has failed bounds checks: ");

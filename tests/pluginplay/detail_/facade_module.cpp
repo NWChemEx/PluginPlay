@@ -20,11 +20,3 @@ TEST_CASE("FacadeModule : is_memoizable") {
     f.turn_on_memoization();
     REQUIRE(f.is_memoizable());
 }
-
-// Once uniques hashes are available for facade modules this unit test should be
-// modified to require false for the hash comparison.
-TEST_CASE("FacadeModule : different hashes for different facades") {
-    auto f1 = pluginplay::make_facade<testing::OneOut>(1);
-    auto f2 = pluginplay::make_facade<testing::OneOut>(2);
-    REQUIRE(pluginplay::hash_objects(f1) == pluginplay::hash_objects(f2));
-}

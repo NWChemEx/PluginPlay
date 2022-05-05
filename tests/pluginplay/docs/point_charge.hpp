@@ -22,6 +22,11 @@ inline bool operator==(const pluginplay_examples::PointCharge& q0,
     return (q0.m_charge == q1.m_charge) && (q0.m_r == q1.m_r);
 }
 
+inline bool operator<(const pluginplay_examples::PointCharge& q0,
+                      const pluginplay_examples::PointCharge& q1) {
+    return std::tie(q0.m_charge, q0.m_r) < std::tie(q1.m_charge, q1.m_r);
+}
+
 inline void hash_object(const pluginplay_examples::PointCharge& q,
                         pluginplay::Hasher& h) {
     h(q.m_charge, q.m_r);

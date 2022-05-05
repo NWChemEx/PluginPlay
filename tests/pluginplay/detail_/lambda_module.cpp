@@ -31,11 +31,3 @@ TEST_CASE("LambdaModule : is_memoizable") {
     l.turn_on_memoization();
     REQUIRE(l.is_memoizable());
 }
-
-// Once uniques hashes are available for lambda modules this unit test should be
-// modified to require false for the hash comparison.
-TEST_CASE("LambdaModule : same hash for different lambdas") {
-    auto l1 = pluginplay::make_lambda<testing::OneOut>([]() { return 1; });
-    auto l2 = pluginplay::make_lambda<testing::OneOut>([]() { return 2; });
-    REQUIRE(pluginplay::hash_objects(l1) == pluginplay::hash_objects(l2));
-}

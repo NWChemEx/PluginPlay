@@ -285,18 +285,6 @@ TEST_CASE("ModulePIMPL : profile_info") {
     }
 }
 
-TEST_CASE("ModulePIMPL : hash") {
-    SECTION("Inputs set vs not set") {
-        auto mod1 = make_module_pimpl<NotReadyModule>();
-        auto mod2 = make_module_pimpl<NotReadyModule>();
-        REQUIRE(pluginplay::hash_objects(mod1) ==
-                pluginplay::hash_objects(mod2));
-        mod1.inputs().at("Option 1").change(3);
-        REQUIRE_FALSE(pluginplay::hash_objects(mod1) ==
-                      pluginplay::hash_objects(mod2));
-    }
-}
-
 TEST_CASE("ModulePIMPL : is_cached") {
     SECTION("No cache") {
         auto mod = make_module_pimpl<NullModule>();

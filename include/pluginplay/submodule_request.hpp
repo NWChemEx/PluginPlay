@@ -302,19 +302,6 @@ public:
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args);
 
-    /** @brief Hashes the module wrapped in the class.
-     *
-     *  If this request contains a module, this function will hash it. If it
-     *  does not contain a module, @p h will not be modified..
-     *
-     *  @param[in,out] h The hasher instance to use. The state of the hasher
-     *                   will be updated with a hash of the wrapped module.
-     *
-     *  @throw ??? If the hash function of the module throws. Same guarantee as
-     *             the module's hash function.
-     */
-    void hash(Hasher& h) const;
-
     /** @brief Compares two SubmoduleRequest instances for equality
      *
      * Two SubmoduleRequest instances are equivalent if they both:

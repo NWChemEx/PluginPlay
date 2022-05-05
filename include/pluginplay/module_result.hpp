@@ -1,5 +1,5 @@
 #pragma once
-#include "pluginplay/detail_/any.hpp"
+#include "pluginplay/any/any.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
 #include <memory>
@@ -282,13 +282,13 @@ T ModuleResult::value() const {
         using type = typename clean_T::element_type;
         return T(at_(), &value<type&>());
     } else
-        return detail_::AnyCast<T>(*at_());
+        return any::any_cast<T>(*at_());
 }
 
 template<typename T>
 type::any ModuleResult::wrap_value_(T&& new_value) {
     using clean_T = std::decay_t<T>;
-    return detail_::make_Any<clean_T>(std::forward<T>(new_value));
+    return any::make_any_field<clean_T>(std::forward<T>(new_value));
 }
 
 } // namespace pluginplay

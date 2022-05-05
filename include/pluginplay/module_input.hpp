@@ -1,11 +1,11 @@
 #pragma once
+#include "pluginplay/any/any.hpp"
 #include "pluginplay/bounds_checking.hpp"
-#include "pluginplay/detail_/any.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
 #include <functional>
 #include <set>
-#include <string>
+#include <sstream>
 #include <utilities/printing/demangler.hpp>
 
 namespace pluginplay {
@@ -198,29 +198,6 @@ public:
      */
     template<typename T>
     bool is_valid(T&& new_value) const;
-
-    /** @brief Hashes the current instance and adds the hash to the provided
-     *         hasher object.
-     *
-     * The current strategy for hashing in the pluginplay is to:
-     *
-     * - make a hasher object,
-     * - pass it to everything you want to hash, and
-     * - finalize the hasher
-     *
-     * Upon finalization the hasher returns the hash of the collective state of
-     * objects passed to it. This function allows ModuleInput instances to be
-     * hashed by the hasher object. The present input will only be hashed if
-     * it is opaque.
-     *
-     * @param[in,out] h The hasher object that is in the process of hashing
-     *                  stuff. If the current instance is opaque it will be
-     *                  added to @p h's internal state.
-     *
-     * @throws ??? If the hash function for the wrapped value throws. Same
-     *             guarantee.
-     */
-    void hash(Hasher& h) const;
 
     /** @brief Sets the type of this input field to @p T.
      *
@@ -426,7 +403,7 @@ public:
      */
     ModuleInput& make_transparent() noexcept;
 
-    std::string str() const { return get_().str(); }
+    std::string str() const;
 
     /** @brief Returns the bound input as an instance of type @p T.
      *
@@ -547,17 +524,9 @@ private:
     template<typename T>
     auto& add_type_check_();
 
-    /// Unwraps an pluginplayAny that contains a const reference
-    template<typename T>
-    static T unwrap_cref_(const type::any& the_value);
-
-    /// Wraps a value into a reference_wrapper wrapped in an pluginplayAny
-    template<typename T>
-    static auto wrap_cref_(T&& new_value);
-
     /// Wraps a value in an pluginplayAny
     template<typename T>
-    static type::any wrap_value_(T&& new_value);
+    type::any wrap_value_(T&& new_value) const;
 
     /// Keeps track of whether the user requested we store a const reference
     bool m_is_cref_ = false;
@@ -577,16 +546,7 @@ inline ModuleInput& ModuleInput::operator=(const ModuleInput& rhs) {
 
 template<typename T>
 bool ModuleInput::is_valid(T&& new_value) const {
-    constexpr bool is_value = std::is_same_v<std::decay_t<T>, T>;
-
-    // If we got a value we can't directly forward it as it's basically a
-    // temporary, this first case creates an object to avoid this.
-    if constexpr(is_value) {
-        std::decay_t<T> holder{std::forward<T>(new_value)};
-        return is_valid_(wrap_cref_(holder));
-    } else {
-        return is_valid_(wrap_cref_(std::forward<T>(new_value)));
-    }
+    return is_valid_(wrap_value_(std::forward<T>(new_value)));
 }
 
 template<typename T>
@@ -604,13 +564,12 @@ T ModuleInput::value() {
     // return read/write ref
     if(m_is_cref_) throw std::bad_any_cast();
 
-    return detail_::AnyCast<T>(get_());
+    return any::any_cast<T>(get_());
 }
 
 template<typename T>
 T ModuleInput::value() const {
-    return m_is_actually_cref_ ? unwrap_cref_<T>(get_()) :
-                                 detail_::AnyCast<T>(get_());
+    return any::any_cast<T>(get_());
 }
 
 template<typename T, typename U>
@@ -637,11 +596,15 @@ auto& ModuleInput::add_check(bounds_checking::InRange<T> check,
 template<typename T>
 auto& ModuleInput::add_check(validity_check<T> check, type::description desc) {
     any_check temp = [check{std::move(check)}](const type::any& new_value) {
-        return check(new_value.is_convertible<T>() ?
-                       new_value.cast<T>() :
-                       ModuleInput::unwrap_cref_<T>(new_value));
+        return check(any::any_cast<T>(new_value));
     };
     return add_check_(std::move(temp), std::move(desc));
+}
+
+inline std::string ModuleInput::str() const {
+    std::stringstream ss;
+    get_().print(ss);
+    return ss.str();
 }
 
 template<typename T>
@@ -667,45 +630,7 @@ auto& ModuleInput::set_type() {
 
 template<typename T>
 auto& ModuleInput::change(T&& new_value) {
-    if constexpr(detail_::IsCString<T>::value) {
-        change_(wrap_value_(std::string(new_value)));
-    } else { // needed to avoid this branch being compiled for string literals
-
-        constexpr bool is_value = std::is_same_v<T, std::decay_t<T>>;
-        constexpr bool is_rref  = std::is_rvalue_reference_v<T>;
-
-        type::any da_any;
-
-        /* Fun time. The pluginplay supports modules taking arguments in one of
-         * two ways:
-         * 1. By const reference (read-only)
-         * 2. By value
-         *
-         * When setting the actual value there's no stipulation requiring
-         * the user to provide us that value in the same form. Specifically
-         * they can provide us the value:
-         * 1. In read/write mode (by reference)
-         * 2. In read-only mode (by constant reference)
-         * 3. By value (constructed it in place)
-         *
-         * Of these three possible inputs, number 3 is the easiest. We
-         * basically just take ownership of it. For the other types of input
-         * what we do depends on how it's going to be used. If the value
-         * will be used in a read-only manner we just make a reference
-         * wrapper around it, otherwise we copy it.
-         */
-        if constexpr(is_value || is_rref) { // User gave us the input by value
-            da_any              = wrap_value_(std::forward<T>(new_value));
-            m_is_actually_cref_ = false;
-        } else {
-            if(m_is_cref_) {
-                da_any              = wrap_cref_(std::forward<T>(new_value));
-                m_is_actually_cref_ = true;
-            } else
-                da_any = wrap_value_(std::forward<T>(new_value));
-        }
-        change_(std::move(da_any));
-    }
+    change_(wrap_value_(std::forward<T>(new_value)));
     return *this;
 }
 
@@ -724,20 +649,13 @@ inline type::any& ModuleInput::get_() {
 }
 
 template<typename T>
-T ModuleInput::unwrap_cref_(const type::any& the_value) {
-    return detail_::AnyCast<cref_wrapper<T>>(the_value);
-}
-
-template<typename T>
-auto ModuleInput::wrap_cref_(T&& new_value) {
-    return detail_::make_Any<cref_wrapper<T>>(
-      std::cref(std::forward<T>(new_value)));
-}
-
-template<typename T>
-type::any ModuleInput::wrap_value_(T&& new_value) {
-    using clean_T = std::remove_reference_t<T>;
-    return detail_::make_Any<clean_T>(std::forward<T>(new_value));
+type::any ModuleInput::wrap_value_(T&& new_value) const {
+    using clean_type = std::decay_t<T>;
+    using cref_type  = const clean_type&;
+    if(m_is_cref_)
+        return any::make_any_field<cref_type>(std::forward<T>(new_value));
+    else
+        return any::make_any_field<clean_type>(std::forward<T>(new_value));
 }
 
 template<typename T>
