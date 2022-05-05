@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pluginplay: pluginplay::detail_::is_any_input_wrapper&lt; AnyInputWrapper&lt; T &gt; &gt; Struct Template Reference</title>
+<title>pluginplay: pluginplay::any::detail_::is_any_field_wrapper&lt; T &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,39 +62,39 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>pluginplay</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structpluginplay_1_1detail___1_1is__any__input__wrapper_3_01AnyInputWrapper_3_01T_01_4_01_4.html">is_any_input_wrapper&lt; AnyInputWrapper&lt; T &gt; &gt;</a></li>  </ul>
+<li class="navelem"><b>pluginplay</b></li><li class="navelem"><b>any</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper.html">is_any_field_wrapper</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">pluginplay::detail_::is_any_input_wrapper&lt; AnyInputWrapper&lt; T &gt; &gt; Struct Template Reference</div>  </div>
+<div class="title">pluginplay::any::detail_::is_any_field_wrapper&lt; T &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Specialization of <a class="el" href="structpluginplay_1_1detail___1_1is__any__input__wrapper.html" title="Primary template for deducing if T is a specialization of AnyInputWrapper.">is_any_input_wrapper</a> for when the template parameter is an <a class="el" href="classpluginplay_1_1detail___1_1AnyInputWrapper.html" title="Implements input-specific methods of the any class.">AnyInputWrapper</a>.  
- <a href="structpluginplay_1_1detail___1_1is__any__input__wrapper_3_01AnyInputWrapper_3_01T_01_4_01_4.html#details">More...</a></p>
+<p>Primary template for deducing if <code>T</code> is a specialization of <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html" title="Given knowledge of type T, implements AnyFieldBase.">AnyFieldWrapper</a>.  
+ <a href="structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="any__input__wrapper_8hpp_source.html">any_input_wrapper.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="any__field__wrapper__traits_8hpp_source.html">any_field_wrapper_traits.hpp</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for pluginplay::detail_::is_any_input_wrapper&lt; AnyInputWrapper&lt; T &gt; &gt;:</div>
+Inheritance diagram for pluginplay::any::detail_::is_any_field_wrapper&lt; T &gt;:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="structpluginplay_1_1detail___1_1is__any__input__wrapper_3_01AnyInputWrapper_3_01T_01_4_01_4.png" alt=""/>
+  <img src="structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper.png" alt=""/>
  </div></div>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
-struct pluginplay::detail_::is_any_input_wrapper&lt; AnyInputWrapper&lt; T &gt; &gt;</h3>
+struct pluginplay::any::detail_::is_any_field_wrapper&lt; T &gt;</h3>
 
-<p>Specialization of <a class="el" href="structpluginplay_1_1detail___1_1is__any__input__wrapper.html" title="Primary template for deducing if T is a specialization of AnyInputWrapper.">is_any_input_wrapper</a> for when the template parameter is an <a class="el" href="classpluginplay_1_1detail___1_1AnyInputWrapper.html" title="Implements input-specific methods of the any class.">AnyInputWrapper</a>. </p>
-<p>This implementation of <a class="el" href="classpluginplay_1_1detail___1_1AnyInputWrapper.html" title="Implements input-specific methods of the any class.">AnyInputWrapper</a> is choosen when <code>T</code> is a specialization of <a class="el" href="classpluginplay_1_1detail___1_1AnyInputWrapper.html" title="Implements input-specific methods of the any class.">AnyInputWrapper</a>.</p>
+<p>Primary template for deducing if <code>T</code> is a specialization of <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html" title="Given knowledge of type T, implements AnyFieldBase.">AnyFieldWrapper</a>. </p>
+<p>We use the templated class <a class="el" href="structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper.html" title="Primary template for deducing if T is a specialization of AnyFieldWrapper.">is_any_field_wrapper</a> to determine if its template parameter is a specialization of <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html" title="Given knowledge of type T, implements AnyFieldBase.">AnyFieldWrapper</a>. This is the primary template and it is selected when <code>T</code> is not an <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html" title="Given knowledge of type T, implements AnyFieldBase.">AnyFieldWrapper</a> specialization.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>The value of the <a class="el" href="classpluginplay_1_1detail___1_1AnyInputWrapper.html" title="Implements input-specific methods of the any class.">AnyInputWrapper</a> template parameter. For the purposes of this trait there are no resctictions on <code>T</code>. </td></tr>
+    <tr><td class="paramname">T</td><td>the type we are inspecting. </td></tr>
   </table>
   </dd>
 </dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/pluginplay/any/detail_/<a class="el" href="any__input__wrapper_8hpp_source.html">any_input_wrapper.hpp</a></li>
+<li>include/pluginplay/any/detail_/<a class="el" href="any__field__wrapper__traits_8hpp_source.html">any_field_wrapper_traits.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
