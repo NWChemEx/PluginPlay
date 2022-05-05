@@ -1,8 +1,9 @@
 #pragma once
+#include "database/database_api.hpp"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache {
 
 /** @brief Object responsible for assigning UUIDs to objects (and remembering
  *         them)
@@ -14,26 +15,22 @@ namespace pluginplay::database::detail_ {
  *  @tparam KeyType The type of the objects having UUIDs assigned to them.
  */
 template<typename KeyType>
-class UUIDMapper : public DatabasePIMPL<KeyType, boost::uuids::uuid> {
-private:
-    /// Type of the base class
-    using base_type = DatabasePIMPL<KeyType, boost::uuids::uuid>;
-
+class UUIDMapper {
 public:
     /// Type of the objects getting UUIDs assigned to them, typedef of KeyType
-    using typename base_type::key_type;
+    using key_type = KeyType;
 
     /// Read-only reference to one of the objects, typedef of const KeyType&
-    using typename base_type::const_key_reference;
+    using const_key_reference = const key_type&;
 
     /// Type of the UUIDs, typedef of boost::uuids::uuid
-    using typename base_type::mapped_type;
-
-    /// Type of an object holding a read-only reference to a UUID
-    using typename base_type::const_mapped_reference;
+    using mapped_type = boost::uuids::uuid;
 
     /// Type of the database that UUIDMapper will store UUIDs in
-    using db_type = DatabasePIMPL<key_type, mapped_type>;
+    using db_type = database::DatabaseAPI<key_type, mapped_type>;
+
+    /// Type of a read-only reference to a UUID
+    using const_mapped_reference = typename db_type::const_mapped_reference;
 
     /// Type of a pointer to the database storing the object-to-UUID relation
     using db_pointer = std::unique_ptr<db_type>;
@@ -72,24 +69,20 @@ public:
      */
     void insert(key_type key);
 
-protected:
     /// Just calls m_db_->count(key)
-    bool count_(const_key_reference key) const noexcept override;
-
-    /// Just calls m_db_->insert(key, value)
-    void insert_(key_type key, mapped_type value) override;
+    bool count(const_key_reference key) const noexcept;
 
     /// Just calls m_db_->free(key)
-    void free_(const_key_reference key) override;
+    void free(const_key_reference key);
 
     /// Just calls m_db_->at(key)
-    const_mapped_reference at_(const_key_reference key) const override;
+    const_mapped_reference at(const_key_reference key) const;
 
     /// Just calls m_db_->backup()
-    void backup_() override;
+    void backup();
 
     /// Just calls m_db_->dump()
-    void dump_() override;
+    void dump();
 
 private:
     /** @brief Wraps the process of generating a UUID
@@ -105,6 +98,6 @@ private:
     db_pointer m_db_;
 };
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache
 
 #include "uuid_mapper.ipp"

@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
-#include <pluginplay/database/detail_/native.hpp>
+#include <pluginplay/cache/database/native.hpp>
 
-using namespace pluginplay::database::detail_;
+using namespace pluginplay::cache::database;
 
 using id_pair    = std::pair<int, double>;
 using si_pair    = std::pair<std::string, int>;

@@ -1,14 +1,16 @@
 #pragma once
-#include "database_pimpl.hpp"
+#include "../database_api.hpp"
 #include <memory>
 #include <string>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
+namespace detail_ {
 class RocksDBPIMPL;
+}
 
 /** @brief Wraps RocksDB in PluginPlay's database API.
  *
- *  This DatabasePIMPL can be used to implement a Database whose data is managed
+ *  This DatabaseAPI can be used to implement a Database whose data is managed
  *  by RocksDB. The RocksDB class has its own PIMPL which wraps the calls to
  *  RocksDB, and handles dispatch if the user opted not to build PluginPlay with
  *  RocksDB support. In the case that PluginPlay was built without RocksDB
@@ -24,10 +26,10 @@ class RocksDBPIMPL;
  *                    type holding binary data.
  */
 template<typename KeyType, typename ValueType>
-class RocksDB : public DatabasePIMPL<KeyType, ValueType> {
+class RocksDB : public DatabaseAPI<KeyType, ValueType> {
 private:
     /// Type this class implements
-    using base_type = DatabasePIMPL<KeyType, ValueType>;
+    using base_type = DatabaseAPI<KeyType, ValueType>;
 
 public:
     /// Type used for specifying the disk location of the database
@@ -104,7 +106,7 @@ protected:
 
 private:
     /// Type of the implementation
-    using pimpl_type = RocksDBPIMPL;
+    using pimpl_type = detail_::RocksDBPIMPL;
 
     /// Type of a mutable reference to the PIMPL
     using pimpl_reference = pimpl_type&;
@@ -130,4 +132,4 @@ private:
 
 extern template class RocksDB<std::string, std::string>;
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database

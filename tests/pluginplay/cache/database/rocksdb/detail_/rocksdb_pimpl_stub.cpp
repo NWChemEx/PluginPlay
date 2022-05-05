@@ -11,9 +11,9 @@
  * finds the real definitions.
  */
 #ifndef BUILD_ROCKS_DB
-#include <pluginplay/database/detail_/rocksdb_pimpl_stub.hpp>
+#include <pluginplay/cache/database/rocksdb/detail_/rocksdb_pimpl_stub.hpp>
 
-using namespace pluginplay::database::detail_;
+using namespace pluginplay::cache::database::detail_;
 
 TEST_CASE("RocksDBPIMPL Stub") {
     REQUIRE_THROWS_AS(RocksDBPIMPL("Not/a/path"), std::runtime_error);

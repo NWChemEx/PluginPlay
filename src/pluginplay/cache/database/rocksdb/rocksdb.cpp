@@ -7,12 +7,12 @@
  */
 
 #ifdef BUILD_ROCKS_DB
-#include "rocksdb_pimpl.hpp"
+#include "detail_/rocksdb_pimpl.hpp"
 #else
-#include "rocksdb_pimpl_stub.hpp"
+#include "detail_/rocksdb_pimpl_stub.hpp"
 #endif
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 #define TPARAMS template<typename KeyType, typename ValueType>
 #define ROCKS_DB RocksDB<KeyType, ValueType>
@@ -77,4 +77,4 @@ typename ROCKS_DB::const_pimpl_reference ROCKS_DB::pimpl_() const {
 
 template class RocksDB<std::string, std::string>;
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database

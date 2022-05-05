@@ -1,6 +1,6 @@
-#include "rocksdb.hpp"
+#include "../rocksdb.hpp"
 #include <rocksdb/db.h>
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database::detail_ {
 
 /** @brief Implements the RocksDB class when RocksDB support is enabled.
  *
@@ -222,6 +222,6 @@ private:
     std::map<key_type, std::vector<key_type>> m_split_values_;
 };
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database::detail_
 
 #include "rocksdb_pimpl.ipp"

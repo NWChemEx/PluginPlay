@@ -1,7 +1,7 @@
-#include "rocksdb.hpp"
+#include "../rocksdb.hpp"
 #include <stdexcept>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database::detail_ {
 
 /** @brief This class is a stub API for the RocksDBPIMPL
  *
@@ -77,4 +77,4 @@ inline void RocksDBPIMPL::raise_error_() const {
                              "set to ON.");
 }
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database::detail_

@@ -1,6 +1,6 @@
 // File meant only for inclusion in transposer.hpp
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 #define TPARAMS template<typename KeyType, typename ValueType>
 #define TRANSPOSER Transposer<KeyType, ValueType>
@@ -50,4 +50,4 @@ void TRANSPOSER::dump_() {
 #undef TRANSPOSER
 #undef TPARAMS
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database

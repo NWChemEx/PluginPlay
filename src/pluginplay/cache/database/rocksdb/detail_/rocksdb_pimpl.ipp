@@ -1,5 +1,5 @@
 // This file is meant only for inclusion from rocksdb_pimpl.hpp
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database::detail_ {
 
 // Macro which hides inline, but could be used to hid template parameters
 #define TPARAMS inline
@@ -143,4 +143,4 @@ void ROCKSDB_PIMPL::large_value_free_(const_key_reference key) {
 #undef ROCKSDB_PIMPL
 #undef TPARAMS
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database::detail_

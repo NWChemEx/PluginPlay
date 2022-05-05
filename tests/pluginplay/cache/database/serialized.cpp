@@ -1,7 +1,7 @@
 #include "../lexical_cast.hpp"
 #include <catch2/catch.hpp>
-#include <pluginplay/database/detail_/native.hpp>
-#include <pluginplay/database/detail_/serialized.hpp>
+#include <pluginplay/cache/database/native.hpp>
+#include <pluginplay/cache/database/serialized.hpp>
 #include <sstream>
 
 /* Testing Strategy:
@@ -16,7 +16,7 @@
  * fail for
  */
 
-using namespace pluginplay::database::detail_;
+using namespace pluginplay::cache::database;
 
 using ii_pair    = std::pair<int, int>;
 using is_pair    = std::pair<int, std::string>;

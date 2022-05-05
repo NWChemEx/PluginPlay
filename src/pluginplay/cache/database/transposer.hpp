@@ -1,11 +1,11 @@
 #pragma once
-#include "database_pimpl.hpp"
+#include "database_api.hpp"
 #include <set>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
-/** @brief Satisfies the API of a DatabasePIMPL<KeyType, ValueType>, but really
- *         is a DatabasePIMPL<ValueType, KeyType>.
+/** @brief Satisfies the API of a DatabaseAPI<KeyType, ValueType>, but really
+ *         is a DatabaseAPI<ValueType, KeyType>.
  *
  *  This class is used primarily as an optimization. Many DBs are optimized for
  *  the scenario where the size of a key is smaller than the size of the value;
@@ -32,10 +32,10 @@ namespace pluginplay::database::detail_ {
  *                  wrapped database.
  */
 template<typename KeyType, typename ValueType>
-class Transposer : public DatabasePIMPL<KeyType, ValueType> {
+class Transposer : public DatabaseAPI<KeyType, ValueType> {
 private:
     /// Type of database being implemented by this class
-    using base_type = DatabasePIMPL<KeyType, ValueType>;
+    using base_type = DatabaseAPI<KeyType, ValueType>;
 
 public:
     /// Type of the database's keys, typedef of KeyType
@@ -51,7 +51,7 @@ public:
     using typename base_type::const_mapped_reference;
 
     /// Type of the API the wrapped database satisfies
-    using wrapped_db_type = DatabasePIMPL<mapped_type, key_type>;
+    using wrapped_db_type = DatabaseAPI<mapped_type, key_type>;
 
     /// Type of a smart pointer to a database suitable for wrapping
     using wrapped_db_pointer = std::unique_ptr<wrapped_db_type>;
@@ -103,6 +103,6 @@ private:
     wrapped_db_pointer m_db_;
 };
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database
 
 #include "transposer.ipp"

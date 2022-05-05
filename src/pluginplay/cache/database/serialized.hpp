@@ -1,7 +1,7 @@
-#include "database_pimpl.hpp"
+#include "database_api.hpp"
 #include <parallelzone/serialization.hpp>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 /** @brief Extends an existing binary-based database's API to be object-oriented
  *
@@ -24,17 +24,17 @@ namespace pluginplay::database::detail_ {
  *                    serializable.
  */
 template<typename KeyType, typename ValueType>
-class Serialized : public DatabasePIMPL<KeyType, ValueType> {
+class Serialized : public DatabaseAPI<KeyType, ValueType> {
 private:
     /// Type the class implements
-    using base_type = DatabasePIMPL<KeyType, ValueType>;
+    using base_type = DatabaseAPI<KeyType, ValueType>;
 
 public:
     /// Type that objects get serialized into
     using binary_type = std::string;
 
     /// Type of the binary-based database API we wrapping
-    using sub_db_type = DatabasePIMPL<binary_type, binary_type>;
+    using sub_db_type = DatabaseAPI<binary_type, binary_type>;
 
     /// Type of a managed pointer to an instance of sub_db_type
     using sub_db_pointer = std::unique_ptr<sub_db_type>;
@@ -99,6 +99,6 @@ private:
     sub_db_pointer m_db_;
 };
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database
 
 #include "serialized.ipp"

@@ -1,8 +1,8 @@
 #include <catch2/catch.hpp>
-#include <pluginplay/database/detail_/database_pimpl.hpp>
-#include <pluginplay/database/detail_/native.hpp>
+#include <pluginplay/cache/database/database_api.hpp>
+#include <pluginplay/cache/database/native.hpp>
 
-using namespace pluginplay::database::detail_;
+using namespace pluginplay::cache::database;
 
 /* Testing Strategy:
  *

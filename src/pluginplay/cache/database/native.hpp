@@ -1,8 +1,8 @@
 #pragma once
-#include "database_pimpl.hpp"
+#include "database_api.hpp"
 #include <map>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 /** @brief An in memory database the preserves objects in their native form
  *
@@ -13,16 +13,16 @@ namespace pluginplay::database::detail_ {
  *  be readily accessible. This class also supports backing the key/value pairs
  *  up to more persistant storage by providing a subdatabase.
  *
- *  In practice this class just wraps an std::map with our DatabasePIMPL API.
+ *  In practice this class just wraps an std::map with our DatabaseAPI API.
  *
  *  @tparam KeyType The type of the keys we are storing.
  *  @tparam ValueType The type of the values that the keys map to.
  */
 template<typename KeyType, typename ValueType>
-class Native : public DatabasePIMPL<KeyType, ValueType> {
+class Native : public DatabaseAPI<KeyType, ValueType> {
 private:
     /// Type the class implements
-    using base_type = DatabasePIMPL<KeyType, ValueType>;
+    using base_type = DatabaseAPI<KeyType, ValueType>;
 
 public:
     /// Type of container implementing this class, specialization of std::map
@@ -41,8 +41,8 @@ public:
     /// ConstValue<mapped_type>
     using const_mapped_reference = typename base_type::const_mapped_reference;
 
-    /// Type of DatabasePIMPL that can be used for backup
-    using backup_db_type = DatabasePIMPL<key_type, mapped_type>;
+    /// Type of DatabaseAPI that can be used for backup
+    using backup_db_type = DatabaseAPI<key_type, mapped_type>;
 
     /// Type of a pointer to a backup database
     using backup_db_pointer = std::unique_ptr<backup_db_type>;
@@ -109,6 +109,6 @@ private:
     backup_db_pointer m_backup_;
 };
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database
 
 #include "native.ipp"

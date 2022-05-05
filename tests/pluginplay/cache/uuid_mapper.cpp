@@ -1,10 +1,11 @@
-#include "../lexical_cast.hpp"
+#include "lexical_cast.hpp"
 #include <catch2/catch.hpp>
 #include <iostream>
-#include <pluginplay/database/detail_/native.hpp>
-#include <pluginplay/database/detail_/uuid_mapper.hpp>
+#include <pluginplay/cache/database/native.hpp>
+#include <pluginplay/cache/uuid_mapper.hpp>
 
-using namespace pluginplay::database::detail_;
+using namespace pluginplay::cache;
+using namespace pluginplay::cache::database;
 
 using test_types = std::tuple<int, char, std::string>;
 

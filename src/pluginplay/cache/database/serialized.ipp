@@ -1,6 +1,6 @@
 // This file is meant only for inclusion from serialized.hpp
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 #define TPARAMS template<typename KeyType, typename ValueType>
 #define SERIALIZED Serialized<KeyType, ValueType>
@@ -56,4 +56,4 @@ T SERIALIZED::deserialize_(const binary_type& deserialize_me) const {
 #undef SERIALIZED
 #undef TPARAMS
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database

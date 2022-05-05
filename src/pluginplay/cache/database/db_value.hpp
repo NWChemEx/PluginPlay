@@ -2,7 +2,7 @@
 #include <optional>
 #include <utility>
 
-namespace pluginplay::database {
+namespace pluginplay::cache::database {
 
 /** @brief Wraps a database value so users don't need to worry about memory
  *
@@ -28,7 +28,7 @@ namespace pluginplay::database {
  *
  */
 template<typename T>
-class Value {
+class DBValue {
 public:
     /// The type being wrapped, typedef of @p T
     using value_type = T;
@@ -52,18 +52,23 @@ public:
      *
      *  @throw ??? Throws if @p T 's move ctor throws. Same throw guarantee.
      */
-    explicit Value(value_type v) : m_value_(std::move(v)), m_ptr_(nullptr) {}
+    explicit DBValue(value_type v) : m_value_(std::move(v)), m_ptr_(nullptr) {}
 
-    /** @brief Aliasing ctor.
+    /** @brief Aliasing ctor and default ctor.
      *
-     *  This ctor wraps a value by holding a pointer to it. The caller of this
-     *  ctor is responsible for managing the lifetime of the value.
+     *  If the user provides a pointer, this ctor will wrap it, otherwise the
+     *  resulting instance will wrap the nullptr. If the caller provides a
+     *  pointer, it is the responsability of the caller to manage the lifetime
+     *  of the value.
      *
      *  @param[in] p The address of the object being wrapped in the Value.
+     *               Defaults to the null pointer.
      *
      *  @throw None No throw guarantee.
      */
-    explicit Value(pointer p) : m_ptr_(p) {}
+    explicit DBValue(pointer p = nullptr) : m_ptr_(p) {}
+
+    bool has_value() const noexcept;
 
     /** @brief Returns the wrapped object.
      *
@@ -99,20 +104,25 @@ private:
 
 /// Type of a Value which wraps an immutable object of type @p T
 template<typename T>
-using ConstValue = Value<const T>;
+using ConstDBValue = DBValue<const T>;
 
 // -----------------------------------------------------------------------------
 // -- Inline Implementations
 // -----------------------------------------------------------------------------
 
 template<typename T>
-typename Value<T>::reference Value<T>::get() {
+bool DBValue<T>::has_value() const noexcept {
+    return m_value_ || m_ptr_;
+}
+
+template<typename T>
+typename DBValue<T>::reference DBValue<T>::get() {
     return m_value_ ? *m_value_ : *m_ptr_;
 }
 
 template<typename T>
-typename Value<T>::const_reference Value<T>::get() const {
+typename DBValue<T>::const_reference DBValue<T>::get() const {
     return m_value_ ? *m_value_ : *m_ptr_;
 }
 
-} // namespace pluginplay::database
+} // namespace pluginplay::cache::database

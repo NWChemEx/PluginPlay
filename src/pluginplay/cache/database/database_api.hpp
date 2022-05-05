@@ -1,15 +1,15 @@
 #pragma once
-#include "../value.hpp"
+#include "db_value.hpp"
 #include <stdexcept>
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 /** @brief Implements a Database object.
  *
  *  To keep things simple for the user we only have one Database class. This
  *  class defines a very simple API that all database backends adhere to.
  *  Different implementations are created by specializing the Database class's
- *  PIMPL. The DatabasePIMPL class defines the API that all PIMPLs must have.
+ *  PIMPL. The DatabaseAPI class defines the API that all PIMPLs must have.
  *
  *  @tparam KeyType In PluginPlay databases are viewed as key/value stores,
  *                  @p KeyType is the type for the keys.
@@ -17,7 +17,7 @@ namespace pluginplay::database::detail_ {
  *                    @p ValueType is the type for the values.
  */
 template<typename KeyType, typename ValueType>
-class DatabasePIMPL {
+class DatabaseAPI {
 public:
     /// Type used to store the keys in the database, same as @p KeyType
     using key_type = KeyType;
@@ -40,10 +40,10 @@ public:
      *  `Value<ValueType>`.
      *
      *  N.B. `mapped_reference` is only used by the backend. The public API of
-     *       DatabasePIMPL uses const_mapped_reference only. Avoiding problems
+     *       DatabaseAPI uses const_mapped_reference only. Avoiding problems
      *       related to mutating values owned by `Value` instances.
      */
-    using mapped_reference = Value<mapped_type>;
+    using mapped_reference = DBValue<mapped_type>;
 
     /** @brief immutable reference to a value
      *
@@ -58,13 +58,13 @@ public:
      *  `ConstValue<ValueType>`.
      *
      */
-    using const_mapped_reference = ConstValue<mapped_type>;
+    using const_mapped_reference = ConstDBValue<mapped_type>;
 
     /// No-op, no-throw default ctor
-    DatabasePIMPL() noexcept = default;
+    DatabaseAPI() noexcept = default;
 
     /// No-op, no-throw polymorphic default dtor
-    virtual ~DatabasePIMPL() noexcept = default;
+    virtual ~DatabaseAPI() noexcept = default;
 
     /** @brief Public API for determining if a database contains a key.
      *
@@ -223,7 +223,7 @@ protected:
     /** @brief Hook for derived class to implement count.
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::count.
+     *  definition consistent with the description of DatabaseAPI::count.
      *
      *  @param[in] key The key the user is looking for.
      *
@@ -236,7 +236,7 @@ protected:
     /** @brief Hook for derived class to implement insert
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::insert.
+     *  definition consistent with the description of DatabaseAPI::insert.
      *
      *  @param[in] key The key that @p value will be stored under.
      *  @param[in] value The object to store under @p key.
@@ -249,7 +249,7 @@ protected:
     /** @brief Hook for derived class to implement free
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::free.
+     *  definition consistent with the description of DatabaseAPI::free.
      *
      *  @param[in] key The key for the key/value pair to delete.
      *
@@ -260,7 +260,7 @@ protected:
     /** @brief Hook for derived class to implement operator[]
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::operator[].
+     *  definition consistent with the description of DatabaseAPI::operator[].
      *
      *  @param[in] key The key whose associated value will be returned.
      *
@@ -271,7 +271,7 @@ protected:
     /** @brief Hook for derived class to implement backup
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::backup.
+     *  definition consistent with the description of DatabaseAPI::backup.
      *
      *  @throw ??? The backend may choose to throw if appropriate.
      */
@@ -280,7 +280,7 @@ protected:
     /** @brief Hook for derived class to implement dump
      *
      *  The derived class is responsible for overriding this method with a
-     *  definition consistent with the description of DatabasePIMPL::dump.
+     *  definition consistent with the description of DatabaseAPI::dump.
      *
      *  @throw ??? The backend may choose to throw if appropriate.
      */
@@ -288,7 +288,7 @@ protected:
 };
 
 #define TPARAMS template<typename KeyType, typename ValueType>
-#define DB_PIMPL DatabasePIMPL<KeyType, ValueType>
+#define DB_PIMPL DatabaseAPI<KeyType, ValueType>
 
 TPARAMS
 void DB_PIMPL::insert(KeyType key, ValueType value) {
@@ -311,4 +311,4 @@ typename DB_PIMPL::const_mapped_reference DB_PIMPL::operator[](
 #undef TPARAMS
 #undef DB_PIMPL
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database

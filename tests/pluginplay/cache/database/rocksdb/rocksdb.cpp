@@ -1,8 +1,8 @@
 
 #include <catch2/catch.hpp>
 #include <filesystem>
-#include <pluginplay/database/detail_/rocksdb.hpp>
-using namespace pluginplay::database::detail_;
+#include <pluginplay/cache/database/rocksdb/rocksdb.hpp>
+using namespace pluginplay::cache::database;
 
 #ifdef BUILD_ROCKS_DB
 

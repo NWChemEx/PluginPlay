@@ -1,6 +1,6 @@
 // File to be included from native.hpp only
 
-namespace pluginplay::database::detail_ {
+namespace pluginplay::cache::database {
 
 #define TPARAMS template<typename KeyType, typename ValueType>
 #define NATIVE Native<KeyType, ValueType>
@@ -47,4 +47,4 @@ void NATIVE::dump_() {
 #undef NATIVE
 #undef TPARAMS
 
-} // namespace pluginplay::database::detail_
+} // namespace pluginplay::cache::database
