@@ -257,9 +257,9 @@ protected:
 private:
     /// Deleted to avoid slicing
     ///@{
-    AnyFieldBase(AnyFieldBase&& other)           = delete;
+    AnyFieldBase(AnyFieldBase&& other) = delete;
     AnyFieldBase& operator=(const AnyFieldBase&) = delete;
-    AnyFieldBase& operator=(AnyFieldBase&&)      = delete;
+    AnyFieldBase& operator=(AnyFieldBase&&) = delete;
     ///@}
 
     /// To be overriddent to implement clone
