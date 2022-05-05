@@ -1,69 +1,102 @@
 #pragma once
 #include "pluginplay/any/detail_/any_field_base.hpp"
-#include <any>
-#include <utilities/printing/print_stl.hpp>
+#include "pluginplay/any/detail_/any_field_wrapper_traits.hpp"
 
-namespace pluginplay::detail_ {
+namespace pluginplay::any::detail_ {
 
-/** @brief Implements functions common to AnyInputWrapper and AnyResultWrapper
+/** @brief Given knowledge of type @p T, implements AnyFieldBase
  *
- *  This class implements functions which are common to the AnyInputWrapper and
- *  AnyResultWrapper classes. It is templated on the class it should derive from
- *  (`AnyResultBase` or `AnyInputBase` for `AnyResultWrapper` and
- *  `AnyInputWrapper` respectively) to avoid multiple inheritance in the derived
- *  classes. More specifically if `AnyFieldWrapper` inherited directly from
- *  `AnyFieldBase` then say `AnyResultWrapper` would have to inherit from both
- *  `AnyFieldWrapper` and `AnyResultBase`.
+ *  AnyFieldBase defines the type-erased API for working with the wrapped value.
+ *  The implementation of most functions occurrs in this class since it has
+ *  access to the object's type and can perform the operations in a type-safe
+ *  manner.
  *
- *  @tparam T The type of the object being wrapped. The exact concepts that the
- *            type must satisfy are enforced by the derived class. This class
- *            only assumes that instances of type T can be compared with
- *            `operator==`.
- *  @tparam BaseType Expected to be either `AnyResultBase` or `AnyInputBase`.
+ *  @tparam T The type of the wrapped object. Let U = std::decay_t<T>, then T
+ *            can be: U, const U, or const U&. U must be copyable, comaprable
+ *            via operator== and operator<, and serializable.
  */
-template<typename T, typename BaseType>
-class AnyFieldWrapper : public BaseType {
+template<typename T>
+class AnyFieldWrapper : public AnyFieldBase {
 private:
-    /// Type of this class, including the template parameters
-    using my_type = AnyFieldWrapper<T, BaseType>;
+    /// Type this class derives from
+    using base_type = AnyFieldBase;
+
+    /// Type of this class, inluding the template parameter
+    using my_type = AnyFieldWrapper<T>;
+
+    /// The type we are wrapping without cv-qualifiers or references
+    using clean_type = std::decay_t<T>;
+
+    /// Type of T if it it's read-only by value
+    using const_value_type = const clean_type;
+
+    /// Type of T if it's a const reference
+    using const_ref_type = const clean_type&;
+
+    /// Are we wrapping a value
+    static constexpr bool wrap_val_v = std::is_same_v<clean_type, T>;
+
+    /// Are we wrapping a const value
+    static constexpr bool wrap_const_val_v =
+      std::is_same_v<const_value_type, T>;
+
+    /// Are we wrapping a const reference
+    static constexpr bool wrap_const_ref_v = std::is_same_v<const_ref_type, T>;
+
+    /// Type we're actually wrapping if we need to use a reference wrapper
+    using ref_wrapper_t = std::reference_wrapper<const_value_type>;
 
 public:
-    /// Type used for expressing the runtime type information
-    using rtti_type = typename BaseType::rtti_type;
+    /// Pointer to the base class of this hierarchy
+    using typename base_type::field_base_pointer;
+
+    /// This is the type of the object actually in the std::any
+    using wrapped_type = std::conditional_t<wrap_const_ref_v, ref_wrapper_t, T>;
+
+    /** @brief Makes an AnyFieldWrapper by wrapping the provided value.
+     *
+     *  @tparam U Type of the value we are wrapping. @p U must be implicitly
+     *            convertible to @p T.
+     *  @tparam <anonymous> Used to disable this function via SFINAE when @p U
+     *                      is an instantiation of an input wrapper.
+     *
+     *  This ctor wraps the provided value in a newly created AnyFieldWrapper.
+     *  Exactly how this is done depends on how @p value2wrap is passed and the
+     *  exact type of @p T.
+     *
+     *  - When T is a value or const value the resulting AnyFieldWrapper
+     *    instance will own the wrapped value. This means the wrapped value will
+     *    be a copy of @p value2wrap if @p value2wrap was passed by reference
+     *    and it will take ownership of @p value2wrap if it was passed by value
+     *    or rvalue.
+     *  - When T is a const reference AnyFieldWrapper will only alias
+     *    @p value2wrap and the user is responsible for keeping @p value2wrap
+     *    alive for the lifetime of the AnyFieldWrapper.
+     *
+     *  N.B. if @p U is not an implicityly convertible to type @p T you will get
+     *  a compiler error saying there is no valid std::any ctor for @p U.
+     *
+     *  @param[in] value2wrap The object being passed as an input.
+     *
+     *  @throw ??? If wrapping @p value2wrap in a std::any throws. Same throw
+     *             guarantee.
+     */
+    template<typename U,
+             typename = disable_if_any_field_wrapper_t<std::decay_t<U>>>
+    AnyFieldWrapper(U&& value2wrap);
 
 protected:
-    /** @brief Value-wrapping ctor.
-     *
-     *  The derived classes take a value, wrap it in an `std::any` and then
-     *  forward it to this ctor. This ctor is responsible for forwarding the
-     *  `std::any` to the base class on behalf of the derived class.
-     *
-     *  @param[in] da_any The type-erased value being wrapped by this field.
-     *
-     *  @throw None No throw guarantee.
-     */
-    AnyFieldWrapper(std::any da_any) : BaseType(std::move(da_any)) {}
+    /// Implements polymorphic clone
+    field_base_pointer clone_() const override;
 
-    /** @brief Implements AnyFieldBase::are_equal
-     *
-     *  This function contains the majority of the implementation for
-     *  AnyFieldBase::are_equal for both `AnyInputWrapper` and
-     *  `AnyResultWrapper`. In particular it first ensures that @p rhs can be
-     *  cast to an `AnyFieldWrapper<T, BaseType>` instance (*i.e.*, the type of
-     *  the current instance). In doing so it has checked that the anys wrap
-     *  objects of the same type and the objects are being wrapped in the same
-     *  capacity (as inputs or as results). After confirming type compatability,
-     *  the function retrieves const references to the values, and compares the
-     *  values. The only thing left for the derived classes to do is to check
-     *  any state added in the derived class.
-     *
-     *  @param[in] rhs The instance we are comparing to.
-     *
-     *  @return True if this instance compares equal and false otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
+    /// Implements AnyFieldBase::are_equal
     bool are_equal_(const AnyFieldBase& rhs) const noexcept override;
+
+    /// Implements AnyFieldBase::value_equal
+    bool value_equal_(const AnyFieldBase& rhs) const noexcept override;
+
+    /// Implements AnyFieldBase::value_less
+    bool value_less_(const AnyFieldBase& rhs) const noexcept override;
 
     /** @brief Implements AnyFieldBase::print
      *
@@ -83,31 +116,18 @@ protected:
 private:
     /// Implements type() for both AnyResultWrapper and AnyInputWrapper
     rtti_type type_() const noexcept override { return {typeid(T)}; }
+
+    /// Implements storing_const_ref
+    bool storing_const_ref_() const noexcept override;
+
+    /// Implements storing_const_value
+    bool storing_const_value_() const noexcept override;
+
+    /// Code factorization for wrapping an object of type @p U in a std::any
+    template<typename U>
+    std::any wrap_value_(U&& value2wrap) const;
 };
 
-// -- inline implementations ---------------------------------------------------
+} // namespace pluginplay::any::detail_
 
-template<typename T, typename BaseType>
-bool AnyFieldWrapper<T, BaseType>::are_equal_(
-  const AnyFieldBase& rhs) const noexcept {
-    auto prhs = dynamic_cast<const my_type*>(&rhs);
-    if(prhs == nullptr) return false; // Not the same type
-    // Compare the values
-    const auto& lhs_value = this->BaseType::template cast<const T&>();
-    const auto& rhs_value = prhs->BaseType::template cast<const T&>();
-    return lhs_value == rhs_value;
-}
-
-template<typename T, typename BaseType>
-std::ostream& AnyFieldWrapper<T, BaseType>::print_(std::ostream& os) const {
-    using utilities::printing::operator<<;
-    if constexpr(utilities::type_traits::is_printable_v<T>) {
-        os << this->BaseType::template cast<const T&>();
-    } else {
-        const auto* pvalue = &(this->BaseType::template cast<const T&>());
-        os << "<" << typeid(T).name() << " " << pvalue << ">";
-    }
-    return os;
-}
-
-} // namespace pluginplay::detail_
+#include "any_field_wrapper.ipp"
