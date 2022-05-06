@@ -146,7 +146,7 @@ TEST_CASE("How to use a lambda module") {
     // Below we show how memoization could result in a wrong result
     // if we enable it for lamdda modules used as submodules.
     // Note that, by default memoization is disabled for lambda_modules,
-    // so we shoot our leg here by enabling it.
+    // so we shoot ourselves in the leg here by enabling it.
     {
         auto mod = mm.at("Prism");
         auto l =

@@ -1,7 +1,6 @@
 #pragma once
-#include "pluginplay/module_input.hpp"
-#include "pluginplay/module_result.hpp"
 #include "pluginplay/types.hpp"
+#include <pluginplay/fields/fields.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {

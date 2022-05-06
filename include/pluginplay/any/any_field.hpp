@@ -226,7 +226,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    bool operator<(const AnyField& rhs) const noexcept;
+    // bool operator<(const AnyField& rhs) const noexcept;
 
     /** @brief Adds a string representation of the wrapped object to the stream
      *

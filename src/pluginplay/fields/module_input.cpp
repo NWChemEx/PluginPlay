@@ -1,5 +1,5 @@
 #include "detail_/module_input_pimpl.hpp"
-#include "pluginplay/module_input.hpp"
+#include <pluginplay/fields/module_input.hpp>
 
 namespace pluginplay {
 

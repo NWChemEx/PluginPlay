@@ -1,5 +1,5 @@
-#include "pluginplay/detail_/module_result_pimpl.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/fields/detail_/module_result_pimpl.hpp>
 using namespace pluginplay;
 using namespace pluginplay::detail_;
 using shared_any = typename ModuleResultPIMPL::shared_any;

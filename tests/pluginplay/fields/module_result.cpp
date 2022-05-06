@@ -1,5 +1,5 @@
-#include "pluginplay/module_result.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/fields/module_result.hpp>
 using namespace pluginplay;
 
 TEST_CASE("ModuleResult : default ctor") {
@@ -116,7 +116,7 @@ TEST_CASE("ModuleResult : value") {
     }
     SECTION("Throws if requested type is wrong") {
         p.change(double{3.14});
-        REQUIRE_THROWS_AS(p.value<int>(), std::bad_any_cast);
+        REQUIRE_THROWS_AS(p.value<int>(), std::runtime_error);
     }
     SECTION("Can get value") {
         p.change(double{3.14});

@@ -12,8 +12,7 @@
 
 #include <catch2/catch.hpp>
 #include <pluginplay/detail_/field_tuple_traits.hpp>
-#include <pluginplay/module_input.hpp>
-#include <pluginplay/module_result.hpp>
+#include <pluginplay/fields/fields.hpp>
 
 using namespace pluginplay;
 using namespace pluginplay::detail_;

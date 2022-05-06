@@ -1,7 +1,7 @@
 #pragma once
-#include "pluginplay/any/any.hpp"
-#include "pluginplay/types.hpp"
 #include <memory>
+#include <pluginplay/any/any.hpp>
+#include <pluginplay/types.hpp>
 #include <typeindex>
 #include <utilities/printing/demangler.hpp>
 

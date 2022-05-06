@@ -1,10 +1,9 @@
 #pragma once
-#include "pluginplay/cache/cache.hpp"
-#include "pluginplay/module_input.hpp"
-#include "pluginplay/module_result.hpp"
-#include "pluginplay/submodule_request.hpp"
 #include <memory>
 #include <parallelzone/Runtime.hpp>
+#include <pluginplay/cache/cache.hpp>
+#include <pluginplay/fields/fields.hpp>
+#include <pluginplay/submodule_request.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
