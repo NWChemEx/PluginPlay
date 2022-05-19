@@ -139,7 +139,7 @@ TEST_CASE("Module : ready") {
 TEST_CASE("Module : reset_cache") {
     auto mod_pimpl = make_module_pimpl_with_cache<RealDeal>();
     auto mod       = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
+            std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
 
     auto in = mod.inputs();
     in.at("Option 1").change(1);
@@ -155,9 +155,9 @@ TEST_CASE("Module : reset_cache") {
 TEST_CASE("Module : reset_internal_cache") {
     auto mod_base_ptr = std::make_shared<testing::NullModule>();
     auto mod          = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
+               std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
 
-    auto cache = std::make_shared<pluginplay::Cache>();
+    auto cache = std::make_shared<pluginplay::cache::UserCache>();
     cache->cache(int{1}, int{2});
     mod_base_ptr->set_cache(cache);
 

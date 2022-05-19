@@ -28,15 +28,19 @@ namespace pluginplay {
  *  the type (this is done implicitly by passing the this pointer).
  */
 class ModuleBase {
+private:
+    /// Top-level type for the entire ModuleManager
+    using mm_cache = cache::ModuleManagerCache;
+
 public:
     /// The type returned by memoization
     using hash_type = std::string;
 
     /// The type of the internal cache
-    using cache_type = Cache;
+    using cache_type = typename mm_cache::user_cache_type;
 
     /// A pointer to a cache
-    using cache_ptr = std::shared_ptr<cache_type>;
+    using cache_ptr = typename mm_cache::user_cache_pointer;
 
     /// The type of the runtime
     using runtime_type = parallelzone::Runtime;

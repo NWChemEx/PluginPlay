@@ -31,7 +31,12 @@ T ModuleInput::value() {
 
 template<typename T>
 T ModuleInput::value() const {
-    return any::any_cast<T>(get_());
+    const auto& any = get_();
+    if constexpr(std::is_same_v<std::decay_t<T>, type::any>) {
+        return any;
+    } else {
+        return any::any_cast<T>(get_());
+    }
 }
 
 template<typename T, typename U>

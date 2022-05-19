@@ -370,6 +370,20 @@ TEST_CASE("ModuleInput") {
             REQUIRE(i.value<const v_t&>().data() == pv);
             REQUIRE_THROWS_AS(i.value<v_t&>(), std::runtime_error);
         }
+        SECTION("T == type::any") {
+            i.set_type<int>();
+            i.change(int{3});
+            auto da_any = i.value<type::any>();
+            REQUIRE(da_any == any::make_any_field<int>(3));
+        }
+        SECTION("T == const type::any&") {
+            i.set_type<int>();
+            i.change(int{3});
+            const auto& da_any = i.value<const type::any&>();
+            auto pany          = &any::any_cast<const int&>(da_any);
+            auto pcorr         = &i.value<const int&>();
+            REQUIRE(pany == pcorr);
+        }
     }
 
     SECTION("description") {

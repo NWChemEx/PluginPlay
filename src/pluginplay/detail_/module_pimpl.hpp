@@ -1,8 +1,9 @@
 #pragma once
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/types.hpp"
 #include <chrono>
 #include <iomanip> // for put_time
+#include <pluginplay/cache/module_cache.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/types.hpp>
 #include <utilities/timer.hpp>
 
 namespace pluginplay::detail_ {
@@ -51,7 +52,7 @@ public:
     using base_ptr = std::shared_ptr<const ModuleBase>;
 
     /// Type of the object used to store the results computed by the module
-    using cache_type = std::map<std::string, type::result_map>;
+    using cache_type = cache::ModuleCache;
 
     /// How we store the object used for caching
     using cache_ptr = std::shared_ptr<cache_type>;
@@ -744,10 +745,10 @@ inline auto ModulePIMPL::run(type::input_map ps) {
 
     ps = merge_inputs_(ps);
 
-    // if(is_memoizable() && m_cache_ && m_cache_->count(ps)) {
-    //     m_timer_.record(time_now);
-    //     return m_cache_->at(hv);
-    // }
+    if(is_memoizable() && m_cache_ && m_cache_->count(ps)) {
+        m_timer_.record(time_now);
+        return m_cache_->uncache(ps);
+    }
 
     // not there so run
     auto rv = m_base_->run(std::move(ps), m_submods_);
@@ -757,9 +758,9 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     }
 
     // cache result
-    // m_cache_->emplace(ps, std::move(rv));
-    // m_timer_.record(time_now);
-    // return m_cache_->at(ps);
+    m_cache_->cache(ps, std::move(rv));
+    m_timer_.record(time_now);
+    return m_cache_->uncache(ps);
 }
 
 inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {

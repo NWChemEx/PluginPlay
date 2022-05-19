@@ -111,7 +111,7 @@ TEST_CASE("ModuleBase : get_cache") {
     }
 
     SECTION("Works if there's a cache") {
-        auto cache = std::make_shared<pluginplay::Cache>();
+        auto cache = std::make_shared<pluginplay::cache::UserCache>();
         mod.set_cache(cache);
         auto& internal_cache = mod.get_cache();
         REQUIRE(&internal_cache == cache.get());
@@ -135,7 +135,7 @@ TEST_CASE("ModuleBase : get_runtime") {
 TEST_CASE("ModuleBase : reset_internal_cache") {
     testing::NullModule mod;
 
-    auto cache = std::make_shared<pluginplay::Cache>();
+    auto cache = std::make_shared<pluginplay::cache::UserCache>();
     cache->cache(int{1}, int{2});
     mod.set_cache(cache);
     mod.reset_internal_cache();
