@@ -190,16 +190,9 @@ auto make_module_pimpl() {
 template<typename T>
 auto make_module_pimpl_with_cache() {
     auto ptr = std::make_shared<T>();
-    /// Type of a cache
-    using cache_type = typename pluginplay::detail_::ModulePIMPL::cache_type;
-    /// Type of a shared cache
-    using shared_cache = std::shared_ptr<cache_type>;
-    /// Type of a map holding caches
-    using cache_map = std::map<std::type_index, shared_cache>;
-    cache_map m_caches;
-    std::type_index type(ptr->type());
-    m_caches[type] = std::make_shared<cache_type>();
-    return pluginplay::detail_::ModulePIMPL(ptr, m_caches[type]);
+    pluginplay::cache::ModuleManagerCache m_caches;
+    auto pcache = m_caches.get_or_make_module_cache("foo");
+    return pluginplay::detail_::ModulePIMPL(ptr, pcache);
 }
 
 // Wraps the creation of a module w/o going through a module manager

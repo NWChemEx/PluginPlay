@@ -687,8 +687,7 @@ inline bool ModulePIMPL::is_memoizable() const {
 inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     if(!m_cache_) return false;
     auto ps = merge_inputs_(in_inputs);
-    return false;
-    // return m_cache_->count(ps) == 1;
+    return m_cache_->count(ps);
 }
 
 inline void ModulePIMPL::reset_cache() {

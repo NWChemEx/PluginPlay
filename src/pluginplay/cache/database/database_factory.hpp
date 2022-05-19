@@ -9,9 +9,26 @@ namespace pluginplay::cache::database {
 
 /** @brief Wraps the process of making databases for the Cache.
  *
+ *  @warning It is imperative to keep the design documentation up to date with
+ *           any and all modifications made to this class. This is because there
+ *           database does a lot of processing steps, which are difficult to
+ *           follow from code alone. So if you change this class make sure
+ *           db_pimpl_design.png reflects those changes or the next person who
+ *           works on this class is going to be like "What the heck?".
+ *
  *  Constructing the objects which are used as databases is a rather invovlved
- *  process. This object wraps the processes of making several types of
- *  databases needed for the Cache to do its job.
+ *  process. This class hides that process from the rest of PluginPlay's
+ *  internals by having other classes rely on this factor to make new databases.
+ *
+ *  Based on the current design, the Database backend of each module's cache
+ *  (and also the user caches, since they just wrap module caches) contains two
+ *  shared pieces:
+ *
+ *  1. A DB from type-erased inputs/results to UUIDs
+ *  2. A DB from proxy maps to proxy maps used by all modules
+ *
+ *  Each factory maintains its own copies of these pointers and injects the
+ *  copies it holds.
  *
  */
 class DatabaseFactory {
@@ -61,13 +78,37 @@ public:
     /// Type of a pointer to the DB satisfying any_2_uuid
     using any_2_uuid_pointer = std::shared_ptr<any_2_uuid>;
 
+    /// Type of a DB that can map proxy maps to result maps
+    using pm_2_result_map = DatabaseAPI<proxy_map_type, result_map_type>;
+
+    /// Type of a pointer to a pm_2_result_map DB
+    using pm_2_result_map_pointer = std::unique_ptr<pm_2_result_map>;
+
+    /** @brief Creates a new DatabaseFactory which doesn't have any long-term
+     *         storage.
+     *
+     *  The default DatabaseFactory creates databases whose results live purely
+     *  in memory. Once those databases are cleaned up those results are lost.
+     *  While conceptually you can make a default constructed DatabaseFactory
+     *  start having long-term storage (enabling it will not retroactively apply
+     *  it to databases created by it), doing so in a real run is likely to be
+     *  more headache than it's worth. Hence are recommendation is to create a
+     *  different DatabaseFactory instance which handles the long-term storage.
+     */
+    DatabaseFactory();
+
     /** @brief Creates a new DatabaseFactory instance where the long-term
      *         storage databases live at the provided paths.
      *
+     *  This is the ctor we expect users to invoke when they want their
+     *  databases to be stored long term. The resulting databases will live in
+     *  memory, but be backed up to provided "disk" paths (disk in quotes as
+     *  it can be any POSIX-like path and may not be a literal disk).
+     *
      *  @param[in] cache_path Where the proxy map to proxy map database should
      *                        be archived to.
-     *  @param[in] uuid_path Where the object to UUID database should be
-     *                       archived to.
+     *  @param[in] uuid_path Where the input to UUID (and result to UUID)
+     *                       databases will be archived to.
      *
      */
     DatabaseFactory(const std::string& cache_path,
@@ -84,6 +125,18 @@ public:
      */
     module_db_pointer default_module_db(uuid_type module_uuid) const;
 
+    /** @brief Wraps the process of making a DB that can go from proxy maps to
+     *         result maps.
+     *
+     *  This factory is capable of generating two different proxy-map to result-
+     *  map databases: one with long-term archival, and one without. The type
+     *  of databse returned from this method depends on whether or not
+     *  long-term archival of proxy-map to proxy-map databases has been enabled.
+     *
+     *
+     */
+    pm_2_result_map_pointer pm2result_db(uuid_type module_uuid) const;
+
     /** @brief Allows the user to change where the proxy map to proxy map
      *         database is stored.
      *
@@ -96,7 +149,13 @@ public:
      */
     void set_serialized_pm_to_pm(const std::string& path);
 
-    /** @brief Allows the user to change where the object to uuid database
+    /** @brief Creates a uuid database with no long-term storage
+     *
+     *
+     */
+    void set_type_eraser_backend();
+
+    /** @brief Allows the user to change where the long-term uuid database
      *         lives.
      *
      *  N.B. The actual database lives in a shared pointer, so changing the

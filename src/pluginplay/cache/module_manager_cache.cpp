@@ -21,7 +21,7 @@ struct ModuleManagerCachePIMPL {
 
     using db_factory_type = database::DatabaseFactory;
 
-    std::shared_ptr<database::DatabaseFactory> m_db_factory;
+    database::DatabaseFactory m_db_factory;
 
     std::map<module_cache_key, module_cache_pointer> m_module_caches;
 
@@ -33,12 +33,12 @@ struct ModuleManagerCachePIMPL {
 ModuleManagerCache::ModuleManagerCache() noexcept = default;
 
 ModuleManagerCache::ModuleManagerCache(path_type disk_location) {
-    change_location(std::move(disk_location));
+    change_save_location(std::move(disk_location));
 }
 
 ModuleManagerCache::~ModuleManagerCache() noexcept = default;
 
-void ModuleManagerCache::change_location(path_type disk_location) {
+void ModuleManagerCache::change_save_location(path_type disk_location) {
     std::filesystem::path root_dir(disk_location);
     std::filesystem::path cache_dir("cache");
     std::filesystem::path uuid_dir("uuid");
@@ -46,11 +46,8 @@ void ModuleManagerCache::change_location(path_type disk_location) {
     auto p = root_dir / cache_dir;
     auto q = root_dir / uuid_dir;
 
-    using factory_type = typename pimpl_type::db_factory_type;
-
-    auto pfactory = std::make_shared<factory_type>(p.string(), q.string());
-    if(!m_pimpl_) { m_pimpl_ = std::make_unique<pimpl_type>(); }
-    m_pimpl_->m_db_factory = pfactory;
+    pimpl_().m_db_factory.set_serialized_pm_to_pm(p.string());
+    m_pimpl_->m_db_factory.set_type_eraser_backend(q.string());
 }
 
 typename ModuleManagerCache::module_cache_pointer
@@ -76,18 +73,18 @@ ModuleManagerCache::get_or_make_user_cache(module_cache_key key) {
 typename ModuleManagerCache::module_cache_type
 ModuleManagerCache::make_module_cache_(module_cache_key key) {
     auto p  = std::make_unique<detail_::ModuleCachePIMPL>();
-    p->m_db = m_pimpl_->m_db_factory->default_module_db(std::move(key));
+    p->m_db = pimpl_().m_db_factory.default_module_db(std::move(key));
     return module_cache_type(std::move(p));
 }
 
 void ModuleManagerCache::assert_pimpl_() const {
     if(m_pimpl_) return;
-    throw std::runtime_error("ModuleManagerCache has no PIMPL. Was it default "
-                             "initialized or moved from?");
+    throw std::runtime_error("This read-only ModuleManagerCache has no PIMPL. "
+                             "Was it default initialized or moved from?");
 }
 
 typename ModuleManagerCache::pimpl_reference ModuleManagerCache::pimpl_() {
-    assert_pimpl_();
+    if(!m_pimpl_) { m_pimpl_ = std::make_unique<pimpl_type>(); }
     return *m_pimpl_;
 }
 
