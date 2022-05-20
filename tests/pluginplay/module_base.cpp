@@ -1,5 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
+#include <parallelzone/Runtime.hpp>
 #include <pluginplay/module_base.hpp>
 
 using namespace pluginplay;
@@ -114,6 +115,20 @@ TEST_CASE("ModuleBase : get_cache") {
         mod.set_cache(cache);
         auto& internal_cache = mod.get_cache();
         REQUIRE(&internal_cache == cache.get());
+    }
+}
+
+TEST_CASE("ModuleBase : get_runtime") {
+    testing::NullModule mod;
+    SECTION("Throws if no runtime") {
+        REQUIRE_THROWS_AS(mod.get_runtime(), std::runtime_error);
+    }
+
+    SECTION("Works if there's a runtime") {
+        auto runtime = std::make_shared<parallelzone::Runtime>();
+        mod.set_runtime(runtime);
+        auto& internal_runtime = mod.get_runtime();
+        REQUIRE(&internal_runtime == runtime.get());
     }
 }
 
