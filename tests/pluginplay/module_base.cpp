@@ -135,7 +135,8 @@ TEST_CASE("ModuleBase : get_runtime") {
 TEST_CASE("ModuleBase : reset_internal_cache") {
     testing::NullModule mod;
 
-    auto cache = std::make_shared<pluginplay::cache::UserCache>();
+    pluginplay::cache::ModuleManagerCache mm_cache;
+    auto cache = mm_cache.get_or_make_user_cache("foo");
     cache->cache(int{1}, int{2});
     mod.set_cache(cache);
     mod.reset_internal_cache();

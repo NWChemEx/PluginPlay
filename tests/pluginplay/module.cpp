@@ -157,7 +157,8 @@ TEST_CASE("Module : reset_internal_cache") {
     auto mod          = pluginplay::Module(
                std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
 
-    auto cache = std::make_shared<pluginplay::cache::UserCache>();
+    pluginplay::cache::ModuleManagerCache mm_cache;
+    auto cache = mm_cache.get_or_make_user_cache("foo");
     cache->cache(int{1}, int{2});
     mod_base_ptr->set_cache(cache);
 

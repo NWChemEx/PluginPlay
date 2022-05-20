@@ -79,10 +79,10 @@ public:
     template<typename FxnType>
     explicit LambdaModule(FxnType&& fxn);
 
-    LambdaModule(const LambdaModule&) = delete;
-    LambdaModule(LambdaModule&&)      = delete;
+    LambdaModule(const LambdaModule&)            = delete;
+    LambdaModule(LambdaModule&&)                 = delete;
     LambdaModule& operator=(const LambdaModule&) = delete;
-    LambdaModule& operator=(LambdaModule&&) = delete;
+    LambdaModule& operator=(LambdaModule&&)      = delete;
 
     /** @brief Implements the `run_as` function for the `Module` class.
      *
@@ -216,7 +216,6 @@ auto make_lambda(FxnType&& fxn) {
     using lambda_type = detail_::LambdaModule<PropertyType>;
     auto l  = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
     auto lm = Module(std::move(l));
-    lm.turn_off_memoization();
     return lm;
 }
 

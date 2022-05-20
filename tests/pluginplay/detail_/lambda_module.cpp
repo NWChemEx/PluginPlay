@@ -12,22 +12,17 @@
  * test in this source file
  */
 
-TEST_CASE("LambdaModule : single return") {
-    auto l = pluginplay::make_lambda<testing::OneOut>([]() { return 2; });
-    REQUIRE(std::get<0>(l.run_as<testing::OneOut>()) == 2);
-}
+TEST_CASE("LambdaModule") {
+    SECTION("single return") {
+        auto l = pluginplay::make_lambda<testing::OneOut>([]() { return 2; });
+        REQUIRE(std::get<0>(l.run_as<testing::OneOut>()) == 2);
+    }
 
-TEST_CASE("LambdaModule : multiple returns") {
-    auto l = pluginplay::make_lambda<testing::TwoOut>(
-      []() { return std::make_tuple(2, 'b'); });
-    auto [i, c] = l.run_as<testing::TwoOut>();
-    REQUIRE(i == 2);
-    REQUIRE(c == 'b');
-}
-
-TEST_CASE("LambdaModule : is_memoizable") {
-    auto l = pluginplay::make_lambda<testing::OneOut>([]() { return 2; });
-    REQUIRE_FALSE(l.is_memoizable());
-    l.turn_on_memoization();
-    REQUIRE(l.is_memoizable());
+    SECTION("multiple returns") {
+        auto l = pluginplay::make_lambda<testing::TwoOut>(
+          []() { return std::make_tuple(2, 'b'); });
+        auto [i, c] = l.run_as<testing::TwoOut>();
+        REQUIRE(i == 2);
+        REQUIRE(c == 'b');
+    }
 }
