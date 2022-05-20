@@ -92,25 +92,25 @@ TEST_CASE("ModuleInputPIMPL : is_valid") {
     }
 }
 
-TEST_CASE("ModuleInputPIMPL : hash") {
-    ModuleInputPIMPL p;
-    p.set_type(std::type_index(typeid(int)));
-    SECTION("No value") {
-        REQUIRE(pluginplay::hash_objects(p) ==
-                "cbc357ccb763df2852fee8c4fc7d55f2");
-    }
-    SECTION("has value") {
-        p.set_value(make_Any<int>(3));
-        REQUIRE(pluginplay::hash_objects(p) ==
-                "9a4294b64e60cc012c5ed48db4cd9c48");
-    }
-    SECTION("is transparent") {
-        p.set_value(make_Any<int>(3));
-        p.make_transparent();
-        REQUIRE(pluginplay::hash_objects(p) ==
-                "00000000000000000000000000000000");
-    }
-}
+// TEST_CASE("ModuleInputPIMPL : hash") {
+//     ModuleInputPIMPL p;
+//     p.set_type(std::type_index(typeid(int)));
+//     SECTION("No value") {
+//         REQUIRE(pluginplay::hash_objects(p) ==
+//                 "cbc357ccb763df2852fee8c4fc7d55f2");
+//     }
+//     SECTION("has value") {
+//         p.set_value(make_Any<int>(3));
+//         REQUIRE(pluginplay::hash_objects(p) ==
+//                 "9a4294b64e60cc012c5ed48db4cd9c48");
+//     }
+//     SECTION("is transparent") {
+//         p.set_value(make_Any<int>(3));
+//         p.make_transparent();
+//         REQUIRE(pluginplay::hash_objects(p) ==
+//                 "00000000000000000000000000000000");
+//     }
+// }
 
 TEST_CASE("ModuleInputPIMPL : set_type") {
     ModuleInputPIMPL p;
