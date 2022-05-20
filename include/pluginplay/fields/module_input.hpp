@@ -417,7 +417,7 @@ public:
      *
      * @throw std::runtime_error if no value is bound to this input field.
      *                           Strong throw guarantee.
-     * @throw std::bad_any_cast if the wrapped value can not be converted to
+     * @throw std::runtime_error if the wrapped value can not be converted to
      *                          type @p T. Strong throw guarantee.
      */
     template<typename T>
@@ -435,7 +435,7 @@ public:
      *
      * @throw std::runtime_error if no value is bound to this input field.
      *                           Strong throw guarantee.
-     * @throw std::bad_any_cast if the wrapped value can not be converted to
+     * @throw std::runtime_error if the wrapped value can not be converted to
      *                          type @p T. Strong throw guarantee.
      */
     template<typename T>

@@ -24,7 +24,9 @@ T ModuleInput::value() {
 
     // Check how it's stored. If not a copy (i.e., it's a const ref) we can't
     // return read/write ref
-    if(m_is_cref_) throw std::bad_any_cast();
+    if(m_is_cref_)
+        throw std::runtime_error("Input is a const ref, so you can't get it "
+                                 "back as a modifiable reference.");
 
     return any::any_cast<T>(get_());
 }
