@@ -1,6 +1,7 @@
 #include "database_factory.hpp"
 #include "key_injector.hpp"
 #include "key_proxy_mapper.hpp"
+#include "make_any.hpp"
 #include "native.hpp"
 #include "rocksdb/rocksdb.hpp"
 #include "serialized.hpp"
@@ -9,25 +10,6 @@
 #include "value_proxy_mapper.hpp"
 
 namespace pluginplay::cache::database {
-
-// Specialize MakeAny for ModuleInputs
-template<>
-struct MakeAny<ModuleInput> {
-    template<typename U>
-    static any::AnyField convert(U&& v) {
-        return v.template value<any::AnyField>();
-    }
-};
-
-// Specialize MakeAny for ModuleResults
-template<>
-struct MakeAny<ModuleResult> {
-    template<typename U>
-    static any::AnyField convert(U&& v) {
-        using shared_any = typename ModuleResult::shared_any;
-        return *v.template value<shared_any>();
-    }
-};
 
 // Names are chosen to reflect design diagram
 using input_map     = typename DatabaseFactory::input_map_type;
