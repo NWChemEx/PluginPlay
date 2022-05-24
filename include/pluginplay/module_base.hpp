@@ -4,6 +4,7 @@
 #include "pluginplay/module_result.hpp"
 #include "pluginplay/submodule_request.hpp"
 #include <memory>
+#include <parallelzone/Runtime.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
@@ -37,6 +38,12 @@ public:
 
     /// A pointer to a cache
     using cache_ptr = std::shared_ptr<cache_type>;
+
+    /// The type of the runtime
+    using runtime_type = parallelzone::Runtime;
+
+    /// A pointer to a runtime
+    using runtime_ptr = std::shared_ptr<runtime_type>;
 
     /// Deleted to avoid erroneous construction
     ModuleBase() = delete;
@@ -231,6 +238,25 @@ public:
     /** @brief Reset the modules internal cache.
      */
     void reset_internal_cache() const;
+
+    /** @brief Sets the runtime of the module.
+     *
+     *  @param[in] runtime A shared_ptr to a @p runtime_type instance with which
+     *                     the module is currently associated.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
+
+    /** @brief Provides the runtime of the module.
+     *
+     *  @return The runtime object with which the module is currently
+     *          associated.
+     *
+     *  @throw std::runtime_error if there is no runtime. Strong throw
+     * guarantee.
+     */
+    runtime_type& get_runtime() const;
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -477,6 +503,9 @@ private:
 
     /// Where the module can store temporaries and intermediates
     cache_ptr m_cache_;
+
+    /// Pointer to this modules current runtime
+    runtime_ptr m_runtime_;
 }; // class ModuleBase
 
 // -------------------------------- Helper Macros ------------------------------
@@ -607,6 +636,12 @@ inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
     if(!m_cache_)
         throw std::runtime_error("Module does not have an interal cache");
     return *m_cache_.get();
+}
+
+inline typename ModuleBase::runtime_type& ModuleBase::get_runtime() const {
+    if(!m_runtime_)
+        throw std::runtime_error("Module does not a Runtime instance");
+    return *m_runtime_.get();
 }
 
 inline void ModuleBase::reset_internal_cache() const {
