@@ -22,6 +22,26 @@ TEST_CASE("ModuleManagerPIMPL : Default ctor") {
     }
 }
 
+TEST_CASE("ModuleManagerPIMPL : Runtime") {
+    SECTION("ctor") {
+        auto runtime = std::make_shared<parallelzone::Runtime>();
+        ModuleManagerPIMPL pimple(runtime);
+        auto& internal_runtime = pimple.get_runtime();
+        REQUIRE(&internal_runtime == runtime.get());
+    }
+    SECTION("set_runtime") {
+        ModuleManagerPIMPL pimple;
+        auto runtime = std::make_shared<parallelzone::Runtime>();
+
+        auto& internal_runtime1 = pimple.get_runtime();
+        REQUIRE(&internal_runtime1 != runtime.get());
+
+        pimple.set_runtime(runtime);
+        auto& internal_runtime2 = pimple.get_runtime();
+        REQUIRE(&internal_runtime2 == runtime.get());
+    }
+}
+
 TEST_CASE("ModuleManagerPIMPL : comparison") {
     ModuleManagerPIMPL pimpl1, pimpl2;
     SECTION("Default state") {

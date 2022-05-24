@@ -3,6 +3,7 @@
 #include "pluginplay/module_base.hpp"
 #include "pluginplay/module_manager.hpp"
 #include <memory>
+#include <parallelzone/Runtime.hpp>
 #include <typeindex>
 
 namespace pluginplay {
@@ -45,7 +46,18 @@ struct ModuleManagerPIMPL {
 
     /// Type of a map holding the default module key for a given property type
     using default_map = std::map<std::type_index, type::key>;
+
+    /// The type of the runtime
+    using runtime_type = parallelzone::Runtime;
+
+    /// A pointer to a runtime
+    using runtime_ptr = std::shared_ptr<runtime_type>;
+
     ///@}
+
+    ModuleManagerPIMPL(runtime_ptr runtime) : m_runtime_(runtime) {}
+
+    ModuleManagerPIMPL() : m_runtime_(std::make_shared<runtime_type>()) {}
 
     /// Makes a deep copy of this instance on the heap
     auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
@@ -99,6 +111,7 @@ struct ModuleManagerPIMPL {
         using internal_cache_type = typename ModuleBase::cache_type;
         auto internal_cache       = std::make_shared<internal_cache_type>();
         base->set_cache(internal_cache);
+        base->set_runtime(m_runtime_);
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
         if(!m_caches.count(type))
@@ -197,6 +210,10 @@ struct ModuleManagerPIMPL {
     bool operator!=(const ModuleManagerPIMPL& rhs) const {
         return !((*this) == rhs);
     }
+
+    void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
+
+    runtime_type& get_runtime() const { return *m_runtime_.get(); }
     ///@}
 
     ///@{
@@ -218,6 +235,9 @@ struct ModuleManagerPIMPL {
 
     // A map of inputs for property types
     std::map<std::type_index, type::input_map> m_inputs;
+
+    // Pointer to this modules current runtime
+    runtime_ptr m_runtime_;
     ///@}
 private:
     /// Wraps the check for making sure @p key is not in use.
