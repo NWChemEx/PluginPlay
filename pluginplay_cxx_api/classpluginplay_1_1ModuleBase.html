@@ -105,6 +105,14 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a9726294e36e9087277a079b39e7bbbbe">cache_ptr</a> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleBase.html#ab195b52e661b851b9fe07ead69aff66e">cache_type</a> &gt;</td></tr>
 <tr class="memdesc:a9726294e36e9087277a079b39e7bbbbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a cache. <br /></td></tr>
 <tr class="separator:a9726294e36e9087277a079b39e7bbbbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3af1a5116cbca394e862f109e35eb726"><td class="memItemLeft" align="right" valign="top"><a id="a3af1a5116cbca394e862f109e35eb726"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726">runtime_type</a> = parallelzone::Runtime</td></tr>
+<tr class="memdesc:a3af1a5116cbca394e862f109e35eb726"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
+<tr class="separator:a3af1a5116cbca394e862f109e35eb726"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f0f62523701c61e540b73082bdb67aa"><td class="memItemLeft" align="right" valign="top"><a id="a1f0f62523701c61e540b73082bdb67aa"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a1f0f62523701c61e540b73082bdb67aa">runtime_ptr</a> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726">runtime_type</a> &gt;</td></tr>
+<tr class="memdesc:a1f0f62523701c61e540b73082bdb67aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a runtime. <br /></td></tr>
+<tr class="separator:a1f0f62523701c61e540b73082bdb67aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -168,6 +176,12 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a2a8618f5c241c18bf70232b4f7d7730d">reset_internal_cache</a> () const</td></tr>
 <tr class="memdesc:a2a8618f5c241c18bf70232b4f7d7730d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the modules internal cache. <br /></td></tr>
 <tr class="separator:a2a8618f5c241c18bf70232b4f7d7730d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ed372a76afdaeef2485d155d4e9aba0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a6ed372a76afdaeef2485d155d4e9aba0">set_runtime</a> (<a class="el" href="classpluginplay_1_1ModuleBase.html#a1f0f62523701c61e540b73082bdb67aa">runtime_ptr</a> runtime) noexcept</td></tr>
+<tr class="memdesc:a6ed372a76afdaeef2485d155d4e9aba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the runtime of the module.  <a href="classpluginplay_1_1ModuleBase.html#a6ed372a76afdaeef2485d155d4e9aba0">More...</a><br /></td></tr>
+<tr class="separator:a6ed372a76afdaeef2485d155d4e9aba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe01bf65ca1f830c770d305831b9cf09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726">runtime_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#afe01bf65ca1f830c770d305831b9cf09">get_runtime</a> () const</td></tr>
+<tr class="memdesc:afe01bf65ca1f830c770d305831b9cf09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the runtime of the module.  <a href="classpluginplay_1_1ModuleBase.html#afe01bf65ca1f830c770d305831b9cf09">More...</a><br /></td></tr>
+<tr class="separator:afe01bf65ca1f830c770d305831b9cf09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb82e512415a8605ab5a7865b97723cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#afb82e512415a8605ab5a7865b97723cc">operator==</a> (const <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:afb82e512415a8605ab5a7865b97723cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instances for equality.  <a href="classpluginplay_1_1ModuleBase.html#afb82e512415a8605ab5a7865b97723cc">More...</a><br /></td></tr>
 <tr class="separator:afb82e512415a8605ab5a7865b97723cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -751,6 +765,40 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="afe01bf65ca1f830c770d305831b9cf09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe01bf65ca1f830c770d305831b9cf09">&#9670;&nbsp;</a></span>get_runtime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726">ModuleBase::runtime_type</a> &amp; pluginplay::ModuleBase::get_runtime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Provides the runtime of the module. </p>
+<dl class="section return"><dt>Returns</dt><dd>The runtime object with which the module is currently associated.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if there is no runtime. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac45a5393e1845dcf5924d162d9fc86dc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac45a5393e1845dcf5924d162d9fc86dc">&#9670;&nbsp;</a></span>has_description()</h2>
 
@@ -1098,6 +1146,46 @@ template&lt;typename property_type &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">cache</td><td>A shared_ptr to a <code>cache_type</code> instance which will be used by the module for cacheing internal data.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6ed372a76afdaeef2485d155d4e9aba0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ed372a76afdaeef2485d155d4e9aba0">&#9670;&nbsp;</a></span>set_runtime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleBase::set_runtime </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1ModuleBase.html#a1f0f62523701c61e540b73082bdb67aa">runtime_ptr</a>&#160;</td>
+          <td class="paramname"><em>runtime</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the runtime of the module. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">runtime</td><td>A shared_ptr to a <code>runtime_type</code> instance with which the module is currently associated.</td></tr>
   </table>
   </dd>
 </dl>
