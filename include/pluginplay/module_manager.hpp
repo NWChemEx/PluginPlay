@@ -3,6 +3,8 @@
 #include "pluginplay/module_base.hpp"
 #include "pluginplay/types.hpp"
 #include <memory>
+#include <parallelzone/Runtime.hpp>
+
 namespace pluginplay {
 
 namespace detail_ {
@@ -23,11 +25,18 @@ public:
     /// Type of a map holding usable modules
     using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
 
+    // The type of the runtime
+    using runtime_type = parallelzone::Runtime;
+
+    /// A pointer to a runtime
+    using runtime_ptr = std::shared_ptr<runtime_type>;
+
     ///@{
     /** @name Ctors and assignment operators
      *
      */
     ModuleManager();
+    ModuleManager(runtime_ptr runtime);
     ModuleManager(const ModuleManager& rhs);
     ModuleManager& operator=(const ModuleManager& rhs) {
         return *this = std::move(ModuleManager(rhs));
@@ -186,6 +195,25 @@ public:
     auto run_as(const type::key& key, Args&&... args) {
         return at(key).run_as<T>(std::forward<Args>(args)...);
     }
+
+    /** @brief Sets the runtime of the module mananger and its modules.
+     *
+     *  @param[in] runtime A shared_ptr to a @p runtime_type instance with which
+     *                     the module manager is currently associated.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_runtime(runtime_ptr runtime) noexcept;
+
+    /** @brief Provides the runtime of the module manager.
+     *
+     *  @return The runtime object with which the module manager is currently
+     *          associated.
+     *
+     *  @throw std::runtime_error if there is no runtime. Strong throw
+     * guarantee.
+     */
+    runtime_type& get_runtime() const noexcept;
 
 private:
     /// Bridges the gap between the set_default and the PIMPL
