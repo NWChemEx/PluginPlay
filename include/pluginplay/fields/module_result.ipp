@@ -23,6 +23,8 @@ void ModuleResult::change(T&& new_value) {
       std::is_same_v<clean_T, std::shared_ptr<type::any>>; // no const
     if constexpr(is_shared_any)
         change_(new_value);
+    else if constexpr(detail_::IsCString<T>::value)
+        change_(std::move(wrap_value_(std::string(new_value))));
     else
         change_(std::move(wrap_value_(std::forward<T>(new_value))));
 }
