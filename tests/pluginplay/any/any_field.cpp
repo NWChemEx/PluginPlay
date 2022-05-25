@@ -227,19 +227,6 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         REQUIRE_FALSE(by_value.are_equal(diff));
     }
 
-    SECTION("operator<") {
-        // N.B. The logic for comparing wrapped values is tested in
-        // detail_/any_field_wrapper.cpp and is not replicated here
-
-        // AnyField adds to the PIMPL logic by having to worry about defaulted
-        // instances, which is primarily what we test here
-
-        REQUIRE_FALSE(defaulted < AnyField{});
-        REQUIRE(defaulted < by_value);
-        REQUIRE_FALSE(by_value < defaulted);
-        REQUIRE(default_val < by_value);
-    }
-
     SECTION("print") {
         std::stringstream ss;
 

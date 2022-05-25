@@ -39,3 +39,7 @@ Release/
 
 # Users commonly store their specific CMake settings in a toolchain file
 toolchain.cmake
+
+# These are the default names for the components of the cache
+cache.db
+uuid.db

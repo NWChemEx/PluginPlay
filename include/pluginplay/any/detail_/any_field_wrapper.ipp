@@ -39,14 +39,6 @@ bool ANY_FIELD_WRAPPER::value_equal_(const AnyFieldBase& rhs) const noexcept {
 }
 
 TEMPLATE_PARAMS
-bool ANY_FIELD_WRAPPER::value_less_(const AnyFieldBase& rhs) const noexcept {
-    if(type() != rhs.type()) return type() < rhs.type();
-    const auto& lhs_value = this->base_type::template cast<const_ref_type>();
-    const auto& rhs_value = rhs.cast<const_ref_type>();
-    return lhs_value < rhs_value;
-}
-
-TEMPLATE_PARAMS
 std::ostream& ANY_FIELD_WRAPPER::print_(std::ostream& os) const {
     using utilities::printing::operator<<;
     if constexpr(utilities::type_traits::is_printable_v<T>) {

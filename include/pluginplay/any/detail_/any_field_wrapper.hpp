@@ -95,9 +95,6 @@ protected:
     /// Implements AnyFieldBase::value_equal
     bool value_equal_(const AnyFieldBase& rhs) const noexcept override;
 
-    /// Implements AnyFieldBase::value_less
-    bool value_less_(const AnyFieldBase& rhs) const noexcept override;
-
     /** @brief Implements AnyFieldBase::print
      *
      *  This function implements AnyFieldBase::print by determining if
