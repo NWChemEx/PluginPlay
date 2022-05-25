@@ -43,6 +43,15 @@ SubmoduleRequest& SubmoduleRequest::set_description(
 
 type::rtti SubmoduleRequest::type() const { return m_pimpl_->type(); }
 
+typename SubmoduleRequest::submod_uuid_map SubmoduleRequest::submod_uuids()
+  const {
+    return m_pimpl_->submod_uuids();
+}
+
+typename SubmoduleRequest::uuid_type SubmoduleRequest::uuid() const {
+    return m_pimpl_->uuid();
+}
+
 const Module& SubmoduleRequest::value() const { return m_pimpl_->value(); }
 
 Module& SubmoduleRequest::value() { return m_pimpl_->value(); }

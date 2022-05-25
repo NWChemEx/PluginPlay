@@ -30,6 +30,12 @@ public:
     /// Type of a shared pointer to a module, how the submodule is stored
     using module_ptr = std::shared_ptr<Module>;
 
+    /// Type used to hold the wrapped Module's UUID
+    using uuid_type = typename Module::uuid_type;
+
+    /// Type of map, mapping submodule keys to UUIDs
+    using submod_uuid_map = typename Module::submod_uuid_map;
+
     /** @brief Makes an empty request.
      *
      *  The request resulting from this call will have no description, no type,
@@ -212,6 +218,31 @@ public:
      *                                  guarantee.
      */
     type::rtti type() const;
+
+    /** @brief This is a convenience function for calling submod_uuids on the
+     *         wrapped module.
+     *
+     *  For memoization purposes we need to know the UUIDs of each submodule.
+     *  Retrieving this information is done by calling Module::submod_uuids().
+     *  This function is a convenience function so that users don't need to
+     *  unwrap the module in the SubmoduleRequest to call submod_uuids() (this
+     *  function does that for you).
+     *
+     *  @return A map from submodule keys to UUIDs.
+     *
+     *  @throw std::bad_alloc if there is a problem making the map. Strong
+     *                        throw guarantee.
+     *  @throw std::runtime_error if there is no wrapped module. Strong throw
+     *                            guarantee.
+     */
+    submod_uuid_map submod_uuids() const;
+
+    /** @brief Returns the UUID of the wrapped module.
+     *
+     *  @throw std::runtime_error if there is no wrapped module. Strong throw
+     *                            guarantee.
+     */
+    uuid_type uuid() const;
 
     /** @brief Provides the module used to satisfy this request in a read-only
      *         state.

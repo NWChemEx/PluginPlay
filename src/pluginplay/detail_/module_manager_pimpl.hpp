@@ -103,6 +103,7 @@ struct ModuleManagerPIMPL {
         auto internal_cache = m_caches.get_or_make_user_cache(key);
         base->set_cache(internal_cache);
         base->set_runtime(m_runtime_);
+        base->set_uuid(utility::generate_uuid());
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
         auto module_cache = m_caches.get_or_make_module_cache(key);

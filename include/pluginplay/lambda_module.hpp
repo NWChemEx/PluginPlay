@@ -1,7 +1,8 @@
 #pragma once
-#include "pluginplay/module.hpp"
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/types.hpp"
+#include <pluginplay/module.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/types.hpp>
+#include <pluginplay/utility/uuid.hpp>
 #include <utilities/type_traits/tuple/is_tuple.hpp>
 
 namespace pluginplay {
@@ -214,7 +215,8 @@ auto LAMBDA_MOD_TYPE::wrap_results_(T&& rvs, std::index_sequence<Is...>) {
 template<typename PropertyType, typename FxnType>
 auto make_lambda(FxnType&& fxn) {
     using lambda_type = detail_::LambdaModule<PropertyType>;
-    auto l  = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
+    auto l = std::make_unique<lambda_type>(std::forward<FxnType>(fxn));
+    l->set_uuid(utility::generate_uuid());
     auto lm = Module(std::move(l));
     return lm;
 }

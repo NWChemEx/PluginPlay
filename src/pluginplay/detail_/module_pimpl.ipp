@@ -84,6 +84,7 @@ inline auto& ModulePIMPL::citations() const {
 
 inline bool ModulePIMPL::is_memoizable() const {
     assert_mod_();
+    if(!m_base_->has_uuid()) return false;
     auto memoizable = m_memoizable_;
     for(const auto& [k, v] : m_submods_) {
         memoizable = v.value().is_memoizable() && memoizable;
@@ -180,15 +181,41 @@ inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
     return (*m_base_ == *rhs.m_base_);
 }
 
-inline auto ModulePIMPL::type() const {
+inline typename ModulePIMPL::rtti_type ModulePIMPL::type() const {
     assert_mod_();
     return m_base_->type();
+}
+
+inline typename ModulePIMPL::uuid_type ModulePIMPL::uuid() const {
+    assert_mod_();
+    return m_base_->uuid();
+}
+
+inline typename ModulePIMPL::submod_uuid_map ModulePIMPL::submod_uuids() const {
+    submod_uuid_map rv;
+    for(const auto& [k, v] : submods()) {
+        // Prepend the submodule key to each of its submodules' keys
+        // N.B. This essentially scopes the sub submodule keys
+        for(const auto& [sub_k, sub_v] : v.submod_uuids()) {
+            rv.emplace(k + ":" + sub_k, sub_v);
+        }
+        rv.emplace(k, v.uuid());
+    }
+    return rv;
 }
 
 inline type::input_map ModulePIMPL::merge_inputs_(
   type::input_map in_inputs) const {
     for(const auto& [k, v] : m_inputs_)
         if(!in_inputs.count(k)) in_inputs[k] = v;
+
+    // TODO: It probably makes sense to create an Input class which tracks this
+    //       and allows using submods as inputs
+    std::string submod_key = "__PLUGIN_PLAY__ SUBMOD KEYS __PLUGIN_PLAY__";
+    ModuleInput temp;
+    temp.set_type<submod_uuid_map>();
+    temp.change(submod_uuids());
+    in_inputs.emplace(submod_key, temp);
     return in_inputs;
 }
 

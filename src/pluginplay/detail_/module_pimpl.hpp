@@ -63,6 +63,12 @@ public:
     /// Type of object containing RTTI of ModuleBase implementation
     using rtti_type = type::rtti;
 
+    /// Type of the UUID
+    using uuid_type = typename ModuleBase::uuid_type;
+
+    /// Type of the submodule key to UUID map
+    using submod_uuid_map = std::map<std::string, uuid_type>;
+
     /** @brief Makes a module with no implementation.
      *
      *  The ModulePIMPL instance resulting from this ctor wraps no algorithm,
@@ -558,6 +564,23 @@ public:
      *                            implementation. Strong throw guarantee.
      */
     rtti_type type() const;
+
+    /** @brief Returns the UUID assigned to the underlying algorithm.
+     *
+     *  When ModuleBase instances are added to the ModuleManager they are
+     *  assigned UUIDs. This method allows you to retrieve the UUID the module
+     *  was assigned.
+     *
+     *  @return The UUID assigned to the wrapped implementation. An empty string
+     *          is returned if the wrapped implementation was not assigned a
+     *          UUID.
+     *
+     *  @throws std::runtime_error if the ModulePIMPL does not have an
+     *                             implementation. Strong throw guarantee.
+     */
+    uuid_type uuid() const;
+
+    submod_uuid_map submod_uuids() const;
 
 private:
     /** @brief Code factorization for merging two sets of inputs.

@@ -1,8 +1,9 @@
 #pragma once
-#include "pluginplay/detail_/module_pimpl.hpp"
-#include "pluginplay/module.hpp"
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/property_type/property_type.hpp"
+#include <pluginplay/detail_/module_pimpl.hpp>
+#include <pluginplay/module.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/property_type/property_type.hpp>
+#include <pluginplay/utility/uuid.hpp>
 
 namespace testing {
 
@@ -192,6 +193,7 @@ auto make_module_pimpl_with_cache() {
     auto ptr = std::make_shared<T>();
     pluginplay::cache::ModuleManagerCache m_caches;
     auto pcache = m_caches.get_or_make_module_cache("foo");
+    ptr->set_uuid(pluginplay::utility::generate_uuid());
     return pluginplay::detail_::ModulePIMPL(ptr, pcache);
 }
 

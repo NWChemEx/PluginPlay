@@ -94,6 +94,16 @@ const std::vector<type::description>& Module::citations() const {
 
 std::string Module::profile_info() const { return m_pimpl_->profile_info(); }
 
+typename Module::uuid_type Module::uuid() const {
+    if(!m_pimpl_) return uuid_type{};
+    return m_pimpl_->uuid();
+}
+
+typename Module::submod_uuid_map Module::submod_uuids() const {
+    if(!m_pimpl_) return submod_uuid_map{};
+    return m_pimpl_->submod_uuids();
+}
+
 //--------------------------- Private Members --------------------------------/
 
 void Module::unlock_() noexcept { m_pimpl_->unlock(); }

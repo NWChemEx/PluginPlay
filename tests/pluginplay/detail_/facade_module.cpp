@@ -17,6 +17,8 @@ TEST_CASE("FacadeModule : multiple returns") {
 TEST_CASE("FacadeModule : is_memoizable") {
     auto f = pluginplay::make_facade<testing::OneOut>(2);
     REQUIRE_FALSE(f.is_memoizable());
+
+    // Still not memoizable even if marked as memoizable (no UUID or Cache)
     f.turn_on_memoization();
-    REQUIRE(f.is_memoizable());
+    REQUIRE_FALSE(f.is_memoizable());
 }

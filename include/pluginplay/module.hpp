@@ -1,6 +1,7 @@
 #pragma once
 #include "pluginplay/types.hpp"
 #include <pluginplay/fields/fields.hpp>
+#include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
@@ -39,6 +40,12 @@ public:
 
     /// Type of the object used to convey why a module is not ready
     using not_ready_type = utilities::CaseInsensitiveMap<std::set<type::key>>;
+
+    /// Type of UUIDs
+    using uuid_type = utility::uuid_type;
+
+    /// Type of a submodule to UUID map
+    using submod_uuid_map = std::map<type::key, uuid_type>;
 
     /** @brief Makes a module with no implementation.
      *
@@ -613,6 +620,10 @@ public:
      *         return. Strong throw guarantee.
      */
     std::string profile_info() const;
+
+    submod_uuid_map submod_uuids() const;
+
+    uuid_type uuid() const;
 
     /** @brief Compares two Module instances for equality
      *
