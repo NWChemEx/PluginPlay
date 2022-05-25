@@ -22,6 +22,11 @@ U UserCache::uncache(T&& key) {
     return unwrap_results_<U>(std::move(wrap_val));
 }
 
+template<typename U, typename T, typename V>
+U UserCache::uncache(T&& key, V&& default_value) {
+    return count(key) ? uncache<U>(std::forward<T>(key)) : default_value;
+}
+
 template<typename T>
 typename UserCache::input_map_type UserCache::wrap_inputs_(T&& key) const {
     using input_type = input_map_type::mapped_type;

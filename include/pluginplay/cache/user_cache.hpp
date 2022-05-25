@@ -20,6 +20,31 @@ public:
     template<typename U, typename T>
     U uncache(T&& key);
 
+    /** @brief Uncache with optional default value.
+     *
+     *  This method checks to see if there's a result cached under @p key. If so
+     *  that result is returned. If not, then @p default_value is returned.
+     *  This is largely intended as code factorization for the very common use
+     *  case when you attempt to restart from a cached result, but need to use
+     *  a default value if no cached result exists.
+     *
+     *  @tparam U The type of the result. Results are stored in a type-erased
+     *            manner so you must know the result's type to uncache it.
+     *  @tparam T The type of the key.
+     *  @tparam V The type of the default argument. Must be implicitly
+     *            convertible to type U.
+     *
+     *  @param[in] key The object used to store the result.
+     *  @param[in] default_value The value to return if there is no result
+     *                           stored under @p key.
+     *
+     *  @return The result stored under @p key (if there is one) otherwise
+     *          @p default_value is returned.
+     *
+     */
+    template<typename U, typename T, typename V>
+    U uncache(T&& key, V&& default_value);
+
     void reset_cache() { m_cache_.clear(); }
 
 private:
