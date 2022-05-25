@@ -86,25 +86,25 @@ Inheritance diagram for pluginplay::any::detail_::AnyFieldBase:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a5a9b8b8dd67d0ad0c8adc07ad3cc2053"><td class="memItemLeft" align="right" valign="top"><a id="a5a9b8b8dd67d0ad0c8adc07ad3cc2053"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a5a9b8b8dd67d0ad0c8adc07ad3cc2053">field_base_pointer</a> = typename <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a7f53cb7cdde8bf915c3657d8d47af314">AnyField::pimpl_pointer</a></td></tr>
-<tr class="memdesc:a5a9b8b8dd67d0ad0c8adc07ad3cc2053"><td class="mdescLeft">&#160;</td><td class="mdescRight">How the PIMPL is stored. <br /></td></tr>
-<tr class="separator:a5a9b8b8dd67d0ad0c8adc07ad3cc2053"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afce163e33daa3c1d5585ffe6714ca125"><td class="memItemLeft" align="right" valign="top"><a id="afce163e33daa3c1d5585ffe6714ca125"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#afce163e33daa3c1d5585ffe6714ca125">rtti_type</a> = typename <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a3407b4afe33f5bf5d856428628d280e8">any_field_type::rtti_type</a></td></tr>
-<tr class="memdesc:afce163e33daa3c1d5585ffe6714ca125"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type the Any class hierarchy uses for RTTI purposes. <br /></td></tr>
-<tr class="separator:afce163e33daa3c1d5585ffe6714ca125"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56f22739d8829d8fd736e452fb237d2c"><td class="memItemLeft" align="right" valign="top"><a id="a56f22739d8829d8fd736e452fb237d2c"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> &gt;</td></tr>
+<tr class="memdesc:a56f22739d8829d8fd736e452fb237d2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">How the PIMPL is stored. <br /></td></tr>
+<tr class="separator:a56f22739d8829d8fd736e452fb237d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae51363b5fe4dfd20262c4613fb65fa8"><td class="memItemLeft" align="right" valign="top"><a id="aae51363b5fe4dfd20262c4613fb65fa8"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8">rtti_type</a> = std::type_index</td></tr>
+<tr class="memdesc:aae51363b5fe4dfd20262c4613fb65fa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type the Any class hierarchy uses for RTTI purposes. <br /></td></tr>
+<tr class="separator:aae51363b5fe4dfd20262c4613fb65fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a090ff0fc141b2b791bc83086041301d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a5a9b8b8dd67d0ad0c8adc07ad3cc2053">field_base_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a090ff0fc141b2b791bc83086041301d8">clone</a> () const</td></tr>
+<tr class="memitem:a090ff0fc141b2b791bc83086041301d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a090ff0fc141b2b791bc83086041301d8">clone</a> () const</td></tr>
 <tr class="memdesc:a090ff0fc141b2b791bc83086041301d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymorphic copy.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a090ff0fc141b2b791bc83086041301d8">More...</a><br /></td></tr>
 <tr class="separator:a090ff0fc141b2b791bc83086041301d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a411bd0df14f9c9cdb960dde3445dd44f"><td class="memItemLeft" align="right" valign="top"><a id="a411bd0df14f9c9cdb960dde3445dd44f"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a411bd0df14f9c9cdb960dde3445dd44f">~AnyFieldBase</a> () noexcept=default</td></tr>
 <tr class="memdesc:a411bd0df14f9c9cdb960dde3445dd44f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard polymorphic dtor. <br /></td></tr>
 <tr class="separator:a411bd0df14f9c9cdb960dde3445dd44f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ce659cb729672118ac1e8909d52d837"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#afce163e33daa3c1d5585ffe6714ca125">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a9ce659cb729672118ac1e8909d52d837">type</a> () const noexcept</td></tr>
+<tr class="memitem:a9ce659cb729672118ac1e8909d52d837"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a9ce659cb729672118ac1e8909d52d837">type</a> () const noexcept</td></tr>
 <tr class="memdesc:a9ce659cb729672118ac1e8909d52d837"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the RTTI for the wrapped object.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a9ce659cb729672118ac1e8909d52d837">More...</a><br /></td></tr>
 <tr class="separator:a9ce659cb729672118ac1e8909d52d837"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93d9645a687723fd5986d99b41b9e324"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -127,9 +127,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>storing_const_referen
 <tr class="memitem:ab6f1857afbbbf939ec5225ac4c38f6b2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ab6f1857afbbbf939ec5225ac4c38f6b2">value_equal</a> (const <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:ab6f1857afbbbf939ec5225ac4c38f6b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the value wrapped by two <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances are equal.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ab6f1857afbbbf939ec5225ac4c38f6b2">More...</a><br /></td></tr>
 <tr class="separator:ab6f1857afbbbf939ec5225ac4c38f6b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a268d44eacf29a1fa766136bb094ee415"><td class="memItemLeft" align="right" valign="top"><a id="a268d44eacf29a1fa766136bb094ee415"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>value_less</b> (const <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> &amp;rhs) const noexcept</td></tr>
-<tr class="separator:a268d44eacf29a1fa766136bb094ee415"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40f33fe1d2a6cfe06639955a8a657e9c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a40f33fe1d2a6cfe06639955a8a657e9c">print</a> (std::ostream &amp;os) const</td></tr>
 <tr class="memdesc:a40f33fe1d2a6cfe06639955a8a657e9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a text representation of the wrapped object to <code>os</code>.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a40f33fe1d2a6cfe06639955a8a657e9c">More...</a><br /></td></tr>
 <tr class="separator:a40f33fe1d2a6cfe06639955a8a657e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -306,7 +303,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a5a9b8b8dd67d0ad0c8adc07ad3cc2053">field_base_pointer</a> pluginplay::any::detail_::AnyFieldBase::clone </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a> pluginplay::any::detail_::AnyFieldBase::clone </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -472,7 +469,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#afce163e33daa3c1d5585ffe6714ca125">rtti_type</a> pluginplay::any::detail_::AnyFieldBase::type </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8">rtti_type</a> pluginplay::any::detail_::AnyFieldBase::type </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>

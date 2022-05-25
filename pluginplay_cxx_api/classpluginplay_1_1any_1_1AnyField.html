@@ -84,22 +84,22 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a3407b4afe33f5bf5d856428628d280e8"><td class="memItemLeft" align="right" valign="top"><a id="a3407b4afe33f5bf5d856428628d280e8"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a3407b4afe33f5bf5d856428628d280e8">rtti_type</a> = std::type_index</td></tr>
-<tr class="memdesc:a3407b4afe33f5bf5d856428628d280e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used for runtime type information (RTTI) purposes. <br /></td></tr>
-<tr class="separator:a3407b4afe33f5bf5d856428628d280e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6a7d66addbb9527eb3d13a7ce0881e8"><td class="memItemLeft" align="right" valign="top"><a id="af6a7d66addbb9527eb3d13a7ce0881e8"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#af6a7d66addbb9527eb3d13a7ce0881e8">pimpl_type</a> = <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">detail_::AnyFieldBase</a></td></tr>
 <tr class="memdesc:af6a7d66addbb9527eb3d13a7ce0881e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the object actually implementing the <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> class. <br /></td></tr>
 <tr class="separator:af6a7d66addbb9527eb3d13a7ce0881e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f53cb7cdde8bf915c3657d8d47af314"><td class="memItemLeft" align="right" valign="top"><a id="a7f53cb7cdde8bf915c3657d8d47af314"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a7f53cb7cdde8bf915c3657d8d47af314">pimpl_pointer</a> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#af6a7d66addbb9527eb3d13a7ce0881e8">pimpl_type</a> &gt;</td></tr>
-<tr class="memdesc:a7f53cb7cdde8bf915c3657d8d47af314"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the smart pointer holding a PIMPL, typedef of unique_ptr. <br /></td></tr>
-<tr class="separator:a7f53cb7cdde8bf915c3657d8d47af314"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6eedd962b805fe06bdba02abacb5cf96"><td class="memItemLeft" align="right" valign="top"><a id="a6eedd962b805fe06bdba02abacb5cf96"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a6eedd962b805fe06bdba02abacb5cf96">rtti_type</a> = typename <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8">pimpl_type::rtti_type</a></td></tr>
+<tr class="memdesc:a6eedd962b805fe06bdba02abacb5cf96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used for runtime type information (RTTI) purposes. <br /></td></tr>
+<tr class="separator:a6eedd962b805fe06bdba02abacb5cf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86b67b0e1045c23c6ddd967d19dbe81c"><td class="memItemLeft" align="right" valign="top"><a id="a86b67b0e1045c23c6ddd967d19dbe81c"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a86b67b0e1045c23c6ddd967d19dbe81c">pimpl_pointer</a> = typename <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">pimpl_type::field_base_pointer</a></td></tr>
+<tr class="memdesc:a86b67b0e1045c23c6ddd967d19dbe81c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the smart pointer holding a PIMPL, typedef of unique_ptr. <br /></td></tr>
+<tr class="separator:a86b67b0e1045c23c6ddd967d19dbe81c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa81faf61ea66dd872d350ba3277a0a6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#aa81faf61ea66dd872d350ba3277a0a6b">AnyField</a> (<a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a7f53cb7cdde8bf915c3657d8d47af314">pimpl_pointer</a> pimpl=nullptr) noexcept</td></tr>
+<tr class="memitem:aa81faf61ea66dd872d350ba3277a0a6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#aa81faf61ea66dd872d350ba3277a0a6b">AnyField</a> (<a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a86b67b0e1045c23c6ddd967d19dbe81c">pimpl_pointer</a> pimpl=nullptr) noexcept</td></tr>
 <tr class="memdesc:aa81faf61ea66dd872d350ba3277a0a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> wrapping the provided value.  <a href="classpluginplay_1_1any_1_1AnyField.html#aa81faf61ea66dd872d350ba3277a0a6b">More...</a><br /></td></tr>
 <tr class="separator:aa81faf61ea66dd872d350ba3277a0a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc108a8616b058bb379caae97e332271"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#adc108a8616b058bb379caae97e332271">AnyField</a> (const <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;other)</td></tr>
@@ -114,6 +114,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acc26a99b8dea4df1681e4ec7f1cb504c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#acc26a99b8dea4df1681e4ec7f1cb504c">operator=</a> (<a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;&amp;rhs) noexcept</td></tr>
 <tr class="memdesc:acc26a99b8dea4df1681e4ec7f1cb504c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces the existing state with another <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a>'s state.  <a href="classpluginplay_1_1any_1_1AnyField.html#acc26a99b8dea4df1681e4ec7f1cb504c">More...</a><br /></td></tr>
 <tr class="separator:acc26a99b8dea4df1681e4ec7f1cb504c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad47cec1b53de6071ef865e553856ef4"><td class="memItemLeft" align="right" valign="top"><a id="aad47cec1b53de6071ef865e553856ef4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#aad47cec1b53de6071ef865e553856ef4">~AnyField</a> () noexcept</td></tr>
+<tr class="memdesc:aad47cec1b53de6071ef865e553856ef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default non-throw dtor. <br /></td></tr>
+<tr class="separator:aad47cec1b53de6071ef865e553856ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37c6211c5dce42649b09aa9964aaf580"><td class="memItemLeft" align="right" valign="top"><a id="a37c6211c5dce42649b09aa9964aaf580"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a37c6211c5dce42649b09aa9964aaf580">swap</a> (<a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;other) noexcept</td></tr>
 <tr class="memdesc:a37c6211c5dce42649b09aa9964aaf580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard swap function, just exchanges PIMPL instances. <br /></td></tr>
@@ -121,18 +125,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a5ab05419cb141d81de4307b0b71441b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a5ab05419cb141d81de4307b0b71441b7">reset</a> () noexcept</td></tr>
 <tr class="memdesc:a5ab05419cb141d81de4307b0b71441b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores the <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> to a default initialized state.  <a href="classpluginplay_1_1any_1_1AnyField.html#a5ab05419cb141d81de4307b0b71441b7">More...</a><br /></td></tr>
 <tr class="separator:a5ab05419cb141d81de4307b0b71441b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1938cf3c5bb68dade4ef4579bd78da1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a3407b4afe33f5bf5d856428628d280e8">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a1938cf3c5bb68dade4ef4579bd78da1a">type</a> () const noexcept</td></tr>
+<tr class="memitem:a1938cf3c5bb68dade4ef4579bd78da1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a6eedd962b805fe06bdba02abacb5cf96">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a1938cf3c5bb68dade4ef4579bd78da1a">type</a> () const noexcept</td></tr>
 <tr class="memdesc:a1938cf3c5bb68dade4ef4579bd78da1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the RTTI of the wrapped type.  <a href="classpluginplay_1_1any_1_1AnyField.html#a1938cf3c5bb68dade4ef4579bd78da1a">More...</a><br /></td></tr>
 <tr class="separator:a1938cf3c5bb68dade4ef4579bd78da1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47f3ba6bd3ea2191f585082a4d1213e6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a47f3ba6bd3ea2191f585082a4d1213e6"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a47f3ba6bd3ea2191f585082a4d1213e6">is_convertible</a> () const noexcept</td></tr>
+<tr class="memdesc:a47f3ba6bd3ea2191f585082a4d1213e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the wrapped value can be converted to the specified type.  <a href="classpluginplay_1_1any_1_1AnyField.html#a47f3ba6bd3ea2191f585082a4d1213e6">More...</a><br /></td></tr>
+<tr class="separator:a47f3ba6bd3ea2191f585082a4d1213e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebf38798ba4579e859acc186df1d6355"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#aebf38798ba4579e859acc186df1d6355">operator==</a> (const <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:aebf38798ba4579e859acc186df1d6355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a value comparison on two <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances.  <a href="classpluginplay_1_1any_1_1AnyField.html#aebf38798ba4579e859acc186df1d6355">More...</a><br /></td></tr>
 <tr class="separator:aebf38798ba4579e859acc186df1d6355"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9979d0b65d295fb467ad1c1d181f68f2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9979d0b65d295fb467ad1c1d181f68f2">are_equal</a> (const <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:a9979d0b65d295fb467ad1c1d181f68f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymorphically compares two <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> objects.  <a href="classpluginplay_1_1any_1_1AnyField.html#a9979d0b65d295fb467ad1c1d181f68f2">More...</a><br /></td></tr>
 <tr class="separator:a9979d0b65d295fb467ad1c1d181f68f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cc4479716d2015066baa964f9f35dbc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a2cc4479716d2015066baa964f9f35dbc">operator&lt;</a> (const <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;rhs) const noexcept</td></tr>
-<tr class="memdesc:a2cc4479716d2015066baa964f9f35dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an ordering for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances.  <a href="classpluginplay_1_1any_1_1AnyField.html#a2cc4479716d2015066baa964f9f35dbc">More...</a><br /></td></tr>
-<tr class="separator:a2cc4479716d2015066baa964f9f35dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9abdc20009f346d3a0b8d301a61dc148"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148">print</a> (std::ostream &amp;os) const</td></tr>
 <tr class="memdesc:a9abdc20009f346d3a0b8d301a61dc148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a string representation of the wrapped object to the stream.  <a href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148">More...</a><br /></td></tr>
 <tr class="separator:a9abdc20009f346d3a0b8d301a61dc148"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,6 +147,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:add74670b0c356d7e80fd73362db8d1f6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#add74670b0c356d7e80fd73362db8d1f6">owns_value</a> () const noexcept</td></tr>
 <tr class="memdesc:add74670b0c356d7e80fd73362db8d1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> own the wrapped value?  <a href="classpluginplay_1_1any_1_1AnyField.html#add74670b0c356d7e80fd73362db8d1f6">More...</a><br /></td></tr>
 <tr class="separator:add74670b0c356d7e80fd73362db8d1f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fe5c69cbc88290eba46e23dce7f4697"><td class="memTemplParams" colspan="2"><a id="a7fe5c69cbc88290eba46e23dce7f4697"></a>
+template&lt;typename Archive &gt; </td></tr>
+<tr class="memitem:a7fe5c69cbc88290eba46e23dce7f4697"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>save</b> (Archive &amp;ar) const</td></tr>
+<tr class="separator:a7fe5c69cbc88290eba46e23dce7f4697"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ccf5092fe9ad9d353f96670c511f506"><td class="memTemplParams" colspan="2"><a id="a1ccf5092fe9ad9d353f96670c511f506"></a>
+template&lt;typename Archive &gt; </td></tr>
+<tr class="memitem:a1ccf5092fe9ad9d353f96670c511f506"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>load</b> (Archive &amp;ar)</td></tr>
+<tr class="separator:a1ccf5092fe9ad9d353f96670c511f506"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -187,7 +200,7 @@ Related Functions</h2></td></tr>
         <tr>
           <td class="memname">pluginplay::any::AnyField::AnyField </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a7f53cb7cdde8bf915c3657d8d47af314">pimpl_pointer</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a86b67b0e1045c23c6ddd967d19dbe81c">pimpl_pointer</a>&#160;</td>
           <td class="paramname"><em>pimpl</em> = <code>nullptr</code></td><td>)</td>
           <td></td>
         </tr>
@@ -367,21 +380,19 @@ Related Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2cc4479716d2015066baa964f9f35dbc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cc4479716d2015066baa964f9f35dbc">&#9670;&nbsp;</a></span>operator&lt;()</h2>
+<a id="a47f3ba6bd3ea2191f585082a4d1213e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47f3ba6bd3ea2191f585082a4d1213e6">&#9670;&nbsp;</a></span>is_convertible()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool pluginplay::any::AnyField::operator&lt; </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;&#160;</td>
-          <td class="paramname"><em>rhs</em></td><td>)</td>
-          <td> const</td>
+          <td class="memname">bool pluginplay::any::AnyField::is_convertible</td>
         </tr>
       </table>
   </td>
@@ -391,22 +402,15 @@ Related Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Defines an ordering for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances. </p>
-<p>Given two instances <code>a</code> and <code>b</code>, <code>a</code> comes before <code>b</code> if:</p>
-<ul>
-<li><code>a</code> is default constructed, but <code>b</code> isn't</li>
-<li>the RTTI of <code>a</code> comes before the the RTTI of <code>b</code></li>
-<li>if the value <code>a</code> wraps comes before the value <code>b</code> wraps</li>
-</ul>
-<p>Following usual C++ conventions if <code>a</code> is not less than <code>b</code>, and <code>b</code> is not less than <code>a</code>, then <code>a</code> is value equal to <code>b</code> (meaning operator== will return true). Note that even in this scenario <code>are_equal</code> may return false since <code>are_equal</code> also takes into account how the value is owned.</p>
-<p>In particular we note that the RTTI comparison is through <code><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a1938cf3c5bb68dade4ef4579bd78da1a" title="Retrieves the RTTI of the wrapped type.">type()</a></code> and does NOT take into account cv-qualifiers or references.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>The instance we are comparing to.</td></tr>
+<p>Determines if the wrapped value can be converted to the specified type. </p>
+<p>Assuming the present instance wraps a value (if it does not this method will always return false) this method determines if a call to <code>any_cast&lt;T&gt;(*this)</code> will succeed. It should be noted that <code>T</code> should be cv and reference qualified, i.e., this method takes into account the <code>const</code>-ness and reference-semantics of <code>T</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>A cv and reference qualified type.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the present instance comes before <code>rhs</code> and false otherwise. In particular note that a value of false does not necessarilly mean that <code>rhs</code> comes before this.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if it is possible to convert the wrapped object to an instance of type <code>T</code> and false otherwise. Notably, if this instance does not contain a PIMPL this method returns false.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
@@ -648,7 +652,7 @@ Related Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a3407b4afe33f5bf5d856428628d280e8">rtti_type</a> pluginplay::any::AnyField::type </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a6eedd962b805fe06bdba02abacb5cf96">rtti_type</a> pluginplay::any::AnyField::type </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
