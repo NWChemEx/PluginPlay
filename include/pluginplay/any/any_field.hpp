@@ -109,6 +109,7 @@ public:
      */
     AnyField& operator=(AnyField&& rhs) noexcept;
 
+    /// Default non-throw dtor
     ~AnyField() noexcept;
 
     /// Standard swap function, just exchanges PIMPL instances
@@ -142,6 +143,23 @@ public:
      */
     rtti_type type() const noexcept;
 
+    /** @brief Determines if the wrapped value can be converted to the specified
+     *         type.
+     *
+     *  Assuming the present instance wraps a value (if it does not this method
+     *  will always return false) this method determines if a call to
+     *  `any_cast<T>(*this)` will succeed. It should be noted that @p T should
+     *  be cv and reference qualified, i.e., this method takes into account the
+     *  `const`-ness and reference-semantics of @p T.
+     *
+     *  @tparam T A cv and reference qualified type.
+     *
+     *  @return True if it is possible to convert the wrapped object to an
+     *          instance of type @p T and false otherwise. Notably, if this
+     *          instance does not contain a PIMPL this method returns false.
+     *
+     *  @throw None No throw guarantee.
+     */
     template<typename T>
     bool is_convertible() const noexcept;
 

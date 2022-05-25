@@ -168,6 +168,20 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         REQUIRE(by_cref.type() == rtti);
     }
 
+    SECTION("is_convertible") {
+        // No value, so this should be false for every type
+        REQUIRE_FALSE(defaulted.is_convertible<TestType>());
+
+        // The rest of these just forward to AnyFieldBase::is_convertible, so as
+        // long as those unit tests work, these should work too. Here we just
+        // spot check by_value
+        REQUIRE(by_value.template is_convertible<TestType>());
+        REQUIRE(by_value.template is_convertible<const TestType>());
+        REQUIRE(by_value.template is_convertible<TestType&>());
+        REQUIRE(by_value.template is_convertible<const TestType&>());
+        REQUIRE_FALSE(by_value.template is_convertible<map_type>());
+    }
+
     SECTION("operator==/operator!=") {
         // Two default AnyFields
         REQUIRE(defaulted == AnyField{});
