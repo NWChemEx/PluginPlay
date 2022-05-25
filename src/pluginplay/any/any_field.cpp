@@ -54,16 +54,16 @@ bool AnyField::are_equal(const AnyField& rhs) const noexcept {
     return m_pimpl_->are_equal(*rhs.m_pimpl_);
 }
 
-bool AnyField::operator<(const AnyField& rhs) const noexcept {
-    // If RHS doesn't have a value we can't be first
-    if(!rhs.has_value()) return false;
+// bool AnyField::operator<(const AnyField& rhs) const noexcept {
+//     // If RHS doesn't have a value we can't be first
+//     if(!rhs.has_value()) return false;
 
-    // RHS has a value, if we don't then we're first
-    if(!has_value()) return true;
+//     // RHS has a value, if we don't then we're first
+//     if(!has_value()) return true;
 
-    // Getting here means they both have a value, compare them
-    return m_pimpl_->value_less(*rhs.m_pimpl_);
-}
+//     // Getting here means they both have a value, compare them
+//     return m_pimpl_->value_less(*rhs.m_pimpl_);
+// }
 
 std::ostream& AnyField::print(std::ostream& os) const {
     if(!has_value()) return os;

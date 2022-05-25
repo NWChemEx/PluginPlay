@@ -1,23 +1,20 @@
 #pragma once
-#include "pluginplay/any/any_field.hpp"
 #include <any>
-#include <iostream>
-
+#include <exception>
+#include <memory>
+#include <ostream>
+#include <typeindex>
 namespace pluginplay::any::detail_ {
 
 /** @brief
  */
 class AnyFieldBase {
-private:
-    /// The base class of AnyInput/AnyResult, used to get types
-    using any_field_type = AnyField;
-
 public:
     /// How the PIMPL is stored
-    using field_base_pointer = typename AnyField::pimpl_pointer;
+    using field_base_pointer = std::unique_ptr<AnyFieldBase>;
 
     /// The type the Any class hierarchy uses for RTTI purposes
-    using rtti_type = typename any_field_type::rtti_type;
+    using rtti_type = std::type_index;
 
     /** @brief Polymorphic copy
      *
@@ -160,10 +157,6 @@ public:
         return value_equal_(rhs);
     }
 
-    bool value_less(const AnyFieldBase& rhs) const noexcept {
-        return value_less_(rhs);
-    }
-
     /** @brief Adds a text representation of the wrapped object to @p os
      *
      *  This function is actually implemented by calling the virtual function
@@ -262,9 +255,6 @@ private:
 
     /// To be overridden by derived class to implemet value_equal
     virtual bool value_equal_(const AnyFieldBase& rhs) const noexcept = 0;
-
-    /// To be overridden by derived class to implement value_less
-    virtual bool value_less_(const AnyFieldBase& rhs) const noexcept = 0;
 
     /// To be overridden by derived class to implement printing
     virtual std::ostream& print_(std::ostream& os) const = 0;

@@ -125,38 +125,6 @@ TEMPLATE_LIST_TEST_CASE("AnyFieldWrapper", "", testing::types2test) {
         REQUIRE_FALSE(const_val.value_equal(diff));
     }
 
-    SECTION("value_less") {
-        // N.B. for all types considered, the default constructed type compares
-        // less than our non-default value.
-
-        // This is what comparing different types should yield
-        bool corr = rtti < typeid(different_type);
-
-        REQUIRE_FALSE(defaulted.value_less(wrapper_type(default_value)));
-        REQUIRE(defaulted.value_less(has_value));
-        REQUIRE(defaulted.value_less(const_val));
-        REQUIRE(defaulted.value_less(const_ref));
-        REQUIRE(defaulted.value_less(diff) == corr);
-
-        REQUIRE_FALSE(has_value.value_less(defaulted));
-        REQUIRE_FALSE(has_value.value_less(wrapper_type(value)));
-        REQUIRE_FALSE(has_value.value_less(const_val));
-        REQUIRE_FALSE(has_value.value_less(const_ref));
-        REQUIRE(has_value.value_less(diff) == corr);
-
-        REQUIRE_FALSE(const_val.value_less(defaulted));
-        REQUIRE_FALSE(const_val.value_less(has_value));
-        REQUIRE_FALSE(const_val.value_less(cval_wrapper(value)));
-        REQUIRE_FALSE(const_val.value_less(const_ref));
-        REQUIRE(const_val.value_less(diff) == corr);
-
-        REQUIRE_FALSE(const_ref.value_less(defaulted));
-        REQUIRE_FALSE(const_ref.value_less(has_value));
-        REQUIRE_FALSE(const_ref.value_less(const_val));
-        REQUIRE_FALSE(const_val.value_less(cref_wrapper(value)));
-        REQUIRE(const_val.value_less(diff) == corr);
-    }
-
     SECTION("type") {
         REQUIRE(defaulted.type() == rtti);
         REQUIRE(has_value.type() == rtti);
