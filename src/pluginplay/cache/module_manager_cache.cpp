@@ -40,6 +40,10 @@ ModuleManagerCache::~ModuleManagerCache() noexcept = default;
 
 void ModuleManagerCache::change_save_location(path_type disk_location) {
     std::filesystem::path root_dir(disk_location);
+    if(!std::filesystem::exists(root_dir)) {
+        std::filesystem::create_directories(root_dir);
+    }
+
     std::filesystem::path cache_dir("cache");
     std::filesystem::path uuid_dir("uuid");
 

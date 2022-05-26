@@ -76,11 +76,6 @@ public:
      *  already exists then we assume you want us to reuse the cache that
      *  already lives at @p disk_location.
      *
-     *  N.B. Only one directory will be created. So if you give a path `/A/B/C`
-     *  the path `/A/B` must already exist as this function will only create the
-     *  `C` directory. `C` is also only created if `/A/B/C` is not already a
-     *  directory (if it already exists then we assume you are trying to load
-     *  from `/A/B/C`).
      *
      *  @param[in] disk_location The (ideally full) path to the directory where
      *                           cached results will be saved.
@@ -122,8 +117,8 @@ public:
      *  associated with @p key. If the cache does not exist prior to this call
      *  it will be created and then returned.
      *
-     *  @param[in] key An identifier which should correspond to a specific
-     *                 module implementation.
+     *  @param[in] key The identifier for the specific module implementation
+     *                 whose module cache we are to retrieve.
      *
      *  @return A pointer to the requested module cache.
      *
@@ -132,6 +127,25 @@ public:
      */
     module_cache_pointer get_or_make_module_cache(module_cache_key key);
 
+    /** @brief Retrieves the requested user cache.
+     *
+     *  Module developers may need to cache internal state. To do this
+     *  PluginPlay associates with each module implementation a user cache. Like
+     *  the module cache, the user cache is shared by all isntances of the
+     *  same algorithm.
+     *
+     *  This method retrieves the user cache associated with @p key. If the
+     *  cache does not exist prior to this call it will be created and then
+     *  returned.
+     *
+     *  @param[in] key The identifier for the specific module implementation
+     *                 whose user cache we are to retrieve.
+     *
+     *  @return A pointer to the requested user cache.
+     *
+     *  @throw std::bad_alloc if the cache does not already exist and there is a
+     *         problem allocating it. Strong throw guarantee.
+     */
     user_cache_pointer get_or_make_user_cache(module_cache_key key);
 
 private:
@@ -144,16 +158,22 @@ private:
     /// Type of read-only reference to the PIMPL
     using const_pimpl_reference = const pimpl_type&;
 
+    /// Type of a pointer to the PIMPL
     using pimpl_pointer = std::unique_ptr<pimpl_type>;
 
+    /// Code factorization for making a moduel cache
     module_cache_type make_module_cache_(module_cache_key key);
 
+    /// Asserts that the object has a PIMPL, throws std::runtime_error if not
     void assert_pimpl_() const;
 
+    /// Returns PIMPL in read/write state, making it if it DNE
     pimpl_reference pimpl_();
 
+    /// Returns PIMPL in read-only state after asserting it exists
     const_pimpl_reference pimpl_() const;
 
+    /// The actual PIMPL
     pimpl_pointer m_pimpl_;
 };
 

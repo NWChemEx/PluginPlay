@@ -23,7 +23,8 @@ void ModuleCache::cache(key_type key, mapped_type value) {
 
 typename ModuleCache::mapped_type ModuleCache::uncache(
   const_key_reference key) {
-    return pimpl_().m_db->at(key).get();
+    if(!count(key)) throw std::out_of_range("No cached results");
+    return m_pimpl_->m_db->at(key).get();
 }
 
 void ModuleCache::clear() {
