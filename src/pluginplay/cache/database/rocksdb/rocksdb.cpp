@@ -3,13 +3,12 @@
  * To that end, we define two PIMPL implementations, rocksdb_pimpl.hpp contains
  * the real one which gets included when BUILD_ROCKS_DB is defined and
  * rocksdb_pimpl_stub.hpp gets included otherwise. The dispatch between the two
- * happens here (away from the API of the RocksDB class).
+ * happens based on the PIMPL type in the RocksDB class.
  */
 
+#include "detail_/rocksdb_pimpl_stub.hpp"
 #ifdef BUILD_ROCKS_DB
 #include "detail_/rocksdb_pimpl.hpp"
-#else
-#include "detail_/rocksdb_pimpl_stub.hpp"
 #endif
 
 namespace pluginplay::cache::database {

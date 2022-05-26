@@ -33,9 +33,9 @@ void ROCKSDB_PIMPL::insert(key_type key, mapped_type value) {
         large_value_insert_(std::move(key), std::move(value));
         return;
     }
-    auto opts   = rocksdb::WriteOptions();
-    auto status = m_db_->Put(std::move(opts), std::move(key), std::move(value));
-    assert(status.ok());
+    auto opts = rocksdb::WriteOptions();
+    check_status_(
+      m_db_->Put(std::move(opts), std::move(key), std::move(value)));
 }
 
 TPARAMS
@@ -45,15 +45,15 @@ void ROCKSDB_PIMPL::free(const_key_reference key) {
         large_value_free_(key);
         return;
     }
-    auto opts   = rocksdb::WriteOptions();
-    auto status = m_db_->Delete(opts, std::move(key));
-    assert(status.ok());
+    auto opts = rocksdb::WriteOptions();
+    check_status_(m_db_->Delete(opts, std::move(key)));
 }
 
 TPARAMS
 typename ROCKSDB_PIMPL::const_mapped_reference ROCKSDB_PIMPL::at(
   const_key_reference key) const {
     assert_ptr_();
+    if(!count(key)) return const_mapped_reference();
     if(m_split_values_.count(key)) { return large_value_at_(key); }
 
     auto opts = rocksdb::ReadOptions();
@@ -75,8 +75,7 @@ TPARAMS
 typename ROCKSDB_PIMPL::raw_db_pointer ROCKSDB_PIMPL::allocate_(
   const_path_reference path, options_type opts) {
     raw_db_pointer db;
-    auto status = rocksdb::DB::Open(std::move(opts), path, &db);
-    assert(status.ok());
+    check_status_(rocksdb::DB::Open(std::move(opts), path, &db));
     return db;
 }
 
@@ -138,6 +137,11 @@ TPARAMS
 void ROCKSDB_PIMPL::large_value_free_(const_key_reference key) {
     for(const auto& sub_key : m_split_values_.at(key)) free(sub_key);
     m_split_values_.erase(key);
+}
+
+TPARAMS
+void ROCKSDB_PIMPL::check_status_(rocksdb::Status s) const {
+    if(!s.ok()) { throw std::runtime_error(s.ToString()); }
 }
 
 #undef ROCKSDB_PIMPL
