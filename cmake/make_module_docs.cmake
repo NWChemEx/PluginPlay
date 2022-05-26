@@ -1,5 +1,9 @@
 include_guard()
 
+#[[[
+# Path to source file for the executable used to generate module documentation
+# files.
+#]]
 set(ppgmd_config_file "${CMAKE_CURRENT_LIST_DIR}/generate_module_docs.cpp.in")
 
 #[[[
