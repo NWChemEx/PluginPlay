@@ -1,7 +1,7 @@
 #pragma once
 #include "database/database_api.hpp"
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid.hpp>
+#include <memory>
+#include <pluginplay/utility/uuid.hpp>
 
 namespace pluginplay::cache {
 
@@ -24,7 +24,7 @@ public:
     using const_key_reference = const key_type&;
 
     /// Type of the UUIDs, typedef of boost::uuids::uuid
-    using mapped_type = boost::uuids::uuid;
+    using mapped_type = std::string;
 
     /// Type of the database that UUIDMapper will store UUIDs in
     using db_type = database::DatabaseAPI<key_type, mapped_type>;

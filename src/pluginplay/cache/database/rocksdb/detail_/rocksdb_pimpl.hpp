@@ -107,15 +107,12 @@ public:
      *  internally the associated value was split up this method will
      *  automatically put it back together.
      *
-     *  If @p key is not a valid key this function throws (AFAIK RocksDB by
-     *  default checks if a key is valid so there is no way around the overhead
-     *  associated with the check and we may as well act on it).
-     *
      *  @param[in] key The label of the value to retrieve.
      *
-     *  @throw std::out_of_range if @p key is not a valid key. Strong throw
-     *                           guarantee as far as the class is concerned, but
-     *                           there may be changes to the underlying database
+     *  @return A ConstDBValue instance which holds a read-only reference to
+     *          the requested value (if `count(key)`), otherwise the returned
+     *          ConstDBValue object has no value.
+     *
      *  @throw std::bad_alloc if there is a problem putting a large value back
      *                        together.
      */
@@ -202,6 +199,8 @@ private:
     const_mapped_reference large_value_at_(const_key_reference key) const;
 
     void large_value_free_(const_key_reference key);
+
+    void check_status_(rocksdb::Status s) const;
 
     /** @brief Maximum size a value can be.
      *
