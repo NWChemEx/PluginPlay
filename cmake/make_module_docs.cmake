@@ -74,6 +74,22 @@ endfunction()
 #        ${CMAKE_PROJECT_NAME}
 #        "${CMAKE_CURRENT_LIST_DIR}/build/module_apis"
 #    )
+#
+# After building the project, ``build/generate_module_docs`` can be run to
+# generate the documentation source files in ``build/module_apis``. The
+# resulting reStructuredText in ``build/module_apis`` can be converted to
+# HTML by moving it to a Sphinx project where it is included in a 
+# ``toctree`` directive, or by running the following ``sphinx-build`` command:
+#
+# .. code-block:: bash
+# 
+#    sphinx-build -b html -c "docs/source/" "build/module_apis/" "docs/build/html/module_apis/"
+#
+# where the ``-c "docs/source/"`` flag tells ``sphinx-build`` where
+# the ``conf.py`` file is located, ``"build/module_apis"`` is the module
+# documentation reStructuredText files, and 
+# ``"docs/build/html/module_apis/"`` is the output directory for the HTML
+# documentation.
 #]]
 function(plugin_play_generate_module_docs_from_name ppgmdfn_name ppgmdfn_output)
     plugin_play_generate_module_docs(
