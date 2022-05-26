@@ -100,10 +100,11 @@ struct ModuleManagerPIMPL {
      */
     void add_module(type::key key, module_base_ptr base) {
         assert_unique_key_(key);
-        auto internal_cache = m_caches.get_or_make_user_cache(key);
+        auto uuid           = utility::generate_uuid();
+        auto internal_cache = m_caches.get_or_make_user_cache(uuid);
         base->set_cache(internal_cache);
         base->set_runtime(m_runtime_);
-        base->set_uuid(utility::generate_uuid());
+        base->set_uuid(uuid);
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
         auto module_cache = m_caches.get_or_make_module_cache(key);

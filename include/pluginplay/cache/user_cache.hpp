@@ -2,7 +2,6 @@
 #include <pluginplay/cache/module_cache.hpp>
 
 namespace pluginplay::cache {
-
 class UserCache {
 public:
     using sub_cache_type = ModuleCache;
