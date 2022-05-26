@@ -26,7 +26,7 @@ TEST_CASE("ModuleManagerCache") {
         REQUIRE(pcache.get() == pcache2.get());
     }
 
-    SECTION("get_or_make_module_cache") {
+    SECTION("get_or_make_user_cache") {
         auto pcache = memory_only.get_or_make_user_cache("hello");
 
         // New key, new cache

@@ -88,10 +88,48 @@ public:
      */
     explicit ModuleManagerCache(path_type disk_location);
 
+    /** @brief Default dtor.
+     *
+     *  This desctructor simply cleans up the memory. In particular it does not
+     *  force a save or anything like that.
+     *
+     *  @throw None No throw guarantee.
+     */
     ~ModuleManagerCache() noexcept;
 
+    /** @brief Changes/sets the disk location where the cache is backed up to.
+     *
+     *  If you want the cache to be saved to disk it is strongly advised you
+     *  use the ctor which takes a path. That said, you can use this method to
+     *  make it such that future get_or_make calls create/load caches from a
+     *  disk-based location. In particular, this will not affect caches which
+     *  have been created by this instance prior to calling change_save_location
+     *  (i.e., if you made some in memory-only caches, this method will not
+     *  reallocate them/migrate their data to a cache which can save to disk).
+     *
+     *  @param[in] disk_location Where the cache should be saved to.
+     */
     void change_save_location(path_type disk_location);
 
+    /** @brief Retrieves the module cache for @p key.
+     *
+     *  For module implementations which can be memoized, the cache holds a
+     *  module cache instance for this purpose. That cache is shared by all
+     *  instances of that implementation. It is the caller's responsibility to
+     *  assign unique identifiers to each different module implementation.
+     *
+     *  This function is used to retrieve the module cache for the module
+     *  associated with @p key. If the cache does not exist prior to this call
+     *  it will be created and then returned.
+     *
+     *  @param[in] key An identifier which should correspond to a specific
+     *                 module implementation.
+     *
+     *  @return A pointer to the requested module cache.
+     *
+     *  @throw std::bad_alloc if the cache does not already exist and there is a
+     *                        problem allocating it.
+     */
     module_cache_pointer get_or_make_module_cache(module_cache_key key);
 
     user_cache_pointer get_or_make_user_cache(module_cache_key key);
