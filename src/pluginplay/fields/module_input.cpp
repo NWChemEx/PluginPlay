@@ -1,5 +1,5 @@
 #include "detail_/module_input_pimpl.hpp"
-#include "pluginplay/module_input.hpp"
+#include <pluginplay/fields/module_input.hpp>
 
 namespace pluginplay {
 
@@ -40,8 +40,6 @@ bool ModuleInput::ready() const noexcept { return m_pimpl_->is_ready(); }
 const type::description& ModuleInput::description() const {
     return m_pimpl_->description();
 }
-
-void ModuleInput::hash(Hasher& h) const { return m_pimpl_->hash(h); }
 
 ModuleInput& ModuleInput::set_description(type::description desc) noexcept {
     m_pimpl_->set_description(std::move(desc));

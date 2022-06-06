@@ -16,9 +16,9 @@
  */
 
 namespace pluginplay {
-namespace detail_ {
-class Any;
-} // namespace detail_
+namespace any {
+class AnyField;
+} // namespace any
 
 class ModuleInput;
 
@@ -41,7 +41,7 @@ class SubmoduleRequest;
 namespace pluginplay::type {
 
 /// The type of our type-erased holder class
-using any = detail_::Any;
+using any = any::AnyField;
 
 /// The type of metadata holding a description
 using description = std::string;

@@ -1,5 +1,5 @@
 #include "detail_/module_result_pimpl.hpp"
-#include "pluginplay/module_result.hpp"
+#include <pluginplay/fields/module_result.hpp>
 #include <typeindex>
 
 namespace pluginplay {

@@ -1,7 +1,7 @@
 #pragma once
-#include "pluginplay/module_result.hpp"
-#include "pluginplay/types.hpp"
 #include "rest_printer.hpp"
+#include <pluginplay/fields/module_result.hpp>
+#include <pluginplay/types.hpp>
 
 namespace pluginplay::printing::detail_ {
 

@@ -1,5 +1,5 @@
-#include "pluginplay/detail_/module_result_pimpl.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/fields/detail_/module_result_pimpl.hpp>
 using namespace pluginplay;
 using namespace pluginplay::detail_;
 using shared_any = typename ModuleResultPIMPL::shared_any;
@@ -7,7 +7,7 @@ using shared_any = typename ModuleResultPIMPL::shared_any;
 template<typename T, typename U>
 static auto wrap_value(U&& value) {
     return std::make_shared<const type::any>(
-      make_Any<T>(std::forward<U>(value)));
+      any::make_any_field<T>(std::forward<U>(value)));
 }
 
 static const std::type_index d(typeid(double));
@@ -105,7 +105,7 @@ TEST_CASE("ModuleResultPIMPL : value") {
     SECTION("Can get value") {
         p.set_type(d);
         p.set_value(wrap_value<double>(3.14));
-        REQUIRE(p.value()->cast<double>() == 3.14);
+        REQUIRE(any::any_cast<double>(*p.value()) == 3.14);
     }
 }
 
