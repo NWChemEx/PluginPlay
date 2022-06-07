@@ -3,6 +3,8 @@
 PluginPlay
 ==========
 
+[Documentation](https://nwchemex-project.github.io/PluginPlay/)
+
 Warning!!!! PluginPlay is currently in alpha. 
 
 At this points APIs should be stable, but expect bugs and 
