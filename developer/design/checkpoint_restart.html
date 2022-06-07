@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkpoint/Restart &mdash; pluginplay 1.0.0 documentation</title>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -94,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="checkpoint-restart">
-<span id="design-checkpoint-restart"></span><h1>Checkpoint/Restart<a class="headerlink" href="#checkpoint-restart" title="Permalink to this headline"></a></h1>
+<span id="design-checkpoint-restart"></span><h1>Checkpoint/Restart<a class="headerlink" href="#checkpoint-restart" title="Permalink to this heading"></a></h1>
 <p>The need for checkpoint/restart (C/R) was briefly touched upon in
 <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> with a full discussion deferred to this section. From
 the PluginPlay perspective C/R is a subset of the memoization needs, more
@@ -102,7 +103,7 @@ specifically C/R amounts to avoiding recomputation by using a previously created
 checkpoint. In PluginPlay C/R is unified with memoization by using the
 checkpoint to create a Cache instance.</p>
 <section id="what-is-c-r">
-<h2>What is C/R?<a class="headerlink" href="#what-is-c-r" title="Permalink to this headline"></a></h2>
+<h2>What is C/R?<a class="headerlink" href="#what-is-c-r" title="Permalink to this heading"></a></h2>
 <p>C/R is the high-performance computing equivalent of saving/loading. In
 conventional usage C/R primarily targets fault resilience (being able to resume
 a program when something goes wrong) and is typically done in the background of
@@ -129,7 +130,7 @@ developer does the checkpointing), and allows other actions to occur between the
 checkpoint and the restart.</p>
 </section>
 <section id="why-do-we-need-c-r">
-<h2>Why Do We Need C/R?<a class="headerlink" href="#why-do-we-need-c-r" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need C/R?<a class="headerlink" href="#why-do-we-need-c-r" title="Permalink to this heading"></a></h2>
 <p>Historically many electronic structure packages have had limited or no C/R
 capabilities. However, fault rates are expected to increase substantially with
 exascale computing making it prudent for us to consider C/R if for no other
@@ -141,12 +142,12 @@ Having C/R means a user doesn’t need to rerun the entire program just because
 an error occurred.</p>
 </section>
 <section id="c-r-considerations">
-<h2>C/R Considerations<a class="headerlink" href="#c-r-considerations" title="Permalink to this headline"></a></h2>
+<h2>C/R Considerations<a class="headerlink" href="#c-r-considerations" title="Permalink to this heading"></a></h2>
 <p>There are a number of C/R considerations which we have grouped based on whether
 they pertain to the objects being C/R, the hardware being used to C/R, or the
 design of PluginPlay.</p>
 <section id="object-considerations">
-<h3>Object Considerations<a class="headerlink" href="#object-considerations" title="Permalink to this headline"></a></h3>
+<h3>Object Considerations<a class="headerlink" href="#object-considerations" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p>The amount of data to checkpoint can be formidable</p>
 <blockquote>
@@ -178,7 +179,7 @@ thus intimately related to C/R</p></li>
 </ul>
 </section>
 <section id="hardware-considerations">
-<h3>Hardware Considerations<a class="headerlink" href="#hardware-considerations" title="Permalink to this headline"></a></h3>
+<h3>Hardware Considerations<a class="headerlink" href="#hardware-considerations" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p>Exascale machines include memory hierarchies that need checkpointed (e.g.
 burst buffers, nonvolatile memory)</p></li>
@@ -194,7 +195,7 @@ long-term archival the storage format needs to be platform agnostic</p></li>
 </ul>
 </section>
 <section id="pluginplay-specific-considerations">
-<h3>PluginPlay Specific Considerations<a class="headerlink" href="#pluginplay-specific-considerations" title="Permalink to this headline"></a></h3>
+<h3>PluginPlay Specific Considerations<a class="headerlink" href="#pluginplay-specific-considerations" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Generally speaking, in PluginPlay most data that needs checkpointed will live
 in the cache.</p></li>
@@ -210,7 +211,7 @@ have different target time ranges.</p></li>
 </section>
 </section>
 <section id="c-r-implementations">
-<h2>C/R Implementations<a class="headerlink" href="#c-r-implementations" title="Permalink to this headline"></a></h2>
+<h2>C/R Implementations<a class="headerlink" href="#c-r-implementations" title="Permalink to this heading"></a></h2>
 <p>Saving/loading is an ubiquitous aspect of the modern user experience. For this
 reason we expected to find a number of existing C/R candidates; however, we
 were only able to locate a few existing libraries. It is possible that we are
@@ -263,7 +264,7 @@ state of the libraries. Stars and watchers were accurate as of March 2022.</p>
 </div>
 </section>
 <section id="c-r-strategy">
-<h2>C/R Strategy<a class="headerlink" href="#c-r-strategy" title="Permalink to this headline"></a></h2>
+<h2>C/R Strategy<a class="headerlink" href="#c-r-strategy" title="Permalink to this heading"></a></h2>
 <p>The existing C/R libraries do not seem to be widely used. Perhaps the larger
 problem with the existing C/R libraries is that it is not clear what they have
 to offer (unless our program is so simple we can just tell it what memory

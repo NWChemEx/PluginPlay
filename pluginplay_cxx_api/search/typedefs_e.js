@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['result_5fmap_413',['result_map',['../classpluginplay_1_1detail___1_1FacadeModule.html#a27c72c29bf89e6e9229cb9322ff5ca3b',1,'pluginplay::detail_::FacadeModule::result_map()'],['../classpluginplay_1_1detail___1_1LambdaModule.html#ad261676530cf553344481b96d146d311',1,'pluginplay::detail_::LambdaModule::result_map()'],['../namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394',1,'pluginplay::type::result_map()']]],
-  ['rtti_414',['rtti',['../namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0',1,'pluginplay::type']]],
-  ['rtti_5ftype_415',['rtti_type',['../classpluginplay_1_1any_1_1AnyField.html#a6eedd962b805fe06bdba02abacb5cf96',1,'pluginplay::any::AnyField::rtti_type()'],['../classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8',1,'pluginplay::any::detail_::AnyFieldBase::rtti_type()'],['../classpluginplay_1_1detail___1_1Any.html#a0f1544db2d30172b35af96ca704cf00b',1,'pluginplay::detail_::Any::rtti_type()'],['../classpluginplay_1_1detail___1_1AnyWrapperBase.html#a950b086e1fef9e84b2f89ba0b6d37a23',1,'pluginplay::detail_::AnyWrapperBase::rtti_type()']]],
-  ['runtime_5fptr_416',['runtime_ptr',['../classpluginplay_1_1ModuleBase.html#a1f0f62523701c61e540b73082bdb67aa',1,'pluginplay::ModuleBase::runtime_ptr()'],['../classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018',1,'pluginplay::ModuleManager::runtime_ptr()']]],
-  ['runtime_5ftype_417',['runtime_type',['../classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726',1,'pluginplay::ModuleBase']]]
+  ['shared_5fany_453',['shared_any',['../classpluginplay_1_1ModuleResult.html#a2df2dd287e9350d10f54d34bb5b5e7f6',1,'pluginplay::ModuleResult']]],
+  ['size_454',['size',['../namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c',1,'pluginplay::type']]],
+  ['sub_5fcache_5ftype_455',['sub_cache_type',['../classpluginplay_1_1cache_1_1UserCache.html#af44acc631efeae88b3f140aae233e261',1,'pluginplay::cache::UserCache']]],
+  ['submod_5fuuid_5fmap_456',['submod_uuid_map',['../classpluginplay_1_1Module.html#a92bee556e6935e51eec08b7d0dbaacdd',1,'pluginplay::Module::submod_uuid_map()'],['../classpluginplay_1_1SubmoduleRequest.html#a772757c21c35cf30fcdef7f98b7eff96',1,'pluginplay::SubmoduleRequest::submod_uuid_map()']]],
+  ['submodule_5fmap_457',['submodule_map',['../classpluginplay_1_1detail___1_1FacadeModule.html#a428b500affacdfbc366f2d59b5f1f871',1,'pluginplay::detail_::FacadeModule::submodule_map()'],['../classpluginplay_1_1detail___1_1LambdaModule.html#a200c5be02b1917ea5a4505e72a86d305',1,'pluginplay::detail_::LambdaModule::submodule_map()'],['../namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7',1,'pluginplay::type::submodule_map()']]]
 ];

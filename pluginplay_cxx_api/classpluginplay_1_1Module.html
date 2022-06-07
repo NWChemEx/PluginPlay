@@ -90,6 +90,14 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#acc06e026e097f882a2716784d4ed6a4b">not_ready_type</a> = utilities::CaseInsensitiveMap&lt; std::set&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt; &gt;</td></tr>
 <tr class="memdesc:acc06e026e097f882a2716784d4ed6a4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the object used to convey why a module is not ready. <br /></td></tr>
 <tr class="separator:acc06e026e097f882a2716784d4ed6a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fdd4c01406da7ebddbf31259b108478"><td class="memItemLeft" align="right" valign="top"><a id="a3fdd4c01406da7ebddbf31259b108478"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a3fdd4c01406da7ebddbf31259b108478">uuid_type</a> = utility::uuid_type</td></tr>
+<tr class="memdesc:a3fdd4c01406da7ebddbf31259b108478"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of UUIDs. <br /></td></tr>
+<tr class="separator:a3fdd4c01406da7ebddbf31259b108478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92bee556e6935e51eec08b7d0dbaacdd"><td class="memItemLeft" align="right" valign="top"><a id="a92bee556e6935e51eec08b7d0dbaacdd"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a92bee556e6935e51eec08b7d0dbaacdd">submod_uuid_map</a> = std::map&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>, <a class="el" href="classpluginplay_1_1Module.html#a3fdd4c01406da7ebddbf31259b108478">uuid_type</a> &gt;</td></tr>
+<tr class="memdesc:a92bee556e6935e51eec08b7d0dbaacdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a submodule to UUID map. <br /></td></tr>
+<tr class="separator:a92bee556e6935e51eec08b7d0dbaacdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -199,9 +207,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0e9915469381ceb9149c0e186f2d31bb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a0e9915469381ceb9149c0e186f2d31bb">profile_info</a> () const</td></tr>
 <tr class="memdesc:a0e9915469381ceb9149c0e186f2d31bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns timing data for this module and all submodules.  <a href="classpluginplay_1_1Module.html#a0e9915469381ceb9149c0e186f2d31bb">More...</a><br /></td></tr>
 <tr class="separator:a0e9915469381ceb9149c0e186f2d31bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab242eda6175c97d01fbb648ce244552c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#ab242eda6175c97d01fbb648ce244552c">hash</a> (Hasher &amp;h) const</td></tr>
-<tr class="memdesc:ab242eda6175c97d01fbb648ce244552c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a hash of the module's state.  <a href="classpluginplay_1_1Module.html#ab242eda6175c97d01fbb648ce244552c">More...</a><br /></td></tr>
-<tr class="separator:ab242eda6175c97d01fbb648ce244552c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c7d2023ffccb86a445ec7e6ede9f99f"><td class="memItemLeft" align="right" valign="top"><a id="a8c7d2023ffccb86a445ec7e6ede9f99f"></a>
+<a class="el" href="classpluginplay_1_1Module.html#a92bee556e6935e51eec08b7d0dbaacdd">submod_uuid_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>submod_uuids</b> () const</td></tr>
+<tr class="separator:a8c7d2023ffccb86a445ec7e6ede9f99f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a079d7a86e21978be2a26858956a03792"><td class="memItemLeft" align="right" valign="top"><a id="a079d7a86e21978be2a26858956a03792"></a>
+<a class="el" href="classpluginplay_1_1Module.html#a3fdd4c01406da7ebddbf31259b108478">uuid_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>uuid</b> () const</td></tr>
+<tr class="separator:a079d7a86e21978be2a26858956a03792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42280bf2c1904d72ceff837b777c897e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a42280bf2c1904d72ceff837b777c897e">operator==</a> (const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;rhs) const</td></tr>
 <tr class="memdesc:a42280bf2c1904d72ceff837b777c897e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instances for equality.  <a href="classpluginplay_1_1Module.html#a42280bf2c1904d72ceff837b777c897e">More...</a><br /></td></tr>
 <tr class="separator:a42280bf2c1904d72ceff837b777c897e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -728,39 +739,6 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ab242eda6175c97d01fbb648ce244552c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab242eda6175c97d01fbb648ce244552c">&#9670;&nbsp;</a></span>hash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pluginplay::Module::hash </td>
-          <td>(</td>
-          <td class="paramtype">Hasher &amp;&#160;</td>
-          <td class="paramname"><em>h</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Computes a hash of the module's state. </p>
-<p>This function is used to compute a hash of the module's current state. This hash takes into account the currently bound inputs and submodules (including the states of those submodules). Note that memoization also needs to take into account the values of any additional inputs to run_as/run.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">h</td><td>The hasher instance to add the hash of the module to.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">???</td><td>If hashing any of the inputs throws. Same throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

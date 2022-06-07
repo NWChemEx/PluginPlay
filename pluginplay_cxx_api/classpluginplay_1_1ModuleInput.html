@@ -92,7 +92,7 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memdesc:a7bb8a3517115cf777a536656733e3aa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a functor that can be used to check a value. <br /></td></tr>
 <tr class="separator:a7bb8a3517115cf777a536656733e3aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6294e615aaab0f05ca844d33b6689ea"><td class="memItemLeft" align="right" valign="top"><a id="ab6294e615aaab0f05ca844d33b6689ea"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#ab6294e615aaab0f05ca844d33b6689ea">any_check</a> = <a class="el" href="classpluginplay_1_1ModuleInput.html#a7bb8a3517115cf777a536656733e3aa3">validity_check</a>&lt; <a class="el" href="namespacepluginplay_1_1type.html#a8cd765fa2e68f1562a0b90a7282bf7ea">type::any</a> &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#ab6294e615aaab0f05ca844d33b6689ea">any_check</a> = <a class="el" href="classpluginplay_1_1ModuleInput.html#a7bb8a3517115cf777a536656733e3aa3">validity_check</a>&lt; <a class="el" href="namespacepluginplay_1_1type.html#a563823c3c7c40a96a8b543528d417579">type::any</a> &gt;</td></tr>
 <tr class="memdesc:ab6294e615aaab0f05ca844d33b6689ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a check that operates on a type-erased value. <br /></td></tr>
 <tr class="separator:ab6294e615aaab0f05ca844d33b6689ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -138,9 +138,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af4c7b4b043da7cefa38ce26b4ffeae81"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#af4c7b4b043da7cefa38ce26b4ffeae81">is_valid</a> (T &amp;&amp;new_value) const</td></tr>
 <tr class="memdesc:af4c7b4b043da7cefa38ce26b4ffeae81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the provided value is a valid value.  <a href="classpluginplay_1_1ModuleInput.html#af4c7b4b043da7cefa38ce26b4ffeae81">More...</a><br /></td></tr>
 <tr class="separator:af4c7b4b043da7cefa38ce26b4ffeae81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a751147dc6ad05f24d33f4bdea29dc062"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#a751147dc6ad05f24d33f4bdea29dc062">hash</a> (Hasher &amp;h) const</td></tr>
-<tr class="memdesc:a751147dc6ad05f24d33f4bdea29dc062"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes the current instance and adds the hash to the provided hasher object.  <a href="classpluginplay_1_1ModuleInput.html#a751147dc6ad05f24d33f4bdea29dc062">More...</a><br /></td></tr>
-<tr class="separator:a751147dc6ad05f24d33f4bdea29dc062"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade086361138a1d04451227e8388b5c7b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ade086361138a1d04451227e8388b5c7b"><td class="memTemplItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#ade086361138a1d04451227e8388b5c7b">set_type</a> ()</td></tr>
 <tr class="memdesc:ade086361138a1d04451227e8388b5c7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of this input field to <code>T</code>.  <a href="classpluginplay_1_1ModuleInput.html#ade086361138a1d04451227e8388b5c7b">More...</a><br /></td></tr>
@@ -580,45 +577,6 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a751147dc6ad05f24d33f4bdea29dc062"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a751147dc6ad05f24d33f4bdea29dc062">&#9670;&nbsp;</a></span>hash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pluginplay::ModuleInput::hash </td>
-          <td>(</td>
-          <td class="paramtype">Hasher &amp;&#160;</td>
-          <td class="paramname"><em>h</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Hashes the current instance and adds the hash to the provided hasher object. </p>
-<p>The current strategy for hashing in the pluginplay is to:</p>
-<ul>
-<li>make a hasher object,</li>
-<li>pass it to everything you want to hash, and</li>
-<li>finalize the hasher</li>
-</ul>
-<p>Upon finalization the hasher returns the hash of the collective state of objects passed to it. This function allows <a class="el" href="classpluginplay_1_1ModuleInput.html" title="Holds an input value for a module in a type-erased form.">ModuleInput</a> instances to be hashed by the hasher object. The present input will only be hashed if it is opaque.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">h</td><td>The hasher object that is in the process of hashing stuff. If the current instance is opaque it will be added to <code>h's</code> internal state.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">???</td><td>If the hash function for the wrapped value throws. Same guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1158,7 +1116,7 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if no value is bound to this input field. Strong throw guarantee. </td></tr>
-    <tr><td class="paramname">std::bad_any_cast</td><td>if the wrapped value can not be converted to type <code>T</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if the wrapped value can not be converted to type <code>T</code>. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1194,15 +1152,16 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if no value is bound to this input field. Strong throw guarantee. </td></tr>
-    <tr><td class="paramname">std::bad_any_cast</td><td>if the wrapped value can not be converted to type <code>T</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if the wrapped value can not be converted to type <code>T</code>. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/pluginplay/<a class="el" href="module__input_8hpp_source.html">module_input.hpp</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>include/pluginplay/fields/<a class="el" href="module__input_8hpp_source.html">module_input.hpp</a></li>
+<li>include/pluginplay/fields/module_input.ipp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

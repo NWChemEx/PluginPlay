@@ -139,7 +139,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a9979d0b65d295fb467ad1c1d181f68f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymorphically compares two <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> objects.  <a href="classpluginplay_1_1any_1_1AnyField.html#a9979d0b65d295fb467ad1c1d181f68f2">More...</a><br /></td></tr>
 <tr class="separator:a9979d0b65d295fb467ad1c1d181f68f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9abdc20009f346d3a0b8d301a61dc148"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148">print</a> (std::ostream &amp;os) const</td></tr>
-<tr class="memdesc:a9abdc20009f346d3a0b8d301a61dc148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a string representation of the wrapped object to the stream.  <a href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148">More...</a><br /></td></tr>
+<tr class="memdesc:a9abdc20009f346d3a0b8d301a61dc148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an ordering for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances.  <a href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148">More...</a><br /></td></tr>
 <tr class="separator:a9abdc20009f346d3a0b8d301a61dc148"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab19637d3d7a4fecaff47ad6822077a4f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#ab19637d3d7a4fecaff47ad6822077a4f">has_value</a> () const noexcept</td></tr>
 <tr class="memdesc:ab19637d3d7a4fecaff47ad6822077a4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does this <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> currently wrap a value?  <a href="classpluginplay_1_1any_1_1AnyField.html#ab19637d3d7a4fecaff47ad6822077a4f">More...</a><br /></td></tr>
@@ -590,7 +590,29 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Adds a string representation of the wrapped object to the stream. </p>
+<p>Defines an ordering for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances. </p>
+<p>Given two instances <code>a</code> and <code>b</code>, <code>a</code> comes before <code>b</code> if:</p>
+<ul>
+<li><code>a</code> is default constructed, but <code>b</code> isn't</li>
+<li>the RTTI of <code>a</code> comes before the the RTTI of <code>b</code></li>
+<li>if the value <code>a</code> wraps comes before the value <code>b</code> wraps</li>
+</ul>
+<p>Following usual C++ conventions if <code>a</code> is not less than <code>b</code>, and <code>b</code> is not less than <code>a</code>, then <code>a</code> is value equal to <code>b</code> (meaning operator== will return true). Note that even in this scenario <code>are_equal</code> may return false since <code>are_equal</code> also takes into account how the value is owned.</p>
+<p>In particular we note that the RTTI comparison is through <code><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a1938cf3c5bb68dade4ef4579bd78da1a" title="Retrieves the RTTI of the wrapped type.">type()</a></code> and does NOT take into account cv-qualifiers or references.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>The instance we are comparing to.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the present instance comes before <code>rhs</code> and false otherwise. In particular note that a value of false does not necessarilly mean that <code>rhs</code> comes before this.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Adds a string representation of the wrapped object to the stream</p>
 <p>Sometimes it's useful to have string representations of objects. If the wrapped object overloads std::ostream::operator&lt;&lt; this function will use std::ostream::operator&lt;&lt; to add a string representation of the wrapped object to <code>os</code>. If no such overload is present, the type and address of the object will be printed as a proxy representation. Finally, if this <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> is not presently holding a value <code>os</code> will be returned unchanged.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -827,7 +849,7 @@ template&lt;typename T , typename AnyType &gt; </div>
 </div><div class="memdoc">
 
 <p>Allows stream insertion of <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances. </p>
-<p>This function overloads std::ostream::operator&lt;&lt; so that <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances can be inserted into std::ostream instances. The actual implementation simply defers to <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Adds a string representation of the wrapped object to the stream.">AnyField::print</a>. More details on the insertion behavior can be found in the documentation for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Adds a string representation of the wrapped object to the stream.">AnyField::print</a>.</p>
+<p>This function overloads std::ostream::operator&lt;&lt; so that <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances can be inserted into std::ostream instances. The actual implementation simply defers to <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Defines an ordering for AnyField instances.">AnyField::print</a>. More details on the insertion behavior can be found in the documentation for <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Defines an ordering for AnyField instances.">AnyField::print</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">os</td><td>The stream we are inserting <code>any</code> in to. After this call <code>os</code> will contain a string representation of <code>any</code>. </td></tr>
@@ -838,7 +860,7 @@ template&lt;typename T , typename AnyType &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>os</code> after inserting <code>any</code> in to it.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">???</td><td>If <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Adds a string representation of the wrapped object to the stream.">AnyField::print</a> throws. Same throw guarantee. </td></tr>
+    <tr><td class="paramname">???</td><td>If <a class="el" href="classpluginplay_1_1any_1_1AnyField.html#a9abdc20009f346d3a0b8d301a61dc148" title="Defines an ordering for AnyField instances.">AnyField::print</a> throws. Same throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

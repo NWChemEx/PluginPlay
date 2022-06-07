@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Basics of Writing a Module &mdash; pluginplay 1.0.0 documentation</title>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -93,7 +94,7 @@
            <div itemprop="articleBody">
              
   <section id="basics-of-writing-a-module">
-<h1>Basics of Writing a Module<a class="headerlink" href="#basics-of-writing-a-module" title="Permalink to this headline"></a></h1>
+<h1>Basics of Writing a Module<a class="headerlink" href="#basics-of-writing-a-module" title="Permalink to this heading"></a></h1>
 <p>This page is intended to walk you through the basics of writing a module. Here
 we focus purely on writing the module, not designing it. Because of how
 PluginPlay works designing a module can sometimes be non-trivial; tips for
@@ -101,7 +102,7 @@ designing a module can be found (TODO: add link). This page assumes we are
 writing a module which computes the electric field, <span class="math notranslate nohighlight">\(\vec{E}\left(\vec{r}\right)\)</span> of a series of
 point charges as detailed (TODO: add link).</p>
 <section id="delcaring-the-module">
-<h2>Delcaring the Module<a class="headerlink" href="#delcaring-the-module" title="Permalink to this headline"></a></h2>
+<h2>Delcaring the Module<a class="headerlink" href="#delcaring-the-module" title="Permalink to this heading"></a></h2>
 <p>In PluginPlay modules are implemented by inheriting from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>
 class and then implementing a constructor and a <code class="docutils literal notranslate"><span class="pre">run_</span></code> member. The declaration
 amounts to a large amount of boilerplate so PluginPlay provides a macro
@@ -132,14 +133,14 @@ in a single header file.</p>
 </div>
 </section>
 <section id="defining-the-module">
-<h2>Defining the Module<a class="headerlink" href="#defining-the-module" title="Permalink to this headline"></a></h2>
+<h2>Defining the Module<a class="headerlink" href="#defining-the-module" title="Permalink to this heading"></a></h2>
 <p>The definition of our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module goes in a source file. Defining the
 module amounts to implementing two functions: the default constructor and the
 <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function. The constructor is where all the set-up for your
 module occurs; it is also where you can set meta-data associated with your
 module. The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function is where your module does the work.</p>
 <section id="defining-the-constructor">
-<h3>Defining the Constructor<a class="headerlink" href="#defining-the-constructor" title="Permalink to this headline"></a></h3>
+<h3>Defining the Constructor<a class="headerlink" href="#defining-the-constructor" title="Permalink to this heading"></a></h3>
 <p>PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">MODULE_CTOR(T)</span></code>, where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the name of the
 module to aid in defining the module’s constructor. At a minimum the constructor
 must set the property type(s) that the module satisfies. It is also a good idea
@@ -189,7 +190,7 @@ without having to use escapes or other workarounds for line endings.</p>
 </div>
 </section>
 <section id="defining-the-run-member">
-<h3>Defining the Run Member<a class="headerlink" href="#defining-the-run-member" title="Permalink to this headline"></a></h3>
+<h3>Defining the Run Member<a class="headerlink" href="#defining-the-run-member" title="Permalink to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member of the module takes a set of inputs and a set of submodules,
 and returns the property (or properties). Like the module constructor,
 PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">MODULE_RUN(T)</span></code>, where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the name of the
@@ -251,7 +252,7 @@ computing the electric field) is:</p>
 </section>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <p>Coulomb’s Law is pretty simple. Most simulation techniques are much more
 complicated than that and involve an inticate interplay of many different
 properties.</p>
