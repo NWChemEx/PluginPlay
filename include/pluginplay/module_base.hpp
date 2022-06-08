@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <parallelzone/Runtime.hpp>
+#include <parallelzone/runtime.hpp>
 #include <pluginplay/cache/cache.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/submodule_request.hpp>
