@@ -1,7 +1,7 @@
 #pragma once
 #include "module_pimpl.hpp"
 #include <memory>
-#include <parallelzone/Runtime.hpp>
+#include <parallelzone/runtime.hpp>
 #include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/module_base.hpp>
 #include <pluginplay/module_manager.hpp>

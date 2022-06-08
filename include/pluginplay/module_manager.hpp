@@ -3,7 +3,7 @@
 #include "pluginplay/module_base.hpp"
 #include "pluginplay/types.hpp"
 #include <memory>
-#include <parallelzone/Runtime.hpp>
+#include <parallelzone/runtime.hpp>
 
 namespace pluginplay {
 

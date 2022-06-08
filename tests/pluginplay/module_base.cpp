@@ -1,6 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <parallelzone/Runtime.hpp>
+#include <parallelzone/runtime.hpp>
 #include <pluginplay/module_base.hpp>
 
 using namespace pluginplay;
