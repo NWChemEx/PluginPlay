@@ -14,8 +14,8 @@ TEMPLATE_LIST_TEST_CASE("Map", "", test_types) {
 
     using map_type = Native<key_type, mapped_type>;
 
-    key_type default_key;
-    mapped_type default_value;
+    key_type default_key{};
+    mapped_type default_value{};
 
     typename map_type::map_type default_map, val{{default_key, default_value}};
 
