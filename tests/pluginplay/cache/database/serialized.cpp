@@ -41,9 +41,9 @@ TEMPLATE_LIST_TEST_CASE("Serialized", "", test_types) {
     auto pdb = std::make_unique<sub_db_type>();
 
     // Make some keys and values to put into the instance
-    key_type key0;
+    key_type key0{};
     auto key1 = testing::lexical_cast<key_type>("1");
-    mapped_type value0;
+    mapped_type value0{};
     auto value1 = testing::lexical_cast<mapped_type>("42");
 
     // Make the Serialized instance
