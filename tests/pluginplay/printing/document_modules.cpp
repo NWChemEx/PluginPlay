@@ -7,9 +7,7 @@
 
 TEST_CASE("document_modules") {
     // Need a docs path
-    const auto root_dir = std::filesystem::temp_directory_path();
-    const std::filesystem::path docs_dir("docs");
-    auto docs_path = root_dir / docs_dir;
+    const std::filesystem::path docs_path("./docs");
 
     std::filesystem::remove_all(docs_path);
 

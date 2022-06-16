@@ -16,6 +16,8 @@ ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
 ModuleManager::ModuleManager(runtime_ptr runtime) :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime)) {}
+ModuleManager::ModuleManager(const ModuleManager& rhs) :
+  pimpl_(rhs.pimpl_->clone()) {}
 ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;

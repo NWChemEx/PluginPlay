@@ -1,7 +1,8 @@
 #pragma once
+#include "pluginplay/module_input.hpp"
+#include "pluginplay/module_result.hpp"
 #include "pluginplay/property_type/field_tuple.hpp"
 #include "pluginplay/type_traits/is_property_type.hpp"
-#include <pluginplay/fields/fields.hpp>
 
 namespace pluginplay {
 namespace detail_ {

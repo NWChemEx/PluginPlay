@@ -31,10 +31,6 @@ public:
     /// Type used to hold the submodule
     using module_ptr = typename SubmoduleRequest::module_ptr;
 
-    using uuid_type = typename SubmoduleRequest::uuid_type;
-
-    using submod_uuid_map = typename SubmoduleRequest::submod_uuid_map;
-
     /** @brief Makes an empty request.
      *
      *  The PIMPL resulting from this call will have no description, no type,
@@ -260,34 +256,6 @@ public:
      */
     const auto& description() const { return m_desc_.value(); }
 
-    /** @brief Convenience function for calling submod_uuids() on the wrapped
-     *         module.
-     *
-     *  This function simply wraps a call to Module::submod_uuids(). Full
-     *  documentation can be found there.     *
-     *
-     *  @return A map from key to UUID for all of the wrapped module's
-     *          submodules.
-     *
-     *  @throw std::runtime_error if the request does not have a module. Strong
-     *                            throw guarantee.
-     */
-    submod_uuid_map submod_uuids() const;
-
-    /** @brief Convenience function for calling uuid on the wrapped module
-     *
-     *  The ModuleManager assigns UUIDs to modules when they are loaded. This
-     *  method is used to retrieve the UUID assigned to the wrapped module. This
-     *  method is simply a convenience function for calling Module::uuid() on
-     *  the wrapped module.
-     *
-     *  @return The UUID of the wrapped module.
-     *
-     *  @throw std::runtime_error if the request does not have a module. Strong
-     *                            throw guarantee.
-     */
-    uuid_type uuid() const;
-
     /** @brief Locks the submodule.
      *
      *  A locked module can no longer have its inputs and submodules modified.
@@ -351,6 +319,70 @@ private:
     module_ptr m_module_;
 }; // class SubmoduleRequestPIMPL
 
-} // namespace pluginplay::detail_
+//------------------------------------Implementations---------------------------
 
-#include "submodule_request_pimpl.ipp"
+inline auto SubmoduleRequestPIMPL::clone() const {
+    return std::make_unique<SubmoduleRequestPIMPL>(*this);
+}
+
+inline bool SubmoduleRequestPIMPL::ready() const {
+    // Relies on short-circuiting to avoid the segfault
+    return has_type() && has_module() && m_module_->ready(m_inputs_);
+}
+
+inline void SubmoduleRequestPIMPL::set_type(type::rtti type,
+                                            type::input_map inputs) {
+    if(has_module() && !value().property_types().count(type))
+        throw std::runtime_error("Can't change type after setting module");
+    m_type_.emplace(type);
+    m_inputs_ = std::move(inputs);
+}
+
+inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {
+    if(!ptr) throw std::runtime_error("Pointer does not contain a module");
+    // Type will check that a property type was set
+    if(ptr->property_types().count(type()) == 0) {
+        std::string msg("Module does not satisfy property type: ");
+        msg += utilities::printing::Demangler::demangle(type());
+        throw std::runtime_error(msg);
+    }
+    m_module_ = ptr;
+}
+
+inline void SubmoduleRequestPIMPL::set_description(std::string desc) noexcept {
+    m_desc_.emplace(std::move(desc));
+}
+
+inline const Module& SubmoduleRequestPIMPL::value() const {
+    if(!has_module()) throw std::runtime_error("Submodule is not ready");
+    return *m_module_;
+}
+
+inline Module& SubmoduleRequestPIMPL::value() {
+    if(!has_module()) throw std::runtime_error("Submodule is not ready");
+    return *m_module_;
+}
+
+inline void SubmoduleRequestPIMPL::lock() {
+    if(!ready()) throw std::runtime_error("Can't lock a non-ready module");
+    m_module_->lock();
+}
+
+inline bool SubmoduleRequestPIMPL::operator==(
+  const SubmoduleRequestPIMPL& rhs) const {
+    if(has_type() != rhs.has_type()) return false;
+    if(has_description() != rhs.has_description()) return false;
+    if(has_module() != rhs.has_module()) return false;
+
+    if(has_type() && type() != rhs.type()) return false;
+    if(has_description() && description() != rhs.description()) return false;
+    if(has_module() && (value() != rhs.value())) return false;
+    return true;
+}
+
+inline bool SubmoduleRequestPIMPL::operator!=(
+  const SubmoduleRequestPIMPL& rhs) const {
+    return !((*this) == rhs);
+}
+
+} // namespace pluginplay::detail_

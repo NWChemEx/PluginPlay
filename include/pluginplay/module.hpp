@@ -1,7 +1,7 @@
 #pragma once
+#include "pluginplay/module_input.hpp"
+#include "pluginplay/module_result.hpp"
 #include "pluginplay/types.hpp"
-#include <pluginplay/fields/fields.hpp>
-#include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
@@ -40,12 +40,6 @@ public:
 
     /// Type of the object used to convey why a module is not ready
     using not_ready_type = utilities::CaseInsensitiveMap<std::set<type::key>>;
-
-    /// Type of UUIDs
-    using uuid_type = utility::uuid_type;
-
-    /// Type of a submodule to UUID map
-    using submod_uuid_map = std::map<type::key, uuid_type>;
 
     /** @brief Makes a module with no implementation.
      *
@@ -621,9 +615,19 @@ public:
      */
     std::string profile_info() const;
 
-    submod_uuid_map submod_uuids() const;
-
-    uuid_type uuid() const;
+    /** @brief Computes a hash of the module's state.
+     *
+     *  This function is used to compute a hash of the module's current state.
+     *  This hash takes into account the currently bound inputs and submodules
+     *  (including the states of those submodules). Note that memoization also
+     *  needs to take into account the values of any additional inputs to
+     *  run_as/run.
+     *
+     *  @param[in,out] h The hasher instance to add the hash of the module to.
+     *
+     *  @throw ??? If hashing any of the inputs throws. Same throw guarantee.
+     */
+    void hash(Hasher& h) const;
 
     /** @brief Compares two Module instances for equality
      *

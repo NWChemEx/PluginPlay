@@ -15,7 +15,7 @@ using namespace pluginplay::cache::database;
 
 TEST_CASE("RocksDB") {
     std::filesystem::path file("test.db");
-    auto p = std::filesystem::temp_directory_path() / file;
+    auto p = std::filesystem::current_path() / file;
 
     using RocksDBSS = RocksDB<std::string, std::string>;
     RocksDBSS defaulted;
@@ -65,6 +65,8 @@ TEST_CASE("RocksDB") {
     SECTION("backup") {}
 
     SECTION("dump") {}
+
+    std::filesystem::remove_all(p);
 }
 #else
 

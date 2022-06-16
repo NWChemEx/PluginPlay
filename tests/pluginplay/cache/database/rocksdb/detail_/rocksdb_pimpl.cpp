@@ -93,5 +93,6 @@ TEST_CASE("RocksDBPIMPL") {
         auto val = db.at("large value");
         REQUIRE(val.get() == buffer);
     }
+    std::filesystem::remove_all(p);
 }
 #endif

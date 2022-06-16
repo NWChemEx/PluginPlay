@@ -37,10 +37,10 @@ public:
      */
     ModuleManager();
     ModuleManager(runtime_ptr runtime);
-    // ModuleManager(const ModuleManager& rhs);
-    // ModuleManager& operator=(const ModuleManager& rhs) {
-    //     return *this = std::move(ModuleManager(rhs));
-    // }
+    ModuleManager(const ModuleManager& rhs);
+    ModuleManager& operator=(const ModuleManager& rhs) {
+        return *this = std::move(ModuleManager(rhs));
+    }
     ModuleManager(ModuleManager&& rhs) noexcept;
     ModuleManager& operator=(ModuleManager&& rhs) noexcept;
     ///@}

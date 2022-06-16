@@ -115,8 +115,7 @@ TEST_CASE("PrismVolume Property Type") {
     SECTION("Wrap Inputs") {
         using v_double = std::vector<double>;
         v_double dims{1.23, 4.56, 7.89};
-        auto inputs = pt.inputs();
-        pt.wrap_inputs(inputs, dims);
+        auto inputs = pt.wrap_inputs(pt.inputs(), dims);
         REQUIRE(inputs.size() == 1);
         SECTION("Manually unwrap") {
             const auto& pdims = inputs["Dimensions"].value<const v_double&>();

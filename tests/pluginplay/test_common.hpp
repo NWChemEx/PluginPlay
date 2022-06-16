@@ -1,16 +1,15 @@
 #pragma once
-#include <pluginplay/detail_/module_pimpl.hpp>
-#include <pluginplay/module.hpp>
-#include <pluginplay/module_base.hpp>
-#include <pluginplay/property_type/property_type.hpp>
-#include <pluginplay/utility/uuid.hpp>
+#include "pluginplay/detail_/module_pimpl.hpp"
+#include "pluginplay/module.hpp"
+#include "pluginplay/module_base.hpp"
+#include "pluginplay/property_type/property_type.hpp"
 
 namespace testing {
 
 struct BaseClass {
     int x = 0;
     bool operator==(const BaseClass& rhs) const noexcept { return x == rhs.x; }
-    bool operator<(const BaseClass& rhs) const noexcept { return x < rhs.x; }
+    void hash(pluginplay::Hasher& h) const { return h(x); }
 };
 
 struct DerivedClass : BaseClass {};
@@ -191,10 +190,16 @@ auto make_module_pimpl() {
 template<typename T>
 auto make_module_pimpl_with_cache() {
     auto ptr = std::make_shared<T>();
-    pluginplay::cache::ModuleManagerCache m_caches;
-    auto pcache = m_caches.get_or_make_module_cache("foo");
-    ptr->set_uuid(pluginplay::utility::generate_uuid());
-    return pluginplay::detail_::ModulePIMPL(ptr, pcache);
+    /// Type of a cache
+    using cache_type = typename pluginplay::detail_::ModulePIMPL::cache_type;
+    /// Type of a shared cache
+    using shared_cache = std::shared_ptr<cache_type>;
+    /// Type of a map holding caches
+    using cache_map = std::map<std::type_index, shared_cache>;
+    cache_map m_caches;
+    std::type_index type(ptr->type());
+    m_caches[type] = std::make_shared<cache_type>();
+    return pluginplay::detail_::ModulePIMPL(ptr, m_caches[type]);
 }
 
 // Wraps the creation of a module w/o going through a module manager

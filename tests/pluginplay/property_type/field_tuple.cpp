@@ -1,6 +1,7 @@
+#include "pluginplay/module_input.hpp"
+#include "pluginplay/module_result.hpp"
+#include "pluginplay/property_type/field_tuple.hpp"
 #include <catch2/catch.hpp>
-#include <pluginplay/fields/fields.hpp>
-#include <pluginplay/property_type/field_tuple.hpp>
 
 using namespace pluginplay;
 using namespace pluginplay::detail_;

@@ -1,10 +1,10 @@
 #pragma once
+#include "pluginplay/cache/cache.hpp"
+#include "pluginplay/module_input.hpp"
+#include "pluginplay/module_result.hpp"
+#include "pluginplay/submodule_request.hpp"
 #include <memory>
 #include <parallelzone/runtime.hpp>
-#include <pluginplay/cache/cache.hpp>
-#include <pluginplay/fields/fields.hpp>
-#include <pluginplay/submodule_request.hpp>
-#include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
@@ -29,19 +29,15 @@ namespace pluginplay {
  *  the type (this is done implicitly by passing the this pointer).
  */
 class ModuleBase {
-private:
-    /// Top-level type for the entire ModuleManager
-    using mm_cache = cache::ModuleManagerCache;
-
 public:
-    /// Type of the UUID assigned to this module
-    using uuid_type = utility::uuid_type;
+    /// The type returned by memoization
+    using hash_type = std::string;
 
     /// The type of the internal cache
-    using cache_type = typename mm_cache::user_cache_type;
+    using cache_type = Cache;
 
     /// A pointer to a cache
-    using cache_ptr = typename mm_cache::user_cache_pointer;
+    using cache_ptr = std::shared_ptr<cache_type>;
 
     /// The type of the runtime
     using runtime_type = parallelzone::Runtime;
@@ -186,12 +182,6 @@ public:
      *  @throw none No throw guarantee.
      */
     type::rtti type() const noexcept { return m_type_; }
-
-    bool has_uuid() const noexcept { return m_uuid_ != uuid_type{}; }
-
-    uuid_type uuid() const noexcept { return m_uuid_; }
-
-    void set_uuid(uuid_type uuid) noexcept { m_uuid_ = std::move(uuid); }
 
     /** @brief Returns the documentation on what the derived module does
      *
@@ -489,9 +479,6 @@ private:
      */
     virtual type::result_map run_(type::input_map inputs,
                                   type::submodule_map submods) const = 0;
-
-    /// The UUID assigned to this module
-    uuid_type m_uuid_;
 
     /// The inputs set by the developer
     type::input_map m_inputs_;
