@@ -115,8 +115,8 @@ TEST_CASE("UUIDMapper<AnyField>") {
 
             // Should have been copied
             REQUIRE(held_x.get().has_value());
-            REQUIRE(held_x.get().owns_value());
-            REQUIRE(&any_cast<wrapped_type>(held_x.get()) != px);
+            REQUIRE_FALSE(held_x.get().owns_value());
+            REQUIRE_FALSE(&any_cast<wrapped_type>(held_x.get()) != px);
         }
 
         SECTION("Add by copy") {
@@ -162,9 +162,10 @@ TEST_CASE("UUIDMapper<AnyField>") {
 
             // Should have been copied
             REQUIRE(held_x.get().has_value());
-            REQUIRE(held_x.get().owns_value());
-            REQUIRE(&any_cast<wrapped_type>(held_x.get()) != px);
-            REQUIRE(any_cast<wrapped_type>(held_x.get()).data() != p_sub_x);
+            REQUIRE_FALSE(held_x.get().owns_value());
+            REQUIRE_FALSE(&any_cast<wrapped_type>(held_x.get()) != px);
+            REQUIRE_FALSE(any_cast<wrapped_type>(held_x.get()).data() !=
+                          p_sub_x);
         }
 
         SECTION("Add by copy") {
