@@ -37,7 +37,7 @@ TPARAMS
 typename TRANSPOSER::const_mapped_reference TRANSPOSER::at_(
   const_key_reference key) const {
     for(const auto& val : m_keys_)
-        if(m_db_->at(val).get() == key) return const_mapped_reference{val};
+        if(m_db_->at(val).get() == key) return const_mapped_reference{&val};
     throw std::out_of_range("Key not found");
 }
 

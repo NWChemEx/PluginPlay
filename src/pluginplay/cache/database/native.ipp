@@ -29,7 +29,7 @@ void NATIVE::free_(const_key_reference key) { m_map_.erase(key); }
 TPARAMS
 typename NATIVE::const_mapped_reference NATIVE::at_(
   const_key_reference key) const {
-    return const_mapped_reference(m_map_.at(key));
+    return const_mapped_reference(&m_map_.at(key));
 }
 
 TPARAMS

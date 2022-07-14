@@ -30,7 +30,7 @@ typename SERIALIZED::const_mapped_reference SERIALIZED::at_(
     auto serialized_key = serialize_(key);
     auto serialized_val = m_db_->at(serialized_key);
     auto rv             = deserialize_<mapped_type>(serialized_val.get());
-    return const_mapped_reference(rv);
+    return const_mapped_reference(&rv);
 }
 
 TPARAMS
