@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <parallelzone/runtime.hpp>
+#include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/cache.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/submodule_request.hpp>
@@ -44,7 +44,7 @@ public:
     using cache_ptr = typename mm_cache::user_cache_pointer;
 
     /// The type of the runtime
-    using runtime_type = parallelzone::Runtime;
+    using runtime_type = parallelzone::runtime::RuntimeView;
 
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;

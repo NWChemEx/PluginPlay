@@ -1,6 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <parallelzone/runtime.hpp>
+#include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/module_base.hpp>
 
 using namespace pluginplay;
@@ -125,7 +125,7 @@ TEST_CASE("ModuleBase : get_runtime") {
     }
 
     SECTION("Works if there's a runtime") {
-        auto runtime = std::make_shared<parallelzone::Runtime>();
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
         mod.set_runtime(runtime);
         auto& internal_runtime = mod.get_runtime();
         REQUIRE(&internal_runtime == runtime.get());
