@@ -75,7 +75,7 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;pluginplay/module_base.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;pluginplay/types.hpp&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;parallelzone/runtime.hpp&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;parallelzone/runtime/runtime_view.hpp&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>pluginplay {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
@@ -92,7 +92,7 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classpluginplay_1_1ModuleManager.html#a5890fdaeab7e35865b4f6de88c3e0892">   26</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classpluginplay_1_1ModuleManager.html#a5890fdaeab7e35865b4f6de88c3e0892">module_map</a> = utilities::CaseInsensitiveMap&lt;std::shared_ptr&lt;Module&gt;&gt;;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// The type of the runtime</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">using</span> runtime_type = parallelzone::Runtime;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">using</span> runtime_type = parallelzone::runtime::RuntimeView;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">   32</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> = std::shared_ptr&lt;runtime_type&gt;;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>

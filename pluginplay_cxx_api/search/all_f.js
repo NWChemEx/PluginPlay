@@ -13,5 +13,5 @@ var searchData=
   ['run_5f_168',['run_',['../classpluginplay_1_1detail___1_1FacadeModule.html#a41a6f66950edb30cdf620967f4eef0a8',1,'pluginplay::detail_::FacadeModule::run_()'],['../classpluginplay_1_1detail___1_1LambdaModule.html#ad1fc5e3c84f9c4801f8964bf902a8b77',1,'pluginplay::detail_::LambdaModule::run_()']]],
   ['run_5fas_169',['run_as',['../classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7',1,'pluginplay::Module::run_as()'],['../classpluginplay_1_1ModuleManager.html#a71e54fd304cf6d058e6737086168da44',1,'pluginplay::ModuleManager::run_as()'],['../classpluginplay_1_1SubmoduleRequest.html#a5dc7a34eccd38d95f883c9979af3bea3',1,'pluginplay::SubmoduleRequest::run_as()']]],
   ['runtime_5fptr_170',['runtime_ptr',['../classpluginplay_1_1ModuleBase.html#a1f0f62523701c61e540b73082bdb67aa',1,'pluginplay::ModuleBase::runtime_ptr()'],['../classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018',1,'pluginplay::ModuleManager::runtime_ptr()']]],
-  ['runtime_5ftype_171',['runtime_type',['../classpluginplay_1_1ModuleBase.html#a3af1a5116cbca394e862f109e35eb726',1,'pluginplay::ModuleBase']]]
+  ['runtime_5ftype_171',['runtime_type',['../classpluginplay_1_1ModuleBase.html#a4565ae9c483ea973bcbd3cfa85455da5',1,'pluginplay::ModuleBase']]]
 ];
