@@ -21,14 +21,14 @@ TEST_CASE("ModuleManagerPIMPL : Default ctor") {
 
 TEST_CASE("ModuleManagerPIMPL : Runtime") {
     SECTION("ctor") {
-        auto runtime = std::make_shared<parallelzone::Runtime>();
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
         ModuleManagerPIMPL pimple(runtime);
         auto& internal_runtime = pimple.get_runtime();
         REQUIRE(&internal_runtime == runtime.get());
     }
     SECTION("set_runtime") {
         ModuleManagerPIMPL pimple;
-        auto runtime = std::make_shared<parallelzone::Runtime>();
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
 
         auto& internal_runtime1 = pimple.get_runtime();
         REQUIRE(&internal_runtime1 != runtime.get());

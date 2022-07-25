@@ -3,7 +3,7 @@
 #include "pluginplay/module_base.hpp"
 #include "pluginplay/types.hpp"
 #include <memory>
-#include <parallelzone/runtime.hpp>
+#include <parallelzone/runtime/runtime_view.hpp>
 
 namespace pluginplay {
 
@@ -26,7 +26,7 @@ public:
     using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
 
     // The type of the runtime
-    using runtime_type = parallelzone::Runtime;
+    using runtime_type = parallelzone::runtime::RuntimeView;
 
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;

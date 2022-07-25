@@ -1,7 +1,7 @@
 #pragma once
 #include "module_pimpl.hpp"
 #include <memory>
-#include <parallelzone/runtime.hpp>
+#include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/module_base.hpp>
 #include <pluginplay/module_manager.hpp>
@@ -40,7 +40,7 @@ struct ModuleManagerPIMPL {
     using default_map = std::map<std::type_index, type::key>;
 
     /// The type of the runtime
-    using runtime_type = parallelzone::Runtime;
+    using runtime_type = parallelzone::runtime::RuntimeView;
 
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;
