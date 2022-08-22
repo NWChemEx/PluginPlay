@@ -313,7 +313,7 @@ bool operator!=(const FieldTuple<LHSType, LHSTypes...>& lhs,
  */
 template<typename LHSType, typename RHSType, std::size_t depth = 0>
 auto union_guts(LHSType&& lhs, const RHSType& rhs) {
-    if constexpr(rhs.size() == depth) { // End recursion
+    if constexpr(std::decay_t<RHSType>::size() == depth) { // End recursion
         return lhs;
     } else { // Non-empty RHS
         auto itr = rhs.begin();
