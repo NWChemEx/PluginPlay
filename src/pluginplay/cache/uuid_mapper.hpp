@@ -35,6 +35,9 @@ public:
     /// Type of a pointer to the database storing the object-to-UUID relation
     using db_pointer = std::unique_ptr<db_type>;
 
+    /// Type of a container holding keys
+    using key_set_type = typename db_type::key_set_type;
+
     /** @brief Creates a new UUID instance which stores the UUID mapping in the
      *         provided db
      *
@@ -68,6 +71,8 @@ public:
      *         gurantee.
      */
     void insert(key_type key);
+
+    key_set_type keys() const { return m_db_->keys(); }
 
     /// Just calls m_db_->count(key)
     bool count(const_key_reference key) const noexcept;

@@ -41,12 +41,14 @@ public:
     /// Type of the keys, typedef of KeyType
     using key_type = KeyType;
 
+    /// Ultimately a typedef of DatabaseAPI<key_value_type, ...>::key_set_type
+    using key_set_type = std::vector<key_type>;
+
     /// Read-only reference to a key, typedef of const KeyType&
     using const_key_reference = const key_type&;
 
     /// Type of this database's values, typedef of ValueType
     using mapped_type = std::map<key_key_type, uuid_type, key_key_compare>;
-    ;
 
     /// Type of a read-only reference to a proxy map
     using const_mapped_reference = const mapped_type&;
@@ -69,6 +71,15 @@ public:
      *                            guarantee.
      */
     explicit ProxyMapMaker(proxy_mapper_pointer db);
+
+    /** @brief Returns the set of objects which have been proxied.
+     *
+     *  This function returns the set of keys used as inputs, not the proxied
+     *  versions (which are the values from the perspective of this class).
+     *
+     *  @return The set of objects which have been proxied.
+     */
+    key_set_type keys() const;
 
     /** @brief Determines if all the values in @p key are in the wrapped
      *         database.

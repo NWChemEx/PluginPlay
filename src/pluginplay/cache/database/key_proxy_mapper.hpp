@@ -24,6 +24,9 @@ public:
     /// Type of the keys, typedef of KeyType
     using typename base_type::key_type;
 
+    /// Ultimately typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Read-only reference to a key, typedef of const KeyType&
     using typename base_type::const_key_reference;
 
@@ -60,6 +63,9 @@ public:
     KeyProxyMapper(proxy_map_maker_pointer proxy_mapper, sub_db_pointer sub_db);
 
 protected:
+    /// Returns the keys in the wrapped proxy_mapper
+    key_set_type keys_() const override;
+
     /// Makes sure key is in proxy_mapper, if so then check sub_db
     bool count_(const_key_reference key) const noexcept override;
 

@@ -44,6 +44,9 @@ public:
     /// Read-only reference to a key, typedef of const KeyType&
     using typename base_type::const_key_reference;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Type of this database's values
     using typename base_type::mapped_type;
 
@@ -78,6 +81,9 @@ public:
                 sub_db_pointer sub_db);
 
 protected:
+    /// calls m_db_->keys() and then removes the injected key
+    key_set_type keys_() const override;
+
     /// injects into key, then calls m_db_->count()
     bool count_(const_key_reference key) const noexcept override;
 

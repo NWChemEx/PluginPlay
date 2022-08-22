@@ -33,6 +33,9 @@ TEMPLATE_LIST_TEST_CASE("Serialized", "", test_types) {
     // Determine the specialization of Serialized being tested
     using serialized_type = Serialized<key_type, mapped_type>;
 
+    // Determine the type returned by keys()
+    using key_set_type = typename serialized_type::key_set_type;
+
     // Work out the type of the wrapped database
     using binary_type = typename serialized_type::binary_type;
     using sub_db_type = Native<binary_type, binary_type>;
@@ -50,6 +53,8 @@ TEMPLATE_LIST_TEST_CASE("Serialized", "", test_types) {
     serialized_type smap(std::move(pdb));
 
     smap.insert(key1, value1);
+
+    SECTION("keys") { REQUIRE(smap.keys() == key_set_type{key1}); }
 
     SECTION("count") {
         REQUIRE_FALSE(smap.count(key0));

@@ -14,8 +14,9 @@ TEMPLATE_LIST_TEST_CASE("KeyInjector", "", test_types) {
     using key_type       = std::map<key_key_type, key_value_type>;
     using value_type     = key_type;
 
-    using db_type     = KeyInjector<key_type, value_type>;
-    using sub_db_type = Native<key_type, value_type>;
+    using db_type      = KeyInjector<key_type, value_type>;
+    using sub_db_type  = Native<key_type, value_type>;
+    using key_set_type = typename db_type::key_set_type;
 
     auto sub_sub_db = std::make_unique<sub_db_type>();
     auto psub       = sub_sub_db.get();
@@ -37,6 +38,8 @@ TEMPLATE_LIST_TEST_CASE("KeyInjector", "", test_types) {
         REQUIRE_THROWS_AS(db_type(defaulted_key, defaulted_value, nullptr),
                           std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(db.keys() == key_set_type{key0}); }
 
     SECTION("count") {
         REQUIRE(db.count(key0));

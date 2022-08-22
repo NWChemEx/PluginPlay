@@ -12,7 +12,13 @@ PROXY_MAP_MAKER::ProxyMapMaker(proxy_mapper_pointer db) : m_db_(std::move(db)) {
 }
 
 TPARAMS
-bool PROXY_MAP_MAKER::count(const_key_reference key) const {
+typename PROXY_MAP_MAKER::key_set_type PROXY_MAP_MAKER::keys() const {
+    key_set_type rv;
+    for(const auto& [_, v] : m_buffer_) rv.push_back(v);
+    return rv;
+}
+
+TPARAMS bool PROXY_MAP_MAKER::count(const_key_reference key) const {
     for(const auto& [_, v] : key) {
         if(!m_db_->count(v)) return false;
     }

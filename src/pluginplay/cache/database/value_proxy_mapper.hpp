@@ -34,6 +34,9 @@ public:
     /// Type of an object holding a read-only reference to a value
     using typename base_type::const_mapped_reference;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Type the ProxyMapMaker used for assigning proxies
     using proxy_map_maker = ProxyMapMaker<mapped_type>;
 
@@ -62,6 +65,9 @@ public:
                      sub_db_pointer sub_db);
 
 protected:
+    /// Just calls keys() on the wrapped db
+    key_set_type keys_() const override { return m_sub_db_->keys(); }
+
     /// Makes sure key is in proxy_mapper, if so then check sub_db
     bool count_(const_key_reference key) const noexcept override;
 

@@ -17,6 +17,13 @@ KEY_INJECTOR::KeyInjector(key_key_type key_to_inject,
 }
 
 TPARAMS
+typename KEY_INJECTOR::key_set_type KEY_INJECTOR::keys_() const {
+    auto rv = m_db_->keys();
+    for(auto& key : rv) key.erase(m_key_to_inject_);
+    return rv;
+}
+
+TPARAMS
 bool KEY_INJECTOR::count_(const_key_reference key) const noexcept {
     // This actually can throw if there's not enough memory
     try {

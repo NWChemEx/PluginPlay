@@ -57,6 +57,9 @@ public:
     /// Type of an object holding a read-only reference
     using typename base_type::const_mapped_reference;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Type used for type-erasure, typedef of any::AnyField
     using any_type = any::AnyField;
 
@@ -80,6 +83,9 @@ public:
     explicit TypeEraser(wrapped_mapper_pointer db);
 
 public:
+    /// un-type-erases keys from m_db_->keys()
+    key_set_type keys_() const override;
+
     /// type-erases key, then calls m_db_->count
     bool count_(const_key_reference key) const noexcept override;
 

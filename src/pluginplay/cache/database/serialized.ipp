@@ -6,6 +6,13 @@ namespace pluginplay::cache::database {
 #define SERIALIZED Serialized<KeyType, ValueType>
 
 TPARAMS
+typename SERIALIZED::key_set_type SERIALIZED::keys_() const {
+    key_set_type rv;
+    for(const auto& k : m_db_->keys()) rv.push_back(deserialize_<key_type>(k));
+    return rv;
+}
+
+TPARAMS
 bool SERIALIZED::count_(const_key_reference key) const noexcept {
     try {
         return m_db_->count(serialize_(key));

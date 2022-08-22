@@ -29,17 +29,20 @@ public:
     using map_type = std::map<KeyType, ValueType>;
 
     /// Type of the keys to this database, typedef of KeyType
-    using key_type = typename base_type::key_type;
+    using typename base_type::key_type;
+
+    /// Ultimately typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
 
     /// Type of a read-only reference to a key, typedef of const KeyType&
-    using const_key_reference = typename base_type::const_key_reference;
+    using typename base_type::const_key_reference;
 
     /// Type of the mapped values, typedef of ValueType
-    using mapped_type = typename base_type::mapped_type;
+    using typename base_type::mapped_type;
 
     /// Type of an object holding a read-only reference to a value, typedef of
     /// ConstValue<mapped_type>
-    using const_mapped_reference = typename base_type::const_mapped_reference;
+    using typename base_type::const_mapped_reference;
 
     /// Type of DatabaseAPI that can be used for backup
     using backup_db_type = DatabaseAPI<key_type, mapped_type>;
@@ -83,6 +86,9 @@ public:
     const auto& map() const { return m_map_; }
 
 protected:
+    /// Puts keys in wrapped map into a key_set_type and returns it
+    key_set_type keys_() const override;
+
     /// Calls count on the wrapped map
     bool count_(const_key_reference key) const noexcept override;
 

@@ -14,6 +14,7 @@ TEMPLATE_LIST_TEST_CASE("UUIDMapper", "", testing::test_types) {
     using key_type     = TestType;
     using uuid_db_type = UUIDMapper<key_type>;
     using uuid_type    = typename uuid_db_type::mapped_type;
+    using key_set_type = typename uuid_db_type::key_set_type;
 
     auto [pinner, db] = testing::make_nested_native<key_type, uuid_type>();
 
@@ -26,6 +27,8 @@ TEMPLATE_LIST_TEST_CASE("UUIDMapper", "", testing::test_types) {
     SECTION("CTor") {
         REQUIRE_THROWS_AS(uuid_db_type(nullptr), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(uuid_db.keys() == key_set_type{key0}); }
 
     SECTION("count") {
         REQUIRE(uuid_db.count(key0));

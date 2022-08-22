@@ -1,6 +1,7 @@
 #pragma once
 #include "db_value.hpp"
 #include <stdexcept>
+#include <vector>
 
 namespace pluginplay::cache::database {
 
@@ -21,6 +22,9 @@ class DatabaseAPI {
 public:
     /// Type used to store the keys in the database, same as @p KeyType
     using key_type = KeyType;
+
+    /// Type of a container holding the database's keys
+    using key_set_type = std::vector<key_type>;
 
     /// Read-only reference to a key. Alias for `const KeyType&`
     using const_key_reference = const key_type&;
@@ -65,6 +69,8 @@ public:
 
     /// No-op, no-throw polymorphic default dtor
     virtual ~DatabaseAPI() noexcept = default;
+
+    key_set_type keys() const { return keys_(); }
 
     /** @brief Public API for determining if a database contains a key.
      *
@@ -220,6 +226,18 @@ public:
     void dump() { dump_(); }
 
 protected:
+    /** @brief Hook for derived class to implement keys.
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabaseAPI::keys.
+     *
+     *  @return A container with this database's keys
+     *
+     *  @throw std::bad_alloc if there is a problem creating the return. Strong
+     *         throw guarantee.
+     */
+    virtual key_set_type keys_() const { throw std::runtime_error("NYI"); }
+
     /** @brief Hook for derived class to implement count.
      *
      *  The derived class is responsible for overriding this method with a

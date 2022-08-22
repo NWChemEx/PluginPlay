@@ -42,6 +42,9 @@ public:
     /// Typedef of KeyType
     using typename base_type::key_type;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Typedef of const key_type&
     using typename base_type::const_key_reference;
 
@@ -68,6 +71,9 @@ public:
     Serialized(sub_db_pointer p) : m_db_(std::move(p)) {}
 
 protected:
+    /// returns a container with the deserialized keys
+    key_set_type keys_() const override;
+
     /// Checks if wrapped db has serialized @p key
     bool count_(const_key_reference key) const noexcept override;
 

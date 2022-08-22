@@ -12,6 +12,8 @@ TEMPLATE_LIST_TEST_CASE("TypeEraser", "", test_types) {
     using value_type = std::string;
     using db_type    = TypeEraser<key_type, value_type>;
 
+    using key_set_type = typename db_type::key_set_type;
+
     // The type the DB uses for type-erased stuff
     using any_type = typename db_type::any_type;
 
@@ -43,6 +45,8 @@ TEMPLATE_LIST_TEST_CASE("TypeEraser", "", test_types) {
     SECTION("CTors") {
         REQUIRE_THROWS_AS(db_type(nullptr), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(db.keys() == key_set_type{key0}); }
 
     SECTION("count") {
         REQUIRE(db.count(key0));
