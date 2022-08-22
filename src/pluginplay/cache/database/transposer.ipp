@@ -11,6 +11,13 @@ TRANSPOSER::Transposer(wrapped_db_pointer p) : m_db_(std::move(p)) {
 }
 
 TPARAMS
+typename TRANSPOSER::key_set_type TRANSPOSER::keys_() const {
+    key_set_type rv;
+    for(const auto& val : m_keys_) rv.push_back(m_db_->at(val).get());
+    return rv;
+}
+
+TPARAMS
 bool TRANSPOSER::count_(const_key_reference key) const noexcept {
     for(const auto& val : m_keys_)
         if(m_db_->at(val).get() == key) return true;

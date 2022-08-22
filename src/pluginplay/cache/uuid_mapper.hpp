@@ -35,6 +35,9 @@ public:
     /// Type of a pointer to the database storing the object-to-UUID relation
     using db_pointer = std::unique_ptr<db_type>;
 
+    /// Type of a container holding keys
+    using key_set_type = typename db_type::key_set_type;
+
     /** @brief Creates a new UUID instance which stores the UUID mapping in the
      *         provided db
      *
@@ -68,6 +71,18 @@ public:
      *         gurantee.
      */
     void insert(key_type key);
+
+    /** @brief Returns the set of objects which have been proxied.
+     *
+     *  N.B. this operation should only be used for debugging as it will copy
+     *  each key into the returned object.
+     *
+     *  @return A container with copies of each key.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the return.
+     *         Strong throw guarantee.
+     */
+    key_set_type keys() const { return m_db_->keys(); }
 
     /// Just calls m_db_->count(key)
     bool count(const_key_reference key) const noexcept;

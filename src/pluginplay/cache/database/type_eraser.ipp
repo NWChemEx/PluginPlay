@@ -12,6 +12,14 @@ TYPE_ERASER::TypeEraser(wrapped_mapper_pointer db) : m_db_(db) {
 }
 
 TPARAMS
+typename TYPE_ERASER::key_set_type TYPE_ERASER::keys_() const {
+    key_set_type rv;
+    for(const auto& key : m_db_->keys())
+        rv.push_back(any::any_cast<key_type>(key));
+    return rv;
+}
+
+TPARAMS
 bool TYPE_ERASER::count_(const_key_reference key) const noexcept {
     return m_db_->count(wrap_(key));
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "db_value.hpp"
 #include <stdexcept>
+#include <vector>
 
 namespace pluginplay::cache::database {
 
@@ -21,6 +22,9 @@ class DatabaseAPI {
 public:
     /// Type used to store the keys in the database, same as @p KeyType
     using key_type = KeyType;
+
+    /// Type of a container holding the database's keys
+    using key_set_type = std::vector<key_type>;
 
     /// Read-only reference to a key. Alias for `const KeyType&`
     using const_key_reference = const key_type&;
@@ -65,6 +69,24 @@ public:
 
     /// No-op, no-throw polymorphic default dtor
     virtual ~DatabaseAPI() noexcept = default;
+
+    /** @brief Returns a container with the keys for the database.
+     *
+     *  One of the most accessible ways to iterate over a database is by
+     *  looping over the keys and then retrieving the values ("accessible"
+     *  because not all backends expose key/value pairs).
+     *
+     *  N.B. This operation, as implemented, can be very expensive because in
+     *  general the keys will need to be copied into the returned object.
+     *  Furthermore, for some of the layers relying on proxies, this method
+     *  can result in multiple copies of the unproxied objects.
+     *
+     *  @return A container with the database's keys.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating. Strong throw
+     *                        gurantee.
+     */
+    key_set_type keys() const { return keys_(); }
 
     /** @brief Public API for determining if a database contains a key.
      *
@@ -220,6 +242,18 @@ public:
     void dump() { dump_(); }
 
 protected:
+    /** @brief Hook for derived class to implement keys.
+     *
+     *  The derived class is responsible for overriding this method with a
+     *  definition consistent with the description of DatabaseAPI::keys.
+     *
+     *  @return A container with this database's keys
+     *
+     *  @throw std::bad_alloc if there is a problem creating the return. Strong
+     *         throw guarantee.
+     */
+    virtual key_set_type keys_() const { throw std::runtime_error("NYI"); }
+
     /** @brief Hook for derived class to implement count.
      *
      *  The derived class is responsible for overriding this method with a

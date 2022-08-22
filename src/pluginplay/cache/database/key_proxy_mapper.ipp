@@ -13,6 +13,11 @@ KEY_PROXY_MAPPER::KeyProxyMapper(proxy_map_maker_pointer proxy_mapper,
 }
 
 TPARAMS
+typename KEY_PROXY_MAPPER::key_set_type KEY_PROXY_MAPPER::keys_() const {
+    return m_proxy_mapper_->keys();
+}
+
+TPARAMS
 bool KEY_PROXY_MAPPER::count_(const_key_reference key) const noexcept {
     // Each part of key needs to be in proxy_mapper or it can't be in sub_db
     if(!m_proxy_mapper_->count(key)) return false;

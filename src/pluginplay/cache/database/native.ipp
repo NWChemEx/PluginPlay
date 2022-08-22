@@ -14,6 +14,13 @@ NATIVE::Native(backup_db_pointer backup) :
   Native(map_type{}, std::move(backup)) {}
 
 TPARAMS
+typename NATIVE::key_set_type NATIVE::keys_() const {
+    key_set_type rv;
+    for(const auto& [k, _] : m_map_) rv.push_back(k);
+    return rv;
+}
+
+TPARAMS
 bool NATIVE::count_(const_key_reference key) const noexcept {
     return m_map_.count(key);
 }

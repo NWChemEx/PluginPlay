@@ -10,9 +10,10 @@ using namespace testing;
 TEMPLATE_LIST_TEST_CASE("KeyProxyMapper", "", testing::test_types) {
     // Type of the keys, values, and resulting KeyProxyMapper we're testing
     // N.B. double not in test_types so value_type != key_type
-    using key_type    = std::map<std::string, TestType>;
-    using value_type  = std::map<std::string, double>;
-    using mapper_type = KeyProxyMapper<key_type, value_type>;
+    using key_type     = std::map<std::string, TestType>;
+    using value_type   = std::map<std::string, double>;
+    using mapper_type  = KeyProxyMapper<key_type, value_type>;
+    using key_set_type = typename mapper_type::key_set_type;
 
     // ProxyMappers need to sub objects a ProxyMapMaker and a sub database
     // First we figure out the ProxyMapMaker type and what's being proxied
@@ -55,6 +56,8 @@ TEMPLATE_LIST_TEST_CASE("KeyProxyMapper", "", testing::test_types) {
     SECTION("CTor") {
         REQUIRE_THROWS_AS(mapper_type(nullptr, nullptr), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(db.keys() == key_set_type{key0}); }
 
     SECTION("count") {
         REQUIRE(db.count(key0));
