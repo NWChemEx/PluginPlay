@@ -72,6 +72,16 @@ public:
      */
     void insert(key_type key);
 
+    /** @brief Returns the set of objects which have been proxied.
+     *
+     *  N.B. this operation should only be used for debugging as it will copy
+     *  each key into the returned object.
+     *
+     *  @return A container with copies of each key.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the return.
+     *         Strong throw guarantee.
+     */
     key_set_type keys() const { return m_db_->keys(); }
 
     /// Just calls m_db_->count(key)

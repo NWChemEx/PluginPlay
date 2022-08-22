@@ -70,6 +70,22 @@ public:
     /// No-op, no-throw polymorphic default dtor
     virtual ~DatabaseAPI() noexcept = default;
 
+    /** @brief Returns a container with the keys for the database.
+     *
+     *  One of the most accessible ways to iterate over a database is by
+     *  looping over the keys and then retrieving the values ("accessible"
+     *  because not all backends expose key/value pairs).
+     *
+     *  N.B. This operation, as implemented, can be very expensive because in
+     *  general the keys will need to be copied into the returned object.
+     *  Furthermore, for some of the layers relying on proxies, this method
+     *  can result in multiple copies of the unproxied objects.
+     *
+     *  @return A container with the database's keys.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating. Strong throw
+     *                        gurantee.
+     */
     key_set_type keys() const { return keys_(); }
 
     /** @brief Public API for determining if a database contains a key.
