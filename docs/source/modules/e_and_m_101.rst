@@ -26,8 +26,8 @@ where  |r_i_hat| is a unit vector in the direction of |r_i|.
 Assume we want to write a code which can compute |e_field|. In PluginPlay this
 code has three parts:
 
-#. the module which actually computes |e_field|,
-#. the property type defining the API for modules which compute |e_field|, and
+#. the PluginPlay::Module which actually computes |e_field|,
+#. the property type defining the API of our PluginPlay::Module, and
 #. the plugin.
 
 Right now we are concerned with the first point. So we ignore plugins entirely
