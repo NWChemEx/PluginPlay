@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../config/config_impl.hpp" // For with_rockdb_v
 #include "../database_api.hpp"
 #include <memory>
 #include <string>
@@ -6,7 +7,8 @@
 namespace pluginplay::cache::database {
 namespace detail_ {
 class RocksDBPIMPL;
-}
+class RocksDBPIMPLStub;
+} // namespace detail_
 
 /** @brief Wraps RocksDB in PluginPlay's database API.
  *
@@ -106,7 +108,8 @@ protected:
 
 private:
     /// Type of the implementation
-    using pimpl_type = detail_::RocksDBPIMPL;
+    using pimpl_type = std::conditional_t<with_rocksdb_v, detail_::RocksDBPIMPL,
+                                          detail_::RocksDBPIMPLStub>;
 
     /// Type of a mutable reference to the PIMPL
     using pimpl_reference = pimpl_type&;

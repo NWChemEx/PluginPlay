@@ -168,6 +168,20 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         REQUIRE(by_cref.type() == rtti);
     }
 
+    SECTION("is_convertible") {
+        // No value, so this should be false for every type
+        REQUIRE_FALSE(defaulted.is_convertible<TestType>());
+
+        // The rest of these just forward to AnyFieldBase::is_convertible, so as
+        // long as those unit tests work, these should work too. Here we just
+        // spot check by_value
+        REQUIRE(by_value.template is_convertible<TestType>());
+        REQUIRE(by_value.template is_convertible<const TestType>());
+        REQUIRE(by_value.template is_convertible<TestType&>());
+        REQUIRE(by_value.template is_convertible<const TestType&>());
+        REQUIRE_FALSE(by_value.template is_convertible<map_type>());
+    }
+
     SECTION("operator==/operator!=") {
         // Two default AnyFields
         REQUIRE(defaulted == AnyField{});
@@ -227,19 +241,6 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         REQUIRE_FALSE(by_value.are_equal(diff));
     }
 
-    SECTION("operator<") {
-        // N.B. The logic for comparing wrapped values is tested in
-        // detail_/any_field_wrapper.cpp and is not replicated here
-
-        // AnyField adds to the PIMPL logic by having to worry about defaulted
-        // instances, which is primarily what we test here
-
-        REQUIRE_FALSE(defaulted < AnyField{});
-        REQUIRE(defaulted < by_value);
-        REQUIRE_FALSE(by_value < defaulted);
-        REQUIRE(default_val < by_value);
-    }
-
     SECTION("print") {
         std::stringstream ss;
 
@@ -275,5 +276,109 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
         REQUIRE(by_value.owns_value());
         REQUIRE(by_cval.owns_value());
         REQUIRE_FALSE(by_cref.owns_value());
+    }
+}
+
+namespace {
+
+struct ABaseClass {
+    int x;
+
+    ABaseClass(int _x) : x(_x) {}
+
+    bool operator==(const ABaseClass& rhs) const noexcept { return x == rhs.x; }
+};
+
+struct DerivedClass : ABaseClass {
+    double y;
+
+    DerivedClass(double _y, int _x) : y(_y), ABaseClass(_x) {}
+
+    bool operator==(const DerivedClass& rhs) const noexcept {
+        return y == rhs.y && ABaseClass::operator==(rhs);
+    }
+};
+
+} // namespace
+
+TEST_CASE("AnyField with polymorphic classes") {
+    auto pbase = std::make_unique<ABaseClass>(1);
+
+    auto pderived0             = std::make_unique<DerivedClass>(1.23, 0);
+    ABaseClass* pderived0_base = pderived0.get();
+
+    auto pderived1             = std::make_unique<DerivedClass>(1.23, 1);
+    ABaseClass* pderived1_base = pderived1.get();
+
+    SECTION("Sanity check classes") {
+        REQUIRE(pbase->x == 1);
+        REQUIRE(pderived0->x == 0);
+        REQUIRE(pderived0->y == 1.23);
+        REQUIRE(pderived1->x == 1);
+        REQUIRE(pderived1->y == 1.23);
+        REQUIRE_FALSE(*pbase == *pderived0);
+        REQUIRE(*pbase == *pderived1);
+
+        auto pother = std::make_unique<DerivedClass>(3.14, 1);
+        REQUIRE_FALSE(*pderived0 == *pother);
+        REQUIRE_FALSE(*pderived1 == *pother);
+
+        ABaseClass* pother_base = pother.get();
+        REQUIRE_FALSE(*pderived0_base == *pother_base);
+        REQUIRE(*pderived1_base == *pother_base);
+    }
+
+    SECTION("Wrap by const ref to base") {
+        using wrapped_type = const ABaseClass&;
+
+        // Wrap the instance which is a base
+        auto te_base = make_any_field<wrapped_type>(*pbase);
+        // Verify it was wrapped by reference
+        REQUIRE(&any_cast<wrapped_type>(te_base) == pbase.get());
+
+        // Wrap derived0 as if it were a base instance
+        auto te_derived0 = make_any_field<wrapped_type>(*pderived0);
+        // Verify it was wrapped by ref to the base
+        REQUIRE(&any_cast<wrapped_type>(te_derived0) == pderived0_base);
+
+        // Wrap derived1 as if it were a base instance
+        auto te_derived1 = make_any_field<wrapped_type>(*pderived1);
+        // Verify it was wrapped by ref to the base
+        REQUIRE(&any_cast<wrapped_type>(te_derived1) == pderived1_base);
+
+        // Comparisons should only consider the base class
+        REQUIRE_FALSE(te_base == te_derived0);
+        REQUIRE(te_base == te_derived1);
+        REQUIRE_FALSE(te_derived0 == te_derived1);
+
+        // Copy slices
+        AnyField base_copy(te_base);
+        REQUIRE(&any_cast<wrapped_type>(base_copy) != pbase.get());
+
+        AnyField d0_copy(te_derived0);
+        REQUIRE(&any_cast<wrapped_type>(d0_copy) != pderived0_base);
+
+        AnyField d1_copy(te_derived1);
+        REQUIRE(&any_cast<wrapped_type>(d1_copy) != pderived1_base);
+    }
+
+    SECTION("Wrap by const ref to derived") {
+        using wrapped_type = const DerivedClass&;
+
+        auto te_derived0 = make_any_field<wrapped_type>(*pderived0);
+        REQUIRE(&any_cast<wrapped_type>(te_derived0) == pderived0.get());
+        auto te_derived1 = make_any_field<wrapped_type>(*pderived1);
+        REQUIRE(&any_cast<wrapped_type>(te_derived1) == pderived1.get());
+
+        REQUIRE_FALSE(te_derived0 == te_derived1);
+
+        // Copy doesn't slice
+        AnyField d0_copy(te_derived0);
+        REQUIRE(&any_cast<wrapped_type>(d0_copy) != pderived0.get());
+        REQUIRE(any_cast<wrapped_type>(d0_copy) == *pderived0);
+
+        AnyField d1_copy(te_derived1);
+        REQUIRE(&any_cast<wrapped_type>(d1_copy) != pderived1.get());
+        REQUIRE(any_cast<wrapped_type>(d1_copy) == *pderived1);
     }
 }

@@ -1,9 +1,10 @@
 #pragma once
-#include "pluginplay/cache/cache.hpp"
-#include "pluginplay/module_input.hpp"
-#include "pluginplay/module_result.hpp"
-#include "pluginplay/submodule_request.hpp"
 #include <memory>
+#include <parallelzone/runtime/runtime_view.hpp>
+#include <pluginplay/cache/cache.hpp>
+#include <pluginplay/fields/fields.hpp>
+#include <pluginplay/submodule_request.hpp>
+#include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay {
@@ -28,15 +29,25 @@ namespace pluginplay {
  *  the type (this is done implicitly by passing the this pointer).
  */
 class ModuleBase {
+private:
+    /// Top-level type for the entire ModuleManager
+    using mm_cache = cache::ModuleManagerCache;
+
 public:
-    /// The type returned by memoization
-    using hash_type = std::string;
+    /// Type of the UUID assigned to this module
+    using uuid_type = utility::uuid_type;
 
     /// The type of the internal cache
-    using cache_type = Cache;
+    using cache_type = typename mm_cache::user_cache_type;
 
     /// A pointer to a cache
-    using cache_ptr = std::shared_ptr<cache_type>;
+    using cache_ptr = typename mm_cache::user_cache_pointer;
+
+    /// The type of the runtime
+    using runtime_type = parallelzone::runtime::RuntimeView;
+
+    /// A pointer to a runtime
+    using runtime_ptr = std::shared_ptr<runtime_type>;
 
     /// Deleted to avoid erroneous construction
     ModuleBase() = delete;
@@ -176,6 +187,12 @@ public:
      */
     type::rtti type() const noexcept { return m_type_; }
 
+    bool has_uuid() const noexcept { return m_uuid_ != uuid_type{}; }
+
+    uuid_type uuid() const noexcept { return m_uuid_; }
+
+    void set_uuid(uuid_type uuid) noexcept { m_uuid_ = std::move(uuid); }
+
     /** @brief Returns the documentation on what the derived module does
      *
      *  Developers are encouraged to set a human-readable documentation string
@@ -231,6 +248,25 @@ public:
     /** @brief Reset the modules internal cache.
      */
     void reset_internal_cache() const;
+
+    /** @brief Sets the runtime of the module.
+     *
+     *  @param[in] runtime A shared_ptr to a @p runtime_type instance with which
+     *                     the module is currently associated.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
+
+    /** @brief Provides the runtime of the module.
+     *
+     *  @return The runtime object with which the module is currently
+     *          associated.
+     *
+     *  @throw std::runtime_error if there is no runtime. Strong throw
+     * guarantee.
+     */
+    runtime_type& get_runtime() const;
 
     /** @brief Compares two ModuleBase instances for equality.
      *
@@ -454,6 +490,9 @@ private:
     virtual type::result_map run_(type::input_map inputs,
                                   type::submodule_map submods) const = 0;
 
+    /// The UUID assigned to this module
+    uuid_type m_uuid_;
+
     /// The inputs set by the developer
     type::input_map m_inputs_;
 
@@ -477,6 +516,9 @@ private:
 
     /// Where the module can store temporaries and intermediates
     cache_ptr m_cache_;
+
+    /// Pointer to this modules current runtime
+    runtime_ptr m_runtime_;
 }; // class ModuleBase
 
 // -------------------------------- Helper Macros ------------------------------
@@ -607,6 +649,12 @@ inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {
     if(!m_cache_)
         throw std::runtime_error("Module does not have an interal cache");
     return *m_cache_.get();
+}
+
+inline typename ModuleBase::runtime_type& ModuleBase::get_runtime() const {
+    if(!m_runtime_)
+        throw std::runtime_error("Module does not a Runtime instance");
+    return *m_runtime_.get();
 }
 
 inline void ModuleBase::reset_internal_cache() const {

@@ -7,8 +7,6 @@ using namespace pluginplay::detail_;
 
 using base_map    = typename ModuleManagerPIMPL::base_map;
 using module_map  = typename ModuleManagerPIMPL::module_map;
-using cache_type  = typename ModuleManagerPIMPL::cache_type;
-using cache_map   = typename ModuleManagerPIMPL::cache_map;
 using default_map = typename ModuleManagerPIMPL::default_map;
 
 TEST_CASE("ModuleManagerPIMPL : Default ctor") {
@@ -17,8 +15,27 @@ TEST_CASE("ModuleManagerPIMPL : Default ctor") {
         REQUIRE(pimpl.size() == 0);
         REQUIRE(pimpl.m_bases == base_map{});
         REQUIRE(pimpl.m_modules == module_map{});
-        REQUIRE(pimpl.m_caches == cache_map{});
         REQUIRE(pimpl.m_defaults == default_map{});
+    }
+}
+
+TEST_CASE("ModuleManagerPIMPL : Runtime") {
+    SECTION("ctor") {
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
+        ModuleManagerPIMPL pimple(runtime);
+        auto& internal_runtime = pimple.get_runtime();
+        REQUIRE(&internal_runtime == runtime.get());
+    }
+    SECTION("set_runtime") {
+        ModuleManagerPIMPL pimple;
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
+
+        auto& internal_runtime1 = pimple.get_runtime();
+        REQUIRE(&internal_runtime1 != runtime.get());
+
+        pimple.set_runtime(runtime);
+        auto& internal_runtime2 = pimple.get_runtime();
+        REQUIRE(&internal_runtime2 == runtime.get());
     }
 }
 
@@ -69,12 +86,6 @@ TEST_CASE("ModuleManagerPIMPL : comparison") {
                 REQUIRE(!(pimpl1 == pimpl2));
             }
         }
-    }
-    SECTION("Different caches") {
-        auto ptr1 = std::make_shared<cache_type>();
-        pimpl1.m_caches[std::type_index(typeid(double))] = ptr1;
-        REQUIRE(pimpl1 == pimpl2);
-        REQUIRE(!(pimpl1 != pimpl2));
     }
     SECTION("Different defaults") {
         SECTION("Different types") {
@@ -144,14 +155,6 @@ TEST_CASE("ModuleManagerPIMPL : set_default") {
         pimpl2.m_defaults[typeid(Area)] = "key";
         REQUIRE(pimpl1 == pimpl2);
     }
-}
-
-TEST_CASE("ModuleManagerPIMPL : clone") {
-    auto ptr1 = std::make_shared<Rectangle>();
-    ModuleManagerPIMPL pimpl1;
-    pimpl1.add_module("key", ptr1);
-    auto clone = pimpl1.clone();
-    REQUIRE(*clone == pimpl1);
 }
 
 TEST_CASE("ModuleManagerPIMPL : count") {

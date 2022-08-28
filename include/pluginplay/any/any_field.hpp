@@ -1,13 +1,7 @@
 #pragma once
-#include <exception>
-#include <memory>
-#include <ostream>
-#include <typeindex>
+#include "detail_/any_field_base.hpp"
 
 namespace pluginplay::any {
-namespace detail_ {
-class AnyFieldBase; // Forward declare the PIMPL
-}
 
 /** @brief Wraps either an input or a result to a module.
  *
@@ -31,14 +25,14 @@ class AnyFieldBase; // Forward declare the PIMPL
  */
 class AnyField {
 public:
-    /// Type used for runtime type information (RTTI) purposes
-    using rtti_type = std::type_index;
-
     /// Type of the object actually implementing the AnyField class
     using pimpl_type = detail_::AnyFieldBase;
 
+    /// Type used for runtime type information (RTTI) purposes
+    using rtti_type = typename pimpl_type::rtti_type;
+
     /// Type of the smart pointer holding a PIMPL, typedef of unique_ptr
-    using pimpl_pointer = std::unique_ptr<pimpl_type>;
+    using pimpl_pointer = typename pimpl_type::field_base_pointer;
 
     /** @brief Creates an AnyField wrapping the provided value.
      *
@@ -115,6 +109,7 @@ public:
      */
     AnyField& operator=(AnyField&& rhs) noexcept;
 
+    /// Default non-throw dtor
     ~AnyField() noexcept;
 
     /// Standard swap function, just exchanges PIMPL instances
@@ -147,6 +142,26 @@ public:
      *  @throw None No throw guarantee.
      */
     rtti_type type() const noexcept;
+
+    /** @brief Determines if the wrapped value can be converted to the specified
+     *         type.
+     *
+     *  Assuming the present instance wraps a value (if it does not this method
+     *  will always return false) this method determines if a call to
+     *  `any_cast<T>(*this)` will succeed. It should be noted that @p T should
+     *  be cv and reference qualified, i.e., this method takes into account the
+     *  `const`-ness and reference-semantics of @p T.
+     *
+     *  @tparam T A cv and reference qualified type.
+     *
+     *  @return True if it is possible to convert the wrapped object to an
+     *          instance of type @p T and false otherwise. Notably, if this
+     *          instance does not contain a PIMPL this method returns false.
+     *
+     *  @throw None No throw guarantee.
+     */
+    template<typename T>
+    bool is_convertible() const noexcept;
 
     /** @brief Performs a value comparison on two AnyField instances.
      *
@@ -186,33 +201,6 @@ public:
      */
     bool are_equal(const AnyField& rhs) const noexcept;
 
-    /** @brief Defines an ordering for AnyField instances.
-     *
-     *  Given two instances `a` and `b`, `a` comes before `b` if:
-     *
-     *  - `a` is default constructed, but `b` isn't
-     *  - the RTTI of `a` comes before the the RTTI of `b`
-     *  - if the value `a` wraps comes before the value `b` wraps
-     *
-     *  Following usual C++ conventions if `a` is not less than `b`, and `b` is
-     *  not less than `a`, then `a` is value equal to `b` (meaning operator==
-     *  will return true). Note that even in this scenario `are_equal` may
-     *  return false since `are_equal` also takes into account how the value is
-     *  owned.
-     *
-     *  In particular we note that the RTTI comparison is through `type()` and
-     *  does NOT take into account cv-qualifiers or references.
-     *
-     *  @param[in] rhs The instance we are comparing to.
-     *
-     *  @return True if the present instance comes before @p rhs and false
-     *          otherwise. In particular note that a value of false does not
-     *          necessarilly mean that @p rhs comes before this.
-     *
-     *  @throw None No throw guarantee.
-     */
-    bool operator<(const AnyField& rhs) const noexcept;
-
     /** @brief Adds a string representation of the wrapped object to the stream
      *
      *  Sometimes it's useful to have string representations of objects. If the
@@ -237,7 +225,8 @@ public:
     /** @brief Does this AnyField currently wrap a value?
      *
      *  At any time an AnyField either wraps a value or does not. This function
-     *  is used to determine if the AnyField wraps a value.
+     *  is used to determine if the AnyField wraps a value. Whether the AnyField
+     *  owns the value is not considered.
      *
      *  @return True if the PIMPL is non-null and false otherwise.
      *
@@ -265,6 +254,16 @@ public:
      */
     bool owns_value() const noexcept;
 
+    template<typename Archive>
+    void save(Archive& ar) const {
+        std::runtime_error("NYI");
+    }
+
+    template<typename Archive>
+    void load(Archive& ar) {
+        std::runtime_error("NYI");
+    }
+
 private:
     /// Allows any_cast to actually cast the AnyField
     template<typename T, typename AnyType>
@@ -273,6 +272,12 @@ private:
     /// The actual PIMPL
     pimpl_pointer m_pimpl_;
 };
+
+template<typename T>
+bool AnyField::is_convertible() const noexcept {
+    if(!m_pimpl_) return false;
+    return m_pimpl_->is_convertible<T>();
+}
 
 /** @brief Determines if two AnyField instances are different.
  *

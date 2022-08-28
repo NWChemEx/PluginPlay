@@ -1,18 +1,21 @@
 #include "detail_/module_manager_pimpl.hpp"
 #include "detail_/module_pimpl.hpp"
 #include "pluginplay/module_manager.hpp"
+
 namespace pluginplay {
 
 using module_map      = typename ModuleManager::module_map;
 using module_base_ptr = typename ModuleManager::module_base_ptr;
 using cache_type      = typename detail_::ModulePIMPL::cache_type;
+using runtime_type    = typename ModuleManager::runtime_type;
+using runtime_ptr     = typename ModuleManager::runtime_ptr;
 template<typename T>
 using CIM = utilities::CaseInsensitiveMap<T>;
 
 ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
-ModuleManager::ModuleManager(const ModuleManager& rhs) :
-  pimpl_(rhs.pimpl_->clone()) {}
+ModuleManager::ModuleManager(runtime_ptr runtime) :
+  pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime)) {}
 ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;
@@ -51,5 +54,13 @@ module_map::iterator ModuleManager::begin() noexcept { return pimpl_->begin(); }
 module_map::iterator ModuleManager::end() noexcept { return pimpl_->end(); }
 
 type::size ModuleManager::size() const noexcept { return pimpl_->size(); }
+
+void ModuleManager::set_runtime(runtime_ptr runtime) noexcept {
+    pimpl_->set_runtime(runtime);
+};
+
+ModuleManager::runtime_type& ModuleManager::get_runtime() const noexcept {
+    return pimpl_->get_runtime();
+};
 
 } // namespace pluginplay

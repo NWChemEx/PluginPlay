@@ -1,8 +1,9 @@
 #pragma once
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/types.hpp"
 #include <chrono>
 #include <iomanip> // for put_time
+#include <pluginplay/cache/module_cache.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/types.hpp>
 #include <utilities/timer.hpp>
 
 namespace pluginplay::detail_ {
@@ -51,13 +52,22 @@ public:
     using base_ptr = std::shared_ptr<const ModuleBase>;
 
     /// Type of the object used to store the results computed by the module
-    using cache_type = std::map<std::string, type::result_map>;
+    using cache_type = cache::ModuleCache;
 
     /// How we store the object used for caching
     using cache_ptr = std::shared_ptr<cache_type>;
 
     /// How we tell you what's preventing your module from running
     using not_set_type = utilities::CaseInsensitiveMap<std::set<type::key>>;
+
+    /// Type of object containing RTTI of ModuleBase implementation
+    using rtti_type = type::rtti;
+
+    /// Type of the UUID
+    using uuid_type = typename ModuleBase::uuid_type;
+
+    /// Type of the submodule key to UUID map
+    using submod_uuid_map = std::map<std::string, uuid_type>;
 
     /** @brief Makes a module with no implementation.
      *
@@ -409,36 +419,6 @@ public:
      */
     auto& citations() const;
 
-    /** @brief Computes the hash of the current instance using the bound params.
-     *
-     *  This function simply calls memoize with the currently bound inputs.
-     *
-     *  @param[in,out] h The hasher to use for hashing.
-     *
-     *  @throw ??? if any of the hash functions throw. Same throw
-     */
-    void hash(Hasher& h) const { memoize(h, m_inputs_); }
-
-    /** @brief computes a hash for a particular invocation of the `run` member.
-     *
-     *  For a deterministic module providing the module the same inputs must
-     *  return the same outputs. We need a way to determine if we have already
-     *  called the module with a particular set of inputs; that's where this
-     *  function comes in. This function takes a set of input values, as well as
-     *  the set of submodules to use, and maps them to a hash value. Barring the
-     *  universe conspiring against us, that hash value is a concise and unique
-     *  representation of the input state.
-     *
-     * @param[in,out] h The hasher instance to use
-     * @param[in] inputs The values of the inputs to hash
-     *
-     * @throw std::bad_alloc if there is insufficient memory to merge the
-     *                       inputs. Strong throw guarantee.
-     * @throw ??? If the hash function of any input or submodule throws. Strong
-     *            throw guarantee.
-     */
-    void memoize(Hasher& h, type::input_map inputs) const;
-
     /** @brief Returns timing data for this module and all submodules.
      *
      *  Each time the run member is called the time for the call (including all
@@ -572,6 +552,36 @@ public:
      */
     bool operator!=(const ModulePIMPL& rhs) const { return !((*this) == rhs); }
 
+    /** @brief Returns the RTTI of the class implementing the Module.
+     *
+     *  The ModuleManager uses the RTTI as a unique way to refer to the module's
+     *  implementation. This function allows access to the RTTI through the
+     *  PIMPL.
+     *
+     *  @return The RTTI of the implementation.
+     *
+     *  @throw std::runtime_error if the ModulePIMPL does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    rtti_type type() const;
+
+    /** @brief Returns the UUID assigned to the underlying algorithm.
+     *
+     *  When ModuleBase instances are added to the ModuleManager they are
+     *  assigned UUIDs. This method allows you to retrieve the UUID the module
+     *  was assigned.
+     *
+     *  @return The UUID assigned to the wrapped implementation. An empty string
+     *          is returned if the wrapped implementation was not assigned a
+     *          UUID.
+     *
+     *  @throws std::runtime_error if the ModulePIMPL does not have an
+     *                             implementation. Strong throw guarantee.
+     */
+    uuid_type uuid() const;
+
+    submod_uuid_map submod_uuids() const;
+
 private:
     /** @brief Code factorization for merging two sets of inputs.
      *
@@ -589,9 +599,6 @@ private:
      *                        sets of inputs. Strong throw guarantee.
      */
     type::input_map merge_inputs_(type::input_map in_inputs) const;
-
-    /// Code factorization for computing the hash of a module
-    std::string get_hash_(const type::input_map& in_inputs);
 
     /// Code factorization for checking if things in a map are ready
     template<typename T>
@@ -625,227 +632,6 @@ private:
     utilities::Timer m_timer_;
 }; // class ModulePIMPL
 
-//-------------------------------Implementations--------------------------------
-
-inline ModulePIMPL::ModulePIMPL(base_ptr base, cache_ptr cache) :
-  m_base_(base),
-  m_cache_(cache),
-  m_inputs_(base ? base->inputs() : type::input_map{}),
-  m_submods_(base ? base->submods() : type::submodule_map{}),
-  m_property_types_(base ? base->property_types() : std::set<type::rtti>{}) {}
-
-inline bool ModulePIMPL::has_description() const {
-    assert_mod_();
-    return m_base_->has_description();
-}
-
-inline auto ModulePIMPL::not_set(const type::input_map& in_inputs) const {
-    assert_mod_();
-    not_set_type probs;
-
-    // This is all of the not ready inputs
-    auto in_probs = not_set_guts_(m_inputs_);
-
-    // Now pull out those set by the property type
-    for(const auto& [k, v] : in_inputs)
-        if(in_probs.count(k)) in_probs.erase(k);
-    if(!in_probs.empty()) probs.emplace("Inputs", std::move(in_probs));
-
-    auto submod_probs = not_set_guts_(m_submods_);
-    if(!submod_probs.empty())
-        probs.emplace("Submodules", std::move(submod_probs));
-    return probs;
-}
-
-inline bool ModulePIMPL::ready(const type::input_map& inps) const {
-    auto errors = not_set(inps);
-    return errors.empty();
-}
-
-inline const auto& ModulePIMPL::results() const {
-    assert_mod_();
-    return m_base_->results();
-}
-
-inline auto& ModulePIMPL::inputs() {
-    assert_mod_();
-    return m_inputs_;
-}
-
-inline auto& ModulePIMPL::inputs() const {
-    assert_mod_();
-    return m_inputs_;
-}
-
-inline auto& ModulePIMPL::submods() {
-    assert_mod_();
-    return m_submods_;
-}
-
-inline auto& ModulePIMPL::submods() const {
-    assert_mod_();
-    return m_submods_;
-}
-
-inline auto& ModulePIMPL::property_types() {
-    assert_mod_();
-    return m_property_types_;
-}
-
-inline auto& ModulePIMPL::property_types() const {
-    assert_mod_();
-    return m_property_types_;
-}
-
-inline auto& ModulePIMPL::description() const {
-    assert_mod_();
-    return m_base_->get_desc();
-}
-
-inline auto& ModulePIMPL::citations() const {
-    assert_mod_();
-    return m_base_->citations();
-}
-
-inline bool ModulePIMPL::is_memoizable() const {
-    assert_mod_();
-    auto memoizable = m_memoizable_;
-    for(const auto& [k, v] : m_submods_) {
-        memoizable = v.value().is_memoizable() && memoizable;
-    }
-    return memoizable;
-}
-
-inline void ModulePIMPL::memoize(Hasher& h, type::input_map inputs) const {
-    inputs = merge_inputs_(std::move(inputs));
-    for(const auto& [k, v] : inputs) v.hash(h);
-    for(const auto& [k, v] : m_submods_) v.hash(h);
-    // This is not a great way of hashing the class name...
-    h(m_base_->type().name());
-}
-
-inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
-    if(!m_cache_) return false;
-    auto ps = merge_inputs_(in_inputs);
-    return m_cache_->count(get_hash_(ps)) == 1;
-}
-
-inline void ModulePIMPL::reset_cache() {
-    if(m_cache_) m_cache_->clear();
-}
-
-inline void ModulePIMPL::reset_internal_cache() {
-    assert_mod_();
-    m_base_->reset_internal_cache();
-}
-
-inline void ModulePIMPL::turn_off_memoization() {
-    assert_mod_();
-    m_memoizable_ = false;
-}
-
-inline void ModulePIMPL::turn_on_memoization() {
-    assert_mod_();
-    m_memoizable_ = true;
-}
-
-inline std::string ModulePIMPL::profile_info() const {
-    std::stringstream ss;
-    ss << m_timer_;
-    std::string tab("  ");
-    for(auto [key, submod] : m_submods_) {
-        ss << tab << key << std::endl;
-        auto submod_prof_info = submod.value().profile_info();
-        std::stringstream ss2(submod_prof_info);
-        std::string token;
-        while(std::getline(ss2, token, '\n'))
-            ss << tab << tab << token << std::endl;
-    }
-    return ss.str();
-}
-
-inline auto ModulePIMPL::run(type::input_map ps) {
-    auto time_now = time_stamp();
-    m_timer_.reset();
-    assert_mod_();
-    //DEBUG
-    // Check the inputs we were just given
-    for(const auto& [k, v] : ps)
-        if(!v.ready()) throw std::runtime_error("Inputs are not ready");
-
-    // Merge with bound and see if we are ready
-    if(!ready(ps)) {
-        // Make a dummy module with this PIMPL so we can print out why it's not
-        // ready.
-        Module dummy(std::make_unique<ModulePIMPL>(*this));
-        throw std::runtime_error(print_not_ready(dummy, ps));
-    }
-
-    lock();
-
-    ps = merge_inputs_(ps);
-    // Check cache
-    auto hv = get_hash_(ps);
-
-    if(is_memoizable() && m_cache_ && m_cache_->count(hv)) {
-        m_timer_.record(time_now);
-        return m_cache_->at(hv);
-    }
-
-    // not there so run
-    auto rv = m_base_->run(std::move(ps), m_submods_);
-    if(!m_cache_ || !is_memoizable()) {
-        m_timer_.record(time_now);
-        return rv;
-    }
-
-    // cache result
-    m_cache_->emplace(hv, std::move(rv));
-    m_timer_.record(time_now);
-    return m_cache_->at(hv);
-}
-
-inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
-    if(has_module() != rhs.has_module()) return false;
-    if(locked() != rhs.locked()) return false;
-    if(!has_module()) return true;
-
-    if(std::tie(inputs(), submods(), property_types()) !=
-       std::tie(rhs.inputs(), rhs.submods(), rhs.property_types()))
-        return false;
-    return (*m_base_ == *rhs.m_base_);
-}
-
-inline type::input_map ModulePIMPL::merge_inputs_(
-  type::input_map in_inputs) const {
-    for(const auto& [k, v] : m_inputs_)
-        if(!in_inputs.count(k)) in_inputs[k] = v;
-    return in_inputs;
-}
-
-inline void ModulePIMPL::lock() {
-    for(auto& [k, v] : m_submods_) v.lock();
-    m_locked_ = true;
-}
-
-/// Code factorization for computing the hash of a module
-inline std::string ModulePIMPL::get_hash_(const type::input_map& in_inputs) {
-    Hasher h(pluginplay::HashType::Hash128);
-    memoize(h, in_inputs);
-    return pluginplay::hash_to_string(h.finalize());
-}
-
-template<typename T>
-std::set<type::key> ModulePIMPL::not_set_guts_(T&& map) const {
-    std::set<type::key> probs;
-    for(const auto& [k, v] : map)
-        if(!v.ready()) probs.insert(k);
-    return probs;
-}
-
-inline void ModulePIMPL::assert_mod_() const {
-    if(has_module()) return;
-    throw std::runtime_error("Module does not contain an implementation");
-}
-
 } // namespace pluginplay::detail_
+
+#include "module_pimpl.ipp"

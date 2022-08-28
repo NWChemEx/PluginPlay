@@ -38,7 +38,7 @@ void UUID_MAPPER::dump() { m_db_->dump(); }
 
 TPARAMS
 typename UUID_MAPPER::mapped_type UUID_MAPPER::uuid_() const {
-    return boost::uuids::random_generator()();
+    return utility::generate_uuid();
 }
 
 #undef UUID_MAPPER

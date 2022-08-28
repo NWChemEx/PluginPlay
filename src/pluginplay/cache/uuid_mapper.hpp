@@ -1,7 +1,7 @@
 #pragma once
 #include "database/database_api.hpp"
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid.hpp>
+#include <memory>
+#include <pluginplay/utility/uuid.hpp>
 
 namespace pluginplay::cache {
 
@@ -24,7 +24,7 @@ public:
     using const_key_reference = const key_type&;
 
     /// Type of the UUIDs, typedef of boost::uuids::uuid
-    using mapped_type = boost::uuids::uuid;
+    using mapped_type = std::string;
 
     /// Type of the database that UUIDMapper will store UUIDs in
     using db_type = database::DatabaseAPI<key_type, mapped_type>;
@@ -34,6 +34,9 @@ public:
 
     /// Type of a pointer to the database storing the object-to-UUID relation
     using db_pointer = std::unique_ptr<db_type>;
+
+    /// Type of a container holding keys
+    using key_set_type = typename db_type::key_set_type;
 
     /** @brief Creates a new UUID instance which stores the UUID mapping in the
      *         provided db
@@ -68,6 +71,18 @@ public:
      *         gurantee.
      */
     void insert(key_type key);
+
+    /** @brief Returns the set of objects which have been proxied.
+     *
+     *  N.B. this operation should only be used for debugging as it will copy
+     *  each key into the returned object.
+     *
+     *  @return A container with copies of each key.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the return.
+     *         Strong throw guarantee.
+     */
+    key_set_type keys() const { return m_db_->keys(); }
 
     /// Just calls m_db_->count(key)
     bool count(const_key_reference key) const noexcept;

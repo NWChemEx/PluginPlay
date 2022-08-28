@@ -1,5 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
+#include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/module_base.hpp>
 
 using namespace pluginplay;
@@ -110,17 +111,32 @@ TEST_CASE("ModuleBase : get_cache") {
     }
 
     SECTION("Works if there's a cache") {
-        auto cache = std::make_shared<pluginplay::Cache>();
+        auto cache = std::make_shared<pluginplay::cache::UserCache>();
         mod.set_cache(cache);
         auto& internal_cache = mod.get_cache();
         REQUIRE(&internal_cache == cache.get());
     }
 }
 
+TEST_CASE("ModuleBase : get_runtime") {
+    testing::NullModule mod;
+    SECTION("Throws if no runtime") {
+        REQUIRE_THROWS_AS(mod.get_runtime(), std::runtime_error);
+    }
+
+    SECTION("Works if there's a runtime") {
+        auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
+        mod.set_runtime(runtime);
+        auto& internal_runtime = mod.get_runtime();
+        REQUIRE(&internal_runtime == runtime.get());
+    }
+}
+
 TEST_CASE("ModuleBase : reset_internal_cache") {
     testing::NullModule mod;
 
-    auto cache = std::make_shared<pluginplay::Cache>();
+    pluginplay::cache::ModuleManagerCache mm_cache;
+    auto cache = mm_cache.get_or_make_user_cache("foo");
     cache->cache(int{1}, int{2});
     mod.set_cache(cache);
     mod.reset_internal_cache();

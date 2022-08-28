@@ -1,8 +1,10 @@
 #pragma once
 #include "module_pimpl.hpp"
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/module_manager.hpp"
 #include <memory>
+#include <parallelzone/runtime/runtime_view.hpp>
+#include <pluginplay/cache/module_manager_cache.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/module_manager.hpp>
 #include <typeindex>
 
 namespace pluginplay {
@@ -34,21 +36,23 @@ struct ModuleManagerPIMPL {
     /// Type of a map holding usable modules
     using module_map = utilities::CaseInsensitiveMap<shared_module>;
 
-    /// Type of a cache
-    using cache_type = typename ModulePIMPL::cache_type;
-
-    /// Type of a shared cache
-    using shared_cache = std::shared_ptr<cache_type>;
-
-    /// Type of a map holding caches
-    using cache_map = std::map<std::type_index, shared_cache>;
-
     /// Type of a map holding the default module key for a given property type
     using default_map = std::map<std::type_index, type::key>;
+
+    /// The type of the runtime
+    using runtime_type = parallelzone::runtime::RuntimeView;
+
+    /// A pointer to a runtime
+    using runtime_ptr = std::shared_ptr<runtime_type>;
+
     ///@}
 
+    ModuleManagerPIMPL(runtime_ptr runtime) : m_runtime_(runtime) {}
+
+    ModuleManagerPIMPL() : m_runtime_(std::make_shared<runtime_type>()) {}
+
     /// Makes a deep copy of this instance on the heap
-    auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
+    // auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
 
     /// Ensures we determine if we have a module consistently
     type::size count(const type::key& key) const noexcept {
@@ -96,16 +100,16 @@ struct ModuleManagerPIMPL {
      */
     void add_module(type::key key, module_base_ptr base) {
         assert_unique_key_(key);
-        using internal_cache_type = typename ModuleBase::cache_type;
-        auto internal_cache       = std::make_shared<internal_cache_type>();
+        auto uuid           = utility::generate_uuid();
+        auto internal_cache = m_caches.get_or_make_user_cache(uuid);
         base->set_cache(internal_cache);
+        base->set_runtime(m_runtime_);
+        base->set_uuid(uuid);
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
-        if(!m_caches.count(type))
-            m_caches[type] = std::make_shared<cache_type>();
-        auto pimpl =
-          std::make_unique<ModulePIMPL>(m_bases[type], m_caches[type]);
-        auto ptr = std::make_shared<Module>(std::move(pimpl));
+        auto module_cache = m_caches.get_or_make_module_cache(key);
+        auto pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
+        auto ptr   = std::make_shared<Module>(std::move(pimpl));
         m_modules.emplace(std::move(key), ptr);
     }
 
@@ -197,6 +201,10 @@ struct ModuleManagerPIMPL {
     bool operator!=(const ModuleManagerPIMPL& rhs) const {
         return !((*this) == rhs);
     }
+
+    void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
+
+    runtime_type& get_runtime() const { return *m_runtime_.get(); }
     ///@}
 
     ///@{
@@ -211,13 +219,16 @@ struct ModuleManagerPIMPL {
     module_map m_modules;
 
     // These are the results of the modules running in the user's states
-    cache_map m_caches;
+    cache::ModuleManagerCache m_caches;
 
     // A map of property types
     default_map m_defaults;
 
     // A map of inputs for property types
     std::map<std::type_index, type::input_map> m_inputs;
+
+    // Pointer to this modules current runtime
+    runtime_ptr m_runtime_;
     ///@}
 private:
     /// Wraps the check for making sure @p key is not in use.

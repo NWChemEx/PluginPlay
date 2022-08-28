@@ -1,7 +1,9 @@
 #include <catch2/catch.hpp>
 
 /* This unit test ensures that attempting to create a RocksDBPIMPL fails when
- * RocksDB support has not been enabled. N.B. if RocksDB support is enabled this
+ * RocksDB support has not been enabled.
+ *
+ * N.B. if RocksDB support is enabled this
  * test will find the real definitions, even though we don't include the real
  * header file. This is because the PluginPlay binary contains the real
  * definitions of the symbols, and (at least with GCC) the definitions in the
@@ -10,12 +12,12 @@
  * file, because of how C++ works, this test will still fail because it still
  * finds the real definitions.
  */
-#ifndef BUILD_ROCKS_DB
 #include <pluginplay/cache/database/rocksdb/detail_/rocksdb_pimpl_stub.hpp>
-
+#include <pluginplay/config/config_impl.hpp>
 using namespace pluginplay::cache::database::detail_;
 
 TEST_CASE("RocksDBPIMPL Stub") {
-    REQUIRE_THROWS_AS(RocksDBPIMPL("Not/a/path"), std::runtime_error);
+    if constexpr(!pluginplay::with_rocksdb_v) {
+        REQUIRE_THROWS_AS(RocksDBPIMPLStub("Not/a/path"), std::runtime_error);
+    }
 }
-#endif

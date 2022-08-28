@@ -41,6 +41,9 @@ public:
     /// Type of the database's keys, typedef of KeyType
     using typename base_type::key_type;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Type of a read-only reference to a key, typedef of const KeyType&
     using typename base_type::const_key_reference;
 
@@ -77,6 +80,9 @@ public:
     explicit Transposer(wrapped_db_pointer p);
 
 protected:
+    /// Returns a copy of m_keys_
+    key_set_type keys_() const override;
+
     /// Loops over m_keys_ looking for a "key" whose value is @p key
     bool count_(const_key_reference key) const noexcept override;
 

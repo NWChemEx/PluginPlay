@@ -3,17 +3,17 @@
 
 namespace pluginplay::cache::database::detail_ {
 
-/** @brief This class is a stub API for the RocksDBPIMPL
+/** @brief This class is a stub API for the RocksDBPIMPLStub
  *
  *  If a user chooses not to enable RocksDB they get this definition of the
- *  RocksDBPIMPL. This class has the same API as the real RocksDBPIMPL so
- *  classes can use it without preprocessor protection. Attempting to actually
+ *  RocksDBPIMPLStub. This class has the same API as the real RocksDBPIMPLStub
+ * so classes can use it without preprocessor protection. Attempting to actually
  *  instantiate an instance of this class will raise a runtime error. For good
  *  measure all functions are defined to throw as well; however, it shouldn't
  *  be possible to call any of them since you can't make an instance of this
  *  class.
  */
-class RocksDBPIMPL {
+class RocksDBPIMPLStub {
 public:
     /// The type of the database which relies on this PIMPL
     using parent_type = RocksDB<std::string, std::string>;
@@ -37,7 +37,7 @@ public:
     using const_mapped_reference = typename parent_type::const_mapped_reference;
 
     /// Raises runtime_error if called
-    RocksDBPIMPL(const_path_reference) { raise_error_(); }
+    RocksDBPIMPLStub(const_path_reference) { raise_error_(); }
 
     /// Raises runtime_error if called
     bool count(const_key_reference) const;
@@ -59,18 +59,18 @@ private:
 // -----------------------------------------------------------------------------
 // -- Inline Implementations
 // -----------------------------------------------------------------------------
-inline bool RocksDBPIMPL::count(const_key_reference) const {
+inline bool RocksDBPIMPLStub::count(const_key_reference) const {
     raise_error_();
     return false;
 }
 
-inline typename RocksDBPIMPL::const_mapped_reference RocksDBPIMPL::at(
+inline typename RocksDBPIMPLStub::const_mapped_reference RocksDBPIMPLStub::at(
   const_key_reference) const {
     raise_error_();
     return const_mapped_reference{mapped_type{}};
 }
 
-inline void RocksDBPIMPL::raise_error_() const {
+inline void RocksDBPIMPLStub::raise_error_() const {
     throw std::runtime_error("PluginPlay was not compiled with RocksDB "
                              "support. To use RocksDB as a database rebuild "
                              "PluginPlay with the CMake option BUILD_ROCKSDB "

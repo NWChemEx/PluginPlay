@@ -24,7 +24,7 @@ TEST_CASE("RocksDBPIMPL") {
     const bool do_large_value = false;
 
     std::filesystem::path file("test.db");
-    auto p = std::filesystem::current_path() / file;
+    auto p = std::filesystem::temp_directory_path() / file;
 
     RocksDBPIMPL db(p.string());
     db.insert("Hello", "World");
@@ -50,7 +50,8 @@ TEST_CASE("RocksDBPIMPL") {
         auto val2 = db.at("Hello");
         REQUIRE(val2.get() == "Universe");
 
-        REQUIRE_THROWS_AS(db.at("Not a key"), std::out_of_range);
+        // Returns an empty object if key DNE
+        REQUIRE_FALSE(db.at("Not a key").has_value());
     }
 
     SECTION("free") {
@@ -92,6 +93,5 @@ TEST_CASE("RocksDBPIMPL") {
         auto val = db.at("large value");
         REQUIRE(val.get() == buffer);
     }
-    std::filesystem::remove_all(p);
 }
 #endif

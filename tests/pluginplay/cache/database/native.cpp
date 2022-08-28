@@ -12,10 +12,11 @@ TEMPLATE_LIST_TEST_CASE("Map", "", test_types) {
     using key_type    = std::tuple_element_t<0, value_type>;
     using mapped_type = std::tuple_element_t<1, value_type>;
 
-    using map_type = Native<key_type, mapped_type>;
+    using map_type     = Native<key_type, mapped_type>;
+    using key_set_type = typename map_type::key_set_type;
 
-    key_type default_key;
-    mapped_type default_value;
+    key_type default_key{};
+    mapped_type default_value{};
 
     typename map_type::map_type default_map, val{{default_key, default_value}};
 
@@ -30,6 +31,12 @@ TEMPLATE_LIST_TEST_CASE("Map", "", test_types) {
         REQUIRE(defaulted.map() == default_map);
         REQUIRE(has_val.map() == val);
         REQUIRE(has_backup.map() == val);
+    }
+
+    SECTION("keys") {
+        REQUIRE(defaulted.keys() == key_set_type{});
+        REQUIRE(has_val.keys() == key_set_type{default_key});
+        REQUIRE(has_backup.keys() == key_set_type{default_key});
     }
 
     SECTION("Count") {

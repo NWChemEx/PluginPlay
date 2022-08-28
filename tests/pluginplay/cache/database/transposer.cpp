@@ -18,6 +18,8 @@ TEMPLATE_LIST_TEST_CASE("Transposer", "", test_types) {
     using backup_db_type  = Native<mapped_type, key_type>;
     using db_type         = Transposer<key_type, mapped_type>;
 
+    using key_set_type = typename db_type::key_set_type;
+
     key_type key0{};
     auto key1 = testing::lexical_cast<key_type>("42");
     mapped_type val0{};
@@ -34,6 +36,8 @@ TEMPLATE_LIST_TEST_CASE("Transposer", "", test_types) {
         using ptr_type = typename db_type::wrapped_db_pointer;
         REQUIRE_THROWS_AS(db_type(ptr_type{}), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(has_val.keys() == key_set_type{key0}); }
 
     SECTION("Count") {
         REQUIRE(has_val.count(key0));

@@ -1,0 +1,15 @@
+#include "@ppgmd_HEADER_PATH@"
+#include <cstdlib>
+#include <filesystem>
+#include <pluginplay/printing/document_modules.hpp>
+
+int main(){
+    const std::filesystem::path out("@ppgmd_OUTPUT_DIR@");
+    std::filesystem::remove_all(out);
+    std::filesystem::create_directory(out);
+
+    pluginplay::ModuleManager mm;
+    @ppgmd_LOAD_MODULES_FXN@(mm);
+    pluginplay::printing::document_modules(mm, out);
+    return EXIT_SUCCESS;
+}
