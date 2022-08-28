@@ -136,7 +136,7 @@ inline auto ModulePIMPL::run(type::input_map ps) {
     auto time_now = time_stamp();
     m_timer_.reset();
     assert_mod_();
-    //DEBUG
+    // DEBUG
     // Check the inputs we were just given
     for(const auto& [k, v] : ps)
         if(!v.ready()) throw std::runtime_error("Inputs are not ready");
