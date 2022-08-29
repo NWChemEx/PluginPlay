@@ -36,7 +36,11 @@ like:
    :lines: 1,2,5,6-34
 
 For the most part the Python implementation is simply a direct translation of
-the C++ implementation (with the macro guts exposed).
+the C++ implementation (with the macro guts exposed). In particular note that:
+
+- You need to pass ``self`` to the super class's constructor
+- The class names for the property types are set using the subscript operator
+- Multiple inputs are unpacked into a container (here a list)
 
 .. note::
 

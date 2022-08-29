@@ -1,5 +1,10 @@
+##########
 Submodules
-==========
+##########
+
+:ref:`cpp_basics` and :ref:`python_basics` showed you how to write a basic
+PluginPlay::Module in C++ and Python respectively. In practice, most
+programs are far more complicated than our Coulomb's Law example.
 
 Coulomb's Law is pretty simple. Most simulation techniques are much more
 complicated than that and involve an intricate interplay of many different
