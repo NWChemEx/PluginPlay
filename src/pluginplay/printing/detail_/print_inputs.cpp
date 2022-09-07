@@ -17,10 +17,7 @@
 #include "fort_custom_styles.hpp"
 #include "print_inputs.hpp"
 #include <fort.hpp>
-#include <utilities/printing/table.hpp>
 namespace pluginplay::printing::detail_ {
-
-using Table = utilities::printing::Table;
 
 reSTPrinter& input_desc(reSTPrinter& p) {
     p << "This section details the full list of inputs that the module accepts."
