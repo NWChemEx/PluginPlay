@@ -18,10 +18,7 @@
 #include "print_results.hpp"
 #include <fort.hpp>
 #include <utilities/printing/demangler.hpp>
-#include <utilities/printing/table.hpp>
 namespace pluginplay::printing::detail_ {
-
-using Table = utilities::printing::Table;
 
 reSTPrinter& result_desc(reSTPrinter& p) {
     p << "This section tabulates the full list of results that the module "

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 #include <catch2/catch.hpp>
 #include <filesystem>
 #include <pluginplay/cache/database/rocksdb/rocksdb.hpp>
