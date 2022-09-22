@@ -30,7 +30,7 @@ To declare our ``ElectricField`` property type the relevant code is:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/electric_field.hpp
    :language: c++
-   :lines: 1,3,5,7,22
+   :lines: 17,19,21,23,38
 
 Unlike modules, property types are usually defined in the header file (this is
 because these macros hide a significant amount of template meta-programming).
@@ -64,7 +64,7 @@ The definition of the ``inputs_()`` function looks like:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/electric_field.hpp
    :language: c++
-   :lines: 9-22
+   :lines: 25-38
 
 As mentioned at the beginning of this chapter we are only concerning ourselves
 with the scenario in which we want the value of the electric field at a single
@@ -89,7 +89,7 @@ and a string which will be used as the name of the field. You can think of:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/electric_field.hpp
    :language: c++
-   :lines: 13-15
+   :lines: 29-31
 
 as declaring a function ``ElectricField`` with the signature
 ``ElectricField(const Point& r, const std::vector<PointCharge>& charges)`` (the
@@ -121,7 +121,7 @@ definition is:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/electric_field.hpp
    :language: c++
-   :lines: 24-26
+   :lines: 40-42
 
 The electric field at a point is simply a vector and we have been modeling
 vectors with the ``Point`` class. Thus we establish that the return of our
