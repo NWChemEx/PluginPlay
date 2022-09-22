@@ -69,7 +69,7 @@ Continuing with our electric field examples, adding our modules to the
 
 .. literalinclude:: ../../../tests/pluginplay/docs/load_modules.cpp
    :language: c++
-   :lines: 1-11,14-16
+   :lines: 17-27,30-32
 
 
 Once you have added all your modules the next step is to set the default
@@ -86,7 +86,7 @@ If by default we want the ``ClassicalForce`` module we loaded under the key
 
 .. literalinclude:: ../../../tests/pluginplay/docs/load_modules.cpp
    :language: c++
-   :lines: 13
+   :lines: 29
 
 .. note::
 

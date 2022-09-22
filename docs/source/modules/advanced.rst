@@ -46,7 +46,7 @@ With the new input the constructor becomes:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/screened_coulombs_law.cpp
    :language: c++
-   :lines: 23-30
+   :lines: 39-46
 
 Specifically we declare a new double-precision input called "threshold", with a
 brief description and a default value set to the maximum double value (*i.e.*,
@@ -55,7 +55,7 @@ is:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/screened_coulombs_law.cpp
    :language: c++
-   :lines: 32-37,59-61
+   :lines: 48-53,75-77
 
 Here the point to note is that our module is responsible for manually unwrapping
 the new input parameter. It will **NOT** automatically be unwrapped by the

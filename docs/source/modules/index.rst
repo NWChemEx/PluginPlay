@@ -39,7 +39,7 @@ by:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/point_charge.hpp
    :language: c++
-   :lines: 1-13
+   :lines: 17-29
 
 and that the header file ``electric_field.hpp`` defines a property type
 ``ElectricField`` with an API:

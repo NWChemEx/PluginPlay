@@ -35,7 +35,7 @@ Templating slightly changes how the module is declared:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/modules.hpp
    :language: c++
-   :lines: 1-4,10-11,16
+   :lines: 17-20,26-27,32
 
 specifically we need to include a ``template<typename FloatingPointType>``
 statement before the call to ``MODULE_RUN``
@@ -47,4 +47,4 @@ parameters.
 
 .. literalinclude:: ../../../tests/pluginplay/docs/templated_coulombs_law.cpp
    :language: c++
-   :lines: 1-5, 22-29,35-38,58-60
+   :lines: 17-21, 38-45,51-54,74-76

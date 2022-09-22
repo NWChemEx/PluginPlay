@@ -34,14 +34,14 @@ include both the ``sde::printing::document_modules`` function and the
 
 .. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
-   :lines: 1, 3-5
+   :lines: 17, 19-21
 
 Next, set up a ``sde::ModuleManager`` and load your modules with the
 ``load_modules`` you wrote.
 
 .. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
-   :lines: 17-21
+   :lines: 33-37
 
 The final step is to generate documentation through
 ``sde::printing::document_modules``, by providing your ``ModuleManager``
@@ -53,7 +53,7 @@ path, although more validation may be necessary.
 
 .. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
-   :lines: 23-24
+   :lines: 39-40
 
 .. _example-module-doc-gen:
 
@@ -66,4 +66,4 @@ generate documentation for your modules.
 
 .. literalinclude:: ../../../tests/pluginplay/docs/generate_module_documentation.cpp
    :language: c++
-   :lines: 1-29
+   :lines: 17-45

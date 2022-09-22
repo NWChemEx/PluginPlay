@@ -47,7 +47,7 @@ The relevant lines are:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/modules.hpp
    :language: c++
-   :lines: 1-6,15-16
+   :lines: 17-22,31-32
 
 .. note::
 
@@ -76,7 +76,7 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/coulombs_law.cpp
    :language: c++
-   :lines: 7-23
+   :lines: 23-39
 
 One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
@@ -119,7 +119,7 @@ code are:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/coulombs_law.cpp
    :language: c++
-   :lines: 25-29,49-51
+   :lines: 41-45,65-67
 
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
@@ -136,7 +136,7 @@ computing the electric field) is:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/coulombs_law.cpp
    :language: c++
-   :lines: 25-51
+   :lines: 41-67
 
 Submodules
 ==========
@@ -169,7 +169,7 @@ property type `ElectricField`. This looks like:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/force.cpp
    :language: c++
-   :lines: 22-29
+   :lines: 38-45
 
 PluginPlay also requires that we specify a tag (we choose the tag
 ``"electric field"``). The tag ensures that the module can specify and
@@ -179,13 +179,13 @@ our module looks like:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/force.cpp
    :language: c++
-   :lines: 31-43
+   :lines: 47-59
 
 Of note is the line:
 
 .. literalinclude:: ../../../tests/pluginplay/docs/force.cpp
    :language: c++
-   :lines: 37
+   :lines: 53
 
 which says we are running the submodule tagged with ``"electric field"`` as an
 ``efield_type``. We provide the submodule with the point charge's location and
