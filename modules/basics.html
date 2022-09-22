@@ -115,13 +115,14 @@ algorithm in the module’s name. For the purposes of our electric field module 
 will compute the electric field via Coulomb’s Law so we choose to name our
 module <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> and we store the declaration in a file <code class="docutils literal notranslate"><span class="pre">modules.hpp</span></code>.
 The relevant lines are:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm"> * Copyright 2022 NWChemEx-Project</span>
-<span class="cm"> *</span>
-<span class="cm"> * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="cm"> * you may not use this file except in compliance with the License.</span>
-<span class="cm"> * You may obtain a copy of the License at</span>
-<span class="cm"> */</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">);</span><span class="w"></span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -145,23 +146,23 @@ module to aid in defining the module’s constructor. At a minimum the construct
 must set the property type(s) that the module satisfies. It is also a good idea
 to provide a short description about the algorithm implemented in the module.</p>
 <p>For our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module a basic constructor looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="o">*</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">http</span><span class="o">:</span><span class="c1">//www.apache.org/licenses/LICENSE-2.0</span>
-<span class="w"> </span><span class="o">*</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Unless</span><span class="w"> </span><span class="n">required</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">applicable</span><span class="w"> </span><span class="n">law</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">agreed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">writing</span><span class="p">,</span><span class="w"> </span><span class="n">software</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">distributed</span><span class="w"> </span><span class="n">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">distributed</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="s">&quot;AS IS&quot;</span><span class="w"> </span><span class="n">BASIS</span><span class="p">,</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">WITHOUT</span><span class="w"> </span><span class="n">WARRANTIES</span><span class="w"> </span><span class="n">OR</span><span class="w"> </span><span class="n">CONDITIONS</span><span class="w"> </span><span class="n">OF</span><span class="w"> </span><span class="n">ANY</span><span class="w"> </span><span class="n">KIND</span><span class="p">,</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">express</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">implied</span><span class="p">.</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">See</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">specific</span><span class="w"> </span><span class="n">language</span><span class="w"> </span><span class="n">governing</span><span class="w"> </span><span class="n">permissions</span><span class="w"> </span><span class="n">and</span><span class="w"></span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">limitations</span><span class="w"> </span><span class="n">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="p">.</span><span class="w"></span>
-<span class="w"> </span><span class="o">*/</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span><span class="s"></span>
+<span class="s">Electric Field From Coulomb&#39;s Law</span>
+<span class="s">---------------------------------</span>
 
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;electric_field.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;numeric&gt;</span><span class="c1"> // for std::inner_product</span><span class="cp"></span>
+<span class="s">This module computes the electric field of a series of point charges using</span>
+<span class="s">Coulomb&#39;s law according to:</span>
 
-<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="s">.. math::</span>
 
-<span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="s">&quot;(</span>
+<span class="s">   \vec{E}(\vec{r}) = \sum_{i=1}^N</span>
+<span class="s">                      \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}</span>
+<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>One particularly nice feature of PluginPlay is that it can autogenerate
@@ -198,14 +199,14 @@ module to aid in defining the module’s <code class="docutils literal notransla
 <code class="docutils literal notranslate"><span class="pre">inputs</span></code> and <code class="docutils literal notranslate"><span class="pre">submods</span></code>. Presently we will ignore the <code class="docutils literal notranslate"><span class="pre">submods</span></code> argument.</p>
 <p>For defining our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw::run_</span></code> member the relevant PluginPlay bits of
 code are:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>---------------------------------
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
 
-This module computes the electric field of a series of point charges using
-Coulomb&#39;s law according to:
-
-        auto q   = charge.m_charge;
-        auto&amp; ri = charge.m_r;
-
+<span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>The inputs to a module are type-erased. Getting them back in a usable typed form
@@ -219,33 +220,33 @@ defines a static function <code class="docutils literal notranslate"><span class
 returns a result map with the type-erased results.</p>
 <p>The full definition of the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member (including the source code for
 computing the electric field) is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>---------------------------------
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
 
-This module computes the electric field of a series of point charges using
-Coulomb&#39;s law according to:
+<span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
 
-.. math::
+<span class="w">    </span><span class="c1">// This loop fills in E</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">charge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">charges</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_charge</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">;</span><span class="w"></span>
 
-   \vec{E}(\vec{r}) = \sum_{i=1}^N
-                      \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}
-)&quot;;
+<span class="w">        </span><span class="c1">// Magnitude of r_i</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">ri2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">mag_ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ri2</span><span class="p">);</span><span class="w"></span>
 
-MODULE_CTOR(CoulombsLaw) {
-    description(module_desc);
-    satisfies_property_type&lt;ElectricField&gt;();
-}
+<span class="w">        </span><span class="c1">// ||r - r_i||**2</span>
+<span class="w">        </span><span class="n">Point</span><span class="w"> </span><span class="nf">rij</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">rij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">rij2</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">          </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span><span class="w"></span>
 
-MODULE_RUN(CoulombsLaw) {
-    const auto&amp; [r, charges] = ElectricField::unwrap_inputs(inputs);
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">mag_ri</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rij2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-    // This will be the value of the electric field
-    Point E{0.0, 0.0, 0.0};
-
-    // This loop fills in E
-    for(const auto&amp; charge : charges) {
-        auto q   = charge.m_charge;
-        auto&amp; ri = charge.m_r;
-
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -270,14 +271,14 @@ terms of an electric field submodule.</p>
 <p>Submodules change the class’s definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
 property type <cite>ElectricField</cite>. This looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>
-using efield_type = ElectricField;
-using force_type  = Force;
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
-static constexpr auto module_desc = R&quot;(
-Computes the force of a moving charged particle as it moves through the electric
-field arising from a set of point charges. Assuming the particle has a mass
-:math:`m`, a charge :math:`q`, and an acccleration :math:`\vec{a}`, the force
+<span class="w">    </span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;Used to compute the electric field of the point charges&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>PluginPlay also requires that we specify a tag (we choose the tag
@@ -285,23 +286,23 @@ field arising from a set of point charges. Assuming the particle has a mass
 distinguish between multiple submodules of the same type. When appropriately
 named, the tag also aids in readability of the code. The <code class="docutils literal notranslate"><span class="pre">run_</span></code> function for
 our module looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>
-.. math::
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
 
-   \vec{F}(\vec{r}) = m\vec{a}\left(\vec{r}\right) +
-                      q\vec{E}\left(\vec{r}\right)
-)&quot;;
+<span class="w">    </span><span class="c1">// This will be the value of the force</span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">F</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
 
-MODULE_CTOR(ClassicalForce) {
-    description(module_desc);
-    satisfies_property_type&lt;force_type&gt;();
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span><span class="w"></span>
 
-    add_submodule&lt;efield_type&gt;(&quot;electric field&quot;)
-      .set_description(
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">m_charge</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Of note is the line:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>which says we are running the submodule tagged with <code class="docutils literal notranslate"><span class="pre">&quot;electric</span> <span class="pre">field&quot;</span></code> as an
