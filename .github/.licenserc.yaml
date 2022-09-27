@@ -20,7 +20,9 @@ header:
   paths-ignore:
     - .github/
     - docs/Makefile
+    - docs/requirements.txt
     - cmake/generate_module_docs.cpp.in
     - LICENSE
+    - version.txt
 
   comment: never
