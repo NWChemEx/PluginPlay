@@ -19,6 +19,7 @@
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/types.hpp>
 #include <typeindex>
+#include <functional>
 #include <utilities/containers/case_insensitive_map.hpp>
 
 namespace pluginplay::detail_ {
