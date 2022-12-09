@@ -53,7 +53,7 @@ inline static void compare_value(T&& w, corr_t corr) {
         std::stringstream ss;
         using utilities::printing::operator<<;
         ss << corr;
-        //REQUIRE(ss.str() == w.str());
+        // REQUIRE(ss.str() == w.str());
     }
 
     SECTION("hashing") {
