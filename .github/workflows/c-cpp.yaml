@@ -6,9 +6,19 @@ on:
       - master
 
 jobs:
-  build:
+  build-with-gcc:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
       dependencies: 'gcc gcovr cmake openmpi boost'
+      clang-build: false
+      gcc-build: true
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
+  # build-with-clang:
+  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
+  #   with: 
+  #     dependencies: 'clang gcovr cmake openmpi boost'
+  #     clang-build: true
+  #     gcc-build: false
+  #   secrets:
+  #     CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
