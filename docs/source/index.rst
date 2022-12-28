@@ -16,20 +16,20 @@
 PluginPlay
 ##########
 
-PluginPlay is a framework for writing modular software. Users of PluginPlay
-write modules (standalone, encapsulated algorithms), register those modules with
-PluginPlay, and then use PluginPlay to dynamically assemble a call graph.
+PluginPlay is a framework for constructing a runtime representation of a
+program's call graph in terms of "modules."
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    installation/index
+   terminology
    modules/index
    property_types/index
    module_collections/index
-   about/index
    developer/index
+   bibliography/bibliography
 
 `C++ API <pluginplay_cxx_api/index.html>`_
 

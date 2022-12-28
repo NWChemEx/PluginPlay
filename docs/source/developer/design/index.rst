@@ -23,6 +23,8 @@ the design) of PluginPlay.
    :maxdepth: 2
    :caption: Contents:
 
+   background
+   pluginplay
    memoization
    checkpoint_restart
    cache

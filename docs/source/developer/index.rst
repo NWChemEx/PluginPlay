@@ -12,12 +12,12 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-################
-Developer Topics
-################
+#######################
+Developer Documentation
+#######################
 
-The topics in this part are things that pluginplay developers need to know. For
-the most part users of the pluginplay can safely ignore these topics.
+The topics in this part are meant to capture details on how the internals of
+PluginPlay work and why things are designed the way they are.
 
 .. toctree::
    :maxdepth: 2
