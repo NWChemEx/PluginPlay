@@ -16,8 +16,8 @@
 PluginPlay
 ##########
 
-PluginPlay is a framework for constructing a runtime representation of a
-program's call graph in terms of "modules."
+PluginPlay is a framework aimed at facilitating the creation of modular
+scientific research software.
 
 .. toctree::
    :maxdepth: 2
@@ -32,9 +32,3 @@ program's call graph in terms of "modules."
    bibliography/bibliography
 
 `C++ API <pluginplay_cxx_api/index.html>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
