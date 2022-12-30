@@ -16,19 +16,29 @@
 PluginPlay
 ##########
 
-PluginPlay is a framework aimed at facilitating the creation of modular
-scientific research software.
+Thanks for your interest in the PluginPlay project!!!
+
+If you are completely new to PluginPlay we recommend you start
+with :ref:`pp_overview`.
+
+If you are trying to write a plugin, module, or property type and you prefer
+to learn by example, check out :ref:`pp_tutorials`.
+
+If you are interested in contributing to the PluginPlay framework then start
+by looking at :ref:`pp_developer`.
+
+If you don't like being told what to do, and would rather browse topics on your
+own then here's an index of the documentation you can peruse through (or not,
+your choice).
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    installation/index
-   terminology
-   modules/index
-   property_types/index
-   module_collections/index
+   background/index
+   tutorials/index
    developer/index
+   faqs
    bibliography/bibliography
 
 `C++ API <pluginplay_cxx_api/index.html>`_

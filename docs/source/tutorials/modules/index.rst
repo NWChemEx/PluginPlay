@@ -37,7 +37,7 @@ located at |r_i|. We further assume that there is a header file
 ``point_charge.hpp`` which defines the class ``PointCharge`` given
 by:
 
-.. literalinclude:: ../../../tests/pluginplay/docs/point_charge.hpp
+.. literalinclude:: ../../../../tests/pluginplay/docs/point_charge.hpp
    :language: c++
    :lines: 17-29
 

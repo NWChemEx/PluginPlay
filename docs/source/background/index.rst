@@ -12,18 +12,23 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-.. _pp_developer:
+.. _pp_background:
 
-#######################
-Developer Documentation
-#######################
+#####################
+PluginPlay Background
+#####################
 
-The topics in this part are meant to capture details on how the internals of
-PluginPlay work and why things are designed the way they are.
+The topics in this part are meant to motivate the need for the PluginPlay
+project, and provide a high-level introduction to the concepts and
+architecture of PluginPlay. More details of the design are found in the
+developer documentation :ref:`pp_developer`.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   design/index
-   module_state
+   overview
+   scientific_software
+   statement_of_need
+   alternatives
+   terminology

@@ -12,6 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
+.. _pp_design:
+
 #############
 Design Topics
 #############
@@ -23,7 +25,6 @@ the design) of PluginPlay.
    :maxdepth: 2
    :caption: Contents:
 
-   background
    pluginplay
    memoization
    checkpoint_restart
