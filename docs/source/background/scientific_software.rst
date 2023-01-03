@@ -62,14 +62,138 @@ another package was needed it was often easier to re-implement the feature
 than to interface to the other package. Hence over the years, each package's
 feature set tended to converge to a set of standard algorithms. Each of these
 algorithms has now been implemented a number of times, resulting in a
-substantial amount of duplicated work :cite:`krylov18`.
+substantial amount of duplicated work. At the same time few, if any, of
+these redundant implementations have been developed in a modular fashion, in
+turn perpetuating the cycle :cite:`krylov18`.
 
-After years (decades in many cases) of the above cycle the technical debt has
-piled up. While many developers acknowledge the importance of modularity to
-avoid the reproduction of work, adopting a modular design often requires
-repaying too much technical debt for it to be practical. The existing legacy
-software packages
+After years (decades in many cases) of the above cycle, the average legacy
+package contains:
 
+- **Millions of lines of code**. Often this code base is poorly
+  documented, lacks consistent formatting, widely varying quality, has poor test
+  coverage, and involves multiple coding languages.
+- **Hundreds of features**. Many of these features are loosely integrated silos,
+  meaning there are only a handful of developers who know how a feature work and
+  these features are only integrated with some of the package's other features,
+  *e.g.*, a new optimization routine may only be accessible from the algorithm
+  it was written to support.
+- **Monolithic code base**. Somewhat ironically, even though features are
+  loosely integrated with one another, each feature tends to be tightly coupled
+  to the code base, *e.g.*, works by assuming existing quirks of other code,
+  relies on a particular global state existing. In turn, even if the code base
+  is comprised  of libraries and/or components, these components rarely can
+  function without the rest of the code.
+- **Insurmountable technical debt**. A "just get something working" mentality
+  has been used for much of the software's lifetime. Each invocation of this
+  mentality has added more tech debt. Unfortunately, tech debt tends to
+  compound exponentially
 
-Making matters worse credit for software development is not properly
-attributed.
+While modularity is not a silver bullet, many developers acknowledge that if
+legacy software had been designed and written in a more modular manner current
+development efforts would be easier. At this point adopting a more modular
+design requires repaying too much technical debt for it to be practical and
+many legacy packages are left with two choices: start from scratch, or continue
+to push the current development model to its breaking point.
+
+To be fair there are a lot of other factors which shaped how legacy software
+came to be:
+
+- **Poor attribution**. Historically publications are the currency of academia
+  and publishing software developments has been difficult. When software does
+  get published it's often for a release and the resulting paper has hundreds
+  of authors. This provides little incentive for a developer to do more than
+  the bare minimum.
+- **Funding agency expectations**. Decades of delivering software in a "just
+  get something working" state (and often overselling how primetime ready it
+  really is) has resulted in funding agencies expecting software on unrealistic
+  timelines.
+- **Lack of formal training**. Most scientific software is written by scientific
+  domain experts who have little to no formal computer engineering skills.
+  Historically this means that there has been a large amount of ignorance
+  regarding best practices.
+- **Not invented here syndrome**. It's embarrassing to admit, but in scientific
+  software development there tends to be a heavy bias against using software
+  developed externally to the team. Part of this is because such software is
+  often used in a "black-box" manner, which can be off putting to scientists
+  who want to understand how everything work. Another part of this is a
+  belief that other developers produce inferior products.
+- **Research is not industry**. There is a prevalent belief throughout academia
+  that developing research software needs to play by different rules than
+  industrial software development. In many cases this belief stems from the
+  fact that academics often occupy many roles other than software engineer,
+  notably they are also often users of the software. By contrast, most software
+  engineers in industry spend the majority of their time writing software.
+
+To summarize, while legacy software represents a substantial investment in
+terms of time and money, in many cases existing legacy packages are
+unsustainable. The number of organizations dedicated to developing better
+research software is a direct result of not wanting to repeat the same
+mistakes moving forward.
+
+.. _what_sets_scientific_software_apart:
+
+************************************
+What Sets Scientific Software Apart?
+************************************
+
+As suggested by the intro to to this page, there is an increasing interest in
+developing better more sustainable scientific software. If we are to capitalize
+on these efforts we need to understand what makes developing scientific
+software challenging, and how to avoid repeating the problems of legacy
+software. With regards to why scientific software is unique:
+
+1. Performance
+
+   - Scientific software is among the most computationally expensive software
+     in the world. High computational complexity of many algorithms means that
+     even a small degradation in performance can result in a simulation
+     becoming intractable.
+   - Often requires high-performance computing
+   - Performance is heavily tied to hardware; as hardware evolves so will the
+     scientific software.
+
+#. Scientific motivation
+
+   - Software is typically seen as a means to an end and usually developed by
+     the scientists themselves.
+   - Benefit to cost ratio of dependencies must be large, i.e., dependencies
+     usually only considered if they save a lot of time, or are very performant.
+   - Most scientists prefer to do as little software development as possible.
+
+#. Dynamic nature of scientific research
+
+   - Scientific research is by its nature highly uncertain. Promising
+     avenues may not pan out. Funding sources dry up. New hot topics emerge.
+   - Workflows vary widely among researchers
+   - Users may come up with use cases beyond the original scope
+   - Research leads to new quantities of interest, software needs to be
+     extensible to support these new properties.
+   - New algorithms for computing a property emerge. Need to be able to use
+     these algorithms throughout the code.
+
+#. Complex nature of scientific research
+
+   - Scientific simulations of real world phenomenon have many pieces.
+   - Domains are often hard to grasp for non-experts.
+   - Often multi-disciplinary.
+
+#. Need for rapid prototyping
+
+   - Design space for most scientific algorithms is huge. Need to be able to
+     quickly scan this space.
+   - Python is at present the *de facto* language of choice for rapid
+     prototyping
+
+#. Decentralized scientific software development
+
+   - Developers are typically spread out across the world. Makes synchronizing
+     difficult.
+   - Entire range of software engineering capabilities. Quality of contributions
+     and software products varies widely.
+   - Need to protect unpublished research
+
+Many of the above considerations can be handled by ensuring a modular code
+base. When done well, modularity leads to encapsulation and a separation of
+concerns. This in turn makes it easier to refactor code for performance, add
+support for new theories, work on a feature without affecting other researchers,
+and reuse contributions from other groups.
