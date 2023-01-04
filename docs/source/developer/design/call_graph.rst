@@ -12,27 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-.. _pp_design:
+.. _call_graph_design:
 
-#############
-Design Topics
-#############
-
-The topics in this section explain the design (and the decisions that went into
-the design) of PluginPlay.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: PluginPlay and Components:
-
-   module_manager
-   cache
-   database
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Processes
-
-   call_graph
-   memoization
-   checkpoint_restart
+##################################
+Designing the Call Graph Component
+##################################

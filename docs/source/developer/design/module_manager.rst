@@ -12,17 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-####################
-Designing PluginPlay
-####################
+.. _module_manager_design:
 
-:ref:`pp_background` introduces (in quite some detail) why there is a need for
-a framework like PluginPlay and what alternatives there are (we couldn't find
-any that did everything we wanted in a general manner).
-
-
-*****************
-PluginPlay Design
-*****************
-
-With
+############################
+Designing the Module Manager
+############################

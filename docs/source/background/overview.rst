@@ -29,40 +29,46 @@ the essentials in about a 5 minute read.
 What is PluginPlay?
 *******************
 
-There is a need for modular scientific software. Ideally, developers will write
-algorithms inside self-contained modules. Software packages will then be
-written by wiring these modules together. Additional modules are developed for
-new methods and/or new properties of interest, the ecosystem grows, and the
-cycle repeats. Sustaining software packages in such an ecosystem requires
-being able to :
+There is a need for modular scientific software. Using PluginPlay, developers
+write algorithms inside self-contained :ref:`module` objects. Software packages
+are then created by "wiring" :ref:`module` objects together. Additional
+:ref:`module` objects are developed as new methods and properties are
+discovered, the ecosystem of :ref:`module` objects grows, and the cycle
+repeats. PluginPlay facilitates writing sustainable modular scientific software
+packages by providing a framework that is focused on enabling dynamic:
 
-#. Dynamically discover new modules
-#. Non-invasively extend the program to new properties
-#. "Wire" the modules together
-#. Manage the resulting module-based call graph
+#. loading of :ref:`module` objects,
+#. interactions with :ref:`module` objects, and
+#. wiring of :ref:`module` objects.
 
-PluginPlay was written to accomplish all four of the above tasks, in a domain-
-agnostic manner. Software-maintenance primarily falls to module developers,
-spreading the burden out. In turn, using PluginPlay scientists can do more
-science and less software engineering.
+The dynamic nature of the resulting package makes it easier to extend the
+package to new use cases and new hardware. PluginPlay includes a number of
+other features designed to make development as easy as possible, *e.g.*, tools
+for:
+
+#. debugging/profiling :ref:`module` objects,
+#. recording provenance of the resulting program,
+#. creating :ref:`module` objects from existing code, and
+#. leveraging :ref:`module` objects in other code.
+
 
 **************************
 Who should use PluginPlay?
 **************************
 
-PluginPlay is meant as a framework for writing a software package. PluginPlay
-is really targeted at developers who fall into two groups. The first group of
-developers actively write and maintain modular software package(s). The second
-group of developers write modules which can be consumed as plugins to the
-aforementioned modular software packages. Of course, these groups of developers
-need not be disjoint and developers may find themselves in both groups at one
-time or another.
+PluginPlay is meant as a framework on which to build a software package.
+PluginPlay is thus really targeted at developers who fall into two groups. The
+first group of developers actively write and maintain modular software
+package(s). The second group of developers write modules which can be consumed
+as plugins to the aforementioned modular software packages. Of course, these
+groups of developers need not be disjoint and developers may find themselves
+in both groups at one time or another.
 
 While PluginPlay can be used as a workflow tool, its domain-agnostic nature
 can make standard workflow tasks cumbersome. So while end-users of a software
 package can (and should be able to) interact directly with PluginPlay, in many
 cases developers can serve their community better by wrapping the PluginPlay
-calls needed for domain-specific tasks in domain-specific APIs.
+calls needed for domain-specific tasks in domain-specific :ref:`api`.
 
 *************************
 How does PluginPlay work?
@@ -78,14 +84,14 @@ The PluginPlay framework relies on four concepts:
   through a registered API. Property types are these APIs.
 - Plugins. Related modules are typically distributed together. The distribution
   forms a plugin.
-- Module manager. The module manager is the programatic representation of
+- Module manager. The module manager is the runtime representation of
   the PluginPlay framework. Plugins, modules, and property types are
   registered with the module manager. In turn, the module manager dynamically
   assembles the program.
 
 .. _fig_pp_arch:
 
-.. figure:: assets/architecture.png
+.. figure:: assets/architecture_simple.png
    :align: center
 
    High-level architecture of PluginPlay. Users primarily interact with
@@ -103,7 +109,7 @@ At the bottom of the diagram is PluginPlay's primary dependency, ParallelZone.
 PluginPlay is very concerned with performance and ParallelZone is used for
 inspecting available hardware, scheduling tasks, and logging program progress.
 ParallelZone is exposed to module developers, who in turn may use ParallelZone
-directly or use ParallelZone to initialize their own runtime systems from it.
+directly or may initialize their own runtime systems from ParallelZone.
 
 Conceptually PluginPlay's internals are comprised of four main parts. The
 simplest is the module manager, which is where modules and property types are

@@ -69,7 +69,7 @@ Memoization
 ===========
 
 A technique where repeated calls to an expensive function, with
-the same input, are avoided by saving the input to the function and the
+the same input, are avoided by saving the input to the function, and the
 result of calling the function.
 
 .. _module:

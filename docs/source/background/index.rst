@@ -32,3 +32,4 @@ developer documentation :ref:`pp_developer`.
    statement_of_need
    alternatives
    terminology
+   architecture
