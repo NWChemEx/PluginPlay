@@ -1,40 +1,78 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Basics of Writing a Module &mdash; pluginplay 1.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Templated Modules" href="templated.html" />
     <link rel="prev" title="Module Development" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> pluginplay
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 1.0.0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -42,7 +80,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
@@ -69,33 +118,75 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Topics</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pluginplay</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Module Development</a></li>
-      <li class="breadcrumb-item active">Basics of Writing a Module</li>
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module Development</a> &raquo;</li>
+        
+      <li>Basics of Writing a Module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../_sources/modules/basics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="basics-of-writing-a-module">
-<h1>Basics of Writing a Module<a class="headerlink" href="#basics-of-writing-a-module" title="Permalink to this heading"></a></h1>
+<h1>Basics of Writing a Module<a class="headerlink" href="#basics-of-writing-a-module" title="Permalink to this heading">¶</a></h1>
 <p>This page is intended to walk you through the basics of writing a module. Here
 we focus purely on writing the module, not designing it. Because of how
 PluginPlay works designing a module can sometimes be non-trivial; tips for
@@ -103,7 +194,7 @@ designing a module can be found (TODO: add link). This page assumes we are
 writing a module which computes the electric field, <span class="math notranslate nohighlight">\(\vec{E}\left(\vec{r}\right)\)</span> of a series of
 point charges as detailed (TODO: add link).</p>
 <section id="delcaring-the-module">
-<h2>Delcaring the Module<a class="headerlink" href="#delcaring-the-module" title="Permalink to this heading"></a></h2>
+<h2>Delcaring the Module<a class="headerlink" href="#delcaring-the-module" title="Permalink to this heading">¶</a></h2>
 <p>In PluginPlay modules are implemented by inheriting from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>
 class and then implementing a constructor and a <code class="docutils literal notranslate"><span class="pre">run_</span></code> member. The declaration
 amounts to a large amount of boilerplate so PluginPlay provides a macro
@@ -117,11 +208,11 @@ will compute the electric field via Coulomb’s Law so we choose to name our
 module <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> and we store the declaration in a file <code class="docutils literal notranslate"><span class="pre">modules.hpp</span></code>.
 The relevant lines are:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
 
-<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
 
-<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">);</span><span class="w"></span>
+<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">);</span>
 
 <span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
@@ -134,20 +225,20 @@ in a single header file.</p>
 </div>
 </section>
 <section id="defining-the-module">
-<h2>Defining the Module<a class="headerlink" href="#defining-the-module" title="Permalink to this heading"></a></h2>
+<h2>Defining the Module<a class="headerlink" href="#defining-the-module" title="Permalink to this heading">¶</a></h2>
 <p>The definition of our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module goes in a source file. Defining the
 module amounts to implementing two functions: the default constructor and the
 <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function. The constructor is where all the set-up for your
 module occurs; it is also where you can set meta-data associated with your
 module. The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function is where your module does the work.</p>
 <section id="defining-the-constructor">
-<h3>Defining the Constructor<a class="headerlink" href="#defining-the-constructor" title="Permalink to this heading"></a></h3>
+<h3>Defining the Constructor<a class="headerlink" href="#defining-the-constructor" title="Permalink to this heading">¶</a></h3>
 <p>PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">MODULE_CTOR(T)</span></code>, where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the name of the
 module to aid in defining the module’s constructor. At a minimum the constructor
 must set the property type(s) that the module satisfies. It is also a good idea
 to provide a short description about the algorithm implemented in the module.</p>
 <p>For our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module a basic constructor looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span><span class="s"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
 <span class="s">Electric Field From Coulomb&#39;s Law</span>
 <span class="s">---------------------------------</span>
 
@@ -158,12 +249,12 @@ to provide a short description about the algorithm implemented in the module.</p
 
 <span class="s">   \vec{E}(\vec{r}) = \sum_{i=1}^N</span>
 <span class="s">                      \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}</span>
-<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span>
 
-<span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>One particularly nice feature of PluginPlay is that it can autogenerate
@@ -191,7 +282,7 @@ without having to use escapes or other workarounds for line endings.</p>
 </div>
 </section>
 <section id="defining-the-run-member">
-<h3>Defining the Run Member<a class="headerlink" href="#defining-the-run-member" title="Permalink to this heading"></a></h3>
+<h3>Defining the Run Member<a class="headerlink" href="#defining-the-run-member" title="Permalink to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member of the module takes a set of inputs and a set of submodules,
 and returns the property (or properties). Like the module constructor,
 PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">MODULE_RUN(T)</span></code>, where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the name of the
@@ -200,14 +291,14 @@ module to aid in defining the module’s <code class="docutils literal notransla
 <code class="docutils literal notranslate"><span class="pre">inputs</span></code> and <code class="docutils literal notranslate"><span class="pre">submods</span></code>. Presently we will ignore the <code class="docutils literal notranslate"><span class="pre">submods</span></code> argument.</p>
 <p>For defining our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw::run_</span></code> member the relevant PluginPlay bits of
 code are:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
-<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The inputs to a module are type-erased. Getting them back in a usable typed form
@@ -221,39 +312,39 @@ defines a static function <code class="docutils literal notranslate"><span class
 returns a result map with the type-erased results.</p>
 <p>The full definition of the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member (including the source code for
 computing the electric field) is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
-<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span>
 
 <span class="w">    </span><span class="c1">// This loop fills in E</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">charge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">charges</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_charge</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">charge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">charges</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_charge</span><span class="p">;</span>
+<span class="w">        </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">;</span>
 
 <span class="w">        </span><span class="c1">// Magnitude of r_i</span>
-<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">ri2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">mag_ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ri2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">ri2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">mag_ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ri2</span><span class="p">);</span>
 
 <span class="w">        </span><span class="c1">// ||r - r_i||**2</span>
-<span class="w">        </span><span class="n">Point</span><span class="w"> </span><span class="nf">rij</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">rij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">rij2</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">          </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">Point</span><span class="w"> </span><span class="nf">rij</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">rij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">charge</span><span class="p">.</span><span class="n">m_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">rij2</span><span class="w"> </span><span class="o">=</span>
+<span class="w">          </span><span class="n">std</span><span class="o">::</span><span class="n">inner_product</span><span class="p">(</span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">rij</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">mag_ri</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rij2</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">mag_ri</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rij2</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 <p>Coulomb’s Law is pretty simple. Most simulation techniques are much more
 complicated than that and involve an inticate interplay of many different
 properties.</p>
@@ -272,14 +363,14 @@ terms of an electric field submodule.</p>
 <p>Submodules change the class’s definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
 property type <cite>ElectricField</cite>. This looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">();</span>
 
-<span class="w">    </span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;Used to compute the electric field of the point charges&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;Used to compute the electric field of the point charges&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>PluginPlay also requires that we specify a tag (we choose the tag
@@ -287,23 +378,23 @@ property type <cite>ElectricField</cite>. This looks like:</p>
 distinguish between multiple submodules of the same type. When appropriately
 named, the tag also aids in readability of the code. The <code class="docutils literal notranslate"><span class="pre">run_</span></code> function for
 our module looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ClassicalForce</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the force</span>
-<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">F</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">F</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span>
 
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">m_charge</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">m_charge</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Of note is the line:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">efield_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">m_r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>which says we are running the submodule tagged with <code class="docutils literal notranslate"><span class="pre">&quot;electric</span> <span class="pre">field&quot;</span></code> as an
@@ -330,33 +421,50 @@ logic!!!!!</p></li>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Module Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="templated.html" class="btn btn-neutral float-right" title="Templated Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Module Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, NWChemEx Team.</p>
-  </div>
+    <p>
+        &#169; Copyright 2020, NWChemEx Team.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
