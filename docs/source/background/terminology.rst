@@ -20,7 +20,7 @@ Terminology and Abbreviations
 
 The purpose of this page is to define abbreviations and terminology used
 throughout the PluginPlay documentation. Terms and abbreviations are listed in
-alphabetic order. Other pages are encouraged to link to to the terms and
+alphabetic order. Other pages are encouraged to link to the terms and
 abbreviations.
 
 ***********

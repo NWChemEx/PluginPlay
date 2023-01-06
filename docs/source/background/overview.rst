@@ -21,8 +21,8 @@ PluginPlay Overview
 The background section of the PluginPlay documentation is extensive. This is
 because PluginPlay is targeted at scientific research software and thus it
 is important to understand the scientific merits of PluginPlay and how it
-relates to other software. That said most users can safely ignore most of the
-content in the background section, this overview page is designed to give you
+relates to other software. That said, most users can safely ignore most of the
+content in the background section, and this overview page is designed to give you
 the essentials in about a 5 minute read.
 
 *******************
@@ -96,8 +96,8 @@ The PluginPlay framework relies on four concepts:
 
    High-level architecture of PluginPlay. Users primarily interact with
    PluginPlay through the module manager. The module manager builds the call
-   graph representation of the program. When users run the program results
-   are stored in the cache. And developers can write new modules using the
+   graph representation of the program. When users run the program, results
+   are stored in the cache, and developers can write new modules using the
    module utilities.
 
 :numref:`fig_pp_arch` is a simplified architecture diagram of PluginPlay. The

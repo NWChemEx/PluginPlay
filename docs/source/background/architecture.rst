@@ -39,7 +39,7 @@ Internally PluginPlay is made up of four components:
 1. **Module Manager**. Which is the user-facing :ref:`api` for the PluginPlay
    framework. Loading modules, manipulating the call graph, and inspecting
    module state all goes through the module manager.
-#. **Cache**. When a module runs the inputs/results to/from the module are
+#. **Cache**. When a module runs, the inputs/results to/from the module are
    recorded in the cache.
 #. **Module Utilities**. A collection of module development tools spanning
    debugging, profiling, documenting, and much more.
@@ -63,7 +63,7 @@ ParallelZone is a runtime system, *i.e.*, a library meant to provide a software
 abstraction between the hardware/operating system and a program. In particular,
 ParallelZone provides abstractions for:
 
-- Determining what hardware, and how much, the software is currently running on.
+- Determining what hardware, including the amount of each component, the software is currently running on.
 - Message-based distributed parallelism.
 - Logging.
 - Task-based scheduling.

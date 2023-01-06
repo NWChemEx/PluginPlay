@@ -65,7 +65,7 @@ capable of:
 
    - Program's call graph assembled by wiring modules together.
    - Facilitates refactoring on a module basis, and in turn makes it easier to:
-     retire modules, add new modules, and rewiring the call graph.
+     retire modules, add new modules, and rewire the call graph.
    - Refactoring can be used as a means of rapid prototyping.
    - Encapsulation avoids leaking complicated details or large amounts of
      technical debt (the latter may occur as a result of rapid prototyping or

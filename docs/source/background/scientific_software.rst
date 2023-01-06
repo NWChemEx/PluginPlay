@@ -44,7 +44,7 @@ of scientific software including:
 
 These are only some of the more general efforts, within specific domains there
 are even more. The point is so many efforts exist because there is a need
-to address deep-seeded problems with how scientific software has historically
+to address deep-seated problems with how scientific software has historically
 been developed. So let's look at the typical scientific software package circa
 2000.
 
@@ -70,10 +70,10 @@ After years (decades in many cases) of the above cycle, the average legacy
 package contains:
 
 - **Millions of lines of code**. Often this code base is poorly
-  documented, lacks consistent formatting, widely varying quality, has poor test
+  documented, lacks consistent formatting, has widely varying quality, has poor test
   coverage, and involves multiple coding languages.
 - **Hundreds of features**. Many of these features are loosely integrated silos,
-  meaning there are only a handful of developers who know how a feature work and
+  meaning there are only a handful of developers who know how a feature works and
   these features are only integrated with some of the package's other features,
   *e.g.*, a new optimization routine may only be accessible from the algorithm
   it was written to support.
@@ -81,12 +81,12 @@ package contains:
   loosely integrated with one another, each feature tends to be tightly coupled
   to the code base, *e.g.*, works by assuming existing quirks of other code,
   relies on a particular global state existing. In turn, even if the code base
-  is comprised  of libraries and/or components, these components rarely can
+  is comprised  of libraries and/or components, these components rarely
   function without the rest of the code.
 - **Insurmountable technical debt**. A "just get something working" mentality
   has been used for much of the software's lifetime. Each invocation of this
   mentality has added more tech debt. Unfortunately, tech debt tends to
-  compound exponentially
+  compound exponentially.
 
 While modularity is not a silver bullet, many developers acknowledge that if
 legacy software had been designed and written in a more modular manner current
@@ -145,7 +145,7 @@ software. With regards to why scientific software is unique:
 1. Performance
 
    - Scientific software is among the most computationally expensive software
-     in the world. High computational complexity of many algorithms means that
+     in the world. The high computational complexity of many algorithms means that
      even a small degradation in performance can result in a simulation
      becoming intractable.
    - Often requires high-performance computing
@@ -154,43 +154,45 @@ software. With regards to why scientific software is unique:
 
 #. Scientific motivation
 
-   - Software is typically seen as a means to an end and usually developed by
+   - Software is typically seen as a means to an end and is usually developed by
      the scientists themselves.
-   - Benefit to cost ratio of dependencies must be large, i.e., dependencies
+   - Benefit to cost ratio of dependencies must be large, i.e., dependencies are
      usually only considered if they save a lot of time, or are very performant.
+     In addition, the scientists need to have some level of assurance that the dependency
+     will continue to be supported in the future.
    - Most scientists prefer to do as little software development as possible.
 
 #. Dynamic nature of scientific research
 
    - Scientific research is by its nature highly uncertain. Promising
      avenues may not pan out. Funding sources dry up. New hot topics emerge.
-   - Workflows vary widely among researchers
-   - Users may come up with use cases beyond the original scope
-   - Research leads to new quantities of interest, software needs to be
+   - Workflows vary widely among researchers.
+   - Users may come up with use cases beyond the scope of the original software.
+   - Research leads to new quantities of interest, and software needs to be
      extensible to support these new properties.
-   - New algorithms for computing a property emerge. Need to be able to use
+   - New algorithms for computing a property emerge. The software architecture needs to be able to use
      these algorithms throughout the code.
 
 #. Complex nature of scientific research
 
    - Scientific simulations of real world phenomenon have many pieces.
-   - Domains are often hard to grasp for non-experts.
-   - Often multi-disciplinary.
+   - Science domains are often hard to grasp for non-experts.
+   - Current scientific research projects are often multi-disciplinary.
 
 #. Need for rapid prototyping
 
    - Design space for most scientific algorithms is huge. Need to be able to
      quickly scan this space.
    - Python is at present the *de facto* language of choice for rapid
-     prototyping
+     prototyping.
 
 #. Decentralized scientific software development
 
-   - Developers are typically spread out across the world. Makes synchronizing
+   - Developers are typically spread out across the world, making synchronization
      difficult.
-   - Entire range of software engineering capabilities. Quality of contributions
-     and software products varies widely.
-   - Need to protect unpublished research
+   - The scientific software community encapsulates an entire range of software engineering 
+      capabilities. Therefore, the quality of contributions and software products can vary widely.
+   - There is a need to protect unpublished research to ensure publication rights.
 
 Many of the above considerations can be handled by ensuring a modular code
 base. When done well, modularity leads to encapsulation and a separation of
