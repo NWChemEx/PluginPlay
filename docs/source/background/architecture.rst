@@ -88,6 +88,7 @@ These interactions include:
 - Querying the available modules
 - Changing how the call graph is wired
 - Saving/loading call graph execution progress
+- Indirectly, via the module manager setting module state
 
 The design of the module manager component is discussed in more detail in the
 :ref:`module_manager_design` section.
