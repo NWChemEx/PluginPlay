@@ -142,7 +142,7 @@ on these efforts we need to understand what makes developing scientific
 software challenging, and how to avoid repeating the problems of legacy
 software. With regards to why scientific software is unique:
 
-1. Performance
+#. Performance
 
    - Scientific software is among the most computationally expensive software
      in the world. The high computational complexity of many algorithms means that
@@ -190,7 +190,7 @@ software. With regards to why scientific software is unique:
 
    - Developers are typically spread out across the world, making synchronization
      difficult.
-   - The scientific software community encapsulates an entire range of software engineering 
+   - The scientific software community encapsulates an entire range of software engineering
       capabilities. Therefore, the quality of contributions and software products can vary widely.
    - There is a need to protect unpublished research to ensure publication rights.
 
