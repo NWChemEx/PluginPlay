@@ -141,3 +141,16 @@ API
 
 Application Programming Interface. The literal functions you call to
 programmatically interact with a software package.
+
+.. _pimpl:
+
+PIMPL
+=====
+
+Pointer to IMPLementation. A common C++ technique used to separate the
+:ref:`api` of the class from its implementation. The :ref:`api` of the class
+is declared in an "outer" class. The outer class has a (usually private) member
+which is a pointer to an "inner" class. The inner class holds the state and
+implementation. Since the outer class holds a pointer to the inner class, it
+suffices to forward declare the type of the inner class, in turn avoid the
+leakage of details needed to power the inner class.
