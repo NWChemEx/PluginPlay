@@ -31,9 +31,9 @@ What is PluginPlay?
 
 There is a need for modular scientific software. Using PluginPlay, developers
 write algorithms inside self-contained :ref:`module` objects. Software packages
-are then created by "wiring" :ref:`module` objects together. Additional
-:ref:`module` objects are developed as new methods and properties are
-discovered, the ecosystem of :ref:`module` objects grows, and the cycle
+are then created by "wiring" :ref:`module` objects together. As additional
+:ref:`module` objects are developed and as new methods and properties are
+derived, the ecosystem of :ref:`module` objects grows, and the cycle
 repeats. PluginPlay facilitates writing sustainable modular scientific software
 packages by providing a framework that is focused on enabling dynamic:
 
