@@ -18,8 +18,8 @@
 Designing the Module Manager
 ############################
 
-:ref:`pp_architecture` calls for a module manager component which will be the
-user-facing :ref:`api` of PluginPlay. This section describes the design of
+:ref:`pp_architecture` calls for a module manager component which will be
+the user-facing :ref:`api` of PluginPlay. This section describes the design of
 that component.
 
 ***************************
@@ -39,7 +39,7 @@ Since the module manager is the user-facing :ref:`api` every major feature of
 PluginPlay needs to be accessible through it. This means the module manager
 component needs to support:
 
-# Dynamic module management
+#. Dynamic module management
 
   - Users may hard-coded some configuration, but ultimately
     users also need to be able to override those configurations at runtime.
@@ -55,7 +55,7 @@ component needs to support:
 
 #. Modify call graph
 
-   - Change which :ref:`submodule`(s) a :ref:`module` calls
+   - Change which :ref:`submodule` a :ref:`module` calls
    - Change inputs bound to :ref:`module` objects
 
 #. Run call graph

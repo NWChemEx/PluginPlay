@@ -168,6 +168,9 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # -- Options for bibtex --------------------------------------------------------
 
-bibtex_bibfiles = ['bibliography/background.bib']
+bibtex_bibfiles = [
+    'bibliography/background.bib', 'bibliography/design.bib',
+    'bibliography/pluginplay.bib'
+]
 bibtex_reference_style = 'super'
 bibtex_default_style = 'plain'

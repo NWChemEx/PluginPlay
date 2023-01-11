@@ -60,6 +60,7 @@ capable of:
    - Framework needs to avoid inhibiting module performance.
    - If the framework is performant, performance concerns fall to the module
      implementations.
+   - Suggests that the bulk of the framework should be in C++
 
 #. Modular/Component-Based Architecture
 
@@ -71,8 +72,16 @@ capable of:
      technical debt (the latter may occur as a result of rapid prototyping or
      different software development capabilities).
    - Encapsulation isolates developers from what everyone else is doing.
+   - Python :ref:`api` facilitates manipulating the modules
 
 #. Dynamic Module Interfaces
 
    - What we want to compute changes as research evolves.
    - Interfacing to software from new disciplines often requires new interfaces
+   - Python is the *de facto* glue language of choice.
+
+The need for the core framework to be written in C++, and the desire to support
+Python bindings, are fundamental design choices affecting all of PluginPlay.
+For this reason we do not continue to explicitly propagate them through the
+design documentation. However, when their assumption raises explicit concerns
+we will remind the reader of the language choices.

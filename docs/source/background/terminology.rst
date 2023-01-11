@@ -107,6 +107,36 @@ have property types for area, volume, and perimeter. Basically these are the
 quantities that users of your code will want to compute and they define the
 :ref:`api` for calling a :ref:`module` which can compute the namesake property.
 
+.. _strong_type:
+
+Strong Type
+===========
+
+In C++ a strong type ``U`` is a class which wraps an object of type ``T`` so
+that it has a different type than other objects of type ``T``.  This is mainly
+used when arguments to a function have the same type, but different meanings.
+For example, consider:
+
+.. code-block:: c++
+
+   void draw_box(float length, float height);
+
+Accidentally passing the height as the length and the length as the height
+rotates the box by 90 degrees. Since both arguments are ``float`` there is no
+way for the compiler to know you messed up. If we instead do:
+
+.. code-block:: c++
+
+   struct Length{ float value; };
+   struct Height{ float value; };
+
+   void draw_box(Length length, Height height);
+
+It becomes much harder for the user to swap the length and height accidentally
+because they now formally have different types. It should be noted that most
+modern compilers can optimize the additional indirection out so the use of
+strong types should have little to no performance overhead.
+
 .. _submodule:
 
 Submodule
