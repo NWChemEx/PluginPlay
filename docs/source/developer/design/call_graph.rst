@@ -309,6 +309,7 @@ The current design addresses the above considerations by:
 
    - PluginPlay is invoked before and after each module call.
    - This allows PluginPlay to do cacheing, memoization, and saving.
+   - Memoization falls to the module component.
 
 #. Dynamically determine interface for calling a module
 
