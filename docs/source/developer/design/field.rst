@@ -1,4 +1,4 @@
-.. Copyright 2022 NWChemEx-Project
+.. Copyright 2023 NWChemEx-Project
 ..
 .. Licensed under the Apache License, Version 2.0 (the "License");
 .. you may not use this file except in compliance with the License.
@@ -12,17 +12,11 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-.. _pp_developer:
+.. _field_design:
 
-#######################
-Developer Documentation
-#######################
+#############################
+Designing the Field Component
+#############################
 
-The topics in this part are meant to capture details on how the internals of
-PluginPlay work and why things are designed the way they are.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   design/index
+:ref:`property_type_design` and :ref:`module_design` both called for a 
+mechanism to handle fields.

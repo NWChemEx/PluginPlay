@@ -26,6 +26,9 @@ the design) of PluginPlay.
    :caption: PluginPlay and Components:
 
    module_manager
+   module
+   property_type
+   field
    cache
    database
 
