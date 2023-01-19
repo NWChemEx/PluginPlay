@@ -145,8 +145,8 @@ software. With regards to why scientific software is unique:
 #. Performance
 
    - Scientific software is among the most computationally expensive software
-     in the world. The high computational complexity of many algorithms means that
-     even a small degradation in performance can result in a simulation
+     in the world. The high computational complexity of many algorithms means 
+     that even a small degradation in performance can result in a simulation
      becoming intractable.
    - Often requires high-performance computing
    - Performance is heavily tied to hardware; as hardware evolves so will the
@@ -158,8 +158,8 @@ software. With regards to why scientific software is unique:
      the scientists themselves.
    - Benefit to cost ratio of dependencies must be large, i.e., dependencies are
      usually only considered if they save a lot of time, or are very performant.
-     In addition, the scientists need to have some level of assurance that the dependency
-     will continue to be supported in the future.
+     In addition, the scientists need to have some level of assurance that the 
+     dependency will continue to be supported in the future.
    - Most scientists prefer to do as little software development as possible.
 
 #. Dynamic nature of scientific research
@@ -170,8 +170,8 @@ software. With regards to why scientific software is unique:
    - Users may come up with use cases beyond the scope of the original software.
    - Research leads to new quantities of interest, and software needs to be
      extensible to support these new properties.
-   - New algorithms for computing a property emerge. The software architecture needs to be able to use
-     these algorithms throughout the code.
+   - New algorithms for computing a property emerge. The software architecture 
+     needs to be able to use these algorithms throughout the code.
 
 #. Complex nature of scientific research
 
@@ -190,9 +190,12 @@ software. With regards to why scientific software is unique:
 
    - Developers are typically spread out across the world, making synchronization
      difficult.
-   - The scientific software community encapsulates an entire range of software engineering
-      capabilities. Therefore, the quality of contributions and software products can vary widely.
-   - There is a need to protect unpublished research to ensure publication rights.
+   - The scientific software community encapsulates an entire range of software 
+     engineering capabilities. Therefore, the quality of contributions and 
+     software products can vary widely.
+   - There is a need to protect unpublished research to ensure publication 
+     rights. Decentralized development allows you to keep your unpublished
+     research separate.
 
 Many of the above considerations can be handled by ensuring a modular code
 base. When done well, modularity leads to encapsulation and a separation of
