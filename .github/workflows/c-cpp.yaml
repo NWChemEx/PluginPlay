@@ -9,9 +9,10 @@ jobs:
   build-with-gcc:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
-      dependencies: 'gcc gcovr cmake openmpi boost'
+      dependencies: 'ninja gcc gcovr cmake openmpi boost'
       clang-build: false
       gcc-build: true
+      ninja_build: true
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
   # build-with-clang:
