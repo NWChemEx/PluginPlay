@@ -4,13 +4,10 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - ninja-build
 
 jobs:
   build-with-gcc:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@ninja-build
+    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
       dependencies: 'ninja gcc gcovr cmake openmpi boost'
       clang-build: false
