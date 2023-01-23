@@ -1,77 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Cache Design &mdash; pluginplay 1.0.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Database Design" href="database.html" />
     <link rel="prev" title="Checkpoint/Restart" href="checkpoint_restart.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> pluginplay
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -79,18 +40,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
@@ -116,77 +66,34 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pluginplay</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
-        
-          <li><a href="index.html">Design Topics</a> &raquo;</li>
-        
-      <li>Cache Design</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Topics</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Cache Design</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/developer/design/cache.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="cache-design">
-<span id="id1"></span><h1>Cache Design<a class="headerlink" href="#cache-design" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="cache-design">
+<span id="id1"></span><h1>Cache Design<a class="headerlink" href="#cache-design" title="Permalink to this heading"></a></h1>
 <p>As a consequence of our <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> strategy we have decided to
 implement an associative container, called “the cache”, to address the
 remaining memoization considerations. As was briefly noted in the memoization
@@ -197,8 +104,8 @@ checkpoint/restart (C/R) will also be handled by the cache.</p>
 <p>We use the convention that “cache” or “the cache” refers to the concept and
 that <code class="docutils literal notranslate"><span class="pre">Cache</span></code> refers to the class.</p>
 </div>
-<section id="cache-considerations">
-<h2>Cache Considerations<a class="headerlink" href="#cache-considerations" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="cache-considerations">
+<h2>Cache Considerations<a class="headerlink" href="#cache-considerations" title="Permalink to this heading"></a></h2>
 <p>The considerations for the cache are really the union of the memoization
 considerations not considered in the <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section with the
 union of the checkpoint/restart (C/R) considerations not considered in
@@ -247,9 +154,9 @@ at being able to add entries.</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="cache-implementations">
-<h2>Cache Implementations<a class="headerlink" href="#cache-implementations" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="cache-implementations">
+<h2>Cache Implementations<a class="headerlink" href="#cache-implementations" title="Permalink to this heading"></a></h2>
 <p>At its heart the cache involves associative arrays and conceptually we may be
 able to use an existing high-performance C/C++ library to implement it. This
 section explores the available options, their features, and ultimately their
@@ -261,8 +168,8 @@ not have experience with any of the libraries so the descriptions may be
 inaccurate. Activity, star, and watcher information was accurate as of March
 2022 and may have changed since then.</p>
 </div>
-<section id="c-associative-container-libraries">
-<h3>C++ Associative Container Libraries<a class="headerlink" href="#c-associative-container-libraries" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="c-associative-container-libraries">
+<h3>C++ Associative Container Libraries<a class="headerlink" href="#c-associative-container-libraries" title="Permalink to this heading"></a></h3>
 <p>First up are the C++ libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
 <ul class="simple">
 <li><p>HArray</p>
@@ -312,9 +219,9 @@ inaccurate. Activity, star, and watcher information was accurate as of March
 </ul>
 </li>
 </ul>
-</section>
-<section id="c-libraries-for-assoicative-containers">
-<h3>C Libraries for Assoicative Containers<a class="headerlink" href="#c-libraries-for-assoicative-containers" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="c-libraries-for-assoicative-containers">
+<h3>C Libraries for Assoicative Containers<a class="headerlink" href="#c-libraries-for-assoicative-containers" title="Permalink to this heading"></a></h3>
 <p>Next are C libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
 <ul class="simple">
 <li><p>libdict</p>
@@ -378,30 +285,28 @@ integer values.</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="databases">
-<h3>Databases<a class="headerlink" href="#databases" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="databases">
+<h3>Databases<a class="headerlink" href="#databases" title="Permalink to this heading"></a></h3>
 <p>While we’ve focused on associative arrays up to this point, what we’re after
 can also be considered a database. The advantage of moving to databases is that
 we get some real heavy-hitters contributing software. Putting the cart before
 the horse, our current cacheing strategy will rely on databases for a number of
 the considerations. The full design discussion is lengthy and we defer that
 conversation to <a class="reference internal" href="database.html#database-design"><span class="std std-ref">Database Design</span></a>.</p>
-</section>
-</section>
-<section id="cache-strategy">
-<h2>Cache Strategy<a class="headerlink" href="#cache-strategy" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="cache-strategy">
+<h2>Cache Strategy<a class="headerlink" href="#cache-strategy" title="Permalink to this heading"></a></h2>
 <p>Ultimately a lot of the Cache’s implementation will get punted to an underlying
 class <code class="docutils literal notranslate"><span class="pre">Database</span></code>. The design of that class, and how it addresses the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>
 considerations is beyond our current scope, but can be found
 <a class="reference internal" href="database.html#database-design"><span class="std std-ref">here</span></a>. This discussion focuses on the design of the API
 wrapping the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class.</p>
-<figure class="align-default" id="id2">
+<div class="figure align-default" id="id2">
 <span id="fig-cache-design"></span><img alt="../../_images/cache_design.png" src="../../_images/cache_design.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
 <p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 1</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance can have at most one <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance. This
 ensures there’s a single source of truth for the program. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> will be
@@ -449,8 +354,8 @@ considered. If no untagged enteries are found control goes into the module.
 Inside the module, the user checks the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> instance (which in turn
 only considers tagged entries) and the module is able to restart using the last
 intermediate.</p>
-<section id="cache-considerations-addressed">
-<h3>Cache Considerations Addressed<a class="headerlink" href="#cache-considerations-addressed" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="cache-considerations-addressed">
+<h3>Cache Considerations Addressed<a class="headerlink" href="#cache-considerations-addressed" title="Permalink to this heading"></a></h3>
 <p>With respect to the cache considerations this strategy addresses the following
 considerations:</p>
 <ul class="simple">
@@ -522,56 +427,39 @@ treating it separately</p></li>
 </ul>
 </li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="database.html" class="btn btn-neutral float-right" title="Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="checkpoint_restart.html" class="btn btn-neutral float-left" title="Checkpoint/Restart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database.html" class="btn btn-neutral float-right" title="Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

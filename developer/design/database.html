@@ -1,77 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Database Design &mdash; pluginplay 1.0.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Understanding a Module’s State" href="../module_state.html" />
     <link rel="prev" title="Cache Design" href="cache.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> pluginplay
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -79,18 +40,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
@@ -120,82 +70,39 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pluginplay</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Developer Topics</a> &raquo;</li>
-        
-          <li><a href="index.html">Design Topics</a> &raquo;</li>
-        
-      <li>Database Design</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Topics</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Database Design</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/developer/design/database.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="database-design">
-<span id="id1"></span><h1>Database Design<a class="headerlink" href="#database-design" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="database-design">
+<span id="id1"></span><h1>Database Design<a class="headerlink" href="#database-design" title="Permalink to this heading"></a></h1>
 <p>This section explores the design considerations that went into selecting a
 database backend for the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. The TL;DR version is we’re moving
 forward with RocksDB.</p>
-<section id="what-is-a-database">
-<h2>What is a Database?<a class="headerlink" href="#what-is-a-database" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="what-is-a-database">
+<h2>What is a Database?<a class="headerlink" href="#what-is-a-database" title="Permalink to this heading"></a></h2>
 <p>The usual definition is something along the lines of: a database is an organized
 collection of data stored and accessed electronically. What really sets a
 database apart from say a <code class="docutils literal notranslate"><span class="pre">std::map</span></code>, or a spreadsheet, is that databases are
@@ -212,8 +119,8 @@ modern databases are:</p>
 <li><p>your typical DBMS provides loads of features related to data retention,
 processing, and access.</p></li>
 </ul>
-<section id="database-terminology">
-<h3>Database Terminology<a class="headerlink" href="#database-terminology" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="database-terminology">
+<h3>Database Terminology<a class="headerlink" href="#database-terminology" title="Permalink to this heading"></a></h3>
 <p>The reader new to databases will quickly be inundated with jargon. This
 subsection provides a small glossery of the most common terms.</p>
 <dl class="simple">
@@ -254,15 +161,15 @@ applied to the database. In the event of a restart the database can be
 compared to the log to figure out what operations need to be done still.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="database-considerations">
-<span id="id2"></span><h2>Database Considerations<a class="headerlink" href="#database-considerations" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="database-considerations">
+<span id="id2"></span><h2>Database Considerations<a class="headerlink" href="#database-considerations" title="Permalink to this heading"></a></h2>
 <p>The database backend is the lowest level of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and is responsible for
 addressing all memoization and checkpoint/restart (C/R) design considerations
 which were not handled by <a class="reference internal" href="cache.html#cache-design"><span class="std std-ref">Cache Design</span></a>. Summarily they are:</p>
-<section id="parallel-nature-of-pluginplay">
-<h3>Parallel Nature of PluginPlay<a class="headerlink" href="#parallel-nature-of-pluginplay" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="parallel-nature-of-pluginplay">
+<h3>Parallel Nature of PluginPlay<a class="headerlink" href="#parallel-nature-of-pluginplay" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Avoid data races</p></li>
 <li><p>Will need to store parallel objects, sometimes in their distributed form and
@@ -273,9 +180,9 @@ sometimes in a serialized form</p></li>
 use them effectively.</p></li>
 <li><p>Resiliency to deal with hardware failures</p></li>
 </ul>
-</section>
-<section id="object-storage">
-<h3>Object Storage<a class="headerlink" href="#object-storage" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="object-storage">
+<h3>Object Storage<a class="headerlink" href="#object-storage" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Will need to serialize the objects</p></li>
 <li><p>Want a quick access (not serialized) and a long-term serialized form</p></li>
@@ -284,9 +191,9 @@ use them effectively.</p></li>
 <li><p>Avoid storing multiple copies of the same key/value</p></li>
 <li><p>Users may want to customize the storage</p></li>
 </ul>
-</section>
-<section id="other">
-<h3>Other<a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="other">
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p>Automatic backups</p></li>
 <li><p>Diff support</p>
@@ -298,15 +205,15 @@ to make the current state</p></li>
 </div></blockquote>
 </li>
 </ul>
-</section>
-</section>
-<section id="choosing-the-key-value-types">
-<h2>Choosing the Key/Value Types<a class="headerlink" href="#choosing-the-key-value-types" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="choosing-the-key-value-types">
+<h2>Choosing the Key/Value Types<a class="headerlink" href="#choosing-the-key-value-types" title="Permalink to this heading"></a></h2>
 <p>We will use the database as an associative array. This means we need to choose
 how the keys and values are stored in the array. There are a number of possible
 representations which we list here.</p>
-<section id="using-the-literal-values">
-<h3>Using the Literal Values<a class="headerlink" href="#using-the-literal-values" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="using-the-literal-values">
+<h3>Using the Literal Values<a class="headerlink" href="#using-the-literal-values" title="Permalink to this heading"></a></h3>
 <p>Conceptually the simplest option is to use the literal values of the objects we
 are storing.</p>
 <p>Pros:</p>
@@ -341,9 +248,9 @@ comparison operators.</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="using-hashes">
-<h3>Using Hashes<a class="headerlink" href="#using-hashes" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="using-hashes">
+<h3>Using Hashes<a class="headerlink" href="#using-hashes" title="Permalink to this heading"></a></h3>
 <p>Another option is to replace the objects with their hash representation.</p>
 <p>Pros:</p>
 <ul class="simple">
@@ -399,9 +306,9 @@ not possible to determine what object was hashed.</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="universally-unique-ids-uuids">
-<h3>Universally Unique IDs (UUIDs)<a class="headerlink" href="#universally-unique-ids-uuids" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="universally-unique-ids-uuids">
+<h3>Universally Unique IDs (UUIDs)<a class="headerlink" href="#universally-unique-ids-uuids" title="Permalink to this heading"></a></h3>
 <p>UUIDs typically use some hardware-specific information combined with temporal
 information to create a unique ID. Associating the UUID with a specific object
 in effect creates a global memory address for the object.</p>
@@ -429,8 +336,8 @@ the data changes).</p></li>
 <li><p>Requires synchronization to assign the same UUID to an object viewable by
 multiple processes</p></li>
 </ul>
-<section id="digital-object-identifier">
-<h4>Digital Object Identifier<a class="headerlink" href="#digital-object-identifier" title="Permalink to this heading">¶</a></h4>
+<div class="section" id="digital-object-identifier">
+<h4>Digital Object Identifier<a class="headerlink" href="#digital-object-identifier" title="Permalink to this heading"></a></h4>
 <p>UUIDs are conceptually similar to DOIs, except that DOIs are issued by an
 organization.</p>
 <p>Pros:</p>
@@ -445,19 +352,19 @@ organization.</p>
 true DOI</p></li>
 <li><p>Costs money to get a DOI</p></li>
 </ul>
-</section>
-</section>
-</section>
-<section id="database-implementations">
-<h2>Database Implementations<a class="headerlink" href="#database-implementations" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="section" id="database-implementations">
+<h2>Database Implementations<a class="headerlink" href="#database-implementations" title="Permalink to this heading"></a></h2>
 <p>Databases are some of the most important software elements and are used in a ton
 of applications. Thus it should come as no surprise that there are a lot of C++
 options for databases. We have grouped the options based on whether they are
 stand alone, or if they extend an existing database. This section is meant to be
 a list of options with some notes, rather than an extensive comparison. The
 next section provides a head-to-head comparison of the most promising options.</p>
-<section id="stand-alone-options">
-<h3>Stand Alone Options<a class="headerlink" href="#stand-alone-options" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="stand-alone-options">
+<h3>Stand Alone Options<a class="headerlink" href="#stand-alone-options" title="Permalink to this heading"></a></h3>
 <p>For the most part these are database projects which do not seem to be part of a
 wider ecosystem. In many cases they are one-off projects, but in some cases the
 lack of a wider ecosystem is simply because the project itself is all inclusive.
@@ -580,9 +487,9 @@ them)</p></li>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="memcached">
-<h3>MemCached<a class="headerlink" href="#memcached" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="memcached">
+<h3>MemCached<a class="headerlink" href="#memcached" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>memcached</p>
 <ul>
@@ -609,9 +516,9 @@ forever (well at least a minute, I didn’t wait longer)</p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="leveldb">
-<h3>LevelDB<a class="headerlink" href="#leveldb" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="leveldb">
+<h3>LevelDB<a class="headerlink" href="#leveldb" title="Permalink to this heading"></a></h3>
 <p>LevelDB is a Google project which is widely used. Facebook used LevelDB for the
 guts of its (also widely used) RockDB project. We are aware of three databases
 which are part of the LevelDB ecosystem:</p>
@@ -657,9 +564,9 @@ which are part of the LevelDB ecosystem:</p>
 </ul>
 <p>With the exception of BerylDB, these databases are quite well supported and seem
 to be widely used.</p>
-</section>
-<section id="lmdb">
-<h3>LMDB<a class="headerlink" href="#lmdb" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="lmdb">
+<h3>LMDB<a class="headerlink" href="#lmdb" title="Permalink to this heading"></a></h3>
 <p>The lightning memory-mapped databse seems to have a small niche community
 associated with it. While LMDB (and its derivatives) may be capable of high
 performance, the seeming lack of wide usage makes us hesitant to use any of
@@ -701,9 +608,9 @@ these databases in our initial design.</p>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="mysql">
-<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="mysql">
+<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this heading"></a></h3>
 <p>MySQL is one of the most popular databases in use; however, the only C++-client
 we are aware of does not seem to be well utilized.</p>
 <ul>
@@ -723,9 +630,9 @@ we are aware of does not seem to be well utilized.</p>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="mongodb">
-<h3>MongoDB<a class="headerlink" href="#mongodb" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="mongodb">
+<h3>MongoDB<a class="headerlink" href="#mongodb" title="Permalink to this heading"></a></h3>
 <p>MongoDB is a database which has been growing in popularity. Its primary feature
 of interest seems to be that it describes data in a JSON-like manner, which
 makes it immediately applicable to object-oriented programming.</p>
@@ -751,9 +658,9 @@ makes it immediately applicable to object-oriented programming.</p>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="postgresql">
-<h3>PostgreSQL<a class="headerlink" href="#postgresql" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="postgresql">
+<h3>PostgreSQL<a class="headerlink" href="#postgresql" title="Permalink to this heading"></a></h3>
 <p>Not sure what features of PostgreSQL set it apart from say Redis, but it seems
 to be a widely used SQL database.</p>
 <ul>
@@ -790,9 +697,9 @@ to be a widely used SQL database.</p>
 itself widely used, and libpqxx is the official C++ PostgreSQL implementation.
 The implication is that libpqxx appears to have support for the immediate
 future at least.</p>
-</section>
-<section id="redis">
-<h3>Redis<a class="headerlink" href="#redis" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="redis">
+<h3>Redis<a class="headerlink" href="#redis" title="Permalink to this heading"></a></h3>
 <p>Like PostgreSQL, I’m not sure what really sets Redis apart; however, it seems to
 be another popular choice.</p>
 <ul>
@@ -869,9 +776,9 @@ be another popular choice.</p>
 </ul>
 <p>While Redis seems to have the most libraries, Hiredis and redis-plus-plus seem
 to be the only two being widely used.</p>
-</section>
-<section id="sqlite">
-<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="sqlite">
+<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this heading"></a></h3>
 <p>Again I’m not sure what sets SQLite apart, but it seems to be pretty popular.</p>
 <ul>
 <li><p>SQLiteC++</p>
@@ -928,9 +835,9 @@ to be the only two being widely used.</p>
 <p>Like Redis, the majority of the libraries associated with SQLite do not seem to
 be widely supported. SQLiteC++ and SQLite ORM are the exceptions; however, the
 license of SQLite ORM means it’s not viable for our purposes.</p>
-</section>
-<section id="multiple-databases">
-<h3>Multiple Databases<a class="headerlink" href="#multiple-databases" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="multiple-databases">
+<h3>Multiple Databases<a class="headerlink" href="#multiple-databases" title="Permalink to this heading"></a></h3>
 <p>The options in this category provide interfaces to more than one database type.
 For the most part we didn’t give these libraries too much consideration instead
 opting to focus on a single backend.</p>
@@ -1026,10 +933,10 @@ and ODBC</p></li>
 </div></blockquote>
 </li>
 </ul>
-</section>
-</section>
-<section id="database-implementation-comparsions">
-<h2>Database Implementation Comparsions<a class="headerlink" href="#database-implementation-comparsions" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="database-implementation-comparsions">
+<h2>Database Implementation Comparsions<a class="headerlink" href="#database-implementation-comparsions" title="Permalink to this heading"></a></h2>
 <p>The goal of this section is to come to a decision on what database to use. To
 this end we have enumerated a set of features we are looking for.</p>
 <ol class="arabic simple">
@@ -1116,6 +1023,14 @@ table says they do not have. It should also be noted that unless we found
 some evidence that a DBMS has a feature we assumed it did not.</p>
 </div>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 16%" />
+<col style="width: 10%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 16%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Database Name</p></th>
 <th class="head"><p>Thread</p></th>
@@ -1181,16 +1096,14 @@ some evidence that a DBMS has a feature we assumed it did not.</p>
 be RocksDB, or SQLiteC++. In our opinion RocksDB is a better choice than
 SQLiteC++ because mapping the key-value API of RocksDB to our application is
 more straightforward than mapping the SQL-based API of SQLiteC++.</p>
-</section>
-<section id="database-strategy">
-<h2>Database Strategy<a class="headerlink" href="#database-strategy" title="Permalink to this heading">¶</a></h2>
-<figure class="align-default" id="id3">
+</div>
+<div class="section" id="database-strategy">
+<h2>Database Strategy<a class="headerlink" href="#database-strategy" title="Permalink to this heading"></a></h2>
+<div class="figure align-default" id="id3">
 <span id="fig-db-design"></span><img alt="../../_images/database_design.png" src="../../_images/database_design.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Class diagram for the <code class="docutils literal notranslate"><span class="pre">Database</span></code> backend implementing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>. N.B.
-on most browsers you can “open image in a new tab” to easily zoom in.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Class diagram for the <code class="docutils literal notranslate"><span class="pre">Database</span></code> backend implementing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>. N.B.
+on most browsers you can “open image in a new tab” to easily zoom in.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</div>
 <p>Ultimately none of the databases we considered have all of the features we want.
 Our current Database strategy grafts the missing functionality onto RocksDB.
 The class structure for our <code class="docutils literal notranslate"><span class="pre">Database</span></code> class is summarized in
@@ -1216,13 +1129,11 @@ actual module inputs/results (each set of inputs/results is replaced with a
 <code class="docutils literal notranslate"><span class="pre">SerializedDB</span></code> instance which defines (via the proxy objects) the input set to
 result set mappings. Finally the <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> stores an in-memory
 mapping from the input set to the result set (for a specific module).</p>
-<figure class="align-default" id="id4">
+<div class="figure align-default" id="id4">
 <span id="fig-db-pimpl-design"></span><img alt="../../_images/db_pimpl_design.png" src="../../_images/db_pimpl_design.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Structure of the PIMPL implementing the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class. See text for more
-details.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Structure of the PIMPL implementing the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class. See text for more
+details.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</div>
 <p>In practice, as results are put into the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> they first go into the
 <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code>. This allows fast retrieval of memoized
 inputs/results. When checkpointing is needed, or space is an issue, the
@@ -1233,8 +1144,8 @@ what happens after flushing the <code class="docutils literal notranslate"><span
 more <code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> objects. The overall initial structure of the
 <code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> used to implement the <code class="docutils literal notranslate"><span class="pre">Database</span></code> in the Cache is shown in
 <a class="reference internal" href="#fig-db-pimpl-design"><span class="std std-numref">Fig. 3</span></a>.</p>
-<section id="database-considerations-addressed">
-<h3>Database Considerations Addressed<a class="headerlink" href="#database-considerations-addressed" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="database-considerations-addressed">
+<h3>Database Considerations Addressed<a class="headerlink" href="#database-considerations-addressed" title="Permalink to this heading"></a></h3>
 <p>This section explains how our current database strategy addresses the
 considerations raised in the <a class="reference internal" href="#database-considerations"><span class="std std-ref">Database Considerations</span></a> section.</p>
 <ul>
@@ -1376,10 +1287,10 @@ cacheing strategy, no long-term backups, no memoization whatsoever)</p></li>
 </div></blockquote>
 </li>
 </ul>
-</section>
-</section>
-<section id="future-directions">
-<h2>Future Directions<a class="headerlink" href="#future-directions" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="future-directions">
+<h2>Future Directions<a class="headerlink" href="#future-directions" title="Permalink to this heading"></a></h2>
 <p>While our design addresses all of the considerations to some extent, our initial
 design will punt on some aspects. We collect those aspects here for future
 reference.</p>
@@ -1393,55 +1304,38 @@ UUIDs etc.</p></li>
 <li><p>Diff support: will need a new backend</p></li>
 <li><p>Other backends: design should allow for other backends beside RocksDB</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../module_state.html" class="btn btn-neutral float-right" title="Understanding a Module’s State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="cache.html" class="btn btn-neutral float-left" title="Cache Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../module_state.html" class="btn btn-neutral float-right" title="Understanding a Module’s State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
