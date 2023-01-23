@@ -12,6 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
+.. _pp_design:
+
 #############
 Design Topics
 #############
@@ -21,9 +23,19 @@ the design) of PluginPlay.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: PluginPlay and Components:
 
-   memoization
-   checkpoint_restart
+   module_manager
+   module
+   property_type
+   field
    cache
    database
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Processes
+
+   call_graph
+   memoization
+   checkpoint_restart

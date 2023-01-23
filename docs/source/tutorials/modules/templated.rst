@@ -33,7 +33,7 @@ module ``TemplatedCoulombsLaw``, which is templated on the floating-point type.
 
 Templating slightly changes how the module is declared:
 
-.. literalinclude:: ../../../tests/pluginplay/docs/modules.hpp
+.. literalinclude:: ../../../../tests/pluginplay/docs/modules.hpp
    :language: c++
    :lines: 17-20,26-27,32
 
@@ -45,6 +45,6 @@ macros: ``TEMPLATED_MODULE_CTOR`` and ``TEMPLATED_MODULE_RUN``. In addition to
 taking the name of the module, these macros also take a list of all template
 parameters.
 
-.. literalinclude:: ../../../tests/pluginplay/docs/templated_coulombs_law.cpp
+.. literalinclude:: ../../../../tests/pluginplay/docs/templated_coulombs_law.cpp
    :language: c++
    :lines: 17-21, 38-45,51-54,74-76

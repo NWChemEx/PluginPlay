@@ -217,7 +217,7 @@ considerations is beyond our current scope, but can be found
 wrapping the ``Database`` class.
 
 .. _fig_cache_design:
-.. figure:: cache_design.png
+.. figure:: assets/cache_design.png
 
    Main design points of the ``Cache`` and ``ModuleCache`` classes.
 

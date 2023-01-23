@@ -50,5 +50,5 @@ the key.
 As an example we show how to write a simple module for determining a root of the
 cosine function given an interval around the root:
 
-.. literalinclude:: ../../../tests/pluginplay/docs/module_cache.cpp
+.. literalinclude:: ../../../../tests/pluginplay/docs/module_cache.cpp
    :language: c++

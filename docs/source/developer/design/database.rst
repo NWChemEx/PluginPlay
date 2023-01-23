@@ -831,7 +831,7 @@ Database Strategy
 *****************
 
 .. _fig_db_design:
-.. figure:: database_design.png
+.. figure:: assets/database_design.png
 
    Class diagram for the ``Database`` backend implementing the ``Cache``. N.B.
    on most browsers you can "open image in a new tab" to easily zoom in.
@@ -864,7 +864,7 @@ result set mappings. Finally the ``PerModuleObjectDatabase`` stores an in-memory
 mapping from the input set to the result set (for a specific module).
 
 .. _fig_db_pimpl_design:
-.. figure:: db_pimpl_design.png
+.. figure:: assets/db_pimpl_design.png
 
    Structure of the PIMPL implementing the ``Database`` class. See text for more
    details.
