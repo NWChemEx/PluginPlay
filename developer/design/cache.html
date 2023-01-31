@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cache Design &mdash; pluginplay 1.0.0 documentation</title>
+  <title>Cache Design &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Database Design" href="database.html" />
-    <link rel="prev" title="Checkpoint/Restart" href="checkpoint_restart.html" /> 
+    <link rel="prev" title="Designing the Field Component" href="field.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -28,7 +28,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> pluginplay
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
           </a>
               <div class="version">
                 1.0.0
@@ -41,17 +41,16 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Module Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../property_types/index.html">Property Type Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_collections/index.html">Module Collections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About PluginPlay</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Topics</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Cache Design</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#cache-considerations">Cache Considerations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cache-implementations">Cache Implementations</a></li>
@@ -59,11 +58,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../module_state.html">Understanding a Module’s State</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
 </ul>
 
         </div>
@@ -72,7 +75,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pluginplay</a>
+          <a href="../../index.html">PluginPlay</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -80,7 +83,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Developer Topics</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
           <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
       <li class="breadcrumb-item active">Cache Design</li>
       <li class="wy-breadcrumbs-aside">
@@ -305,9 +308,9 @@ considerations is beyond our current scope, but can be found
 wrapping the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class.</p>
 <div class="figure align-default" id="id2">
 <span id="fig-cache-design"></span><img alt="../../_images/cache_design.png" src="../../_images/cache_design.png" />
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p class="caption"><span class="caption-number">Fig. 10 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </div>
-<p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 1</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
+<p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 10</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance can have at most one <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance. This
 ensures there’s a single source of truth for the program. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> will be
 hierarchical since memoization only makes sense for modules of the same C++
@@ -435,7 +438,7 @@ treating it separately</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="checkpoint_restart.html" class="btn btn-neutral float-left" title="Checkpoint/Restart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="field.html" class="btn btn-neutral float-left" title="Designing the Field Component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="database.html" class="btn btn-neutral float-right" title="Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

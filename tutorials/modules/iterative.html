@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iterative Modules &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Advanced Module Implementation" href="advanced.html" />
+    <link rel="prev" title="Templated Modules" href="templated.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PluginPlay Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="basics.html">Basics of Writing a Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="templated.html">Templated Modules</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Iterative Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advanced.html">Advanced Module Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="design.html">Designing a Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/index.html">Module Collections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PluginPlay Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module Development</a></li>
+      <li class="breadcrumb-item active">Iterative Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/modules/iterative.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="iterative-modules">
+<h1>Iterative Modules<a class="headerlink" href="#iterative-modules" title="Permalink to this heading"></a></h1>
+<p>Modules that are meant to be called as part of a loop (typically when optimizing
+a quantity) require special consideration. Consider a module that takes an input
+<span class="math notranslate nohighlight">\(i_0\)</span> and returns a result <span class="math notranslate nohighlight">\(r_1\)</span>. If <span class="math notranslate nohighlight">\(i\)</span> depends on <span class="math notranslate nohighlight">\(r\)</span>
+we can then compute a new <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(i_1\)</span> using <span class="math notranslate nohighlight">\(r_1\)</span>, and call the
+module again generating <span class="math notranslate nohighlight">\(r_2\)</span>. This can be repeated until convergence.
+There’s two main considerations for an iterative module: intermediate quantities
+and memoization.</p>
+<p>Many of the more sophisticated algorithms for iterative refinement, in one way
+or another, use information from previous iterations to help accelerate
+convergence. It is essential to the algorithm to be able to access the
+information from the previous iteration. Memoization leads to a similar
+difficulty. Say our iterative process ran <span class="math notranslate nohighlight">\(m\)</span> times, so we have computed
+an <span class="math notranslate nohighlight">\(r_1\)</span>, an <span class="math notranslate nohighlight">\(r_2\)</span>, on up to an <span class="math notranslate nohighlight">\(r_m\)</span>. When the calculation
+restarts we want to jump back to <span class="math notranslate nohighlight">\(r_m\)</span>, but the input to the module will
+be <span class="math notranslate nohighlight">\(i_0\)</span> and thus default memoization will provide us <span class="math notranslate nohighlight">\(r_1\)</span>. In
+theory if we stored all of the intermediate <span class="math notranslate nohighlight">\(r\)</span> values: <span class="math notranslate nohighlight">\(r_2\)</span>,
+<span class="math notranslate nohighlight">\(r_3\)</span>, etc. up to <span class="math notranslate nohighlight">\(r_m\)</span>, we quickly would regain parity with the
+original computation. In practice we usually delete the intermediates to save
+memory meaning we no longer have access to them. While it is possible to solve
+the memoization problem by recasting iteration as recursion, it is not natural
+in many circumstances and we wish to avoid it.</p>
+<p>PluginPlay’s solution to this problem is to allow each module to cache
+intermediate results. Here we mean “intermediate” in the sense that they are
+either not the result the module will return or they are not the converged
+result. Assuming that the property type for the iterative module is defined such
+that it always takes the intial inputs, in addition to the current inputs, one
+can then save the intermediate results in the cache unsing the initial value as
+the key.</p>
+<p>As an example we show how to write a simple module for determining a root of the
+cosine function given an interval around the root:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * Copyright 2022 NWChemEx-Project</span>
+<span class="cm"> *</span>
+<span class="cm"> * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="cm"> * you may not use this file except in compliance with the License.</span>
+<span class="cm"> * You may obtain a copy of the License at</span>
+<span class="cm"> *</span>
+<span class="cm"> * http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="cm"> *</span>
+<span class="cm"> * Unless required by applicable law or agreed to in writing, software</span>
+<span class="cm"> * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="cm"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="cm"> * See the License for the specific language governing permissions and</span>
+<span class="cm"> * limitations under the License.</span>
+<span class="cm"> */</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cmath&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">pair_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">);</span>
+
+<span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Initial Interval&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Current Interval&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">RootFinder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;New interval&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">DECLARE_MODULE</span><span class="p">(</span><span class="n">CosBisection</span><span class="p">);</span>
+
+<span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CosBisection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="s">&quot;Computes a root of cosine by bisecting an interval.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">RootFinder</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CosBisection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Get 0-th and n-th inputs</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">i0</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RootFinder</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Get the cache</span>
+<span class="w">    </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">my_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_cache</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// If i0 == in we look for a cached value, otherwise we use in</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">in</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">i0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">my_cache</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">i0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_cache</span><span class="p">.</span><span class="n">uncache</span><span class="o">&lt;</span><span class="n">pair_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i0</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Compute value of cos on interval&#39;s enpoints</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">fa</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">fb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Make sure one of the endpoints is negative</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">fa</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fb</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">fa</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fb</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">))</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Must have opposite signs on endpoints&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Compute midpoint of interval and the value of cos at that point</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">fc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// The new interval is c and either a or b, whichever has the opposite sign</span>
+<span class="w">    </span><span class="c1">// of c</span>
+<span class="w">    </span><span class="n">pair_type</span><span class="w"> </span><span class="n">new_interval</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">fc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// fc is negative, keep old positive endpoint</span>
+<span class="w">        </span><span class="n">new_interval</span><span class="p">.</span><span class="n">first</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="w">        </span><span class="n">new_interval</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">fa</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// fc is positive (or zero), keep old negative endpoint</span>
+<span class="w">        </span><span class="n">new_interval</span><span class="p">.</span><span class="n">first</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">fa</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">        </span><span class="n">new_interval</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Store our newest interval and return it</span>
+<span class="w">    </span><span class="n">my_cache</span><span class="p">.</span><span class="n">cache</span><span class="p">(</span><span class="n">i0</span><span class="p">,</span><span class="w"> </span><span class="n">new_interval</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">RootFinder</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">new_interval</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="templated.html" class="btn btn-neutral float-left" title="Templated Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced Module Implementation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

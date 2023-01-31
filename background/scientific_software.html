@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developing Scientific Software &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PluginPlay Statement of Need" href="statement_of_need.html" />
+    <link rel="prev" title="PluginPlay Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PluginPlay Background</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">PluginPlay Overview</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Developing Scientific Software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scientific-software-circa-2000">Scientific Software Circa 2000</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-sets-scientific-software-apart">What Sets Scientific Software Apart?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="statement_of_need.html">PluginPlay Statement of Need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alternatives.html">PluginPlay Alternatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Abbreviations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture of PluginPlay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PluginPlay Background</a></li>
+      <li class="breadcrumb-item active">Developing Scientific Software</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/scientific_software.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="developing-scientific-software">
+<span id="id1"></span><h1>Developing Scientific Software<a class="headerlink" href="#developing-scientific-software" title="Permalink to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The authors of this section are primarily developers of electronic structure
+software. The views and anecdotal evidence throughout this section draw
+heavily from this experience. While we believe this page reflects scientific
+software as a whole, the reader should bear this warning in mind.</p>
+</div>
+<p>Starting in the 2010s there have been a number of efforts to improve the state
+of scientific software including:</p>
+<ul class="simple">
+<li><p>Better Scientific Software (BSSw) <span id="id2"><sup><a class="reference internal" href="../bibliography/bibliography.html#id2" title="Better scientific software. https://bssw.io/. Accessed: 12-30-2022.">2</a></sup></span></p></li>
+<li><p>The German Society for Research Software Engineers (deRSE) <span id="id3"><sup><a class="reference internal" href="../bibliography/bibliography.html#id4" title="German society for research software engineers. https://de-rse.org/de/index.html. Accessed: 12-30-2022.">3</a></sup></span></p></li>
+<li><p>The Molecular Sciences Software Institute (MolSSI) <span id="id4"><sup><a class="reference internal" href="../bibliography/bibliography.html#id5" title="The molecular sciences software institute. https://molssi.org/. Accessed: 12-28-2022.">7</a></sup></span></p></li>
+<li><p>The Nordic Research Software Engineers Association <span id="id5"><sup><a class="reference internal" href="../bibliography/bibliography.html#id6" title="The nordic research software engineers association. https://nordic-rse.org/. Accessed: 12-30-2022.">8</a></sup></span></p></li>
+<li><p>Research Software Alliance (ReSA) <span id="id6"><sup><a class="reference internal" href="../bibliography/bibliography.html#id7" title="Research software alliance. https://www.researchsoft.org/. Accessed: 12-30-2022.">5</a></sup></span></p></li>
+<li><p>The RSE Association of Australia and New Zealand <span id="id7"><sup><a class="reference internal" href="../bibliography/bibliography.html#id8" title="The RSE association of australia and new zealand. https://rse-aunz.github.io/. Accessed: 12-30-2022.">12</a></sup></span></p></li>
+<li><p>The Society of Research Software Engineering <span id="id8"><sup><a class="reference internal" href="../bibliography/bibliography.html#id9" title="The society of research software engineering. https://society-rse.org. Accessed: 12-30-2022.">9</a></sup></span></p></li>
+<li><p>Software Engineering for Science (SE4Science) <span id="id9"><sup><a class="reference internal" href="../bibliography/bibliography.html#id10" title="Software engineering for science. https://se4science.org/. Accessed: 12-30-2022.">6</a></sup></span></p></li>
+<li><p>The Software Sustainability Institute (SSI) <span id="id10"><sup><a class="reference internal" href="../bibliography/bibliography.html#id11" title="The software sustainability institute. https://www.software.ac.uk/. Accessed: 12-30-2022.">10</a></sup></span></p></li>
+<li><p>The United States Research Software Engineer Association
+(US-RSE) <span id="id11"><sup><a class="reference internal" href="../bibliography/bibliography.html#id12" title="The united states research software engineer association. https://us-rse.org/. Accessed: 12-30-2022.">11</a></sup></span></p></li>
+<li><p>Working Towards Sustainable Software for Science: Practice and
+Experiences <span id="id12"><sup><a class="reference internal" href="../bibliography/bibliography.html#id13" title="Working towards sustainable software for science: practice and experiencies. https://wssspe.researchcomputing.org.uk/. Accessed: 12-30-2022.">13</a></sup></span></p></li>
+</ul>
+<p>These are only some of the more general efforts, within specific domains there
+are even more. The point is so many efforts exist because there is a need
+to address deep-seated problems with how scientific software has historically
+been developed. So let’s look at the typical scientific software package circa
+2000.</p>
+<div class="section" id="scientific-software-circa-2000">
+<h2>Scientific Software Circa 2000<a class="headerlink" href="#scientific-software-circa-2000" title="Permalink to this heading"></a></h2>
+<p>Many legacy scientific software packages grew organically with little to no
+design. In many cases new packages sprung up because existing packages did
+not fill a need, or because the existing packages had differing philosophies,
+<em>e.g.</em>, open vs. closed source, functional vs. object-oriented. While legacy
+packages may have had different origin stories, the lack of design,
+particularly with respect to interoperability, means that when a feature of
+another package was needed it was often easier to re-implement the feature
+than to interface to the other package. Hence over the years, each package’s
+feature set tended to converge to a set of standard algorithms. Each of these
+algorithms has now been implemented a number of times, resulting in a
+substantial amount of duplicated work. At the same time few, if any, of
+these redundant implementations have been developed in a modular fashion, in
+turn perpetuating the cycle <span id="id13"><sup><a class="reference internal" href="../bibliography/bibliography.html#id31" title="A. Krylov, T. L. Windus, T. Barnes, E. Marin-Rimoldi, J. A. Nash, B. Pritchard, D. G. A. Smith, D. Altarawy, P. Saxe, C. Clementi, T. D. Crawford, R. J. Harrison, S. Jha, V. S. Pande, and T. Head-Gordon. Perspective: computational chemistry software and its advancement as illustrated through three grand challenge cases for molecular science. The Journal of Chemical Physics, 149(18):180901, 2018. doi:10.1063/1.5052551.">22</a></sup></span>.</p>
+<p>After years (decades in many cases) of the above cycle, the average legacy
+package contains:</p>
+<ul class="simple">
+<li><p><strong>Millions of lines of code</strong>. Often this code base is poorly
+documented, lacks consistent formatting, has widely varying quality, has poor test
+coverage, and involves multiple coding languages.</p></li>
+<li><p><strong>Hundreds of features</strong>. Many of these features are loosely integrated silos,
+meaning there are only a handful of developers who know how a feature works and
+these features are only integrated with some of the package’s other features,
+<em>e.g.</em>, a new optimization routine may only be accessible from the algorithm
+it was written to support.</p></li>
+<li><p><strong>Monolithic code base</strong>. Somewhat ironically, even though features are
+loosely integrated with one another, each feature tends to be tightly coupled
+to the code base, <em>e.g.</em>, works by assuming existing quirks of other code,
+relies on a particular global state existing. In turn, even if the code base
+is comprised  of libraries and/or components, these components rarely
+function without the rest of the code.</p></li>
+<li><p><strong>Insurmountable technical debt</strong>. A “just get something working” mentality
+has been used for much of the software’s lifetime. Each invocation of this
+mentality has added more tech debt. Unfortunately, tech debt tends to
+compound exponentially.</p></li>
+</ul>
+<p>While modularity is not a silver bullet, many developers acknowledge that if
+legacy software had been designed and written in a more modular manner current
+development efforts would be easier. At this point adopting a more modular
+design requires repaying too much technical debt for it to be practical and
+many legacy packages are left with two choices: start from scratch, or continue
+to push the current development model to its breaking point.</p>
+<p>To be fair there are a lot of other factors which shaped how legacy software
+came to be:</p>
+<ul class="simple">
+<li><p><strong>Poor attribution</strong>. Historically publications are the currency of academia
+and publishing software developments has been difficult. When software does
+get published it’s often for a release and the resulting paper has hundreds
+of authors. This provides little incentive for a developer to do more than
+the bare minimum.</p></li>
+<li><p><strong>Funding agency expectations</strong>. Decades of delivering software in a “just
+get something working” state (and often overselling how primetime ready it
+really is) has resulted in funding agencies expecting software on unrealistic
+timelines.</p></li>
+<li><p><strong>Lack of formal training</strong>. Most scientific software is written by scientific
+domain experts who have little to no formal computer engineering skills.
+Historically this means that there has been a large amount of ignorance
+regarding best practices.</p></li>
+<li><p><strong>Not invented here syndrome</strong>. It’s embarrassing to admit, but in scientific
+software development there tends to be a heavy bias against using software
+developed externally to the team. Part of this is because such software is
+often used in a “black-box” manner, which can be off putting to scientists
+who want to understand how everything work. Another part of this is a
+belief that other developers produce inferior products.</p></li>
+<li><p><strong>Research is not industry</strong>. There is a prevalent belief throughout academia
+that developing research software needs to play by different rules than
+industrial software development. In many cases this belief stems from the
+fact that academics often occupy many roles other than software engineer,
+notably they are also often users of the software. By contrast, most software
+engineers in industry spend the majority of their time writing software.</p></li>
+</ul>
+<p>To summarize, while legacy software represents a substantial investment in
+terms of time and money, in many cases existing legacy packages are
+unsustainable. The number of organizations dedicated to developing better
+research software is a direct result of not wanting to repeat the same
+mistakes moving forward.</p>
+</div>
+<div class="section" id="what-sets-scientific-software-apart">
+<span id="id14"></span><h2>What Sets Scientific Software Apart?<a class="headerlink" href="#what-sets-scientific-software-apart" title="Permalink to this heading"></a></h2>
+<p>As suggested by the intro to to this page, there is an increasing interest in
+developing better more sustainable scientific software. If we are to capitalize
+on these efforts we need to understand what makes developing scientific
+software challenging, and how to avoid repeating the problems of legacy
+software. With regards to why scientific software is unique:</p>
+<ol class="arabic simple">
+<li><p>Performance</p>
+<ul class="simple">
+<li><p>Scientific software is among the most computationally expensive software
+in the world. The high computational complexity of many algorithms means
+that even a small degradation in performance can result in a simulation
+becoming intractable.</p></li>
+<li><p>Often requires high-performance computing</p></li>
+<li><p>Performance is heavily tied to hardware; as hardware evolves so will the
+scientific software.</p></li>
+</ul>
+</li>
+<li><p>Scientific motivation</p>
+<ul class="simple">
+<li><p>Software is typically seen as a means to an end and is usually developed by
+the scientists themselves.</p></li>
+<li><p>Benefit to cost ratio of dependencies must be large, i.e., dependencies are
+usually only considered if they save a lot of time, or are very performant.
+In addition, the scientists need to have some level of assurance that the
+dependency will continue to be supported in the future.</p></li>
+<li><p>Most scientists prefer to do as little software development as possible.</p></li>
+</ul>
+</li>
+<li><p>Dynamic nature of scientific research</p>
+<ul class="simple">
+<li><p>Scientific research is by its nature highly uncertain. Promising
+avenues may not pan out. Funding sources dry up. New hot topics emerge.</p></li>
+<li><p>Workflows vary widely among researchers.</p></li>
+<li><p>Users may come up with use cases beyond the scope of the original software.</p></li>
+<li><p>Research leads to new quantities of interest, and software needs to be
+extensible to support these new properties.</p></li>
+<li><p>New algorithms for computing a property emerge. The software architecture
+needs to be able to use these algorithms throughout the code.</p></li>
+</ul>
+</li>
+<li><p>Complex nature of scientific research</p>
+<ul class="simple">
+<li><p>Scientific simulations of real world phenomenon have many pieces.</p></li>
+<li><p>Science domains are often hard to grasp for non-experts.</p></li>
+<li><p>Current scientific research projects are often multi-disciplinary.</p></li>
+</ul>
+</li>
+<li><p>Need for rapid prototyping</p>
+<ul class="simple">
+<li><p>Design space for most scientific algorithms is huge. Need to be able to
+quickly scan this space.</p></li>
+<li><p>Python is at present the <em>de facto</em> language of choice for rapid
+prototyping.</p></li>
+</ul>
+</li>
+<li><p>Decentralized scientific software development</p>
+<ul class="simple">
+<li><p>Developers are typically spread out across the world, making synchronization
+difficult.</p></li>
+<li><p>The scientific software community encapsulates an entire range of software
+engineering capabilities. Therefore, the quality of contributions and
+software products can vary widely.</p></li>
+<li><p>There is a need to protect unpublished research to ensure publication
+rights. Decentralized development allows you to keep your unpublished
+research separate.</p></li>
+</ul>
+</li>
+</ol>
+<p>Many of the above considerations can be handled by ensuring a modular code
+base. When done well, modularity leads to encapsulation and a separation of
+concerns. This in turn makes it easier to refactor code for performance, add
+support for new theories, work on a feature without affecting other researchers,
+and reuse contributions from other groups.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="PluginPlay Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="statement_of_need.html" class="btn btn-neutral float-right" title="PluginPlay Statement of Need" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

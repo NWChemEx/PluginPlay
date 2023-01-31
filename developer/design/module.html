@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Module Component &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Property Type Component" href="property_type.html" />
+    <link rel="prev" title="Designing the Module Manager" href="module_manager.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Module Component</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-module-component">What is the module component?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-component-considerations">Module Component Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-component-design">Module Component Design</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Module Component</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/module.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-module-component">
+<span id="module-design"></span><h1>Designing the Module Component<a class="headerlink" href="#designing-the-module-component" title="Permalink to this heading"></a></h1>
+<p>The <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section motivated the need for a module component
+(although the fact that we’ve written “module” like a thousand times by now
+ought to have suggested it too…).</p>
+<div class="section" id="what-is-the-module-component">
+<h2>What is the module component?<a class="headerlink" href="#what-is-the-module-component" title="Permalink to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> for PluginPlay’s definition of a module. The module component
+is primarily responsible for interfacing PluginPlay to the algorithm the
+module developer wrote.</p>
+</div>
+<div class="section" id="module-component-considerations">
+<h2>Module Component Considerations<a class="headerlink" href="#module-component-considerations" title="Permalink to this heading"></a></h2>
+<p>Based on the discussions in the <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section, the module
+component must:</p>
+<ol class="arabic simple">
+<li><p>Provide a mechanism for a user to interface their algorithm with PluginPlay</p></li>
+<li><p>Leverage cache component for memoization</p>
+<ul class="simple">
+<li><p>Ideally largely automated</p></li>
+<li><p>Developers may need mark modules as incapable of being memoized when they
+are not sufficiently “pure” (<em>i.e.</em>, they have side effects, are
+non-deterministic, and/or depend on global input).</p></li>
+</ul>
+</li>
+<li><p>Have a setup phase (presumably in the constructor)</p>
+<ul class="simple">
+<li><p>Used by developer to register the module’s metadata.</p></li>
+<li><p>Also can initialize constant state needed by the module.</p></li>
+</ul>
+</li>
+<li><p>Expose a <code class="docutils literal notranslate"><span class="pre">run</span></code> member for actually running the module</p></li>
+<li><p>Have the ability to store call-back points.</p></li>
+</ol>
+</div>
+<div class="section" id="module-component-design">
+<h2>Module Component Design<a class="headerlink" href="#module-component-design" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id1">
+<span id="fig-module-design"></span><img alt="../../_images/module_design.png" src="../../_images/module_design.png" />
+<p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">Module component design showing the contact points. Users of the
+module go through the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. PluginPlay interacts with
+the user of the module via the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> class and the module developer
+via the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. Module developers interact with the component
+by deriving from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>The design of the module component is shown in Fig <a class="reference internal" href="#fig-module-design"><span class="std std-numref">Fig. 6</span></a>.
+The subsections below go over the major pieces in more detail.</p>
+<div class="section" id="module-development">
+<h3>Module Development<a class="headerlink" href="#module-development" title="Permalink to this heading"></a></h3>
+<p>Following traditional object-oriented practices module developers implement
+modules by deriving from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. In the constructor of their
+module, module developers set the property type(s) their module satisfies,
+any additional inputs/results (beyond those specified by the property type),
+callback hooks used throughout, and the metadata (version, author, papers to
+cite, <em>etc.</em>). The actual state provided in the constructor is stored in the
+<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> part of the object and preserved in the state provided. When
+users change inputs, or callbacks the user’s requests are actually stored in
+the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>.</p>
+<p>The other half of implementing a module is done when the module developer
+overrides the <code class="docutils literal notranslate"><span class="pre">run_()</span></code> member. This member is assumed to be a pure function
+(a pure function always returns the same results for the same inputs, and has
+no side-effects). PluginPlay helps enforce this assumption by making the
+<code class="docutils literal notranslate"><span class="pre">run_()</span></code> member <code class="docutils literal notranslate"><span class="pre">const</span></code>. The need for a pure function is brought on by the
+desired black-box nature and for memoization purposes. To be treated as a black
+box the module must receive no “hidden” inputs including from global variables,
+files, or state not registered with PluginPlay. In practice, particularly when
+considering modules meant to be called iteratively, a module may need access
+to modifable state. This is where the “Temporary Cache” comes in. The derived
+class is able to put/get data in/out of the temporary cache using a key-value
+system.</p>
+</div>
+<div class="section" id="module-usage">
+<h3>Module Usage<a class="headerlink" href="#module-usage" title="Permalink to this heading"></a></h3>
+<div class="figure align-center" id="id2">
+<span id="fig-calling-a-module"></span><img alt="../../_images/calling_a_module.png" src="../../_images/calling_a_module.png" />
+<p class="caption"><span class="caption-number">Fig. 7 </span><span class="caption-text">How inputs traverse the module component.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
+<p>Fig. <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a> depicts the process of a user interacting,
+<em>i.e.</em>, calling, the module. First, the user selects the property type to run
+the module as. The property type defines the inputs the user must provide, and
+the user passes the appropriate inputs into the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class. Inside the
+<code class="docutils literal notranslate"><span class="pre">Module</span></code>, the bound inputs are added to the user’s inputs (for each bound
+input, it is added only if it does not override a user specified input). The
+<code class="docutils literal notranslate"><span class="pre">Module</span></code> (actually the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>) then forwards the combined inputs,
+and the bound callbacks, to the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. The <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class
+unifies the provided inputs with the default inputs (again only adding a
+default input if it does not override a provided input) and forwards the final
+set of inputs and the callbacks to the derived class. Returning values is much
+simpler as there are no default/bound returns and results are simply forwarded
+from the derived class through the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>, <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">Module</span></code> classes. To aid in memoization/parallelization the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>
+locks during the aforementioned process to avoid concurrent modifications to
+its state.</p>
+<p>While not shown in Fig. <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a>, memoization occurs in
+the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> class (<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> is shared by all instances of the
+same module and, with the exception of the temporary cache, read-only). The
+design of the memoization process is covered in more detail
+in <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a>. For our current purposes it suffices to say that
+the user-provided inputs, unified with the bound inputs and the callbacks, are
+used as a key to the cache (which is module-base specific). If that key is
+found the result is simply returned, otherwise <code class="docutils literal notranslate"><span class="pre">ModuleBase::run</span></code> is called.</p>
+</div>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<p>The above design specifically addresses the stated considerations by:</p>
+<ol class="arabic simple">
+<li><p>Provide a mechanism for a user to interface their algorithm with PluginPlay</p>
+<ul class="simple">
+<li><p>Module developers inherit from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> and fill in the virtual
+<code class="docutils literal notranslate"><span class="pre">run_</span></code> member.</p></li>
+<li><p>Metadata for the module can be registered with <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> (and thus
+PluginPlay) in the derived class’s ctor.</p></li>
+</ul>
+</li>
+<li><p>Leverage cache component for memoization</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> performs memoization.</p></li>
+</ul>
+</li>
+<li><p>Have a setup phase (presumably in the constructor)</p>
+<ul class="simple">
+<li><p>Derived classes use their constructor</p></li>
+</ul>
+</li>
+<li><p>Expose a <code class="docutils literal notranslate"><span class="pre">run</span></code> member for actually running the module</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Module</span></code> exposes the <code class="docutils literal notranslate"><span class="pre">run</span></code> (and more useful <code class="docutils literal notranslate"><span class="pre">run_as</span></code>) which
+executes the module.</p></li>
+</ul>
+</li>
+<li><p>Have the ability to store call-back points.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> records the hooks (property types and associated tag) for
+each call back location.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPl</span></code> holds the bound callbacks for each hook.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="module_manager.html" class="btn btn-neutral float-left" title="Designing the Module Manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="property_type.html" class="btn btn-neutral float-right" title="Designing the Property Type Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

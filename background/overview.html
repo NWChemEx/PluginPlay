@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PluginPlay Overview &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developing Scientific Software" href="scientific_software.html" />
+    <link rel="prev" title="PluginPlay Background" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PluginPlay Background</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PluginPlay Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-pluginplay">What is PluginPlay?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#who-should-use-pluginplay">Who should use PluginPlay?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-does-pluginplay-work">How does PluginPlay work?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scientific_software.html">Developing Scientific Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statement_of_need.html">PluginPlay Statement of Need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alternatives.html">PluginPlay Alternatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Abbreviations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture of PluginPlay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PluginPlay Background</a></li>
+      <li class="breadcrumb-item active">PluginPlay Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="pluginplay-overview">
+<span id="pp-overview"></span><h1>PluginPlay Overview<a class="headerlink" href="#pluginplay-overview" title="Permalink to this heading"></a></h1>
+<p>The background section of the PluginPlay documentation is extensive. This is
+because PluginPlay is targeted at scientific research software and thus it
+is important to understand the scientific merits of PluginPlay and how it
+relates to other software. That said, most users can safely ignore most of the
+content in the background section, and this overview page is designed to give you
+the essentials in about a 5 minute read.</p>
+<div class="section" id="what-is-pluginplay">
+<h2>What is PluginPlay?<a class="headerlink" href="#what-is-pluginplay" title="Permalink to this heading"></a></h2>
+<p>There is a need for modular scientific software. Using PluginPlay, developers
+write algorithms inside self-contained <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects. Software packages
+are then created by “wiring” <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects together. As additional
+<a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects are developed and as new methods and properties are
+derived, the ecosystem of <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects grows, and the cycle
+repeats. PluginPlay facilitates writing sustainable modular scientific software
+packages by providing a framework that is focused on enabling dynamic:</p>
+<ol class="arabic simple">
+<li><p>loading of <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects,</p></li>
+<li><p>interactions with <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects, and</p></li>
+<li><p>wiring of <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects.</p></li>
+</ol>
+<p>The dynamic nature of the resulting package makes it easier to extend the
+package to new use cases and new hardware. PluginPlay includes a number of
+other features designed to make development as easy as possible, <em>e.g.</em>, tools
+for:</p>
+<ol class="arabic simple">
+<li><p>debugging/profiling <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects,</p></li>
+<li><p>recording provenance of the resulting program,</p></li>
+<li><p>creating <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects from existing code, and</p></li>
+<li><p>leveraging <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects in other code.</p></li>
+</ol>
+</div>
+<div class="section" id="who-should-use-pluginplay">
+<h2>Who should use PluginPlay?<a class="headerlink" href="#who-should-use-pluginplay" title="Permalink to this heading"></a></h2>
+<p>PluginPlay is meant as a framework on which to build a software package.
+PluginPlay is thus really targeted at developers who fall into two groups. The
+first group of developers actively write and maintain modular software
+package(s). The second group of developers write modules which can be consumed
+as plugins to the aforementioned modular software packages. Of course, these
+groups of developers need not be disjoint and developers may find themselves
+in both groups at one time or another.</p>
+<p>While PluginPlay can be used as a workflow tool, its domain-agnostic nature
+can make standard workflow tasks cumbersome. So while end-users of a software
+package can (and should be able to) interact directly with PluginPlay, in many
+cases developers can serve their community better by wrapping the PluginPlay
+calls needed for domain-specific tasks in domain-specific <a class="reference internal" href="terminology.html#api"><span class="std std-ref">API</span></a>.</p>
+</div>
+<div class="section" id="how-does-pluginplay-work">
+<h2>How does PluginPlay work?<a class="headerlink" href="#how-does-pluginplay-work" title="Permalink to this heading"></a></h2>
+<p>The PluginPlay framework relies on four concepts:</p>
+<ul class="simple">
+<li><p>Modules. These are components of the software. Aside from the inputs to the
+module and any hooks/callback locations the module provides, each module is
+a self-contained algorithm, typically with the granularity of a standard
+function.</p></li>
+<li><p>Property types. When a module needs to call another module, they must do so
+through a registered API. Property types are these APIs.</p></li>
+<li><p>Plugins. Related modules are typically distributed together. The distribution
+forms a plugin.</p></li>
+<li><p>Module manager. The module manager is the runtime representation of
+the PluginPlay framework. Plugins, modules, and property types are
+registered with the module manager. In turn, the module manager dynamically
+assembles the program.</p></li>
+</ul>
+<div class="figure align-center" id="id1">
+<span id="fig-pp-arch"></span><img alt="../_images/architecture_simple.png" src="../_images/architecture_simple.png" />
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">High-level architecture of PluginPlay. Users primarily interact with
+PluginPlay through the module manager. The module manager builds the call
+graph representation of the program. When users run the program, results
+are stored in the cache, and developers can write new modules using the
+module utilities.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p><a class="reference internal" href="#fig-pp-arch"><span class="std std-numref">Fig. 1</span></a> is a simplified architecture diagram of PluginPlay. The
+point of the diagram is to give you a very rough idea of what goes on inside
+PluginPlay so you can rationalize about its behavior. For performance reasons
+PluginPlay is substantially more complicated than this diagram suggests.</p>
+<p>At the bottom of the diagram is PluginPlay’s primary dependency, ParallelZone.
+PluginPlay is very concerned with performance and ParallelZone is used for
+inspecting available hardware, scheduling tasks, and logging program progress.
+ParallelZone is exposed to module developers, who in turn may use ParallelZone
+directly or may initialize their own runtime systems from ParallelZone.</p>
+<p>Conceptually PluginPlay’s internals are comprised of four main parts. The
+simplest is the module manager, which is where modules and property types are
+registered. When the time comes to assemble a program, the contents of the
+module manager are used to populate a call graph. The nodes of the call graph
+are taken from the list of registered modules and the property types are used
+to form the edges between the nodes/modules. When the program is actually run
+the computed results are cached to facilitate checkpoint/restart and for
+performance reasons, <em>e.g.</em>, avoiding redundant computations. The last part of
+PluginPlay is a collection of utilities which makes it easier for module
+developers to develop high-quality modules, <em>e.g.</em>, documentation generators,
+and debugging tools.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PluginPlay Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scientific_software.html" class="btn btn-neutral float-right" title="Developing Scientific Software" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

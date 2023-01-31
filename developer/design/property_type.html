@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Property Type Component &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Field Component" href="field.html" />
+    <link rel="prev" title="Designing the Module Component" href="module.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Property Type Component</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-property-type-component">What is the Property Type Component?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-type-considerations">Property Type Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-type-component-design">Property Type Component Design</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Property Type Component</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/property_type.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-property-type-component">
+<span id="property-type-design"></span><h1>Designing the Property Type Component<a class="headerlink" href="#designing-the-property-type-component" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> calls for a property type component. This section
+outlines the design decisions that went into that component.</p>
+<div class="section" id="what-is-the-property-type-component">
+<h2>What is the Property Type Component?<a class="headerlink" href="#what-is-the-property-type-component" title="Permalink to this heading"></a></h2>
+<p>At the lowest level all modules have the same <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>: take a series of
+type-erased inputs and return a set of type-erased outputs. In strongly typed
+languages like C++, type-erased objects are cumbersome to work with. The
+property type component facilitates the wrapping/unwrapping of
+typed/type-erased objects while also enforcing a standardized <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p>
+</div>
+<div class="section" id="property-type-considerations">
+<h2>Property Type Considerations<a class="headerlink" href="#property-type-considerations" title="Permalink to this heading"></a></h2>
+<p>From <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> we have:</p>
+<ol class="arabic simple">
+<li><p>Dynamic determine module <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
+<ul class="simple">
+<li><p>Property types will need to wrap/unwrap typed/type-erased data</p></li>
+</ul>
+</li>
+<li><p>Domain agnostic</p>
+<ul class="simple">
+<li><p>PluginPlay needs to avoid coupling to the domain-specific types</p></li>
+</ul>
+</li>
+</ol>
+<p>While not explicitly called for at this point we also want:</p>
+<ol class="arabic simple" start="3">
+<li><p>Avoid exposing templates to the user (to the extent possible)</p>
+<ul class="simple">
+<li><p>Property types will inevitably use templates, but many C++ programmers in
+computational science are not comfortable with advanced template usage.</p></li>
+</ul>
+</li>
+<li><p>Use property types to factor out input/result provenance</p>
+<ul class="simple">
+<li><p>The same property type will be used by multiple modules. Rather than
+duplicating provenance, particularly input/result descriptions, in each
+module, we want to factor this out to the property type.</p></li>
+</ul>
+</li>
+<li><p>Allow property type inheritance</p>
+<ul class="simple">
+<li><p>Many properties are related via “is-a-type-of” relationships.</p></li>
+<li><p>Inheritance captures “is-a-type-of” relationships and can be used for
+avoiding duplication</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="property-type-component-design">
+<h2>Property Type Component Design<a class="headerlink" href="#property-type-component-design" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id1">
+<span id="fig-property-type-design"></span><img alt="../../_images/property_type_design.png" src="../../_images/property_type_design.png" />
+<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Architecture of the property type component. Users derive from the
+<code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to implement their property types. The template
+meta-programming needed for dealing with types is factored out into the
+<code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>Fig <a class="reference internal" href="#fig-property-type-design"><span class="std std-numref">Fig. 8</span></a> shows the architecture of the property
+type component. The <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class holds the bulk of the implementation.
+Users derive their property types from <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code>, using the curiously-
+recursive template pattern (CRTP). CRTP facilitates PluginPlay implementing
+features on behalf of the user, without PluginPlay knowing the types. <em>N.B.</em>,
+normal inheritance would not allow the <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to access the
+types defined in the derived class. In our implementation <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> is
+templated on the derived type and the base type(s). The <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class
+will implement four functions <code class="docutils literal notranslate"><span class="pre">wrap_inputs</span></code>, <code class="docutils literal notranslate"><span class="pre">wrap_results</span></code>,
+<code class="docutils literal notranslate"><span class="pre">unwrap_inputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">unwrap_results</span></code> which can be used to type-erase and
+un-type-erase data on behalf of the user.</p>
+<p>In the derived class, users fill in two <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> objects, one for the
+inputs and one for the results. The process of doing this is wrapped by
+“virtual” functions (since we’re using CRTP they’re not actually virtual)
+<code class="docutils literal notranslate"><span class="pre">inputs_</span></code> and <code class="docutils literal notranslate"><span class="pre">results_</span></code> respectively. The <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> objects are
+responsible for storing not only the types of the inputs, but also the default
+values, descriptions, etc. It is the responsibility of the <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code>
+objects to define as simple of an <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as possible.</p>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<p>Our design addresses the above considerations by:</p>
+<ol class="arabic simple">
+<li><p>Dynamic determine module <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unwrap_inputs</span></code> / <code class="docutils literal notranslate"><span class="pre">unwrap_results</span></code> and
+<code class="docutils literal notranslate"><span class="pre">wrap_inputs</span></code> / <code class="docutils literal notranslate"><span class="pre">wrap_results</span></code> functions can be used at runtime to go
+from/to type-erased inputs/results.</p></li>
+</ul>
+</li>
+<li><p>Domain agnostic</p>
+<ul class="simple">
+<li><p>CRTP allows the <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to access derived class’s types
+through “inheritance”.</p></li>
+<li><p>Derived classes, and their types, live in downstream code.</p></li>
+</ul>
+</li>
+<li><p>Avoid exposing templates to the user (to the extent possible)</p>
+<ul class="simple">
+<li><p>Largely falls to <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> component.</p></li>
+<li><p>Macros further de-template the <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p></li>
+</ul>
+</li>
+<li><p>Use property types to factor out input/result provenance</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FieldTuple`</span></code> stores provenance for inputs/results.</p></li>
+<li><p>Can be overridden on a per-module basis.</p></li>
+</ul>
+</li>
+<li><p>Allow property type inheritance</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> is templated on base property types.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="module.html" class="btn btn-neutral float-left" title="Designing the Module Component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="field.html" class="btn btn-neutral float-right" title="Designing the Field Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -19,7 +19,9 @@ Memoization Design
 ##################
 
 This page documents the design process and decisions affecting memoization in
-PluginPlay.
+PluginPlay. The need for memoization stems from considerations
+:ref:`module_manager_design`, specifically to ensure efficient call graph
+execution and for saving/loading previous sessions.
 
 ********************
 What is Memoization?

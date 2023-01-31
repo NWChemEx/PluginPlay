@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Call Graph Component &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Memoization Design" href="memoization.html" />
+    <link rel="prev" title="Database Design" href="database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Call Graph Component</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-call-graph">What is a call graph?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#call-graph-considerations">Call Graph Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Call Graph Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#additional-notes">Additional Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Call Graph Component</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/call_graph.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-call-graph-component">
+<span id="call-graph-design"></span><h1>Designing the Call Graph Component<a class="headerlink" href="#designing-the-call-graph-component" title="Permalink to this heading"></a></h1>
+<p>Stemming from the discussions in <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and
+<a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> PluginPlay needs a call graph component. This
+section describes the overall design of that component.</p>
+<div class="section" id="what-is-a-call-graph">
+<h2>What is a call graph?<a class="headerlink" href="#what-is-a-call-graph" title="Permalink to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To make contact with typical computer science terminology the use of static
+and dynamic call graphs differ somewhat in this section than in other places
+of the manual.</p>
+</div>
+<p>Call graphs are graphs (in the mathematical sense) that represent the control
+flow of a program. Each node in a call graph represents one function in the
+program. Edges between nodes are directed from the calling function to the
+called function. Given the complexity of most programs, call graph
+representations are typically determined by running the program and recording
+the control flow. The resulting call graph is only representative
+of the run used to generate it. Such call graphs are typically known as
+“dynamic” call graphs, since they are generated dynamically. In theory, there
+also exists a “static” call graph which shows all possible control flow paths
+through the program; however, for most programs this call graph is far too
+complicated to be useful and determining it has undecidable complexity.</p>
+<p>In the PluginPlay call graph component we define “call graph” slightly
+differently than the computer science definition just given. In particular, in
+PluginPlay’s call graph component, the nodes are user-provided <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>
+objects, not individual function calls. Similarly, the edges go from the
+calling <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> object to the callee <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> object, not between
+individual function calls. The net result is that PluginPlay’s call graph
+component is a coarse-grained representation of the actual call graph.</p>
+</div>
+<div class="section" id="call-graph-considerations">
+<h2>Call Graph Considerations<a class="headerlink" href="#call-graph-considerations" title="Permalink to this heading"></a></h2>
+<p>Sections <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> passed a
+number of considerations to the call graph component which we list here:</p>
+<ol class="arabic simple">
+<li><p>Inspect and modify the call graph</p>
+<ul class="simple">
+<li><p>Need to be able to add/remove nodes at runtime</p></li>
+<li><p>Must be able to “rewire” the call graph</p></li>
+</ul>
+</li>
+<li><p>Leverage cache component for memoization, saving/loading, and
+checkpoint/restart</p></li>
+<li><p>Dynamically determine interface for calling a module</p>
+<ul class="simple">
+<li><p>Modules may be callable in different ways, similar to overloads in C++</p></li>
+</ul>
+</li>
+<li><p>Remain domain agnostic</p>
+<ul class="simple">
+<li><p>Need to be compatible with a domain’s native types</p></li>
+<li><p>Realize that the set of types in a domain may expand over time</p></li>
+<li><p>Avoid directly coupling one domain to another</p></li>
+</ul>
+</li>
+<li><p>Support a Python <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
+<ul class="simple">
+<li><p>Using pure Python, there is no way to instantiate a class template (or
+function template) at runtime, meaning all interfaces must be known at
+compile time. <em>N.B.</em>, Cppyy <span id="id1"><sup><a class="reference internal" href="../../bibliography/bibliography.html#id32" title="Wim T. L. P. Lavrijsen and Aditi Dutta. High-performance python-C++ bindings with pypy and cling. In 2016 6th Workshop on Python for High-Performance and Scientific Computing(PyHPC), volume, 27-35. 2016. doi:10.1109/PyHPC.2016.008.">24</a></sup></span> is a notable exception.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>Call Graph Design<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>PluginPlay was designed before considering Cppyy and this discussion
+assumes that only pure Python bindings are being considered.</p>
+</div>
+<div class="section" id="node-design">
+<h3>Node Design<a class="headerlink" href="#node-design" title="Permalink to this heading"></a></h3>
+<p>As established the nodes of the call graph will be PluginPlay <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>
+objects and will need to be function-like. We propose the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class to
+describe the modules. Users will create <code class="docutils literal notranslate"><span class="pre">Module</span></code> instances which contain
+their algorithms and any state the algorithm needs. Then the <code class="docutils literal notranslate"><span class="pre">Module</span></code> object
+can be run by providing it any inputs it needs. We do not want to use the
+constructor for running the module, as the constructor is more naturally used
+to initialize any state the <code class="docutils literal notranslate"><span class="pre">Module</span></code> may have. Thus we require the <code class="docutils literal notranslate"><span class="pre">Module</span></code>
+class to have a <code class="docutils literal notranslate"><span class="pre">run</span></code> method. The <code class="docutils literal notranslate"><span class="pre">run</span></code> method will take a series of inputs
+and return zero or more results. Since the <code class="docutils literal notranslate"><span class="pre">run</span></code> method will be written in
+C++ we now have to decide on the types of the inputs/results. The consideration
+to remain domain agnostic immediately suggests a templated solution and we
+suggest that <code class="docutils literal notranslate"><span class="pre">run</span></code> looks like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="n">Results</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="p">...</span><span class="n">Inputs</span><span class="o">&gt;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="n">Results</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">Inputs</span><span class="o">&amp;&amp;</span><span class="p">...);</span>
+</pre></div>
+</div>
+<p>While a perfectly acceptable C++ solution, this <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> can not be exposed
+to Python without instantiating every possible function template, <em>i.e.</em>, to
+expose this to Python we need to know every possible choice for the <code class="docutils literal notranslate"><span class="pre">Results</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Inputs</span></code> parameter packs. In turn, PluginPlay would need to either know
+domain information (which we don’t want it to know) or we would have to
+restrict the allowable types to some set (which could have serious performance
+consequences).</p>
+<p>A common C++ technique for passing arbitrary types, in a non-templated type-safe
+manner is “type erasure.”. For now we ignore the details of how type erasure
+works and simply note that it requires us to define a class to act as, more or
+less, a common base class for every type we may want to wrap. We thus establish
+the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> class for type erasing inputs/results. We also note that
+templating is only required to create the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> object and to unwrap it,
+the actual class is not templated. In terms of <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> we can write the
+<code class="docutils literal notranslate"><span class="pre">run</span></code> <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Where we switched to <code class="docutils literal notranslate"><span class="pre">std::vector</span></code> to avoid needing to know the number of
+fields at compile time.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Python actually uses a similar trick to interface with the C code underlying
+it. By ensuring that we can convert <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> objects to/from Python
+handles, we are able to expose this interface to Python seamlessly. Modules
+written in Python get inputs that are Python objects and the returned
+Python objects are automatically converted to <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> objects.
+Similarly, when an <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> object containing a Python object is
+unwrapped in C++ we know the C++ type we want and under the hood we simply
+cast the Python object to that type before returning it to the C++.</p>
+</div>
+<p>We could stop here, but actually using the <code class="docutils literal notranslate"><span class="pre">run</span></code> members is quite clunky. The
+problem is that at compile time every module is now interchangeable with every
+other module because they all have literally the same <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. However,
+type erasure is still type-safe, it just defers the type check to runtime.
+Thus it should be noted that at runtime they are <strong>NOT</strong> all compatible. This
+is because inside the run function you’ll have to do something like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">){</span>
+<span class="w">    </span><span class="c1">// Our function expects two arguments</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">inputs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Argument 0 should be of type T</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="n">arg0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Argument 1 should be a double</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">arg1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Rest of function...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>While this will always compile, it will raise runtime errors if the number of
+inputs is not two, the first argument is convertible to type <code class="docutils literal notranslate"><span class="pre">T</span></code>, or if the
+second argument is not convertible to a <code class="docutils literal notranslate"><span class="pre">double</span></code>. Having to wait until
+runtime (and possibly very far into a session) to find out if the call graph
+is wired correctly is undesirable.</p>
+<p>Another problem is say that we have two modules whose <code class="docutils literal notranslate"><span class="pre">run</span></code> APIs essentially
+are:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="kt">double</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>after we unwrap the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> objects. These modules are <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>
+compatible at both compile time and run time. The problem is these modules may
+do very different things despite having the same <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p>
+<p>To address the problems of: runtime type-checking and discerning callbacks we
+introduce the “Property Type” component. The name “property type” comes from
+the fact that most of the original use cases focused on using property types
+to discern among modules which compute different properties, but have the same
+<a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. PluginPlay only includes infrastructure for registering property
+types, not the actual property types. This is because property types are
+necessarily domain-specific and should be defined downstream of PluginPlay.</p>
+<p>Each <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> internally must set the property types that it satisfies.
+By stating that a module <code class="docutils literal notranslate"><span class="pre">M</span></code> satisfies property type <code class="docutils literal notranslate"><span class="pre">A</span></code> the module
+developer of <code class="docutils literal notranslate"><span class="pre">M</span></code> is saying that anytime anyone needs a module capable of
+computing <code class="docutils literal notranslate"><span class="pre">A</span></code>, they may use <code class="docutils literal notranslate"><span class="pre">M</span></code>. In this sense, PluginPlay uses each
+<a class="reference internal" href="../../background/terminology.html#property-type"><span class="std std-ref">Property Type</span></a> as a <a class="reference internal" href="../../background/terminology.html#strong-type"><span class="std std-ref">Strong Type</span></a>, helping avoid accidentally using
+a module in the wrong place. To address the runtime type-checking problem
+each property type also includes the types of the inputs and the results.</p>
+</div>
+<div class="section" id="data-flow-in-to-out-of-a-module">
+<h3>Data Flow in to/out of a Module<a class="headerlink" href="#data-flow-in-to-out-of-a-module" title="Permalink to this heading"></a></h3>
+<p>The previous sections introduced the components of the call graph. With these
+pieces it is now possible to describe how nodes will actually call one another.</p>
+<div class="figure align-center" id="id3">
+<span id="fig-data-flow"></span><img alt="../../_images/data_flow.png" src="../../_images/data_flow.png" />
+<p class="caption"><span class="caption-number">Fig. 13 </span><span class="caption-text">Left how typed information traverses the user’s code into the module
+developer’s code and right how typed information leaves the module
+developer’s code and enters the user’s code. Note that all data traverses
+the code boundary in type-erased form.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</div>
+<p>To try and make the design from the last section more intuitive consider
+Fig. <a class="reference internal" href="#fig-data-flow"><span class="std std-numref">Fig. 13</span></a>. The left side shows the process of passing data
+into a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>. This can be passing data into the first <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> in
+the call graph or from one <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> in the call graph to another. The
+first step is to type-erase the data. This is done by feeding the data through
+the <a class="reference internal" href="../../background/terminology.html#property-type"><span class="std std-ref">Property Type</span></a> resulting in <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> objects. The <code class="docutils literal notranslate"><span class="pre">AnyField</span></code>
+objects then cross the code boundary into PluginPlay, where cacheing and
+memoization may occur, before being forwarded to the <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>. Inside the
+<a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> the same <a class="reference internal" href="../../background/terminology.html#property-type"><span class="std std-ref">Property Type</span></a> is used to unpack the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code>
+objects. Returning data simply reverses the process.</p>
+<p>There are several points to note about this design:</p>
+<ol class="arabic simple">
+<li><p>User and module developers need to agree on a set of property types. This
+simply amounts to standardization, <em>i.e.</em>, the field has to agree on what it
+means to compute a specific property, including the classes.</p>
+<ul class="simple">
+<li><p><em>N.B.</em> with good class design it is possible to avoid coupling the identity
+of the class to the data layout of the class, <em>e.g.</em>, by using
+<a class="reference internal" href="../../background/terminology.html#pimpl"><span class="std std-ref">PIMPL</span></a>.</p></li>
+</ul>
+</li>
+<li><p>The user code never directly touches the module developer’s code, nor does
+the module developer’s code every directly touch the user’s code.</p>
+<ul class="simple">
+<li><p>This places onus on PluginPlay to maintain its APIs, but avoids the user
+and module developer’s codes from every having to know about one another.</p></li>
+<li><p>This facilitates extending the call graph later since new code only needs
+to know about PluginPlay (and the property types)</p></li>
+</ul>
+</li>
+<li><p>Type-erasure is <strong>NOT</strong> serialization</p>
+<ul class="simple">
+<li><p>Serialization often has a large performance-penalty</p></li>
+<li><p>Type-erasure is a pointer cast and extremely cheap on the scale of most
+scientific simulations.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="assembling-the-call-graph">
+<h3>Assembling the Call Graph<a class="headerlink" href="#assembling-the-call-graph" title="Permalink to this heading"></a></h3>
+<p>With a design in place to wrap algorithms in modules, and a design for how
+to call the modules, the last piece of the call graph component is literally
+assembling the call graph. As a first pass we have adopted a simple solution
+depicted in Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>.</p>
+<div class="figure align-center" id="id4">
+<span id="fig-assemble-call-graph"></span><img alt="../../_images/making_callgraph.png" src="../../_images/making_callgraph.png" />
+<p class="caption"><span class="caption-number">Fig. 14 </span><span class="caption-text">Each module must register with PluginPlay the number of callback points
+it exposes, and the property types which will be used at those points.
+PluginPlay chooses (with a lot of help from the user) the modules for
+each callback point and gives them to the module at run time.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</div>
+<p>Rather than create a literal call graph object to represent the call graph we
+have taken a linked list approach. When a module developer writes a module they
+register with PluginPlay all of their callback points. In
+Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a> the developer has registered three
+callback points. To distinguish callback points within the module, each
+callback point is assigned a unique name (unique within the scope of the
+module). Here these names are <code class="docutils literal notranslate"><span class="pre">&quot;Callback</span> <span class="pre">A&quot;</span></code>, <em>etc.</em>. In addition to the name
+of the callback point, PluginPlay also needs to know what <a class="reference internal" href="../../background/terminology.html#property-type"><span class="std std-ref">Property Type</span></a>
+will be used for the callback. Module developers register the domain-specific
+property type they will use. As noted in Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>
+the property types need not be different. These steps are written as part of
+developing the module (although they will actually get executed at run time).</p>
+<p>When it comes time to assemble a call graph, PluginPlay will look at the first
+module to call, retrieve its list of callback points, and determine which
+module, from the module pool, will be called at which call back location.
+Once the callbacks are determined, the module is linked to them and the process
+is repeated recursively inside each callback module.</p>
+</div>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<p>The current design addresses the above considerations by:</p>
+<ol class="arabic simple">
+<li><p>Inspect and modify the call graph</p>
+<ul class="simple">
+<li><p>The call graph is made up of components which have run time state.</p></li>
+<li><p>Run time state of call graph can be inspected and modified</p></li>
+<li><p>Able to swap modules out.</p></li>
+</ul>
+</li>
+<li><p>Leverage cache component for memoization, saving/loading, and
+checkpoint/restart</p>
+<ul class="simple">
+<li><p>PluginPlay is invoked before and after each module call.</p></li>
+<li><p>This allows PluginPlay to do cacheing, memoization, and saving.</p></li>
+<li><p>Memoization falls to the module component.</p></li>
+</ul>
+</li>
+<li><p>Dynamically determine interface for calling a module</p>
+<ul class="simple">
+<li><p>All modules have the same, type-erased base <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p></li>
+<li><p>It is up to the user and module developer to determine the property
+type to use. While the list of property types can not evolve at run
+time, it is possible to use logic to determine which property type to
+use at runtime.</p></li>
+</ul>
+</li>
+<li><p>Remain domain agnostic</p>
+<ul class="simple">
+<li><p>Type-erasure preserves the domain’s native types, but uses pointer
+trickery to avoid exposing them.</p></li>
+<li><p>Type-erasure only needs to know type of object at creation and unwrapping
+so more types can be wrapped later</p></li>
+<li><p>All calls go through PluginPlay, which avoids directly coupling domains</p></li>
+</ul>
+</li>
+<li><p>Support a Python <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
+<ul class="simple">
+<li><p>PluginPlay exposes type-erased APIs which can easily interoperate with
+Python’s object handles  and duck typing</p></li>
+<li><p>Python object handles can be cast to C++ types under the hood of the
+type-erased objects</p></li>
+</ul>
+</li>
+</ol>
+<p>This design has also mandated the creation of several components and design
+criteria for those components.</p>
+<ol class="arabic simple">
+<li><p>Module Component</p>
+<ul class="simple">
+<li><p>Users of PluginPlay write algorithms in <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Module</span></code> constructor is reserved for initialization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Module</span></code> must expose <code class="docutils literal notranslate"><span class="pre">run</span></code> member for running the object given a set
+of type-erased inputs, and must return a set of type-erased outputs</p></li>
+<li><p>Store a list of callback points, and a list of callbacks for those points</p></li>
+</ul>
+</li>
+<li><p>Any Component</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AnyField</span></code> class for type-erasing inputs and results to modules</p></li>
+<li><p>Need to be compatible with Python object handles</p></li>
+</ul>
+</li>
+<li><p>Property Type Component</p>
+<ul class="simple">
+<li><p>Used to restore compile time type checks</p></li>
+<li><p>Facilitates wrapping/unwrapping type-erased objects</p></li>
+<li><p>Establishes domain-specific properties a module can compute</p></li>
+<li><p>Downstream users register property types</p></li>
+<li><p>PluginPlay infrastructure must be agnostic to API codified by property
+type,</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="additional-notes">
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>For simplicity we assumed that each module object stores a list of the
+modules it will call, and PluginPlay manipulates this list. We could
+create a full fledged graph object at a later point. This would
+facilitate searching the graph.</p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database.html" class="btn btn-neutral float-left" title="Database Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memoization.html" class="btn btn-neutral float-right" title="Memoization Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

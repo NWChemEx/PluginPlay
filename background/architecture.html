@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture of PluginPlay &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PluginPlay Tutorials" href="../tutorials/index.html" />
+    <link rel="prev" title="Terminology and Abbreviations" href="terminology.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PluginPlay Background</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">PluginPlay Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scientific_software.html">Developing Scientific Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statement_of_need.html">PluginPlay Statement of Need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alternatives.html">PluginPlay Alternatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Abbreviations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Architecture of PluginPlay</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parallelzone">ParallelZone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager">Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cache">Cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#call-graph">Call Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PluginPlay Background</a></li>
+      <li class="breadcrumb-item active">Architecture of PluginPlay</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="architecture-of-pluginplay">
+<span id="pp-architecture"></span><h1>Architecture of PluginPlay<a class="headerlink" href="#architecture-of-pluginplay" title="Permalink to this heading"></a></h1>
+<p>This page describes the overarching architecture of PluginPlay and focuses
+on how this architecture addresses the considerations raised in the
+<a class="reference internal" href="statement_of_need.html#pp-statement-of-need"><span class="std std-ref">PluginPlay Statement of Need</span></a> section.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-pp-arch-full"></span><img alt="../_images/architecture.png" src="../_images/architecture.png" />
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Architecture of PluginPlay. The left side shows the contents of PluginPlay
+(including its major dependency). The right shows how PluginPlay is fed
+contents, <em>i.e.</em>, by ingesting plugins containing modules.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>Fig. <a class="reference internal" href="#fig-pp-arch-full"><span class="std std-ref">Architecture of PluginPlay. The left side shows the contents of PluginPlay
+(including its major dependency). The right shows how PluginPlay is fed
+contents, i.e., by ingesting plugins containing modules.</span></a> shows the conceptual architecture of PluginPlay.
+PluginPlay itself is built on top of the runtime system implemented by
+<a class="reference external" href="https://github.com/NWChemEx-Project/ParallelZone">ParallelZone</a>.
+Internally PluginPlay is made up of four components:</p>
+<ol class="arabic simple">
+<li><p><strong>Module Manager</strong>. Which is the user-facing <a class="reference internal" href="terminology.html#api"><span class="std std-ref">API</span></a> for the PluginPlay
+framework. Loading modules, manipulating the call graph, and inspecting
+module state all goes through the module manager.</p></li>
+<li><p><strong>Cache</strong>. When a module runs, the inputs/results to/from the module are
+recorded in the cache.</p></li>
+<li><p><strong>Module Utilities</strong>. A collection of module development tools spanning
+debugging, profiling, documenting, and much more.</p></li>
+<li><p><strong>Call Graph</strong>. This component contains a runtime representation of the
+program’s control flow.</p></li>
+</ol>
+<p>Fig. <a class="reference internal" href="#fig-pp-arch-full"><span class="std std-ref">Architecture of PluginPlay. The left side shows the contents of PluginPlay
+(including its major dependency). The right shows how PluginPlay is fed
+contents, i.e., by ingesting plugins containing modules.</span></a> also tries to make the point that PluginPlay is
+just a framework, <em>i.e.</em>, a piece of software designed to facilitate writing
+other software by serving as a “template” for the program. PluginPlay does not
+contain any scientific functionality; scientific functionality must be supplied
+by plugins (and the modules in them). If it helps, you can think of PluginPlay
+as a meta-package meant to facilitate working with other packages.</p>
+<p>The following subsections summarize the PluginPlay components in more detail.</p>
+<div class="section" id="parallelzone">
+<h2>ParallelZone<a class="headerlink" href="#parallelzone" title="Permalink to this heading"></a></h2>
+<p>ParallelZone is a runtime system, <em>i.e.</em>, a library meant to provide a software
+abstraction between the hardware/operating system and a program. In particular,
+ParallelZone provides abstractions for:</p>
+<ul class="simple">
+<li><p>Determining what hardware, including the amount of each component, the software is currently running on.</p></li>
+<li><p>Message-based distributed parallelism.</p></li>
+<li><p>Logging.</p></li>
+<li><p>Task-based scheduling.</p></li>
+</ul>
+<p>PluginPlay uses ParallelZone to make informed cache decisions (<em>vide infra</em>),
+schedule modules, record progress, and much more.</p>
+<p>The NWChemEx-Project organization develops ParallelZone as a separate project,
+in the hope that it will prove useful for other libraries/frameworks besides
+PluginPlay. More details pertaining to the design of ParallelZone can be found
+<a class="reference external" href="https://nwchemex-project.github.io/ParallelZone/developer/design/parallel_zone.html">here</a>.</p>
+</div>
+<div class="section" id="module-manager">
+<h2>Module Manager<a class="headerlink" href="#module-manager" title="Permalink to this heading"></a></h2>
+<p>Implemented by the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class, the module manager component is
+responsible for most runtime interactions between the user and ParallelZone.
+These interactions include:</p>
+<ul class="simple">
+<li><p>Loading modules into PluginPlay</p></li>
+<li><p>Querying the available modules</p></li>
+<li><p>Changing how the call graph is wired</p></li>
+<li><p>Saving/loading call graph execution progress</p></li>
+<li><p>Indirectly, via the module manager setting module state</p></li>
+</ul>
+<p>The design of the module manager component is discussed in more detail in the
+<a class="reference internal" href="../developer/design/module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> section.</p>
+</div>
+<div class="section" id="cache">
+<h2>Cache<a class="headerlink" href="#cache" title="Permalink to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although we are somewhat “putting the cart before the horse” by introducing
+the cache component here, the cache is an important design point of
+PluginPlay and has serious performance considerations. Hence we feel it
+is worth considering the cache in the top-level architecture.</p>
+</div>
+<p>While perhaps not clear at this point, one downside to encapsulation is that it
+makes it difficult to discern exactly what intermediates a <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> may
+have computed since <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects are largely opaque. If recomputing
+the intermediates is expensive, then it is essential that the recomputation
+be avoided. PluginPlay’s solution is to rely on <a class="reference internal" href="terminology.html#memoization"><span class="std std-ref">Memoization</span></a>.</p>
+<p>In short, PluginPlay saves the inputs/results provided to/by the <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a>
+in the cache. Then if the same inputs are again provided to the same module,
+PluginPlay automatically returns the cached results. In practice,
+<a class="reference internal" href="terminology.html#memoization"><span class="std std-ref">Memoization</span></a> can also be used as a save/load (or sometimes called
+checkpoint/restart) mechanism, <em>i.e.</em>, start with a cache from a previous run,
+rerun the program, and allow control to reach parity with the previous run
+(which because of <a class="reference internal" href="terminology.html#memoization"><span class="std std-ref">Memoization</span></a> should happen quickly).</p>
+<p>More design details pertaining to <a class="reference internal" href="terminology.html#memoization"><span class="std std-ref">Memoization</span></a> can be found in the
+<a class="reference internal" href="../developer/design/memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section and more details about the design of the
+cache can be found in the <a class="reference internal" href="../developer/design/cache.html#cache-design"><span class="std std-ref">Cache Design</span></a> section.</p>
+</div>
+<div class="section" id="call-graph">
+<h2>Call Graph<a class="headerlink" href="#call-graph" title="Permalink to this heading"></a></h2>
+<p>Most user interactions with PluginPlay pertain to modifying the state of the
+call graph. This includes:</p>
+<ul class="simple">
+<li><p>changing what modules can be in the call graph,</p></li>
+<li><p>modifying how the modules are wired together, and</p></li>
+<li><p>setting the values of <a class="reference internal" href="terminology.html#bound-input"><span class="std std-ref">Bound Input</span></a>.</p></li>
+</ul>
+<p>Users actually do the above through a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> object, but under the
+hood the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> is interacting with the call graph component of
+PluginPlay. More detailed design documentation can be found in
+<a class="reference internal" href="../developer/design/call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h2>
+<p>This design specifically addresses the considerations raised in the
+<a class="reference internal" href="statement_of_need.html#pp-statement-of-need"><span class="std std-ref">PluginPlay Statement of Need</span></a> section by:</p>
+<ol class="arabic simple">
+<li><p>Performance</p>
+<ul class="simple">
+<li><p>PluginPlay is built on ParallelZone, which is a performance-centric
+runtime system.</p></li>
+<li><p>Cache feature enables memoization to avoid redundant module runs</p></li>
+<li><p>Module utilities help with performance tuning</p></li>
+<li><p>Dynamically swapping out modules can enable using hardware-specific
+versions</p></li>
+<li><p>Plugins make it easy to add hardware-specific modules after the fact</p></li>
+</ul>
+</li>
+<li><p>Modular/Component-Based Architecture</p>
+<ul class="simple">
+<li><p>Program’s call graph assembled by wiring modules together.</p></li>
+<li><p>Plugins allow distributing related modules together.</p></li>
+<li><p>Module manager allows interacting with the modules.</p></li>
+</ul>
+</li>
+<li><p>Dynamic Module Interfaces</p>
+<ul class="simple">
+<li><p>Dynamically changes how modules in the call graph communicate</p></li>
+<li><p>Falls under the call graph component</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="terminology.html" class="btn btn-neutral float-left" title="Terminology and Abbreviations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="PluginPlay Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

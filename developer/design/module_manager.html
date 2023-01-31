@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Module Manager &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Module Component" href="module.html" />
+    <link rel="prev" title="Design Topics" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Module Manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-module-manager">What is the module manager?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-manager-considerations">Module Manager Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-manager-architecture">Module Manager Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Module Manager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/module_manager.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-module-manager">
+<span id="module-manager-design"></span><h1>Designing the Module Manager<a class="headerlink" href="#designing-the-module-manager" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> calls for a module manager component which will be
+the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> of PluginPlay. This section describes the design of
+that component.</p>
+<div class="section" id="what-is-the-module-manager">
+<h2>What is the module manager?<a class="headerlink" href="#what-is-the-module-manager" title="Permalink to this heading"></a></h2>
+<p>Based on object-oriented design principles we need an object to represent the
+PluginPlay framework. The majority of interactions with the framework can be
+summarized as “module management” so we have opted to call the corresponding
+component the “module manager” and the literal class <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p>
+</div>
+<div class="section" id="module-manager-considerations">
+<h2>Module Manager Considerations<a class="headerlink" href="#module-manager-considerations" title="Permalink to this heading"></a></h2>
+<p>Since the module manager is the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> every major feature of
+PluginPlay needs to be accessible through it. This means the module manager
+component needs to support:</p>
+<ol class="arabic simple">
+<li><p>Dynamic module management</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Users may hard-coded some configuration, but ultimately
+users also need to be able to override those configurations at runtime.</p></li>
+<li><p>The state of the framework needs to adapt to changes in real time</p></li>
+<li><p>The state of the framework needs to be query-able  in real time.</p></li>
+<li><p>Responsible for lifetime of modules (and framework)</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>Managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool</p>
+<ul class="simple">
+<li><p>Need to be able to load, remove, <em>etc.</em> <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> objects</p></li>
+<li><p>Iterate over, list, count, <em>etc.</em> loaded <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> objects</p></li>
+<li><p>Discern among different configurations</p></li>
+</ul>
+</li>
+<li><p>Modify call graph</p>
+<ul class="simple">
+<li><p>Change which <a class="reference internal" href="../../background/terminology.html#submodule"><span class="std std-ref">Submodule</span></a> a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> calls</p></li>
+<li><p>Change inputs bound to <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> objects</p></li>
+</ul>
+</li>
+<li><p>Run call graph</p>
+<ul class="simple">
+<li><p>Once the call graph is setup need to actually be able to run it.</p></li>
+<li><p>Running call graph should be efficient/performant</p></li>
+</ul>
+</li>
+<li><p>Saving, loading, and restarting a previous session</p>
+<ul class="simple">
+<li><p>Intermediates can be expensive, need to manage size of save state</p></li>
+<li><p>May need to go from distributed state to single node, vice versa</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="module-manager-architecture">
+<h2>Module Manager Architecture<a class="headerlink" href="#module-manager-architecture" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id1">
+<span id="fig-mm-arch"></span><img alt="../../_images/mm_arch.png" src="../../_images/mm_arch.png" />
+<p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>Fig. <a class="reference internal" href="#fig-mm-arch"><span class="std std-numref">Fig. 4</span></a> shows the architecture of the module manager
+component. The user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> is codified by a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class.
+Using the <a class="reference internal" href="../../background/terminology.html#pimpl"><span class="std std-ref">PIMPL</span></a> idiom, the implementation of the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> (and
+PluginPlay itself) is separated from the <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. The current design
+actually has the call graph, cache, and ParallelZone components residing
+within the <code class="docutils literal notranslate"><span class="pre">ModuleManagerPIMPL</span></code> (not as separate from the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>
+as shown in <a class="reference internal" href="../../background/architecture.html#fig-pp-arch-full"><span class="std std-numref">Fig. 3</span></a>). This is primarily for convenience,
+but since it is in the <a class="reference internal" href="../../background/terminology.html#pimpl"><span class="std std-ref">PIMPL</span></a>, they could be separated out later
+if need be.</p>
+<p>With the exception of the “Loaded Module” component (which we discuss in more
+detail below). The remainder of the <code class="docutils literal notranslate"><span class="pre">ModuleManagerPIMPL</span></code>’s state was also
+present in top-level architecture diagram and has simply passed through. The
+design of the module manager component punts many of the module manager
+considerations to these components (see summary below), but provides
+user-facing APIs for doing them.</p>
+<div class="section" id="module-pool">
+<h3>Module Pool<a class="headerlink" href="#module-pool" title="Permalink to this heading"></a></h3>
+<div class="figure align-center" id="id2">
+<span id="fig-mm-module-pool"></span><img alt="../../_images/module_pool.png" src="../../_images/module_pool.png" />
+<p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Architecture of the “Loaded Module” component, <em>i.e.</em>, a module pool.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
+<p>The new component here is the “Loaded Module” component, which is an associative
+array of loaded modules used like a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool. Conceptually the main
+points of this pool are summarized in Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>. Here
+our user has loaded one module under the module key <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> (we’ll
+discuss <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> below). Module keys are used to refer to the modules
+in the module pool. Each module choice has a unique key meant to facilitate
+referring back to a specific module.</p>
+<p>When the user loads <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> is inserted into the module
+pool as is. Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a> depicts <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> as having
+four, members. The values of these four members, define the default state for
+<code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code>. If a user does not want to use <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> in its default
+state, they can create a new configuration. This is what <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code>
+represents in Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> is a
+different configuration of <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> which differs in that the value of
+<code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">C</span></code> is replaced with some new value <code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">E</span></code>. Thus configurations
+are stored as differences. That is to say each configuration contains a link to
+the original module and a list of changes to apply. Note that by design, aside
+from the different value for the third member, to PluginPlay users and the call
+graph, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> is indistinguishable from <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code>. This avoids
+placing any special emphasis on the default configuration.</p>
+<p>Preserving the original state of the module is an important design point.
+First, it establishes a default configuration, from which we can define our
+differences. Second it facilitates recording provenance. When looking back at a
+previous session it can be important to know if the value used was the default
+value, or if the user set the value. Note that module defaults can change over
+time, which makes it harder to ascertain this information if it is not
+recorded.  The third, and primary reason for preserving the original state is
+we necessarily treat each module as a black-box. Therefore we want to avoid
+copying the module on account of not knowing how expensive the copy actually
+will be.</p>
+</div>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<p>The current design of the module manager really only directly addresses concern
+two (<em>i.e.</em>, managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool) and punts the remaining concerns.
+More specifically:</p>
+<p># Dynamic module management</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Operations go through <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class</p></li>
+<li><p>Different configurations handled by module pool</p></li>
+<li><p>Module pool is query-able and modifiable in real time</p></li>
+<li><p>Call graph handles querying and modifying modules comprising program</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>Managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool</p>
+<ul class="simple">
+<li><p>Explicit component of the current design</p></li>
+</ul>
+</li>
+<li><p>Modify call graph</p>
+<ul class="simple">
+<li><p>User/call-graph interactions go through <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code></p></li>
+<li><p>Actual interactions fall to call graph component</p></li>
+</ul>
+</li>
+<li><p>Run call graph</p>
+<ul class="simple">
+<li><p>Running the call graph done through <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>, but actual execution
+falls to call graph component</p></li>
+<li><p>Efficiency tied to memoization and falls to the cache and call graph
+components</p></li>
+</ul>
+</li>
+<li><p>Saving, loading, and restarting a previous session</p>
+<ul class="simple">
+<li><p>User-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> is exposed through <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code></p></li>
+<li><p>Falls to cache and call graph component (memoization)</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Design Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="module.html" class="btn btn-neutral float-right" title="Designing the Module Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

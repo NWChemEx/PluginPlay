@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Field Component &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Cache Design" href="cache.html" />
+    <link rel="prev" title="Designing the Property Type Component" href="property_type.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Field Component</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-field-component">What is the Field Component?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#field-component-considerations">Field Component Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#field-component-design">Field Component Design</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Field Component</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/field.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-field-component">
+<span id="field-design"></span><h1>Designing the Field Component<a class="headerlink" href="#designing-the-field-component" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="property_type.html#property-type-design"><span class="std std-ref">Designing the Property Type Component</span></a> and <a class="reference internal" href="module.html#module-design"><span class="std std-ref">Designing the Module Component</span></a> both called for a
+mechanism to handle fields.</p>
+<div class="section" id="what-is-the-field-component">
+<h2>What is the Field Component?<a class="headerlink" href="#what-is-the-field-component" title="Permalink to this heading"></a></h2>
+<p>Modules are meant to be black-box functions which take all the input (inputs
+and callbacks) they will need to compute their results. The inputs and
+results are the fields. Since callbacks are passed as inputs we consider how
+they are passed to be part of the field component, while the actual callback
+mechanism falls to the call graph component (see <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>).</p>
+</div>
+<div class="section" id="field-component-considerations">
+<h2>Field Component Considerations<a class="headerlink" href="#field-component-considerations" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Work with arbitrary types.</p>
+<ul class="simple">
+<li><p>Downstream users of PluginPlay should be able to use their native types.</p></li>
+</ul>
+</li>
+<li><p>Recognize differences between inputs and results.</p>
+<ul class="simple">
+<li><p>Inputs can be by value or by read-only reference.</p></li>
+<li><p>Results are always by value.</p></li>
+<li><p>Note can move into a value argument.</p></li>
+</ul>
+</li>
+<li><p>Record provenance of inputs/results.</p>
+<ul class="simple">
+<li><p>The inputs/results should hold metadata to sufficiently describe them.</p></li>
+<li><p>Metadata can conceivably be used by callers of the module as a “tooltip”</p></li>
+</ul>
+</li>
+<li><p>Verify inputs satisfy bound constraints.</p>
+<ul class="simple">
+<li><p>Associating checks with the field avoids waiting until the module runs to
+ensure the field’s value is valid.</p></li>
+<li><p>Used to prevent users from setting a field to an incorrect value (before
+the module tries to unwrap the input).</p></li>
+</ul>
+</li>
+<li><p>Leverage metadata to generate documentation.</p>
+<ul class="simple">
+<li><p>Keeping documentation up to date with <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> changes can be tedious.</p></li>
+<li><p>Generating documentation from metadata keeps code and documentation
+synched.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="field-component-design">
+<h2>Field Component Design<a class="headerlink" href="#field-component-design" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id1">
+<span id="fig-field-design"></span><img alt="../../_images/field_design.png" src="../../_images/field_design.png" />
+<p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">The three major components of PluginPlay’s field component. ModuleInput/
+ModuleResult are responsible for respectively managing the inputs/results
+to/from a module and SubmoduleRequest is used to manage callback hooks.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>Fig. <a class="reference internal" href="#fig-field-design"><span class="std std-numref">Fig. 9</span></a> shows the architecture of the field component.
+The three major components, <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code>, <code class="docutils literal notranslate"><span class="pre">ModuleResult</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">SubmoduleRequest</span></code> correspond to three major items passed into/from modules.
+<code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code>  manages an input to a module (the set of inputs passed to a
+module will be a container of <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> objects). In addition to the
+type-erased input, which lives in the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> object, the <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code>
+also holds metadata (<em>e.g.</em>, a description, if the user set the value, is
+the value <a class="reference internal" href="../../background/terminology.html#opaque"><span class="std std-ref">Opaque</span></a>) and any bounds checks (<em>e.g.</em>, can the value be null,
+is there a maximum/minimum for the value, what are the allowed strings). The
+<code class="docutils literal notranslate"><span class="pre">ModuleResult</span></code> is similar except it does not have bounds checks (the
+module developer presumably is not trying to return invalid results). The
+<code class="docutils literal notranslate"><span class="pre">SubmoduleRequest</span></code> class is designed to hold a callback hook, and the callback
+once it is set.</p>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Work with arbitrary types.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AnyField</span></code> uses type-erasure to wrap whatever type the module developer
+and/or property type developer wants.</p></li>
+<li><p>Types live in the module implementation or in the property type, both of
+which live downstream from PluginPlay.</p></li>
+</ul>
+</li>
+<li><p>Recognize differences between inputs and results.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleResult</span></code> are different classes to better
+capture this point.</p></li>
+</ul>
+</li>
+<li><p>Record provenance of inputs/results.</p>
+<ul class="simple">
+<li><p>All classes have metadata to record provenance.</p></li>
+</ul>
+</li>
+<li><p>Verify inputs satisfy bound constraints.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> has the ability to store bounds checks the input values
+must satisfy.</p></li>
+</ul>
+</li>
+<li><p>Leverage metadata to generate documentation.</p>
+<ul class="simple">
+<li><p>Not strictly part of the field component, but the field component exposes
+enough information for another component to generate the documentation.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="property_type.html" class="btn btn-neutral float-left" title="Designing the Property Type Component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cache.html" class="btn btn-neutral float-right" title="Cache Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PluginPlay Statement of Need &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PluginPlay Alternatives" href="alternatives.html" />
+    <link rel="prev" title="Developing Scientific Software" href="scientific_software.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PluginPlay Background</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">PluginPlay Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scientific_software.html">Developing Scientific Software</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PluginPlay Statement of Need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alternatives.html">PluginPlay Alternatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Abbreviations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture of PluginPlay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PluginPlay Background</a></li>
+      <li class="breadcrumb-item active">PluginPlay Statement of Need</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/statement_of_need.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="pluginplay-statement-of-need">
+<span id="pp-statement-of-need"></span><h1>PluginPlay Statement of Need<a class="headerlink" href="#pluginplay-statement-of-need" title="Permalink to this heading"></a></h1>
+<p>As summarized in <a class="reference internal" href="scientific_software.html#developing-scientific-software"><span class="std std-ref">Developing Scientific Software</span></a> there is a need to
+transition to more modular scientific software. For our purposes a modular
+piece of code:</p>
+<ul class="simple">
+<li><p>is created, maintained, and distributed independently of other modules.</p></li>
+<li><p>fully encapsulates its dependencies.</p></li>
+<li><p>has well-defined, stable APIs, both internally and externally.</p></li>
+<li><p>is reusable by other packages as is.</p></li>
+</ul>
+<p>Unfortunately, simply having a heap of modules does not equate to having
+research capable software. This is because you still need to “wire” the modules
+together to form a program. Fig. <a class="reference internal" href="#fig-pp-wire-modules"><span class="std std-numref">Fig. 2</span></a> illustrate this
+point pictorially.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-pp-wire-modules"></span><img alt="../_images/modules2program.png" src="../_images/modules2program.png" />
+<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Modules by themselves do not form a program. A program results when the
+modules have been wired together.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>Generally speaking, to go from a set of modules to a program there are two
+options: write a driver/workflow to call the modules, or load the modules
+into a framework and have the framework assemble the program. In the driver/
+workflow option the set of modules is typically fixed and the calls are
+hard-coded. In turn adding more modules, or changing which module calls which,
+requires modifying the driver/workflow. A framework contains a template for
+the program and dynamically fills in the details from the available modules.
+A good framework also makes it easy to add more modules or change which modules
+call which modules.</p>
+<p>With the points from <a class="reference internal" href="scientific_software.html#what-sets-scientific-software-apart"><span class="std std-ref">What Sets Scientific Software Apart?</span></a> in mind we
+argue that to successfully leverage scientific modules we need a framework
+capable of:</p>
+<ol class="arabic simple">
+<li><p>Performance</p>
+<ul class="simple">
+<li><p>Scientific algorithms are computationally expensive.</p></li>
+<li><p>Framework needs to avoid inhibiting module performance.</p></li>
+<li><p>If the framework is performant, performance concerns fall to the module
+implementations.</p></li>
+<li><p>Suggests that the bulk of the framework should be in C++</p></li>
+</ul>
+</li>
+<li><p>Modular/Component-Based Architecture</p>
+<ul class="simple">
+<li><p>Program’s call graph assembled by wiring modules together.</p></li>
+<li><p>Facilitates refactoring on a module basis, and in turn makes it easier to:
+retire modules, add new modules, and rewire the call graph.</p></li>
+<li><p>Refactoring can be used as a means of rapid prototyping.</p></li>
+<li><p>Encapsulation avoids leaking complicated details or large amounts of
+technical debt (the latter may occur as a result of rapid prototyping or
+different software development capabilities).</p></li>
+<li><p>Encapsulation isolates developers from what everyone else is doing.</p></li>
+<li><p>Python <a class="reference internal" href="terminology.html#api"><span class="std std-ref">API</span></a> facilitates manipulating the modules</p></li>
+</ul>
+</li>
+<li><p>Dynamic Module Interfaces</p>
+<ul class="simple">
+<li><p>What we want to compute changes as research evolves.</p></li>
+<li><p>Interfacing to software from new disciplines often requires new interfaces</p></li>
+<li><p>Python is the <em>de facto</em> glue language of choice.</p></li>
+</ul>
+</li>
+</ol>
+<p>The need for the core framework to be written in C++, and the desire to support
+Python bindings, are fundamental design choices affecting all of PluginPlay.
+For this reason we do not continue to explicitly propagate them through the
+design documentation. However, when their assumption raises explicit concerns
+we will remind the reader of the language choices.</p>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scientific_software.html" class="btn btn-neutral float-left" title="Developing Scientific Software" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="alternatives.html" class="btn btn-neutral float-right" title="PluginPlay Alternatives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

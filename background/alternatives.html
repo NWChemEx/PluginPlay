@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PluginPlay Alternatives &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Terminology and Abbreviations" href="terminology.html" />
+    <link rel="prev" title="PluginPlay Statement of Need" href="statement_of_need.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PluginPlay
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/building.html">Building PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PluginPlay Background</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">PluginPlay Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scientific_software.html">Developing Scientific Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statement_of_need.html">PluginPlay Statement of Need</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PluginPlay Alternatives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inversion-of-control-frameworks">Inversion of Control Frameworks</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#autowiring">Autowiring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ioc">ioc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ioc-cpp">ioc-cpp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pococapsule">Pococapsule</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#computational-chemistry-component-based-frameworks">Computational Chemistry Component-Based Frameworks</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#atomic-simulation-environment-ase">Atomic Simulation Environment (ASE)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-component-architecture-cca">Common Component Architecture (CCA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#massively-parallel-quantum-chemistry-mpqc">Massively Parallel Quantum Chemistry (MPQC)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#molssi-driver-interface-mdi-library">MolSSI Driver Interface (MDI) Library</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#psi4">Psi4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pulsar-computational-chemistry-framework">Pulsar Computational Chemistry Framework</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyadf">PyADF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-materials-genomics-pymatgen">Python Materials Genomics (pymatgen)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyscf">PySCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#qcarchive">QCArchive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantum-chemistry-automation-and-structure-manipulation-qchasm">Quantum Chemistry Automation and Structure Manipulation (QChASM)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology and Abbreviations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture of PluginPlay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography/bibliography.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PluginPlay Background</a></li>
+      <li class="breadcrumb-item active">PluginPlay Alternatives</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/alternatives.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="pluginplay-alternatives">
+<h1>PluginPlay Alternatives<a class="headerlink" href="#pluginplay-alternatives" title="Permalink to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The developers of PluginPlay have limited to no experience actually using
+many of the packages in this section. Notes and impressions stem
+from perusing documentation and source code and may not actually reflect
+the true state of the packages.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Packages are listed in alphabetical order. Hence the order is not meant to
+imply importance or temporal ordering.</p>
+</div>
+<p>Based on the distilled considerations from <a class="reference internal" href="statement_of_need.html#pp-statement-of-need"><span class="std std-ref">PluginPlay Statement of Need</span></a> we have
+considered a number of existing C++ frameworks. Admittedly the search space
+of existing frameworks is very large and we have limited our search to
+frameworks which do not assume networking. This is because most networking
+applications assume a large communication latency between components, whereas
+we are interested in frameworks where component communication latency is on
+the order of a function call. We also have not considered entity-component
+frameworks; these frameworks typically target game design where components
+are instance-like.</p>
+<div class="section" id="inversion-of-control-frameworks">
+<h2>Inversion of Control Frameworks<a class="headerlink" href="#inversion-of-control-frameworks" title="Permalink to this heading"></a></h2>
+<p>Frameworks satisfying our distilled considerations tend to rely on
+inversion of control (IoC) and dependency injection. We are aware of the
+following C++ IoC frameworks. <em>N.B.</em> that all of these frameworks are now
+abandoned.</p>
+<div class="section" id="autowiring">
+<h3>Autowiring<a class="headerlink" href="#autowiring" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leapmotion/autowiring">GitHub</a></p></li>
+<li><p>Last updated 2018</p></li>
+<li><p>68 watchers and 145 stars</p></li>
+</ul>
+<p>Autowiring <span id="id1"><sup><a class="reference internal" href="../bibliography/bibliography.html#id14" title="Autowiring: a C++ inversion of control framework. https://github.com/leapmotion/autowiring. Accessed: 12-28-2022.">1</a></sup></span> composes a dynamic call graph in terms of
+<code class="docutils literal notranslate"><span class="pre">Context</span></code> objects. Beyond this the documentation is a bit sparse and hard to
+follow, but it appears that users write <code class="docutils literal notranslate"><span class="pre">AutoFilter</span></code> instances to define
+type-safe APIs for interacting with the <code class="docutils literal notranslate"><span class="pre">Context</span></code> objects. The project
+appears to now be abandoned.</p>
+</div>
+<div class="section" id="ioc">
+<h3>ioc<a class="headerlink" href="#ioc" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/unixdev0/ioc">GitHub</a></p></li>
+<li><p>Last commit 2017</p></li>
+<li><p>2 watchers and 2 stars.</p></li>
+</ul>
+<p>ioc <span id="id2"><sup><a class="reference internal" href="../bibliography/bibliography.html#id15" title="ioc: inversion of control container c++11. https://github.com/unixdev0/ioc. Accessed: 12-28-2022.">16</a></sup></span> was intended to be a header-only framework for writing C++
+applications using the inversion of control design pattern. The project looks
+like it was abandoned just after getting started.</p>
+</div>
+<div class="section" id="ioc-cpp">
+<h3>ioc-cpp<a class="headerlink" href="#ioc-cpp" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mrts/ioc-cpp">GitHub</a></p></li>
+<li><p>Last commit 2014</p></li>
+<li><p>2 watchers and 0 stars</p></li>
+</ul>
+<p>ioc-cpp <span id="id3"><sup><a class="reference internal" href="../bibliography/bibliography.html#id16" title="ioc-cpp: inversion of control/dependency injection container for c++03. https://github.com/mrts/ioc-cpp. Accessed: 12-28-2022.">15</a></sup></span> provides an inversion of control/dependency injection
+container. In lieu of documentation a simple example is provided. Based on the
+example it seems that users register parent-child relationships with the
+framework. Later when the user wants an object derived from the child class,
+the user gets it from the framework. While ioc-cpp does indeed have the
+potential to be used as part of an inversion of control framework, it appears
+to be lacking many features a full featured framework would need (such as
+the ability to modify what dependency is injected). Development seems to have
+stopped in 2014 and the project is now abandoned.</p>
+</div>
+<div class="section" id="pococapsule">
+<h3>Pococapsule<a class="headerlink" href="#pococapsule" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://code.google.com/archive/p/pococapsule">Google Code</a></p></li>
+<li><p><a class="reference external" href="https://github.com/onioncong/pococapsule">GitHub</a></p></li>
+<li><p>GitHub last updated 2008</p></li>
+<li><p>1 watcher and 0 stars</p></li>
+</ul>
+<p>Pococapsule <span id="id4"><sup><a class="reference internal" href="../bibliography/bibliography.html#id17" title="Pococapsule: an IoC and DSM framework for C/C++ applications. https://code.google.com/archive/p/pococapsule. Accessed: 12-28-2022.">4</a></sup></span> appears to have originally been developed at
+Google Code and then transitioned to GitHub. Based on the Google Code repo’s
+description, Pococapsule defines an inversion-of-control container that supports
+dependency injection. A “dynamic proxy engine” is used for type-safe invocations
+of the containers and “dynamic wiring” is used to connect the containers.
+Documentation is lacking and ultimately development never seemed to take off
+at GitHub, which would make resurrecting this project very difficult.</p>
+</div>
+</div>
+<div class="section" id="computational-chemistry-component-based-frameworks">
+<h2>Computational Chemistry Component-Based Frameworks<a class="headerlink" href="#computational-chemistry-component-based-frameworks" title="Permalink to this heading"></a></h2>
+<p>PluginPlay was motivated by the needs of NWChemEx, which is a scientific
+research software package targeting electronic structure theory. As such,
+one could reasonably argue that we need not code up a general component-based
+solution, if a domain-specific solution exists and works. Point being, we’d be
+remiss if we didn’t also mention the work aimed at designing computational
+chemistry specific solutions for modular software.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Historically computational chemists have been very loose with their
+software terminology. So while many packages boast a modular design, a lot
+of times this modularity amounts to the fact that the code uses functions
+and/or libraries. For our purposes, we consider something modular if it can
+reasonably stand alone. Notably we do not require interoperability in order
+for something to be modular.</p>
+</div>
+<div class="section" id="atomic-simulation-environment-ase">
+<h3>Atomic Simulation Environment (ASE)<a class="headerlink" href="#atomic-simulation-environment-ase" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://gitlab.com/ase/ase">GitLab</a></p></li>
+<li><p>Active development</p></li>
+<li><p>342 stars</p></li>
+</ul>
+<p>ASE <span id="id5"><sup><a class="reference internal" href="../bibliography/bibliography.html#id18" title="A. H. Larsen, J. J. Mortensen, J. Blomqvist, I. E. Castelli, R. Christensen, M. Dułak, J. Friis, M. N. Groves, B. Hammer, C. Hargus, E. D. Hermes, P. C. Jennings, P. B. Jensen, J. Kermode, J. R. Kitchin, E. L. Kolsbjerg, J. Kubal, K. Kaasbjerg, S. Lysgaard, J. B. Maronsson, T. Maxson, T. Olsen, L. Pastewka, A. Peterson, C. Rostgaard, J. Schiøtz, O. Schütt, M. Strange, K. S. Thygesen, T. Vegge, L. Vilhelmsen, M. Walter, Z. Zeng, and K. W. Jacobsen. The atomic simulation environment—a python library for working with atoms. Journal of Physics: Condensed Matter, 29(27):273002, 2017. doi:10.1088/1361-648X/aa680e.">23</a></sup></span> is designed with the goal of being a unified framework for
+setting up, steering, and analyzing atomistic simulations. ASE provides a
+number of modules, which serve as hooks where external components can be
+hooked in. For example the <code class="docutils literal notranslate"><span class="pre">calculator</span></code> module defines the API for
+computing energies and forces on a molecule. ASE notably also allows users to
+write observers, which are called at pre-defined points in the module’s
+execution, thus facilitating even more extension points.</p>
+<p>ASE is ultimately targeted at driving other computational chemistry packages.
+From the perspective of developing a computational chemistry package, ASE is
+thus a workflow tool. The hooks ASE provides are too high-level for our
+purposes and ASE does not seem to provide any mechanism for adding more hooks.</p>
+</div>
+<div class="section" id="common-component-architecture-cca">
+<h3>Common Component Architecture (CCA)<a class="headerlink" href="#common-component-architecture-cca" title="Permalink to this heading"></a></h3>
+<p>The CCA <span id="id6"><sup><a class="reference internal" href="../bibliography/bibliography.html#id3" title="D. E. Bernholdt, B. A. Allan, R. Armstrong, F. Bertrand, K. Chiu, T. L. Dahlgren, K. Damevski, W. R. Elwasif, T. W. Epperly, M. Govindaraju, D. S. Katz, J. A. Kohl, M. Krishnan, G. Kumfert, J. W. Larson, S. Lefantzi, M. J. Lewis, A. D. Malony, L. C. McInnes, J. Nieplocha, B. Norris, S. G. Parker, J. Ray, S. Shende, T. L. Windus, and S. Zhou. A component architecture for high-performance scientific computing. International Journal of High-Performance Computing Applications, 20(2):163 – 202, 2006. doi:10.1177/1094342006064488.">17</a></sup></span> was one of the first attempts at designing a component-based
+framework for writing modular scientific software. Components had standardized
+APIs and relatively specific tasks (e.g., compute integrals, or diagonalize a
+matrix). Notably, CCA did not only target computational chemistry (although it
+had a computational chemistry sub-community). Ultimately, the CCA was abandoned
+because it was too cumbersome for developers.</p>
+</div>
+<div class="section" id="massively-parallel-quantum-chemistry-mpqc">
+<h3>Massively Parallel Quantum Chemistry (MPQC)<a class="headerlink" href="#massively-parallel-quantum-chemistry-mpqc" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/ValeevGroup/mpqc">GitHub</a></p></li>
+<li><p>Active development (although most occurs in a private fork)</p></li>
+<li><p>27 watchers and 56 stars</p></li>
+</ul>
+<p>Already in MPQC’s original design <span id="id7"><sup><a class="reference internal" href="../bibliography/bibliography.html#id20" title="C. L. Janssen, E. T. Seidl, and M. E. Colvin. Object-Oriented Implementation of Parallel Ab Initio Programs, chapter 4, pages 47-61. American Chemical Society, 1995. doi:10.1021/bk-1995-0592.ch004.">21</a></sup></span> you could see how MPQC could be
+used as a modular framework for quantum chemistry. More specifically, the class
+hierarchy took care to define abstract APIs for most algorithms, derived classes
+implemented the algorithms; hence the base classes provided hooks for extending
+the functionality in an encapsulated manner. MPQC’s modern state <span id="id8"><sup><a class="reference internal" href="../bibliography/bibliography.html#id21" title="C. Peng, C. Lewis, X. Wang, M. Clement, F. Pavosevic, J. Zhang, V. Rishi, N. Teke, K. Pierce, J. Calvin, J. Kenny, E. Seidl, C. Janssen, and E. Valeev. The massively parallel quantum chemistry program (MPQC), version 4.0.0-beta.1. http://github.com/ValeevGroup/mpqc. Accessed: 12-29-2022.">27</a></sup></span>
+includes support for plugin-based development. Developers wanting to use this
+feature compile MPQC as a library, extend an MPQC class in their plugin, and
+link MPQC and their plugin to the driver.</p>
+<p>At present there does not seem to be support for dynamically discovering
+plugins, nor is there a way to extend the set of hooks without modifying MPQC.</p>
+</div>
+<div class="section" id="molssi-driver-interface-mdi-library">
+<h3>MolSSI Driver Interface (MDI) Library<a class="headerlink" href="#molssi-driver-interface-mdi-library" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/MolSSI-MDI/MDI_Library">GitHub</a></p></li>
+<li><p>Active development</p></li>
+<li><p>4 watchers and 21 stars</p></li>
+</ul>
+<p>MDI <span id="id9"><sup><a class="reference internal" href="../bibliography/bibliography.html#id19" title="MolSSI Driver Interface (MDI) Library. https://github.com/MolSSI-MDI/MDI_Library. Accessed: 12-30-2022.">14</a></sup></span> provides a standardized interface for communicating between
+computational chemistry programs in order to simplify developing workflows
+that work across codes. MDI terms the individual packages “engines”. Each
+engine exposes a series of commands and drivers are written in terms of these
+commands. MDI seems to have substantial scope overlap with QCArchive
+(specifically QCEngine  and QCFractal). The main distinction seems to be that
+MDI is written in C++ and is more focused on performance than QCArchive.</p>
+<p>MDI is focused on high-level communication between components. MDI also does not
+appear to provide a mechanism for adding new interfaces (at least without
+contacting the developers). The interface aspects are heavily tied to
+computational chemistry.</p>
+</div>
+<div class="section" id="psi4">
+<h3>Psi4<a class="headerlink" href="#psi4" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/psi4/psi4/">Github</a></p></li>
+<li><p>Active development</p></li>
+<li><p>61 watchers and 754 stars</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I’m not sure what the official capitalization of Psi3/Psi4 is. It seems to
+be listed as Psi3/Psi4 in some places, <em>e.g.</em>, <span id="id10">Parrish <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id24" title="R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett, A. E. III DePrince, E. G. Hohenstein, U. Bozkaya, A. Y. Sokolov, R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James, H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard, P. Verma, H. F. III Schaefer, K. Patkowski, R. A. King, E. F. Valeev, F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill. Psi4 1.1: an open-source electronic structure program emphasizing automation, advanced libraries, and interoperability. Journal of Chemical Theory and Computation, 13(7):3185-3197, 2017. doi:10.1021/acs.jctc.7b00174.">26</a></sup></span>
+(<em>N.B.</em> that small caps would have all letters the same size if they were
+all the same case) and PSI3/PSI4 in others, <em>e.g.</em>, <span id="id11">Smith <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id25" title="D. G. A. Smith, L. A. Burns, A. C. Simmonett, R. M. Parrish, M. C. Schieber, R. Galvelis, P. Kraus, H. Kruse, R. Di Remigio, A. Alenaizan, A. M. James, S. Lehtola, J. P. Misiewicz, M. Scheurer, R. A. Shaw, J. B. Schriber, Y. Xie, Z. L. Glick, D. A. Sirianni, J. S. O’Brien, J. M. Waldrop, A. Kumar, E. G. Hohenstein, B. P. Pritchard, B. R. Brooks, H. F. Schaefer, A. Y. Sokolov, K. Patkowski, A. E. DePrince, U. Bozkaya, R. A. King, F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill. PSI4 1.4: open-source software for high-throughput quantum chemistry. The Journal of Chemical Physics, 152(18):184108, 2020. doi:10.1063/5.0006002.">29</a></sup></span>.</p>
+</div>
+<p>Psi3 <span id="id12"><sup><a class="reference internal" href="../bibliography/bibliography.html#id22" title="T. D. Crawford, C. D. Sherrill, E. F. Valeev, J. T. Fermann, R. A. King, M. L. Leininger, S. T. Brown, C. L. Janssen, E. T. Seidl, J. P. Kenny, and W. D. Allen. PSI3: an open-source ab initio electronic structure package. Journal of Computational Chemistry, 28(9):1610-1616, 2007. doi:https://doi.org/10.1002/jcc.20573.">18</a></sup></span>, contained a number of individual programs (termed modules),
+each designed to perform a common task. These modules used disk to communicate
+and a driver program to wire them together. This architecture made it difficult
+to transition to high-performance computing, and was the motivation for the
+Psi4 <span id="id13"><sup><a class="reference internal" href="../bibliography/bibliography.html#id23" title="J. M. Turney, A. C. Simmonett, R. M. Parrish, E. G. Hohenstein, F. A. Evangelista, J. T. Fermann, B. J. Mintz, L. A. Burns, J. J. Wilke, M. L. Abrams, N. J. Russ, M. L. Leininger, C. L. Janssen, E. T. Seidl, W. D. Allen, H. F. Schaefer, R. A. King, E. F. Valeev, C. D. Sherrill, and T. D. Crawford. Psi4: an open-source ab initio electronic structure program. WIREs Computational Molecular Science, 2(4):556-565, 2012. doi:https://doi.org/10.1002/wcms.93.">31</a></sup></span> rewrite. In it’s initial incarnation, Psi4 was a single
+executable with a Python front-end. From the initial publication <span id="id14"><sup><a class="reference internal" href="../bibliography/bibliography.html#id23" title="J. M. Turney, A. C. Simmonett, R. M. Parrish, E. G. Hohenstein, F. A. Evangelista, J. T. Fermann, B. J. Mintz, L. A. Burns, J. J. Wilke, M. L. Abrams, N. J. Russ, M. L. Leininger, C. L. Janssen, E. T. Seidl, W. D. Allen, H. F. Schaefer, R. A. King, E. F. Valeev, C. D. Sherrill, and T. D. Crawford. Psi4: an open-source ab initio electronic structure program. WIREs Computational Molecular Science, 2(4):556-565, 2012. doi:https://doi.org/10.1002/wcms.93.">31</a></sup></span>
+it is not clear what plugin/module features it had, but as of the 1.1 release
+of Psi4 <span id="id15"><sup><a class="reference internal" href="../bibliography/bibliography.html#id24" title="R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett, A. E. III DePrince, E. G. Hohenstein, U. Bozkaya, A. Y. Sokolov, R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James, H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard, P. Verma, H. F. III Schaefer, K. Patkowski, R. A. King, E. F. Valeev, F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill. Psi4 1.1: an open-source electronic structure program emphasizing automation, advanced libraries, and interoperability. Journal of Chemical Theory and Computation, 13(7):3185-3197, 2017. doi:10.1021/acs.jctc.7b00174.">26</a></sup></span>, Psi4’s ability to support plugins and external
+projects had been noted.</p>
+<p>As of the 1.1. version of Psi4, Psi4’s modular capabilities were relatively
+limited. In particular, Psi4 version 1.1. allowed users to write modules that
+satisfied one of a small set of high-level APIs (e.g. the ability to compute an
+energy). While <span id="id16">Parrish <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id24" title="R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett, A. E. III DePrince, E. G. Hohenstein, U. Bozkaya, A. Y. Sokolov, R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James, H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard, P. Verma, H. F. III Schaefer, K. Patkowski, R. A. King, E. F. Valeev, F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill. Psi4 1.1: an open-source electronic structure program emphasizing automation, advanced libraries, and interoperability. Journal of Chemical Theory and Computation, 13(7):3185-3197, 2017. doi:10.1021/acs.jctc.7b00174.">26</a></sup></span> lists a number of external projects which
+interface with Psi4, most of these projects are better categorized as optional
+dependencies because they interface through dependency-specific channels (as
+opposed to more general APIs meant for extending Psi4). As of version 1.4
+<span id="id17"><sup><a class="reference internal" href="../bibliography/bibliography.html#id25" title="D. G. A. Smith, L. A. Burns, A. C. Simmonett, R. M. Parrish, M. C. Schieber, R. Galvelis, P. Kraus, H. Kruse, R. Di Remigio, A. Alenaizan, A. M. James, S. Lehtola, J. P. Misiewicz, M. Scheurer, R. A. Shaw, J. B. Schriber, Y. Xie, Z. L. Glick, D. A. Sirianni, J. S. O’Brien, J. M. Waldrop, A. Kumar, E. G. Hohenstein, B. P. Pritchard, B. R. Brooks, H. F. Schaefer, A. Y. Sokolov, K. Patkowski, A. E. DePrince, U. Bozkaya, R. A. King, F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill. PSI4 1.4: open-source software for high-throughput quantum chemistry. The Journal of Chemical Physics, 152(18):184108, 2020. doi:10.1063/5.0006002.">29</a></sup></span>, modularity of Psi4 relies on QCArchive and thus Psi4’s module
+capabilities are tied to the QCArchive project.</p>
+</div>
+<div class="section" id="pulsar-computational-chemistry-framework">
+<h3>Pulsar Computational Chemistry Framework<a class="headerlink" href="#pulsar-computational-chemistry-framework" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/pulsar-chem">GitHub</a>.</p></li>
+<li><p>Last updated 2017</p></li>
+</ul>
+<p>Pulsar is a now abandoned project, co-created by some of the authors of
+PluginPlay. Many of the ideas from Pulsar live on in PluginPlay (and the rest
+of the NWChemEx stack). It is primarily listed here for completeness, <em>i.e.</em>,
+in case someone later reads this page and says “I found this Pulsar project
+that PluginPlay seems to have ripped off.” Well now you know we did rip it
+off, but then again we wrote it so…</p>
+</div>
+<div class="section" id="pyadf">
+<h3>PyADF<a class="headerlink" href="#pyadf" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/chjacob-tubs/pyadf-releases">GitHub</a></p></li>
+<li><p>Active development</p></li>
+<li><p>1 watcher and 5 stars</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I am unsure of the  preferred capitalization of PyADF. The GitHub page uses
+CamelCase, but <span id="id18">Jacob <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id26" title="C. R. Jacob, S. M. Beyhan, R. E. Bulo, A. S. P. Gomes, A. W. Götz, K. Kiewisch, J. Sikkema, and L. Visscher. PyADF — a scripting framework for multiscale quantum chemistry. Journal of Computational Chemistry, 32(10):2328-2338, 2011. doi:https://doi.org/10.1002/jcc.21810.">20</a></sup></span> uses all caps.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is not clear that the GitHub link listed here</p>
+</div>
+<p>PyADF <span id="id19"><sup><a class="reference internal" href="../bibliography/bibliography.html#id26" title="C. R. Jacob, S. M. Beyhan, R. E. Bulo, A. S. P. Gomes, A. W. Götz, K. Kiewisch, J. Sikkema, and L. Visscher. PyADF — a scripting framework for multiscale quantum chemistry. Journal of Computational Chemistry, 32(10):2328-2338, 2011. doi:https://doi.org/10.1002/jcc.21810.">20</a></sup></span> started as a Python front-end to the ADF package; however,
+PyADF is not explicitly tied to ADF and <span id="id20">Jacob <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id26" title="C. R. Jacob, S. M. Beyhan, R. E. Bulo, A. S. P. Gomes, A. W. Götz, K. Kiewisch, J. Sikkema, and L. Visscher. PyADF — a scripting framework for multiscale quantum chemistry. Journal of Computational Chemistry, 32(10):2328-2338, 2011. doi:https://doi.org/10.1002/jcc.21810.">20</a></sup></span> state that PyADF
+supports a number of backends: ADF, Dalton, Dirac, and NWChem. PyADF seems to
+recognize: input generation, program execution, error handling, data extraction,
+and post-processing as the customization points of its workflow tool.</p>
+<p>Ultimately the aforementioned GitHub repo seems pretty bare bones, and appears
+to be lacking documentation (although the presence of a <code class="docutils literal notranslate"><span class="pre">doc/</span></code> directory
+suggests that documentation exists somewhere, although it may just be
+doc strings). Based on the above description, it seems that the intent is
+for PyADF to be a driver/workflow tool more than a full-fledged component
+framework. Furthermore, the use of the GPL license makes using PyADF in another
+non-GPL project problematic.</p>
+</div>
+<div class="section" id="python-materials-genomics-pymatgen">
+<h3>Python Materials Genomics (pymatgen)<a class="headerlink" href="#python-materials-genomics-pymatgen" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen">GitHub</a></p></li>
+<li><p>Active development</p></li>
+<li><p>113 watchers and 1K stars</p></li>
+</ul>
+<p>pymatgen <span id="id21"><sup><a class="reference internal" href="../bibliography/bibliography.html#id27" title="S. P. Ong, W. D. Richards, A. Jain, G. Hautier, M. Kocher, S. Cholia, D. Gunter, V. L. Chevrier, K. A. Persson, and G. Ceder. Python materials genomics (pymatgen): a robust, open-source python library for materials analysis. Computational Materials Science, 68:314-319, 2013. doi:https://doi.org/10.1016/j.commatsci.2012.10.028.">25</a></sup></span> is a Python package aimed at materials analysis.
+It aids in setting up calculations and analyzing the results. pymatgen allows
+users to extend the pymatgen framework by adding new analyses, high-level API
+to external resources (<em>e.g.</em>, databases), or support for I/O to/from another
+code.</p>
+<p>From the perspective of developing an electronic structure package, pymatgen’s
+components are too high-level and pymatgen is therefore a workflow tool. There
+also does not appear to be a way to add new interfaces, although this may not
+be as much of a problem with pymatgen since the existing interfaces seem quite
+generic.</p>
+</div>
+<div class="section" id="pyscf">
+<h3>PySCF<a class="headerlink" href="#pyscf" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/pyscf/pyscf">GitHub</a></p></li>
+<li><p>Active development</p></li>
+<li><p>75 watchers and 826 stars</p></li>
+</ul>
+<p>PySCF <span id="id22"><sup><a class="reference internal" href="../bibliography/bibliography.html#id28" title="Q. Sun, T. C. Berkelbach, N. S. Blunt, G. H. Booth, S. Guo, Z. Li, J. Liu, J. D. McClain, E. R. Sayfutyarova, S. Sharma, S. Wouters, and G. K.-L. Chan. PySCF: the python-based simulations of chemistry framework. WIREs Computational Molecular Science, 8(1):e1340, 2018. doi:https://doi.org/10.1002/wcms.1340.">30</a></sup></span> is one of the few electronic structure packages to be
+written almost entirely in Python. Compared to compiled packages, this makes
+it remarkably easier to “hack” PySCF to do what you want. Nonetheless, PySCF
+does include some features to facilitate modular extensions. First is the
+custom Hamiltonian feature which allows the user, at runtime, to switch out
+the Hamiltonian used by PySCF. The next is the streaming/functional nature of
+PySCF. To over simplify, PySCF works by having each feature take in an initial
+state, mutate the state, and then return the mutated state. Thus by nesting
+function calls an entire series of features can be applied to an initial
+input. Users are free to write their own functions compatible with this API
+and to inject them into the nesting.</p>
+<p>PySCF’s component framework seems to primarily be targeted at high-level
+electronic structure operations. This means it’s easy to to modify and add
+components when they deal with inputs/outputs close to the user. As far as
+we can tell, there are no hooks beyond the custom Hamiltonian and the streaming
+syntax, nor is there a way to add more hooks without modifying PySCF.
+Furthermore, both extension locations are very chemistry-based making it hard
+to, for example, change the numeric linear algebra used under the hood.</p>
+</div>
+<div class="section" id="qcarchive">
+<h3>QCArchive<a class="headerlink" href="#qcarchive" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/MolSSI/QCEngine">QCEngine on GitHub</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MolSSI/QCFractal">QCFractal on GitHub</a></p></li>
+</ul>
+<p>QCArchive <span id="id23"><sup><a class="reference internal" href="../bibliography/bibliography.html#id29" title="D. G. A. Smith, D. Altarawy, L. A. Burns, M. Welborn, L. N. Naden, L. Ward, S. Ellis, B. P. Pritchard, and T. D. Crawford. The MolSSI QCArchive project: an open-source platform to compute, organize, and share quantum chemistry data. WIREs Computational Molecular Science, 11(2):e1491, 2021. doi:https://doi.org/10.1002/wcms.1491.">28</a></sup></span> is a MolSSI-sponsored project comprised of several
+interconnected pieces which aims to establish infrastructure for automatically
+computing quantum chemistry results and making them available to the broader
+community. The projects really constituting the guts of the QCArchive framework
+are QCEngine and QCFractal.</p>
+<p>QCEngine is designed to wrap the process of calling arbitrary quantum chemistry
+software packages (or any other package which takes chemistry-like input). It
+does so either directly through Python or by using I/O adhering to the QCSChema
+standard. QCFractal is somewhat less clear cut than QCEngine, but handles a
+number of tasks including distributed runs of QCEngine, running workflow
+services, and creating databases of results.</p>
+</div>
+<div class="section" id="quantum-chemistry-automation-and-structure-manipulation-qchasm">
+<h3>Quantum Chemistry Automation and Structure Manipulation (QChASM)<a class="headerlink" href="#quantum-chemistry-automation-and-structure-manipulation-qchasm" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/QChASM">GitHub</a></p></li>
+<li><p>Active development</p></li>
+</ul>
+<p>QChASM <span id="id24"><sup><a class="reference internal" href="../bibliography/bibliography.html#id30" title="V. M. Ingman, A. J. Schaefer, L. R. Andreola, and S. E. Wheeler. QChASM: quantum chemistry automation and structure manipulation. WIREs Computational Molecular Science, 11(4):e1510, 2021. doi:https://doi.org/10.1002/wcms.1510.">19</a></sup></span> is a collection of tools for building and manipulating
+complicated molecular structures and automating quantum chemistry applications.
+QChASM is specifically targeted at finding transition state structures, but
+also includes a number of general utilities for interacting with electronic
+structure packages (<span id="id25">Ingman <em>et al.</em><sup><a class="reference internal" href="../bibliography/bibliography.html#id30" title="V. M. Ingman, A. J. Schaefer, L. R. Andreola, and S. E. Wheeler. QChASM: quantum chemistry automation and structure manipulation. WIREs Computational Molecular Science, 11(4):e1510, 2021. doi:https://doi.org/10.1002/wcms.1510.">19</a></sup></span> states support for Gaussian, ORCA, and
+Psi4), primarily through file parsing. QChASM has the ability to launch jobs
+from the inputs.</p>
+<p>QChASM’s focus on driving chemistry programs makes it too high-level for our
+needs. It also seems to have limited hooks where components can be added.
+Finally, there does not seem to be any route to extend the framework without
+modifying it.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h2>
+<p>In our opinion the highly multi-disciplinary nature of computational chemistry
+means that we need the ability to leverage developments and libraries from
+not just within computational chemistry, but from other scientific fields as
+well. The fact that all existing computational chemistry frameworks assume
+the domain of chemistry, coupled with the fact these frameworks seem more
+interested with stringing chemistry packages together than offering a generic
+framework for writing a package makes them all unsuitable to our needs.</p>
+<p>With respect to the more generic existing C++ plugin frameworks we were unable
+to find any frameworks which are still supported. We speculate that the lack
+of interest in developing generic C++ frameworks for inversion of control
+comes down to:</p>
+<ul class="simple">
+<li><p>Most developers are now writing apps/microservices for already established
+frameworks, e.g., Android and iOS.</p></li>
+<li><p>Prevalence of Python/Java. Outside scientific software interest in C++ seems
+to be waning.</p></li>
+<li><p>Within high-performance computing (HPC), where C++ is still rampant, there
+seems to be a focus on writing HPC-capable modules, but little to no
+attention on how to combine them.</p></li>
+</ul>
+<p>Anyways, long story short, we were unable to find a framework which does what
+we want, so we wrote PluginPlay.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="statement_of_need.html" class="btn btn-neutral float-left" title="PluginPlay Statement of Need" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="terminology.html" class="btn btn-neutral float-right" title="Terminology and Abbreviations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
