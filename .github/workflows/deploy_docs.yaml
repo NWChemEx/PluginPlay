@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build-Documentation:
-    uses: NWChemEx-Project/.github/.github/workflows/deploy_docs_tmpl.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/deploy_docs_tmpl.yaml@build-doc-test
     with: 
       target: pluginplay_cxx_api
       dependencies: cmake doxygen sphinx
