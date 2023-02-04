@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - test-deploy
 
 jobs:
   Build-Documentation:
