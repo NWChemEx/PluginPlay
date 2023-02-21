@@ -21,7 +21,7 @@ PluginPlay
 
 [Documentation](https://nwchemex-project.github.io/PluginPlay/)
 
-Warning!!!! PluginPlay is currently in alpha. 
+Warning!!!! PluginPlay is currently in beta. 
 
 At this points APIs should be stable, but expect bugs and 
 performance issues. We are actively improving PluginPlay
