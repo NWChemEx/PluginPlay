@@ -55,15 +55,6 @@ inline static void compare_value(T&& w, corr_t corr) {
         ss << corr;
         REQUIRE(ss.str() == w.str());
     }
-
-    SECTION("hashing") {
-#ifdef BPHASH_USE_TYPEID
-        REQUIRE_FALSE(pluginplay::hash_objects(corr) ==
-                      pluginplay::hash_objects(w));
-#else
-        REQUIRE(pluginplay::hash_objects(corr) == pluginplay::hash_objects(w));
-#endif
-    }
 }
 
 TEST_CASE("AnyWrapper<POD>(value)") {
@@ -130,8 +121,6 @@ TEST_CASE("AnyWrapper Comparisons") {
 }
 
 struct NotPrintable {
-    void hash(pluginplay::Hasher&) const noexcept {}
-
     bool operator==(const NotPrintable&) const noexcept { return true; }
 };
 

@@ -23,7 +23,6 @@
  */
 
 #include "pluginplay/facade_module.hpp"
-#include "pluginplay/hasher.hpp"
 #include "pluginplay/lambda_module.hpp"
 #include "pluginplay/module_manager.hpp"
 #include "pluginplay/property_type/property_type.hpp"
