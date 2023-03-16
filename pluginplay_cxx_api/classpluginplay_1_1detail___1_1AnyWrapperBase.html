@@ -113,9 +113,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abc2e276002aecb1958531fca443d441f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#abc2e276002aecb1958531fca443d441f">is_convertible</a> () const noexcept</td></tr>
 <tr class="memdesc:abc2e276002aecb1958531fca443d441f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the wrapped instance is convertible to the provided type.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#abc2e276002aecb1958531fca443d441f">More...</a><br /></td></tr>
 <tr class="separator:abc2e276002aecb1958531fca443d441f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="memItemLeft" align="right" valign="top">enable_if_input_type_t&lt; Tag &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a5e2e1707d7a5c5d54d83098d6d35e48e">hash</a> (Hasher &amp;h) const</td></tr>
-<tr class="memdesc:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows the AnyBase_ instance to be hashed.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#a5e2e1707d7a5c5d54d83098d6d35e48e">More...</a><br /></td></tr>
-<tr class="separator:a5e2e1707d7a5c5d54d83098d6d35e48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdc505ef7e0d10319dbf3d239022e381"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#acdc505ef7e0d10319dbf3d239022e381">str</a> () const</td></tr>
 <tr class="memdesc:acdc505ef7e0d10319dbf3d239022e381"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string representation of the object stored in the any.  <a href="classpluginplay_1_1detail___1_1AnyWrapperBase.html#acdc505ef7e0d10319dbf3d239022e381">More...</a><br /></td></tr>
 <tr class="separator:acdc505ef7e0d10319dbf3d239022e381"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -476,51 +473,6 @@ template&lt;AnyTag Tag = AnyTag::General&gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">???</td><td>If the copy constructor of the wrapped instance throws. Same guarantee as the wrapped instance's copy ctor. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a5e2e1707d7a5c5d54d83098d6d35e48e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e2e1707d7a5c5d54d83098d6d35e48e">&#9670;&nbsp;</a></span>hash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;AnyTag Tag = AnyTag::General&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enable_if_input_type_t&lt;Tag&gt; <a class="el" href="classpluginplay_1_1detail___1_1AnyWrapperBase.html">pluginplay::detail_::AnyWrapperBase</a>&lt; Tag &gt;::hash </td>
-          <td>(</td>
-          <td class="paramtype">Hasher &amp;&#160;</td>
-          <td class="paramname"><em>h</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Allows the AnyBase_ instance to be hashed. </p>
-<p>This function simply delegates to the protected hash_ member function (following the suggestion on BPHash's website).</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">h</td><td>A Hasher instance to use for the hashing.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity:</dt><dd>Same as the complexity of hashing the wrapped type.</dd></dl>
-<dl class="section user"><dt>Data Races:</dt><dd>The state of the current instance will be accessed and data races may result if it is concurrently modified.</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">???</td><td>if the wrapped instance's hash function throws. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

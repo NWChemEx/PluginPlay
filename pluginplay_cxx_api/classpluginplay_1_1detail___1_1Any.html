@@ -144,9 +144,6 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a2cad62e2603e62ebc55ada37c293d17c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1Any.html#a0f1544db2d30172b35af96ca704cf00b">rtti_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1Any.html#a2cad62e2603e62ebc55ada37c293d17c">type</a> () const noexcept</td></tr>
 <tr class="memdesc:a2cad62e2603e62ebc55ada37c293d17c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the type of the wrapped instance.  <a href="classpluginplay_1_1detail___1_1Any.html#a2cad62e2603e62ebc55ada37c293d17c">More...</a><br /></td></tr>
 <tr class="separator:a2cad62e2603e62ebc55ada37c293d17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1619d54f2383b119fb26d75ae98c5f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1Any.html#af1619d54f2383b119fb26d75ae98c5f2">hash</a> (Hasher &amp;h) const</td></tr>
-<tr class="memdesc:af1619d54f2383b119fb26d75ae98c5f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forwards the wrapped type to the provided Hasher.  <a href="classpluginplay_1_1detail___1_1Any.html#af1619d54f2383b119fb26d75ae98c5f2">More...</a><br /></td></tr>
-<tr class="separator:af1619d54f2383b119fb26d75ae98c5f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8245be9bc9bf322b82f5d0a4f2d94d1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1Any.html#aa8245be9bc9bf322b82f5d0a4f2d94d1">str</a> () const</td></tr>
 <tr class="memdesc:aa8245be9bc9bf322b82f5d0a4f2d94d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a human-readable string representation of the wrapped instance.  <a href="classpluginplay_1_1detail___1_1Any.html#aa8245be9bc9bf322b82f5d0a4f2d94d1">More...</a><br /></td></tr>
 <tr class="separator:aa8245be9bc9bf322b82f5d0a4f2d94d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -534,47 +531,6 @@ template&lt;typename T , typename... Args&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity:</dt><dd>Constant. </dd></dl>
-
-</div>
-</div>
-<a id="af1619d54f2383b119fb26d75ae98c5f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af1619d54f2383b119fb26d75ae98c5f2">&#9670;&nbsp;</a></span>hash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pluginplay::detail_::Any::hash </td>
-          <td>(</td>
-          <td class="paramtype">Hasher &amp;&#160;</td>
-          <td class="paramname"><em>h</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Forwards the wrapped type to the provided Hasher. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">h</td><td>A Hasher instance to use for the hashing.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">???</td><td>if the wrapped instance's hash function throws. Same throw guarantee as the wrapped instance's hash function.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity:</dt><dd>Same as the complexity of hashing the wrapped type. </dd></dl>
 
 </div>
 </div>
