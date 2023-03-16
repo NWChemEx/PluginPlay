@@ -155,7 +155,7 @@ TEST_CASE("Module : ready") {
 TEST_CASE("Module : reset_cache") {
     auto mod_pimpl = make_module_pimpl_with_cache<RealDeal>();
     auto mod       = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
+            std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
 
     auto in = mod.inputs();
     in.at("Option 1").change(1);
@@ -171,7 +171,7 @@ TEST_CASE("Module : reset_cache") {
 TEST_CASE("Module : reset_internal_cache") {
     auto mod_base_ptr = std::make_shared<testing::NullModule>();
     auto mod          = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
+               std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
 
     pluginplay::cache::ModuleManagerCache mm_cache;
     auto cache = mm_cache.get_or_make_user_cache("foo");
@@ -444,20 +444,6 @@ TEST_CASE("Module : profile_info") {
           "^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d\\.\\d{3} : \\d h "
           "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
         REQUIRE(std::regex_search(p->profile_info(), corr));
-    }
-}
-
-TEST_CASE("Module : hash") {
-    SECTION("Inputs not set") {
-        auto mod = make_module<NotReadyModule>();
-        //        REQUIRE(hash_objects(*mod) ==
-        //        "cbc357ccb763df2852fee8c4fc7d55f2");
-    }
-    SECTION("Input set") {
-        auto mod = make_module<NotReadyModule>();
-        mod->change_input("Option 1", int{3});
-        //        REQUIRE(hash_objects(*mod) ==
-        //        "9a4294b64e60cc012c5ed48db4cd9c48");
     }
 }
 

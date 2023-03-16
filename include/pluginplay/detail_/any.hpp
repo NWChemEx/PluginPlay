@@ -343,18 +343,6 @@ public:
      */
     rtti_type type() const noexcept;
 
-    /** @brief Forwards the wrapped type to the provided Hasher.
-     *
-     *  @param[in,out] h A Hasher instance to use for the hashing.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Same
-     *              throw guarantee as the wrapped instance's hash function.
-     *
-     * @par Complexity:
-     *  Same as the complexity of hashing the wrapped type.
-     */
-    void hash(Hasher& h) const { h(m_ptr_); }
-
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.
      *
