@@ -18,8 +18,8 @@ project(pluginplay VERSION "${VERSION}" LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
-        nwx_cmake
-        GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+    nwx_cmake
+    GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
@@ -29,7 +29,7 @@ set(
     CACHE STRING "" FORCE
 )
 
-include(get_cpp)
+include(get_cmaize)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
@@ -59,7 +59,7 @@ if("${BUILD_DOCS}")
     endif()
 endif()
 
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     utilities
     URL github.com/NWChemEx-Project/utilities
     BUILD_TARGET utilities
@@ -67,7 +67,7 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
 )
 
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     libfort
     URL github.com/seleznevae/libfort
     BUILD_TARGET fort
@@ -75,13 +75,13 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS FORT_ENABLE_TESTING=OFF
 )
 
-cpp_find_or_build_dependency(
-        parallelzone
-        URL github.com/NWChemEx-Project/ParallelZone
-        PRIVATE TRUE
-        BUILD_TARGET parallelzone
-        FIND_TARGET nwx::parallelzone
-        CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
+cmaize_find_or_build_dependency(
+    parallelzone
+    URL github.com/NWChemEx-Project/ParallelZone
+    PRIVATE TRUE
+    BUILD_TARGET parallelzone
+    FIND_TARGET nwx::parallelzone
+    CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
 find_package(Boost REQUIRED)
@@ -108,11 +108,11 @@ if("${BUILD_ROCKSDB}")
     target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
 endif()
 
-cpp_add_library(
+cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS nwx::utilities nwx::parallelzone libfort::fort ${ROCKSDB_TARGET}
+    INCLUDE_DIRS "${project_inc_dir}"
+    DEPENDS utilities parallelzone libfort ${ROCKSDB_TARGET}
             Boost::boost
 )
 
@@ -141,6 +141,8 @@ if("${BUILD_TESTING}")
         test_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}_examples
+        DEPENDS Catch2 ${PROJECT_NAME}_examples
     )
 endif()
+
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
