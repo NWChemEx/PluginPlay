@@ -259,7 +259,7 @@ computing the electric field) is:</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <p>Coulomb’s Law is pretty simple. Most simulation techniques are much more
-complicated than that and involve an inticate interplay of many different
+complicated than that and involve an intricate interplay of many different
 properties.</p>
 <p>As an example say we are writing a module which computes the force of a moving
 charged particle at a position <span class="math notranslate nohighlight">\(\vec{r}\)</span>, <span class="math notranslate nohighlight">\(\vec{F}\left(\vec{r}\right)\)</span>. Assuming the particle
@@ -271,7 +271,7 @@ and that it has a charge <span class="math notranslate nohighlight">\(q\)</span>
 \newcommand{\efield}{\vec{E}\left(\vec{r}\right)}\\\force = m\acceleration + q\efield\end{aligned}\end{align} \]</div>
 <p>The important point for this tutorial is that <span class="math notranslate nohighlight">\(F\left(\vec{r}\right)\)</span> can
 be written in terms of the electric field, <span class="math notranslate nohighlight">\(\vec{E}\left(\vec{r}\right)\)</span>. To capitialize on all the
-inovations in computing electric fields, we decide to write our force module in
+innovations in computing electric fields, we decide to write our force module in
 terms of an electric field submodule.</p>
 <p>Submodules change the class’s definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
