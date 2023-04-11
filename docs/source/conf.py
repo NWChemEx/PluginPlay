@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+# Copyright 2022 NWChemEx-Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 #
 # Configuration file for the Sphinx documentation builder.
 #
@@ -10,7 +24,7 @@ import os
 
 # -- Project information -----------------------------------------------------
 
-project = u'pluginplay'
+project = u'PluginPlay'
 copyright = u'2020, NWChemEx Team'
 author = u'NWChemEx Team'
 
@@ -33,20 +47,12 @@ needs_sphinx = '1.3'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    #'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.autodoc', 'sphinx.ext.mathjax', 'sphinx.ext.githubpages',
+    'sphinx.ext.autosummary', 'sphinx_rtd_theme', 'sphinxcontrib.bibtex'
 ]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 doc_path = os.path.dirname(dir_path)
 root_path = os.path.dirname(doc_path)
-
-# Add any paths that contain templates here, relative to this directory.
-#templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -62,7 +68,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -103,12 +109,10 @@ html_theme = 'sphinx_rtd_theme'
 #
 # html_sidebars = {}
 
-
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = project + 'doc'
-
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -134,18 +138,16 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, project + '.tex',project + ' Documentation', author, 'manual'),
+    (master_doc, project + '.tex', project + ' Documentation', author,
+     'manual'),
 ]
-
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, project.lower(), project + ' Documentation', [author], 1)
-]
-
+man_pages = [(master_doc, project.lower(), project + ' Documentation',
+              [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -153,10 +155,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, project, project + ' Documentation',
-     author, project, 'One line description of project.', 'Miscellaneous'),
+    (master_doc, project, project + ' Documentation', author, project,
+     'One line description of project.', 'Miscellaneous'),
 ]
-
 
 # -- Extension configuration -------------------------------------------------
 
@@ -165,7 +166,11 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
 
-# -- Options for todo extension ----------------------------------------------
+# -- Options for bibtex --------------------------------------------------------
 
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+bibtex_bibfiles = [
+    'bibliography/background.bib', 'bibliography/design.bib',
+    'bibliography/pluginplay.bib'
+]
+bibtex_reference_style = 'super'
+bibtex_default_style = 'plain'

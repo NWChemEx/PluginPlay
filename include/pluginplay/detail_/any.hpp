@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "pluginplay/detail_/any_wrapper.hpp"
 #include "pluginplay/utility.hpp"
@@ -326,18 +342,6 @@ public:
      * @throw None. No throw guarantee.
      */
     rtti_type type() const noexcept;
-
-    /** @brief Forwards the wrapped type to the provided Hasher.
-     *
-     *  @param[in,out] h A Hasher instance to use for the hashing.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Same
-     *              throw guarantee as the wrapped instance's hash function.
-     *
-     * @par Complexity:
-     *  Same as the complexity of hashing the wrapped type.
-     */
-    void hash(Hasher& h) const { h(m_ptr_); }
 
     /** @brief Creates a human-readable string representation of the wrapped
      *         instance.

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "database/database_api.hpp"
 #include <memory>
@@ -35,6 +51,9 @@ public:
     /// Type of a pointer to the database storing the object-to-UUID relation
     using db_pointer = std::unique_ptr<db_type>;
 
+    /// Type of a container holding keys
+    using key_set_type = typename db_type::key_set_type;
+
     /** @brief Creates a new UUID instance which stores the UUID mapping in the
      *         provided db
      *
@@ -68,6 +87,18 @@ public:
      *         gurantee.
      */
     void insert(key_type key);
+
+    /** @brief Returns the set of objects which have been proxied.
+     *
+     *  N.B. this operation should only be used for debugging as it will copy
+     *  each key into the returned object.
+     *
+     *  @return A container with copies of each key.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the return.
+     *         Strong throw guarantee.
+     */
+    key_set_type keys() const { return m_db_->keys(); }
 
     /// Just calls m_db_->count(key)
     bool count(const_key_reference key) const noexcept;

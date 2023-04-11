@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "../lexical_cast.hpp"
 #include <catch2/catch.hpp>
 #include <pluginplay/cache/database/native.hpp>
@@ -18,6 +34,8 @@ TEMPLATE_LIST_TEST_CASE("Transposer", "", test_types) {
     using backup_db_type  = Native<mapped_type, key_type>;
     using db_type         = Transposer<key_type, mapped_type>;
 
+    using key_set_type = typename db_type::key_set_type;
+
     key_type key0{};
     auto key1 = testing::lexical_cast<key_type>("42");
     mapped_type val0{};
@@ -34,6 +52,8 @@ TEMPLATE_LIST_TEST_CASE("Transposer", "", test_types) {
         using ptr_type = typename db_type::wrapped_db_pointer;
         REQUIRE_THROWS_AS(db_type(ptr_type{}), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(has_val.keys() == key_set_type{key0}); }
 
     SECTION("Count") {
         REQUIRE(has_val.count(key0));

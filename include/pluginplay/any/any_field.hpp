@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "detail_/any_field_base.hpp"
 
@@ -201,33 +217,6 @@ public:
      */
     bool are_equal(const AnyField& rhs) const noexcept;
 
-    /** @brief Defines an ordering for AnyField instances.
-     *
-     *  Given two instances `a` and `b`, `a` comes before `b` if:
-     *
-     *  - `a` is default constructed, but `b` isn't
-     *  - the RTTI of `a` comes before the the RTTI of `b`
-     *  - if the value `a` wraps comes before the value `b` wraps
-     *
-     *  Following usual C++ conventions if `a` is not less than `b`, and `b` is
-     *  not less than `a`, then `a` is value equal to `b` (meaning operator==
-     *  will return true). Note that even in this scenario `are_equal` may
-     *  return false since `are_equal` also takes into account how the value is
-     *  owned.
-     *
-     *  In particular we note that the RTTI comparison is through `type()` and
-     *  does NOT take into account cv-qualifiers or references.
-     *
-     *  @param[in] rhs The instance we are comparing to.
-     *
-     *  @return True if the present instance comes before @p rhs and false
-     *          otherwise. In particular note that a value of false does not
-     *          necessarilly mean that @p rhs comes before this.
-     *
-     *  @throw None No throw guarantee.
-     */
-    // bool operator<(const AnyField& rhs) const noexcept;
-
     /** @brief Adds a string representation of the wrapped object to the stream
      *
      *  Sometimes it's useful to have string representations of objects. If the
@@ -252,7 +241,8 @@ public:
     /** @brief Does this AnyField currently wrap a value?
      *
      *  At any time an AnyField either wraps a value or does not. This function
-     *  is used to determine if the AnyField wraps a value.
+     *  is used to determine if the AnyField wraps a value. Whether the AnyField
+     *  owns the value is not considered.
      *
      *  @return True if the PIMPL is non-null and false otherwise.
      *

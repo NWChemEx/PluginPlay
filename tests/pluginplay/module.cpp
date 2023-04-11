@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
 #include <pluginplay/module.hpp>
@@ -428,20 +444,6 @@ TEST_CASE("Module : profile_info") {
           "^\\d\\d-\\d\\d-\\d{4} \\d\\d:\\d\\d:\\d\\d\\.\\d{3} : \\d h "
           "\\d m \\d s \\d+ ms[\\r\\n]  Submodule 1[\\r\\n]$");
         REQUIRE(std::regex_search(p->profile_info(), corr));
-    }
-}
-
-TEST_CASE("Module : hash") {
-    SECTION("Inputs not set") {
-        auto mod = make_module<NotReadyModule>();
-        //        REQUIRE(hash_objects(*mod) ==
-        //        "cbc357ccb763df2852fee8c4fc7d55f2");
-    }
-    SECTION("Input set") {
-        auto mod = make_module<NotReadyModule>();
-        mod->change_input("Option 1", int{3});
-        //        REQUIRE(hash_objects(*mod) ==
-        //        "9a4294b64e60cc012c5ed48db4cd9c48");
     }
 }
 

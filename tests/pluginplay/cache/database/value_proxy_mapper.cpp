@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "../lexical_cast.hpp"
 #include "../test_cache.hpp"
 #include <map>
@@ -10,9 +26,10 @@ using namespace testing;
 TEMPLATE_LIST_TEST_CASE("ValueProxyMapper", "", testing::test_types) {
     // Type of the keys, values, and resulting KeyProxyMapper we're testing
     // N.B. double not in test_types so value_type != key_type
-    using key_type    = std::map<std::string, TestType>;
-    using value_type  = std::map<std::string, double>;
-    using mapper_type = ValueProxyMapper<key_type, value_type>;
+    using key_type     = std::map<std::string, TestType>;
+    using value_type   = std::map<std::string, double>;
+    using mapper_type  = ValueProxyMapper<key_type, value_type>;
+    using key_set_type = typename mapper_type::key_set_type;
 
     // ProxyMappers need to sub objects a ProxyMapMaker and a sub database
     // First we figure out the ProxyMapMaker type and what's being proxied
@@ -55,6 +72,8 @@ TEMPLATE_LIST_TEST_CASE("ValueProxyMapper", "", testing::test_types) {
     SECTION("CTor") {
         REQUIRE_THROWS_AS(mapper_type(nullptr, nullptr), std::runtime_error);
     }
+
+    SECTION("keys") { REQUIRE(db.keys() == key_set_type{key0}); }
 
     SECTION("count") {
         REQUIRE(db.count(key0));

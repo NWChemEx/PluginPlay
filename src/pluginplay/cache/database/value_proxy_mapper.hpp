@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "../proxy_map_maker.hpp"
 #include "database_api.hpp"
@@ -34,6 +50,9 @@ public:
     /// Type of an object holding a read-only reference to a value
     using typename base_type::const_mapped_reference;
 
+    /// Ultimately a typedef of DatabaseAPI::key_set_type
+    using typename base_type::key_set_type;
+
     /// Type the ProxyMapMaker used for assigning proxies
     using proxy_map_maker = ProxyMapMaker<mapped_type>;
 
@@ -62,6 +81,9 @@ public:
                      sub_db_pointer sub_db);
 
 protected:
+    /// Just calls keys() on the wrapped db
+    key_set_type keys_() const override { return m_sub_db_->keys(); }
+
     /// Makes sure key is in proxy_mapper, if so then check sub_db
     bool count_(const_key_reference key) const noexcept override;
 

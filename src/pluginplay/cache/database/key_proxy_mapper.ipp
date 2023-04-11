@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // This file meant only for inclusion from key_proxy_mapper.hpp
 
 namespace pluginplay::cache ::database {
@@ -10,6 +26,11 @@ KEY_PROXY_MAPPER::KeyProxyMapper(proxy_map_maker_pointer proxy_mapper,
   m_proxy_mapper_(std::move(proxy_mapper)), m_sub_db_(std::move(sub_db)) {
     if(m_proxy_mapper_ && m_sub_db_) return;
     throw std::runtime_error("Expected non-null databases");
+}
+
+TPARAMS
+typename KEY_PROXY_MAPPER::key_set_type KEY_PROXY_MAPPER::keys_() const {
+    return m_proxy_mapper_->keys();
 }
 
 TPARAMS

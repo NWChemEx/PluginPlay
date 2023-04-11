@@ -1,10 +1,26 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "pluginplay/detail_/any_tag.hpp"
-#include "pluginplay/hasher.hpp"
 #include "pluginplay/types.hpp"
 #include "pluginplay/utility.hpp"
 #include <any>
 #include <memory>
+#include <sstream>
 #include <utilities/printing/print_stl.hpp>
 
 namespace pluginplay::detail_ {
@@ -110,27 +126,6 @@ public:
      */
     template<typename T>
     bool is_convertible() const noexcept;
-
-    /**
-     *  @brief Allows the AnyBase_ instance to be hashed.
-     *
-     *  This function simply delegates to the protected hash_ member
-     *  function (following the suggestion on BPHash's website).
-     *
-     *  @param[in, out] h A Hasher instance to use for the hashing.
-     *
-     *  @par Complexity:
-     *  Same as the complexity of hashing the wrapped type.
-     *
-     *  @par Data Races:
-     *  The state of the current instance will be accessed and data races
-     *  may
-     *  result if it is concurrently modified.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Strong
-     *  throw guarantee.
-     */
-    enable_if_input_type_t<Tag> hash(Hasher& h) const { hash_(h); }
 
     /** @brief Returns the string representation of the object stored in the
      *         any.
@@ -273,9 +268,6 @@ private:
 
     /// To be implemented by derived class so we can retrieve the RTTI
     virtual rtti_type type_() const noexcept = 0;
-
-    /// To be implemented by derived class so we can hash
-    virtual enable_if_input_type_t<Tag> hash_(Hasher& h) const = 0;
 
     /// To be implemented by derived class to make a string representation
     virtual std::string str_() const = 0;
@@ -434,15 +426,6 @@ private:
      *  @throw none No throw guarantee.
      */
     bool are_equal_(const AnyWrapperBase<Tag>& rhs) const noexcept override;
-
-    /** @brief Implements hashing for the AnyBase_ class.
-     *
-     *  @param[in,out] h The hasher instance to use for the hashing.
-     *
-     *  @throws ??? if the wrapped instance's hash function throws.  Strong
-     *              throw guarantee.
-     */
-    enable_if_input_type_t<Tag> hash_(Hasher& h) const override { h(value_()); }
 };
 
 //-------------------------------Implementations--------------------------------

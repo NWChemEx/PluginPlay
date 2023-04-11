@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
 #include <pluginplay/submodule_request.hpp>
@@ -173,20 +189,6 @@ TEST_CASE("SubmoduleRequest : run_as") {
         r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>());
         r.run_as<testing::NullPT>();
-    }
-}
-
-TEST_CASE("SubmoduleRequest : hash") {
-    SubmoduleRequest r;
-    SECTION("No module") {
-        //        REQUIRE(hash_objects(r) ==
-        //        "00000000000000000000000000000000");
-    }
-    SECTION("Module") {
-        r.set_type<testing::OneIn>();
-        r.change(testing::make_module<testing::NotReadyModule>());
-        //        REQUIRE(hash_objects(r) ==
-        //        "cbc357ccb763df2852fee8c4fc7d55f2");
     }
 }
 

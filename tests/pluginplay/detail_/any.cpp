@@ -1,5 +1,20 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "pluginplay/detail_/any.hpp"
-#include "pluginplay/hasher.hpp"
 #include <catch2/catch.hpp>
 #include <map>
 #include <typeindex>
@@ -11,8 +26,6 @@ TEST_CASE("Any : Default ctor") {
     Any a;
     REQUIRE_FALSE(a.has_value());
     REQUIRE(a.type() == typeid(void));
-    // REQUIRE(pluginplay::hash_objects(a) ==
-    // "cbc357ccb763df2852fee8c4fc7d55f2");
     REQUIRE_THROWS_AS(a.cast<double>(), std::bad_any_cast);
     REQUIRE(a.str() == "<empty Any>");
 }
@@ -22,8 +35,6 @@ TEST_CASE("Any : Value ctor") {
         Any a(int{3});
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
-        // REQUIRE(pluginplay::hash_objects(a) ==
-        // "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -32,8 +43,6 @@ TEST_CASE("Any : Value ctor") {
         Any a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(int));
-        // REQUIRE(pluginplay::hash_objects(a) ==
-        // "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -42,8 +51,6 @@ TEST_CASE("Any : Value ctor") {
         Any a(x);
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(const int));
-        // REQUIRE(pluginplay::hash_objects(a) ==
-        // "9a4294b64e60cc012c5ed48db4cd9c48");
         REQUIRE(a.cast<int>() == 3);
         REQUIRE(a.str() == "3");
     }
@@ -53,8 +60,6 @@ TEST_CASE("Any : Value ctor") {
         Any a(std::move(x));
         REQUIRE(a.has_value());
         REQUIRE(a.type() == typeid(std::vector<int>));
-        // REQUIRE(pluginplay::hash_objects(a) ==
-        // "ad06a09d17cceb43c8d7f0283f889ef6");
         REQUIRE(a.cast<std::vector<int>&>().data() == px);
         // RMR I don't know why this is broken on my box, but since we're going
         // to scrap this class shortly I'm not going to worry about it.
