@@ -128,7 +128,7 @@ Submodules
 ==========
 
 Coulomb's Law is pretty simple. Most simulation techniques are much more
-complicated than that and involve an inticate interplay of many different
+complicated than that and involve an intricate interplay of many different
 properties.
 
 As an example say we are writing a module which computes the force of a moving
@@ -146,7 +146,7 @@ and that it has a charge :math:`q`, the |force| is given by:
 
 The important point for this tutorial is that :math:`F\left(\vec{r}\right)` can
 be written in terms of the electric field, |e_field|. To capitialize on all the
-inovations in computing electric fields, we decide to write our force module in
+innovations in computing electric fields, we decide to write our force module in
 terms of an electric field submodule.
 
 Submodules change the class's definition. In the constructor we now need to
