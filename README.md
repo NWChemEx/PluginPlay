@@ -16,15 +16,50 @@
 
 [![Actions](https://github.com/NWChemEx-Project/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/PluginPlay)
 
-PluginPlay
-==========
-
 [Documentation](https://nwchemex-project.github.io/PluginPlay/)
 
-Warning!!!! PluginPlay is currently in beta. 
+![alt text](docs/source/assets/full_logo.png)
 
-At this points APIs should be stable, but expect bugs and 
-performance issues. We are actively improving PluginPlay
-in concert with NWChemEx. As downstream work continues on
-NWChemEx expect PluginPlay to improve. FWIW, we expect a 
-1.0 release of PluginPlay by March 2023.
+PluginPlay is an inversion-of-control (IoC) framework to facilitate wrtiting
+high-performance modular scientific software. More specifically, using
+PluginPlay scientific software is written as a series of disconnected modules.
+At runtime the modules are loaded into PluginPlay and then PluginPlay wires the
+modules together to form a call graph. A more detailed overview can be found
+[here](https://nwchemex-project.github.io/PluginPlay/background/overview.html).
+
+# Features
+
+From the perspective of high-performance scientific software development, the
+main features of PluginPlay are:
+
+- Memoization of the call graph. PluginPlay automatically records the execution
+  of the call graph, which facilitates saving/loading a calcualtion.
+-
+
+A full feature list can be found
+[here](https://nwchemex-project.github.io/PluginPlay/features.html).
+
+# Install
+
+PluginPlay ultimately uses CMake for configuring and building. This means that
+installation is usually achieved via a variation on:
+
+```.sh
+git clone https://github.com/NWChemEx-Project/PluginPlay
+cd PluginPlay
+cmake -H. -Bbuild -D...
+cmake --build build --target install
+```
+More detailed install instructions can be found
+[here](https://nwchemex-project.github.io/PluginPlay/install.html).
+
+# Contributing
+
+- [Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
+- [Contributor License Agreement](https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
+- [Developer Documentation](https://nwchemex-project.github.io/PluginPlay/developer/index.html)
+- [Code of Conduct](https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md)
+
+# Acknowledgments
+
+This research was supported by the Exascale Computing Project (17-SC-20-SC), a collaborative effort of the U.S. Department of Energy Office of Science and the National Nuclear Security Administration.

@@ -29,8 +29,7 @@ copyright = u'2020, NWChemEx Team'
 author = u'NWChemEx Team'
 
 # Get the version from version.txt
-with open('../../version.txt', 'r') as file:
-    version = file.read().replace('\n', '')
+version = "1.0.0"
 # The full version, including alpha/beta/rc tags
 release = version
 
@@ -88,12 +87,14 @@ numfig = True
 #
 html_theme = 'sphinx_rtd_theme'
 
+html_logo = "assets/full_logo.png"
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-
+    'logo_only': True
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
