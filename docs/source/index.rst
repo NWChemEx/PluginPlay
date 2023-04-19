@@ -16,6 +16,8 @@
 PluginPlay
 ##########
 
+.. image:: assets/full_logo.png
+
 Thanks for your interest in the PluginPlay project!!!
 
 If you are completely new to PluginPlay we recommend you start
@@ -34,8 +36,8 @@ your choice).
 .. toctree::
    :maxdepth: 2
 
-   installation/index
    background/index
+   install
    tutorials/index
    developer/index
    faqs
