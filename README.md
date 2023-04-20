@@ -14,11 +14,13 @@
   ~ limitations under the License.
 -->
 
+![alt text](docs/source/assets/full_logo.png)
+
 [![Actions](https://github.com/NWChemEx-Project/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/PluginPlay)
 
 [Documentation](https://nwchemex-project.github.io/PluginPlay/)
 
-![alt text](docs/source/assets/full_logo.png)
+TODO: add badge when article has DOI.
 
 PluginPlay is an inversion-of-control (IoC) framework to facilitate wrtiting
 high-performance modular scientific software. More specifically, using
@@ -30,11 +32,16 @@ modules together to form a call graph. A more detailed overview can be found
 # Features
 
 From the perspective of high-performance scientific software development, the
-main features of PluginPlay are:
+main features enjoyed by a program built on top of PluginPlay are:
 
+- Want to call your new optimizer everwhere an optimizer is needed without
+  modifying those places, or even knowing where those places are? Runtime
+  dependency injection lets you do just that!
 - Memoization of the call graph. PluginPlay automatically records the execution
   of the call graph, which facilitates saving/loading a calcualtion.
--
+- Plugin-based development. In C++ there is no need to recompile anything other
+  than your plugin while developing it. Notably all other plugins and the
+  program consuming the plugins, do not need to be recompiled!
 
 A full feature list can be found
 [here](https://nwchemex-project.github.io/PluginPlay/features.html).

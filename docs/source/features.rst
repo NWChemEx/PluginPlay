@@ -16,21 +16,32 @@
 List of PluginPlay Features
 ###########################
 
+This page is intended to collect the major selling points of PluginPlay. This
+necessarilly is not a complete list; the complete list can be garnered by
+reviewing the list of merged pull requests on GitHub.
+
 ********************
 Fundamental Features
 ********************
 
-The features listed in this section literally define an inversion-of-control
+The features listed in this section essentially define an inversion-of-control
 framework. So while they have been available since version 1.0.0, their
 fundamental nature makes them almost assumed; nonetheless, we list them here
 for completeness.
 
 - Algorithms are written as modules, self-contained encapsulated units of code.
 - Interfaces defining how modules exchange data are defined via "property
-  types". Users can choose how to call a module dynamically by selecting from
+  types". Users can dynamically choose how to call a module by selecting from
   the property types it satisfies.
-- Property types can be developed downstream of PluginPlay and may thus contain
-  domain-specific data.
+- Property types are developed downstream of PluginPlay and may thus contain
+  domain-specific data structures, *i.e.*, no need to serialize or use a
+  restricted set of types.
+- Module distribution is facilitated by creating packages called "plugins."
+- Plugins can be loaded at runtime to dynamically change the features of the
+  codes built on PluginPlay.
+- Dependency injection. PluginPlay allows modules to use other modules without
+  either module knowing of the other's existence, so long as their property
+  types are compatible.
 
 **************************************
 Features available in PluginPlay 1.0.0
