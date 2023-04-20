@@ -50,7 +50,7 @@ MODULE_RUN(ClassicalForce) {
     // This will be the value of the force
     Point F{0.0, 0.0, 0.0};
 
-    auto [E] = submods.at("electric field").run_as<efield_type>(q.m_r, charges);
+    auto E = submods.at("electric field").run_as<efield_type>(q.m_r, charges);
 
     for(std::size_t i = 0; i < 3; ++i) { F[i] = m * a[i] + q.m_charge * E[i]; }
 

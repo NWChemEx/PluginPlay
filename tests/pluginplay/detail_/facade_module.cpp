@@ -20,7 +20,7 @@
 
 TEST_CASE("FacadeModule : single return") {
     auto f = pluginplay::make_facade<testing::OneOut>(2);
-    REQUIRE(std::get<0>(f.run_as<testing::OneOut>()) == 2);
+    REQUIRE(f.run_as<testing::OneOut>() == 2);
 }
 
 TEST_CASE("FacadeModule : multiple returns") {

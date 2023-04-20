@@ -326,7 +326,7 @@ private:
          * Similarly, you will get an error if you try to assign the result of
          * the call to an identifier of the wrong type.
          */
-        auto [area] = submods.at("area").run_as<Area>(dims[0], dims[1]);
+        auto area = submods.at("area").run_as<Area>(dims[0], dims[1]);
 
         /* This concludes the module tutorial. The remainder of the code
          * finishes the implementation of the ``Prism`` class and presents
