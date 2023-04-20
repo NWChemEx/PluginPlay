@@ -22,7 +22,13 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
-list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
+set(
+    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${nwx_cmake_SOURCE_DIR}/cmake"
+    CACHE STRING ""
+    FORCE
+)
+
+include(get_cmaize)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
@@ -36,7 +42,7 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("${project_inc_dir}")
 
-include(get_cmaize)
+
 
 cmaize_find_or_build_dependency(
     utilities
