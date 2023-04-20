@@ -385,11 +385,11 @@ TEST_CASE("Module : run_as") {
     }
     SECTION("Can call defaulted module without arg") {
         auto mod = make_module<ReadyModule>();
-        REQUIRE(std::get<0>(mod->run_as<OptionalInput>()) == 1);
+        REQUIRE(mod->run_as<OptionalInput>() == 1);
     }
     SECTION("Can call defaulted module without arg") {
         auto mod = make_module<ReadyModule>();
-        REQUIRE(std::get<0>(mod->run_as<OptionalInput>(42)) == 42);
+        REQUIRE(mod->run_as<OptionalInput>(42) == 42);
     }
     SECTION("Can call use derived classes polymorphically") {
         auto mod = make_module<PolymorphicModule>();
@@ -404,7 +404,7 @@ TEST_CASE("Module : run_as") {
     }
     SECTION("Works") {
         auto mod = make_module<ResultModule>();
-        REQUIRE(std::get<0>(mod->run_as<OneOut>()) == 4);
+        REQUIRE(mod->run_as<OneOut>() == 4);
         SECTION("Locks module") { REQUIRE(mod->locked()); }
     }
 }

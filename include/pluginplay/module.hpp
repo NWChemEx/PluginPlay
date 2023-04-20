@@ -738,7 +738,19 @@ auto Module::run_as(Args&&... args) {
     check_property_type_(type::rtti{typeid(property_type)});
     auto temp = inputs();
     temp      = property_type::wrap_inputs(temp, std::forward<Args>(args)...);
-    return property_type::unwrap_results(run(temp));
+    using r_type = decltype(property_type::unwrap_results(run(temp)));
+    using clean_t = std::decay_t<r_type>;
+    if constexpr(std::is_same_v<clean_t, void>){
+        property_type::unwrap_results(run(temp));
+    }else {
+        auto rv = property_type::unwrap_results(run(temp));
+
+        if constexpr (std::tuple_size_v<clean_t> == 1){
+            return std::get<0>(rv);
+        } else{
+            return rv;
+        }
+    }
 }
 
 inline void Module::assert_not_locked_() {
