@@ -40,8 +40,8 @@ set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src" 
-                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
+# nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/include")
+nwx_cxx_api_docs("${project_inc_dir}")
 
 
 
