@@ -26,7 +26,6 @@ you please select an option from the following menu:
    learn by example. <pp_tutorials>`
 3. :ref:`I am interested in contributing to PluginPlay. <pp_developer>`
 4. I am not happy being told what to do.
-5. This is for testing whether doc updates or not.
 
 If you choose 4, please try browsing the topics on your own then...
 
