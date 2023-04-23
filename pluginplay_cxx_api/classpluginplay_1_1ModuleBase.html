@@ -868,7 +868,7 @@ template&lt;typename T &gt; </div>
 
 <p>Retrieves the inputs this module requires. </p>
 <p>This function can be used to retrieve the set of inputs that the developer defined. These are the results as they were defined in the module's ctor and thus are thus always the defaults. Hence using this function to inputs during run_ is a mistake (and will likely fail because some values are not set).</p>
-<p>The set of inputs returned by <a class="el" href="classpluginplay_1_1Module.html#a1e9604379735dd63b5d502c42d0b06a0" title="Returns the inputs this module recognizes.">Module::inputs</a> is the set of inputs from this function combined with the defaults set by the user.</p>
+<p>The set of inputs returned by <a class="el" href="classpluginplay_1_1Module.html#a9c08084c405c78d283dde5707268bd9d" title="Returns the inputs this module recognizes.">Module::inputs</a> is the set of inputs from this function combined with the defaults set by the user.</p>
 <dl class="section return"><dt>Returns</dt><dd>The set of inputs that the developer defined.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
@@ -987,7 +987,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Returns the set of property types this module satisfies. </p>
-<p>This function returns the set of property types that the developer okay'd their module to run as. It is used as the seed for the return of the similarly named <a class="el" href="classpluginplay_1_1Module.html#a52ad74c526a3d651df074e701ebf445f" title="Returns the set of property types that this module can be run as.">Module::property_types</a>, which returns the full set of property_types that the module can be run as. The final list may differ from the list returned by this function if the user explicitly whitelists additional property types.</p>
+<p>This function returns the set of property types that the developer okay'd their module to run as. It is used as the seed for the return of the similarly named <a class="el" href="classpluginplay_1_1Module.html#ad5a4ec2878bdc6ab27a1ca89498fb7ac" title="Returns the set of property types that this module can be run as.">Module::property_types</a>, which returns the full set of property_types that the module can be run as. The final list may differ from the list returned by this function if the user explicitly whitelists additional property types.</p>
 <dl class="section return"><dt>Returns</dt><dd>The list of property types that this module can be run as.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
@@ -1024,7 +1024,7 @@ template&lt;typename T &gt; </div>
 <p>Retrieves the results this module can compute. </p>
 <p>This function does <b>NOT</b> return actual computed results,, but rather a result_map of the results that can be computed with this module. When you run the module results are returned directly to you, there is no need to call this function unless you want to know ahead of time what results to expect.</p>
 <p>This function also serves as a convenient mechanism for developers to construct their module's return value. Namely call this function, copy the result, set the copy's values, return the copy.</p>
-<p>It does not make sense for the user to add additional results to a module and the list returned through <a class="el" href="classpluginplay_1_1Module.html#a53c3b842f9b55235283ce085016d80b5" title="Returns the set of results that can be computed by this module.">Module::results</a> will always be the same as the list returned by this function.</p>
+<p>It does not make sense for the user to add additional results to a module and the list returned through <a class="el" href="classpluginplay_1_1Module.html#abd7b2a50ca408b93b39744dbb799efc7" title="Returns the set of results that can be computed by this module.">Module::results</a> will always be the same as the list returned by this function.</p>
 <dl class="section return"><dt>Returns</dt><dd>The set of results that the developer defined this module as being able to compute.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
@@ -1232,7 +1232,7 @@ template&lt;typename property_type &gt; </div>
 
 <p>Returns the set of submodules requested by the developer. </p>
 <p>This function returns the set of submodule requests that were created in the module's ctor. These requests are in the same state they were defined in, which means they are also unlikely to be fulfilled. Hence, using this function to retrieve submodules during your module's run_ member is unlikely to work because you will not get any submodules.</p>
-<p>The set of submodules returned by <a class="el" href="classpluginplay_1_1Module.html#ae2efdff860a5f9acd03010b5f3b53f57" title="Returns the submodule callback points defined by this module.">Module::submods</a> is the set returned by this function, combined with any defaults set by the user.</p>
+<p>The set of submodules returned by <a class="el" href="classpluginplay_1_1Module.html#ab584778c7a47a5177b42399b3c56c3d2" title="Returns the submodule callback points defined by this module.">Module::submods</a> is the set returned by this function, combined with any defaults set by the user.</p>
 <dl class="section return"><dt>Returns</dt><dd>The set of submodules specified by the developer in the ctor.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">

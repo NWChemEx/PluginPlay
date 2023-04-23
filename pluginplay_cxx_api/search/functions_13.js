@@ -1,16 +1,7 @@
 var searchData=
 [
-  ['_7eany_387',['~Any',['../classpluginplay_1_1detail___1_1Any.html#af338ee8d6343a31f4284e2a55bb0f34b',1,'pluginplay::detail_::Any']]],
-  ['_7eanyfield_388',['~AnyField',['../classpluginplay_1_1any_1_1AnyField.html#aad47cec1b53de6071ef865e553856ef4',1,'pluginplay::any::AnyField']]],
-  ['_7eanyfieldbase_389',['~AnyFieldBase',['../classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a411bd0df14f9c9cdb960dde3445dd44f',1,'pluginplay::any::detail_::AnyFieldBase']]],
-  ['_7eanywrapperbase_390',['~AnyWrapperBase',['../classpluginplay_1_1detail___1_1AnyWrapperBase.html#ab42bcc3845ba7293bfa54b74d5b2ca89',1,'pluginplay::detail_::AnyWrapperBase']]],
-  ['_7efieldtuple_391',['~FieldTuple',['../classpluginplay_1_1FieldTuple.html#a6766bb08829d4293780133260fb7e906',1,'pluginplay::FieldTuple']]],
-  ['_7emodule_392',['~Module',['../classpluginplay_1_1Module.html#a5d0d950f321b5030ee8ac9e9c8741dcb',1,'pluginplay::Module']]],
-  ['_7emodulebase_393',['~ModuleBase',['../classpluginplay_1_1ModuleBase.html#a3b609656ac268db1bea3bc5fb9f88421',1,'pluginplay::ModuleBase']]],
-  ['_7emodulecache_394',['~ModuleCache',['../classpluginplay_1_1cache_1_1ModuleCache.html#a475d139b8999e2563ceaafec067af39f',1,'pluginplay::cache::ModuleCache']]],
-  ['_7emoduleinput_395',['~ModuleInput',['../classpluginplay_1_1ModuleInput.html#a54abdba0a1028f654fac27d9c0e856f0',1,'pluginplay::ModuleInput']]],
-  ['_7emodulemanager_396',['~ModuleManager',['../classpluginplay_1_1ModuleManager.html#a1119ea79a4c4944157bebc50c2cc60ab',1,'pluginplay::ModuleManager']]],
-  ['_7emodulemanagercache_397',['~ModuleManagerCache',['../classpluginplay_1_1cache_1_1ModuleManagerCache.html#afdaf0579be72e9088cfb475df9993969',1,'pluginplay::cache::ModuleManagerCache']]],
-  ['_7emoduleresult_398',['~ModuleResult',['../classpluginplay_1_1ModuleResult.html#a2f9996782b53beb0144cf83301359ed9',1,'pluginplay::ModuleResult']]],
-  ['_7esubmodulerequest_399',['~SubmoduleRequest',['../classpluginplay_1_1SubmoduleRequest.html#abbcf10c693cce09fa8ab4d67abb8c5ec',1,'pluginplay::SubmoduleRequest']]]
+  ['value_556',['value',['../classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a74db1e891268ef22941246e84da76fee',1,'pluginplay::detail_::SubmoduleRequestPIMPL::value() const'],['../classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a73dc27a51be6ae225149c7f32e014351',1,'pluginplay::detail_::SubmoduleRequestPIMPL::value()'],['../classpluginplay_1_1detail___1_1ModuleInputPIMPL.html#a4b122b84a32a9d244391abc4893bd5d3',1,'pluginplay::detail_::ModuleInputPIMPL::value()'],['../classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a1899489fea9709005b93493c3327d075',1,'pluginplay::detail_::ModuleResultPIMPL::value()'],['../classpluginplay_1_1ModuleInput.html#aaff9d759fbda690c560d16e9329ad1ea',1,'pluginplay::ModuleInput::value()'],['../classpluginplay_1_1ModuleInput.html#a6336865035bb03229bed97e817623793',1,'pluginplay::ModuleInput::value() const'],['../classpluginplay_1_1ModuleResult.html#aa665d843cfe2d35ef6cc92d45a640f80',1,'pluginplay::ModuleResult::value()'],['../classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d',1,'pluginplay::SubmoduleRequest::value() const'],['../classpluginplay_1_1SubmoduleRequest.html#a07ad2fe8526464addc490e9b31b37b12',1,'pluginplay::SubmoduleRequest::value()']]],
+  ['value_5fequal_557',['value_equal',['../classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ab6f1857afbbbf939ec5225ac4c38f6b2',1,'pluginplay::any::detail_::AnyFieldBase']]],
+  ['value_5fequal_5f_558',['value_equal_',['../classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html#a1212bead549b3259bcea0c50f5633e1b',1,'pluginplay::any::detail_::AnyFieldWrapper']]],
+  ['valueproxymapper_559',['ValueProxyMapper',['../classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html#aed12e69f5b725af5b3f2ef9993450b82',1,'pluginplay::cache::database::ValueProxyMapper']]]
 ];

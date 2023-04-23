@@ -16,26 +16,25 @@
 PluginPlay
 ##########
 
-Thanks for your interest in the PluginPlay project!!!
+.. image:: assets/full_logo.png
 
-If you are completely new to PluginPlay we recommend you start
-with :ref:`pp_overview`.
+Thanks for your interest in the PluginPlay project!!! To help us better serve
+you please select an option from the following menu:
 
-If you are trying to write a plugin, module, or property type and you prefer
-to learn by example, check out :ref:`pp_tutorials`.
+1. :ref:`I am completely new to PluginPlay. <pp_overview>`
+2. :ref:`I am trying to write a plugin, module, or property type and prefer to
+   learn by example. <pp_tutorials>`
+3. :ref:`I am interested in contributing to PluginPlay. <pp_developer>`
+4. I am not happy being told what to do.
 
-If you are interested in contributing to the PluginPlay framework then start
-by looking at :ref:`pp_developer`.
-
-If you don't like being told what to do, and would rather browse topics on your
-own then here's an index of the documentation you can peruse through (or not,
-your choice).
+If you choose 4, please try browsing the topics on your own then...
 
 .. toctree::
    :maxdepth: 2
 
-   installation/index
    background/index
+   features
+   install
    tutorials/index
    developer/index
    faqs
