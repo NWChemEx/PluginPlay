@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - doc-fix
 
 jobs:
   Build-Documentation:
