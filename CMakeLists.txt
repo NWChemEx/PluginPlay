@@ -103,11 +103,7 @@ cmaize_add_library(
 )
 
 include(nwx_python_mods)
-cppyy_make_python_package(
-    PACKAGE pluginplay
-    NAMESPACES pluginplay
-    DEPPACKAGES parallelzone
-)
+cppyy_make_python_package(PACKAGE pluginplay NAMESPACES pluginplay DEPPACKAGES parallelzone )
 
 if("${BUILD_TESTING}")
     set(tests_src_dir "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}")
