@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - check-build
 
 jobs:
   build-with-gcc:
