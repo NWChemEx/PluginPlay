@@ -27,7 +27,7 @@ you please select an option from the following menu:
 3. :ref:`I am interested in contributing to PluginPlay. <pp_developer>`
 4. I am not happy being told what to do.
 
-If you choose 4, then please try browsing the topics on your own then...
+If you choose 4, please try browsing the topics on your own then...
 
 .. toctree::
    :maxdepth: 2
