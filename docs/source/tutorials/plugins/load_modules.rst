@@ -35,7 +35,7 @@ Public API
 
 As far as the public API for ``load_modules`` goes, the declaration is simple:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/load_modules.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/load_modules.hpp
    :language: c++
 
 In particular note that by forward declaring the ``load_modules`` function it is
@@ -67,7 +67,7 @@ existing instances.
 Continuing with our electric field examples, adding our modules to the
 ``ModuleManager`` looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/load_modules.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/load_modules.cpp
    :language: c++
    :lines: 17-27,30-32
 
@@ -84,7 +84,7 @@ modules; their keys are:
 If by default we want the ``ClassicalForce`` module we loaded under the key
 "Force" to use a ``CoulombsLaw`` module we can accomplish this by:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/load_modules.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/load_modules.cpp
    :language: c++
    :lines: 29
 
@@ -97,5 +97,5 @@ If by default we want the ``ClassicalForce`` module we loaded under the key
 
 The entire implementation of our ``load_modules`` function looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/load_modules.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/load_modules.cpp
    :language: c++

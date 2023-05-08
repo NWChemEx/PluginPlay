@@ -19,7 +19,7 @@
 #include <iterator>
 #include <pluginplay/printing/document_modules.hpp>
 
-#include "../docs/load_modules.hpp"
+#include "../doc_snippets/load_modules.hpp"
 
 TEST_CASE("document_modules") {
     // Need a docs path

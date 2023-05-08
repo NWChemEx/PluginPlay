@@ -40,7 +40,7 @@ set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src" 
+nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src"
                  "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 
@@ -110,8 +110,10 @@ cppyy_make_python_package(
 )
 
 if("${BUILD_TESTING}")
-    set(tests_src_dir "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}")
-    set(examples_src_dir "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}/docs")
+    set(cxx_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(tests_src_dir "${cxx_tests_dir}/unit_tests/${PROJECT_NAME}")
+    set(examples_src_dir "${cxx_tests_dir}/doc_snippets")
+
     cmaize_add_library(
         ${PROJECT_NAME}_examples
         SOURCE_DIR ${examples_src_dir}

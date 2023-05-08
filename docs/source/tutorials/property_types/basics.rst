@@ -28,7 +28,7 @@ Like declaring a module, declaring a property type involves a lot of
 boilerplate. For this reason we have provided macros to faciliate the process.
 To declare our ``ElectricField`` property type the relevant code is:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/electric_field.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/electric_field.hpp
    :language: c++
    :lines: 17,19,21,23,38
 
@@ -62,7 +62,7 @@ boilerplate.
 
 The definition of the ``inputs_()`` function looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/electric_field.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/electric_field.hpp
    :language: c++
    :lines: 25-38
 
@@ -87,7 +87,7 @@ After agreeing on the types we declare the fields. This involves calling
 ``add_field``. ``add_field`` takes one type parameter (the type of the field)
 and a string which will be used as the name of the field. You can think of:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/electric_field.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/electric_field.hpp
    :language: c++
    :lines: 29-31
 
@@ -119,7 +119,7 @@ The definition of the ``results_()`` function looks very similar to
 ``pluginplay::declare_result`` instead of ``pluginplay::declare_inputs``. The
 definition is:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/electric_field.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/electric_field.hpp
    :language: c++
    :lines: 40-42
 
@@ -160,5 +160,5 @@ defining the function:
 The full declaration and definition of the ``ElectricField`` property type is
 shown below:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/electric_field.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/electric_field.hpp
    :language: c++
