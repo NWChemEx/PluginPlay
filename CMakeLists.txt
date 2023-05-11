@@ -32,7 +32,8 @@ include(get_cmaize)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_PYBIND11_PYBINDIGS "Use pybind11 to build Python3 bindings?" OFF)
+option(BUILD_CPPYY_PYBINDINGS "Use Cppyy to build Python3 bindings?" OFF)
 option(BUILD_ROCKSDB "Should we build the RocksDB backend?" OFF)
 
 # Work out the project paths
@@ -42,8 +43,6 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src"
                  "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-
 
 cmaize_find_or_build_dependency(
     utilities
@@ -72,6 +71,7 @@ cmaize_find_or_build_dependency(
 
 find_package(Boost REQUIRED)
 
+set(pluginplay_depends utilities parallelzone libfort Boost::boost)
 set(ROCKSDB_TARGET "")
 if("${BUILD_ROCKSDB}")
     set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
@@ -92,15 +92,27 @@ if("${BUILD_ROCKSDB}")
     #                WITH_TESTS=OFF
     # )
     target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
+    list(APPEND pluginplay_depends ${ROCKSDB_TARGET})
 endif()
 
-cmaize_add_library(
-    ${PROJECT_NAME}
-    SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS utilities parallelzone libfort ${ROCKSDB_TARGET}
-            Boost::boost
-)
+set(pluginplay_target ${PROJECT_NAME})
+if("${BUILD_PYBIND11_PYBINDINGS}")
+    include(nwx_pybind11)
+    nwx_add_pybind11_module(
+        ${PROJECT_NAME}
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src"
+        INCLUDE_DIRS "${project_inc_dir}"
+        DEPENDS "${pluginplay_depends}"
+    )
+    set(pluginplay_target "py_${pluginplay_target}")
+else()
+    cmaize_add_library(
+        ${PROJECT_NAME}
+        SOURCE_DIR "${project_src_dir}"
+        INCLUDE_DIRS "${project_inc_dir}"
+        DEPENDS "${pluginplay_depends}"
+    )
+endif()
 
 include(nwx_python_mods)
 cppyy_make_python_package(
@@ -118,7 +130,7 @@ if("${BUILD_TESTING}")
         ${PROJECT_NAME}_examples
         SOURCE_DIR ${examples_src_dir}
         INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS ${PROJECT_NAME}
+        DEPENDS ${pluginplay_target}
     )
     cppyy_make_python_package(
         PACKAGE ${PROJECT_NAME}_examples
