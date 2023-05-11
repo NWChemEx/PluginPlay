@@ -19,7 +19,9 @@
 #include <exception>
 #include <memory>
 #include <ostream>
+#include <pluginplay/python/python_wrapper.hpp>
 #include <typeindex>
+
 namespace pluginplay::any::detail_ {
 
 /** @brief
@@ -31,6 +33,15 @@ public:
 
     /// The type the Any class hierarchy uses for RTTI purposes
     using rtti_type = std::type_index;
+
+    /// The type we use for holding Python objects
+    using python_value = python::PythonWrapper;
+
+    /// A read/write reference to a Python object
+    using python_reference = python_value&;
+
+    /// A read-only reference to a Python object
+    using const_python_reference = const python_value&;
 
     /** @brief Polymorphic copy
      *
@@ -121,6 +132,10 @@ public:
 
     bool storing_const_reference() const noexcept {
         return storing_const_ref_();
+    }
+
+    bool storing_python_object() const noexcept {
+        return storing_python_object_();
     }
 
     /** @brief Polymophically compares two objects derived from AnyFieldBase.
@@ -258,9 +273,9 @@ protected:
 private:
     /// Deleted to avoid slicing
     ///@{
-    AnyFieldBase(AnyFieldBase&& other) = delete;
+    AnyFieldBase(AnyFieldBase&& other)           = delete;
     AnyFieldBase& operator=(const AnyFieldBase&) = delete;
-    AnyFieldBase& operator=(AnyFieldBase&&) = delete;
+    AnyFieldBase& operator=(AnyFieldBase&&)      = delete;
     ///@}
 
     /// To be overriddent to implement clone
@@ -283,6 +298,9 @@ private:
 
     /// To be overridden by derived class to implement storing_const_value
     virtual bool storing_const_value_() const noexcept = 0;
+
+    /// To be overridden by derived class to implement storing_python_object
+    virtual bool storing_python_object_() const noexcept = 0;
 
     /// Code factorization for throwing when we can't convert to T
     template<typename T>

@@ -22,6 +22,11 @@ T AnyFieldBase::cast() {
     // N.B. This relies on calling the non-const version of is_convertible
     if(!is_convertible<T>()) error_if_not_convertible_<T>();
 
+    if(storing_python_object()) {
+        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        return py_obj.unwrap<T>();
+    }
+
     using clean_type              = std::decay_t<T>;
     using mutable_ref             = clean_type&;
     constexpr bool by_mutable_ref = std::is_same_v<T, mutable_ref>;
@@ -42,8 +47,17 @@ template<typename T>
 T AnyFieldBase::cast() const {
     // N.B. This relies on calling the const-version of is_convertible
     if(!is_convertible<T>()) error_if_not_convertible_<T>();
+    using clean_type = std::decay_t<T>;
 
-    using clean_type              = std::decay_t<T>;
+    if(storing_python_object()) {
+        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        if constexpr(std::is_same_v<clean_type, python::PythonWrapper>) {
+            return py_obj;
+        } else {
+            return py_obj.unwrap<T>();
+        }
+    }
+
     using mutable_ref             = clean_type&;
     constexpr bool by_mutable_ref = std::is_same_v<T, mutable_ref>;
     static_assert(!by_mutable_ref, "Read-only can't be retrieved mutably");
@@ -57,8 +71,9 @@ T AnyFieldBase::cast() const {
 
 template<typename T>
 bool AnyFieldBase::is_convertible() noexcept {
-    // Only differs from non-const overload if we hold a mutable value
-    if(storing_const_reference() || storing_const_value())
+    // Only differs from non-const overload if we hold a mutable C++ value
+    if(storing_const_reference() || storing_const_value() ||
+       storing_python_object())
         return std::as_const(*this).is_convertible<T>();
 
     // Getting here means it's stored by mutable value and we can return it
@@ -68,6 +83,11 @@ bool AnyFieldBase::is_convertible() noexcept {
 
 template<typename T>
 bool AnyFieldBase::is_convertible() const noexcept {
+    if(storing_python_object()) {
+        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        return py_obj.is_convertible<T>();
+    }
+
     using clean_type = std::decay_t<T>;
     // Value is read-only so can only be one of these:
     constexpr bool by_val  = std::is_same_v<clean_type, T>;

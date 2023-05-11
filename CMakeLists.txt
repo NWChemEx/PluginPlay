@@ -105,13 +105,15 @@ if("${BUILD_PYBIND11_PYBINDINGS}")
         DEPENDS "${pluginplay_depends}"
     )
     set(pluginplay_target "py_${pluginplay_target}")
+    target_compile_definitions("${pluginplay_target}" PUBLIC BUILD_PYBIND11)
 else()
     cmaize_add_library(
-        ${PROJECT_NAME}
+        ${pluginplay_target}
         SOURCE_DIR "${project_src_dir}"
         INCLUDE_DIRS "${project_inc_dir}"
         DEPENDS "${pluginplay_depends}"
     )
+    cmaize_add_package(${pluginplay_target} NAMESPACE nwx::)
 endif()
 
 include(nwx_python_mods)
@@ -123,6 +125,7 @@ cppyy_make_python_package(
 
 if("${BUILD_TESTING}")
     set(cxx_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(python_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
     set(tests_src_dir "${cxx_tests_dir}/unit_tests/${PROJECT_NAME}")
     set(examples_src_dir "${cxx_tests_dir}/doc_snippets")
 
@@ -150,6 +153,18 @@ if("${BUILD_TESTING}")
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
         DEPENDS Catch2 ${PROJECT_NAME}_examples
     )
-endif()
 
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+    # In the python tests we will pass Python into PluginPlay, we will then
+    # need to know that C++ can handle those Python types. To this end we
+    # create a series of Python bindings for unit testing this functionality
+    # which live in the py_test_pluginplay library.
+    nwx_add_pybind11_module(
+        py_test_pluginplay
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests"
+        INCLUDE_DIRS "${project_inc_dir}"
+        DEPENDS ${pluginplay_target}
+    )
+    nwx_pybind11_tests(
+        py_pluginplay ${python_tests_dir}/unit_tests/test_pluginplay.py
+    )
+endif()

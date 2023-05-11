@@ -136,6 +136,9 @@ private:
     /// Implements storing_const_value
     bool storing_const_value_() const noexcept override;
 
+    /// Implements storing_python_object
+    bool storing_python_object_() const noexcept override;
+
     /// Code factorization for wrapping an object of type @p U in a std::any
     template<typename U>
     std::any wrap_value_(U&& value2wrap) const;
