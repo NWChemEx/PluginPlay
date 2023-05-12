@@ -66,6 +66,9 @@ public:
     /// Pointer to the base class of this hierarchy
     using typename base_type::field_base_pointer;
 
+    /// Type used to wrap Python objects
+    using typename base_type::python_value;
+
     /// This is the type of the object actually in the std::any
     using wrapped_type = std::conditional_t<wrap_const_ref_v, ref_wrapper_t, T>;
 
@@ -129,6 +132,9 @@ protected:
 private:
     /// Implements type() for both AnyResultWrapper and AnyInputWrapper
     rtti_type type_() const noexcept override { return {typeid(T)}; }
+
+    /// Implements as_python_wrapper()
+    python_value as_python_wrapper_() const override;
 
     /// Implements storing_const_ref
     bool storing_const_ref_() const noexcept override;

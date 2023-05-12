@@ -128,12 +128,53 @@ public:
     template<typename T>
     bool is_convertible() const noexcept;
 
+    /** @brief Unwraps the wrapped object into a PythonWrapper.
+     *
+     *  This method will wrap the wrapped object into a PythonWrapper, sight
+     *
+     *  @throw std::runtime_error if PluginPlay was not compiled with Pybind11
+     *                            support. Strong throw guarantee.
+     */
+    python_value as_python_wrapper() const { return as_python_wrapper_(); }
+
+    /** @brief Determines if *this is holding the value, but won't let the user
+     *         modify it.
+     *
+     *  @return True if *this if the type of the wrapped object is `const U`
+     *          where `U` is an unqualified type and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     bool storing_const_value() const noexcept { return storing_const_value_(); }
 
+    /** @brief Used to determine if *this is holding a read-only reference to a
+     *         value.
+     *
+     *  To avoid copying objects, AnyField instances are allowed to hold ready-
+     *  only references to objects. The `storing_const_reference` method allows
+     *  the caller to determine if *this wraps a read-only reference to the
+     *  object.
+     *
+     *  @return True if *this holds a read-only reference to an object and false
+     *          otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     bool storing_const_reference() const noexcept {
         return storing_const_ref_();
     }
 
+    /** @brief Used to determine if *this holds a Python object.
+     *
+     *  If Pybind11 support is enabled AnyField objects may hold Python objects.
+     *  The storing_python_object method is used to determine if *this is
+     *  holding a Python object (defined as the derived class's template type
+     *  parameter being `python_value`).
+     *
+     *  @return True if *this is holding a Python object and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     bool storing_python_object() const noexcept {
         return storing_python_object_();
     }
@@ -292,6 +333,9 @@ private:
 
     /// To be overridden by derived class to implement type
     virtual rtti_type type_() const noexcept = 0;
+
+    /// To be overridden by derived class to implement as_python_wrapper
+    virtual python_value as_python_wrapper_() const = 0;
 
     /// To be overridden by derived class to implement storing_const_ref
     virtual bool storing_const_ref_() const noexcept = 0;

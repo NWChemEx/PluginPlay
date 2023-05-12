@@ -35,14 +35,15 @@ class TestAnyField(unittest.TestCase):
         # Same lists
         other_list = pp.make_any_field([1, 2, 3])
         self.assertEqual(self.has_list, other_list)
-        self.assertFalse(self.has_list == other_list)
+        self.assertFalse(self.has_list != other_list)
 
         # Different lists
         diff_list = pp.make_any_field([2, 3, 4])
         self.assertNotEqual(self.has_list, diff_list)
         self.assertFalse(self.has_list == diff_list)
 
-        # Different types
+        # Different types (note that the vector was specifically chosen so that
+        # it is convertible to the list)
         self.assertNotEqual(self.has_list, self.has_vector)
         self.assertFalse(self.has_list == self.has_vector)
 
@@ -55,6 +56,8 @@ class TestAnyField(unittest.TestCase):
 
     def test_owns_value(self):
         self.assertFalse(self.defaulted.owns_value())
+        self.assertTrue(self.has_vector.owns_value())
+        self.assertTrue(self.has_list.owns_value())
 
 
     def setUp(self):

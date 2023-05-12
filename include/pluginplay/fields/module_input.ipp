@@ -144,6 +144,9 @@ type::any ModuleInput::wrap_value_(T&& new_value) const {
     using clean_type = std::decay_t<T>;
     using cref_type  = const clean_type&;
 
+    // Did the user give us an AnyField already?
+    if constexpr(std::is_same_v<clean_type, type::any>) { return new_value; }
+
     // Did the user give us a reference (so either T=U& or T=U&&)
     constexpr bool is_ref = std::is_reference_v<T>;
 

@@ -263,6 +263,13 @@ public:
      *
      *  To create an owning instance from one that does not own, copy it.
      *
+     *  @note Instances holding Python objects own them. This is because
+     *        unwrapping Python objects requires creating a C++ object in a
+     *        buffer and the buffer will be owned by *this. Even if the Python
+     *        object is not unwrapped, we hold a reference counted instance
+     *        and thus it will not go out of scope, consistent with the C++
+     *        behavior of this method.
+     *
      *  @return True if this instance wraps a value, and it owns that value.
      *          False otherwise.
      *

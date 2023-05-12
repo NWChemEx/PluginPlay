@@ -90,6 +90,9 @@ public:
         return !(*this == rhs);
     }
 
+    template<typename T>
+    bool is_convertible() noexcept;
+
     /** @brief Determines if the wrapped Python object can be turned into a
      *         C++ object of type @p T.
      *
@@ -100,7 +103,7 @@ public:
      *  passed.
      *
      *  @tparam T The type we are attempting to cast to. @p T can be an
-     *          unqualified or reference type with optional cv-qualifications.
+     *          unqualified type or cv-qualified reference type.
      *
      *  @return True if the wrapped object can be converted to an object of type
      *          @p T and false otherwise.
@@ -110,13 +113,14 @@ public:
     template<typename T>
     bool is_convertible() const noexcept;
 
+    template<typename T>
+    T unwrap();
+
     /** @brief Wraps the process of unwrapping *this to a C++ object.
      *
      *  @tparam T The C++ type we want to get the wrapped object back as. @p T
      *          can be an unqualified type, or a cv-qualified reference to a
-     *          C++ type. Note that if @p T is the same as py_object_type
-     *          this method will return the wrapped Python object and not
-     *          attempt to convert it to C++.
+     *          C++ type.
      *
      *  @return A C++ representation of the Python object held by *this.
      *
@@ -140,7 +144,10 @@ public:
     }
 
 private:
-    /// Code factorization for unwrapping the std::any
+    /// Code factorization for unwrapping the mutable std::any
+    py_reference unwrap_() { return std::any_cast<py_reference>(m_value_); }
+
+    /// Code factorization for unwrapping the read-only std::any
     const_py_reference unwrap_() const {
         return std::any_cast<const_py_reference>(m_value_);
     }
@@ -169,8 +176,16 @@ inline std::ostream& operator<<(std::ostream& os, const PythonWrapper& pywrap) {
     return os << pywrap.as_string();
 }
 
+template<typename T>
+PythonWrapper make_python_wrapper(T&& cxx_value) {
+    using py_object_type    = typename PythonWrapper::py_object_type;
+    py_object_type py_value = pybind11::cast(std::forward<T>(cxx_value));
+    return PythonWrapper(std::move(py_value));
+}
+
 // -----------------------------------------------------------------------------
-// -- Inline Implementations ---------------------------------------------------
+// -- Inline Implementations
+// ---------------------------------------------------
 // -----------------------------------------------------------------------------
 
 inline bool PythonWrapper::operator==(const PythonWrapper& rhs) const noexcept {
@@ -180,31 +195,76 @@ inline bool PythonWrapper::operator==(const PythonWrapper& rhs) const noexcept {
 }
 
 template<typename T>
-bool PythonWrapper::is_convertible() const noexcept {
-    using clean_type = std::decay_t<T>;
+bool PythonWrapper::is_convertible() noexcept {
+    // If we don't have a value we're not convertible
     if(!has_value()) return false;
-    if constexpr(std::is_same_v<clean_type, py_object_type>) { return true; }
-    try {
-        auto cxx_value = unwrap_().cast<clean_type>();
+
+    using clean_type = std::decay_t<T>;
+    // Does the user want a pybind11::object, or a reference to one?
+    if constexpr(std::is_same_v<clean_type, py_object_type>) {
         return true;
-    } catch(...) { return false; }
+    }
+    // Does the user want a PythonWrapper, or a reference to one?
+    else if constexpr(std::is_same_v<clean_type, PythonWrapper>) {
+        return true;
+    }
+    // User wants us to try converting the Python object to a C++ object
+    else {
+        try {
+            auto cxx_value = unwrap_().cast<clean_type>();
+            return true;
+        } catch(...) { return false; }
+    }
 }
 
 template<typename T>
-T PythonWrapper::unwrap() const {
-    using clean_type     = std::decay_t<T>;
-    const auto& py_value = unwrap_();
+bool PythonWrapper::is_convertible() const noexcept {
+    using clean_type              = std::decay_t<T>;
+    constexpr bool to_mutable_ref = std::is_same_v<T, clean_type&>;
+
+    // Rule out mutable references
+    if constexpr(to_mutable_ref) { return false; }
+
+    // Now it's the same as non-const is_convertible
+    return const_cast<PythonWrapper*>(this)->is_convertible<T>();
+}
+
+template<typename T>
+T PythonWrapper::unwrap() {
+    using clean_type = std::decay_t<T>;
+    auto& py_value   = unwrap_();
+
+    // Want a pybind11::object, pybind11::object&, or const pybind11::object&?
     if constexpr(std::is_same_v<clean_type, py_object_type>) {
         return py_value;
-    } else if constexpr(std::is_same_v<clean_type, T>) {
+    }
+    // Want a PythonWrapper, PythonWrapper&, or const PythonWrapper&?
+    else if constexpr(std::is_same_v<clean_type, PythonWrapper>) {
+        return *this;
+    }
+    // Want the Python object converted to a C++ value?
+    else if constexpr(std::is_same_v<clean_type, T>) {
         return py_value.cast<clean_type>();
-    } else {
+    }
+    // User wants the converted C++ value by reference or const reference
+    else {
         if(!m_buffer_.has_value()) {
             auto cxx_value = py_value.cast<clean_type>();
             m_buffer_      = std::make_any<clean_type>(std::move(cxx_value));
         }
         return std::any_cast<T>(m_buffer_);
     }
+}
+
+template<typename T>
+T PythonWrapper::unwrap() const {
+    using clean_type              = std::decay_t<T>;
+    constexpr bool is_mutable_ref = std::is_same_v<T, clean_type&>;
+    static_assert(!is_mutable_ref, "Can not unwrap to mutable reference");
+
+    // okay to use non-const version since we know user doesn't want a mutable
+    // reference
+    return const_cast<PythonWrapper*>(this)->unwrap<T>();
 }
 
 } // namespace pluginplay::python
@@ -222,6 +282,8 @@ namespace pluginplay::python {
  */
 class PythonWrapper {
 public:
+    PythonWrapper() { error_(); }
+
     template<typename T>
     T unwrap() const {
         error_();
@@ -238,6 +300,11 @@ private:
                                  "support");
     }
 };
+
+template<typename T>
+PythonWrapper make_python_wrapper(T&& cxx_value) {
+    return PythonWrapper();
+}
 
 } // namespace pluginplay::python
 #endif

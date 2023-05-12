@@ -21,13 +21,17 @@ template<typename T>
 T AnyFieldBase::cast() {
     // N.B. This relies on calling the non-const version of is_convertible
     if(!is_convertible<T>()) error_if_not_convertible_<T>();
+    using clean_type = std::decay_t<T>;
 
     if(storing_python_object()) {
-        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        auto& py_obj = std::any_cast<python_reference>(m_value_);
         return py_obj.unwrap<T>();
     }
 
-    using clean_type              = std::decay_t<T>;
+    if constexpr(std::is_same_v<T, python_value>) {
+        return as_python_wrapper();
+    }
+
     using mutable_ref             = clean_type&;
     constexpr bool by_mutable_ref = std::is_same_v<T, mutable_ref>;
 
@@ -51,11 +55,11 @@ T AnyFieldBase::cast() const {
 
     if(storing_python_object()) {
         const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
-        if constexpr(std::is_same_v<clean_type, python::PythonWrapper>) {
-            return py_obj;
-        } else {
-            return py_obj.unwrap<T>();
-        }
+        return py_obj.unwrap<T>();
+    }
+
+    if constexpr(std::is_same_v<T, python_value>) {
+        return as_python_wrapper();
     }
 
     using mutable_ref             = clean_type&;
@@ -71,24 +75,46 @@ T AnyFieldBase::cast() const {
 
 template<typename T>
 bool AnyFieldBase::is_convertible() noexcept {
+    using clean_type = std::decay_t<T>;
+
     // Only differs from non-const overload if we hold a mutable C++ value
     if(storing_const_reference() || storing_const_value() ||
        storing_python_object())
         return std::as_const(*this).is_convertible<T>();
 
+    // Is the user trying to convert it to a PythonWrapper? N.B. since we know
+    // it's not a PythonWrapper already we can only return it by value.
+    if constexpr(std::is_same_v<T, python_value>) {
+        return true;
+    } else if constexpr(std::is_same_v<clean_type, python_value>) {
+        return false;
+    }
+
     // Getting here means it's stored by mutable value and we can return it
     // however the user wants (as long as the object's actually that type...)
-    return std::any_cast<std::decay_t<T>>(&m_value_) != nullptr;
+    return std::any_cast<clean_type>(&m_value_) != nullptr;
 }
 
 template<typename T>
 bool AnyFieldBase::is_convertible() const noexcept {
+    using clean_type = std::decay_t<T>;
+
+    // Trying to convert a Python object to a C++ object
     if(storing_python_object()) {
         const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
         return py_obj.is_convertible<T>();
     }
 
-    using clean_type = std::decay_t<T>;
+    // Trying to convert to a PythonWrapper? N.B. Since it's not a PythonWrapper
+    // already we can only return it by value.
+    if constexpr(std::is_same_v<T, python_value>) {
+        return true;
+    } else if constexpr(std::is_same_v<clean_type, python_value>) {
+        return false;
+    }
+
+    // C++ to C++ past this point
+
     // Value is read-only so can only be one of these:
     constexpr bool by_val  = std::is_same_v<clean_type, T>;
     constexpr bool by_cval = std::is_same_v<const clean_type, T>;

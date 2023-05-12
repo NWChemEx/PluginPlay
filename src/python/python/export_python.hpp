@@ -1,10 +1,10 @@
 #pragma once
-#include <pybind11/pybind11.h>
+#include "../export_pluginplay.hpp"
 
 namespace pluginplay::python {
 
-void export_python_wrapper(pybind11::module_& m);
+void export_python_wrapper(py_module_reference m);
 
-inline void export_python(pybind11::module_& m) { export_python_wrapper(m); }
+inline void export_python(py_module_reference m) { export_python_wrapper(m); }
 
 } // namespace pluginplay::python

@@ -4,8 +4,8 @@
 
 namespace pluginplay::python {
 
-void export_python_wrapper(pybind11::module_& m) {
-    pybind11::class_<PythonWrapper>(m, "PythonWrapper")
+void export_python_wrapper(py_module_reference m) {
+    py_class_type<PythonWrapper>(m, "PythonWrapper")
       .def(pybind11::init<pybind11::object>())
       .def("has_value", &PythonWrapper::has_value)
       .def(pybind11::self == pybind11::self)
