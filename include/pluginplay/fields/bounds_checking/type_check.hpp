@@ -21,6 +21,14 @@
 
 namespace pluginplay::bounds_checking {
 
+/** @brief Wraps checking if an object is of type @p T.
+ *
+ *  This functor is meant for use with ModuleInput/ModuleResult where it's
+ *  primary use is in being able to unwrap a pluginplay::any::AnyField. When
+ *  used with objects that are not type-erased it is a functor version of
+ *  std::is_convertible_v.
+ *
+ */
 template<typename T>
 class TypeCheck {
 public:
