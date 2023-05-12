@@ -21,7 +21,7 @@
 namespace pluginplay::any {
 
 void export_any_field(py_module_reference m) {
-   py_class_type<AnyField>(m, "AnyField")
+    py_class_type<AnyField>(m, "AnyField")
       .def(pybind11::init<>())
       .def("reset", &AnyField::reset)
       //.def("is_convertible") Not sure we need to expose this to Python
