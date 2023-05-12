@@ -15,7 +15,7 @@
  */
 
 #include <catch2/catch.hpp>
-#include <pluginplay/bounds_checking.hpp>
+#include <pluginplay/bounds_checking/bounds_checking.hpp>
 
 using namespace pluginplay::bounds_checking;
 

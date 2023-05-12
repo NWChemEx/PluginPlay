@@ -48,7 +48,7 @@ void test_module_input(pybind11::module_& m) {
 
     // This will check that i contains a list {1, 2, 3}
     m_test.def("unwrap_python_list", [](ModuleInput& i) {
-        const auto& value = i.value<std::vector<int>>();
+        const auto value = i.value<std::vector<int>>();
         return value == std::vector<int>{1, 2, 3};
     });
 }

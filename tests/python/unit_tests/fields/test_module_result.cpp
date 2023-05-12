@@ -17,10 +17,36 @@
 #include "test_fields.hpp"
 #include <pluginplay/fields/module_result.hpp>
 
+using namespace pluginplay;
+
 namespace test_pluginplay {
 
 void test_module_result(pybind11::module_& m) {
-    auto m_test = m.def_submodule("test_module_results");
+    auto m_test = m.def_submodule("test_module_result");
+
+    m_test.def("get_r_float", []() {
+        ModuleResult r;
+        r.set_type<double>();
+        return r;
+    });
+
+    m_test.def("get_r_list", []() {
+        ModuleResult r;
+        r.set_type<std::vector<int>>();
+        return r;
+    });
+
+    m_test.def("get_filled_r_list", []() {
+        ModuleResult r;
+        r.set_type<std::vector<int>>();
+        r.change(std::vector<int>{1, 2, 3});
+        return r;
+    });
+
+    m_test.def("unwrap_python_list", [](ModuleResult& r) {
+        const auto value = r.value<std::vector<int>>();
+        return value == std::vector<int>{1, 2, 3};
+    });
 }
 
 } // namespace test_pluginplay

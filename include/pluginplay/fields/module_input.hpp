@@ -17,12 +17,11 @@
 #pragma once
 #include <functional>
 #include <pluginplay/any/any.hpp>
-#include <pluginplay/bounds_checking.hpp>
+#include <pluginplay/bounds_checking/bounds_checking.hpp>
 #include <pluginplay/types.hpp>
 #include <pluginplay/utility.hpp>
 #include <set>
 #include <sstream>
-#include <utilities/printing/demangler.hpp>
 
 namespace pluginplay {
 namespace detail_ {

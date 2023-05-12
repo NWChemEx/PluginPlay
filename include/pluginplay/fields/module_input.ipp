@@ -161,14 +161,8 @@ type::any ModuleInput::wrap_value_(T&& new_value) const {
 
 template<typename T>
 auto& ModuleInput::add_type_check_() {
-    // When we run the checks we always wrap a const reference
-    auto check = [](const type::any& new_value) {
-        return new_value.is_convertible<T>() ||
-               new_value.is_convertible<const T&>();
-    };
-    auto msg = std::string("Type == ") +
-               utilities::printing::Demangler::demangle(typeid(T));
-    return add_check_(check, msg);
+    TypeCheck<T> check;
+    return add_check_(check, check.str());
 }
 
 } // namespace pluginplay
