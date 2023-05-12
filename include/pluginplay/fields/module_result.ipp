@@ -60,6 +60,10 @@ T ModuleResult::value() const {
 template<typename T>
 type::any ModuleResult::wrap_value_(T&& new_value) {
     using clean_T = std::decay_t<T>;
+    // Is it already an AnyField
+    if constexpr(std::is_same_v<clean_T, type::any>) {
+        return std::forward<T>(new_value);
+    }
     return any::make_any_field<clean_T>(std::forward<T>(new_value));
 }
 
