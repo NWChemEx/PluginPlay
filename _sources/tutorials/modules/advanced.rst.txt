@@ -44,7 +44,7 @@ than modifying ``CoulombsLaw``. Relative to our ``CoulombsLaw`` module, the new
 parameter slightly modifies the constructor and the ``run_`` member functions.
 With the new input the constructor becomes:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/screened_coulombs_law.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/screened_coulombs_law.cpp
    :language: c++
    :lines: 39-46
 
@@ -53,7 +53,7 @@ brief description and a default value set to the maximum double value (*i.e.*,
 no screening will occur by default). The relevant change to the ``run_`` member
 is:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/screened_coulombs_law.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/screened_coulombs_law.cpp
    :language: c++
    :lines: 48-53,75-77
 
