@@ -45,7 +45,7 @@ will compute the electric field via Coulomb's Law so we choose to name our
 module ``CoulombsLaw`` and we store the declaration in a file ``modules.hpp``.
 The relevant lines are:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/modules.hpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/modules.hpp
    :language: c++
    :lines: 17-22,31-32
 
@@ -74,7 +74,7 @@ to provide a short description about the algorithm implemented in the module.
 
 For our ``CoulombsLaw`` module a basic constructor looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/coulombs_law.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
    :language: c++
    :lines: 23-39
 
@@ -117,7 +117,7 @@ module to aid in defining the module's ``run_`` member function. By convention
 For defining our ``CoulombsLaw::run_`` member the relevant PluginPlay bits of
 code are:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/coulombs_law.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
    :language: c++
    :lines: 41-45,65-67
 
@@ -134,7 +134,7 @@ returns a result map with the type-erased results.
 The full definition of the ``run_`` member (including the source code for
 computing the electric field) is:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/coulombs_law.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
    :language: c++
    :lines: 41-67
 
@@ -167,7 +167,7 @@ Submodules change the class's definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
 property type `ElectricField`. This looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
    :language: c++
    :lines: 38-45
 
@@ -177,13 +177,13 @@ distinguish between multiple submodules of the same type. When appropriately
 named, the tag also aids in readability of the code. The ``run_`` function for
 our module looks like:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
    :language: c++
    :lines: 47-59
 
 Of note is the line:
 
-.. literalinclude:: ../../../../tests/pluginplay/docs/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
    :language: c++
    :lines: 53
 
