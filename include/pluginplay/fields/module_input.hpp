@@ -150,7 +150,10 @@ public:
      *  the value to 0, sometimes we need a null state separate from the
      *  possible input values and that is where the optional trait comes in.
      *
-     *  This function is used to determine if the current input is optional
+     *  This function is used to determine if the current input is optional.
+     *
+     *  @note By default all ModuleInput instances are required, *i.e.*, this
+     *        method will return false.
      *
      *  @return True if the current input field is optional and false otherwise.
      *

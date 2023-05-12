@@ -21,4 +21,6 @@ namespace pluginplay {
 
 bool with_rocksdb() { return with_rocksdb_v; }
 
+bool with_pybind11() { return with_pybind11_v; }
+
 } // namespace pluginplay

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <iostream>
+#include <pluginplay/python/python_wrapper.hpp>
 #include <utilities/printing/print_stl.hpp>
 
 namespace pluginplay::any::detail_ {
@@ -29,18 +31,28 @@ TEMPLATE_PARAMS
 typename ANY_FIELD_WRAPPER::field_base_pointer ANY_FIELD_WRAPPER::clone_()
   const {
     using deep_copy_type = AnyFieldWrapper<clean_type>;
-    const auto& val      = base_type::template cast<const_ref_type>();
-    return std::make_unique<deep_copy_type>(val);
+    if constexpr(std::is_same_v<clean_type, python_value>) {
+        return std::make_unique<deep_copy_type>(as_python_wrapper());
+    } else {
+        const auto& val = base_type::template cast<const_ref_type>();
+        return std::make_unique<deep_copy_type>(val);
+    }
 }
 
 TEMPLATE_PARAMS
 bool ANY_FIELD_WRAPPER::are_equal_(const AnyFieldBase& rhs) const noexcept {
     auto prhs = dynamic_cast<const my_type*>(&rhs);
     if(prhs == nullptr) return false; // Not the same type
-    // Compare the values
-    const auto& lhs_value = this->base_type::template cast<const_ref_type>();
-    const auto& rhs_value = prhs->base_type::template cast<const_ref_type>();
-    return lhs_value == rhs_value;
+
+    if constexpr(std::is_same_v<clean_type, python_value>) {
+        return as_python_wrapper() == rhs.as_python_wrapper();
+    } else {
+        const auto& lhs_value =
+          this->base_type::template cast<const_ref_type>();
+        const auto& rhs_value =
+          prhs->base_type::template cast<const_ref_type>();
+        return lhs_value == rhs_value;
+    }
 }
 
 TEMPLATE_PARAMS
@@ -67,6 +79,16 @@ std::ostream& ANY_FIELD_WRAPPER::print_(std::ostream& os) const {
 }
 
 TEMPLATE_PARAMS
+typename ANY_FIELD_WRAPPER::python_value ANY_FIELD_WRAPPER::as_python_wrapper_()
+  const {
+    if(this->storing_python_object()) {
+        return this->base_type::template cast<python_value>();
+    }
+    const auto& my_value = this->base_type::template cast<const_ref_type>();
+    return python::make_python_wrapper(my_value);
+}
+
+TEMPLATE_PARAMS
 bool ANY_FIELD_WRAPPER::storing_const_ref_() const noexcept {
     return wrap_const_ref_v;
 }
@@ -74,6 +96,11 @@ bool ANY_FIELD_WRAPPER::storing_const_ref_() const noexcept {
 TEMPLATE_PARAMS
 bool ANY_FIELD_WRAPPER::storing_const_value_() const noexcept {
     return wrap_const_val_v;
+}
+
+TEMPLATE_PARAMS
+bool ANY_FIELD_WRAPPER::storing_python_object_() const noexcept {
+    return std::is_same_v<clean_type, python::PythonWrapper>;
 }
 
 TEMPLATE_PARAMS
