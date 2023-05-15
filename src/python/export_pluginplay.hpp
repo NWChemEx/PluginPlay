@@ -29,4 +29,6 @@ using py_module_reference = py_module_type&;
 template<typename T>
 using py_class_type = pybind11::class_<T>;
 
+void export_module(py_module_reference m);
+
 } // namespace pluginplay

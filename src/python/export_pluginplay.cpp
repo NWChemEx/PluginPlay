@@ -25,6 +25,7 @@ PYBIND11_MODULE(pluginplay, m) {
     any::export_any(m);
     export_fields(m);
     python::export_python(m);
+    export_module(m);
 }
 
 } // namespace pluginplay

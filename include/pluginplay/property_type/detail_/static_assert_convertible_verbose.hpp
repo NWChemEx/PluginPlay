@@ -16,7 +16,11 @@
 
 #pragma once
 
-namespace pluginplay::detail_ {
+namespace pluginplay {
+namespace python {
+class PythonWrapper;
+}
+namespace detail_ {
 
 /** @brief Struct that provides clearer error message when types are not
  * convertible.
@@ -32,13 +36,21 @@ namespace pluginplay::detail_ {
  * will give a slightly simpler error message showing a smaller set of template
  * parameters.
  *
+ * @note A special exception is made when @p T1 wraps a Python object. In this
+ *       case we don't know if the Python object can be converted to an object
+ *       of type @p T2 until runtime.
+ *
  * @tparam T1 The type of the object to convert from
  * @tparam T2 The type of the object to convert to
  * @tparam I position of the argument in some argument list
  */
 template<typename T1, typename T2, std::size_t I>
 struct STATIC_ASSERT_CONVERTIBLE_VERBOSE {
-    static_assert(std::is_convertible_v<T1, T2>,
+    using clean_t1        = std::decay_t<T1>;
+    using py_wrapper_type = python::PythonWrapper;
+    static constexpr bool is_py_wrapper =
+      std::is_same_v<clean_t1, py_wrapper_type>;
+    static_assert(std::is_convertible_v<T1, T2> || is_py_wrapper,
                   R"(
 
     Incorrect argument type; type T1 not convertible to type T2 at position I.
@@ -47,4 +59,5 @@ struct STATIC_ASSERT_CONVERTIBLE_VERBOSE {
         )");
 };
 
-} // namespace pluginplay::detail_
+} // namespace detail_
+} // namespace pluginplay

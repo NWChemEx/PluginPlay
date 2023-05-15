@@ -337,7 +337,12 @@ namespace pluginplay::python {
  */
 class PythonWrapper {
 public:
-    PythonWrapper() { error_(); }
+    PythonWrapper() { error_() : }
+
+    template<typename T>
+    PythonWrapper(T&&) {
+        error_();
+    }
 
     template<typename T>
     T unwrap() const {

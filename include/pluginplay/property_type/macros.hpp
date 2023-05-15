@@ -15,6 +15,9 @@
  */
 
 #pragma once
+#include <pluginplay/python/python.hpp>
+#include <pluginplay/types.hpp>
+#include <utility>
 
 // ------------------------- Helper Macros ------------------------------------
 
@@ -138,3 +141,17 @@
  */
 #define TEMPLATED_PROPERTY_TYPE_RESULTS(prop_type, ...) \
     inline auto prop_type<__VA_ARGS__>::results_()
+
+#define EXPORT_PROPERTY_TYPE(prop_type, m)                            \
+    pybind11::class_<prop_type>(m, #prop_type)                        \
+      .def(pybind11::init<>())                                        \
+      .def("unwrap_inputs",                                           \
+           [](prop_type& pt, pluginplay::type::input_map& inputs) {   \
+               return pt.unwrap_inputs(inputs);                       \
+           })                                                         \
+      .def("wrap_results",                                            \
+           [](prop_type& pt, pluginplay::type::result_map& results,   \
+              pybind11::args args) {                                  \
+               return pluginplay::python::py_wrap_results<prop_type>( \
+                 results, std::move(args));                           \
+           })
