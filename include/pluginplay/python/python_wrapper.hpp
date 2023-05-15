@@ -76,6 +76,63 @@ public:
      */
     bool has_value() const noexcept { return static_cast<bool>(unwrap_()); }
 
+    /** @brief Can the wrapped Python object be converted to type @p T?
+     *
+     *  @tparam T The type we are trying to convert the wrapped object to.
+     *
+     *  @return True if *this wraps an object and that object can be converted
+     *          to an object of type @p T, false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    template<typename T>
+    bool is_convertible() noexcept;
+
+    /** @brief Determines if the wrapped Python object can be turned into a
+     *         C++ object of type @p T.
+     *
+     *  If *this does not hold a value this method will return false (one can
+     *  not convert nothing to something...). If *this does hold a value this
+     *  method will attempt to cast the held value to a C++ object of type
+     *  @p T. The method then returns the result of whether or not the cast
+     *  passed.
+     *
+     *  @tparam T The type we are attempting to cast to. @p T can be an
+     *          unqualified type or cv-qualified reference type.
+     *
+     *  @return True if the wrapped object can be converted to an object of type
+     *          @p T and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    template<typename T>
+    bool is_convertible() const noexcept;
+
+    /** @brief Converts the wrapped Python object to an object of type @p T.
+     *
+     *  @tparam T The C++ type of the object we want to get back. @p T can be
+     *          an unqualified or cv-qualified reference.
+     *
+     *  @return The wrapped Python object converted to a C++ object of type
+     *          @p T.
+     *
+     *  @throw ??? May throw if the conversion throws.
+     */
+    template<typename T>
+    T unwrap();
+
+    /** @brief Wraps the process of unwrapping *this to a C++ object.
+     *
+     *  @tparam T The C++ type we want to get the wrapped object back as. @p T
+     *          can be an unqualified type, or a cv-qualified reference to a
+     *          C++ type.
+     *
+     *  @return A C++ representation of the Python object held by *this.
+     *
+     */
+    template<typename T>
+    T unwrap() const;
+
     /** @brief Value comparison of the wrapped Python object.
      *
      *  This method will value compare the Python object wrapped by *this to
@@ -105,44 +162,6 @@ public:
     bool operator!=(const PythonWrapper& rhs) const noexcept {
         return !(*this == rhs);
     }
-
-    template<typename T>
-    bool is_convertible() noexcept;
-
-    /** @brief Determines if the wrapped Python object can be turned into a
-     *         C++ object of type @p T.
-     *
-     *  If *this does not hold a value this method will return false (one can
-     *  not convert nothing to something...). If *this does hold a value this
-     *  method will attempt to cast the held value to a C++ object of type
-     *  @p T. The method then returns the result of whether or not the cast
-     *  passed.
-     *
-     *  @tparam T The type we are attempting to cast to. @p T can be an
-     *          unqualified type or cv-qualified reference type.
-     *
-     *  @return True if the wrapped object can be converted to an object of type
-     *          @p T and false otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    template<typename T>
-    bool is_convertible() const noexcept;
-
-    template<typename T>
-    T unwrap();
-
-    /** @brief Wraps the process of unwrapping *this to a C++ object.
-     *
-     *  @tparam T The C++ type we want to get the wrapped object back as. @p T
-     *          can be an unqualified type, or a cv-qualified reference to a
-     *          C++ type.
-     *
-     *  @return A C++ representation of the Python object held by *this.
-     *
-     */
-    template<typename T>
-    T unwrap() const;
 
     /** @brief Returns a string representation of the object held by *this.
      *
@@ -192,6 +211,23 @@ inline std::ostream& operator<<(std::ostream& os, const PythonWrapper& pywrap) {
     return os << pywrap.as_string();
 }
 
+/** @brief Wraps the process of making a PythonWrapper object around a
+ *         C++ object.
+ *
+ *  This method provides a uniform API for creating a PythonWrapper object from
+ *  an arbitrary C++ object. The object wrapped by the PythonWrapper will be a
+ *  Python object. Meaning that C++ objects are first converted to Python
+ *  objects before constructing the PythonWrapper.
+ *
+ *  @tparam T The type of the object to wrap. Deduced automatically by the
+ *          compiler.
+ *
+ *  @param[in] cxx_value The object to wrap.
+ *
+ *  @return The PythonWrapper which wraps the provided object.
+ *
+ *  @throw ??? If wrapping the object throws. Same throw guarantee.
+ */
 template<typename T>
 PythonWrapper make_python_wrapper(T&& cxx_value) {
     using py_object_type    = typename PythonWrapper::py_object_type;
@@ -247,6 +283,9 @@ bool PythonWrapper::is_convertible() const noexcept {
 
 template<typename T>
 T PythonWrapper::unwrap() {
+    if(!has_value())
+        throw std::runtime_error("Does not hold a value to unwrap");
+
     using clean_type = std::decay_t<T>;
     auto& py_value   = unwrap_();
 
