@@ -45,13 +45,9 @@ class TestModuleResult(unittest.TestCase):
         self.assertFalse(self.rfloat.has_value())
 
         # Can change the value
-        x = self.rfloat.change(1)
+        self.rfloat.change(1)
         self.assertTrue(self.rfloat.has_value())
         self.assertEqual(self.rfloat.value(), 1)
-
-        # Returns an alias to self.rfloat
-        x.change(2)
-        self.assertTrue(self.rfloat.value(), 2)
 
 
     def test_set_description(self):
@@ -95,7 +91,7 @@ class TestModuleResult(unittest.TestCase):
         self.assertFalse(self.defaulted == self.rfloat)
 
         # Both have same type
-        other_rfloat = test_pp.get_i_float()
+        other_rfloat = test_pp.get_r_float()
         self.assertEqual(self.rfloat, other_rfloat)
         self.assertFalse(self.rfloat != other_rfloat)
 
@@ -108,7 +104,7 @@ class TestModuleResult(unittest.TestCase):
         self.assertFalse(self.rlist == self.rlist2)
 
         # Different values
-        other_rlist = test_pp.get_i_list()
+        other_rlist = test_pp.get_r_list()
         other_rlist.change([2, 3, 4])
         self.assertNotEqual(self.rlist2, other_rlist)
         self.assertFalse(self.rlist2 == other_rlist)

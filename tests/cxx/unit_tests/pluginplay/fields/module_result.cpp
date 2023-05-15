@@ -74,7 +74,7 @@ TEST_CASE("ModuleResult : change") {
     ModuleResult p;
     const double v = 3.14;
     SECTION("Throws if type is not set") {
-        REQUIRE_THROWS_AS(p.change(v), std::bad_optional_access);
+        REQUIRE_THROWS_AS(p.change(v), std::runtime_error);
     }
     SECTION("Throws if the value's type is wrong") {
         p.set_type<int>();

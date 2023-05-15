@@ -17,6 +17,7 @@
 #pragma once
 #include <pluginplay/types.hpp>
 #include <string>
+#include <type_traits>
 #include <utilities/printing/demangler.hpp>
 
 namespace pluginplay::bounds_checking {
@@ -28,22 +29,46 @@ namespace pluginplay::bounds_checking {
  *  used with objects that are not type-erased it is a functor version of
  *  std::is_convertible_v.
  *
+ *  @tparam T The type that the value must be implicitly convertible to. Can be
+ *            either an unqualified type or a cv-qualified reference.
  */
 template<typename T>
 class TypeCheck {
 public:
+    /** @brief Determines if @p value is of or can be converted to type @p T.
+     *
+     *  If @p value is an AnyField object this method will call the
+     *  is_convertible method of @p value. Otherwise this method is a thin
+     *  wrapper around std::is_convertible.
+     *
+     *  @tparam U The type of @p value. Automatically deduced by the compiler.
+     *
+     *  @param[in] value The object whose type will be compared to @p T.
+     *
+     *  @return True if @p value is convertible to type @p T and false
+     *          otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     template<typename U>
     bool operator()(U&& value) const {
-        constexpr bool clean_type = std::decay_t<U>;
-        constexpr bool is_any     = std::is_same_v<clean_type, type::any>;
+        using clean_type      = std::decay_t<U>;
+        constexpr bool is_any = std::is_same_v<clean_type, type::any>;
         if constexpr(is_any) {
             return value.template is_convertible<T>() ||
                    value.template is_convertible<const T&>();
         } else {
-            return std::is_convertible_v<U, T>();
+            return std::is_convertible_v<U, T>;
         }
     }
 
+    /** @brief Determines a string representation of the type check.
+     *
+     *  This method generates a string which indicates the type *this is
+     *  looking for.
+     *
+     *  @return A string representation of *this.
+     */
     std::string str() const {
         const std::string p0("Type == ");
         const auto p1 = utilities::printing::Demangler::demangle(typeid(T));

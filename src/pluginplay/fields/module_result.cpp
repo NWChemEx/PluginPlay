@@ -21,12 +21,12 @@
 namespace pluginplay {
 
 using shared_any = typename ModuleResult::shared_any;
-using pimpl_t    = detail_::ModuleResultPIMPL;
+using m_pimpl_t  = detail_::ModuleResultPIMPL;
 
-ModuleResult::ModuleResult() : pimpl_(std::make_unique<pimpl_t>()) {}
+ModuleResult::ModuleResult() : m_pimpl_(std::make_unique<m_pimpl_t>()) {}
 
 ModuleResult::ModuleResult(const ModuleResult& rhs) :
-  pimpl_(rhs.pimpl_->clone()) {}
+  m_pimpl_(rhs.m_pimpl_->clone()) {}
 
 ModuleResult::ModuleResult(ModuleResult&& rhs) noexcept = default;
 
@@ -34,42 +34,66 @@ ModuleResult& ModuleResult::operator=(ModuleResult&& rhs) noexcept = default;
 
 ModuleResult::~ModuleResult() noexcept = default;
 
-bool ModuleResult::has_type() const noexcept { return pimpl_->has_type(); }
+bool ModuleResult::has_type() const noexcept {
+    return has_pimpl_() && m_pimpl_->has_type();
+}
 
-bool ModuleResult::has_value() const noexcept { return pimpl_->has_value(); }
+bool ModuleResult::has_value() const noexcept { return m_pimpl_->has_value(); }
 
 bool ModuleResult::has_description() const noexcept {
-    return pimpl_->has_description();
-}
-
-ModuleResult& ModuleResult::set_type_(const std::type_info& rtti) {
-    pimpl_->set_type(rtti);
-    return *this;
-}
-
-void ModuleResult::change_(type::any new_value) {
-    pimpl_->set_value(std::make_shared<type::any>(std::move(new_value)));
-}
-
-void ModuleResult::change_(shared_any new_value) {
-    pimpl_->set_value(new_value);
+    return m_pimpl_->has_description();
 }
 
 ModuleResult& ModuleResult::set_description(type::description desc) noexcept {
-    pimpl_->set_description(std::move(desc));
+    m_pimpl_->set_description(std::move(desc));
     return *this;
 }
 
-type::rtti ModuleResult::type() const { return pimpl_->type(); }
-
-const shared_any& ModuleResult::at_() const { return pimpl_->value(); }
+type::rtti ModuleResult::type() const { return m_pimpl_->type(); }
 
 const type::description& ModuleResult::description() const {
-    return pimpl_->description();
+    return m_pimpl_->description();
 }
 
 bool ModuleResult::operator==(const ModuleResult& rhs) const {
-    return *pimpl_ == *rhs.pimpl_;
+    return *m_pimpl_ == *rhs.m_pimpl_;
+}
+
+// -- Private Methods
+
+bool ModuleResult::has_pimpl_() const noexcept {
+    return static_cast<bool>(m_pimpl_);
+}
+
+void ModuleResult::assert_type_set_() const {
+    if(has_type()) return;
+    throw std::runtime_error("Type has not been set");
+}
+
+ModuleResult& ModuleResult::set_type_(const std::type_info& rtti) {
+    m_pimpl_->set_type(rtti);
+    return *this;
+}
+
+void ModuleResult::set_type_check_(type_check_function_type fxn) {
+    pimpl_().set_type_check(std::move(fxn));
+}
+
+const shared_any& ModuleResult::at_() const { return m_pimpl_->value(); }
+
+void ModuleResult::change_(type::any new_value) {
+    assert_type_set_();
+    m_pimpl_->set_value(std::make_shared<type::any>(std::move(new_value)));
+}
+
+void ModuleResult::change_(shared_any new_value) {
+    assert_type_set_();
+    m_pimpl_->set_value(new_value);
+}
+
+ModuleResult::pimpl_reference ModuleResult::pimpl_() {
+    if(!m_pimpl_) m_pimpl_ = std::make_unique<pimpl_type>();
+    return *m_pimpl_;
 }
 
 } // namespace pluginplay

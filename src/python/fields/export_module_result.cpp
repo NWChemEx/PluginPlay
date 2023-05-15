@@ -30,7 +30,7 @@ void export_module_result(py_module_reference m) {
       .def("has_description", &ModuleResult::has_description)
       .def("change",
            [](ModuleResult& r, pybind11::object o) {
-               return r.change(any::make_any_field<PythonWrapper>(o));
+               r.change(any::make_any_field<PythonWrapper>(o));
            })
       .def("set_description", &ModuleResult::set_description)
       .def(

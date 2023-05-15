@@ -161,7 +161,7 @@ type::any ModuleInput::wrap_value_(T&& new_value) const {
 
 template<typename T>
 auto& ModuleInput::add_type_check_() {
-    TypeCheck<T> check;
+    bounds_checking::TypeCheck<T> check;
     auto l = [=](const type::any& value) { return check(value); };
     return add_check_(l, check.str());
 }

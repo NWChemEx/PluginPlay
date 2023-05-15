@@ -15,6 +15,7 @@
  */
 
 #pragma once
+#include <functional>
 #include <memory>
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/types.hpp>
@@ -40,6 +41,15 @@ class ModuleResultPIMPL;
  */
 class ModuleResult {
 public:
+    /// The type of the PIMPL
+    using pimpl_type = detail_::ModuleResultPIMPL;
+
+    /// The type of a reference to the PIMPL
+    using pimpl_reference = pimpl_type&;
+
+    /// Type of a pointer to the PIMPL
+    using pimpl_pointer = std::unique_ptr<pimpl_type>;
+
     /// The type of a `shared_ptr` to a type-erased value
     using shared_any = std::shared_ptr<const type::any>;
 
@@ -143,7 +153,7 @@ public:
      *
      * @param[in] new_value The value to bind to this field.
      *
-     * @throw std::bad_optional_access if the type has not been set. Strong
+     * @throw std::runtime_error if the type has not been set. Strong
      *                                 throw guarantee.
      * @throw std::invalid_argument if @p new_value does not have the correct
      *                              type. Strong throw guarantee.
@@ -244,8 +254,23 @@ public:
     bool operator!=(const ModuleResult& rhs) const { return !((*this) == rhs); }
 
 private:
+    /// Makes PIMPL a friend so it can get the type check type
+    friend pimpl_type;
+
+    /// The type of the functor used to check if a value is the correct type.
+    using type_check_function_type = std::function<bool(const type::any&)>;
+
+    /// Determines if *this has a PIMPL
+    bool has_pimpl_() const noexcept;
+
+    /// Asserts that the type has been set
+    void assert_type_set_() const;
+
     /// Implements set_type by deferring to PIMPL
     ModuleResult& set_type_(const std::type_info& type);
+
+    /// Used to pass the type check to the PIMPL
+    void set_type_check_(type_check_function_type fxn);
 
     /// Retrieves the type-erased value from the PIMPL
     const shared_any& at_() const;
@@ -260,8 +285,11 @@ private:
     template<typename T>
     static type::any wrap_value_(T&& new_value);
 
+    /// Creates a PIMPL if pimpl_ is null, then returns pimpl_
+    pimpl_reference pimpl_();
+
     /// The object that holds the actual state of the instance.
-    std::unique_ptr<detail_::ModuleResultPIMPL> pimpl_;
+    pimpl_pointer m_pimpl_;
 }; // class ModuleResult
 
 } // namespace pluginplay

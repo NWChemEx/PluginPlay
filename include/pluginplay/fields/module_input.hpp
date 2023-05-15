@@ -17,7 +17,7 @@
 #pragma once
 #include <functional>
 #include <pluginplay/any/any.hpp>
-#include <pluginplay/bounds_checking/bounds_checking.hpp>
+#include <pluginplay/fields/bounds_checking/bounds_checking.hpp>
 #include <pluginplay/types.hpp>
 #include <pluginplay/utility.hpp>
 #include <set>

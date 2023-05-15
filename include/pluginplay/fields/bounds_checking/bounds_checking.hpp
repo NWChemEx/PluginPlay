@@ -26,7 +26,7 @@
  *  name-wise with other classes. Hence we namespace protect them with the
  *  bounds_checking namespace.
  */
-namespace pluginplay::bounds_checking;
+namespace pluginplay::bounds_checking {}
 
 /** @brief Contains template meta-programming classes for printing bounds checks
  *
@@ -34,4 +34,4 @@ namespace pluginplay::bounds_checking;
  *  defined by the pluginplay. The pluginplay::bounds_check::detail_ namespace
  * includes the machinery required for these checks.
  */
-namespace pluginplay::bounds_checking::detail_;
+namespace pluginplay::bounds_checking::detail_ {}

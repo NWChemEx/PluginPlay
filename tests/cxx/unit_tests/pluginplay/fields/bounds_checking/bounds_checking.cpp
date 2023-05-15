@@ -15,7 +15,8 @@
  */
 
 #include <catch2/catch.hpp>
-#include <pluginplay/bounds_checking/bounds_checking.hpp>
+#include <pluginplay/any/any.hpp>
+#include <pluginplay/fields/bounds_checking/bounds_checking.hpp>
 
 using namespace pluginplay::bounds_checking;
 
@@ -72,4 +73,18 @@ TEST_CASE("InRange") {
     REQUIRE_FALSE(c(-1));
     REQUIRE(c.str() == "in [0, 3)");
     REQUIRE(print_bounds(c) == "in [0, 3)");
+}
+
+TEST_CASE("TypeCheck") {
+    using pluginplay::any::make_any_field;
+    using vector_type = std::vector<int>;
+    TypeCheck<int> c;
+    REQUIRE(c(3));
+    REQUIRE_FALSE(c("hello"));
+
+    vector_type v{1, 2, 3};
+    REQUIRE_FALSE(c(v));
+    REQUIRE(c(make_any_field<int>(3)));
+    REQUIRE_FALSE(c(make_any_field<std::string>("hello")));
+    REQUIRE_FALSE(c(make_any_field<vector_type>(v)));
 }
