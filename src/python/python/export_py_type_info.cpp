@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-#include "any/export_any.hpp"
-#include "fields/export_fields.hpp"
-#include "python/export_python.hpp"
-#include <pybind11/pybind11.h>
+#include "export_python.hpp"
+#include <pluginplay/python/py_type_info.hpp>
+#include <pybind11/operators.h>
 
-namespace pluginplay {
+namespace pluginplay::python {
 
-PYBIND11_MODULE(pluginplay, m) {
-    any::export_any(m);
-    export_fields(m);
-    python::export_python(m);
-    export_module(m);
-    export_module_base(m);
-    export_module_manager(m);
-    export_submodule_request(m);
+void export_py_type_info(py_module_reference m) {
+    py_class_type<PyTypeInfo>(m, "PyTypeInfo")
+      .def(pybind11::init<>())
+      .def("has_value", &PyTypeInfo::has_value)
+      .def(pybind11::self == pybind11::self)
+      .def(pybind11::self != pybind11::self);
 }
 
-} // namespace pluginplay
+} // namespace pluginplay::python

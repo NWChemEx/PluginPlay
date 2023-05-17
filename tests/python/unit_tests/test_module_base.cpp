@@ -1,8 +1,9 @@
-#include "../../cxx/unit_tests/pluginplay/test_common.hpp"
 #include "test_pluginplay.hpp"
 
-namespace pluginplay_testing {
+namespace test_pluginplay {
 
-void export_module_base(pybind11::module_& m) {}
+void test_module_base(pybind11::module_& m) {
+    auto m_test = m.def_submodule("test_module_base");
+}
 
-} // namespace pluginplay_testing
+} // namespace test_pluginplay

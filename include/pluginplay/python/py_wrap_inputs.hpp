@@ -6,7 +6,8 @@
 namespace pluginplay::python {
 namespace detail_ {
 
-/** @brief Implements py_wrap_results
+/** @brief Implements py_wrap_inputs
+ *
  *
  *  @note Calling this function without pybind11 support enabled will result in
  *        an exception.
@@ -19,49 +20,49 @@ namespace detail_ {
  *  @tparam I A template parameter pack containing the indices of @p args we
  *            want to unpack.
  *
- *  @param[in] results The ResultMap instance we are populating.
- *  @param[in] args The results we are adding to @p results.
+ *  @param[in] inputs The InputMap instance we are populating.
+ *  @param[in] args The inputs we are adding to @p inputs.
  *  @param[in] <anonymous> An object used purely for it's template non-type
  *             parameters.
  *
- *  @return @p results after populating it from @p args.
+ *  @return @p inputs after populating it from @p args.
  */
 template<typename PT, typename ArgsType, std::size_t... I>
-auto py_wrap_results_(type::result_map& results, ArgsType&& args,
-                      std::index_sequence<I...>) {
+auto py_wrap_inputs_(type::input_map& inputs, ArgsType&& args,
+                     std::index_sequence<I...>) {
     using pluginplay::python::PythonWrapper;
-    return PT::wrap_results(results, PythonWrapper(args[I])...);
+    return PT::wrap_inputs(inputs, PythonWrapper(args[I])...);
 }
 
 } // namespace detail_
 
 /** @brief Used in the Python bindings of property types.
  *
- *  This method forms the guts of the Python bindings for the `wrap_results`
+ *  This method forms the guts of the Python bindings for the `wrap_inputs`
  *  method. It will unpack the variadic @p args parameter so that the i-th
- *  argument in @p args is used as the i-th result.
+ *  argument in @p args is used as the i-th input.
  *
- *  @note `py_wrap_results` is templated on @p ArgsType so that it will compile
+ *  @note `py_wrap_inputs` is templated on @p ArgsType so that it will compile
  *        even if pybind11 support is not enabled. If pybind11 support is not
  *        enabled, then attempting to call this function will result in a
  *        runtime error.
  *
- *  @tparam PT The type of the property type we are wrapping results for.
+ *  @tparam PT The type of the property type we are wrapping inputs for.
  *  @tparam ArgsType The type of the object representing Python's "args"
  *          concept. @p ArgsType is assumed to be pybind11::args.
  *
- *  @param[in] results The `type::result_map` object we are filling in.
- *  @param[in] args The results passed in to the property type from Python.
+ *  @param[in] inputs The `type::input_map` object we are filling in.
+ *  @param[in] args The inputs passed in to the property type from Python.
  *
- *  @return @p results after filling it in based on @p args.
+ *  @return @p inputs after filling it in based on @p args.
  */
 template<typename PT, typename ArgsType>
-auto py_wrap_results(type::result_map& results, ArgsType&& args) {
-    using result_tuple_type = decltype(PT::results());
-    constexpr auto n        = result_tuple_type::size();
-    constexpr auto indices  = std::make_index_sequence<n>();
-    return detail_::py_wrap_results_<PT>(results, std::forward<ArgsType>(args),
-                                         indices);
+auto py_wrap_inputs(type::input_map& inputs, ArgsType&& args) {
+    using input_tuple_type = decltype(PT::inputs());
+    constexpr auto n       = input_tuple_type::size();
+    constexpr auto indices = std::make_index_sequence<n>();
+    return detail_::py_wrap_inputs_<PT>(inputs, std::forward<ArgsType>(args),
+                                        indices);
 }
 
 } // namespace pluginplay::python
