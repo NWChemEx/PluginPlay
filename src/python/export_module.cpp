@@ -1,16 +1,19 @@
 #include "export_pluginplay.hpp"
 #include <pluginplay/module.hpp>
+#include <pluginplay/python/py_type_info.hpp>
 #include <pluginplay/submodule_request.hpp>
 #include <pybind11/operators.h>
 
 namespace pluginplay {
 
-pybind11::object py_module_run_as(pybind11::object self, pybind11::object pt,
+pybind11::object py_module_run_as(Module& self, pybind11::object pt,
                                   pybind11::args args) {
-    auto inps                = pt.attr("unwrap_inputs")(args);
-    auto rvs                 = self.attr("run")(inps);
-    pybind11::tuple rv_tuple = pt.attr("unwrap_results")(rvs);
-    return rv_tuple.size() != 1 ? rv_tuple : rv_tuple[0];
+    pybind11::dict py_inps = pt.attr("inputs")();
+    if(args.size()) py_inps = pt.attr("wrap_inputs")(py_inps, *args);
+    auto cxx_inps            = py_inps.cast<type::input_map>();
+    auto cxx_rvs             = self.run(cxx_inps);
+    pybind11::tuple rv_tuple = pt.attr("unwrap_results")(cxx_rvs);
+    return rv_tuple.size() != 1 ? rv_tuple : pybind11::object(rv_tuple[0]);
 }
 
 void export_module(py_module_reference m) {
@@ -35,7 +38,13 @@ void export_module(py_module_reference m) {
       .def("results", &Module::results)
       .def("inputs", &Module::inputs)
       .def("submods", &Module::submods)
-      .def("property_types", &Module::property_types)
+      .def("property_types",
+           [](Module& self) {
+               std::set<python::PyTypeInfo> rv;
+               for(const auto& pt : self.property_types())
+                   rv.emplace(python::PyTypeInfo(pt));
+               return rv;
+           })
       .def("description", &Module::description)
       .def("citations", &Module::citations)
       .def("change_input",
@@ -45,6 +54,10 @@ void export_module(py_module_reference m) {
            })
       .def("change_submod",
            static_cast<change_submod_fxn>(&Module::change_submod))
+      .def("run_as",
+           [](Module& self, pybind11::object pt) {
+               return py_module_run_as(self, pt, pybind11::args{});
+           })
       .def("run_as", &py_module_run_as)
       .def("run", &Module::run)
       .def("profile_info", &Module::profile_info)

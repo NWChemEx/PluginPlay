@@ -24,6 +24,12 @@ void export_py_type_info(py_module_reference m) {
     py_class_type<PyTypeInfo>(m, "PyTypeInfo")
       .def(pybind11::init<>())
       .def("has_value", &PyTypeInfo::has_value)
+      .def("__str__", &PyTypeInfo::name)
+      .def("__hash__",
+           [](PyTypeInfo& self) {
+               return self.has_value() ? self.value().hash_code() :
+                                         std::size_t{};
+           })
       .def(pybind11::self == pybind11::self)
       .def(pybind11::self != pybind11::self);
 }

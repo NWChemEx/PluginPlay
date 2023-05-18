@@ -74,6 +74,15 @@ public:
      */
     bool has_value() const noexcept { return m_rtti_.has_value(); }
 
+    /** @brief Returns a string representation of the wrapped type.
+     *
+     *  @return An implementation defined string representation of the type.
+     *
+     *  @throw std::bad_alloc if allocating the memory for the return fails.
+     *         Strong throw guarantee.
+     */
+    std::string name() const { return has_value() ? m_rtti_->name() : ""; }
+
     /** @brief Is the RTTI in @p rhs is value equal to the RTTI in *this?
      *
      *  This method checks if both *this and @p rhs hold RTTI, and if they do,
@@ -105,7 +114,77 @@ public:
      *  @throw None No throw guarantee.
      */
     bool operator!=(const PyTypeInfo& rhs) const noexcept {
-        return !(*this == rhs);
+        return m_rtti_ != rhs.m_rtti_;
+    }
+
+    /** @brief Determines if the RTTI in *this comes before the RTTI in @p rhs.
+     *
+     *  The C++ implementation of the std::type_index defines an ordering. This
+     *  method defers to that ordering to determine if the RTTI in *this comes
+     *  before the RTTI in @p rhs.
+     *
+     *  @param[in] rhs The instance we are comparing against.
+     *
+     *  @return True if the RTTI in *this comes before the RTTI in @p rhs and
+     *          false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator<(const PyTypeInfo& rhs) const noexcept {
+        return m_rtti_ < rhs.m_rtti_;
+    }
+
+    /** @brief Determines if the RTTI in *this comes after the RTTI in @p rhs.
+     *
+     *  The C++ implementation of the std::type_index defines an ordering. This
+     *  method defers to that ordering to determine if the RTTI in *this comes
+     *  after the RTTI in @p rhs.
+     *
+     *  @param[in] rhs The instance we are comparing against.
+     *
+     *  @return True if the RTTI in *this comes after the RTTI in @p rhs and
+     *          false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator>(const PyTypeInfo& rhs) const noexcept {
+        return m_rtti_ > rhs.m_rtti_;
+    }
+
+    /** @brief Determines if the RTTI in *this comes before the RTTI in @p rhs
+     *         or if the the RTTI in *this is the same as the RTTI in @p rhs.
+     *
+     *  The C++ implementation of the std::type_index defines an ordering and
+     *  value equality. This method defers to those definitions to determine if
+     *  the RTTI in *this is the same as, or comes before, the RTTI in @p rhs.
+     *
+     *  @param[in] rhs The instance we are comparing against.
+     *
+     *  @return True if the RTTI in *this is the same as, or comes before the
+     *          RTTI in @p rhs and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator<=(const PyTypeInfo& rhs) const noexcept {
+        return m_rtti_ <= rhs.m_rtti_;
+    }
+
+    /** @brief Determines if the RTTI in *this comes after the RTTI in @p rhs
+     *         or if the the RTTI in *this is the same as the RTTI in @p rhs.
+     *
+     *  The C++ implementation of the std::type_index defines an ordering and
+     *  value equality. This method defers to those definitions to determine if
+     *  the RTTI in *this is the same as, or comes after, the RTTI in @p rhs.
+     *
+     *  @param[in] rhs The instance we are comparing against.
+     *
+     *  @return True if the RTTI in *this is the same as, or comes after the
+     *          RTTI in @p rhs and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator>=(const PyTypeInfo& rhs) const noexcept {
+        return m_rtti_ >= rhs.m_rtti_;
     }
 
 private:

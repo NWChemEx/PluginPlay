@@ -1,4 +1,5 @@
 #pragma once
+#include <pluginplay/any/any.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
 #include <pluginplay/types.hpp>
 #include <type_traits>
@@ -31,7 +32,8 @@ template<typename PT, typename ArgsType, std::size_t... I>
 auto py_wrap_inputs_(type::input_map& inputs, ArgsType&& args,
                      std::index_sequence<I...>) {
     using pluginplay::python::PythonWrapper;
-    return PT::wrap_inputs(inputs, PythonWrapper(args[I])...);
+    return PT::wrap_inputs(inputs,
+                           any::make_any_field<PythonWrapper>(args[I])...);
 }
 
 } // namespace detail_

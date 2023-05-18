@@ -47,6 +47,7 @@ PYBIND11_MODULE(py_test_pluginplay, m) {
     EXPORT_PROPERTY_TYPE(PolymorphicOptions, m);
     EXPORT_PROPERTY_TYPE(OneOut, m);
     EXPORT_PROPERTY_TYPE(TwoOut, m);
+    EXPORT_PROPERTY_TYPE(OneInOneOut, m);
 
     m.def("get_mm", []() {
         pluginplay::ModuleManager mm(nullptr);

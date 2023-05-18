@@ -91,15 +91,15 @@ void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
     using tuple_of_fields = typename traits_type::tuple_of_fields;
     using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
     using clean_V         = std::decay_t<V>;
-    constexpr bool is_py  = std::is_same_v<clean_V, python::PythonWrapper>;
+    constexpr bool is_any = std::is_same_v<clean_V, pluginplay::type::any>;
     constexpr bool is_ref = std::is_reference_v<type>;
     detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE<V, type, ArgI>();
 
     auto key = (builder.begin() + ArgI)->first;
-    if constexpr(is_ref) {
-        // If it's a Python object we don't want to do the conversion
-        using cast2type = std::conditional_t<!is_py, type, clean_V>;
-        rv.at(key).change(static_cast<cast2type>(value));
+    if constexpr(is_any) {
+        rv.at(key).change(std::forward<V>(value));
+    } else if constexpr(is_ref && !is_any) {
+        rv.at(key).change(static_cast<type>(value));
     } else {
         rv.at(key).change(std::forward<V>(value));
     }

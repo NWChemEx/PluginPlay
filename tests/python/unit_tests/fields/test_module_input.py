@@ -197,7 +197,7 @@ class TestModuleInput(unittest.TestCase):
 
 
     def test_check_descriptions(self):
-        print(self.defaulted.check_descriptions())
+        self.assertEqual(self.defaulted.check_descriptions(), set())
 
 
     def test_comparisons(self):

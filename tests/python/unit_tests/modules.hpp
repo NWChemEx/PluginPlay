@@ -78,9 +78,7 @@ inline MODULE_RUN(SubModModule) { return results(); }
 // Module using every feature
 DECLARE_MODULE(RealDeal);
 inline MODULE_CTOR(RealDeal) {
-    satisfies_property_type<NullPT>();
-    satisfies_property_type<OneIn>();
-    satisfies_property_type<OneOut>();
+    satisfies_property_type<OneInOneOut>();
 
     description("This module is the real deal. It does math stuff like:\n\n"
                 ".. math::\n\n"
@@ -93,8 +91,9 @@ inline MODULE_CTOR(RealDeal) {
              "Of. 1 (2009).");
 }
 inline MODULE_RUN(RealDeal) {
-    auto rv = results();
-    return OneOut::wrap_results(rv, int{4});
+    auto rv    = results();
+    auto [inp] = OneInOneOut::unwrap_inputs(inputs);
+    return OneInOneOut::wrap_results(rv, inp);
 }
 
 template<typename T>

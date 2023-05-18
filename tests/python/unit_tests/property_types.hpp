@@ -45,14 +45,13 @@ PROPERTY_TYPE_INPUTS(ThreeIn) {
 PROPERTY_TYPE_RESULTS(ThreeIn) { return pluginplay::declare_result(); }
 
 // Property type for module with a defaulted option
-struct OptionalInput : pluginplay::PropertyType<OptionalInput> {
-    auto inputs_() {
-        return pluginplay::declare_input().add_field<int>("Option 1", 1);
-    }
-    auto results_() {
-        return pluginplay::declare_result().add_field<int>("Result 1");
-    }
-};
+DECLARE_PROPERTY_TYPE(OptionalInput);
+PROPERTY_TYPE_INPUTS(OptionalInput) {
+    return pluginplay::declare_input().add_field<int>("Option 1", 1);
+}
+PROPERTY_TYPE_RESULTS(OptionalInput) {
+    return pluginplay::declare_result().add_field<int>("Result 1");
+}
 
 // Property type that takes a polymorphic option
 DECLARE_PROPERTY_TYPE(PolymorphicOptions);
@@ -77,6 +76,15 @@ PROPERTY_TYPE_RESULTS(TwoOut) {
     return pluginplay::declare_result()
       .add_field<int>("Result 1")
       .add_field<char>("Result 2");
+}
+
+// Property type for module with one input option and one output result
+DECLARE_PROPERTY_TYPE(OneInOneOut);
+PROPERTY_TYPE_INPUTS(OneInOneOut) {
+    return pluginplay::declare_input().add_field<int>("Option 1");
+}
+PROPERTY_TYPE_RESULTS(OneInOneOut) {
+    return pluginplay::declare_result().add_field<int>("Option 2");
 }
 
 } // namespace test_pluginplay
