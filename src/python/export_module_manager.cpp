@@ -1,4 +1,5 @@
 #include "export_pluginplay.hpp"
+#include "py_module_base.hpp"
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
@@ -6,7 +7,9 @@
 namespace pluginplay {
 
 void export_module_manager(py_module_reference m) {
-    using at_fxn = Module& (ModuleManager::*)(const type::key&);
+    using module_base_ptr = ModuleManager::module_base_ptr;
+    using at_fxn          = Module& (ModuleManager::*)(const type::key&);
+    using add_mod_fxn     = void (ModuleManager::*)(type::key, module_base_ptr);
 
     using py_obj = pybind11::object;
     using python::PythonWrapper;
@@ -15,7 +18,9 @@ void export_module_manager(py_module_reference m) {
       .def(pybind11::init<>())
       .def("count", &ModuleManager::count)
       .def("size", &ModuleManager::size)
-      //.def("add_module")
+      .def("add_module",
+           [](ModuleManager& mm, std::string key,
+              std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); })
       .def("at", static_cast<at_fxn>(&ModuleManager::at))
       .def("copy_module", &ModuleManager::copy_module)
       .def("erase", &ModuleManager::erase)

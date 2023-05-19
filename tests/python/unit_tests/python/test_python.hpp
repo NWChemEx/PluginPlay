@@ -19,6 +19,12 @@
 
 namespace test_pluginplay {
 
+void test_py_type_info(pybind11::module_& m);
 void test_python_wrapper(pybind11::module_& m);
 
+inline void test_python(pybind11::module_& m) {
+    test_py_type_info(m);
+    test_python_wrapper(m);
 }
+
+} // namespace test_pluginplay

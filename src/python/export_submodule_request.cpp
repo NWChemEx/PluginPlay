@@ -15,7 +15,7 @@ void py_set_type(SubmoduleRequest& sr, pybind11::object pt) {
 auto py_sr_run_as(pybind11::object sr, pybind11::object pt,
                   pybind11::args args) {
     auto py_mod = sr.attr("value")();
-    return py_mod.attr("run_as")(pt, args);
+    return py_mod.attr("run_as")(pt, *args);
 }
 
 void export_submodule_request(py_module_reference m) {

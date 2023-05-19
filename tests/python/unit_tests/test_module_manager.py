@@ -113,7 +113,7 @@ class TestModuleManager(unittest.TestCase):
         # Throws if there's no modules
         bad_key = 'not a key'
         fxn2test = self.defaulted.change_submod
-        self.assertRaises(Exception, fxn2test, not_a_key, not_a_key, not_a_key)
+        self.assertRaises(Exception, fxn2test, bad_key, bad_key, bad_key)
 
         #Throws if the module's key is invalid
         mod_key = 'C++ module needing a submodule'
@@ -130,12 +130,30 @@ class TestModuleManager(unittest.TestCase):
 
         # Can actually change the submod
         fxn2test(mod_key, submod_key, to_key)
-        new_submod = self.has_mods.at(mod_key).submods()[submod_key]
-        self.assertEqual(new_submod, )
+        new_submod = self.has_mods.at(mod_key).submods()[submod_key].value()
+        self.assertEqual(new_submod, self.has_mods.at(to_key))
 
 
     def test_run_as(self):
-        pass
+        # Throws if there's no modules
+        pt = test_pp.OneInOneOut()
+        bad_key = 'not a key'
+        self.assertRaises(Exception, self.defaulted.run_as, pt, bad_key)
+
+        # Throws if it's the wrong PT
+        mod_key = 'C++ module using every feature'
+        fxn2test = self.has_mods.run_as
+        self.assertRaises(Exception, fxn2test, test_pp.NullPT(), mod_key, 1)
+
+        # Throws if it's a bad module key
+        self.assertRaises(Exception, fxn2test, pt, bad_key, 1)
+
+        # Throws if the input is the wrong type
+        self.assertRaises(Exception, fxn2test, pt, mod_key, [42])
+
+        # Can actually run the function
+        rv = fxn2test(pt, mod_key, 1)
+        self.assertEqual(rv, 1)
 
 
     def setUp(self):

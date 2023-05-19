@@ -69,7 +69,7 @@ PYBIND11_MODULE(py_test_pluginplay, m) {
     test_module(m);
     test_module_base(m);
     test_property_type(m);
-    test_python_wrapper(m);
+    test_python(m);
     test_submodule_request(m);
 }
 
