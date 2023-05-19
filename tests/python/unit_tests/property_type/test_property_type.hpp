@@ -3,6 +3,6 @@
 
 namespace test_pluginplay {
 
-void test_property_type(pybind11::module_&m);
+void test_property_type(pybind11::module_& m);
 
 }
