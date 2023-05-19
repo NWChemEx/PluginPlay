@@ -18,9 +18,7 @@ class APythonModule(pp.ModuleBase):
         i0, = pt.unwrap_inputs(inputs)
         i1  = inputs["An extra input"].value()
 
-        da_sum = i0 + i1
-        print(da_sum)
-        r0 = submods["A submodule"].run_as(pt, da_sum)
+        r0 = submods["A submodule"].run_as(pt, i0 + i1)
 
         rv = self.results()
         rv = pt.wrap_results(rv, r0)
