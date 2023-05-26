@@ -29,6 +29,7 @@ set(
 )
 
 include(get_cmaize)
+include(nwx_versions)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
@@ -47,6 +48,7 @@ nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src"
 cmaize_find_or_build_dependency(
     utilities
     URL github.com/NWChemEx-Project/utilities
+    VERSION ${NWX_UTILITIES_VERSION}
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
     CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
@@ -55,6 +57,7 @@ cmaize_find_or_build_dependency(
 cmaize_find_or_build_dependency(
     libfort
     URL github.com/seleznevae/libfort
+    VERSION ${NWX_LIBFORT_VERSION}
     BUILD_TARGET fort
     FIND_TARGET libfort::fort
     CMAKE_ARGS FORT_ENABLE_TESTING=OFF
@@ -63,7 +66,7 @@ cmaize_find_or_build_dependency(
 cmaize_find_or_build_dependency(
     parallelzone
     URL github.com/NWChemEx-Project/ParallelZone
-    PRIVATE TRUE
+    VERSION ${NWX_PARALLELZONE_VERSION}
     BUILD_TARGET parallelzone
     FIND_TARGET nwx::parallelzone
     CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
@@ -80,7 +83,7 @@ if("${BUILD_ROCKSDB}")
     # cpp_find_or_build_dependency(
     #     RocksDB
     #     URL github.com/facebook/rocksdb
-    #     VERSION v7.0.4
+    #     VERSION ${NWX_ROCKSDB_VERSION}
     #     BUILD_TARGET rocksdb-shared
     #     FIND_TARGET ${ROCKSDB_TARGET}
     #     CMAKE_ARGS CMAKE_BUILD_TYPE=Release
@@ -156,7 +159,7 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-        VERSION v2.13.8
+        VERSION ${NWX_CATCH2_VERSION}
     )
     cmaize_add_tests(
         test_${PROJECT_NAME}
