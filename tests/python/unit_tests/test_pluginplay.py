@@ -15,15 +15,15 @@
 #
 
 import os
-import pluginplay as pp
+import parallelzone as pz
 import sys
 import unittest
 
 
 
 if __name__ == '__main__':
-    # Make a ModuleManager to ensure MPI stays in scope
-    #mm = pp.ModuleManager()
+    # Make a RuntimeView to ensure MPI isn't finalized early
+    rv = pz.runtime.RuntimeView()
 
     my_dir = os.path.dirname(os.path.realpath(__file__))
 

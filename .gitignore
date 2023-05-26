@@ -57,3 +57,5 @@ toolchain.cmake
 # These are the default names for the components of the cache
 cache.db
 uuid.db
+
+install/

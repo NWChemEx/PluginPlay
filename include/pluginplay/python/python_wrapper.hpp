@@ -263,8 +263,11 @@ bool PythonWrapper::is_convertible() noexcept {
     // User wants us to try converting the Python object to a C++ object
     else {
         try {
-            auto cxx_value = unwrap_().cast<clean_type>();
-            return true;
+            if constexpr(std::is_copy_constructible_v<clean_type>) {
+                unwrap_().cast<clean_type>();
+                return true;
+            } else
+                return false;
         } catch(...) { return false; }
     }
 }

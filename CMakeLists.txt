@@ -95,26 +95,37 @@ if("${BUILD_ROCKSDB}")
     list(APPEND pluginplay_depends ${ROCKSDB_TARGET})
 endif()
 
-set(pluginplay_target ${PROJECT_NAME})
 if("${BUILD_PYBIND11_PYBINDINGS}")
-    include(nwx_pybind11)
-    nwx_add_pybind11_module(
-        ${PROJECT_NAME}
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src"
-        INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS "${pluginplay_depends}"
+    cmaize_find_or_build_dependency(
+        pybind11
+        URL github.com/pybind/pybind11
+        BUILD_TARGET pybind11_headers
+        FIND_TARGET pybind11::embed
+        CMAKE_ARGS PYBIND11_INSTALL=ON
+                   PYBIND11_FINDPYTHON=ON
     )
-    set(pluginplay_target "py_${pluginplay_target}")
-    target_compile_definitions("${pluginplay_target}" PUBLIC BUILD_PYBIND11)
-else()
-    cmaize_add_library(
-        ${pluginplay_target}
-        SOURCE_DIR "${project_src_dir}"
-        INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS "${pluginplay_depends}"
+    list(
+        APPEND pluginplay_depends
+        pybind11_headers pybind11::embed Python::Python
     )
-    cmaize_add_package(${pluginplay_target} NAMESPACE nwx::)
 endif()
+
+cmaize_add_library(
+    ${PROJECT_NAME}
+    SOURCE_DIR "${project_src_dir}"
+    INCLUDE_DIRS "${project_inc_dir}"
+    DEPENDS "${pluginplay_depends}"
+)
+if("${BUILD_PYBIND11_PYBINDINGS}")
+    target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
+endif()
+
+include(nwx_pybind11)
+nwx_add_pybind11_module(
+    ${PROJECT_NAME}
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
+    DEPENDS "${PROJECT_NAME}"
+)
 
 include(nwx_python_mods)
 cppyy_make_python_package(
@@ -133,7 +144,7 @@ if("${BUILD_TESTING}")
         ${PROJECT_NAME}_examples
         SOURCE_DIR ${examples_src_dir}
         INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS ${pluginplay_target}
+        DEPENDS ${PROJECT_NAME}
     )
     cppyy_make_python_package(
         PACKAGE ${PROJECT_NAME}_examples
@@ -162,9 +173,12 @@ if("${BUILD_TESTING}")
         py_test_pluginplay
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests"
         INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS ${pluginplay_target}
+        DEPENDS ${PROJECT_NAME}
     )
     nwx_pybind11_tests(
         py_pluginplay ${python_tests_dir}/unit_tests/test_pluginplay.py
+        SUBMODULES parallelzone
     )
 endif()
+
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
