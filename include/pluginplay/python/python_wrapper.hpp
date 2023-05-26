@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include <any>
 #include <stdexcept>
 #ifdef BUILD_PYBIND11
-#include <any>
 #include <memory>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -340,7 +340,7 @@ namespace pluginplay::python {
  */
 class PythonWrapper {
 public:
-    PythonWrapper() { error_() : }
+    PythonWrapper() { error_(); }
 
     template<typename T>
     PythonWrapper(T&&) {
@@ -348,17 +348,29 @@ public:
     }
 
     template<typename T>
-    T unwrap() const {
+    T unwrap() {
         error_();
+        return std::any_cast<T>(m_value_); // Won't actually get here...
     }
 
     template<typename T>
-    bool is_convertible() const {
+    T unwrap() const {
         error_();
+        return std::any_cast<T>(m_value_); // Won't actually get here...
     }
 
+    template<typename T>
+    bool is_convertible() const noexcept {
+        return false;
+    }
+
+    bool operator==(const PythonWrapper& rhs) const noexcept { return true; }
+
+    bool operator!=(const PythonWrapper& rhs) { return false; }
+
 private:
-    void error_() {
+    std::any m_value_;
+    void error_() const {
         throw std::runtime_error("PluginPlay was not configured with Pybind11 "
                                  "support");
     }
