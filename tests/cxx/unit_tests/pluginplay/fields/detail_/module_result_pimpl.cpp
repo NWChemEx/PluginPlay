@@ -26,6 +26,12 @@ static auto wrap_value(U&& value) {
       any::make_any_field<T>(std::forward<U>(value)));
 }
 
+template<typename T>
+static auto make_type_check() {
+    pluginplay::bounds_checking::TypeCheck<T> c;
+    return [=](const type::any& any) { return c(any); };
+}
+
 static const std::type_index d(typeid(double));
 
 TEST_CASE("ModuleResultPIMPL : default ctor") {
@@ -49,6 +55,7 @@ TEST_CASE("ModuleResultPIMPL : has_value") {
     SECTION("No value") { REQUIRE_FALSE(p.has_value()); }
     SECTION("Has a value") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         p.set_value(wrap_value<double>(3.14));
         REQUIRE(p.has_value());
     }
@@ -66,6 +73,7 @@ TEST_CASE("ModuleResultPIMPL : has_description") {
 TEST_CASE("ModuleResultPIMPL : set_type") {
     ModuleResultPIMPL p;
     p.set_type(d);
+    p.set_type_check(make_type_check<double>());
     SECTION("No value") { REQUIRE(p.type() == d); }
     SECTION("Has value with same type") {
         p.set_value(wrap_value<double>(3.14));
@@ -86,11 +94,13 @@ TEST_CASE("ModuleResultPIMPL : set_value") {
     }
     SECTION("Throws if the value's type is wrong") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         auto i = wrap_value<int>(2);
         REQUIRE_THROWS_AS(p.set_value(i), std::invalid_argument);
     }
     SECTION("Can set it") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         p.set_value(v);
         REQUIRE(*p.value() == *v);
     }
@@ -120,6 +130,7 @@ TEST_CASE("ModuleResultPIMPL : value") {
     }
     SECTION("Can get value") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         p.set_value(wrap_value<double>(3.14));
         REQUIRE(any::any_cast<double>(*p.value()) == 3.14);
     }
@@ -156,14 +167,18 @@ TEST_CASE("ModuleResultPIMPL : comparisons") {
     }
     SECTION("Different valued-ness") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         p2.set_type(d);
+        p2.set_type_check(make_type_check<double>());
         p.set_value(wrap_value<double>(3.14));
         REQUIRE(p != p2);
         REQUIRE_FALSE(p == p2);
     }
     SECTION("Different values") {
         p.set_type(d);
+        p.set_type_check(make_type_check<double>());
         p2.set_type(d);
+        p2.set_type_check(make_type_check<double>());
         p.set_value(wrap_value<double>(3.14));
         p2.set_value(wrap_value<double>(1.23));
         REQUIRE(p != p2);

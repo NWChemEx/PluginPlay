@@ -22,8 +22,20 @@
  * This header file will include all of the major pluginplay classes. Developers
  */
 
-#include "pluginplay/facade_module.hpp"
-#include "pluginplay/lambda_module.hpp"
-#include "pluginplay/module_manager.hpp"
-#include "pluginplay/property_type/property_type.hpp"
-#include "pluginplay/type_traits/type_traits.hpp"
+#include <pluginplay/any/any.hpp>
+#include <pluginplay/cache/cache.hpp>
+#include <pluginplay/config/config.hpp>
+#include <pluginplay/facade_module.hpp>
+#include <pluginplay/fields/fields.hpp>
+#include <pluginplay/lambda_module.hpp>
+#include <pluginplay/module.hpp>
+#include <pluginplay/module_base.hpp>
+#include <pluginplay/module_manager.hpp>
+#include <pluginplay/plugin/plugin.hpp>
+#include <pluginplay/printing/printing.hpp>
+#include <pluginplay/property_type/property_type.hpp>
+#include <pluginplay/python/python.hpp>
+#include <pluginplay/submodule_request.hpp>
+#include <pluginplay/type_traits/type_traits.hpp>
+#include <pluginplay/types.hpp>
+#include <pluginplay/utility.hpp>

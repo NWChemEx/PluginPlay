@@ -40,4 +40,12 @@ namespace pluginplay {
  */
 bool with_rocksdb();
 
+/** @brief Was PluginPlay built with pybind11 support?
+ *
+ *  @return True if the PluginPlay library distributed with this header was
+ *          built with pybind11 support and false otherwise
+ */
+
+bool with_pybind11();
+
 } // namespace pluginplay

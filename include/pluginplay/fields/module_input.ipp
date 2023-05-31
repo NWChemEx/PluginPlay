@@ -144,6 +144,9 @@ type::any ModuleInput::wrap_value_(T&& new_value) const {
     using clean_type = std::decay_t<T>;
     using cref_type  = const clean_type&;
 
+    // Did the user give us an AnyField already?
+    if constexpr(std::is_same_v<clean_type, type::any>) { return new_value; }
+
     // Did the user give us a reference (so either T=U& or T=U&&)
     constexpr bool is_ref = std::is_reference_v<T>;
 
@@ -158,14 +161,9 @@ type::any ModuleInput::wrap_value_(T&& new_value) const {
 
 template<typename T>
 auto& ModuleInput::add_type_check_() {
-    // When we run the checks we always wrap a const reference
-    auto check = [](const type::any& new_value) {
-        return new_value.is_convertible<T>() ||
-               new_value.is_convertible<const T&>();
-    };
-    auto msg = std::string("Type == ") +
-               utilities::printing::Demangler::demangle(typeid(T));
-    return add_check_(check, msg);
+    bounds_checking::TypeCheck<T> check;
+    auto l = [=](const type::any& value) { return check(value); };
+    return add_check_(l, check.str());
 }
 
 } // namespace pluginplay

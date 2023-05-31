@@ -15,6 +15,7 @@
  */
 
 // This file meant only for inclusion from module_result.hpp
+#include <pluginplay/fields/bounds_checking/type_check.hpp>
 
 namespace pluginplay {
 
@@ -28,6 +29,9 @@ template<typename T>
 auto& ModuleResult::set_type() {
     constexpr bool is_clean = std::is_same_v<std::decay_t<T>, T>;
     static_assert(is_clean, "Results must be unqualified types.");
+    bounds_checking::TypeCheck<T> check;
+    auto l = [=](const type::any& value) { return check(value); };
+    set_type_check_(std::move(l));
     return set_type_(typeid(T));
 }
 
@@ -60,6 +64,10 @@ T ModuleResult::value() const {
 template<typename T>
 type::any ModuleResult::wrap_value_(T&& new_value) {
     using clean_T = std::decay_t<T>;
+    // Is it already an AnyField
+    if constexpr(std::is_same_v<clean_T, type::any>) {
+        return std::forward<T>(new_value);
+    }
     return any::make_any_field<clean_T>(std::forward<T>(new_value));
 }
 

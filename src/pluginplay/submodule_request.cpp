@@ -47,6 +47,12 @@ bool SubmoduleRequest::has_description() const noexcept {
 
 bool SubmoduleRequest::ready() const noexcept { return m_pimpl_->ready(); }
 
+SubmoduleRequest& SubmoduleRequest::set_type(rtti_type type,
+                                             type::input_map inputs) {
+    m_pimpl_->set_type(type, std::move(inputs));
+    return *this;
+}
+
 void SubmoduleRequest::change(module_ptr new_mod) {
     m_pimpl_->set_module(new_mod);
 }
@@ -80,11 +86,6 @@ void SubmoduleRequest::lock() { m_pimpl_->lock(); }
 
 bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
     return *m_pimpl_ == *rhs.m_pimpl_;
-}
-
-void SubmoduleRequest::set_type_(const std::type_info& type,
-                                 type::input_map inputs) {
-    m_pimpl_->set_type(std::type_index(type), std::move(inputs));
 }
 
 } // namespace pluginplay

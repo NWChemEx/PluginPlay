@@ -15,6 +15,7 @@
  */
 
 // To be included only from module_input_pimpl.hpp
+#include <sstream>
 
 namespace pluginplay::detail_ {
 
@@ -37,7 +38,11 @@ inline void ModuleInputPIMPL::set_type(
 inline void ModuleInputPIMPL::set_value(type::any any) {
     assert_type_set_();
     if(!is_valid(any)) {
-        std::string msg("Input value has failed bounds checks: ");
+        std::string msg("Input value: \"");
+        std::stringstream ss;
+        any.print(ss);
+        msg += ss.str();
+        msg += std::string("\" has failed bounds checks: ");
         for(const auto& [x, y] : m_checks_) {
             if(!y(any)) msg += x + " ";
         }

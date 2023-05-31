@@ -17,12 +17,11 @@
 #pragma once
 #include <functional>
 #include <pluginplay/any/any.hpp>
-#include <pluginplay/bounds_checking.hpp>
+#include <pluginplay/fields/bounds_checking/bounds_checking.hpp>
 #include <pluginplay/types.hpp>
 #include <pluginplay/utility.hpp>
 #include <set>
 #include <sstream>
-#include <utilities/printing/demangler.hpp>
 
 namespace pluginplay {
 namespace detail_ {
@@ -150,7 +149,10 @@ public:
      *  the value to 0, sometimes we need a null state separate from the
      *  possible input values and that is where the optional trait comes in.
      *
-     *  This function is used to determine if the current input is optional
+     *  This function is used to determine if the current input is optional.
+     *
+     *  @note By default all ModuleInput instances are required, *i.e.*, this
+     *        method will return false.
      *
      *  @return True if the current input field is optional and false otherwise.
      *

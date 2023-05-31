@@ -33,7 +33,8 @@ include(nwx_versions)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_PYBIND11_PYBINDIGS "Use pybind11 to build Python3 bindings?" OFF)
+option(BUILD_CPPYY_PYBINDINGS "Use Cppyy to build Python3 bindings?" OFF)
 option(BUILD_ROCKSDB "Should we build the RocksDB backend?" OFF)
 
 # Work out the project paths
@@ -43,8 +44,6 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src"
                  "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-
 
 cmaize_find_or_build_dependency(
     utilities
@@ -75,6 +74,7 @@ cmaize_find_or_build_dependency(
 
 find_package(Boost REQUIRED)
 
+set(pluginplay_depends utilities parallelzone libfort Boost::boost)
 set(ROCKSDB_TARGET "")
 if("${BUILD_ROCKSDB}")
     set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
@@ -95,14 +95,39 @@ if("${BUILD_ROCKSDB}")
     #                WITH_TESTS=OFF
     # )
     target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
+    list(APPEND pluginplay_depends ${ROCKSDB_TARGET})
+endif()
+
+if("${BUILD_PYBIND11_PYBINDINGS}")
+    cmaize_find_or_build_dependency(
+        pybind11
+        URL github.com/pybind/pybind11
+        BUILD_TARGET pybind11_headers
+        FIND_TARGET pybind11::embed
+        CMAKE_ARGS PYBIND11_INSTALL=ON
+                   PYBIND11_FINDPYTHON=ON
+    )
+    list(
+        APPEND pluginplay_depends
+        pybind11_headers pybind11::embed Python::Python
+    )
 endif()
 
 cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS utilities parallelzone libfort ${ROCKSDB_TARGET}
-            Boost::boost
+    DEPENDS "${pluginplay_depends}"
+)
+if("${BUILD_PYBIND11_PYBINDINGS}")
+    target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
+endif()
+
+include(nwx_pybind11)
+nwx_add_pybind11_module(
+    ${PROJECT_NAME}
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
+    DEPENDS "${PROJECT_NAME}"
 )
 
 include(nwx_python_mods)
@@ -114,6 +139,7 @@ cppyy_make_python_package(
 
 if("${BUILD_TESTING}")
     set(cxx_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(python_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
     set(tests_src_dir "${cxx_tests_dir}/unit_tests/${PROJECT_NAME}")
     set(examples_src_dir "${cxx_tests_dir}/doc_snippets")
 
@@ -140,6 +166,21 @@ if("${BUILD_TESTING}")
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
         DEPENDS Catch2 ${PROJECT_NAME}_examples
+    )
+
+    # In the python tests we will pass Python into PluginPlay, we will then
+    # need to know that C++ can handle those Python types. To this end we
+    # create a series of Python bindings for unit testing this functionality
+    # which live in the py_test_pluginplay library.
+    nwx_add_pybind11_module(
+        py_test_pluginplay
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests"
+        INCLUDE_DIRS "${project_inc_dir}"
+        DEPENDS ${PROJECT_NAME}
+    )
+    nwx_pybind11_tests(
+        py_pluginplay ${python_tests_dir}/unit_tests/test_pluginplay.py
+        SUBMODULES parallelzone
     )
 endif()
 

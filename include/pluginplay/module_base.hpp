@@ -19,6 +19,7 @@
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/cache.hpp>
 #include <pluginplay/fields/fields.hpp>
+#include <pluginplay/python/python_wrapper.hpp>
 #include <pluginplay/submodule_request.hpp>
 #include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
@@ -65,7 +66,7 @@ public:
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;
 
-    /// Deleted to avoid erroneous construction
+    /// Deleted to avoid errors
     ModuleBase() = delete;
 
     /// Deleted to avoid erroneous construction
@@ -142,6 +143,8 @@ public:
      */
     const type::result_map& results() const noexcept { return m_results_; }
 
+    type::result_map& results() noexcept { return m_results_; }
+
     /** @brief Retrieves the inputs this module requires
      *
      *  This function can be used to retrieve the set of inputs that the
@@ -159,6 +162,7 @@ public:
      */
     const type::input_map& inputs() const noexcept { return m_inputs_; }
 
+    type::input_map& inputs() noexcept { return m_inputs_; }
     /** @brief Returns the set of submodules requested by the developer.
      *
      *  This function returns the set of submodule requests that were created in
@@ -175,6 +179,8 @@ public:
      *  @throw none No throw guarantee.
      */
     const type::submodule_map& submods() const noexcept { return m_submods_; }
+
+    type::submodule_map& submods() noexcept { return m_submods_; }
 
     /** @brief Returns the set of property types this module satisfies.
      *
@@ -314,8 +320,20 @@ public:
      */
     bool operator!=(const ModuleBase& rhs) const noexcept;
 
+    template<typename InputContainer, typename ResultContainer>
+    void satisfies_property_type(type::rtti rtti, InputContainer&& inputs,
+                                 ResultContainer&& results) {
+        m_property_types_.insert(std::move(rtti));
+        m_inputs_.insert(inputs.begin(), inputs.end());
+        m_results_.insert(results.begin(), results.end());
+    }
+
 protected:
-    /** @brief the ctor that all modules must call.
+    /// The constructor Python modules must call (second argument is ignored and
+    /// is just there so we don't have to rely on SFINAE)
+    ModuleBase(const python::PythonWrapper& o, bool);
+
+    /** @brief the ctor that all C++ modules must call.
      *
      *  Classes that derive form ModuleBase need to call this constructor to
      *  initialize the base. They do this by passing their `this` pointer to
@@ -485,7 +503,6 @@ protected:
     template<typename property_type>
     void satisfies_property_type();
 
-private:
     /** @brief Developer facing API for running the module.
      *
      * This is the member function that the derived class should implement for
@@ -506,6 +523,7 @@ private:
     virtual type::result_map run_(type::input_map inputs,
                                   type::submodule_map submods) const = 0;
 
+private:
     /// The UUID assigned to this module
     uuid_type m_uuid_;
 
@@ -535,6 +553,9 @@ private:
 
     /// Pointer to this modules current runtime
     runtime_ptr m_runtime_;
+
+    /// Is this module implemented in Python?
+    bool m_is_python_ = false;
 }; // class ModuleBase
 
 // -------------------------------- Helper Macros ------------------------------
@@ -610,6 +631,7 @@ inline bool ModuleBase::operator==(const ModuleBase& rhs) const noexcept {
     if(has_description() != rhs.has_description()) return false;
     if(has_description() && get_desc() != rhs.get_desc()) return false;
     if(m_citations_ != rhs.m_citations_) return false;
+    if(m_is_python_ != rhs.m_is_python_) return false;
     return std::tie(inputs(), results(), submods(), property_types()) ==
            std::tie(rhs.inputs(), rhs.results(), rhs.submods(),
                     rhs.property_types());
@@ -621,12 +643,15 @@ inline bool ModuleBase::operator!=(const ModuleBase& rhs) const noexcept {
 
 template<typename DerivedType>
 ModuleBase::ModuleBase(DerivedType*) noexcept :
-  m_type_(typeid(std::decay_t<DerivedType>)) {
+  m_type_(type::rtti(typeid(std::decay_t<DerivedType>))) {
     using clean_t          = std::decay_t<DerivedType>;
     constexpr bool is_base = std::is_base_of_v<ModuleBase, clean_t>;
     static_assert(
       is_base, "The type of the input is not a class dervied from ModuleBase");
 }
+
+inline ModuleBase::ModuleBase(const python::PythonWrapper& self, bool) :
+  m_type_(type::rtti(typeid(python::PythonWrapper))), m_is_python_(true) {}
 
 inline void ModuleBase::description(type::description value) noexcept {
     m_desc_.emplace(std::move(value));
@@ -654,11 +679,8 @@ auto& ModuleBase::add_submodule(const type::key& key) {
 template<typename property_type>
 void ModuleBase::satisfies_property_type() {
     property_type p;
-    m_property_types_.insert(type::rtti(typeid(property_type)));
-    auto inputs = p.inputs();
-    m_inputs_.insert(inputs.begin(), inputs.end());
-    auto results = p.results();
-    m_results_.insert(results.begin(), results.end());
+    type::rtti rtti(typeid(property_type));
+    satisfies_property_type(rtti, p.inputs(), p.results());
 }
 
 inline typename ModuleBase::cache_type& ModuleBase::get_cache() const {

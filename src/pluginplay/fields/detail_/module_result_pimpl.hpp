@@ -17,6 +17,7 @@
 #pragma once
 #include <memory>
 #include <pluginplay/any/any.hpp>
+#include <pluginplay/fields/module_result.hpp>
 #include <pluginplay/types.hpp>
 #include <typeindex>
 #include <utilities/printing/demangler.hpp>
@@ -34,8 +35,11 @@ namespace pluginplay::detail_ {
  */
 class ModuleResultPIMPL {
 public:
-    /// The type of a shared_ptr to a read-only pluginplayAny
-    using shared_any = std::shared_ptr<const type::any>;
+    /// Pulls in ModuleResult::shared_any
+    using shared_any = ModuleResult::shared_any;
+
+    /// Pulls in the type of the type check functor
+    using type_check_function_type = ModuleResult::type_check_function_type;
 
     /** @brief Makes a deep copy of the PIMPL on the heap.
      *
@@ -96,6 +100,22 @@ public:
      *                            guarantee.
      */
     void set_type(type::rtti new_type);
+
+    /** @brief Sets the internal functor for checking the type.
+     *
+     *  Like the ModuleInput, the ModuleResult needs to do runtime
+     *  type-checking. This is easiest done by capturing the type in a function
+     *  and seeing if an AnyField can be unwrapped to that type. This method
+     *  allows the caller to set the functor used by *this for such a type
+     *  check.
+     *
+     *  @param[in] fxn The functor to use for checking the type.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_type_check(type_check_function_type fxn) {
+        m_type_check_.emplace(std::move(fxn));
+    }
 
     /** @brief Binds a value to this result field
      *
@@ -198,6 +218,8 @@ private:
 
     /// The RTTI of this field
     std::optional<type::rtti> m_type_;
+
+    std::optional<type_check_function_type> m_type_check_;
 }; // class ModuleResultPIMPL
 
 //-----------------------------------Implementations----------------------------
@@ -209,7 +231,10 @@ inline void ModuleResultPIMPL::set_type(type::rtti new_type) {
 }
 
 inline void ModuleResultPIMPL::set_value(shared_any new_value) {
-    if(std::type_index(new_value->type()) != type()) {
+    // This'll throw bad optional_access if we haven't set the type
+    auto t            = type();
+    bool is_corr_type = (*m_type_check_)(*new_value);
+    if(!is_corr_type) {
         std::string msg{"Value is not of type: "};
         msg += utilities::printing::Demangler::demangle(type().name());
         throw std::invalid_argument(msg);

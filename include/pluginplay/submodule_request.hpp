@@ -52,6 +52,9 @@ public:
     /// Type of map, mapping submodule keys to UUIDs
     using submod_uuid_map = typename Module::submod_uuid_map;
 
+    /// Type used for RTTI
+    using rtti_type = std::type_index;
+
     /** @brief Makes an empty request.
      *
      *  The request resulting from this call will have no description, no type,
@@ -191,6 +194,15 @@ public:
      */
     template<typename T>
     auto& set_type();
+
+    /** @brief Uses RTTI to set the type of *this.
+     *
+     *  The templated `set_type` method is the preferred means of setting the
+     *  property type from C++. If we want to set the property type from Python
+     *  we need to set it at runtime. This overload of set_type allows the
+     *  property type to be set at runtime.
+     */
+    SubmoduleRequest& set_type(rtti_type type, type::input_map inputs);
 
     /** @brief Sets the module that is to be used to satisfy the request
      *
@@ -383,9 +395,6 @@ public:
     bool operator!=(const SubmoduleRequest& rhs) const;
 
 private:
-    /// Actually implements set_type
-    void set_type_(const std::type_info& type, type::input_map inputs);
-
     /// Object actually storing the state of this class
     std::unique_ptr<detail_::SubmoduleRequestPIMPL> m_pimpl_;
 };
@@ -402,8 +411,7 @@ auto& SubmoduleRequest::set_type() {
     using clean_t = std::decay_t<T>;
     auto inps     = clean_t::inputs();
     type::input_map inputs(inps.begin(), inps.end());
-    set_type_(typeid(clean_t), std::move(inputs));
-    return *this;
+    return set_type(rtti_type(typeid(clean_t)), std::move(inputs));
 }
 
 template<typename property_type, typename... Args>
