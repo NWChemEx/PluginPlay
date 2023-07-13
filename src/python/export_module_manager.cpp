@@ -34,9 +34,11 @@ void export_module_manager(py_module_reference m) {
       .def(pybind11::init<>())
       .def("count", &ModuleManager::count)
       .def("size", &ModuleManager::size)
-      .def("add_module",
-           [](ModuleManager& mm, std::string key,
-              std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); })
+      .def(
+        "add_module",
+        [](ModuleManager& mm, std::string key,
+           std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); },
+        pybind11::keep_alive<1, 3>())
       .def("at", static_cast<at_fxn>(&ModuleManager::at))
       .def("copy_module", &ModuleManager::copy_module)
       .def("erase", &ModuleManager::erase)
