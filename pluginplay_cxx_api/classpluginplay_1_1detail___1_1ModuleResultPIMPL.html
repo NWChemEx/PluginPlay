@@ -82,10 +82,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a162cec1506fc7e7a748c0058afd6d514"><td class="memItemLeft" align="right" valign="top"><a id="a162cec1506fc7e7a748c0058afd6d514"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a162cec1506fc7e7a748c0058afd6d514">shared_any</a> = std::shared_ptr&lt; const <a class="el" href="namespacepluginplay_1_1type.html#a563823c3c7c40a96a8b543528d417579">type::any</a> &gt;</td></tr>
-<tr class="memdesc:a162cec1506fc7e7a748c0058afd6d514"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a shared_ptr to a read-only pluginplayAny. <br /></td></tr>
-<tr class="separator:a162cec1506fc7e7a748c0058afd6d514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba4e068133e003787aed15b619aa9093"><td class="memItemLeft" align="right" valign="top"><a id="aba4e068133e003787aed15b619aa9093"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#aba4e068133e003787aed15b619aa9093">shared_any</a> = <a class="el" href="classpluginplay_1_1ModuleResult.html#a2df2dd287e9350d10f54d34bb5b5e7f6">ModuleResult::shared_any</a></td></tr>
+<tr class="memdesc:aba4e068133e003787aed15b619aa9093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulls in <a class="el" href="classpluginplay_1_1ModuleResult.html#a2df2dd287e9350d10f54d34bb5b5e7f6" title="The type of a shared_ptr to a type-erased value.">ModuleResult::shared_any</a>. <br /></td></tr>
+<tr class="separator:aba4e068133e003787aed15b619aa9093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb18c53a4888a18652297e3b60a3a4b9"><td class="memItemLeft" align="right" valign="top"><a id="afb18c53a4888a18652297e3b60a3a4b9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#afb18c53a4888a18652297e3b60a3a4b9">type_check_function_type</a> = ModuleResult::type_check_function_type</td></tr>
+<tr class="memdesc:afb18c53a4888a18652297e3b60a3a4b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulls in the type of the type check functor. <br /></td></tr>
+<tr class="separator:afb18c53a4888a18652297e3b60a3a4b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -104,7 +108,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aec72a3a1838353cb98af61d85349e244"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#aec72a3a1838353cb98af61d85349e244">set_type</a> (<a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a> new_type)</td></tr>
 <tr class="memdesc:aec72a3a1838353cb98af61d85349e244"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type this result field must have.  <a href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#aec72a3a1838353cb98af61d85349e244">More...</a><br /></td></tr>
 <tr class="separator:aec72a3a1838353cb98af61d85349e244"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6928bd2d62ee0a393a43684f27990cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#ac6928bd2d62ee0a393a43684f27990cd">set_value</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a162cec1506fc7e7a748c0058afd6d514">shared_any</a> new_value)</td></tr>
+<tr class="memitem:a031ed50abf38a646cde17d8d053b2177"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a031ed50abf38a646cde17d8d053b2177">set_type_check</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#afb18c53a4888a18652297e3b60a3a4b9">type_check_function_type</a> fxn)</td></tr>
+<tr class="memdesc:a031ed50abf38a646cde17d8d053b2177"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the internal functor for checking the type.  <a href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a031ed50abf38a646cde17d8d053b2177">More...</a><br /></td></tr>
+<tr class="separator:a031ed50abf38a646cde17d8d053b2177"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6928bd2d62ee0a393a43684f27990cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#ac6928bd2d62ee0a393a43684f27990cd">set_value</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#aba4e068133e003787aed15b619aa9093">shared_any</a> new_value)</td></tr>
 <tr class="memdesc:ac6928bd2d62ee0a393a43684f27990cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds a value to this result field.  <a href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#ac6928bd2d62ee0a393a43684f27990cd">More...</a><br /></td></tr>
 <tr class="separator:ac6928bd2d62ee0a393a43684f27990cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a347a6d97ef2ddd8ad9bf385570c8b302"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a347a6d97ef2ddd8ad9bf385570c8b302">set_description</a> (<a class="el" href="namespacepluginplay_1_1type.html#a6ac6703e3c574d225a21b4abec89e29a">type::description</a> desc) noexcept</td></tr>
@@ -471,6 +478,47 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a031ed50abf38a646cde17d8d053b2177"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a031ed50abf38a646cde17d8d053b2177">&#9670;&nbsp;</a></span>set_type_check()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModuleResultPIMPL::set_type_check </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#afb18c53a4888a18652297e3b60a3a4b9">type_check_function_type</a>&#160;</td>
+          <td class="paramname"><em>fxn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the internal functor for checking the type. </p>
+<p>Like the <a class="el" href="classpluginplay_1_1ModuleInput.html" title="Holds an input value for a module in a type-erased form.">ModuleInput</a>, the <a class="el" href="classpluginplay_1_1ModuleResult.html" title="Holds the results of calling a module&#39;s run function.">ModuleResult</a> needs to do runtime type-checking. This is easiest done by capturing the type in a function and seeing if an AnyField can be unwrapped to that type. This method allows the caller to set the functor used by *this for such a type check.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fxn</td><td>The functor to use for checking the type.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac6928bd2d62ee0a393a43684f27990cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6928bd2d62ee0a393a43684f27990cd">&#9670;&nbsp;</a></span>set_value()</h2>
 
@@ -483,7 +531,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void pluginplay::detail_::ModuleResultPIMPL::set_value </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#a162cec1506fc7e7a748c0058afd6d514">shared_any</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html#aba4e068133e003787aed15b619aa9093">shared_any</a>&#160;</td>
           <td class="paramname"><em>new_value</em></td><td>)</td>
           <td></td>
         </tr>

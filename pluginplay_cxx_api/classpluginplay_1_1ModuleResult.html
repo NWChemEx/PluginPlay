@@ -82,6 +82,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:a659f867658601ee0baab15d276b6e455"><td class="memItemLeft" align="right" valign="top"><a id="a659f867658601ee0baab15d276b6e455"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleResult.html#a659f867658601ee0baab15d276b6e455">pimpl_type</a> = <a class="el" href="classpluginplay_1_1detail___1_1ModuleResultPIMPL.html">detail_::ModuleResultPIMPL</a></td></tr>
+<tr class="memdesc:a659f867658601ee0baab15d276b6e455"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the PIMPL. <br /></td></tr>
+<tr class="separator:a659f867658601ee0baab15d276b6e455"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95b577d11b29e7e0d138ea6b7663cb21"><td class="memItemLeft" align="right" valign="top"><a id="a95b577d11b29e7e0d138ea6b7663cb21"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleResult.html#a95b577d11b29e7e0d138ea6b7663cb21">pimpl_reference</a> = <a class="el" href="classpluginplay_1_1ModuleResult.html#a659f867658601ee0baab15d276b6e455">pimpl_type</a> &amp;</td></tr>
+<tr class="memdesc:a95b577d11b29e7e0d138ea6b7663cb21"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a reference to the PIMPL. <br /></td></tr>
+<tr class="separator:a95b577d11b29e7e0d138ea6b7663cb21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae466b45bcc5662919cc1da808e4cc2ec"><td class="memItemLeft" align="right" valign="top"><a id="ae466b45bcc5662919cc1da808e4cc2ec"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleResult.html#ae466b45bcc5662919cc1da808e4cc2ec">pimpl_pointer</a> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleResult.html#a659f867658601ee0baab15d276b6e455">pimpl_type</a> &gt;</td></tr>
+<tr class="memdesc:ae466b45bcc5662919cc1da808e4cc2ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to the PIMPL. <br /></td></tr>
+<tr class="separator:ae466b45bcc5662919cc1da808e4cc2ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2df2dd287e9350d10f54d34bb5b5e7f6"><td class="memItemLeft" align="right" valign="top"><a id="a2df2dd287e9350d10f54d34bb5b5e7f6"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleResult.html#a2df2dd287e9350d10f54d34bb5b5e7f6">shared_any</a> = std::shared_ptr&lt; const <a class="el" href="namespacepluginplay_1_1type.html#a563823c3c7c40a96a8b543528d417579">type::any</a> &gt;</td></tr>
 <tr class="memdesc:a2df2dd287e9350d10f54d34bb5b5e7f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a <code>shared_ptr</code> to a type-erased value. <br /></td></tr>
@@ -270,7 +282,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::bad_optional_access</td><td>if the type has not been set. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if the type has not been set. Strong throw guarantee. </td></tr>
     <tr><td class="paramname">std::invalid_argument</td><td>if <code>new_value</code> does not have the correct type. Strong throw guarantee. </td></tr>
   </table>
   </dd>

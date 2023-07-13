@@ -94,6 +94,18 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aae51363b5fe4dfd20262c4613fb65fa8">rtti_type</a> = std::type_index</td></tr>
 <tr class="memdesc:aae51363b5fe4dfd20262c4613fb65fa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type the Any class hierarchy uses for RTTI purposes. <br /></td></tr>
 <tr class="separator:aae51363b5fe4dfd20262c4613fb65fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e564f4e195101efb54764ce0c0408c1"><td class="memItemLeft" align="right" valign="top"><a id="a2e564f4e195101efb54764ce0c0408c1"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a2e564f4e195101efb54764ce0c0408c1">python_value</a> = <a class="el" href="classpluginplay_1_1python_1_1PythonWrapper.html">python::PythonWrapper</a></td></tr>
+<tr class="memdesc:a2e564f4e195101efb54764ce0c0408c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type we use for holding Python objects. <br /></td></tr>
+<tr class="separator:a2e564f4e195101efb54764ce0c0408c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad317aca2661c5eece9057906d547687f"><td class="memItemLeft" align="right" valign="top"><a id="ad317aca2661c5eece9057906d547687f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ad317aca2661c5eece9057906d547687f">python_reference</a> = <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a2e564f4e195101efb54764ce0c0408c1">python_value</a> &amp;</td></tr>
+<tr class="memdesc:ad317aca2661c5eece9057906d547687f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A read/write reference to a Python object. <br /></td></tr>
+<tr class="separator:ad317aca2661c5eece9057906d547687f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae706ac0e21782ad4fd7c073d92ca19ac"><td class="memItemLeft" align="right" valign="top"><a id="ae706ac0e21782ad4fd7c073d92ca19ac"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ae706ac0e21782ad4fd7c073d92ca19ac">const_python_reference</a> = const <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a2e564f4e195101efb54764ce0c0408c1">python_value</a> &amp;</td></tr>
+<tr class="memdesc:ae706ac0e21782ad4fd7c073d92ca19ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">A read-only reference to a Python object. <br /></td></tr>
+<tr class="separator:ae706ac0e21782ad4fd7c073d92ca19ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -115,12 +127,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:a0c20197d83feed9fae53371a1cdb7928"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a0c20197d83feed9fae53371a1cdb7928">is_convertible</a> () const noexcept</td></tr>
 <tr class="memdesc:a0c20197d83feed9fae53371a1cdb7928"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the wrapped value can be retrieved as type <code>T</code>.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a0c20197d83feed9fae53371a1cdb7928">More...</a><br /></td></tr>
 <tr class="separator:a0c20197d83feed9fae53371a1cdb7928"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef6c6eb8d5ef5464dc771f034732f2b8"><td class="memItemLeft" align="right" valign="top"><a id="aef6c6eb8d5ef5464dc771f034732f2b8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>storing_const_value</b> () const noexcept</td></tr>
+<tr class="memitem:aac65d2f023c04adc1cfc137512b5a628"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a2e564f4e195101efb54764ce0c0408c1">python_value</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aac65d2f023c04adc1cfc137512b5a628">as_python_wrapper</a> () const</td></tr>
+<tr class="memdesc:aac65d2f023c04adc1cfc137512b5a628"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unwraps the wrapped object into a PythonWrapper.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aac65d2f023c04adc1cfc137512b5a628">More...</a><br /></td></tr>
+<tr class="separator:aac65d2f023c04adc1cfc137512b5a628"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef6c6eb8d5ef5464dc771f034732f2b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aef6c6eb8d5ef5464dc771f034732f2b8">storing_const_value</a> () const noexcept</td></tr>
+<tr class="memdesc:aef6c6eb8d5ef5464dc771f034732f2b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if *this is holding the value, but won't let the user modify it.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aef6c6eb8d5ef5464dc771f034732f2b8">More...</a><br /></td></tr>
 <tr class="separator:aef6c6eb8d5ef5464dc771f034732f2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1dc3f82fb072bbb94aa836e5662cf446"><td class="memItemLeft" align="right" valign="top"><a id="a1dc3f82fb072bbb94aa836e5662cf446"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>storing_const_reference</b> () const noexcept</td></tr>
+<tr class="memitem:a1dc3f82fb072bbb94aa836e5662cf446"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a1dc3f82fb072bbb94aa836e5662cf446">storing_const_reference</a> () const noexcept</td></tr>
+<tr class="memdesc:a1dc3f82fb072bbb94aa836e5662cf446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if *this is holding a read-only reference to a value.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a1dc3f82fb072bbb94aa836e5662cf446">More...</a><br /></td></tr>
 <tr class="separator:a1dc3f82fb072bbb94aa836e5662cf446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16e0a2326295f379a0fb143cf721d28"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ae16e0a2326295f379a0fb143cf721d28">storing_python_object</a> () const noexcept</td></tr>
+<tr class="memdesc:ae16e0a2326295f379a0fb143cf721d28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if *this holds a Python object.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ae16e0a2326295f379a0fb143cf721d28">More...</a><br /></td></tr>
+<tr class="separator:ae16e0a2326295f379a0fb143cf721d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4c5f95a6f3827149c939b1a53bee098"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ac4c5f95a6f3827149c939b1a53bee098">are_equal</a> (const <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:ac4c5f95a6f3827149c939b1a53bee098"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymophically compares two objects derived from <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a>.  <a href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#ac4c5f95a6f3827149c939b1a53bee098">More...</a><br /></td></tr>
 <tr class="separator:ac4c5f95a6f3827149c939b1a53bee098"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -218,6 +236,40 @@ Protected Member Functions</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aac65d2f023c04adc1cfc137512b5a628"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac65d2f023c04adc1cfc137512b5a628">&#9670;&nbsp;</a></span>as_python_wrapper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a2e564f4e195101efb54764ce0c0408c1">python_value</a> pluginplay::any::detail_::AnyFieldBase::as_python_wrapper </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Unwraps the wrapped object into a PythonWrapper. </p>
+<p>This method will wrap the wrapped object into a PythonWrapper, sight</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if PluginPlay was not compiled with Pybind11 support. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -447,6 +499,110 @@ template&lt;typename T &gt; </div>
   <table class="exception">
     <tr><td class="paramname">std::ios_base::failure</td><td>if there is a problem writing to the stream. Weak throw guarantee (the wrapped object is still in the same state, but <code>os</code> is a potentially different state). </td></tr>
     <tr><td class="paramname">???</td><td>If calling <code>std::ostream::operator&lt;&lt;</code> on the wrapped type throws. Same throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1dc3f82fb072bbb94aa836e5662cf446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dc3f82fb072bbb94aa836e5662cf446">&#9670;&nbsp;</a></span>storing_const_reference()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::any::detail_::AnyFieldBase::storing_const_reference </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to determine if *this is holding a read-only reference to a value. </p>
+<p>To avoid copying objects, <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> instances are allowed to hold ready- only references to objects. The <code>storing_const_reference</code> method allows the caller to determine if *this wraps a read-only reference to the object.</p>
+<dl class="section return"><dt>Returns</dt><dd>True if *this holds a read-only reference to an object and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aef6c6eb8d5ef5464dc771f034732f2b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef6c6eb8d5ef5464dc771f034732f2b8">&#9670;&nbsp;</a></span>storing_const_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::any::detail_::AnyFieldBase::storing_const_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determines if *this is holding the value, but won't let the user modify it. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if *this if the type of the wrapped object is <code>const U</code> where <code>U</code> is an unqualified type and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae16e0a2326295f379a0fb143cf721d28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae16e0a2326295f379a0fb143cf721d28">&#9670;&nbsp;</a></span>storing_python_object()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::any::detail_::AnyFieldBase::storing_python_object </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to determine if *this holds a Python object. </p>
+<p>If Pybind11 support is enabled <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> objects may hold Python objects. The storing_python_object method is used to determine if *this is holding a Python object (defined as the derived class's template type parameter being <code>python_value</code>).</p>
+<dl class="section return"><dt>Returns</dt><dd>True if *this is holding a Python object and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

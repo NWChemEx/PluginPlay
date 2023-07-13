@@ -66,6 +66,10 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
@@ -75,6 +79,19 @@ $(function() {
  <a href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="static__assert__convertible__verbose_8hpp_source.html">static_assert_convertible_verbose.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a1e02d7b78ae4bd1369c7e177ba833f7d"><td class="memItemLeft" align="right" valign="top"><a id="a1e02d7b78ae4bd1369c7e177ba833f7d"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>clean_t1</b> = std::decay_t&lt; T1 &gt;</td></tr>
+<tr class="separator:a1e02d7b78ae4bd1369c7e177ba833f7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a7ec3ae886303a51287f7f8d0f3e75d59"><td class="memItemLeft" align="right" valign="top"><a id="a7ec3ae886303a51287f7f8d0f3e75d59"></a>
+static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_any</b> = std::is_same_v&lt;clean_t1, <a class="el" href="classpluginplay_1_1any_1_1AnyField.html">any::AnyField</a>&gt;</td></tr>
+<tr class="separator:a7ec3ae886303a51287f7f8d0f3e75d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T1, typename T2, std::size_t I&gt;<br />
 struct pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt;</h3>
@@ -82,6 +99,7 @@ struct pluginplay::detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE&lt; T1, T2, I &gt;
 <p>Struct that provides clearer error message when types are not convertible. </p>
 <p>This allows the replacement of a static assert of the form: <code>static_assert(std::is_convertible_v&lt;T1,T2&gt;)</code> with instantiation of a templated struct as: <code><a class="el" href="structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html" title="Struct that provides clearer error message when types are not convertible.">STATIC_ASSERT_CONVERTIBLE_VERBOSE</a>&lt;T1, T2, I&gt;()</code> where <code>I</code> is intended to be used as an index describing the position of the argument that should have type <code>T2</code></p>
 <p>The only advantage of using this over the simple <code>static_assert</code> is that it will give a slightly simpler error message showing a smaller set of template parameters.</p>
+<dl class="section note"><dt>Note</dt><dd>A special exception is made when <code>T1</code> is an AnyField object. In this case we don't know if the AnyField object can be converted to an object of type <code>T2</code> until runtime.</dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T1</td><td>The type of the object to convert from </td></tr>

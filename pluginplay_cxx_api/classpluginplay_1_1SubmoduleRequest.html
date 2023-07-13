@@ -94,6 +94,10 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a772757c21c35cf30fcdef7f98b7eff96">submod_uuid_map</a> = typename <a class="el" href="classpluginplay_1_1Module.html#a92bee556e6935e51eec08b7d0dbaacdd">Module::submod_uuid_map</a></td></tr>
 <tr class="memdesc:a772757c21c35cf30fcdef7f98b7eff96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of map, mapping submodule keys to UUIDs. <br /></td></tr>
 <tr class="separator:a772757c21c35cf30fcdef7f98b7eff96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1519f943e6aa54e2a9b7faab4fb2d6a3"><td class="memItemLeft" align="right" valign="top"><a id="a1519f943e6aa54e2a9b7faab4fb2d6a3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a1519f943e6aa54e2a9b7faab4fb2d6a3">rtti_type</a> = std::type_index</td></tr>
+<tr class="memdesc:a1519f943e6aa54e2a9b7faab4fb2d6a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used for RTTI. <br /></td></tr>
+<tr class="separator:a1519f943e6aa54e2a9b7faab4fb2d6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -131,6 +135,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab06b2ea8c51365961c1549c2e7108604"><td class="memTemplItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#ab06b2ea8c51365961c1549c2e7108604">set_type</a> ()</td></tr>
 <tr class="memdesc:ab06b2ea8c51365961c1549c2e7108604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the property type the submodule must satisfy.  <a href="classpluginplay_1_1SubmoduleRequest.html#ab06b2ea8c51365961c1549c2e7108604">More...</a><br /></td></tr>
 <tr class="separator:ab06b2ea8c51365961c1549c2e7108604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71aa44b7ead67342a77e35d205b6f121"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html">SubmoduleRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a71aa44b7ead67342a77e35d205b6f121">set_type</a> (<a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a1519f943e6aa54e2a9b7faab4fb2d6a3">rtti_type</a> <a class="el" href="classpluginplay_1_1SubmoduleRequest.html#aad441aa19b99ddd1e9ce5cbd57dec393">type</a>, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> inputs)</td></tr>
+<tr class="memdesc:a71aa44b7ead67342a77e35d205b6f121"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uses RTTI to set the type of *this.  <a href="classpluginplay_1_1SubmoduleRequest.html#a71aa44b7ead67342a77e35d205b6f121">More...</a><br /></td></tr>
+<tr class="separator:a71aa44b7ead67342a77e35d205b6f121"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a935fd0118e827ca0cba99324fe5d0419"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a935fd0118e827ca0cba99324fe5d0419">change</a> (<a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a372e835f584280aa70cb34553d17f97a">module_ptr</a> new_module)</td></tr>
 <tr class="memdesc:a935fd0118e827ca0cba99324fe5d0419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the module that is to be used to satisfy the request.  <a href="classpluginplay_1_1SubmoduleRequest.html#a935fd0118e827ca0cba99324fe5d0419">More...</a><br /></td></tr>
 <tr class="separator:a935fd0118e827ca0cba99324fe5d0419"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -727,7 +734,7 @@ template&lt;typename property_type , typename... Args&gt; </div>
 <p>This function is a convenience function for running the wrapped submodule as a particular property type. It is semantically the same as calling:</p>
 <div class="fragment"><div class="line">this-&gt;<a class="code" href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">value</a>().<a class="code" href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">run_as</a>&lt;T&gt;(args...);</div>
 <div class="ttc" id="aclasspluginplay_1_1Module_html_a200b448a122dbe825c75bcbce82c64a7"><div class="ttname"><a href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">pluginplay::Module::run_as</a></div><div class="ttdeci">auto run_as(Args &amp;&amp;... args)</div><div class="ttdoc">The primary API for running the encapsulated code.</div><div class="ttdef"><b>Definition:</b> module.hpp:737</div></div>
-<div class="ttc" id="aclasspluginplay_1_1SubmoduleRequest_html_aaa7e1c8be2f4595773a20fa37f0e8a6d"><div class="ttname"><a href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">pluginplay::SubmoduleRequest::value</a></div><div class="ttdeci">const Module &amp; value() const</div><div class="ttdoc">Provides the module used to satisfy this request in a read-only state.</div><div class="ttdef"><b>Definition:</b> submodule_request.cpp:71</div></div>
+<div class="ttc" id="aclasspluginplay_1_1SubmoduleRequest_html_aaa7e1c8be2f4595773a20fa37f0e8a6d"><div class="ttname"><a href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">pluginplay::SubmoduleRequest::value</a></div><div class="ttdeci">const Module &amp; value() const</div><div class="ttdoc">Provides the module used to satisfy this request in a read-only state.</div><div class="ttdef"><b>Definition:</b> submodule_request.cpp:77</div></div>
 </div><!-- fragment --><p>aside from the fact that it also asserts that the submodule is being run as the correct property type. Expert users can access the wrapped module via the <code>value</code> member and perform more advanced runs that way.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -797,7 +804,7 @@ template&lt;typename property_type , typename... Args&gt; </div>
 </div>
 </div>
 <a id="ab06b2ea8c51365961c1549c2e7108604"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab06b2ea8c51365961c1549c2e7108604">&#9670;&nbsp;</a></span>set_type()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab06b2ea8c51365961c1549c2e7108604">&#9670;&nbsp;</a></span>set_type() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -824,6 +831,37 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a71aa44b7ead67342a77e35d205b6f121"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71aa44b7ead67342a77e35d205b6f121">&#9670;&nbsp;</a></span>set_type() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html">SubmoduleRequest</a> &amp; pluginplay::SubmoduleRequest::set_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a1519f943e6aa54e2a9b7faab4fb2d6a3">rtti_type</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a>&#160;</td>
+          <td class="paramname"><em>inputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Uses RTTI to set the type of *this. </p>
+<p>The templated <code>set_type</code> method is the preferred means of setting the property type from C++. If we want to set the property type from Python we need to set it at runtime. This overload of set_type allows the property type to be set at runtime. </p>
 
 </div>
 </div>

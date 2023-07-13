@@ -608,7 +608,8 @@ template&lt;typename T &gt; </div>
 
 <p>Must a value be bound to this input before it can be used? </p>
 <p>Typically a module needs every input to be set to a value before the module can be run. Sometimes, however, the module is capable of running even if an input has not been set. Examples of when this can occur include inputs controlling printing levels and inputs that represent hints or seeds for an algorithm. The unifying theme among these scenarios are that the module can default to reasonable behavior without values for these options. While usually it is possible to say default the value to 0, sometimes we need a null state separate from the possible input values and that is where the optional trait comes in.</p>
-<p>This function is used to determine if the current input is optional</p>
+<p>This function is used to determine if the current input is optional.</p>
+<dl class="section note"><dt>Note</dt><dd>By default all <a class="el" href="classpluginplay_1_1ModuleInput.html" title="Holds an input value for a module in a type-erased form.">ModuleInput</a> instances are required, <em>i.e.</em>, this method will return false.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the current input field is optional and false otherwise.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">

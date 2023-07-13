@@ -86,8 +86,10 @@ Inheritance diagram for pluginplay::ModuleBase:</div>
  <div class="center">
   <img src="classpluginplay_1_1ModuleBase.png" usemap="#pluginplay::ModuleBase_map" alt=""/>
   <map id="pluginplay::ModuleBase_map" name="pluginplay::ModuleBase_map">
-<area href="classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="pluginplay::detail_::FacadeModule&lt; PropertyType &gt;" shape="rect" coords="0,56,306,80"/>
-<area href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="pluginplay::detail_::LambdaModule&lt; PropertyType &gt;" shape="rect" coords="316,56,622,80"/>
+<area href="classpluginplay_1_1Publicist.html" alt="pluginplay::Publicist" shape="rect" coords="0,56,306,80"/>
+<area href="classpluginplay_1_1PyModuleBase.html" title="Defines the interface used to write modules in Python." alt="pluginplay::PyModuleBase" shape="rect" coords="316,56,622,80"/>
+<area href="classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="pluginplay::detail_::FacadeModule&lt; PropertyType &gt;" shape="rect" coords="632,56,938,80"/>
+<area href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="pluginplay::detail_::LambdaModule&lt; PropertyType &gt;" shape="rect" coords="948,56,1254,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -118,7 +120,7 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5c0b2da89dad1c5ef955e5f513ef3d46"><td class="memItemLeft" align="right" valign="top"><a id="a5c0b2da89dad1c5ef955e5f513ef3d46"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a5c0b2da89dad1c5ef955e5f513ef3d46">ModuleBase</a> ()=delete</td></tr>
-<tr class="memdesc:a5c0b2da89dad1c5ef955e5f513ef3d46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted to avoid erroneous construction. <br /></td></tr>
+<tr class="memdesc:a5c0b2da89dad1c5ef955e5f513ef3d46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted to avoid errors. <br /></td></tr>
 <tr class="separator:a5c0b2da89dad1c5ef955e5f513ef3d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d1e0f101f06b6ca8b1e3d804ffe75bd"><td class="memItemLeft" align="right" valign="top"><a id="a9d1e0f101f06b6ca8b1e3d804ffe75bd"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a9d1e0f101f06b6ca8b1e3d804ffe75bd">ModuleBase</a> (const <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &amp;rhs)=delete</td></tr>
@@ -148,12 +150,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3683db39f96d4ffbb1d708b83c12d125"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a3683db39f96d4ffbb1d708b83c12d125">results</a> () const noexcept</td></tr>
 <tr class="memdesc:a3683db39f96d4ffbb1d708b83c12d125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the results this module can compute.  <a href="classpluginplay_1_1ModuleBase.html#a3683db39f96d4ffbb1d708b83c12d125">More...</a><br /></td></tr>
 <tr class="separator:a3683db39f96d4ffbb1d708b83c12d125"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a992d2b105b00aed6c01b0b05238e4fb1"><td class="memItemLeft" align="right" valign="top"><a id="a992d2b105b00aed6c01b0b05238e4fb1"></a>
+<a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>results</b> () noexcept</td></tr>
+<tr class="separator:a992d2b105b00aed6c01b0b05238e4fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae51e2d8713bddf09da86f48f5e172872"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ae51e2d8713bddf09da86f48f5e172872">inputs</a> () const noexcept</td></tr>
 <tr class="memdesc:ae51e2d8713bddf09da86f48f5e172872"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the inputs this module requires.  <a href="classpluginplay_1_1ModuleBase.html#ae51e2d8713bddf09da86f48f5e172872">More...</a><br /></td></tr>
 <tr class="separator:ae51e2d8713bddf09da86f48f5e172872"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39bd1bab88ac7d189f7286b18add2eff"><td class="memItemLeft" align="right" valign="top"><a id="a39bd1bab88ac7d189f7286b18add2eff"></a>
+<a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>inputs</b> () noexcept</td></tr>
+<tr class="separator:a39bd1bab88ac7d189f7286b18add2eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f6c68d4e0c69743cd0d0a66a8b0fd0e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a2f6c68d4e0c69743cd0d0a66a8b0fd0e">submods</a> () const noexcept</td></tr>
 <tr class="memdesc:a2f6c68d4e0c69743cd0d0a66a8b0fd0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of submodules requested by the developer.  <a href="classpluginplay_1_1ModuleBase.html#a2f6c68d4e0c69743cd0d0a66a8b0fd0e">More...</a><br /></td></tr>
 <tr class="separator:a2f6c68d4e0c69743cd0d0a66a8b0fd0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a26349fae517bef663a5c667a61f3fa"><td class="memItemLeft" align="right" valign="top"><a id="a0a26349fae517bef663a5c667a61f3fa"></a>
+<a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>submods</b> () noexcept</td></tr>
+<tr class="separator:a0a26349fae517bef663a5c667a61f3fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd46f4e3685166e4b010a7d07f16d8a9"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#afd46f4e3685166e4b010a7d07f16d8a9">property_types</a> () const noexcept</td></tr>
 <tr class="memdesc:afd46f4e3685166e4b010a7d07f16d8a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of property types this module satisfies.  <a href="classpluginplay_1_1ModuleBase.html#afd46f4e3685166e4b010a7d07f16d8a9">More...</a><br /></td></tr>
 <tr class="separator:afd46f4e3685166e4b010a7d07f16d8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,12 +208,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae9c68140552ca5918bd8f23615650899"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ae9c68140552ca5918bd8f23615650899">operator!=</a> (const <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:ae9c68140552ca5918bd8f23615650899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if two <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instances are different.  <a href="classpluginplay_1_1ModuleBase.html#ae9c68140552ca5918bd8f23615650899">More...</a><br /></td></tr>
 <tr class="separator:ae9c68140552ca5918bd8f23615650899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e1ec1feb15dcc57c3c7441cfbcec8e4"><td class="memTemplParams" colspan="2"><a id="a7e1ec1feb15dcc57c3c7441cfbcec8e4"></a>
+template&lt;typename InputContainer , typename ResultContainer &gt; </td></tr>
+<tr class="memitem:a7e1ec1feb15dcc57c3c7441cfbcec8e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>satisfies_property_type</b> (<a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a> rtti, InputContainer &amp;&amp;<a class="el" href="classpluginplay_1_1ModuleBase.html#ae51e2d8713bddf09da86f48f5e172872">inputs</a>, ResultContainer &amp;&amp;<a class="el" href="classpluginplay_1_1ModuleBase.html#a3683db39f96d4ffbb1d708b83c12d125">results</a>)</td></tr>
+<tr class="separator:a7e1ec1feb15dcc57c3c7441cfbcec8e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a82ffcc0a1ff7f4e91ce673680874a79f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a82ffcc0a1ff7f4e91ce673680874a79f">ModuleBase</a> (const <a class="el" href="classpluginplay_1_1python_1_1PythonWrapper.html">python::PythonWrapper</a> &amp;o, bool)</td></tr>
+<tr class="separator:a82ffcc0a1ff7f4e91ce673680874a79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2f5d332f800f8de2675b7de53c5cfb2"><td class="memTemplParams" colspan="2">template&lt;typename DerivedType &gt; </td></tr>
 <tr class="memitem:ac2f5d332f800f8de2675b7de53c5cfb2"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ac2f5d332f800f8de2675b7de53c5cfb2">ModuleBase</a> (DerivedType *ptr) noexcept</td></tr>
-<tr class="memdesc:ac2f5d332f800f8de2675b7de53c5cfb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ctor that all modules must call.  <a href="classpluginplay_1_1ModuleBase.html#ac2f5d332f800f8de2675b7de53c5cfb2">More...</a><br /></td></tr>
+<tr class="memdesc:ac2f5d332f800f8de2675b7de53c5cfb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ctor that all C++ modules must call.  <a href="classpluginplay_1_1ModuleBase.html#ac2f5d332f800f8de2675b7de53c5cfb2">More...</a><br /></td></tr>
 <tr class="separator:ac2f5d332f800f8de2675b7de53c5cfb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacc8963c190860d072adb7d59e497e09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#aacc8963c190860d072adb7d59e497e09">description</a> (<a class="el" href="namespacepluginplay_1_1type.html#a6ac6703e3c574d225a21b4abec89e29a">type::description</a> value) noexcept</td></tr>
 <tr class="memdesc:aacc8963c190860d072adb7d59e497e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the human-readable description of what this module does.  <a href="classpluginplay_1_1ModuleBase.html#aacc8963c190860d072adb7d59e497e09">More...</a><br /></td></tr>
@@ -235,6 +252,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a21b37dd280938ce92cb7eb0baebb2128"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a21b37dd280938ce92cb7eb0baebb2128">satisfies_property_type</a> ()</td></tr>
 <tr class="memdesc:a21b37dd280938ce92cb7eb0baebb2128"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies that the derived module satisfies <code>property_type</code>.  <a href="classpluginplay_1_1ModuleBase.html#a21b37dd280938ce92cb7eb0baebb2128">More...</a><br /></td></tr>
 <tr class="separator:a21b37dd280938ce92cb7eb0baebb2128"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c96129ce3802cbbde9ee3fb96765e8d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a6c96129ce3802cbbde9ee3fb96765e8d">run_</a> (<a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> <a class="el" href="classpluginplay_1_1ModuleBase.html#ae51e2d8713bddf09da86f48f5e172872">inputs</a>, <a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> <a class="el" href="classpluginplay_1_1ModuleBase.html#a2f6c68d4e0c69743cd0d0a66a8b0fd0e">submods</a>) const =0</td></tr>
+<tr class="memdesc:a6c96129ce3802cbbde9ee3fb96765e8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Developer facing API for running the module.  <a href="classpluginplay_1_1ModuleBase.html#a6c96129ce3802cbbde9ee3fb96765e8d">More...</a><br /></td></tr>
+<tr class="separator:a6c96129ce3802cbbde9ee3fb96765e8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>API determining how the pluginplay interacts with a module's implementation. </p>
@@ -275,8 +295,45 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a82ffcc0a1ff7f4e91ce673680874a79f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82ffcc0a1ff7f4e91ce673680874a79f">&#9670;&nbsp;</a></span>ModuleBase() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pluginplay::ModuleBase::ModuleBase </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1python_1_1PythonWrapper.html">python::PythonWrapper</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The constructor Python modules must call (second argument is ignored and is just there so we don't have to rely on SFINAE) </p>
+
+</div>
+</div>
 <a id="ac2f5d332f800f8de2675b7de53c5cfb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac2f5d332f800f8de2675b7de53c5cfb2">&#9670;&nbsp;</a></span>ModuleBase()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2f5d332f800f8de2675b7de53c5cfb2">&#9670;&nbsp;</a></span>ModuleBase() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,7 +358,7 @@ template&lt;typename DerivedType &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>the ctor that all modules must call. </p>
+<p>the ctor that all C++ modules must call. </p>
 <p>Classes that derive form <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> need to call this constructor to initialize the base. They do this by passing their <code>this</code> pointer to this ctor.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -1085,6 +1142,61 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a6c96129ce3802cbbde9ee3fb96765e8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c96129ce3802cbbde9ee3fb96765e8d">&#9670;&nbsp;</a></span>run_()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a> pluginplay::ModuleBase::run_ </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a>&#160;</td>
+          <td class="paramname"><em>inputs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a>&#160;</td>
+          <td class="paramname"><em>submods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Developer facing API for running the module. </p>
+<p>This is the member function that the derived class should implement for their module's algorithm. By time this function has been called the inputs to the module have been validated, submodules have been assigned and validated, and memoization has occurred (which means we do not have the result in the cache if this function is being called). The implementation is responsible for using the provided inputs and submodules to compute the results.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputs</td><td>The values your module should use as input </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">submods</td><td>The submodules your module should use during the run.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whatever properties your module agreed to compute.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">???</td><td>Throws if the module throws. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classpluginplay_1_1PyModuleBase.html#af5136ad70a9b5083520c9531931fb68f">pluginplay::PyModuleBase</a>, <a class="el" href="classpluginplay_1_1detail___1_1FacadeModule.html#a41a6f66950edb30cdf620967f4eef0a8">pluginplay::detail_::FacadeModule&lt; PropertyType &gt;</a>, and <a class="el" href="classpluginplay_1_1detail___1_1LambdaModule.html#ad1fc5e3c84f9c4801f8964bf902a8b77">pluginplay::detail_::LambdaModule&lt; PropertyType &gt;</a>.</p>
 
 </div>
 </div>
