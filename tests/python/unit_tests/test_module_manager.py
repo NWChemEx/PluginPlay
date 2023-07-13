@@ -16,6 +16,17 @@ import pluginplay as pp
 import py_test_pluginplay as test_pp
 import unittest
 
+class APythonModule(pp.ModuleBase):
+    def __init__(self):
+        pp.ModuleBase.__init__(self)
+        self.satisfies_property_type(test_pp.OneInOneOut())
+
+    def run_(self, inputs, submods):
+        pt = test_pp.OneInOneOut()
+        i0, = pt.unwrap_inputs(inputs)
+        rv = self.results()
+        return pt.wrap_results(rv, i0)
+
 class TestModuleManager(unittest.TestCase):
     def test_count(self):
         # Defaulted is always false
@@ -167,6 +178,21 @@ class TestModuleManager(unittest.TestCase):
 
         # Can actually run the function
         rv = fxn2test(pt, mod_key, 1)
+        self.assertEqual(rv, 1)
+
+
+    def test_pluginplay_309(self):
+        ''' This regression test is in response to issue #309.
+
+            The problem behind #309 was that we weren't keeping the Python part
+            of modules written in Python alive when they were added to the
+            ModuleManager. Without the fix to #309 this test should fail.
+        '''
+
+        mm = pp.ModuleManager()
+        mm.add_module('Issue 309', APythonModule())
+        pt = test_pp.OneInOneOut()
+        rv = mm.run_as(pt, 'Issue 309', 1)
         self.assertEqual(rv, 1)
 
 
