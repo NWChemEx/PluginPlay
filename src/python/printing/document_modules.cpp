@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
+#include "../export_pluginplay.hpp"
 #include "export_printing.hpp"
+#include "pluginplay/printing/document_modules.hpp"
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
-#include "../export_pluginplay.hpp"
-#include "pluginplay/printing/document_modules.hpp"
 #include <pybind11/stl/filesystem.h>
 
 namespace pluginplay {
 
-	void export_document_modules(py_module_reference m) {
-		m.def("document_modules", &pluginplay::printing::document_modules, "A function for exporting document modules");
-	}
+void export_document_modules(py_module_reference m) {
+    m.def("document_modules", &pluginplay::printing::document_modules,
+          "A function for exporting document modules");
+}
 
 } // namespace pluginplay

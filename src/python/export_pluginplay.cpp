@@ -16,9 +16,9 @@
 
 #include "any/export_any.hpp"
 #include "fields/export_fields.hpp"
+#include "printing/export_printing.hpp"
 #include "python/export_python.hpp"
 #include <pybind11/pybind11.h>
-#include "printing/export_printing.hpp"
 
 namespace pluginplay {
 
@@ -30,7 +30,7 @@ PYBIND11_MODULE(pluginplay, m) {
     export_module_base(m);
     export_module_manager(m);
     export_submodule_request(m);
-	export_printing(m);
+    export_printing(m);
 }
 
 } // namespace pluginplay
