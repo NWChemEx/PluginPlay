@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-#include "any/export_any.hpp"
-#include "fields/export_fields.hpp"
-#include "printing/export_printing.hpp"
-#include "python/export_python.hpp"
-#include <pybind11/pybind11.h>
+#pragma once
+#include "../export_pluginplay.hpp"
 
 namespace pluginplay {
 
-PYBIND11_MODULE(pluginplay, m) {
-    any::export_any(m);
-    export_fields(m);
-    python::export_python(m);
-    export_module(m);
-    export_module_base(m);
-    export_module_manager(m);
-    export_submodule_request(m);
-    export_printing(m);
+void export_document_modules(py_module_reference m);
+
+inline void export_printing(py_module_reference m) {
+    export_document_modules(m);
 }
 
 } // namespace pluginplay
