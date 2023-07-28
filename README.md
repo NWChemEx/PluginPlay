@@ -18,9 +18,9 @@
 
 [![Actions](https://github.com/NWChemEx-Project/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/PluginPlay)
 
-[Documentation](https://nwchemex-project.github.io/PluginPlay/)
+[![Citation Badge](https://api.juleskreuer.eu/citation-badge.php?doi=https://doi.org/10.1063/5.0147903)](https://juleskreuer.eu/projekte/citation-badge/)
 
-TODO: add badge when article has DOI.
+[Documentation](https://nwchemex-project.github.io/PluginPlay/)
 
 PluginPlay is an inversion-of-control (IoC) framework to facilitate wrtiting
 high-performance modular scientific software. More specifically, using
