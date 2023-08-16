@@ -93,19 +93,6 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
          :language: python
          :lines: 20-25
 
-   .. tab:: Python (cppyy)
-
-      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force_cppyy.py
-         :language: python
-         :lines: 27-32
-
-.. note::
-   A major difference between the PyBind11 and cppyy versions of the Python code is about 
-   handling template parameter for ``satisfies_property_type``. PyBind11 accepts template 
-   parameter inside parentheses like a function argument, while cppyy requires it to be 
-   passed in square brackets. Also note that with current PyBind11 bindings, ``super()``
-   should not be used.  
-
 One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
 of the module. The description we provided serves as a preface to the resulting
@@ -159,12 +146,6 @@ code are:
          :language: python
          :lines: 27-29,41-42
 
-   .. tab:: Python (cppyy)
-
-      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force_cppyy.py
-         :language: python
-         :lines: 34-36,48-49
-
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
 process are beyond our present scope; for now know that every property type
@@ -191,12 +172,6 @@ computing the electric field) is:
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
          :lines: 27-42
-
-   .. tab:: Python (cppyy)
-
-      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force_cppyy.py
-         :language: python
-         :lines: 34-49
 
 Submodules
 ==========
