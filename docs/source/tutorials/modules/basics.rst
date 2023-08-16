@@ -87,7 +87,7 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
          :language: c++
          :lines: 36-39
 
-   .. tab:: Python (PyBind11)
+   .. tab:: Python
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
@@ -140,7 +140,7 @@ code are:
          :language: c++
          :lines: 41-45,65-67
 
-   .. tab:: Python (PyBind11)
+   .. tab:: Python
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
@@ -167,7 +167,7 @@ computing the electric field) is:
          :language: c++
          :lines: 41-67
 
-   .. tab:: Python (PyBind11)
+   .. tab:: Python
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
