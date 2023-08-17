@@ -42,8 +42,7 @@ set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/src"
-                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_find_or_build_dependency(
     utilities
@@ -139,21 +138,10 @@ cppyy_make_python_package(
 
 if("${BUILD_TESTING}")
     set(cxx_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    set(python_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+    set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
     set(tests_src_dir "${cxx_tests_dir}/unit_tests/${PROJECT_NAME}")
     set(examples_src_dir "${cxx_tests_dir}/doc_snippets")
 
-    cmaize_add_library(
-        ${PROJECT_NAME}_examples
-        SOURCE_DIR ${examples_src_dir}
-        INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS ${PROJECT_NAME}
-    )
-    cppyy_make_python_package(
-        PACKAGE ${PROJECT_NAME}_examples
-        NAMESPACES pluginplay_examples
-        DEPPACKAGES pluginplay
-    )
     cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -161,12 +149,31 @@ if("${BUILD_TESTING}")
         FIND_TARGET Catch2::Catch2
         VERSION ${NWX_CATCH2_VERSION}
     )
+    cmaize_add_library(
+        ${PROJECT_NAME}_examples
+        SOURCE_DIR ${examples_src_dir}
+        INCLUDE_DIRS ${examples_src_dir}
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    )
+    cppyy_make_python_package(
+        PACKAGE ${PROJECT_NAME}_examples
+        NAMESPACES pluginplay_examples
+        DEPPACKAGES pluginplay
+    )
     cmaize_add_tests(
         test_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2 ${PROJECT_NAME}_examples
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}_examples
     )
+
+    cmaize_add_tests(
+        test_${PROJECT_NAME}_docs
+        SOURCE_DIR "${cxx_tests_dir}/doc_snippets"
+        INCLUDE_DIRS "${project_src_dir}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    )
+
 
     # In the python tests we will pass Python into PluginPlay, we will then
     # need to know that C++ can handle those Python types. To this end we
@@ -179,7 +186,11 @@ if("${BUILD_TESTING}")
         DEPENDS ${PROJECT_NAME}
     )
     nwx_pybind11_tests(
-        py_pluginplay ${python_tests_dir}/unit_tests/test_pluginplay.py
+        py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
+        SUBMODULES parallelzone
+    )
+    nwx_pybind11_tests(
+        py_doc_snippets "${python_test_dir}/doc_snippets/test_doc_snippets.py"
         SUBMODULES parallelzone
     )
 endif()
