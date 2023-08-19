@@ -16,30 +16,10 @@
 
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include <parallelzone/runtime/runtime_view.hpp>
-
-namespace testing {
-
-/** @brief Struct representing the testing environment
- *
- *  At the moment this struct just has the default runtime in it.
- *
- */
-struct PZEnvironment {
-    static auto& comm_world() { return *pcomm_world; }
-
-    static parallelzone::runtime::RuntimeView* pcomm_world;
-};
-
-inline parallelzone::runtime::RuntimeView* PZEnvironment::pcomm_world = nullptr;
-
-} // namespace testing
+#include <parallelzone/parallelzone.hpp>
 
 int main(int argc, char* argv[]) {
     auto rt = parallelzone::runtime::RuntimeView(argc, argv);
-    testing::PZEnvironment::pcomm_world = &rt;
-
     int res = Catch::Session().run(argc, argv);
-
     return res;
 }
