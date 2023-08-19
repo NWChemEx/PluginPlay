@@ -18,8 +18,6 @@
 #include "modules.hpp"
 #include <numeric> // for std::inner_product
 
-namespace pluginplay_examples {
-
 static constexpr auto module_desc = R"(
 Electric Field From Coulomb's Law
 ---------------------------------
@@ -32,6 +30,8 @@ Coulomb's law according to:
    \vec{E}(\vec{r}) = \sum_{i=1}^N
                       \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}
 )";
+
+namespace pluginplay_examples {
 
 MODULE_CTOR(CoulombsLaw) {
     description(module_desc);
