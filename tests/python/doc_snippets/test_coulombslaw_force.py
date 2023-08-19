@@ -16,26 +16,16 @@
 import parallelzone as pz
 import unittest
 import pluginplay as pp
-from pluginplay_examples import ElectricField, Force, Point, PointCharge
-from math import sqrt
-from coulombslaw_force import CoulombsLaw, ClassicalForce
+import pluginplay_examples as ppe
 
-class TestCoulombsLaw(unittest.TestCase):
-    def test_coulomb(self):
+class TestTutorialModules(unittest.TestCase):
+    def test_modules(self):
         rv = pz.runtime.RuntimeView()
         mm = pp.ModuleManager()
-
-        mm.add_module("Force", ClassicalForce())
-        mm.add_module("Coulomb's Law", CoulombsLaw())
-        mm.change_submod("Force", "electric field", "Coulomb's Law")
-
-        r = Point([0.0, 0.0, 0.0])
-
-        pvc = [PointCharge(1.0, [2.0, 3.0, 3.0]), PointCharge(0.5, [-1.0, 4.0, 0.0])]
-        field = mm.at("Coulomb's Law").run_as(ElectricField, r, pvc)
-
-        q = PointCharge(0.1, [1.0, 1.0, 1.0])
-        m = 3.0
-        a = Point([-1.0, -1.0, -1.0])
-        cforce = mm.at("Force").run_as(Force, q, m, a, pvc)
-        print(cforce)
+        self.assertEqual(mm.size(),0)
+        ppe.load_modules(mm)
+        self.assertEqual(mm.size(),4)
+        module_names = ["Coulomb's Law", "Force", "Coulomb's Law with screening", "Single-precision Coulomb's law"]
+        for name in module_names:
+            mod = mm.at(name)
+            self.assertTrue(mod.has_description())

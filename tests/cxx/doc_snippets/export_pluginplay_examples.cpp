@@ -63,9 +63,10 @@
 #include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/pybind11.h>
 #include "load_modules.hpp"
-#include <electric_field.hpp>
+//#include <electric_field.hpp>
 
-//#include <export_electric_field.hpp>
+#include <export_electric_field.hpp>
+
 
 namespace pluginplay_examples {
 //EXPORT_PROPERTY_TYPE(ElectricField, m);
