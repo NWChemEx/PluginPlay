@@ -18,10 +18,6 @@
 #include "modules.hpp"
 #include <numeric> // For std::inner_product
 
-namespace pluginplay_examples {
-
-using prop_type = ElectricField;
-
 static constexpr auto module_desc = R"(
 Electric Field From Coulomb's Law
 ---------------------------------
@@ -34,6 +30,12 @@ Coulomb's law according to:
    \vec{E}(\vec{r}) = \sum_{i=1}^N
                       \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}
 )";
+
+namespace pluginplay_examples {
+
+using prop_type = ElectricField;
+
+
 
 template<typename FloatingPointType>
 TEMPLATED_MODULE_CTOR(TemplatedCoulombsLaw, FloatingPointType) {

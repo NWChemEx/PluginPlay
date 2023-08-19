@@ -19,7 +19,9 @@
 #include <iterator>
 #include <pluginplay/printing/document_modules.hpp>
 
-TEST_CASE("document_modules") {
+#include "load_modules.hpp"
+
+TEST_CASE("tutorial_modules_docs") {
    // Need a docs path
    const auto root_dir = std::filesystem::temp_directory_path();
    const std::filesystem::path docs_dir("docs");
@@ -40,14 +42,15 @@ TEST_CASE("document_modules") {
    // Set up module manager
    pluginplay::ModuleManager mm;
 
-   SECTION("Empty Module Manager") {
-       int correct = 1; // for index.html
+   SECTION("Modules Loaded") {
+       // Load your modules
+       pluginplay_examples::load_modules(mm);
 
        // Generate module documentation at the given path
        pluginplay::printing::document_modules(mm, docs_path);
 
        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
                              std::filesystem::directory_iterator{}) ==
-               correct);
+               mm.size() + 1); // +1 for index.rst
    }
 }
