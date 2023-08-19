@@ -18,7 +18,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../../../src/pluginplay/printing/helpers.hpp"
+#include "../../../../src/pluginplay/printing/helpers.hpp"
 
 using namespace pluginplay::printing;
 
