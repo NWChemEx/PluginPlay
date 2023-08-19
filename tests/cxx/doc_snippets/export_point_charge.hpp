@@ -18,7 +18,7 @@
 // #include <pybind11/stl.h>
 // #include <pybind11/operators.h>
 
-// #include "point_charge.hpp" 
+// #include "point_charge.hpp"
 
 // namespace py = pybind11;
 // using namespace pluginplay_examples;
@@ -34,11 +34,11 @@
 //         .def("__lt__", &PointCharge::operator<, py::is_operator())
 //         .def("__repr__",
 //             [](const PointCharge &p) {
-//                 return "<PointCharge m_charge=" + std::to_string(p.m_charge) + " m_r=[" 
+//                 return "<PointCharge m_charge=" + std::to_string(p.m_charge)
+//                 + " m_r=["
 //                     + std::to_string(p.m_r[0]) + ", "
 //                     + std::to_string(p.m_r[1]) + ", "
 //                     + std::to_string(p.m_r[2]) + "]>";
 //             }
 //         );
 // }
-

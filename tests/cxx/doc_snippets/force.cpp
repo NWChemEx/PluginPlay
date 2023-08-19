@@ -35,7 +35,6 @@ namespace pluginplay_examples {
 using efield_type = ElectricField;
 using force_type  = Force;
 
-
 MODULE_CTOR(ClassicalForce) {
     description(module_desc);
     satisfies_property_type<force_type>();

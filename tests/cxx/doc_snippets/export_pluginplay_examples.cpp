@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 // #include <pybind11/pybind11.h>
 // // #include <pybind11/stl.h>
 // // #include <pybind11/stl_bind.h>
@@ -49,7 +48,8 @@
 //     //   m, "CoulombsLaw")
 //     //   .def(py::init<>());
 //     // // .def("inputs", static_cast<void
-//     // // (pluginplay_examples::CoulombsLaw::*)()>(&pluginplay_examples::CoulombsLaw::inputs))
+//     // //
+//     (pluginplay_examples::CoulombsLaw::*)()>(&pluginplay_examples::CoulombsLaw::inputs))
 //     // // .def("results", &pluginplay_examples::CoulombsLaw::results);
 
 //     // // Revised Binding for TemplatedCoulombsLaw
@@ -66,26 +66,27 @@
 //     //            pluginplay::ModuleBase>(m, "ScreenedCoulombsLaw")
 //     //   .def(py::init<>());
 //     // // .def("inputs", &pluginplay_examples::ScreenedCoulombsLaw::inputs)
-//     // // .def("results", &pluginplay_examples::ScreenedCoulombsLaw::results);
+//     // // .def("results",
+//     &pluginplay_examples::ScreenedCoulombsLaw::results);
 
 //     // // Revised Binding for ClassicalForce
-//     // py::class_<pluginplay_examples::ClassicalForce, pluginplay::ModuleBase>(
+//     // py::class_<pluginplay_examples::ClassicalForce,
+//     pluginplay::ModuleBase>(
 //     //   m, "ClassicalForce")
 //     //   .def(py::init<>());
 //     // // .def("inputs", &pluginplay_examples::ClassicalForce::inputs)
 //     // // .def("results", &pluginplay_examples::ClassicalForce::results);
 // }
 
+#include "load_modules.hpp"
 #include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/pybind11.h>
-#include "load_modules.hpp"
 //#include <electric_field.hpp>
 
 #include <export_electric_field.hpp>
 
-
 namespace pluginplay_examples {
-//EXPORT_PROPERTY_TYPE(ElectricField, m);
+// EXPORT_PROPERTY_TYPE(ElectricField, m);
 
 EXPORT_PLUGIN(pluginplay_examples, m){};
 // pybind11::class_<DerivedClass, BaseClass>(m, "DerivedClass");

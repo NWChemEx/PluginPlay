@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
-#include "modules.hpp"
-#include "load_modules.hpp"
 #include "electric_field.hpp"
+#include "load_modules.hpp"
+#include "modules.hpp"
+#include <catch2/catch.hpp>
 
 using namespace pluginplay_examples;
 TEST_CASE("Tutorial modules") {
