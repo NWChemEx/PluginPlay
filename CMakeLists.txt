@@ -164,7 +164,7 @@ if("${BUILD_TESTING}")
         test_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}_examples
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
 
     cmaize_add_tests(
@@ -189,9 +189,15 @@ if("${BUILD_TESTING}")
         py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
         SUBMODULES parallelzone
     )
+    nwx_add_pybind11_module(
+        ${PROJECT_NAME}_examples
+        SOURCE_DIR "${cxx_tests_dir}/doc_snippets"
+        INCLUDE_DIRS "${project_inc_dir}"
+        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
+    )
     nwx_pybind11_tests(
         py_doc_snippets "${python_test_dir}/doc_snippets/test_doc_snippets.py"
-        SUBMODULES parallelzone
+        SUBMODULES parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
 endif()
 
