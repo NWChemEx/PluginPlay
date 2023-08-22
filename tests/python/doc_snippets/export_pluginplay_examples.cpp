@@ -20,9 +20,7 @@
 #include <pybind11/pybind11.h>
 
 namespace pluginplay_examples {
-// EXPORT_PROPERTY_TYPE(ElectricField, m);
 
 EXPORT_PLUGIN(pluginplay_examples, m){};
-// pybind11::class_<DerivedClass, BaseClass>(m, "DerivedClass");
 
 } // namespace pluginplay_examples
