@@ -194,7 +194,7 @@ if("${BUILD_TESTING}")
         DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
     nwx_pybind11_tests(
-        py_doc_snippets "${python_test_dir}/doc_snippets/test_doc_snippets.py"
+        py_${PROJECT_NAME}_docs "${python_test_dir}/doc_snippets/test_doc_snippets.py"
         SUBMODULES parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
 endif()
