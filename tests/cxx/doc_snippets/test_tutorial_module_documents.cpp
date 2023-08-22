@@ -22,35 +22,35 @@
 #include "load_modules.hpp"
 
 TEST_CASE("tutorial_modules_docs") {
-   // Need a docs path
-   const auto root_dir = std::filesystem::temp_directory_path();
-   const std::filesystem::path docs_dir("docs");
-   auto docs_path = root_dir / docs_dir;
+    // Need a docs path
+    const auto root_dir = std::filesystem::temp_directory_path();
+    const std::filesystem::path docs_dir("docs");
+    auto docs_path = root_dir / docs_dir;
 
-   std::filesystem::remove_all(docs_path);
+    std::filesystem::remove_all(docs_path);
 
-   // Create the directory
-   std::filesystem::create_directory(docs_path);
+    // Create the directory
+    std::filesystem::create_directory(docs_path);
 
-   // Verify the directory exists
-   REQUIRE(std::filesystem::exists(docs_path));
-   REQUIRE(std::filesystem::is_directory(docs_path));
-   REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
-                         std::filesystem::directory_iterator{}) ==
-           0); // Empty directory
+    // Verify the directory exists
+    REQUIRE(std::filesystem::exists(docs_path));
+    REQUIRE(std::filesystem::is_directory(docs_path));
+    REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                          std::filesystem::directory_iterator{}) ==
+            0); // Empty directory
 
-   // Set up module manager
-   pluginplay::ModuleManager mm;
+    // Set up module manager
+    pluginplay::ModuleManager mm;
 
-   SECTION("Modules Loaded") {
-       // Load your modules
-       pluginplay_examples::load_modules(mm);
+    SECTION("Modules Loaded") {
+        // Load your modules
+        pluginplay_examples::load_modules(mm);
 
-       // Generate module documentation at the given path
-       pluginplay::printing::document_modules(mm, docs_path);
+        // Generate module documentation at the given path
+        pluginplay::printing::document_modules(mm, docs_path);
 
-       REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
-                             std::filesystem::directory_iterator{}) ==
-               mm.size() + 1); // +1 for index.rst
-   }
+        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                              std::filesystem::directory_iterator{}) ==
+                mm.size() + 1); // +1 for index.rst
+    }
 }

@@ -35,8 +35,6 @@ namespace pluginplay_examples {
 
 using prop_type = ElectricField;
 
-
-
 template<typename FloatingPointType>
 TEMPLATED_MODULE_CTOR(TemplatedCoulombsLaw, FloatingPointType) {
     description(module_desc);
