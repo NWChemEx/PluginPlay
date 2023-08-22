@@ -137,10 +137,10 @@ cppyy_make_python_package(
 )
 
 if("${BUILD_TESTING}")
-    set(cxx_tests_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(cxx_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-    set(tests_src_dir "${cxx_tests_dir}/unit_tests/${PROJECT_NAME}")
-    set(examples_src_dir "${cxx_tests_dir}/doc_snippets")
+    set(tests_src_dir "${cxx_test_dir}/unit_tests/${PROJECT_NAME}")
+    set(examples_src_dir "${cxx_test_dir}/doc_snippets")
 
     cmaize_find_or_build_dependency(
         Catch2
@@ -169,7 +169,7 @@ if("${BUILD_TESTING}")
 
     cmaize_add_tests(
         test_${PROJECT_NAME}_docs
-        SOURCE_DIR "${cxx_tests_dir}/doc_snippets"
+        SOURCE_DIR "${cxx_test_dir}/doc_snippets"
         INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
