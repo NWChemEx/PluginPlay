@@ -174,7 +174,6 @@ if("${BUILD_TESTING}")
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
-
     # In the python tests we will pass Python into PluginPlay, we will then
     # need to know that C++ can handle those Python types. To this end we
     # create a series of Python bindings for unit testing this functionality
@@ -191,8 +190,7 @@ if("${BUILD_TESTING}")
     )
     nwx_add_pybind11_module(
         ${PROJECT_NAME}_examples
-        SOURCE_DIR "${cxx_tests_dir}/doc_snippets"
-        INCLUDE_DIRS "${project_inc_dir}"
+        SOURCE_DIR "${python_test_dir}/doc_snippets"
         DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
     nwx_pybind11_tests(

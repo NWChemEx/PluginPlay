@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <electric_field.hpp>
+#include "../../cxx/doc_snippets/electric_field.hpp"
 #include <pluginplay/pluginplay.hpp>
 
 namespace pluginplay_examples {

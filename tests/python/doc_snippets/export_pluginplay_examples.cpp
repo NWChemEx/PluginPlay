@@ -78,9 +78,7 @@
 
 #include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/pybind11.h>
-#include "load_modules.hpp"
-//#include <electric_field.hpp>
-
+#include "../../cxx/doc_snippets/load_modules.hpp"
 #include <export_electric_field.hpp>
 
 
