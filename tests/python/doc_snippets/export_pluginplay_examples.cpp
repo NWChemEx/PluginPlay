@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
-#include <pluginplay/plugin/plugin.hpp>
-#include <pybind11/pybind11.h>
 #include "../../cxx/doc_snippets/load_modules.hpp"
 #include <export_electric_field.hpp>
+#include <pluginplay/plugin/plugin.hpp>
+#include <pybind11/pybind11.h>
 
 namespace pluginplay_examples {
 // EXPORT_PROPERTY_TYPE(ElectricField, m);
