@@ -57,8 +57,7 @@ The relevant lines are:
 
 .. note::
 
-   Declaring a module is not required if the module is written and accessed only
-   in Python.
+   Declaring a module is not required if the module is written in Python.
 
 Defining the Module
 ===================
