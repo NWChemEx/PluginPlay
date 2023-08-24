@@ -26,7 +26,7 @@ class TestDocumentModules(unittest.TestCase):
         current_dir_path = os.getcwd()
 
         # Get the docs directory
-        docs_dir_path = os.path.abspath(os.path.join(current_dir_path, "../docs"))
+        docs_dir_path = os.path.abspath(os.path.join(current_dir_path, "../docs/test_document_modules"))
 
         
         # Empty docs directory
@@ -64,6 +64,12 @@ class TestDocumentModules(unittest.TestCase):
         
         # Check if index.rst is created
         self.assertTrue(len(docs_file_list) == 1)
+
+        # Remove test directory when finished
+        try:
+            shutil.rmtree(docs_dir_path)
+        except OSError as e:
+            print(f"Error: {e}")
 
     
     
