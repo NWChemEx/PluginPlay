@@ -93,7 +93,7 @@ reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
             p << "- Domain Restrictions :\n\n";
             for(auto& desc : checks) {
                 auto p1 = std::string("  - ") + desc + "\n\n";
-                p << p1;
+                p.print_verbatim(p1);
             }
         }
         p.finish_section();

@@ -24,7 +24,10 @@ using namespace pluginplay::printing;
 
 TEST_CASE("generate_index_string") {
     SECTION("Empty toc") {
-        auto corr = ".. toctree::\n"
+        auto corr = "***********\n"
+                    "Modules API\n"
+                    "***********\n\n"
+                    ".. toctree::\n"
                     "   :maxdepth: 1\n";
 
         std::stringstream ss;
@@ -36,7 +39,10 @@ TEST_CASE("generate_index_string") {
     }
 
     SECTION("Full toc") {
-        auto corr = ".. toctree::\n"
+        auto corr = "***********\n"
+                    "Modules API\n"
+                    "***********\n\n"
+                    ".. toctree::\n"
                     "   :maxdepth: 1\n"
                     "\n"
                     "   Coulomb's_Law\n"
