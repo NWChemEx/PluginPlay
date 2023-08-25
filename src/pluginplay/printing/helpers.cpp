@@ -21,7 +21,8 @@ namespace pluginplay::printing {
 void generate_index_file(std::ostream& os,
                          const std::vector<std::string>& toc) {
     // Generate index.rst text
-    std::string index = ".. toctree::\n   :maxdepth: 1\n";
+    std::string index = "***********\nModules API\n***********\n\n"
+                        ".. toctree::\n   :maxdepth: 1\n";
 
     // Add file names to the toctree
     for(std::string file : toc) { index += std::string("\n   ") + file; }
