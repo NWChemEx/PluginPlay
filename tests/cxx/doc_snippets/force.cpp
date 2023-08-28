@@ -18,11 +18,6 @@
 #include "force.hpp"
 #include "modules.hpp"
 
-namespace pluginplay_examples {
-
-using efield_type = ElectricField;
-using force_type  = Force;
-
 static constexpr auto module_desc = R"(
 Computes the force of a moving charged particle as it moves through the electric
 field arising from a set of point charges. Assuming the particle has a mass
@@ -34,6 +29,11 @@ field arising from a set of point charges. Assuming the particle has a mass
    \vec{F}(\vec{r}) = m\vec{a}\left(\vec{r}\right) +
                       q\vec{E}\left(\vec{r}\right)
 )";
+
+namespace pluginplay_examples {
+
+using efield_type = ElectricField;
+using force_type  = Force;
 
 MODULE_CTOR(ClassicalForce) {
     description(module_desc);

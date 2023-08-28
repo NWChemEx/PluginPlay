@@ -12,6 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
+.. _module_designing:
+
 ******************
 Designing a Module
 ******************
@@ -22,7 +24,7 @@ provide any guidance on how to design your module.
 Additional Inputs
 =================
 
-The property type APIs are necessarilly general and rigid. This can pose
+The property type APIs are necessarily general and rigid. This can pose
 difficulties when your module needs additional input. PluginPlay provides you
 with two options for obtaining the extra input your module needs:
 
