@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG dep_repo_tag
+ARG base_tag
 
 FROM ghcr.io/nwchemex-project/release_parallelzone:$dep_repo_tag
 FROM ghcr.io/nwchemex-project/release_utilities:$dep_repo_tag
-
-ARG base_tag
 
 FROM ghcr.io/nwchemex-project/base_pluginplay:$base_tag
 
