@@ -4,6 +4,12 @@ FROM ${PARENT_IMAGE_NAME}:latest
 
 ARG LIBFORT_VERSION
 
+# Install curl to download libfort
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install libfort#
 ENV INSTALL_PATH=../install
 
