@@ -84,17 +84,17 @@ jobs:
         with:
           tmp_image_name: base-catch2
           tmp_image_tag: latest
-          image_name: ghcr.io/nwchemex-project/base_parallelzone
+          image_name: ghcr.io/nwchemex-project/base_pluginplay
           image_tag: latest
       - name: Check stable base image
         id: image_exists
         shell: /usr/bin/bash {0}
         run: |
-          docker manifest inspect ghcr.io/nwchemex-project/base_parallelzone:stable > /dev/null
+          docker manifest inspect ghcr.io/nwchemex-project/base_pluginplay:stable > /dev/null
           echo "conclusion=$?" >> "$GITHUB_OUTPUT"
       - name: Push stable base image if not exist
         if: ${{ steps.image_exists.outputs.conclusion != 0 }}
         run: |
-          docker pull ghcr.io/nwchemex-project/base_parallelzone:latest
-          docker tag ghcr.io/nwchemex-project/base_parallelzone:latest ghcr.io/nwchemex-project/base_parallelzone:stable
-          docker push ghcr.io/nwchemex-project/base_parallelzone:stable
+          docker pull ghcr.io/nwchemex-project/base_pluginplay:latest
+          docker tag ghcr.io/nwchemex-project/base_pluginplay:latest ghcr.io/nwchemex-project/base_pluginplay:stable
+          docker push ghcr.io/nwchemex-project/base_pluginplay:stable

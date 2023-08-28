@@ -18,7 +18,7 @@ FROM ghcr.io/nwchemex-project/release_utilities:$dep_repo_tag
 
 ARG base_tag
 
-FROM ghcr.io/nwchemex-project/base_parallelzone:$base_tag
+FROM ghcr.io/nwchemex-project/base_pluginplay:$base_tag
 
 COPY --from=0 /install /install
 
