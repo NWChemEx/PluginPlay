@@ -24,6 +24,10 @@ on:
         type: string
         required: false
         default: 20.04
+      catch2_version:
+        type: string
+        required: false
+        default: 2.13.8
       libfort_version:
         type: string
         required: false
