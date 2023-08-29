@@ -36,14 +36,16 @@ toolchain_file=$(pwd)/toolchain.cmake
 
 pybind11_path=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 
+echo "pybind11_path = " ${pybind11_path}
+
 echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
 {
   echo "set(CMAKE_CXX_STANDARD 17)"
   echo 'set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)'
   echo "set(BUILD_SHARED_LIBS ON)"
   echo "set(CATCH_ENABLE_COVERAGE ON)"
-  echo "set(CMAKE_PREFIX_PATH /install)"
-  echo "set(CMAKE_PREFIX_PATH ${pybind11_path})"
+  #echo "set(CMAKE_PREFIX_PATH /install)"
+  echo 'set(CMAKE_PREFIX_PATH "${pybind11_path};/install")'
   echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -std=c++17")'
   echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOMPI_SKIP_MPICXX")'
   echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")'
@@ -120,7 +122,7 @@ echo "Running doc tests..."
 ${ctest_command} -VV -R *docs
 
 # python testing
-export PYTHONPATH="$PYTHONPATH:/install"
+export PYTHONPATH=$PYTHONPATH:/install
 echo "Running python tests..."
 ${ctest_command} -VV -R py
 cd ..
