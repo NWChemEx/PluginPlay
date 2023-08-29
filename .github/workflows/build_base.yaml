@@ -65,12 +65,18 @@ jobs:
           package_name: libboost
           parent_image_name: ghcr.io/nwchemex-project/base-cmake
           path_to_dockerfile: .github/Dockerfile/base-libboost.Dockerfile
+      - name: Install pybind11
+        uses: NWChemEx-Project/.github/actions/install_package@master
+        with:
+          package_name: pybind11
+          parent_image_name: base-libboost
+          path_to_dockerfile: .github/Dockerfile/base-pybind11.Dockerfile
       - name: Install libfort
         uses: NWChemEx-Project/.github/actions/install_package@master
         with:
           libfort_version: ${{ inputs.libfort_version }}
           package_name: libfort
-          parent_image_name: base-libboost
+          parent_image_name: base-pybind11
           path_to_dockerfile: .github/Dockerfile/base-libfort.Dockerfile
       - name: Install catch2
         uses: NWChemEx-Project/.github/actions/install_package@master
