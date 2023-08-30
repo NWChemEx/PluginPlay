@@ -34,7 +34,7 @@ cmake_command=cmake
 ctest_command=ctest
 toolchain_file=$(pwd)/toolchain.cmake
 
-pybind11_path=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+#pybind11_path=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 
 echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
 {
@@ -42,8 +42,8 @@ echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
   echo 'set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)'
   echo "set(BUILD_SHARED_LIBS ON)"
   echo "set(CATCH_ENABLE_COVERAGE ON)"
-  #echo "set(CMAKE_PREFIX_PATH /install)"
-  echo 'set(CMAKE_PREFIX_PATH "${pybind11_path};/install")'
+  echo "set(CMAKE_PREFIX_PATH /install)"
+  #echo 'set(CMAKE_PREFIX_PATH "${pybind11_path};/install")'
   echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -std=c++17")'
   echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOMPI_SKIP_MPICXX")'
   echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")'
@@ -57,8 +57,6 @@ echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
   echo 'set(ScaLAPACK_LIBRARIES  "-L${LIBDIR} -lscalapack-openmpi ${LAPACK_LIBRARIES}")'
   echo 'set(NWX_MODULE_DIRECTORY "./NWX_PyModules")'
 } >> "${toolchain_file}"
-
-cat ${toolchain_file}
 
 # if clang_build is true set clang and 
 # clang++ as default c and cxx compiler
@@ -121,10 +119,10 @@ echo "Running doc tests..."
 ${ctest_command} -VV -R *docs
 
 # python testing
-export PYTHONPATH=$PYTHONPATH:/install
-echo "PYTHONPATH = " $PYTHONPATH
-echo "Running python tests..."
-${ctest_command} -VV -R py
+#export PYTHONPATH=$PYTHONPATH:/install
+#echo "PYTHONPATH = " $PYTHONPATH
+#echo "Running python tests..."
+#${ctest_command} -VV -R py
 cd ..
 
 #Step 5: Install

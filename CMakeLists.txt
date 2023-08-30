@@ -33,7 +33,7 @@ include(nwx_versions)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBIND11_PYBINDINGS "Use pybind11 to build Python3 bindings?" ON)
+option(BUILD_PYBIND11_PYBINDINGS "Use pybind11 to build Python3 bindings?" OFF)
 option(BUILD_CPPYY_PYBINDINGS "Use Cppyy to build Python3 bindings?" OFF)
 option(BUILD_ROCKSDB "Should we build the RocksDB backend?" OFF)
 
