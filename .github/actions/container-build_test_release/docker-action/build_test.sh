@@ -36,8 +36,6 @@ toolchain_file=$(pwd)/toolchain.cmake
 
 pybind11_path=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 
-echo "pybind11_path = " ${pybind11_path}
-
 echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
 {
   echo "set(CMAKE_CXX_STANDARD 17)"
@@ -60,6 +58,7 @@ echo "set(BUILD_TESTING ON)" > "${toolchain_file}"
   echo 'set(NWX_MODULE_DIRECTORY "./NWX_PyModules")'
 } >> "${toolchain_file}"
 
+cat ${toolchain_file}
 
 # if clang_build is true set clang and 
 # clang++ as default c and cxx compiler
@@ -123,6 +122,7 @@ ${ctest_command} -VV -R *docs
 
 # python testing
 export PYTHONPATH=$PYTHONPATH:/install
+echo "PYTHONPATH = " $PYTHONPATH
 echo "Running python tests..."
 ${ctest_command} -VV -R py
 cd ..
