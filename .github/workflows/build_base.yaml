@@ -59,21 +59,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CONTAINER_REPO_TOKEN }}
       - name: Install libboost
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           libboost_version: ${{ inputs.libboost_version }}
           package_name: libboost
           parent_image_name: ghcr.io/nwchemex-project/base-cmake
           path_to_dockerfile: .github/Dockerfile/base-libboost.Dockerfile
       - name: Install libfort
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           libfort_version: ${{ inputs.libfort_version }}
           package_name: libfort
           parent_image_name: base-libboost
           path_to_dockerfile: .github/Dockerfile/base-libfort.Dockerfile
       - name: Install catch2
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           catch2_version: ${{ inputs.catch2_version }}
           package_name: catch2
