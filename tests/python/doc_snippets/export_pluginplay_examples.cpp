@@ -21,6 +21,6 @@
 
 namespace pluginplay_examples {
 
-EXPORT_PLUGIN(pluginplay_examples, m){};
+EXPORT_PLUGIN(py_pluginplay_examples, m){};
 
 } // namespace pluginplay_examples
