@@ -1,0 +1,100 @@
+# manually input version no.s here
+# will check in workflows to obtain 
+# this info from other files
+#
+
+name: Build base image
+
+on:
+  workflow_call:
+    inputs:
+      cmake_version:
+        type: string
+        required: false
+        default: 3.17.0
+      gcc_version:
+        type: string
+        required: false
+        default: 9
+      clang_version:
+        type: string
+        required: false
+        default: 11
+      ubuntu_version:
+        type: string
+        required: false
+        default: 20.04
+      catch2_version:
+        type: string
+        required: false
+        default: 2.13.8
+      libfort_version:
+        type: string
+        required: false
+        default: 0.4.2
+      libboost_version:
+        type: string
+        required: false
+        default: 1.71.0
+
+jobs:
+  build-image-gcc-clang-cmake:
+    uses: NWChemEx-Project/.github/.github/workflows/base_image_gcc-clang-cmake.yaml@master
+    with:
+      cmake_version: ${{ inputs.cmake_version }}
+      gcc_version: ${{ inputs.gcc_version }}
+      clang_version: ${{ inputs.clang_version }}
+      ubuntu_version: ${{ inputs.ubuntu_version }}
+    secrets: inherit
+
+  build-base-image:
+    runs-on: ubuntu-latest
+    needs: build-image-gcc-clang-cmake
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CONTAINER_REPO_TOKEN }}
+      - name: Install libboost
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
+        with:
+          libboost_version: ${{ inputs.libboost_version }}
+          package_name: libboost
+          parent_image_name: ghcr.io/nwchemex-project/base-cmake
+          path_to_dockerfile: .github/Dockerfile/base-libboost.Dockerfile
+      - name: Install libfort
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
+        with:
+          libfort_version: ${{ inputs.libfort_version }}
+          package_name: libfort
+          parent_image_name: base-libboost
+          path_to_dockerfile: .github/Dockerfile/base-libfort.Dockerfile
+      - name: Install catch2
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
+        with:
+          catch2_version: ${{ inputs.catch2_version }}
+          package_name: catch2
+          parent_image_name: base-libfort
+          path_to_dockerfile: .github/Dockerfile/base-catch2.Dockerfile
+      - name: Push the base image
+        uses: NWChemEx-Project/.github/actions/push_image@master
+        with:
+          tmp_image_name: base-catch2
+          tmp_image_tag: latest
+          image_name: ghcr.io/nwchemex-project/base_pluginplay
+          image_tag: latest
+      - name: Check stable base image
+        id: image_exists
+        shell: /usr/bin/bash {0}
+        run: |
+          docker manifest inspect ghcr.io/nwchemex-project/base_pluginplay:stable > /dev/null
+          echo "conclusion=$?" >> "$GITHUB_OUTPUT"
+      - name: Push stable base image if not exist
+        if: ${{ steps.image_exists.outputs.conclusion != 0 }}
+        run: |
+          docker pull ghcr.io/nwchemex-project/base_pluginplay:latest
+          docker tag ghcr.io/nwchemex-project/base_pluginplay:latest ghcr.io/nwchemex-project/base_pluginplay:stable
+          docker push ghcr.io/nwchemex-project/base_pluginplay:stable

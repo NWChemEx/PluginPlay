@@ -161,12 +161,17 @@ if("${BUILD_TESTING}")
         DEPPACKAGES pluginplay
     )
     cmaize_add_tests(
-        test_${PROJECT_NAME}
+        test_unit_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
-
+    cmaize_add_tests(
+        test_integration_${PROJECT_NAME}
+        SOURCE_DIR "${cxx_test_dir}/integration_tests"
+        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME} ${PROJECT_NAME}_examples
+    )
     cmaize_add_tests(
         test_${PROJECT_NAME}_docs
         SOURCE_DIR "${cxx_test_dir}/doc_snippets"
