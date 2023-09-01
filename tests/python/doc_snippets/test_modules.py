@@ -16,7 +16,7 @@
 import parallelzone as pz
 import unittest
 import pluginplay as pp
-import pluginplay_examples as ppe
+import py_pluginplay_examples as ppe
 
 class TestTutorialModules(unittest.TestCase):
     def test_modules(self):
