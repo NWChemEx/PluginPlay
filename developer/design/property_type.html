@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Property Type Component &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -101,19 +103,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="designing-the-property-type-component">
+  <section id="designing-the-property-type-component">
 <span id="property-type-design"></span><h1>Designing the Property Type Component<a class="headerlink" href="#designing-the-property-type-component" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> calls for a property type component. This section
 outlines the design decisions that went into that component.</p>
-<div class="section" id="what-is-the-property-type-component">
+<section id="what-is-the-property-type-component">
 <h2>What is the Property Type Component?<a class="headerlink" href="#what-is-the-property-type-component" title="Permalink to this heading"></a></h2>
 <p>At the lowest level all modules have the same <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>: take a series of
 type-erased inputs and return a set of type-erased outputs. In strongly typed
 languages like C++, type-erased objects are cumbersome to work with. The
 property type component facilitates the wrapping/unwrapping of
 typed/type-erased objects while also enforcing a standardized <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p>
-</div>
-<div class="section" id="property-type-considerations">
+</section>
+<section id="property-type-considerations">
 <h2>Property Type Considerations<a class="headerlink" href="#property-type-considerations" title="Permalink to this heading"></a></h2>
 <p>From <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> we have:</p>
 <ol class="arabic simple">
@@ -151,16 +153,18 @@ avoiding duplication</p></li>
 </ul>
 </li>
 </ol>
-</div>
-<div class="section" id="property-type-component-design">
+</section>
+<section id="property-type-component-design">
 <h2>Property Type Component Design<a class="headerlink" href="#property-type-component-design" title="Permalink to this heading"></a></h2>
-<div class="figure align-center" id="id1">
+<figure class="align-center" id="id1">
 <span id="fig-property-type-design"></span><img alt="../../_images/property_type_design.png" src="../../_images/property_type_design.png" />
-<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Architecture of the property type component. Users derive from the
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Architecture of the property type component. Users derive from the
 <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to implement their property types. The template
 meta-programming needed for dealing with types is factored out into the
 <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+</figcaption>
+</figure>
 <p>Fig <a class="reference internal" href="#fig-property-type-design"><span class="std std-numref">Fig. 8</span></a> shows the architecture of the property
 type component. The <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class holds the bulk of the implementation.
 Users derive their property types from <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code>, using the curiously-
@@ -179,7 +183,7 @@ inputs and one for the results. The process of doing this is wrapped by
 responsible for storing not only the types of the inputs, but also the default
 values, descriptions, etc. It is the responsibility of the <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code>
 objects to define as simple of an <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as possible.</p>
-<div class="section" id="summary">
+<section id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
 <p>Our design addresses the above considerations by:</p>
 <ol class="arabic simple">
@@ -215,9 +219,9 @@ through “inheritance”.</p></li>
 </ul>
 </li>
 </ol>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

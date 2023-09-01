@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Basics of Writing a Property Type &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -96,13 +98,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="basics-of-writing-a-property-type">
+  <section id="basics-of-writing-a-property-type">
 <h1>Basics of Writing a Property Type<a class="headerlink" href="#basics-of-writing-a-property-type" title="Permalink to this heading"></a></h1>
 <p>A property type of type <code class="docutils literal notranslate"><span class="pre">T</span></code> is ultimately a class that inherits from
 <code class="docutils literal notranslate"><span class="pre">pluginplay::PropertyType&lt;T&gt;</span></code>. The property type defines the API for computing
 the associated property. This API has two parts: the positional input arguments
 and the returned value (multiple returns are possible, but rarely needed).</p>
-<div class="section" id="declaring-a-property-type">
+<section id="declaring-a-property-type">
 <h2>Declaring A Property Type<a class="headerlink" href="#declaring-a-property-type" title="Permalink to this heading"></a></h2>
 <p>Like declaring a module, declaring a property type involves a lot of
 boilerplate. For this reason we have provided macros to faciliate the process.
@@ -119,8 +121,8 @@ because these macros hide a significant amount of template meta-programming).
 Thus it is best practice to declare one property type per header file as opposed
 to modules where it is not uncommon to declare several modules in one header
 file.</p>
-</div>
-<div class="section" id="defining-a-property-type">
+</section>
+<section id="defining-a-property-type">
 <h2>Defining a Property Type<a class="headerlink" href="#defining-a-property-type" title="Permalink to this heading"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -131,7 +133,7 @@ can remain ignorant to how we did this for you. If you want to deviate from
 this pattern you likely will have to do quite a bit of template
 meta-programming on your own.</p>
 </div>
-<div class="section" id="defining-the-input-positional-arguments">
+<section id="defining-the-input-positional-arguments">
 <h3>Defining the Input Positional Arguments<a class="headerlink" href="#defining-the-input-positional-arguments" title="Permalink to this heading"></a></h3>
 <p>Defining a property type involves defining two functions: <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and
 <code class="docutils literal notranslate"><span class="pre">results_()</span></code>. Respectively these functions establish the positional input
@@ -195,8 +197,8 @@ inputs (in this case we set their descriptions; a full list of available
 meta-data is located at (TODO: Add link)). For this all to work right it is
 important to declare the fields first and then set the meta-data. The meta-data
 is used in the automatically generated documentation.</p>
-</div>
-<div class="section" id="defining-the-result">
+</section>
+<section id="defining-the-result">
 <h3>Defining the Result<a class="headerlink" href="#defining-the-result" title="Permalink to this heading"></a></h3>
 <p>The definition of the <code class="docutils literal notranslate"><span class="pre">results_()</span></code> function looks very similar to
 <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and follows the same rules except that we use
@@ -220,9 +222,9 @@ multiple returns). Akin to the inputs, we also could have assigned a more
 detailed description to the return value if we wanted to; for better or worse,
 we decided that the tag <code class="docutils literal notranslate"><span class="pre">&quot;electric</span> <span class="pre">field</span> <span class="pre">at</span> <span class="pre">r&quot;</span></code> was descriptive enough and
 forwent a more detailed description.</p>
-</div>
-</div>
-<div class="section" id="summary">
+</section>
+</section>
+<section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h2>
 <p>Generally speaking for both the inputs and results follow this pattern when
 defining the function:</p>
@@ -289,8 +291,8 @@ shown below:</p>
 <span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

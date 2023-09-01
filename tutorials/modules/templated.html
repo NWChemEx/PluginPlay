@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Templated Modules &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -94,7 +96,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="templated-modules">
+  <section id="templated-modules">
 <h1>Templated Modules<a class="headerlink" href="#templated-modules" title="Permalink to this heading"></a></h1>
 <p>Our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module hard-coded the floating type to <code class="docutils literal notranslate"><span class="pre">double</span></code>. In
 practice we can get a factor of 2 speed-up by using <code class="docutils literal notranslate"><span class="pre">float</span></code> instead of
@@ -131,7 +133,7 @@ parameters.</p>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;numeric&gt;</span><span class="c1"> // For std::inner_product</span>
 
-<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+<span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="s">&quot;(</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FloatingPointType</span><span class="o">&gt;</span>
 <span class="n">TEMPLATED_MODULE_CTOR</span><span class="p">(</span><span class="n">TemplatedCoulombsLaw</span><span class="p">,</span><span class="w"> </span><span class="n">FloatingPointType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
@@ -149,7 +151,7 @@ parameters.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
+</section>
 
 
            </div>

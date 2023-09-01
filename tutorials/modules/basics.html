@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Basics of Writing a Module &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -16,6 +18,7 @@
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/tabs.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -54,7 +57,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">PluginPlay Tutorials</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Module Development</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Basics of Writing a Module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#delcaring-the-module">Delcaring the Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#declaring-the-module">Declaring the Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#defining-the-module">Defining the Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 </ul>
@@ -100,16 +103,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="basics-of-writing-a-module">
+  <section id="basics-of-writing-a-module">
 <h1>Basics of Writing a Module<a class="headerlink" href="#basics-of-writing-a-module" title="Permalink to this heading"></a></h1>
 <p>This page is intended to walk you through the basics of writing a module. Here
 we focus purely on writing the module, not designing it. Because of how
 PluginPlay works designing a module can sometimes be non-trivial; tips for
-designing a module can be found (TODO: add link). This page assumes we are
+designing a module can be found in <a class="reference internal" href="design.html#module-designing"><span class="std std-ref">Designing a Module</span></a>. This page assumes we are
 writing a module which computes the electric field, <span class="math notranslate nohighlight">\(\vec{E}\left(\vec{r}\right)\)</span> of a series of
-point charges as detailed (TODO: add link).</p>
-<div class="section" id="delcaring-the-module">
-<h2>Delcaring the Module<a class="headerlink" href="#delcaring-the-module" title="Permalink to this heading"></a></h2>
+point charges as detailed in <a class="reference internal" href="index.html#module-development"><span class="std std-ref">Module Development</span></a>.</p>
+<section id="declaring-the-module">
+<h2>Declaring the Module<a class="headerlink" href="#declaring-the-module" title="Permalink to this heading"></a></h2>
 <p>In PluginPlay modules are implemented by inheriting from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>
 class and then implementing a constructor and a <code class="docutils literal notranslate"><span class="pre">run_</span></code> member. The declaration
 amounts to a large amount of boilerplate so PluginPlay provides a macro
@@ -135,43 +138,44 @@ The relevant lines are:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Most libraries include more than one module, and given that declaring a
-module requries a single line, it is not uncommon to declare multiple modules
+module requires a single line, it is not uncommon to declare multiple modules
 in a single header file.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Declaring a module is not required if the module is written in Python.</p>
 </div>
-<div class="section" id="defining-the-module">
+</section>
+<section id="defining-the-module">
 <h2>Defining the Module<a class="headerlink" href="#defining-the-module" title="Permalink to this heading"></a></h2>
 <p>The definition of our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module goes in a source file. Defining the
 module amounts to implementing two functions: the default constructor and the
 <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function. The constructor is where all the set-up for your
 module occurs; it is also where you can set meta-data associated with your
 module. The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member function is where your module does the work.</p>
-<div class="section" id="defining-the-constructor">
+<section id="defining-the-constructor">
 <h3>Defining the Constructor<a class="headerlink" href="#defining-the-constructor" title="Permalink to this heading"></a></h3>
 <p>PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">MODULE_CTOR(T)</span></code>, where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the name of the
 module to aid in defining the module’s constructor. At a minimum the constructor
 must set the property type(s) that the module satisfies. It is also a good idea
 to provide a short description about the algorithm implemented in the module.</p>
 <p>For our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module a basic constructor looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">module_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
-<span class="s">Electric Field From Coulomb&#39;s Law</span>
-<span class="s">---------------------------------</span>
-
-<span class="s">This module computes the electric field of a series of point charges using</span>
-<span class="s">Coulomb&#39;s law according to:</span>
-
-<span class="s">.. math::</span>
-
-<span class="s">   \vec{E}(\vec{r}) = \sum_{i=1}^N</span>
-<span class="s">                      \frac{q_i \hat{r}_i}{||\vec{r} - \vec{r}_i||^2}</span>
-<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span>
-
-<span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
 <span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CoulombsLaw</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">(</span><span class="s2">&quot;Electric Field From Coulomb&#39;s Law&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
 <p>One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
 of the module. The description we provided serves as a preface to the resulting
@@ -195,8 +199,8 @@ you only need to change it in the typedef.</p>
 <code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">R&quot;(...)&quot;;</span></code> is a great way to write a lengthy description
 without having to use escapes or other workarounds for line endings.</p>
 </div>
-</div>
-<div class="section" id="defining-the-run-member">
+</section>
+<section id="defining-the-run-member">
 <h3>Defining the Run Member<a class="headerlink" href="#defining-the-run-member" title="Permalink to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">run_</span></code> member of the module takes a set of inputs and a set of submodules,
 and returns the property (or properties). Like the module constructor,
@@ -206,7 +210,8 @@ module to aid in defining the module’s <code class="docutils literal notransla
 <code class="docutils literal notranslate"><span class="pre">inputs</span></code> and <code class="docutils literal notranslate"><span class="pre">submods</span></code>. Presently we will ignore the <code class="docutils literal notranslate"><span class="pre">submods</span></code> argument.</p>
 <p>For defining our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw::run_</span></code> member the relevant PluginPlay bits of
 code are:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
@@ -216,6 +221,14 @@ code are:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">Point</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
 <p>The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
 process are beyond our present scope; for now know that every property type
@@ -227,7 +240,8 @@ defines a static function <code class="docutils literal notranslate"><span class
 returns a result map with the type-erased results.</p>
 <p>The full definition of the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member (including the source code for
 computing the electric field) is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">CoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ElectricField</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
@@ -256,9 +270,28 @@ computing the electric field) is:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">Point</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charges</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_charge</span>
+            <span class="n">ri</span> <span class="o">=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_r</span>
+            <span class="n">ri2</span> <span class="o">=</span> <span class="n">ri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ri</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">mag_ri</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">ri2</span><span class="p">)</span>
+            <span class="n">rij</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">rij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">rij2</span> <span class="o">=</span> <span class="n">rij</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">rij</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">rij</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">mag_ri</span> <span class="o">*</span> <span class="n">rij2</span><span class="p">))</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+</pre></div>
 </div>
-</div>
-<div class="section" id="submodules">
+</div></div>
+</section>
+</section>
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <p>Coulomb’s Law is pretty simple. Most simulation techniques are much more
 complicated than that and involve an intricate interplay of many different
@@ -331,8 +364,8 @@ will avoid the need to recompute the electric field when the calculation is
 restarted. The module does not have to maintain separate checkpoint/restart
 logic!!!!!</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

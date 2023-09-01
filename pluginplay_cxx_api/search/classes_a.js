@@ -7,8 +7,6 @@ var searchData=
   ['propertytypebase_398',['PropertyTypeBase',['../structpluginplay_1_1detail___1_1PropertyTypeBase.html',1,'pluginplay::detail_']]],
   ['propertytypebase_3c_20propertytype_3c_20t_2c_20u_20_3e_20_3e_399',['PropertyTypeBase&lt; PropertyType&lt; T, U &gt; &gt;',['../structpluginplay_1_1detail___1_1PropertyTypeBase_3_01PropertyType_3_01T_00_01U_01_4_01_4.html',1,'pluginplay::detail_']]],
   ['proxymapmaker_400',['ProxyMapMaker',['../classpluginplay_1_1cache_1_1ProxyMapMaker.html',1,'pluginplay::cache']]],
-  ['publicist_401',['Publicist',['../classpluginplay_1_1Publicist.html',1,'pluginplay']]],
-  ['pymodulebase_402',['PyModuleBase',['../classpluginplay_1_1PyModuleBase.html',1,'pluginplay']]],
-  ['pythonwrapper_403',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
-  ['pytypeinfo_404',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
+  ['pythonwrapper_401',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
+  ['pytypeinfo_402',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
 ];

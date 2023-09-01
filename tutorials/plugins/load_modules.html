@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loading a Module Collection &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -96,7 +98,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="loading-a-module-collection">
+  <section id="loading-a-module-collection">
 <h1>Loading a Module Collection<a class="headerlink" href="#loading-a-module-collection" title="Permalink to this heading"></a></h1>
 <p>The key piece of a module collection is the <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function. When a
 user starts a run with PluginPlay one of the first things they do is initialize
@@ -109,7 +111,7 @@ a <code class="docutils literal notranslate"><span class="pre">ModuleManager</sp
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">load_modules(mm)</span></code> calls load the module collections provided by the
 various libraries.</p>
-<div class="section" id="public-api">
+<section id="public-api">
 <h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this heading"></a></h2>
 <p>As far as the public API for <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> goes, the declaration is simple:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
@@ -148,8 +150,8 @@ community resources like NWChemEx-Project/SimDE) and your
 module-specific inputs are standard C++ types (or types found in the
 property types) this is your entire public API!!!</p>
 </div>
-</div>
-<div class="section" id="implementation">
+</section>
+<section id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading"></a></h2>
 <p>The actual implementation of <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> typically consists of two parts:
 loading the modules and setting the default submodules.</p>
@@ -235,8 +237,8 @@ responsability of the caller to set the submodule.</p>
 <span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

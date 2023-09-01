@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Module Manager &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -101,19 +103,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="designing-the-module-manager">
+  <section id="designing-the-module-manager">
 <span id="module-manager-design"></span><h1>Designing the Module Manager<a class="headerlink" href="#designing-the-module-manager" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> calls for a module manager component which will be
 the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> of PluginPlay. This section describes the design of
 that component.</p>
-<div class="section" id="what-is-the-module-manager">
+<section id="what-is-the-module-manager">
 <h2>What is the module manager?<a class="headerlink" href="#what-is-the-module-manager" title="Permalink to this heading"></a></h2>
 <p>Based on object-oriented design principles we need an object to represent the
 PluginPlay framework. The majority of interactions with the framework can be
 summarized as “module management” so we have opted to call the corresponding
 component the “module manager” and the literal class <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p>
-</div>
-<div class="section" id="module-manager-considerations">
+</section>
+<section id="module-manager-considerations">
 <h2>Module Manager Considerations<a class="headerlink" href="#module-manager-considerations" title="Permalink to this heading"></a></h2>
 <p>Since the module manager is the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> every major feature of
 PluginPlay needs to be accessible through it. This means the module manager
@@ -157,13 +159,15 @@ users also need to be able to override those configurations at runtime.</p></li>
 </ul>
 </li>
 </ol>
-</div>
-<div class="section" id="module-manager-architecture">
+</section>
+<section id="module-manager-architecture">
 <h2>Module Manager Architecture<a class="headerlink" href="#module-manager-architecture" title="Permalink to this heading"></a></h2>
-<div class="figure align-center" id="id1">
+<figure class="align-center" id="id1">
 <span id="fig-mm-arch"></span><img alt="../../_images/mm_arch.png" src="../../_images/mm_arch.png" />
-<p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>Fig. <a class="reference internal" href="#fig-mm-arch"><span class="std std-numref">Fig. 4</span></a> shows the architecture of the module manager
 component. The user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> is codified by a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class.
 Using the <a class="reference internal" href="../../background/terminology.html#pimpl"><span class="std std-ref">PIMPL</span></a> idiom, the implementation of the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> (and
@@ -179,12 +183,14 @@ present in top-level architecture diagram and has simply passed through. The
 design of the module manager component punts many of the module manager
 considerations to these components (see summary below), but provides
 user-facing APIs for doing them.</p>
-<div class="section" id="module-pool">
+<section id="module-pool">
 <h3>Module Pool<a class="headerlink" href="#module-pool" title="Permalink to this heading"></a></h3>
-<div class="figure align-center" id="id2">
+<figure class="align-center" id="id2">
 <span id="fig-mm-module-pool"></span><img alt="../../_images/module_pool.png" src="../../_images/module_pool.png" />
-<p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Architecture of the “Loaded Module” component, <em>i.e.</em>, a module pool.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Architecture of the “Loaded Module” component, <em>i.e.</em>, a module pool.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>The new component here is the “Loaded Module” component, which is an associative
 array of loaded modules used like a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool. Conceptually the main
 points of this pool are summarized in Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>. Here
@@ -215,8 +221,8 @@ recorded.  The third, and primary reason for preserving the original state is
 we necessarily treat each module as a black-box. Therefore we want to avoid
 copying the module on account of not knowing how expensive the copy actually
 will be.</p>
-</div>
-<div class="section" id="summary">
+</section>
+<section id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
 <p>The current design of the module manager really only directly addresses concern
 two (<em>i.e.</em>, managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool) and punts the remaining concerns.
@@ -257,9 +263,9 @@ components</p></li>
 </ul>
 </li>
 </ol>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

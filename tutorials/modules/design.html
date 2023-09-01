@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing a Module &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -97,20 +99,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="designing-a-module">
-<h1>Designing a Module<a class="headerlink" href="#designing-a-module" title="Permalink to this heading"></a></h1>
+  <section id="designing-a-module">
+<span id="module-designing"></span><h1>Designing a Module<a class="headerlink" href="#designing-a-module" title="Permalink to this heading"></a></h1>
 <p>The previous pages covered how to actually code up a module. They did not
 provide any guidance on how to design your module.</p>
-<div class="section" id="additional-inputs">
+<section id="additional-inputs">
 <h2>Additional Inputs<a class="headerlink" href="#additional-inputs" title="Permalink to this heading"></a></h2>
-<p>The property type APIs are necessarilly general and rigid. This can pose
+<p>The property type APIs are necessarily general and rigid. This can pose
 difficulties when your module needs additional input. PluginPlay provides you
 with two options for obtaining the extra input your module needs:</p>
 <ol class="arabic simple">
 <li><p>Define a module-specific input parameter</p></li>
 <li><p>Call a submodule</p></li>
 </ol>
-<div class="section" id="module-specific-input">
+<section id="module-specific-input">
 <h3>Module-Specific Input<a class="headerlink" href="#module-specific-input" title="Permalink to this heading"></a></h3>
 <p>Many algorithms have algorithmic parameters associated with them such as
 thresholds, tolerances, maximum number of iterations, <strong>etc.</strong>. Generally
@@ -131,8 +133,8 @@ there really isn’t an algorithm that can compute it (typically the default val
 is determined by extensive benchmarking which establishes what value produces a
 tolerable error; while that process could be encapsulated in a module, once
 it’s been done you might as well just use the value).</p>
-</div>
-<div class="section" id="call-a-submodule">
+</section>
+<section id="call-a-submodule">
 <h3>Call a Submodule<a class="headerlink" href="#call-a-submodule" title="Permalink to this heading"></a></h3>
 <p>Module-specific inputs are primarily for algorithmic parameters. Submodules are
 used primarily to establish data dependencies among computed properties. For
@@ -149,9 +151,9 @@ module doesn’t make a lot of sense because: the value of the electric field is
 system dependent (needs to be computed for every system) and the end-user
 typically doesn’t have the value sitting around (unless they’ve already called
 a module satisfying the <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type).</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Field Component &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -101,19 +103,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="designing-the-field-component">
+  <section id="designing-the-field-component">
 <span id="field-design"></span><h1>Designing the Field Component<a class="headerlink" href="#designing-the-field-component" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="property_type.html#property-type-design"><span class="std std-ref">Designing the Property Type Component</span></a> and <a class="reference internal" href="module.html#module-design"><span class="std std-ref">Designing the Module Component</span></a> both called for a
 mechanism to handle fields.</p>
-<div class="section" id="what-is-the-field-component">
+<section id="what-is-the-field-component">
 <h2>What is the Field Component?<a class="headerlink" href="#what-is-the-field-component" title="Permalink to this heading"></a></h2>
 <p>Modules are meant to be black-box functions which take all the input (inputs
 and callbacks) they will need to compute their results. The inputs and
 results are the fields. Since callbacks are passed as inputs we consider how
 they are passed to be part of the field component, while the actual callback
 mechanism falls to the call graph component (see <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>).</p>
-</div>
-<div class="section" id="field-component-considerations">
+</section>
+<section id="field-component-considerations">
 <h2>Field Component Considerations<a class="headerlink" href="#field-component-considerations" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Work with arbitrary types.</p>
@@ -150,15 +152,17 @@ synched.</p></li>
 </ul>
 </li>
 </ol>
-</div>
-<div class="section" id="field-component-design">
+</section>
+<section id="field-component-design">
 <h2>Field Component Design<a class="headerlink" href="#field-component-design" title="Permalink to this heading"></a></h2>
-<div class="figure align-center" id="id1">
+<figure class="align-center" id="id1">
 <span id="fig-field-design"></span><img alt="../../_images/field_design.png" src="../../_images/field_design.png" />
-<p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">The three major components of PluginPlay’s field component. ModuleInput/
+<figcaption>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">The three major components of PluginPlay’s field component. ModuleInput/
 ModuleResult are responsible for respectively managing the inputs/results
 to/from a module and SubmoduleRequest is used to manage callback hooks.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+</figcaption>
+</figure>
 <p>Fig. <a class="reference internal" href="#fig-field-design"><span class="std std-numref">Fig. 9</span></a> shows the architecture of the field component.
 The three major components, <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code>, <code class="docutils literal notranslate"><span class="pre">ModuleResult</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">SubmoduleRequest</span></code> correspond to three major items passed into/from modules.
@@ -172,7 +176,7 @@ is there a maximum/minimum for the value, what are the allowed strings). The
 module developer presumably is not trying to return invalid results). The
 <code class="docutils literal notranslate"><span class="pre">SubmoduleRequest</span></code> class is designed to hold a callback hook, and the callback
 once it is set.</p>
-<div class="section" id="summary">
+<section id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Work with arbitrary types.</p>
@@ -207,9 +211,9 @@ enough information for another component to generate the documentation.</p></li>
 </ul>
 </li>
 </ol>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

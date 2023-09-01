@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Architecture of PluginPlay &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -96,17 +98,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="architecture-of-pluginplay">
+  <section id="architecture-of-pluginplay">
 <span id="pp-architecture"></span><h1>Architecture of PluginPlay<a class="headerlink" href="#architecture-of-pluginplay" title="Permalink to this heading"></a></h1>
 <p>This page describes the overarching architecture of PluginPlay and focuses
 on how this architecture addresses the considerations raised in the
 <a class="reference internal" href="statement_of_need.html#pp-statement-of-need"><span class="std std-ref">PluginPlay Statement of Need</span></a> section.</p>
-<div class="figure align-center" id="id1">
+<figure class="align-center" id="id1">
 <span id="fig-pp-arch-full"></span><img alt="../_images/architecture.png" src="../_images/architecture.png" />
-<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Architecture of PluginPlay. The left side shows the contents of PluginPlay
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Architecture of PluginPlay. The left side shows the contents of PluginPlay
 (including its major dependency). The right shows how PluginPlay is fed
 contents, <em>i.e.</em>, by ingesting plugins containing modules.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+</figcaption>
+</figure>
 <p>Fig. <a class="reference internal" href="#fig-pp-arch-full"><span class="std std-ref">Architecture of PluginPlay. The left side shows the contents of PluginPlay
 (including its major dependency). The right shows how PluginPlay is fed
 contents, i.e., by ingesting plugins containing modules.</span></a> shows the conceptual architecture of PluginPlay.
@@ -133,7 +137,7 @@ contain any scientific functionality; scientific functionality must be supplied
 by plugins (and the modules in them). If it helps, you can think of PluginPlay
 as a meta-package meant to facilitate working with other packages.</p>
 <p>The following subsections summarize the PluginPlay components in more detail.</p>
-<div class="section" id="parallelzone">
+<section id="parallelzone">
 <h2>ParallelZone<a class="headerlink" href="#parallelzone" title="Permalink to this heading"></a></h2>
 <p>ParallelZone is a runtime system, <em>i.e.</em>, a library meant to provide a software
 abstraction between the hardware/operating system and a program. In particular,
@@ -150,8 +154,8 @@ schedule modules, record progress, and much more.</p>
 in the hope that it will prove useful for other libraries/frameworks besides
 PluginPlay. More details pertaining to the design of ParallelZone can be found
 <a class="reference external" href="https://nwchemex-project.github.io/ParallelZone/developer/design/parallel_zone.html">here</a>.</p>
-</div>
-<div class="section" id="module-manager">
+</section>
+<section id="module-manager">
 <h2>Module Manager<a class="headerlink" href="#module-manager" title="Permalink to this heading"></a></h2>
 <p>Implemented by the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class, the module manager component is
 responsible for most runtime interactions between the user and ParallelZone.
@@ -165,8 +169,8 @@ These interactions include:</p>
 </ul>
 <p>The design of the module manager component is discussed in more detail in the
 <a class="reference internal" href="../developer/design/module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> section.</p>
-</div>
-<div class="section" id="cache">
+</section>
+<section id="cache">
 <h2>Cache<a class="headerlink" href="#cache" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -190,8 +194,8 @@ rerun the program, and allow control to reach parity with the previous run
 <p>More design details pertaining to <a class="reference internal" href="terminology.html#memoization"><span class="std std-ref">Memoization</span></a> can be found in the
 <a class="reference internal" href="../developer/design/memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section and more details about the design of the
 cache can be found in the <a class="reference internal" href="../developer/design/cache.html#cache-design"><span class="std std-ref">Cache Design</span></a> section.</p>
-</div>
-<div class="section" id="call-graph">
+</section>
+<section id="call-graph">
 <h2>Call Graph<a class="headerlink" href="#call-graph" title="Permalink to this heading"></a></h2>
 <p>Most user interactions with PluginPlay pertain to modifying the state of the
 call graph. This includes:</p>
@@ -204,8 +208,8 @@ call graph. This includes:</p>
 hood the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> is interacting with the call graph component of
 PluginPlay. More detailed design documentation can be found in
 <a class="reference internal" href="../developer/design/call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>.</p>
-</div>
-<div class="section" id="summary">
+</section>
+<section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h2>
 <p>This design specifically addresses the considerations raised in the
 <a class="reference internal" href="statement_of_need.html#pp-statement-of-need"><span class="std std-ref">PluginPlay Statement of Need</span></a> section by:</p>
@@ -235,8 +239,8 @@ versions</p></li>
 </ul>
 </li>
 </ol>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

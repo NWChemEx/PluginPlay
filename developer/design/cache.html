@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cache Design &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -101,7 +103,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="cache-design">
+  <section id="cache-design">
 <span id="id1"></span><h1>Cache Design<a class="headerlink" href="#cache-design" title="Permalink to this heading"></a></h1>
 <p>As a consequence of our <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> strategy we have decided to
 implement an associative container, called “the cache”, to address the
@@ -113,7 +115,7 @@ checkpoint/restart (C/R) will also be handled by the cache.</p>
 <p>We use the convention that “cache” or “the cache” refers to the concept and
 that <code class="docutils literal notranslate"><span class="pre">Cache</span></code> refers to the class.</p>
 </div>
-<div class="section" id="cache-considerations">
+<section id="cache-considerations">
 <h2>Cache Considerations<a class="headerlink" href="#cache-considerations" title="Permalink to this heading"></a></h2>
 <p>The considerations for the cache are really the union of the memoization
 considerations not considered in the <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a> section with the
@@ -163,8 +165,8 @@ at being able to add entries.</p></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="cache-implementations">
+</section>
+<section id="cache-implementations">
 <h2>Cache Implementations<a class="headerlink" href="#cache-implementations" title="Permalink to this heading"></a></h2>
 <p>At its heart the cache involves associative arrays and conceptually we may be
 able to use an existing high-performance C/C++ library to implement it. This
@@ -177,7 +179,7 @@ not have experience with any of the libraries so the descriptions may be
 inaccurate. Activity, star, and watcher information was accurate as of March
 2022 and may have changed since then.</p>
 </div>
-<div class="section" id="c-associative-container-libraries">
+<section id="c-associative-container-libraries">
 <h3>C++ Associative Container Libraries<a class="headerlink" href="#c-associative-container-libraries" title="Permalink to this heading"></a></h3>
 <p>First up are the C++ libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
 <ul class="simple">
@@ -228,8 +230,8 @@ inaccurate. Activity, star, and watcher information was accurate as of March
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="c-libraries-for-assoicative-containers">
+</section>
+<section id="c-libraries-for-assoicative-containers">
 <h3>C Libraries for Assoicative Containers<a class="headerlink" href="#c-libraries-for-assoicative-containers" title="Permalink to this heading"></a></h3>
 <p>Next are C libraries on GitHub with the <code class="docutils literal notranslate"><span class="pre">associative-array</span></code> tag:</p>
 <ul class="simple">
@@ -294,8 +296,8 @@ integer values.</p></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="databases">
+</section>
+<section id="databases">
 <h3>Databases<a class="headerlink" href="#databases" title="Permalink to this heading"></a></h3>
 <p>While we’ve focused on associative arrays up to this point, what we’re after
 can also be considered a database. The advantage of moving to databases is that
@@ -303,19 +305,21 @@ we get some real heavy-hitters contributing software. Putting the cart before
 the horse, our current cacheing strategy will rely on databases for a number of
 the considerations. The full design discussion is lengthy and we defer that
 conversation to <a class="reference internal" href="database.html#database-design"><span class="std std-ref">Database Design</span></a>.</p>
-</div>
-</div>
-<div class="section" id="cache-strategy">
+</section>
+</section>
+<section id="cache-strategy">
 <h2>Cache Strategy<a class="headerlink" href="#cache-strategy" title="Permalink to this heading"></a></h2>
 <p>Ultimately a lot of the Cache’s implementation will get punted to an underlying
 class <code class="docutils literal notranslate"><span class="pre">Database</span></code>. The design of that class, and how it addresses the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>
 considerations is beyond our current scope, but can be found
 <a class="reference internal" href="database.html#database-design"><span class="std std-ref">here</span></a>. This discussion focuses on the design of the API
 wrapping the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class.</p>
-<div class="figure align-default" id="id2">
+<figure class="align-default" id="id2">
 <span id="fig-cache-design"></span><img alt="../../_images/cache_design.png" src="../../_images/cache_design.png" />
-<p class="caption"><span class="caption-number">Fig. 10 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 10</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance can have at most one <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance. This
 ensures there’s a single source of truth for the program. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> will be
@@ -363,7 +367,7 @@ considered. If no untagged enteries are found control goes into the module.
 Inside the module, the user checks the <code class="docutils literal notranslate"><span class="pre">UserCache</span></code> instance (which in turn
 only considers tagged entries) and the module is able to restart using the last
 intermediate.</p>
-<div class="section" id="cache-considerations-addressed">
+<section id="cache-considerations-addressed">
 <h3>Cache Considerations Addressed<a class="headerlink" href="#cache-considerations-addressed" title="Permalink to this heading"></a></h3>
 <p>With respect to the cache considerations this strategy addresses the following
 considerations:</p>
@@ -436,9 +440,9 @@ treating it separately</p></li>
 </ul>
 </li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

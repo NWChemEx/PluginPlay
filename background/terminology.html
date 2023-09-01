@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terminology and Abbreviations &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -111,68 +113,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="terminology-and-abbreviations">
+  <section id="terminology-and-abbreviations">
 <span id="id1"></span><h1>Terminology and Abbreviations<a class="headerlink" href="#terminology-and-abbreviations" title="Permalink to this heading"></a></h1>
 <p>The purpose of this page is to define abbreviations and terminology used
 throughout the PluginPlay documentation. Terms and abbreviations are listed in
 alphabetic order. Other pages are encouraged to link to the terms and
 abbreviations.</p>
-<div class="section" id="terminology">
+<section id="terminology">
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this heading"></a></h2>
-<div class="section" id="bound-input">
+<section id="bound-input">
 <span id="id2"></span><h3>Bound Input<a class="headerlink" href="#bound-input" title="Permalink to this heading"></a></h3>
 <p>For a particular <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>, <code class="docutils literal notranslate"><span class="pre">M</span></code>, an input <code class="docutils literal notranslate"><span class="pre">k</span></code> is said to be
 bound if the <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> instance returned by <code class="docutils literal notranslate"><span class="pre">M.inputs().at(&quot;k&quot;)</span></code> has
 a value. When a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is called as a particular <a class="reference internal" href="#property-type"><span class="std std-ref">Property Type</span></a>,
 all inputs not appearing in the definition of the <a class="reference internal" href="#property-type"><span class="std std-ref">Property Type</span></a> must be
 bound.</p>
-</div>
-<div class="section" id="bound-submodule">
+</section>
+<section id="bound-submodule">
 <span id="id3"></span><h3>Bound Submodule<a class="headerlink" href="#bound-submodule" title="Permalink to this heading"></a></h3>
 <p>Same as a <a class="reference internal" href="#bound-input"><span class="std std-ref">Bound Input</span></a> except that it refers to one of the
 submodules that a module will call instead of one of the input options.</p>
-</div>
-<div class="section" id="field">
+</section>
+<section id="field">
 <span id="id4"></span><h3>Field<a class="headerlink" href="#field" title="Permalink to this heading"></a></h3>
 <p>A term for generically referring to the arguments to/from a function, <em>i.e.</em>,
 both inputs and results are fields.</p>
-</div>
-<div class="section" id="locked">
+</section>
+<section id="locked">
 <span id="id5"></span><h3>Locked<a class="headerlink" href="#locked" title="Permalink to this heading"></a></h3>
 <p>A <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is said to be locked if the end-user accessible state can no
 longer be changed. This occurs when a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is run and prevents
 concurrent access from invalidating <a class="reference internal" href="#memoization"><span class="std std-ref">Memoization</span></a>.</p>
-</div>
-<div class="section" id="memoization">
+</section>
+<section id="memoization">
 <span id="id6"></span><h3>Memoization<a class="headerlink" href="#memoization" title="Permalink to this heading"></a></h3>
 <p>A technique where repeated calls to an expensive function, with
 the same input, are avoided by saving the input to the function, and the
 result of calling the function.</p>
-</div>
-<div class="section" id="module">
+</section>
+<section id="module">
 <span id="id7"></span><h3>Module<a class="headerlink" href="#module" title="Permalink to this heading"></a></h3>
 <p>Self-contained pieces of code. Modules wrap developer provided code
 in a common <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> that can be used by the rest of PluginPlay.</p>
-</div>
-<div class="section" id="opaque">
+</section>
+<section id="opaque">
 <span id="id8"></span><h3>Opaque<a class="headerlink" href="#opaque" title="Permalink to this heading"></a></h3>
 <p>The opposite of <a class="reference internal" href="#transparent"><span class="std std-ref">Transparent</span></a>. An option is “opaque” if changing its
 value changes the result of a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>.</p>
-</div>
-<div class="section" id="plugin">
+</section>
+<section id="plugin">
 <span id="id9"></span><h3>Plugin<a class="headerlink" href="#plugin" title="Permalink to this heading"></a></h3>
 <p>These are groups of <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> that are distributed together. In C++ plugins
 will be libraries, whereas in Python they will be Python packages.</p>
-</div>
-<div class="section" id="property-type">
+</section>
+<section id="property-type">
 <span id="id10"></span><h3>Property Type<a class="headerlink" href="#property-type" title="Permalink to this heading"></a></h3>
 <p>A property type is a domain-specific quantity of interest. For
 example if your code computes geometric properties of shapes then you may
 have property types for area, volume, and perimeter. Basically these are the
 quantities that users of your code will want to compute and they define the
 <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> for calling a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> which can compute the namesake property.</p>
-</div>
-<div class="section" id="strong-type">
+</section>
+<section id="strong-type">
 <span id="id11"></span><h3>Strong Type<a class="headerlink" href="#strong-type" title="Permalink to this heading"></a></h3>
 <p>In C++ a strong type <code class="docutils literal notranslate"><span class="pre">U</span></code> is a class which wraps an object of type <code class="docutils literal notranslate"><span class="pre">T</span></code> so
 that it has a different type than other objects of type <code class="docutils literal notranslate"><span class="pre">T</span></code>.  This is mainly
@@ -194,15 +196,15 @@ way for the compiler to know you messed up. If we instead do:</p>
 because they now formally have different types. It should be noted that most
 modern compilers can optimize the additional indirection out so the use of
 strong types should have little to no performance overhead.</p>
-</div>
-<div class="section" id="submodule">
+</section>
+<section id="submodule">
 <span id="id12"></span><h3>Submodule<a class="headerlink" href="#submodule" title="Permalink to this heading"></a></h3>
 <p>A <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> called from within the body of a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>. In most cases
 the “sub-” prefix is simply to discern the caller from the callee. The notable
 exception is when discussing the <code class="docutils literal notranslate"><span class="pre">Submodule</span></code> class, which defines the
 interface for how the caller will call the callee.</p>
-</div>
-<div class="section" id="transparent">
+</section>
+<section id="transparent">
 <span id="id13"></span><h3>Transparent<a class="headerlink" href="#transparent" title="Permalink to this heading"></a></h3>
 <p>An input to a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is “transparent” if the result of the
 <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> does not depend on the value. Most inputs are <a class="reference internal" href="#opaque"><span class="std std-ref">Opaque</span></a> in
@@ -210,16 +212,16 @@ that their values do change the resulting value. Examples of transparent
 options include debug printing levels and options that affect the speed at
 which an algorithm computes (block sizes, number of threads, <em>etc.</em>), but not
 the accuracy.</p>
-</div>
-</div>
-<div class="section" id="abbreviations">
+</section>
+</section>
+<section id="abbreviations">
 <h2>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this heading"></a></h2>
-<div class="section" id="api">
+<section id="api">
 <span id="id14"></span><h3>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h3>
 <p>Application Programming Interface. The literal functions you call to
 programmatically interact with a software package.</p>
-</div>
-<div class="section" id="pimpl">
+</section>
+<section id="pimpl">
 <span id="id15"></span><h3>PIMPL<a class="headerlink" href="#pimpl" title="Permalink to this heading"></a></h3>
 <p>Pointer to IMPLementation. A common C++ technique used to separate the
 <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> of the class from its implementation. The <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> of the class
@@ -228,9 +230,9 @@ which is a pointer to an “inner” class. The inner class holds the state and
 implementation. Since the outer class holds a pointer to the inner class, it
 suffices to forward declare the type of the inner class, in turn avoid the
 leakage of details needed to power the inner class.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
