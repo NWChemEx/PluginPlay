@@ -185,6 +185,7 @@ if("${BUILD_TESTING}")
     # which live in the py_test_pluginplay library.
     nwx_add_pybind11_module(
         py_test_pluginplay
+        INSTALL OFF
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests"
         INCLUDE_DIRS "${project_inc_dir}"
         DEPENDS ${PROJECT_NAME}
@@ -194,13 +195,14 @@ if("${BUILD_TESTING}")
         SUBMODULES parallelzone
     )
     nwx_add_pybind11_module(
-        ${PROJECT_NAME}_examples
+        py_${PROJECT_NAME}_examples
+        INSTALL OFF
         SOURCE_DIR "${python_test_dir}/doc_snippets"
-        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
+        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples 
     )
     nwx_pybind11_tests(
         py_${PROJECT_NAME}_docs "${python_test_dir}/doc_snippets/test_doc_snippets.py"
-        SUBMODULES parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
+        SUBMODULES parallelzone
     )
 endif()
 
