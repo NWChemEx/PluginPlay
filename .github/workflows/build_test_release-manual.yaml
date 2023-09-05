@@ -55,14 +55,7 @@ jobs:
           use_clang: false
           CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
           branch_name: ${{ steps.branch-name.outputs.current_branch }} 
-      - name: Check stable release image
-        id: image_exists
-        shell: /usr/bin/bash {0}
-        run: |
-          docker manifest inspect ghcr.io/nwchemex-project/release_pluginplay:gcc-stable > /dev/null
-          echo "conclusion=$?" >> "$GITHUB_OUTPUT"
       - name: Push stable release image if not exist
-        if: ${{ steps.image_exists.outputs.conclusion != 0 }}
         run: |
           docker pull ghcr.io/nwchemex-project/release_pluginplay:gcc-latest
           docker tag ghcr.io/nwchemex-project/release_pluginplay:gcc-latest ghcr.io/nwchemex-project/release_pluginplay:gcc-stable
@@ -98,14 +91,7 @@ jobs:
           use_clang: true
           CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
           branch_name: ${{ steps.branch-name.outputs.current_branch }}
-      - name: Check stable release image
-        id: image_exists
-        shell: /usr/bin/bash {0}
-        run: |
-          docker manifest inspect ghcr.io/nwchemex-project/release_pluginplay:clang-stable > /dev/null
-          echo "conclusion=$?" >> "$GITHUB_OUTPUT"
       - name: Push stable release image if not exist
-        if: ${{ steps.image_exists.outputs.conclusion != 0 }}
         run: |
           docker pull ghcr.io/nwchemex-project/release_pluginplay:clang-latest
           docker tag ghcr.io/nwchemex-project/release_pluginplay:clang-latest ghcr.io/nwchemex-project/release_pluginplay:clang-stable
