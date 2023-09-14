@@ -40,7 +40,7 @@ reSTPrinter& input_quick_ref_desc(reSTPrinter& p) {
 
 std::string input_quick_ref_table(const type::input_map& inputs) {
     // Instantiate the table
-    fort::char_table table;
+    fort::utf8_table table;
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
