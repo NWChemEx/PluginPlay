@@ -1,4 +1,4 @@
-# Copyright 2021 NWChemEx
+# Copyright 2023 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,23 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Tag and Release
+
+name: .github Pull Request Workflow
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
 jobs:
-  tag:
-    uses: NWChemEx-Project/.github/.github/workflows/tag_and_release_master.yaml@master
-    secrets:
-      token: ${{ secrets.TAG_TOKEN }}
-  # release:
-  #   needs: tag
-  #   if: |
-  #     (needs.tag.outputs.bumped_major == 'true') || 
-  #     (needs.tag.outputs.bumped_minor == 'true')
-  #   uses: NWChemEx-Project/.github/.github/workflows/pypi_release_master.yaml@automate-versioning
-  #   secrets:
-  #     token: ${{ secrets.PYPI_API_TOKEN }}
+  Common-Pull-Request:
+    uses: NWChemEx-Project/.github/.github/workflows/common_pull_request.yaml@master
+    with:
+      config_file: '.github/.licenserc.yaml'
+      source_dir: 'include src tests'
+      compilers: '["gcc-11", "clang-11"]'
+      doc_target: 'pluginplay_cxx_api'
+    secrets: inherit
