@@ -15,9 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -104,12 +102,12 @@
            <div itemprop="articleBody">
              
   <section id="advanced-module-implementation">
-<h1>Advanced Module Implementation<a class="headerlink" href="#advanced-module-implementation" title="Permalink to this heading"></a></h1>
+<h1>Advanced Module Implementation<a class="headerlink" href="#advanced-module-implementation" title="Permalink to this headline"></a></h1>
 <p>The previous page covered the basics of writing a module, which is fine for
 many applications. For more complicated algorithms however, there are additional
 considerations. That is what this page focuses on.</p>
 <section id="module-specific-inputs">
-<h2>Module-Specific Inputs<a class="headerlink" href="#module-specific-inputs" title="Permalink to this heading"></a></h2>
+<h2>Module-Specific Inputs<a class="headerlink" href="#module-specific-inputs" title="Permalink to this headline"></a></h2>
 <p>Continuing from our electric field example, the factor of:
 <span class="math notranslate nohighlight">\(||\vec{r} - \vec{r}_i||^2\)</span> means that point charges which are far from
 the evaluation point, <span class="math notranslate nohighlight">\(\vec{r}\)</span>, minimally contributes to the electric
@@ -124,29 +122,29 @@ field module.</p>
 than modifying <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code>. Relative to our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module, the new
 parameter slightly modifies the constructor and the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member functions.
 With the new input the constructor becomes:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span>
-<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_CTOR</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">module_desc</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">prop_type</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Specifically we declare a new double-precision input called “threshold”, with a
 brief description and a default value set to the maximum double value (<em>i.e.</em>,
 no screening will occur by default). The relevant change to the <code class="docutils literal notranslate"><span class="pre">run_</span></code> member
 is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">thresh</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">).</span><span class="n">value</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ScreenedCoulombsLaw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">thresh</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">).</span><span class="n">value</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// This will be the value of the electric field</span>
-<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">E</span><span class="p">{</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">prop_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Here the point to note is that our module is responsible for manually unwrapping
@@ -159,7 +157,7 @@ advance versus parameters that would typically be passed as an input.</p>
 </div>
 </section>
 <section id="satisfying-multiple-property-types">
-<h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this heading"></a></h2>
+<h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this headline"></a></h2>
 <p>Sometimes an algorithm will compute more than one property. Reasons why this may
 occur include performance (the two quantities may share many common
 intermediates) and wrapping code not originally designed for PluginPlay (for
@@ -174,7 +172,7 @@ any module-specific results that the module returns.</p>
 <p>TODO: Add examples</p>
 </section>
 <section id="lambda-modules">
-<h2>Lambda Modules<a class="headerlink" href="#lambda-modules" title="Permalink to this heading"></a></h2>
+<h2>Lambda Modules<a class="headerlink" href="#lambda-modules" title="Permalink to this headline"></a></h2>
 <p>Lambda modules are one-off modules which satisfy a single property type. They
 can be used anywhere the property type is needed. Unlike a normal module which
 requires defining a class and metadata, lambda modules can be written inline in
@@ -184,7 +182,7 @@ lambda function).</p>
 <p>TODO: Add examples</p>
 </section>
 <section id="facade-modules">
-<h2>Facade Modules<a class="headerlink" href="#facade-modules" title="Permalink to this heading"></a></h2>
+<h2>Facade Modules<a class="headerlink" href="#facade-modules" title="Permalink to this headline"></a></h2>
 <p>Facade modules are modules which ignore the arguments they are given and return
 a specified value. They are a simplified version of a lambda module which can
 be created by providing a single value (instead of a function like a lambda

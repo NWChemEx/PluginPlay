@@ -1,0 +1,4 @@
+<map id="pluginplay::cache::database::TypeEraser&lt; KeyType, ValueType &gt;" name="pluginplay::cache::database::TypeEraser&lt; KeyType, ValueType &gt;">
+<area shape="rect" id="node1" title="Converts the keys to type&#45;erased objects before storing." alt="" coords="5,109,185,165"/>
+<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html" title="Implements a Database object." alt="" coords="5,5,185,61"/>
+</map>

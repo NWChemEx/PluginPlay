@@ -15,9 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -105,12 +103,12 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-call-graph-component">
-<span id="call-graph-design"></span><h1>Designing the Call Graph Component<a class="headerlink" href="#designing-the-call-graph-component" title="Permalink to this heading"></a></h1>
+<span id="call-graph-design"></span><h1>Designing the Call Graph Component<a class="headerlink" href="#designing-the-call-graph-component" title="Permalink to this headline"></a></h1>
 <p>Stemming from the discussions in <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and
 <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> PluginPlay needs a call graph component. This
 section describes the overall design of that component.</p>
 <section id="what-is-a-call-graph">
-<h2>What is a call graph?<a class="headerlink" href="#what-is-a-call-graph" title="Permalink to this heading"></a></h2>
+<h2>What is a call graph?<a class="headerlink" href="#what-is-a-call-graph" title="Permalink to this headline"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To make contact with typical computer science terminology the use of static
@@ -137,7 +135,7 @@ individual function calls. The net result is that PluginPlay’s call graph
 component is a coarse-grained representation of the actual call graph.</p>
 </section>
 <section id="call-graph-considerations">
-<h2>Call Graph Considerations<a class="headerlink" href="#call-graph-considerations" title="Permalink to this heading"></a></h2>
+<h2>Call Graph Considerations<a class="headerlink" href="#call-graph-considerations" title="Permalink to this headline"></a></h2>
 <p>Sections <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> passed a
 number of considerations to the call graph component which we list here:</p>
 <ol class="arabic simple">
@@ -171,14 +169,14 @@ compile time. <em>N.B.</em>, Cppyy <span id="id1"><sup><a class="reference inter
 </ol>
 </section>
 <section id="id2">
-<h2>Call Graph Design<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<h2>Call Graph Design<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>PluginPlay was designed before considering Cppyy and this discussion
 assumes that only pure Python bindings are being considered.</p>
 </div>
 <section id="node-design">
-<h3>Node Design<a class="headerlink" href="#node-design" title="Permalink to this heading"></a></h3>
+<h3>Node Design<a class="headerlink" href="#node-design" title="Permalink to this headline"></a></h3>
 <p>As established the nodes of the call graph will be PluginPlay <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>
 objects and will need to be function-like. We propose the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class to
 describe the modules. Users will create <code class="docutils literal notranslate"><span class="pre">Module</span></code> instances which contain
@@ -191,8 +189,8 @@ and return zero or more results. Since the <code class="docutils literal notrans
 C++ we now have to decide on the types of the inputs/results. The consideration
 to remain domain agnostic immediately suggests a templated solution and we
 suggest that <code class="docutils literal notranslate"><span class="pre">run</span></code> looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="n">Results</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="p">...</span><span class="n">Inputs</span><span class="o">&gt;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="n">Results</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">Inputs</span><span class="o">&amp;&amp;</span><span class="p">...);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="n">Results</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="p">...</span><span class="n">Inputs</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="n">Results</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">Inputs</span><span class="o">&amp;&amp;</span><span class="p">...);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>While a perfectly acceptable C++ solution, this <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> can not be exposed
@@ -210,7 +208,7 @@ the <code class="docutils literal notranslate"><span class="pre">AnyField</span>
 templating is only required to create the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> object and to unwrap it,
 the actual class is not templated. In terms of <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> we can write the
 <code class="docutils literal notranslate"><span class="pre">run</span></code> <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Where we switched to <code class="docutils literal notranslate"><span class="pre">std::vector</span></code> to avoid needing to know the number of
@@ -232,18 +230,18 @@ other module because they all have literally the same <a class="reference intern
 type erasure is still type-safe, it just defers the type check to runtime.
 Thus it should be noted that at runtime they are <strong>NOT</strong> all compatible. This
 is because inside the run function you’ll have to do something like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">){</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">AnyField</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputs</span><span class="p">){</span><span class="w"></span>
 <span class="w">    </span><span class="c1">// Our function expects two arguments</span>
-<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">inputs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">inputs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// Argument 0 should be of type T</span>
-<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="n">arg0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="n">arg0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// Argument 1 should be a double</span>
-<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">arg1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">arg1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">unwrap</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// Rest of function...</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>While this will always compile, it will raise runtime errors if the number of
@@ -253,7 +251,7 @@ runtime (and possibly very far into a session) to find out if the call graph
 is wired correctly is undesirable.</p>
 <p>Another problem is say that we have two modules whose <code class="docutils literal notranslate"><span class="pre">run</span></code> APIs essentially
 are:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="kt">double</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="kt">double</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>after we unwrap the <code class="docutils literal notranslate"><span class="pre">AnyField</span></code> objects. These modules are <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>
@@ -275,7 +273,7 @@ a module in the wrong place. To address the runtime type-checking problem
 each property type also includes the types of the inputs and the results.</p>
 </section>
 <section id="data-flow-in-to-out-of-a-module">
-<h3>Data Flow in to/out of a Module<a class="headerlink" href="#data-flow-in-to-out-of-a-module" title="Permalink to this heading"></a></h3>
+<h3>Data Flow in to/out of a Module<a class="headerlink" href="#data-flow-in-to-out-of-a-module" title="Permalink to this headline"></a></h3>
 <p>The previous sections introduced the components of the call graph. With these
 pieces it is now possible to describe how nodes will actually call one another.</p>
 <figure class="align-center" id="id3">
@@ -327,7 +325,7 @@ scientific simulations.</p></li>
 </ol>
 </section>
 <section id="assembling-the-call-graph">
-<h3>Assembling the Call Graph<a class="headerlink" href="#assembling-the-call-graph" title="Permalink to this heading"></a></h3>
+<h3>Assembling the Call Graph<a class="headerlink" href="#assembling-the-call-graph" title="Permalink to this headline"></a></h3>
 <p>With a design in place to wrap algorithms in modules, and a design for how
 to call the modules, the last piece of the call graph component is literally
 assembling the call graph. As a first pass we have adopted a simple solution
@@ -360,7 +358,7 @@ Once the callbacks are determined, the module is linked to them and the process
 is repeated recursively inside each callback module.</p>
 </section>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
 <p>The current design addresses the above considerations by:</p>
 <ol class="arabic simple">
 <li><p>Inspect and modify the call graph</p>
@@ -437,7 +435,7 @@ type,</p></li>
 </section>
 </section>
 <section id="additional-notes">
-<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this heading"></a></h2>
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
 <li><p>For simplicity we assumed that each module object stores a list of the
 modules it will call, and PluginPlay manipulates this list. We could

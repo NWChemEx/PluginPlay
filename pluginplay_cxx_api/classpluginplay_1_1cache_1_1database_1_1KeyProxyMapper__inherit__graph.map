@@ -1,0 +1,4 @@
+<map id="pluginplay::cache::database::KeyProxyMapper&lt; KeyType, ValueType &gt;" name="pluginplay::cache::database::KeyProxyMapper&lt; KeyType, ValueType &gt;">
+<area shape="rect" id="node1" title="Automatically proxies the keys before storing them." alt="" coords="5,109,205,165"/>
+<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html" title="Implements a Database object." alt="" coords="15,5,195,61"/>
+</map>

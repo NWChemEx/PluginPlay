@@ -15,9 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -104,18 +102,18 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-module-component">
-<span id="module-design"></span><h1>Designing the Module Component<a class="headerlink" href="#designing-the-module-component" title="Permalink to this heading"></a></h1>
+<span id="module-design"></span><h1>Designing the Module Component<a class="headerlink" href="#designing-the-module-component" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section motivated the need for a module component
 (although the fact that we’ve written “module” like a thousand times by now
 ought to have suggested it too…).</p>
 <section id="what-is-the-module-component">
-<h2>What is the module component?<a class="headerlink" href="#what-is-the-module-component" title="Permalink to this heading"></a></h2>
+<h2>What is the module component?<a class="headerlink" href="#what-is-the-module-component" title="Permalink to this headline"></a></h2>
 <p>See <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> for PluginPlay’s definition of a module. The module component
 is primarily responsible for interfacing PluginPlay to the algorithm the
 module developer wrote.</p>
 </section>
 <section id="module-component-considerations">
-<h2>Module Component Considerations<a class="headerlink" href="#module-component-considerations" title="Permalink to this heading"></a></h2>
+<h2>Module Component Considerations<a class="headerlink" href="#module-component-considerations" title="Permalink to this headline"></a></h2>
 <p>Based on the discussions in the <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section, the module
 component must:</p>
 <ol class="arabic simple">
@@ -139,7 +137,7 @@ non-deterministic, and/or depend on global input).</p></li>
 </ol>
 </section>
 <section id="module-component-design">
-<h2>Module Component Design<a class="headerlink" href="#module-component-design" title="Permalink to this heading"></a></h2>
+<h2>Module Component Design<a class="headerlink" href="#module-component-design" title="Permalink to this headline"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-module-design"></span><img alt="../../_images/module_design.png" src="../../_images/module_design.png" />
 <figcaption>
@@ -153,7 +151,7 @@ by deriving from <code class="docutils literal notranslate"><span class="pre">Mo
 <p>The design of the module component is shown in Fig <a class="reference internal" href="#fig-module-design"><span class="std std-numref">Fig. 6</span></a>.
 The subsections below go over the major pieces in more detail.</p>
 <section id="module-development">
-<h3>Module Development<a class="headerlink" href="#module-development" title="Permalink to this heading"></a></h3>
+<h3>Module Development<a class="headerlink" href="#module-development" title="Permalink to this headline"></a></h3>
 <p>Following traditional object-oriented practices module developers implement
 modules by deriving from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. In the constructor of their
 module, module developers set the property type(s) their module satisfies,
@@ -177,7 +175,7 @@ class is able to put/get data in/out of the temporary cache using a key-value
 system.</p>
 </section>
 <section id="module-usage">
-<h3>Module Usage<a class="headerlink" href="#module-usage" title="Permalink to this heading"></a></h3>
+<h3>Module Usage<a class="headerlink" href="#module-usage" title="Permalink to this headline"></a></h3>
 <figure class="align-center" id="id2">
 <span id="fig-calling-a-module"></span><img alt="../../_images/calling_a_module.png" src="../../_images/calling_a_module.png" />
 <figcaption>
@@ -210,7 +208,7 @@ used as a key to the cache (which is module-base specific). If that key is
 found the result is simply returned, otherwise <code class="docutils literal notranslate"><span class="pre">ModuleBase::run</span></code> is called.</p>
 </section>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
 <p>The above design specifically addresses the stated considerations by:</p>
 <ol class="arabic simple">
 <li><p>Provide a mechanism for a user to interface their algorithm with PluginPlay</p>

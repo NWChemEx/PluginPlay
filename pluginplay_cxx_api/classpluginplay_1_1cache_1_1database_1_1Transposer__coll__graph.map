@@ -1,0 +1,4 @@
+<map id="pluginplay::cache::database::Transposer&lt; KeyType, ValueType &gt;" name="pluginplay::cache::database::Transposer&lt; KeyType, ValueType &gt;">
+<area shape="rect" id="node1" title="Satisfies the API of a DatabaseAPI&lt;KeyType, ValueType&gt;, but really is a DatabaseAPI&lt;ValueType,..." alt="" coords="5,109,185,165"/>
+<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html" title="Implements a Database object." alt="" coords="5,5,185,61"/>
+</map>

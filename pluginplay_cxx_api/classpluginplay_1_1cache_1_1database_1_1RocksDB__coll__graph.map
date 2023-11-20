@@ -1,0 +1,4 @@
+<map id="pluginplay::cache::database::RocksDB&lt; KeyType, ValueType &gt;" name="pluginplay::cache::database::RocksDB&lt; KeyType, ValueType &gt;">
+<area shape="rect" id="node1" title="Wraps RocksDB in PluginPlay&#39;s database API." alt="" coords="5,109,227,165"/>
+<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html" title="Implements a Database object." alt="" coords="26,5,206,61"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="pluginplay::detail_::IsSharedPtr&lt; std::shared_ptr&lt; T &gt; &gt;" name="pluginplay::detail_::IsSharedPtr&lt; std::shared_ptr&lt; T &gt; &gt;">
+<area shape="rect" id="node1" title="Specializes IsSharedPtr for when the template parameter is a shared_ptr." alt="" coords="5,80,157,136"/>
+<area shape="rect" id="node2" title=" " alt="" coords="25,5,137,32"/>
+</map>
