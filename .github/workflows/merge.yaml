@@ -1,4 +1,4 @@
-# Copyright 2021 NWChemEx-Project
+# Copyright 2023 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Add Licenses
+
+name: .github Merge Workflow
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
 jobs:
-  license_files:
-    uses: NWChemEx-Project/.github/.github/workflows/add_licenses_master.yaml@master
+  Common-Merge:
+    uses: NWChemEx-Project/.github/.github/workflows/common_merge.yaml@master
     with:
-      config_file: .github/.licenserc.yaml
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      doc_target: 'pluginplay_cxx_api'
+      generate_module_docs: false
+    secrets: inherit

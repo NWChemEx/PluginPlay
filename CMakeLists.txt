@@ -169,8 +169,8 @@ if("${BUILD_TESTING}")
     cmaize_add_tests(
         test_integration_${PROJECT_NAME}
         SOURCE_DIR "${cxx_test_dir}/integration_tests"
-        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME} ${PROJECT_NAME}_examples
+        INCLUDE_DIRS "${cxx_test_dir}/integration_tests"
+        DEPENDS Catch2::Catch2
     )
     cmaize_add_tests(
         test_${PROJECT_NAME}_docs
