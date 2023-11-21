@@ -27,5 +27,5 @@ runs:
   steps:
     - name: Generate Module Documentation
       run:  |
-        python3 ${{github.action_path}}/generate_module_dox.py ${{inputs.target}}
+        python3 ${{github.action_path}}/generate_module_dox.py ${{inputs.doc_target}}
       shell: bash
