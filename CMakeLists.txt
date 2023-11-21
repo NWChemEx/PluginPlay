@@ -45,21 +45,21 @@ include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_find_or_build_dependency(
-    utilities
-    URL github.com/NWChemEx-Project/utilities
-    VERSION ${NWX_UTILITIES_VERSION}
-    BUILD_TARGET utilities
-    FIND_TARGET nwx::utilities
-    CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
-)
-
-cmaize_find_or_build_dependency(
     libfort
     URL github.com/seleznevae/libfort
     VERSION ${NWX_LIBFORT_VERSION}
     BUILD_TARGET fort
     FIND_TARGET libfort::fort
     CMAKE_ARGS FORT_ENABLE_TESTING=OFF
+)
+
+cmaize_find_or_build_dependency(
+    utilities
+    URL github.com/NWChemEx-Project/utilities
+    VERSION ${NWX_UTILITIES_VERSION}
+    BUILD_TARGET utilities
+    FIND_TARGET nwx::utilities
+    CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
 )
 
 cmaize_find_or_build_dependency(
@@ -121,6 +121,8 @@ cmaize_add_library(
 if("${BUILD_PYBIND11_PYBINDINGS}")
     target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
 endif()
+
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
 
 include(nwx_pybind11)
 nwx_add_pybind11_module(
@@ -205,5 +207,3 @@ if("${BUILD_TESTING}")
         SUBMODULES parallelzone
     )
 endif()
-
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
