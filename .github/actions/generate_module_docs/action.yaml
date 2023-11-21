@@ -11,18 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-ARG PARENT_IMAGE_NAME
+name: Generate Module Docs
 
-FROM ${PARENT_IMAGE_NAME}:latest
+inputs:
+  doc_target:
+    description: "The name of the documentation target."
+    type: string
+    required: false
+    default: ''
 
-ARG CATCH2_VERSION
-
-# Install catch2 ##
-RUN cd /tmp \
-    && git clone -b v${CATCH2_VERSION} https://github.com/catchorg/Catch2.git \
-    && cd Catch2 \
-    && cmake -Bbuild -H. -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/install \
-    && cmake --build build \
-    && cmake --build build --target install \
-    && rm -rf /tmp/Catch2
+runs:
+  using: "composite"
+  steps:
+    - name: Generate Module Documentation
+      run:  |
+        python3 ${{github.action_path}}/generate_module_dox.py ${{inputs.target}}
+      shell: bash
