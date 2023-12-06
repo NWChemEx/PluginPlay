@@ -39,6 +39,7 @@ using py_class_type = pybind11::class_<T...>;
 
 void export_module(py_module_reference m);
 void export_module_base(py_module_reference m);
+void export_module_pair(py_module_reference m);
 void export_module_manager(py_module_reference m);
 void export_submodule_request(py_module_reference m);
 void export_printing(py_module_reference m);

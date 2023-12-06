@@ -19,8 +19,16 @@
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
+#include <pybind11/stl.h>
 
 namespace pluginplay {
+
+void export_module_pair(py_module_reference m) {
+    py_class_type<std::pair<const std::string, std::shared_ptr<Module>>>(m, "ModulePair")
+    .def(pybind11::init<>())
+    .def_readonly("first", &std::pair<const std::string, std::shared_ptr<Module>>::first)
+    .def_readonly("second", &std::pair<const std::string, std::shared_ptr<Module>>::second);
+}
 
 void export_module_manager(py_module_reference m) {
     using module_base_ptr = ModuleManager::module_base_ptr;
@@ -53,10 +61,25 @@ void export_module_manager(py_module_reference m) {
       .def("run_as",
            [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
-           });
+           })
+      .def("__get_item__", static_cast<at_fxn>(&ModuleManager::at))
+      .def(
+        "begin",
+        [](ModuleManager& self) {
+            return pybind11::make_iterator(self.begin(), self.end());
+        },
+        pybind11::keep_alive<0, 1>())
+      .def("end", [](ModuleManager& self) {
+          return pybind11::make_iterator(self.end(), self.end());
+      }, pybind11::keep_alive<0, 1>())
+      .def(
+        "__iter__",
+        [](ModuleManager& self) {
+            return pybind11::make_iterator(self.begin(), self.end());
+        },
+        pybind11::keep_alive<0, 1>());
     //.def("set_runtime", &ModuleManager::set_runtime)
     //.def("get_runtime", &ModuleManager::get_runtime)
-
     m.def("defaulted_mm", []() { return ModuleManager(nullptr); });
 }
 
