@@ -19,7 +19,7 @@ project(pluginplay VERSION "${VERSION}" LANGUAGES CXX)
 include(FetchContent)
 FetchContent_Declare(
     nwx_cmake
-    GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+    GIT_REPOSITORY https://github.com/NWChemEx/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
 set(
@@ -46,7 +46,7 @@ nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_find_or_build_dependency(
     utilities
-    URL github.com/NWChemEx-Project/utilities
+    URL github.com/NWChemEx/utilities
     VERSION ${NWX_UTILITIES_VERSION}
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
@@ -64,7 +64,7 @@ cmaize_find_or_build_dependency(
 
 cmaize_find_or_build_dependency(
     parallelzone
-    URL github.com/NWChemEx-Project/ParallelZone
+    URL github.com/NWChemEx/ParallelZone
     VERSION ${NWX_PARALLELZONE_VERSION}
     BUILD_TARGET parallelzone
     FIND_TARGET nwx::parallelzone
