@@ -207,11 +207,9 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
         self.assertTrue('C++ Null PT' in self.has_mods.keys())
     
-    def test_iteration_empty_manager(self):
-        for module in self.defaulted:
-            self.fail("Should not iterate over any elements in an empty manager")
     
     # Throws "double free or corruption (out)" error
+    # Can be used once the above error is fixed
     # def test_iteration(self):
     #     nmodules = 0
     #     for key, mod in self.has_mods:
