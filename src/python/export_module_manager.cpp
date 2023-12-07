@@ -24,10 +24,14 @@
 namespace pluginplay {
 
 void export_module_pair(py_module_reference m) {
-    py_class_type<std::pair<const std::string, std::shared_ptr<Module>>>(m, "ModulePair")
-    .def(pybind11::init<>())
-    .def_readonly("first", &std::pair<const std::string, std::shared_ptr<Module>>::first)
-    .def_readonly("second", &std::pair<const std::string, std::shared_ptr<Module>>::second);
+    py_class_type<std::pair<const std::string, std::shared_ptr<Module>>>(
+      m, "ModulePair")
+      .def(pybind11::init<>())
+      .def_readonly(
+        "first", &std::pair<const std::string, std::shared_ptr<Module>>::first)
+      .def_readonly(
+        "second",
+        &std::pair<const std::string, std::shared_ptr<Module>>::second);
 }
 
 void export_module_manager(py_module_reference m) {
@@ -62,22 +66,28 @@ void export_module_manager(py_module_reference m) {
            [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
            })
-      .def("__get_item__", static_cast<at_fxn>(&ModuleManager::at))
-      .def(
-        "begin",
-        [](ModuleManager& self) {
-            return pybind11::make_iterator(self.begin(), self.end());
-        },
-        pybind11::keep_alive<0, 1>())
-      .def("end", [](ModuleManager& self) {
-          return pybind11::make_iterator(self.end(), self.end());
-      }, pybind11::keep_alive<0, 1>())
-      .def(
-        "__iter__",
-        [](ModuleManager& self) {
-            return pybind11::make_iterator(self.begin(), self.end());
-        },
-        pybind11::keep_alive<0, 1>());
+      .def("keys", &ModuleManager::keys)
+      .def("__getitem__", [](ModuleManager& self,
+                             const type::key& key) { return self.at(key); });
+      // Python iterator doesn't work. Gives double free or corruption (out) error. 
+      // .def(
+      //   "begin",
+      //   [](ModuleManager& self) {
+      //       return pybind11::make_iterator(self.begin(), self.end());
+      //   },
+      //   pybind11::keep_alive<0, 1>())
+      // .def(
+      //   "end",
+      //   [](ModuleManager& self) {
+      //       return pybind11::make_iterator(self.end(), self.end());
+      //   },
+      //   pybind11::keep_alive<0, 1>())
+      // .def(
+      //   "__iter__",
+      //   [](ModuleManager& self) {
+      //       return pybind11::make_iterator(self.begin(), self.end());
+      //   },
+      //   pybind11::keep_alive<0, 1>());
     //.def("set_runtime", &ModuleManager::set_runtime)
     //.def("get_runtime", &ModuleManager::get_runtime)
     m.def("defaulted_mm", []() { return ModuleManager(nullptr); });
