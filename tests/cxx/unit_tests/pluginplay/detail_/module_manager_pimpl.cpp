@@ -223,3 +223,22 @@ TEST_CASE("ModuleManagerPIMPL : at") {
         }
     }
 }
+
+TEST_CASE("ModuleManagerPIMPL : keys") {
+    ModuleManagerPIMPL pimpl1;
+    SECTION("Empty") {
+        REQUIRE(pimpl1.keys().size() == 0);
+        REQUIRE(pimpl1.keys().empty());
+    }
+    SECTION("With module") {
+        auto ptr1 = std::make_shared<Rectangle>();
+        pimpl1.add_module("rectangle", ptr1);
+        REQUIRE(pimpl1.keys().size() == 1);
+        REQUIRE(pimpl1.keys().at(0) == "rectangle");
+        auto ptr2 = std::make_shared<Prism>();
+        pimpl1.add_module("prism", ptr2);
+        REQUIRE(pimpl1.keys().size() == 2);
+        REQUIRE(pimpl1.keys().at(0) == "prism");
+        REQUIRE(pimpl1.keys().at(1) == "rectangle");
+    }
+}

@@ -231,6 +231,14 @@ public:
      */
     runtime_type& get_runtime() const noexcept;
 
+
+    /** @brief Returns the keys of all the modules in the module manager.
+     * 
+     * @return A vector of keys for all the modules in the module manager.
+     *
+     * @throw None No throw guarantee.
+     */
+    std::vector<type::key> keys() const noexcept;
 private:
     /// Bridges the gap between the set_default and the PIMPL
     void set_default_(const std::type_info& type, type::input_map inps,

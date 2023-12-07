@@ -32,7 +32,7 @@ ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
 ModuleManager::ModuleManager(runtime_ptr runtime) :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime)) {}
-ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept = default;
+ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept            = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;
 
@@ -79,4 +79,7 @@ ModuleManager::runtime_type& ModuleManager::get_runtime() const noexcept {
     return pimpl_->get_runtime();
 };
 
+std::vector<type::key> ModuleManager::keys() const noexcept {
+    return pimpl_->keys();
+}
 } // namespace pluginplay
