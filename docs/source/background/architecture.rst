@@ -33,7 +33,7 @@ on how this architecture addresses the considerations raised in the
 
 Fig. :ref:`fig_pp_arch_full` shows the conceptual architecture of PluginPlay.
 PluginPlay itself is built on top of the runtime system implemented by
-`ParallelZone <https://github.com/NWChemEx-Project/ParallelZone>`__.
+`ParallelZone <https://github.com/NWChemEx/ParallelZone>`__.
 Internally PluginPlay is made up of four components:
 
 1. **Module Manager**. Which is the user-facing :ref:`api` for the PluginPlay
@@ -71,10 +71,10 @@ ParallelZone provides abstractions for:
 PluginPlay uses ParallelZone to make informed cache decisions (*vide infra*),
 schedule modules, record progress, and much more.
 
-The NWChemEx-Project organization develops ParallelZone as a separate project,
+The NWChemEx organization develops ParallelZone as a separate project,
 in the hope that it will prove useful for other libraries/frameworks besides
 PluginPlay. More details pertaining to the design of ParallelZone can be found
-`here <https://nwchemex-project.github.io/ParallelZone/developer/design/parallel_zone.html>`__.
+`here <https://nwchemex.github.io/ParallelZone/developer/design/parallel_zone.html>`__.
 
 **************
 Module Manager
