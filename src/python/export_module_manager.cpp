@@ -23,17 +23,6 @@
 
 namespace pluginplay {
 
-void export_module_pair(py_module_reference m) {
-    py_class_type<std::pair<const std::string, std::shared_ptr<Module>>>(
-      m, "ModulePair")
-      .def(pybind11::init<>())
-      .def_readonly(
-        "first", &std::pair<const std::string, std::shared_ptr<Module>>::first)
-      .def_readonly(
-        "second",
-        &std::pair<const std::string, std::shared_ptr<Module>>::second);
-}
-
 void export_module_manager(py_module_reference m) {
     using module_base_ptr = ModuleManager::module_base_ptr;
     using at_fxn          = Module& (ModuleManager::*)(const type::key&);
