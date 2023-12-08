@@ -41,11 +41,14 @@ public:
     /// Type of a map holding usable modules
     using module_map = utilities::CaseInsensitiveMap<std::shared_ptr<Module>>;
 
-    // The type of the runtime
+    /// The type of the runtime
     using runtime_type = parallelzone::runtime::RuntimeView;
 
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;
+
+    /// Type of module key container
+    using key_container_type = std::vector<type::key>;
 
     ///@{
     /** @name Ctors and assignment operators
@@ -230,6 +233,14 @@ public:
      * guarantee.
      */
     runtime_type& get_runtime() const noexcept;
+
+    /** @brief Returns the keys of all the modules in the module manager.
+     *
+     * @return A vector of keys for all the modules in the module manager.
+     *
+     * @throw std::bad_alloc if an allocation error arises.
+     */
+    key_container_type keys() const;
 
 private:
     /// Bridges the gap between the set_default and the PIMPL

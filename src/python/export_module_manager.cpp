@@ -19,6 +19,7 @@
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
+#include <pybind11/stl.h>
 
 namespace pluginplay {
 
@@ -53,10 +54,11 @@ void export_module_manager(py_module_reference m) {
       .def("run_as",
            [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
-           });
-    //.def("set_runtime", &ModuleManager::set_runtime)
-    //.def("get_runtime", &ModuleManager::get_runtime)
-
+           })
+      .def("keys", &ModuleManager::keys)
+      .def("__getitem__", [](ModuleManager& self, const type::key& key) {
+          return self.at(key);
+      });
     m.def("defaulted_mm", []() { return ModuleManager(nullptr); });
 }
 

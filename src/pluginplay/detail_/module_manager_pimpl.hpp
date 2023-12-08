@@ -221,6 +221,13 @@ struct ModuleManagerPIMPL {
     void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
 
     runtime_type& get_runtime() const { return *m_runtime_.get(); }
+
+    ModuleManager::key_container_type keys() const {
+        ModuleManager::key_container_type keys;
+        keys.reserve(m_modules.size());
+        for(const auto& [k, v] : m_modules) keys.push_back(k);
+        return keys;
+    }
     ///@}
 
     ///@{
