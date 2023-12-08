@@ -59,27 +59,6 @@ void export_module_manager(py_module_reference m) {
       .def("__getitem__", [](ModuleManager& self, const type::key& key) {
           return self.at(key);
       });
-    // Python iterator doesn't work, yet. Gives "double free or corruption
-    // (out)" error. .def(
-    //   "begin",
-    //   [](ModuleManager& self) {
-    //       return pybind11::make_iterator(self.begin(), self.end());
-    //   },
-    //   pybind11::keep_alive<0, 1>())
-    // .def(
-    //   "end",
-    //   [](ModuleManager& self) {
-    //       return pybind11::make_iterator(self.end(), self.end());
-    //   },
-    //   pybind11::keep_alive<0, 1>())
-    // .def(
-    //   "__iter__",
-    //   [](ModuleManager& self) {
-    //       return pybind11::make_iterator(self.begin(), self.end());
-    //   },
-    //   pybind11::keep_alive<0, 1>());
-    //.def("set_runtime", &ModuleManager::set_runtime)
-    //.def("get_runtime", &ModuleManager::get_runtime)
     m.def("defaulted_mm", []() { return ModuleManager(nullptr); });
 }
 

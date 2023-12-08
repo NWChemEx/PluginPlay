@@ -206,16 +206,7 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
         self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
         self.assertTrue('C++ Null PT' in self.has_mods.keys())
-    
-    
-    # Throws "double free or corruption (out)" error
-    # Can be used once the above error is fixed
-    # def test_iteration(self):
-    #     nmodules = 0
-    #     for key, mod in self.has_mods:
-    #         nmodules += 1
-    #         self.assertTrue(type(key), str)
-    #     self.assertEqual(nmodules, self.has_mods.size())
+
 
     def setUp(self):
         self.defaulted = pp.defaulted_mm()
