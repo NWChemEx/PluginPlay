@@ -16,9 +16,9 @@
 
 ![alt text](docs/source/assets/full_logo.png)
 
-[![Actions](https://github.com/NWChemEx-Project/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/PluginPlay)
+[![Actions](https://github.com/NWChemEx/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx/PluginPlay)
 
-[Documentation](https://nwchemex-project.github.io/PluginPlay/)
+[Documentation](https://nwchemex.github.io/PluginPlay/)
 
 TODO: add badge when article has DOI.
 
@@ -27,7 +27,7 @@ high-performance modular scientific software. More specifically, using
 PluginPlay scientific software is written as a series of disconnected modules.
 At runtime the modules are loaded into PluginPlay and then PluginPlay wires the
 modules together to form a call graph. A more detailed overview can be found
-[here](https://nwchemex-project.github.io/PluginPlay/background/overview.html).
+[here](https://nwchemex.github.io/PluginPlay/background/overview.html).
 
 # Features
 
@@ -44,7 +44,7 @@ main features enjoyed by a program built on top of PluginPlay are:
   program consuming the plugins, do not need to be recompiled!
 
 A full feature list can be found
-[here](https://nwchemex-project.github.io/PluginPlay/features.html).
+[here](https://nwchemex.github.io/PluginPlay/features.html).
 
 # Install
 
@@ -52,20 +52,20 @@ PluginPlay ultimately uses CMake for configuring and building. This means that
 installation is usually achieved via a variation on:
 
 ```.sh
-git clone https://github.com/NWChemEx-Project/PluginPlay
+git clone https://github.com/NWChemEx/PluginPlay
 cd PluginPlay
 cmake -H. -Bbuild -D...
 cmake --build build --target install
 ```
 More detailed install instructions can be found
-[here](https://nwchemex-project.github.io/PluginPlay/install.html).
+[here](https://nwchemex.github.io/PluginPlay/install.html).
 
 # Contributing
 
-- [Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
-- [Contributor License Agreement](https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
-- [Developer Documentation](https://nwchemex-project.github.io/PluginPlay/developer/index.html)
-- [Code of Conduct](https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md)
+- [Contributor Guidelines](https://github.com/NWChemEx/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
+- [Contributor License Agreement](https://github.com/NWChemEx/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
+- [Developer Documentation](https://nwchemex.github.io/PluginPlay/developer/index.html)
+- [Code of Conduct](https://github.com/NWChemEx/.github/blob/master/.github/CODE_OF_CONDUCT.md)
 
 # Acknowledgments
 
