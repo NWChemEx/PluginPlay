@@ -95,12 +95,17 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="memdesc:a5890fdaeab7e35865b4f6de88c3e0892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding usable modules. <br /></td></tr>
 <tr class="separator:a5890fdaeab7e35865b4f6de88c3e0892"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c5eed45f0f8c4d939b2f24ff4280704"><td class="memItemLeft" align="right" valign="top"><a id="a1c5eed45f0f8c4d939b2f24ff4280704"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_type</b> = parallelzone::runtime::RuntimeView</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">runtime_type</a> = parallelzone::runtime::RuntimeView</td></tr>
+<tr class="memdesc:a1c5eed45f0f8c4d939b2f24ff4280704"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
 <tr class="separator:a1c5eed45f0f8c4d939b2f24ff4280704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b13e7a0da82f1d5464e6012d9558018"><td class="memItemLeft" align="right" valign="top"><a id="a8b13e7a0da82f1d5464e6012d9558018"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> = std::shared_ptr&lt; runtime_type &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">runtime_type</a> &gt;</td></tr>
 <tr class="memdesc:a8b13e7a0da82f1d5464e6012d9558018"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a runtime. <br /></td></tr>
 <tr class="separator:a8b13e7a0da82f1d5464e6012d9558018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba62f3cefe36f671b36cbd432f4f1243"><td class="memItemLeft" align="right" valign="top"><a id="aba62f3cefe36f671b36cbd432f4f1243"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">key_container_type</a> = std::vector&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt;</td></tr>
+<tr class="memdesc:aba62f3cefe36f671b36cbd432f4f1243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of module key container. <br /></td></tr>
+<tr class="separator:aba62f3cefe36f671b36cbd432f4f1243"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -154,9 +159,12 @@ template&lt;typename ModuleType &gt; </td></tr>
 <tr class="memitem:ab832aaecab563174813c9dfe5be7f7df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ab832aaecab563174813c9dfe5be7f7df">set_runtime</a> (<a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> runtime) noexcept</td></tr>
 <tr class="memdesc:ab832aaecab563174813c9dfe5be7f7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the runtime of the module mananger and its modules.  <a href="classpluginplay_1_1ModuleManager.html#ab832aaecab563174813c9dfe5be7f7df">More...</a><br /></td></tr>
 <tr class="separator:ab832aaecab563174813c9dfe5be7f7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60095a7da6e1e1445699d747ec8f3d68"><td class="memItemLeft" align="right" valign="top">runtime_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a60095a7da6e1e1445699d747ec8f3d68">get_runtime</a> () const noexcept</td></tr>
+<tr class="memitem:a60095a7da6e1e1445699d747ec8f3d68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">runtime_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a60095a7da6e1e1445699d747ec8f3d68">get_runtime</a> () const noexcept</td></tr>
 <tr class="memdesc:a60095a7da6e1e1445699d747ec8f3d68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the runtime of the module manager.  <a href="classpluginplay_1_1ModuleManager.html#a60095a7da6e1e1445699d747ec8f3d68">More...</a><br /></td></tr>
 <tr class="separator:a60095a7da6e1e1445699d747ec8f3d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26f8d8ff840c2d115ab583c797675f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">key_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">keys</a> () const</td></tr>
+<tr class="memdesc:a26f8d8ff840c2d115ab583c797675f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the keys of all the modules in the module manager.  <a href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">More...</a><br /></td></tr>
+<tr class="separator:a26f8d8ff840c2d115ab583c797675f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Ctors and assignment operators</div></td></tr>
 <tr class="memitem:a31bd760a21a6d7a0ef43987f631f8678"><td class="memItemLeft" align="right" valign="top"><a id="a31bd760a21a6d7a0ef43987f631f8678"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManager</b> ()</td></tr>
@@ -509,7 +517,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ModuleManager::runtime_type &amp; pluginplay::ModuleManager::get_runtime </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">ModuleManager::runtime_type</a> &amp; pluginplay::ModuleManager::get_runtime </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -527,6 +535,32 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if there is no runtime. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a26f8d8ff840c2d115ab583c797675f62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26f8d8ff840c2d115ab583c797675f62">&#9670;&nbsp;</a></span>keys()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">ModuleManager::key_container_type</a> pluginplay::ModuleManager::keys </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the keys of all the modules in the module manager. </p>
+<dl class="section return"><dt>Returns</dt><dd>A vector of keys for all the modules in the module manager.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if an allocation error arises. </td></tr>
   </table>
   </dd>
 </dl>

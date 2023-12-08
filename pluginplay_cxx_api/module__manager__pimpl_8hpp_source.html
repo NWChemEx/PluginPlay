@@ -216,34 +216,42 @@ $(function() {
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keywordtype">void</span> set_runtime(<a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> runtime) noexcept { m_runtime_ = runtime; }</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abdd9879610f9ed93ce9ff6883d2f0dc9">runtime_type</a>&amp; get_runtime()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> *m_runtime_.get(); }</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="comment">// These are the Modules in the states provided to us by the developer</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">base_map</a> m_bases;</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="comment">// These are the Modules in the state set by the user</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a55803300f0e51ec05ab06302ee1ab90d">module_map</a> m_modules;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="comment">// These are the results of the modules running in the user&#39;s states</span></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    cache::ModuleManagerCache m_caches;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="comment">// A map of property types</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa2379e2f590fa48050845a92aed64d7f">default_map</a> m_defaults;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="comment">// A map of inputs for property types</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    std::map&lt;std::type_index, type::input_map&gt; m_inputs;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="comment">// Pointer to this modules current runtime</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> m_runtime_;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keywordtype">void</span> assert_unique_key_(<span class="keyword">const</span> <a class="code" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&amp; key)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a156bd4b3be18eb8b5e1487a33c4dab4b">count</a>(key)) <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Key is in use&quot;</span>);</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    }</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;};</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;} <span class="comment">// namespace detail_</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;} <span class="comment">// namespace pluginplay</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <a class="code" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">ModuleManager::key_container_type</a> keys()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <a class="code" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">ModuleManager::key_container_type</a> keys;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        keys.reserve(m_modules.size());</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span>&amp; [k, v] : m_modules) keys.push_back(k);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        <span class="keywordflow">return</span> keys;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="comment">// These are the Modules in the states provided to us by the developer</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">base_map</a> m_bases;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="comment">// These are the Modules in the state set by the user</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a55803300f0e51ec05ab06302ee1ab90d">module_map</a> m_modules;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="comment">// These are the results of the modules running in the user&#39;s states</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    cache::ModuleManagerCache m_caches;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="comment">// A map of property types</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa2379e2f590fa48050845a92aed64d7f">default_map</a> m_defaults;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="comment">// A map of inputs for property types</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    std::map&lt;std::type_index, type::input_map&gt; m_inputs;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="comment">// Pointer to this modules current runtime</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> m_runtime_;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keywordtype">void</span> assert_unique_key_(<span class="keyword">const</span> <a class="code" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&amp; key)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a156bd4b3be18eb8b5e1487a33c4dab4b">count</a>(key)) <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Key is in use&quot;</span>);</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    }</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;};</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;} <span class="comment">// namespace detail_</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;} <span class="comment">// namespace pluginplay</span></div>
 <div class="ttc" id="aclasspluginplay_1_1ModuleManager_html_a709d144fe07f7e1a4cad0357b170bd6d"><div class="ttname"><a href="classpluginplay_1_1ModuleManager.html#a709d144fe07f7e1a4cad0357b170bd6d">pluginplay::ModuleManager::const_module_base_ptr</a></div><div class="ttdeci">std::shared_ptr&lt; const ModuleBase &gt; const_module_base_ptr</div><div class="ttdoc">The type of a pointer to a read-only module.</div><div class="ttdef"><b>Definition:</b> module_manager.hpp:39</div></div>
+<div class="ttc" id="aclasspluginplay_1_1ModuleManager_html_aba62f3cefe36f671b36cbd432f4f1243"><div class="ttname"><a href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">pluginplay::ModuleManager::key_container_type</a></div><div class="ttdeci">std::vector&lt; type::key &gt; key_container_type</div><div class="ttdoc">Type of module key container.</div><div class="ttdef"><b>Definition:</b> module_manager.hpp:51</div></div>
 <div class="ttc" id="aclasspluginplay_1_1ModuleManager_html_ae507121faff2c11b50d3151bff64c873"><div class="ttname"><a href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">pluginplay::ModuleManager::module_base_ptr</a></div><div class="ttdeci">std::shared_ptr&lt; ModuleBase &gt; module_base_ptr</div><div class="ttdoc">The type of a pointer to a read/write module.</div><div class="ttdef"><b>Definition:</b> module_manager.hpp:36</div></div>
 <div class="ttc" id="aclasspluginplay_1_1Module_html"><div class="ttname"><a href="classpluginplay_1_1Module.html">pluginplay::Module</a></div><div class="ttdoc">The public API of all modules.</div><div class="ttdef"><b>Definition:</b> module.hpp:52</div></div>
 <div class="ttc" id="aclasspluginplay_1_1cache_1_1ModuleManagerCache_html_a3c219c22e068659fb9ff661f8dddbba4"><div class="ttname"><a href="classpluginplay_1_1cache_1_1ModuleManagerCache.html#a3c219c22e068659fb9ff661f8dddbba4">pluginplay::cache::ModuleManagerCache::get_or_make_user_cache</a></div><div class="ttdeci">user_cache_pointer get_or_make_user_cache(module_cache_key key)</div><div class="ttdoc">Retrieves the requested user cache.</div><div class="ttdef"><b>Definition:</b> module_manager_cache.cpp:83</div></div>
