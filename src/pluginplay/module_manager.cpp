@@ -79,7 +79,7 @@ ModuleManager::runtime_type& ModuleManager::get_runtime() const noexcept {
     return pimpl_->get_runtime();
 };
 
-std::vector<type::key> ModuleManager::keys() const noexcept {
+ModuleManager::key_container_type ModuleManager::keys() const noexcept {
     return pimpl_->keys();
 }
 } // namespace pluginplay
