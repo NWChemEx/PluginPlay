@@ -240,7 +240,7 @@ public:
      *
      * @throw std::bad_alloc if an allocation error arises.
      */
-    key_container_type keys() const noexcept;
+    key_container_type keys() const;
 
 private:
     /// Bridges the gap between the set_default and the PIMPL
