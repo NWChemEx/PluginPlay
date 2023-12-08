@@ -39,7 +39,7 @@ In many cases PluginPlay can be installed by:
 
 .. code-block:: console
 
-   git clone https://github.com/NWChemEx-Project/PluginPlay
+   git clone https://github.com/NWChemEx/PluginPlay
    cd PluginPlay
    cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=<path/to/toolchain/file> \
                      -DCMAKE_INSTALL_PREFIX=<where/to/install/PluginPlay>
@@ -211,6 +211,6 @@ ParallelZone if MPI is installed and visible to CMake.
 utilities
 ---------
 
-URL: `<https://www.github.com/NWChemEx-Project/utilities>`__
+URL: `<https://www.github.com/NWChemEx/utilities>`__
 
 Utility classes used throughout the NWChemEx stack.
