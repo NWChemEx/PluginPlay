@@ -13,37 +13,26 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-SET(VERSION 1.0.0) #TODO: get from git
-project(pluginplay VERSION "${VERSION}" LANGUAGES CXX)
 
-include(FetchContent)
-FetchContent_Declare(
-    nwx_cmake
-    GIT_REPOSITORY https://github.com/NWChemEx/NWXCMake
-)
-FetchContent_MakeAvailable(nwx_cmake)
-set(
-    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${nwx_cmake_SOURCE_DIR}/cmake"
-    CACHE STRING ""
-    FORCE
-)
+# Downloads pinned verions, and common CMake modules
+include(cmake/get_nwx_cmake.cmake)
+include(nwx_versions) # Get the pinned versions
+
+# Setup this project
+#include(get_version_from_git)
+#get_version_from_git(VERSION ${CMAKE_CURRENT_SOURCE_DIR})
+project(pluginplay VERSION "1.0.0" LANGUAGES CXX)
 
 include(get_cmaize)
-include(nwx_versions)
 
 ### Options ###
-option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBIND11_PYBINDINGS "Use pybind11 to build Python3 bindings?" OFF)
-option(BUILD_CPPYY_PYBINDINGS "Use Cppyy to build Python3 bindings?" OFF)
-option(BUILD_ROCKSDB "Should we build the RocksDB backend?" OFF)
+cmaize_option_list(
+    BUILD_TESTING OFF "Should we build unit tests?"
+    BUILD_PYBIND11_PYBINDINGS OFF "Build Pybind11 Python bindings?"
+    BUILD_ROCKSDB OFF "Enable RocksDB backend of the cache?"
+)
 
-# Work out the project paths
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
-
-include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
-
+### Dependendencies ###
 cmaize_find_or_build_dependency(
     utilities
     URL github.com/NWChemEx/utilities
@@ -78,21 +67,6 @@ set(ROCKSDB_TARGET "")
 if("${BUILD_ROCKSDB}")
     set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
     find_package(RocksDB REQUIRED)
-    # TODO: We need to do a superbuild for RocksDB
-    # cpp_find_or_build_dependency(
-    #     RocksDB
-    #     URL github.com/facebook/rocksdb
-    #     VERSION ${NWX_ROCKSDB_VERSION}
-    #     BUILD_TARGET rocksdb-shared
-    #     FIND_TARGET ${ROCKSDB_TARGET}
-    #     CMAKE_ARGS CMAKE_BUILD_TYPE=Release
-    #                ROCKSDB_BUILD_SHARED=On
-    #                WITH_BENCHMARK_TOOLS=Off
-    #                WITH_GFLAGS=Off
-    #                WITH_TOOLS=OFF
-    #                JNI=OFF
-    #                WITH_TESTS=OFF
-    # )
     target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
     list(APPEND pluginplay_depends ${ROCKSDB_TARGET})
 endif()
@@ -112,12 +86,21 @@ if("${BUILD_PYBIND11_PYBINDINGS}")
     )
 endif()
 
+# Work out full paths to the project's include/source dirs
+set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+
+# Builds C++ API documentation
+include(nwx_cxx_api_docs)
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+
 cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${pluginplay_depends}"
 )
+
 if("${BUILD_PYBIND11_PYBINDINGS}")
     target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
 endif()
@@ -127,13 +110,6 @@ nwx_add_pybind11_module(
     ${PROJECT_NAME}
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
     DEPENDS "${PROJECT_NAME}"
-)
-
-include(nwx_python_mods)
-cppyy_make_python_package(
-    PACKAGE pluginplay
-    NAMESPACES pluginplay
-    DEPPACKAGES parallelzone
 )
 
 if("${BUILD_TESTING}")
@@ -155,11 +131,7 @@ if("${BUILD_TESTING}")
         INCLUDE_DIRS ${examples_src_dir}
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
-    cppyy_make_python_package(
-        PACKAGE ${PROJECT_NAME}_examples
-        NAMESPACES pluginplay_examples
-        DEPPACKAGES pluginplay
-    )
+
     cmaize_add_tests(
         test_unit_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
@@ -198,7 +170,7 @@ if("${BUILD_TESTING}")
         py_${PROJECT_NAME}_examples
         INSTALL OFF
         SOURCE_DIR "${python_test_dir}/doc_snippets"
-        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples 
+        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
     nwx_pybind11_tests(
         py_${PROJECT_NAME}_docs "${python_test_dir}/doc_snippets/test_doc_snippets.py"
