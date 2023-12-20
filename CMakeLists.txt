@@ -14,14 +14,14 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-# Downloads pinned verions, and common CMake modules
-include(cmake/get_nwx_cmake.cmake)
-include(nwx_versions) # Get the pinned versions
-
 # Setup this project
 #include(get_version_from_git)
 #get_version_from_git(VERSION ${CMAKE_CURRENT_SOURCE_DIR})
 project(pluginplay VERSION "1.0.0" LANGUAGES CXX)
+
+# Downloads pinned verions, and common CMake modules
+include(cmake/get_nwx_cmake.cmake)
+include(nwx_versions) # Get the pinned versions
 
 include(get_cmaize)
 
@@ -114,10 +114,10 @@ nwx_add_pybind11_module(
 
 if("${BUILD_TESTING}")
     set(cxx_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
     set(tests_src_dir "${cxx_test_dir}/unit_tests/${PROJECT_NAME}")
     set(examples_src_dir "${cxx_test_dir}/doc_snippets")
 
+    ### C++ Testing ###
     cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -125,6 +125,7 @@ if("${BUILD_TESTING}")
         FIND_TARGET Catch2::Catch2
         VERSION ${NWX_CATCH2_VERSION}
     )
+
     cmaize_add_library(
         ${PROJECT_NAME}_examples
         SOURCE_DIR ${examples_src_dir}
@@ -151,6 +152,13 @@ if("${BUILD_TESTING}")
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
+    ### Python Tests ###
+    set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+    cmaize_find_or_build_dependency(
+        tox
+        PACKAGE_MANAGER pip
+    )
+
     # In the python tests we will pass Python into PluginPlay, we will then
     # need to know that C++ can handle those Python types. To this end we
     # create a series of Python bindings for unit testing this functionality
@@ -158,12 +166,12 @@ if("${BUILD_TESTING}")
     nwx_add_pybind11_module(
         py_test_pluginplay
         INSTALL OFF
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests"
+        SOURCE_DIR "${python_test_dir}/unit_tests"
         INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS ${PROJECT_NAME}
+        DEPENDS ${PROJECT_NAME} tox
     )
-    nwx_pybind11_tests(
-        py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
+    nwx_tox_test(
+        py_pluginplay ${python_test_dir}/unit_tests
         SUBMODULES parallelzone
     )
     nwx_add_pybind11_module(
