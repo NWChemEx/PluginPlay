@@ -13,14 +13,12 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-
-# Setup this project
-#include(get_version_from_git)
-#get_version_from_git(VERSION ${CMAKE_CURRENT_SOURCE_DIR})
-project(pluginplay VERSION "1.0.0" LANGUAGES CXX)
-
 # Downloads pinned verions, and common CMake modules
 include(cmake/get_nwx_cmake.cmake)
+include(get_version_from_git)
+get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
+project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
+
 include(nwx_versions) # Get the pinned versions
 
 include(get_cmaize)
@@ -60,17 +58,24 @@ cmaize_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
-find_package(Boost REQUIRED)
+cmaize_find_dependency(
+    boost_container
+    URL github.com/boostorg/container
+    FIND_TARGET Boost::container
+)
 
-set(pluginplay_depends utilities parallelzone libfort Boost::boost)
-set(ROCKSDB_TARGET "")
-if("${BUILD_ROCKSDB}")
-    set(ROCKSDB_TARGET RocksDB::rocksdb-shared)
-    find_package(RocksDB REQUIRED)
-    target_compile_definitions(${ROCKSDB_TARGET} INTERFACE BUILD_ROCKS_DB)
-    list(APPEND pluginplay_depends ${ROCKSDB_TARGET})
-endif()
+## Optional Dependencies ##
+cmaize_find_optional_dependency(
+    RocksDB
+    BUILD_ROCKSDB
+    URL github.com/facebook/rocksdb
+    FIND_TARGET RocksDB::rocksdb-shared
+)
 
+set(pluginplay_depends utilities parallelzone libfort boost_container RocksDB)
+
+# As of 1.0.0 CMaize does not support multiple build or find targets. This will
+# be fixed in a future feature release. For now we handle the
 if("${BUILD_PYBIND11_PYBINDINGS}")
     cmaize_find_or_build_dependency(
         pybind11
