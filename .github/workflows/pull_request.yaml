@@ -43,7 +43,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Locate boost
         run: |
+          sudo apt-get install -y plocate
           locate boost
+          locate boost_container
       - name: Build and Test
         env:
           CMAIZE_GITHUB_TOKEN: ${{secrets.CMAIZE_GITHUB_TOKEN}}
