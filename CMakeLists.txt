@@ -61,11 +61,14 @@ cmaize_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
 )
 
-cmaize_find_dependency(
-    boost_container
-    URL github.com/boostorg/container
-    FIND_TARGET Boost::container
-)
+# CI doesn't like this
+#cmaize_find_dependency(
+#    boost_container
+#    URL github.com/boostorg/container
+#    FIND_TARGET Boost::container
+#)
+
+find_package(Boost REQUIRED)
 
 ## Optional Dependencies ##
 cmaize_find_optional_dependency(
@@ -75,7 +78,7 @@ cmaize_find_optional_dependency(
     FIND_TARGET RocksDB::rocksdb-shared
 )
 
-set(pluginplay_depends utilities parallelzone libfort boost_container RocksDB)
+set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
 
 # As of 1.0.0 CMaize does not support multiple build or find targets. This will
 # be fixed in a future feature release. For now we handle the
