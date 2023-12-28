@@ -13,14 +13,16 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-# Downloads pinned verions, and common CMake modules
+
+# Downloads common CMake modules used throughout NWChemEx
 include(cmake/get_nwx_cmake.cmake)
+
+#Sets the version to whatever git thinks it is
 include(get_version_from_git)
 get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
 project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
 
-include(nwx_versions) # Get the pinned versions
-
+include(nwx_versions)
 include(get_cmaize)
 
 ### Options ###
@@ -106,6 +108,8 @@ cmaize_add_library(
     DEPENDS "${pluginplay_depends}"
 )
 
+# TODO: Update source to use BUILD_PYBIND11_PYBINDINGS, then goes away when
+# CMaize supports mulitple targets
 if("${BUILD_PYBIND11_PYBINDINGS}")
     target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
 endif()
@@ -186,7 +190,8 @@ if("${BUILD_TESTING}")
         DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
     nwx_pybind11_tests(
-        py_${PROJECT_NAME}_docs "${python_test_dir}/doc_snippets/test_doc_snippets.py"
+        py_${PROJECT_NAME}_docs
+        "${python_test_dir}/doc_snippets/test_doc_snippets.py"
         SUBMODULES parallelzone
     )
 endif()
