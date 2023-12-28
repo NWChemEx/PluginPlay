@@ -38,15 +38,9 @@ jobs:
         password: ${{ secrets.CONTAINER_REPO_TOKEN }}
     strategy:
       matrix:
-        compiler: gcc-11
+        compiler: ["gcc-11"]
     steps:
       - uses: actions/checkout@v4
-      - name: Append Repo Settings to CMake Toolchain
-        if: inputs.repo_toolchain != ''
-        run:  |
-          toolchain=/toolchains/nwx_${{ matrix.compiler }}.cmake
-          echo 'include('${PWD}'/${{ inputs.repo_toolchain }})' >> $toolchain
-        shell: bash
       - name: Locate boost
         run: |
           locate boost_container
