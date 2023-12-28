@@ -61,9 +61,9 @@ cmaize_find_or_build_dependency(
 )
 
 cmaize_find_dependency(
-    boost_container
-    URL github.com/boostorg/container
-    FIND_TARGET Boost::container
+    Boost
+    URL github.com/boostorg/boost
+    FIND_TARGET Boost::boost
 )
 
 ## Optional Dependencies ##
@@ -74,7 +74,7 @@ cmaize_find_optional_dependency(
     FIND_TARGET RocksDB::rocksdb-shared
 )
 
-set(pluginplay_depends utilities parallelzone libfort boost_container RocksDB)
+set(pluginplay_depends utilities parallelzone libfort Boost RocksDB)
 
 # As of 1.0.0 CMaize does not support multiple build or find targets. This will
 # be fixed in a future feature release. For now we handle the
