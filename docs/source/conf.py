@@ -47,7 +47,8 @@ needs_sphinx = '1.3'
 # ones.
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.mathjax', 'sphinx.ext.githubpages',
-    'sphinx.ext.autosummary', 'sphinx_rtd_theme', 'sphinxcontrib.bibtex'
+    'sphinx.ext.autosummary', 'sphinx_rtd_theme', 'sphinxcontrib.bibtex',
+    'sphinx.ext.githubpages', 'sphinx_tabs.tabs'
 ]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 doc_path = os.path.dirname(dir_path)

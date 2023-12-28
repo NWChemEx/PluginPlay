@@ -24,11 +24,11 @@ Basics of Writing a Module
 This page is intended to walk you through the basics of writing a module. Here
 we focus purely on writing the module, not designing it. Because of how
 PluginPlay works designing a module can sometimes be non-trivial; tips for
-designing a module can be found (TODO: add link). This page assumes we are
+designing a module can be found in :ref:`module_designing`. This page assumes we are
 writing a module which computes the electric field, |e_field| of a series of
-point charges as detailed (TODO: add link).
+point charges as detailed in :ref:`module_development`.
 
-Delcaring the Module
+Declaring the Module
 ====================
 
 In PluginPlay modules are implemented by inheriting from the ``ModuleBase``
@@ -52,8 +52,12 @@ The relevant lines are:
 .. note::
 
    Most libraries include more than one module, and given that declaring a
-   module requries a single line, it is not uncommon to declare multiple modules
+   module requires a single line, it is not uncommon to declare multiple modules
    in a single header file.
+
+.. note::
+
+   Declaring a module is not required if the module is written in Python.
 
 Defining the Module
 ===================
@@ -74,9 +78,19 @@ to provide a short description about the algorithm implemented in the module.
 
 For our ``CoulombsLaw`` module a basic constructor looks like:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
-   :language: c++
-   :lines: 23-39
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
+         :language: c++
+         :lines: 36-39
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
+         :language: python
+         :lines: 20-25
 
 One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
@@ -117,9 +131,19 @@ module to aid in defining the module's ``run_`` member function. By convention
 For defining our ``CoulombsLaw::run_`` member the relevant PluginPlay bits of
 code are:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
-   :language: c++
-   :lines: 41-45,65-67
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
+         :language: c++
+         :lines: 41-45,65-67
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
+         :language: python
+         :lines: 27-29,41-42
 
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
@@ -134,9 +158,19 @@ returns a result map with the type-erased results.
 The full definition of the ``run_`` member (including the source code for
 computing the electric field) is:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
-   :language: c++
-   :lines: 41-67
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
+         :language: c++
+         :lines: 41-67
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
+         :language: python
+         :lines: 27-42
 
 Submodules
 ==========

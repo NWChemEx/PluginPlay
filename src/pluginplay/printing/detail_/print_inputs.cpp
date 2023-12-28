@@ -40,7 +40,7 @@ reSTPrinter& input_quick_ref_desc(reSTPrinter& p) {
 
 std::string input_quick_ref_table(const type::input_map& inputs) {
     // Instantiate the table
-    fort::char_table table;
+    fort::utf8_table table;
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
@@ -93,7 +93,7 @@ reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
             p << "- Domain Restrictions :\n\n";
             for(auto& desc : checks) {
                 auto p1 = std::string("  - ") + desc + "\n\n";
-                p << p1;
+                p.print_verbatim(p1);
             }
         }
         p.finish_section();

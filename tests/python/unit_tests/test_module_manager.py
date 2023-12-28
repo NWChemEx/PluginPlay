@@ -196,6 +196,18 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(rv, 1)
 
 
+    def test_get_item(self):
+        module_with_description = self.has_mods['C++ with description']
+        self.assertTrue(module_with_description.has_description())
+        self.assertNotEqual(self.has_mods['C++ no PT'], None)
+
+
+    def test_keys(self):
+        self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
+        self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
+        self.assertTrue('C++ Null PT' in self.has_mods.keys())
+
+
     def setUp(self):
         self.defaulted = pp.defaulted_mm()
         self.has_mods  = test_pp.get_mm()

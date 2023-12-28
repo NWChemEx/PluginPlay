@@ -33,7 +33,7 @@ reSTPrinter& submod_desc(reSTPrinter& p) {
 
 std::string submod_table(const type::submodule_map& submods) {
     // Instantiate the table
-    fort::char_table table;
+    fort::utf8_table table;
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header

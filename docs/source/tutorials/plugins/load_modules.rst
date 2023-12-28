@@ -45,7 +45,7 @@ importantly any libraries you use to implement them.
 .. note::
 
    If your modules use property types defined elsewhere (such as in centralized
-   community resources like NWChemEx-Project/SimDE) and your
+   community resources like NWChemEx/SimDE) and your
    module-specific inputs are standard C++ types (or types found in the
    property types) this is your entire public API!!!
 

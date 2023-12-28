@@ -1,4 +1,5 @@
-# Copyright 2021 NWChemEx-Project
+#
+# Copyright 2023 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,17 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Add Licenses
+import os
+import parallelzone as pz
+import sys
+import unittest
 
-on:
-  pull_request:
-    branches:
-      - master
 
-jobs:
-  license_files:
-    uses: NWChemEx-Project/.github/.github/workflows/add_licenses_master.yaml@master
-    with:
-      config_file: .github/.licenserc.yaml
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+
+if __name__ == '__main__':
+    # Make a RuntimeView and hold it until all tests run so MPI isn't shut
+    # down
+    rv = pz.runtime.RuntimeView()
+
+    my_dir = os.path.dirname(os.path.realpath(__file__))
+    loader = unittest.TestLoader()
+    tests  = loader.discover(my_dir)
+    testrunner = unittest.runner.TextTestRunner()
+    ret = not testrunner.run(tests).wasSuccessful()
+    sys.exit(ret)
