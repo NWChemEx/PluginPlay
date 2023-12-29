@@ -33,7 +33,6 @@ jobs:
   # Build and test C++ libraries.
   # Runs in a container built on the NWX Build Environment image.
   test_library:
-    needs: license_and_format 
     # Only run if no new changes were made above and if compilers isn't empty
     if: |
       needs.license_and_format.outputs.made_changes == 'false' &&
