@@ -21,44 +21,11 @@ on:
       - master
 
 jobs:
-  # Common-Pull-Request:
-  #   uses: NWChemEx/.github/.github/workflows/common_pull_request.yaml@master
-  #   with:
-  #     config_file: '.github/.licenserc.yaml'
-  #     source_dir: 'include src tests'
-  #     compilers: '["gcc-11", "clang-11"]'
-  #     doc_target: 'pluginplay_cxx_api'
-  #   secrets: inherit
-
-  # Build and test C++ libraries.
-  # Runs in a container built on the NWX Build Environment image.
-  test_library:
-    runs-on: ubuntu-latest
-    container: 
-      image: ghcr.io/nwchemex/nwx_buildenv:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.CONTAINER_REPO_TOKEN }}
-    strategy:
-      matrix:
-        compiler: ["gcc-11"]
-    steps:
-      - uses: actions/checkout@v4
-        with: 
-          fetch-depth: 0
-      - name: Build and Test
-        env:
-          CMAIZE_GITHUB_TOKEN: ${{secrets.CMAIZE_GITHUB_TOKEN}}
-        run:  |
-          toolchain=/toolchains/nwx_${{ matrix.compiler }}.cmake
-          echo 'set(CMAIZE_GITHUB_TOKEN '${CMAIZE_GITHUB_TOKEN}')' >> $toolchain
-
-          cmake -Bbuild -H. -GNinja \
-          -DCMAKE_INSTALL_PREFIX=./install \
-          -DCMAKE_TOOLCHAIN_FILE="${toolchain}"
-       
-          cmake --build build --parallel
-        
-          cd build
-          OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 ctest -VV
-        shell: bash
+  Common-Pull-Request:
+    uses: NWChemEx/.github/.github/workflows/common_pull_request.yaml@master
+    with:
+      config_file: '.github/.licenserc.yaml'
+      source_dir: 'include src tests'
+      compilers: '["gcc-11", "clang-11"]'
+      doc_target: 'pluginplay_cxx_api'
+    secrets: inherit
