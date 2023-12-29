@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: 
-          fetch-tags: true 
+          fetch-depth: 0
       - name: Build and Test
         env:
           CMAIZE_GITHUB_TOKEN: ${{secrets.CMAIZE_GITHUB_TOKEN}}
