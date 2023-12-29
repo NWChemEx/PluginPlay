@@ -26,6 +26,14 @@ project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
 include(nwx_versions)
 include(get_cmaize)
 
+# Work out full paths to the project's include/source dirs
+set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+
+# Builds C++ API documentation
+include(nwx_cxx_api_docs)
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+
 ### Options ###
 cmaize_option_list(
     BUILD_TESTING OFF "Should we build unit tests?"
@@ -96,14 +104,6 @@ if("${BUILD_PYBIND11_PYBINDINGS}")
         pybind11_headers pybind11::embed Python::Python
     )
 endif()
-
-# Work out full paths to the project's include/source dirs
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
-
-# Builds C++ API documentation
-include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_add_library(
     ${PROJECT_NAME}
