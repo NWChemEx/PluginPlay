@@ -32,16 +32,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Set ownership
+        run: |
+          # this is to fix GIT not liking owner of the checkout dir
+          chown -R $(id -u):$(id -g) $PWD
       - name: Build and Test
         env:
           CMAIZE_GITHUB_TOKEN: ${{secrets.CMAIZE_GITHUB_TOKEN}}
         run:  |
-          echo 'Check Git Global Config'
-          git config --global --list
-        
-          echo 'Check Git User Config'
-          git config --list
-
           toolchain=/toolchains/nwx_gcc-11.cmake
           echo 'set(CMAIZE_GITHUB_TOKEN '${CMAIZE_GITHUB_TOKEN}')' >> $toolchain
 
