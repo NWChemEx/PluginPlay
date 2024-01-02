@@ -22,7 +22,6 @@ on:
 
 jobs:
   test_library:
-    needs: license_and_format 
     runs-on: ubuntu-latest
     container: 
       image: ghcr.io/nwchemex/nwx_buildenv:latest
