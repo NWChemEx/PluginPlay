@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: ghcr.io/nwchemex/nwx_buildenv:latest
-      options: --user runner
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.CONTAINER_REPO_TOKEN }}
