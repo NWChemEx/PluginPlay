@@ -20,7 +20,6 @@ include(cmake/get_nwx_cmake.cmake)
 #Sets the version to whatever git thinks it is
 include(get_version_from_git)
 get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
-#set(pluginplay_version 1.0.0)
 project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
 
 include(nwx_versions)
