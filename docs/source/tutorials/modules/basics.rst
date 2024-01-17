@@ -201,7 +201,7 @@ Submodules change the class's definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
 property type `ElectricField`. This looks like:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 38-45
 
@@ -211,13 +211,13 @@ distinguish between multiple submodules of the same type. When appropriately
 named, the tag also aids in readability of the code. The ``run_`` function for
 our module looks like:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 47-59
 
 Of note is the line:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 53
 

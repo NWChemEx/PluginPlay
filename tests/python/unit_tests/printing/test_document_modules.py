@@ -33,7 +33,7 @@ class TestDocumentModules(unittest.TestCase):
         try:
             shutil.rmtree(docs_dir_path)
         except OSError as e:
-            print(f"Error: {e}")
+            print(f"Expected Error Raised: {e}")
         
         
         # Create docs directory
