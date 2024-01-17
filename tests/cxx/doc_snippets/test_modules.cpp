@@ -31,7 +31,7 @@ TEST_CASE("Tutorial modules") {
     REQUIRE(mm.count("Coulomb's Law with screening") == 1);
     REQUIRE(mm.count("Single-precision Coulomb's law") == 1);
     REQUIRE(mm.count("Nonexistent module") == 0);
-    
+
     auto force0_mod = mm.at("Classical Force");
     auto force1_mod = mm.at("Coulomb's Law");
     auto force2_mod = mm.at("Single-precision Coulomb's law");
