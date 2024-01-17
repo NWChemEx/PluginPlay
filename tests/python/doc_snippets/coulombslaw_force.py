@@ -13,18 +13,19 @@
 # limitations under the License.
 
 import pluginplay as pp
-from pluginplay_examples import ElectricField, Force, PointCharge, load_modules
+import pluginplay_examples as ppe
 from math import sqrt
+
 
 class CoulombsLaw(pp.ModuleBase):
 
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.description("Electric Field From Coulomb's Law")
-        self.satisfies_property_type(ElectricField())
+        self.satisfies_property_type(ppe.ElectricField())
 
     def run_(self, inputs, submods):
-        pt = ElectricField()
+        pt = ppe.ElectricField()
         [r, charges] = pt.unwrap_inputs(inputs)
         E = [0.0, 0.0, 0.0]
         for charge in charges:
@@ -47,37 +48,17 @@ class ClassicalForce(pp.ModuleBase):
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.description("Classical Force Field")
-        self.satisfies_property_type(Force())
-        self.add_submodule(ElectricField(), "electric field").set_description(
+        self.satisfies_property_type(ppe.Force())
+        self.add_submodule(ppe.ElectricField(), "electric field").set_description(
             "Used to compute the electric field of the point charges")
 
     def run_(self, inputs, submods):
-        pt = Force()
+        pt = ppe.Force()
         [q, m, a, charges] = pt.unwrap_inputs(inputs)
         F = [0.0, 0.0, 0.0]
-        E = submods["electric field"].run_as(ElectricField(), q.m_r, charges)
+        E = submods["electric field"].run_as(ppe.ElectricField(), q.m_r, charges)
         for i in range(3):
             F[i] = m * a[i] + q.m_charge * E[i]
         rv = self.results()
         return pt.wrap_results(rv, F)
 
-
-if __name__ == "__main__":
-    r = [0.0, 0.0, 0.0]
-    p1 = PointCharge(1.0, [2.0, 3.0, 3.0])
-    p2 = PointCharge(0.5, [-1.0, 4.0, 0.0])
-    pvc = [p1, p2]
-    q = PointCharge(0.1, [1.0, 1.0, 1.0])
-    m = 3.0
-    a = [-1.0, -1.0, -1.0]
-
-    mm = pp.ModuleManager()
-    load_modules(mm)
-
-    # There's a bug here that's messing up the property types somehow.
-    # mm.add_module("My Coulomb's Law", CoulombsLaw())
-    mm.add_module("My Force", ClassicalForce())
-    mm.change_submod("My Force", "electric field", "Coulomb's Law")
-
-    # field = mm.at("My Coulomb's Law").run_as(ElectricField(), r, pvc)
-    cforce = mm.at("My Force").run_as(Force(), q, m, a, pvc)
