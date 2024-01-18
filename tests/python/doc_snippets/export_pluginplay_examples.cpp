@@ -21,7 +21,6 @@
 #include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/operators.h>
 
-
 namespace pluginplay_examples {
 
 EXPORT_PLUGIN(pluginplay_examples, m) {
