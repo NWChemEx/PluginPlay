@@ -165,12 +165,12 @@ to provide a short description about the algorithm implemented in the module.</p
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CoulombsLaw</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="p">):</span>
-
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">(</span><span class="s2">&quot;Electric Field From Coulomb&#39;s Law&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">())</span>
+
 </pre></div>
 </div>
 </div></div>
@@ -219,11 +219,12 @@ code are:</p>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
-        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">Point</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
-        <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">()</span>
+        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charges</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pt</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+
 </pre></div>
 </div>
 </div></div>
@@ -268,22 +269,23 @@ computing the electric field) is:</p>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
-        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">Point</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">()</span>
+        <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charges</span><span class="p">:</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_charge</span>
             <span class="n">ri</span> <span class="o">=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_r</span>
             <span class="n">ri2</span> <span class="o">=</span> <span class="n">ri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ri</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
             <span class="n">mag_ri</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">ri2</span><span class="p">)</span>
-            <span class="n">rij</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">rij</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
                 <span class="n">rij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">charge</span><span class="o">.</span><span class="n">m_r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">rij2</span> <span class="o">=</span> <span class="n">rij</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">rij</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">rij</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
                 <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">mag_ri</span> <span class="o">*</span> <span class="n">rij2</span><span class="p">))</span>
         <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">ElectricField</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pt</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+
 </pre></div>
 </div>
 </div></div>

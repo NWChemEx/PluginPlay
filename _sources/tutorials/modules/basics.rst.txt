@@ -90,7 +90,7 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 20-25
+         :lines: 21-26
 
 One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
@@ -143,7 +143,7 @@ code are:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 27-29,41-42
+         :lines: 28-31,43-44
 
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
@@ -170,7 +170,7 @@ computing the electric field) is:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 27-42
+         :lines: 28-44
 
 Submodules
 ==========
@@ -201,7 +201,7 @@ Submodules change the class's definition. In the constructor we now need to
 declare that our module uses a submodule and that the submodule must satisfy the
 property type `ElectricField`. This looks like:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 38-45
 
@@ -211,13 +211,13 @@ distinguish between multiple submodules of the same type. When appropriately
 named, the tag also aids in readability of the code. The ``run_`` function for
 our module looks like:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 47-59
 
 Of note is the line:
 
-.. literalinclude:: ../../../../tests/cxx/doc_snippets/force.cpp
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/classical_force.cpp
    :language: c++
    :lines: 53
 
