@@ -138,25 +138,13 @@ if("${BUILD_TESTING}")
         VERSION ${NWX_CATCH2_VERSION}
     )
 
-    cmaize_add_library(
-        ${PROJECT_NAME}_examples
-        SOURCE_DIR ${examples_src_dir}
-        INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
     cmaize_add_tests(
         test_unit_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME} ${PROJECT_NAME}_examples
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
-    cmaize_add_tests(
-        test_integration_${PROJECT_NAME}
-        SOURCE_DIR "${cxx_test_dir}/integration_tests"
-        INCLUDE_DIRS "${cxx_test_dir}/integration_tests"
-        DEPENDS Catch2::Catch2
-    )
+
     cmaize_add_tests(
         test_${PROJECT_NAME}_docs
         SOURCE_DIR "${cxx_test_dir}/doc_snippets"
@@ -182,20 +170,30 @@ if("${BUILD_TESTING}")
         INCLUDE_DIRS "${project_inc_dir}"
         DEPENDS ${PROJECT_NAME} tox
     )
+
     nwx_tox_test(
         py_pluginplay ${python_test_dir}/unit_tests
         SUBMODULES parallelzone
     )
+
+    cmaize_add_library(
+        ${PROJECT_NAME}_examples
+        SOURCE_DIR ${examples_src_dir}
+        INCLUDE_DIRS ${examples_src_dir}
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    )
+
     nwx_add_pybind11_module(
-        py_${PROJECT_NAME}_examples
+        ${PROJECT_NAME}_examples
         INSTALL OFF
         SOURCE_DIR "${python_test_dir}/doc_snippets"
         DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
     )
+
     nwx_pybind11_tests(
         py_${PROJECT_NAME}_docs
         "${python_test_dir}/doc_snippets/test_doc_snippets.py"
-        SUBMODULES parallelzone
+        SUBMODULES parallelzone pluginplay
     )
 endif()
 

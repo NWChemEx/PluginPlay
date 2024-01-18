@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import pluginplay as pp
-from pluginplay_examples import ElectricField, Force, Point, PointCharge
+import pluginplay_examples as ppe
 from math import sqrt
 
 
@@ -22,57 +22,43 @@ class CoulombsLaw(pp.ModuleBase):
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.description("Electric Field From Coulomb's Law")
-        self.satisfies_property_type(ElectricField)
+        self.satisfies_property_type(ppe.ElectricField())
 
     def run_(self, inputs, submods):
-        [r, charges] = ElectricField.unwrap_inputs(inputs)
-        E = Point([0.0, 0.0, 0.0])
+        pt = ppe.ElectricField()
+        [r, charges] = pt.unwrap_inputs(inputs)
+        E = [0.0, 0.0, 0.0]
         for charge in charges:
             q = charge.m_charge
             ri = charge.m_r
             ri2 = ri[0]**2 + ri[1]**2 + ri[2]**2
             mag_ri = sqrt(ri2)
-            rij = Point(r)
+            rij = [i for i in r]
             for i in range(3):
                 rij[i] -= charge.m_r[i]
             rij2 = rij[0]**2 + rij[1]**2 + rij[2]**2
             for i in range(3):
                 E[i] += (q * ri[i] / (mag_ri * rij2))
         rv = self.results()
-        return ElectricField.wrap_results(rv, E)
+        return pt.wrap_results(rv, E)
 
 
 class ClassicalForce(pp.ModuleBase):
 
     def __init__(self):
-        super().__init__(self)
+        pp.ModuleBase.__init__(self)
         self.description("Classical Force Field")
-        self.satisfies_property_type(Force)
-        self.add_submodule(ElectricField, "electric field").set_description(
+        self.satisfies_property_type(ppe.Force())
+        self.add_submodule(ppe.ElectricField(), "electric field").set_description(
             "Used to compute the electric field of the point charges")
 
     def run_(self, inputs, submods):
-        [q, m, a, charges] = Force.unwrap_inputs(inputs)
-        F = Point([0.0, 0.0, 0.0])
-        E = submods.at("electric field").run_as(ElectricField, q.m_r, charges)
+        pt = ppe.Force()
+        [q, m, a, charges] = pt.unwrap_inputs(inputs)
+        F = [0.0, 0.0, 0.0]
+        E = submods["electric field"].run_as(ppe.ElectricField(), q.m_r, charges)
         for i in range(3):
-            F[i] = m * a[i] + q.m_charge * E[0][i]
+            F[i] = m * a[i] + q.m_charge * E[i]
         rv = self.results()
-        return Force.wrap_results(rv, F)
+        return pt.wrap_results(rv, F)
 
-
-mm = pp.ModuleManager()
-
-mm.add_module("Force", ClassicalForce())
-mm.add_module("Coulomb's Law", CoulombsLaw())
-mm.change_submod("Force", "electric field", "Coulomb's Law")
-
-r = Point([0.0, 0.0, 0.0])
-
-pvc = [PointCharge(1.0, [2.0, 3.0, 3.0]), PointCharge(0.5, [-1.0, 4.0, 0.0])]
-field = mm.at("Coulomb's Law").run_as(ElectricField, r, pvc)
-
-q = PointCharge(0.1, [1.0, 1.0, 1.0])
-m = 3.0
-a = Point([-1.0, -1.0, -1.0])
-cforce = mm.at("Force").run_as(Force, q, m, a, pvc)

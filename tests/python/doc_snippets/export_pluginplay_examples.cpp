@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 
+#include "../../cxx/doc_snippets/electric_field.hpp"
+#include "../../cxx/doc_snippets/force.hpp"
 #include "../../cxx/doc_snippets/load_modules.hpp"
-#include <export_electric_field.hpp>
-#include <pluginplay/plugin/plugin.hpp>
+#include "../../cxx/doc_snippets/point_charge.hpp"
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 
 namespace pluginplay_examples {
 
-EXPORT_PLUGIN(py_pluginplay_examples, m){};
+PYBIND11_MODULE(pluginplay_examples, m) {
+    pybind11::class_<PointCharge>(m, "PointCharge")
+      .def(pybind11::init<>())
+      .def(pybind11::init<double, Point>())
+      .def_readwrite("m_charge", &PointCharge::m_charge)
+      .def_readwrite("m_r", &PointCharge::m_r)
+      .def(pybind11::self == pybind11::self)
+      .def(pybind11::self < pybind11::self);
+
+    m.def("load_modules", &load_modules);
+    EXPORT_PROPERTY_TYPE(ElectricField, m);
+    EXPORT_PROPERTY_TYPE(Force, m);
+}
 
 } // namespace pluginplay_examples
