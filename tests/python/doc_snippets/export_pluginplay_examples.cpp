@@ -18,12 +18,13 @@
 #include "../../cxx/doc_snippets/force.hpp"
 #include "../../cxx/doc_snippets/load_modules.hpp"
 #include "../../cxx/doc_snippets/point_charge.hpp"
+#include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
+
 
 namespace pluginplay_examples {
 
-PYBIND11_MODULE(pluginplay_examples, m) {
+EXPORT_PLUGIN(pluginplay_examples, m) {
     pybind11::class_<PointCharge>(m, "PointCharge")
       .def(pybind11::init<>())
       .def(pybind11::init<double, Point>())
@@ -32,7 +33,6 @@ PYBIND11_MODULE(pluginplay_examples, m) {
       .def(pybind11::self == pybind11::self)
       .def(pybind11::self < pybind11::self);
 
-    m.def("load_modules", &load_modules);
     EXPORT_PROPERTY_TYPE(ElectricField, m);
     EXPORT_PROPERTY_TYPE(Force, m);
 }
