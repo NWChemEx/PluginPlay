@@ -290,6 +290,9 @@ public:
      */
     runtime_type& get_runtime() const;
 
+    // Is this a Python module?
+    bool is_python() const { return m_is_python_; }
+
     /** @brief Compares two ModuleBase instances for equality.
      *
      *  Two ModuleBase instances are equivalent if their algorithm is

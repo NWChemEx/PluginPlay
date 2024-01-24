@@ -28,15 +28,12 @@ class TestNewPythonModules(unittest.TestCase):
         a = [2.0, 0.0, 0.0]
 
         mm = pp.ModuleManager()
-        ppe.load_modules(mm)
 
-        # There's a bug here that's messing up the property types somehow.
-        # The property seems to get "stuck" on the first add_module call
         mm.add_module("My Coulomb's Law", clf.CoulombsLaw())
-        # mm.add_module("My Force", clf.ClassicalForce())
-        # mm.change_submod("My Force", "electric field", "Coulomb's Law")
+        mm.add_module("My Force", clf.ClassicalForce())
+        mm.change_submod("My Force", "electric field", "My Coulomb's Law")
 
         field = mm.at("My Coulomb's Law").run_as(ppe.ElectricField(), r, pvc)
         self.assertTrue(field == [1.5, 0.0, 0.0])
-        # cforce = mm.at("My Force").run_as(ppe.Force(), q, m, a, pvc)
-        # self.assertTrue(cforce == [5.5, 0.0, 0.0])
+        cforce = mm.at("My Force").run_as(ppe.Force(), q, m, a, pvc)
+        self.assertTrue(cforce == [5.5, 0.0, 0.0])
