@@ -61,6 +61,10 @@ struct ModuleManagerPIMPL {
     /// A pointer to a runtime
     using runtime_ptr = std::shared_ptr<runtime_type>;
 
+    /// Type of a map from key to Python implementation
+    // TODO: remove when a more elegant solution is determined
+    using py_base_map = std::map<type::key, const_module_base_ptr>;
+
     ///@}
 
     ModuleManagerPIMPL(runtime_ptr runtime) : m_runtime_(runtime) {}
@@ -121,11 +125,21 @@ struct ModuleManagerPIMPL {
         base->set_cache(internal_cache);
         base->set_runtime(m_runtime_);
         base->set_uuid(uuid);
-        std::type_index type(base->type());
-        if(!m_bases.count(type)) m_bases[type] = base;
         auto module_cache = m_caches.get_or_make_module_cache(key);
-        auto pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
-        auto ptr   = std::make_shared<Module>(std::move(pimpl));
+        std::unique_ptr<ModulePIMPL> pimpl;
+        if(base->is_python()) {
+            // This is a hacky patch to allow multiple python modules to be
+            // added while avoiding the type_index collisions.
+            // TODO: remove when a more elegant solution is determined
+            m_py_bases[key] = base;
+            pimpl =
+              std::make_unique<ModulePIMPL>(m_py_bases[key], module_cache);
+        } else {
+            std::type_index type(base->type());
+            if(!m_bases.count(type)) m_bases[type] = base;
+            pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
+        }
+        auto ptr = std::make_shared<Module>(std::move(pimpl));
         m_modules.emplace(std::move(key), ptr);
     }
 
@@ -197,6 +211,13 @@ struct ModuleManagerPIMPL {
         if(m_modules.size() != rhs.m_modules.size()) return false;
         if(m_defaults.size() != rhs.m_defaults.size()) return false;
 
+        // TODO: Remove with the rest of the python hack
+        if(m_py_bases.size() != rhs.m_py_bases.size()) return false;
+        for(const auto& [k, v] : rhs.m_py_bases) {
+            if(!m_py_bases.count(k)) return false;
+            if(*m_py_bases.at(k) != *v) return false;
+        }
+
         // Skip checking the values b/c implementations are compared by type
         for(const auto& [k, v] : rhs.m_bases) {
             if(!m_bases.count(k)) return false;
@@ -240,6 +261,11 @@ struct ModuleManagerPIMPL {
 
     // These are the Modules in the state set by the user
     module_map m_modules;
+
+    // Part of the hacky patch to make multiple python modules work
+    // TODO: remove when a more elegant solution is determined
+    // These are the Python Modules in their developer state
+    py_base_map m_py_bases;
 
     // These are the results of the modules running in the user's states
     cache::ModuleManagerCache m_caches;
