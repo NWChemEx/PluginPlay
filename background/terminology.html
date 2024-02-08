@@ -178,16 +178,16 @@ quantities that users of your code will want to compute and they define the
 that it has a different type than other objects of type <code class="docutils literal notranslate"><span class="pre">T</span></code>.  This is mainly
 used when arguments to a function have the same type, but different meanings.
 For example, consider:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">draw_box</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">draw_box</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">height</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Accidentally passing the height as the length and the length as the height
 rotates the box by 90 degrees. Since both arguments are <code class="docutils literal notranslate"><span class="pre">float</span></code> there is no
 way for the compiler to know you messed up. If we instead do:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">Length</span><span class="p">{</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">Height</span><span class="p">{</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">Length</span><span class="p">{</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Height</span><span class="p">{</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">draw_box</span><span class="p">(</span><span class="n">Length</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">Height</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">draw_box</span><span class="p">(</span><span class="n">Length</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">Height</span><span class="w"> </span><span class="n">height</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>It becomes much harder for the user to swap the length and height accidentally

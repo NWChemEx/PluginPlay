@@ -108,10 +108,10 @@ and the returned value (multiple returns are possible, but rarely needed).</p>
 boilerplate. For this reason we have provided macros to faciliate the process.
 To declare our <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type the relevant code is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
-<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+<span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Unlike modules, property types are usually defined in the header file (this is
@@ -139,20 +139,20 @@ arguments (and their types) for computing the property and how the property is
 represented in code. Again we have provided macros to take care of the
 boilerplate.</p>
 <p>The definition of the <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> function looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Type of an std::vector filled with PointCharge instances</span>
-<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 
-<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="s">&quot;The point where the electric field will be evaluated.&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="s">&quot;The set of point charges giving rise to the electric field.&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;The point where the electric field will be evaluated.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;The set of point charges giving rise to the electric field.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>As mentioned at the beginning of this chapter we are only concerning ourselves
@@ -174,9 +174,9 @@ or by constant reference.</p>
 <code class="docutils literal notranslate"><span class="pre">pluginplay::delare_input()</span></code> and then chaining to the result two calls to
 <code class="docutils literal notranslate"><span class="pre">add_field</span></code>. <code class="docutils literal notranslate"><span class="pre">add_field</span></code> takes one type parameter (the type of the field)
 and a string which will be used as the name of the field. You can think of:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>as declaring a function <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> with the signature
@@ -202,9 +202,9 @@ is used in the automatically generated documentation.</p>
 <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and follows the same rules except that we use
 <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_result</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_inputs</span></code>. The
 definition is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The electric field at a point is simply a vector and we have been modeling
@@ -257,34 +257,34 @@ shown below:</p>
 <span class="cm"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="cm"> * See the License for the specific language governing permissions and</span>
 <span class="cm"> * limitations under the License.</span>
-<span class="cm"> */</span><span class="w"></span>
+<span class="cm"> */</span>
 
 <span class="cp">#pragma once</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;point_charge.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;point_charge.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
 
-<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
 
-<span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span><span class="w"></span>
+<span class="n">DECLARE_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">);</span>
 
-<span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="n">PROPERTY_TYPE_INPUTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Type of an std::vector filled with PointCharge instances</span>
-<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_input</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Point</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">add_field</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">point_charge_vector</span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">);</span>
 
-<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="s">&quot;The point where the electric field will be evaluated.&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="s">&quot;The set of point charges giving rise to the electric field.&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;The point where the electric field will be evaluated.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;charges&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;The set of point charges giving rise to the electric field.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="n">PROPERTY_TYPE_RESULTS</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pluginplay</span><span class="o">::</span><span class="n">declare_result</span><span class="p">().</span><span class="n">add_field</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field at r&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 
 <span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
 </pre></div>

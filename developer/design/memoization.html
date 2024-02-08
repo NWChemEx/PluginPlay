@@ -298,14 +298,14 @@ memoization process is straightforward since the <code class="docutils literal n
 method already wraps the actual invocation of the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class’s
 <code class="docutils literal notranslate"><span class="pre">run</span></code> method (the latter is what actually implements the module’s algorithm).
 The actual memoization process more or less amounts to the following pseudocode:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_memoizable</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">has_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">get_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_memoizable</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">has_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">get_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
-<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">ModuleBase</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">ModuleBase</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 
-<span class="n">add_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="n">add_memoized_result</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
 
-<span class="k">return</span><span class="w"> </span><span class="n">get_memoized_resutl</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span><span class="w"></span>
+<span class="k">return</span><span class="w"> </span><span class="n">get_memoized_resutl</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>In the first line we rely on the <code class="docutils literal notranslate"><span class="pre">Module::is_memoizable()</span></code> method to determine
