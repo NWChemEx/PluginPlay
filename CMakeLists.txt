@@ -89,15 +89,9 @@ set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
 
 # As of 1.0.0 CMaize does not support multiple build or find targets. This will
 # be fixed in a future feature release. For now we handle the
+include(nwx_pybind11)
 if("${BUILD_PYBIND11_PYBINDINGS}")
-    cmaize_find_or_build_dependency(
-        pybind11
-        URL github.com/pybind/pybind11
-        BUILD_TARGET pybind11_headers
-        FIND_TARGET pybind11::embed
-        CMAKE_ARGS PYBIND11_INSTALL=ON
-                   PYBIND11_FINDPYTHON=ON
-    )
+    nwx_find_pybind11()
     list(
         APPEND pluginplay_depends
         pybind11_headers pybind11::embed Python::Python
@@ -117,7 +111,6 @@ if("${BUILD_PYBIND11_PYBINDINGS}")
     target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
 endif()
 
-include(nwx_pybind11)
 nwx_add_pybind11_module(
     ${PROJECT_NAME}
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
