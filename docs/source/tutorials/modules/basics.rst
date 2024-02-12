@@ -90,7 +90,7 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 21-26
+         :lines: 22-25
 
 One particularly nice feature of PluginPlay is that it can autogenerate
 restructured text documentation for modules by scraping the meta-data and fields
@@ -143,7 +143,7 @@ code are:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 28-31,43-44
+         :lines: 27-30,42-43
 
 The inputs to a module are type-erased. Getting them back in a usable typed form
 can be done automatically via template meta-programming. The details of this
@@ -170,7 +170,7 @@ computing the electric field) is:
 
       .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
          :language: python
-         :lines: 28-44
+         :lines: 27-43
 
 Submodules
 ==========

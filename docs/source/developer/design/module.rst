@@ -112,7 +112,7 @@ Module Usage
 
    How inputs traverse the module component.
 
-Fig. :numref:`fig_calling_a_module` depicts the process of a user interacting,
+:numref:`fig_calling_a_module` depicts the process of a user interacting,
 *i.e.*, calling, the module. First, the user selects the property type to run
 the module as. The property type defines the inputs the user must provide, and
 the user passes the appropriate inputs into the ``Module`` class. Inside the
@@ -129,7 +129,7 @@ from the derived class through the ``ModuleBase``, ``ModulePIMPL``, and
 locks during the aforementioned process to avoid concurrent modifications to
 its state.
 
-While not shown in Fig. :numref:`fig_calling_a_module`, memoization occurs in
+While not shown in :numref:`fig_calling_a_module`, memoization occurs in
 the ``ModulePIMPL`` class (``ModuleBase`` is shared by all instances of the
 same module and, with the exception of the temporary cache, read-only). The
 design of the memoization process is covered in more detail 
