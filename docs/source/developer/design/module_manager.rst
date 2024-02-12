@@ -147,7 +147,7 @@ The current design of the module manager really only directly addresses concern
 two (*i.e.*, managing of :ref:`module` pool) and punts the remaining concerns.
 More specifically:
 
-# Dynamic module management
+#. Dynamic module management
 
   - Operations go through ``ModuleManager`` class
   - Different configurations handled by module pool
