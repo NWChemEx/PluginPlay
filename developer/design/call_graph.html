@@ -286,7 +286,7 @@ the code boundary in type-erased form.</span><a class="headerlink" href="#id3" t
 </figcaption>
 </figure>
 <p>To try and make the design from the last section more intuitive consider
-Fig. <a class="reference internal" href="#fig-data-flow"><span class="std std-numref">Fig. 13</span></a>. The left side shows the process of passing data
+<a class="reference internal" href="#fig-data-flow"><span class="std std-numref">Fig. 13</span></a>. The left side shows the process of passing data
 into a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>. This can be passing data into the first <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> in
 the call graph or from one <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> in the call graph to another. The
 first step is to type-erase the data. This is done by feeding the data through
@@ -329,7 +329,7 @@ scientific simulations.</p></li>
 <p>With a design in place to wrap algorithms in modules, and a design for how
 to call the modules, the last piece of the call graph component is literally
 assembling the call graph. As a first pass we have adopted a simple solution
-depicted in Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>.</p>
+depicted in <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>.</p>
 <figure class="align-center" id="id4">
 <span id="fig-assemble-call-graph"></span><img alt="../../_images/making_callgraph.png" src="../../_images/making_callgraph.png" />
 <figcaption>
@@ -342,13 +342,13 @@ each callback point and gives them to the module at run time.</span><a class="he
 <p>Rather than create a literal call graph object to represent the call graph we
 have taken a linked list approach. When a module developer writes a module they
 register with PluginPlay all of their callback points. In
-Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a> the developer has registered three
+<a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a> the developer has registered three
 callback points. To distinguish callback points within the module, each
 callback point is assigned a unique name (unique within the scope of the
 module). Here these names are <code class="docutils literal notranslate"><span class="pre">&quot;Callback</span> <span class="pre">A&quot;</span></code>, <em>etc.</em>. In addition to the name
 of the callback point, PluginPlay also needs to know what <a class="reference internal" href="../../background/terminology.html#property-type"><span class="std std-ref">Property Type</span></a>
 will be used for the callback. Module developers register the domain-specific
-property type they will use. As noted in Fig. <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>
+property type they will use. As noted in <a class="reference internal" href="#fig-assemble-call-graph"><span class="std std-numref">Fig. 14</span></a>
 the property types need not be different. These steps are written as part of
 developing the module (although they will actually get executed at run time).</p>
 <p>When it comes time to assemble a call graph, PluginPlay will look at the first

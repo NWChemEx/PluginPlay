@@ -29,7 +29,7 @@ piece of code:
 
 Unfortunately, simply having a heap of modules does not equate to having
 research capable software. This is because you still need to "wire" the modules
-together to form a program. Fig. :numref:`fig_pp_wire_modules` illustrate this
+together to form a program. :numref:`fig_pp_wire_modules` illustrate this
 point pictorially.
 
 .. _fig_pp_wire_modules:

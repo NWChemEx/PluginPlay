@@ -182,7 +182,7 @@ system.</p>
 <p><span class="caption-number">Fig. 7 </span><span class="caption-text">How inputs traverse the module component.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
-<p>Fig. <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a> depicts the process of a user interacting,
+<p><a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a> depicts the process of a user interacting,
 <em>i.e.</em>, calling, the module. First, the user selects the property type to run
 the module as. The property type defines the inputs the user must provide, and
 the user passes the appropriate inputs into the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class. Inside the
@@ -198,7 +198,7 @@ from the derived class through the <code class="docutils literal notranslate"><s
 <code class="docutils literal notranslate"><span class="pre">Module</span></code> classes. To aid in memoization/parallelization the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>
 locks during the aforementioned process to avoid concurrent modifications to
 its state.</p>
-<p>While not shown in Fig. <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a>, memoization occurs in
+<p>While not shown in <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a>, memoization occurs in
 the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> class (<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> is shared by all instances of the
 same module and, with the exception of the temporary cache, read-only). The
 design of the memoization process is covered in more detail

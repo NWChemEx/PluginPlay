@@ -220,7 +220,7 @@ pieces it is now possible to describe how nodes will actually call one another.
    the code boundary in type-erased form.
 
 To try and make the design from the last section more intuitive consider
-Fig. :numref:`fig_data_flow`. The left side shows the process of passing data
+:numref:`fig_data_flow`. The left side shows the process of passing data
 into a :ref:`module`. This can be passing data into the first :ref:`module` in
 the call graph or from one :ref:`module` in the call graph to another. The
 first step is to type-erase the data. This is done by feeding the data through
@@ -261,7 +261,7 @@ Assembling the Call Graph
 With a design in place to wrap algorithms in modules, and a design for how
 to call the modules, the last piece of the call graph component is literally
 assembling the call graph. As a first pass we have adopted a simple solution
-depicted in Fig. :numref:`fig_assemble_call_graph`.
+depicted in :numref:`fig_assemble_call_graph`.
 
 
 .. _fig_assemble_call_graph:
@@ -277,13 +277,13 @@ depicted in Fig. :numref:`fig_assemble_call_graph`.
 Rather than create a literal call graph object to represent the call graph we
 have taken a linked list approach. When a module developer writes a module they
 register with PluginPlay all of their callback points. In
-Fig. :numref:`fig_assemble_call_graph` the developer has registered three
+:numref:`fig_assemble_call_graph` the developer has registered three
 callback points. To distinguish callback points within the module, each
 callback point is assigned a unique name (unique within the scope of the
 module). Here these names are ``"Callback A"``, *etc.*. In addition to the name
 of the callback point, PluginPlay also needs to know what :ref:`property_type`
 will be used for the callback. Module developers register the domain-specific
-property type they will use. As noted in Fig. :numref:`fig_assemble_call_graph`
+property type they will use. As noted in :numref:`fig_assemble_call_graph`
 the property types need not be different. These steps are written as part of
 developing the module (although they will actually get executed at run time).
 

@@ -166,7 +166,7 @@ users also need to be able to override those configurations at runtime.</p></li>
 <p><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
-<p>Fig. <a class="reference internal" href="#fig-mm-arch"><span class="std std-numref">Fig. 4</span></a> shows the architecture of the module manager
+<p><a class="reference internal" href="#fig-mm-arch"><span class="std std-numref">Fig. 4</span></a> shows the architecture of the module manager
 component. The user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> is codified by a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class.
 Using the <a class="reference internal" href="../../background/terminology.html#pimpl"><span class="std std-ref">PIMPL</span></a> idiom, the implementation of the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> (and
 PluginPlay itself) is separated from the <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. The current design
@@ -191,17 +191,17 @@ user-facing APIs for doing them.</p>
 </figure>
 <p>The new component here is the “Loaded Module” component, which is an associative
 array of loaded modules used like a <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool. Conceptually the main
-points of this pool are summarized in Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>. Here
+points of this pool are summarized in <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>. Here
 our user has loaded one module under the module key <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> (we’ll
 discuss <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> below). Module keys are used to refer to the modules
 in the module pool. Each module choice has a unique key meant to facilitate
 referring back to a specific module.</p>
 <p>When the user loads <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> is inserted into the module
-pool as is. Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a> depicts <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> as having
+pool as is. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a> depicts <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> as having
 four, members. The values of these four members, define the default state for
 <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code>. If a user does not want to use <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> in its default
 state, they can create a new configuration. This is what <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code>
-represents in Fig. <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> is a
+represents in <a class="reference internal" href="#fig-mm-module-pool"><span class="std std-numref">Fig. 5</span></a>, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">B&quot;</span></code> is a
 different configuration of <code class="docutils literal notranslate"><span class="pre">&quot;Module</span> <span class="pre">A&quot;</span></code> which differs in that the value of
 <code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">C</span></code> is replaced with some new value <code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">E</span></code>. Thus configurations
 are stored as differences. That is to say each configuration contains a link to
@@ -225,7 +225,9 @@ will be.</p>
 <p>The current design of the module manager really only directly addresses concern
 two (<em>i.e.</em>, managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool) and punts the remaining concerns.
 More specifically:</p>
-<p># Dynamic module management</p>
+<ol class="arabic simple">
+<li><p>Dynamic module management</p></li>
+</ol>
 <blockquote>
 <div><ul class="simple">
 <li><p>Operations go through <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> class</p></li>
