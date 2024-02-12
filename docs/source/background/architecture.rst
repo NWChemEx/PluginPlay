@@ -31,7 +31,7 @@ on how this architecture addresses the considerations raised in the
    (including its major dependency). The right shows how PluginPlay is fed
    contents, *i.e.*, by ingesting plugins containing modules.
 
-Fig. :ref:`fig_pp_arch_full` shows the conceptual architecture of PluginPlay.
+:numref:`fig_pp_arch_full` shows the conceptual architecture of PluginPlay.
 PluginPlay itself is built on top of the runtime system implemented by
 `ParallelZone <https://github.com/NWChemEx/ParallelZone>`__.
 Internally PluginPlay is made up of four components:
@@ -46,7 +46,7 @@ Internally PluginPlay is made up of four components:
 #. **Call Graph**. This component contains a runtime representation of the
    program's control flow.
 
-Fig. :ref:`fig_pp_arch_full` also tries to make the point that PluginPlay is
+:numref:`fig_pp_arch_full` also tries to make the point that PluginPlay is
 just a framework, *i.e.*, a piece of software designed to facilitate writing
 other software by serving as a "template" for the program. PluginPlay does not
 contain any scientific functionality; scientific functionality must be supplied

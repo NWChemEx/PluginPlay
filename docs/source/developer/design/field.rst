@@ -76,7 +76,7 @@ Field Component Design
    ModuleResult are responsible for respectively managing the inputs/results
    to/from a module and SubmoduleRequest is used to manage callback hooks.
 
-Fig. :numref:`fig_field_design` shows the architecture of the field component.
+:numref:`fig_field_design` shows the architecture of the field component.
 The three major components, ``ModuleInput``, ``ModuleResult``, and 
 ``SubmoduleRequest`` correspond to three major items passed into/from modules.
 ``ModuleInput``  manages an input to a module (the set of inputs passed to a

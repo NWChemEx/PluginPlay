@@ -79,7 +79,7 @@ Module Manager Architecture
 
    Architecture of the module manager component.
 
-Fig. :numref:`fig_mm_arch` shows the architecture of the module manager
+:numref:`fig_mm_arch` shows the architecture of the module manager
 component. The user-facing :ref:`api` is codified by a ``ModuleManager`` class.
 Using the :ref:`pimpl` idiom, the implementation of the ``ModuleManager`` (and
 PluginPlay itself) is separated from the :ref:`api`. The current design
@@ -108,18 +108,18 @@ Module Pool
 
 The new component here is the "Loaded Module" component, which is an associative
 array of loaded modules used like a :ref:`module` pool. Conceptually the main
-points of this pool are summarized in Fig. :numref:`fig_mm_module_pool`. Here
+points of this pool are summarized in :numref:`fig_mm_module_pool`. Here
 our user has loaded one module under the module key ``"Module A"`` (we'll
 discuss ``"Module B"`` below). Module keys are used to refer to the modules
 in the module pool. Each module choice has a unique key meant to facilitate
 referring back to a specific module.
 
 When the user loads ``"Module A"``, ``"Module A"`` is inserted into the module
-pool as is. Fig. :numref:`fig_mm_module_pool` depicts ``"Module A"`` as having
+pool as is. :numref:`fig_mm_module_pool` depicts ``"Module A"`` as having
 four, members. The values of these four members, define the default state for
 ``"Module A"``. If a user does not want to use ``"Module A"`` in its default
 state, they can create a new configuration. This is what ``"Module B"``
-represents in Fig. :numref:`fig_mm_module_pool`, *i.e.*, ``"Module B"`` is a
+represents in :numref:`fig_mm_module_pool`, *i.e.*, ``"Module B"`` is a
 different configuration of ``"Module A"`` which differs in that the value of
 ``Member C`` is replaced with some new value ``Member E``. Thus configurations
 are stored as differences. That is to say each configuration contains a link to
