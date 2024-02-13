@@ -16,7 +16,9 @@ import pluginplay as pp
 import py_test_pluginplay as test_pp
 import unittest
 
+
 class APythonModule(pp.ModuleBase):
+
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.satisfies_property_type(test_pp.OneInOneOut())
@@ -27,7 +29,9 @@ class APythonModule(pp.ModuleBase):
         rv = self.results()
         return pt.wrap_results(rv, i0)
 
+
 class TestModuleManager(unittest.TestCase):
+
     def test_count(self):
         # Defaulted is always false
         self.assertFalse(self.defaulted.count('not a key'))
@@ -38,12 +42,10 @@ class TestModuleManager(unittest.TestCase):
         # True if we do
         self.assertTrue(self.has_mods.count('C++ no PT'))
 
-
     def test_size(self):
         # Defaulted MMs are empty
         self.assertEqual(self.defaulted.size(), 0)
         self.assertEqual(self.has_mods.size(), self.corr_total)
-
 
     def test_at(self):
         # Throws if there's no implementation
@@ -54,7 +56,6 @@ class TestModuleManager(unittest.TestCase):
 
         # Can actually get a module
         self.assertNotEqual(self.has_mods.at('C++ no PT'), None)
-
 
     def test_copy_module(self):
         # Throws if there's no implementation
@@ -74,7 +75,6 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(has_mods.size(), self.corr_total + 1)
         self.assertTrue(has_mods.count('foo'))
 
-
     def test_erase(self):
         # Is a no-op if defaulted
         bad_key = 'not a key'
@@ -90,14 +90,15 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(self.has_mods.size(), self.corr_total - 1)
         self.assertFalse(self.has_mods.count('C++ no PT'))
 
-
     def test_rename_module(self):
         # Throws if there's not implementation
-        self.assertRaises(Exception, self.defaulted.rename_module, 'foo', 'bar')
+        self.assertRaises(Exception, self.defaulted.rename_module, 'foo',
+                          'bar')
 
         # Throws if from is not a valid key
         has_mods = self.has_mods
-        self.assertRaises(Exception, has_mods.rename_module, 'not a key', 'bar')
+        self.assertRaises(Exception, has_mods.rename_module, 'not a key',
+                          'bar')
 
         # Throws if to key is in use
         from_key = 'C++ no PT'
@@ -109,7 +110,6 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(has_mods.size(), self.corr_total)
         self.assertFalse(has_mods.count(from_key))
         self.assertTrue(has_mods.count('key not in use'))
-
 
     def test_change_input(self):
         # Throws if there's no modules
@@ -132,7 +132,6 @@ class TestModuleManager(unittest.TestCase):
         has_mods_fxn(mod_key, opt_key, 1)
         opt = self.has_mods.at(mod_key).inputs()[opt_key].value()
         self.assertEqual(opt, 1)
-
 
     def test_change_submod(self):
         # Throws if there's no modules
@@ -158,7 +157,6 @@ class TestModuleManager(unittest.TestCase):
         new_submod = self.has_mods.at(mod_key).submods()[submod_key].value()
         self.assertEqual(new_submod, self.has_mods.at(to_key))
 
-
     def test_run_as(self):
         # Throws if there's no modules
         pt = test_pp.OneInOneOut()
@@ -180,7 +178,6 @@ class TestModuleManager(unittest.TestCase):
         rv = fxn2test(pt, mod_key, 1)
         self.assertEqual(rv, 1)
 
-
     def test_pluginplay_309(self):
         ''' This regression test is in response to issue #309.
 
@@ -195,20 +192,17 @@ class TestModuleManager(unittest.TestCase):
         rv = mm.run_as(pt, 'Issue 309', 1)
         self.assertEqual(rv, 1)
 
-
     def test_get_item(self):
         module_with_description = self.has_mods['C++ with description']
         self.assertTrue(module_with_description.has_description())
         self.assertNotEqual(self.has_mods['C++ no PT'], None)
-
 
     def test_keys(self):
         self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
         self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
         self.assertTrue('C++ Null PT' in self.has_mods.keys())
 
-
     def setUp(self):
         self.defaulted = pp.defaulted_mm()
-        self.has_mods  = test_pp.get_mm()
+        self.has_mods = test_pp.get_mm()
         self.corr_total = 10  # This should be the correct number of modules

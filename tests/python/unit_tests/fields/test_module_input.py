@@ -16,13 +16,14 @@ import pluginplay as pp
 import py_test_pluginplay.test_module_input as test_pp
 import unittest
 
+
 class TestModuleInput(unittest.TestCase):
+
     def test_has_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.assertTrue(self.ifloat.has_type())
         self.assertTrue(self.ilist.has_type())
         self.assertTrue(self.ilist2.has_type())
-
 
     def test_has_value(self):
         self.assertFalse(self.defaulted.has_value())
@@ -30,13 +31,11 @@ class TestModuleInput(unittest.TestCase):
         self.assertFalse(self.ilist.has_value())
         self.assertTrue(self.ilist2.has_value())
 
-
     def test_has_description(self):
         self.assertFalse(self.defaulted.has_description())
         self.assertFalse(self.ifloat.has_description())
         self.assertFalse(self.ilist.has_description())
         self.assertFalse(self.ilist2.has_description())
-
 
     def test_is_optional(self):
         self.assertFalse(self.defaulted.is_optional())
@@ -44,20 +43,17 @@ class TestModuleInput(unittest.TestCase):
         self.assertFalse(self.ilist.is_optional())
         self.assertFalse(self.ilist2.is_optional())
 
-
     def test_is_transparent(self):
         self.assertFalse(self.defaulted.is_transparent())
         self.assertFalse(self.ifloat.is_transparent())
         self.assertFalse(self.ilist.is_transparent())
         self.assertFalse(self.ilist2.is_transparent())
 
-
     def test_ready(self):
         self.assertFalse(self.defaulted.ready())
         self.assertFalse(self.ifloat.ready())
         self.assertFalse(self.ilist.ready())
         self.assertTrue(self.ilist2.ready())
-
 
     def test_is_valid(self):
         # No type should throw
@@ -84,7 +80,6 @@ class TestModuleInput(unittest.TestCase):
         # Can't set a list of integers with a string
         self.assertFalse(self.ilist.is_valid("hi"))
 
-
     def test_change(self):
         self.assertRaises(Exception, self.defaulted.change, "hi")
 
@@ -100,7 +95,6 @@ class TestModuleInput(unittest.TestCase):
         x.change(2)
         self.assertTrue(self.ifloat.value(), 2)
 
-
     def test_set_default(self):
         self.assertRaises(Exception, self.defaulted.set_default, "hi")
 
@@ -110,7 +104,6 @@ class TestModuleInput(unittest.TestCase):
         x = self.ilist.set_default([1, 2, 3])
         self.assertTrue(self.ilist.has_value())
         self.assertEqual(self.ilist.value(), [1, 2, 3])
-
 
     def test_set_description(self):
         self.assertFalse(self.defaulted.has_description())
@@ -125,7 +118,6 @@ class TestModuleInput(unittest.TestCase):
         x.set_description("foo bar")
         self.assertEqual(self.defaulted.description(), "foo bar")
 
-
     def test_make_optional(self):
         self.assertFalse(self.defaulted.is_optional())
 
@@ -137,7 +129,6 @@ class TestModuleInput(unittest.TestCase):
         # x is an alias of self.defaulted
         x.make_required()
         self.assertFalse(self.defaulted.is_optional())
-
 
     def test_make_required(self):
         self.defaulted.make_optional()
@@ -152,7 +143,6 @@ class TestModuleInput(unittest.TestCase):
         x.make_optional()
         self.assertTrue(self.defaulted.is_optional())
 
-
     def test_make_opaque(self):
         self.defaulted.make_transparent()
         self.assertTrue(self.defaulted.is_transparent())
@@ -166,7 +156,6 @@ class TestModuleInput(unittest.TestCase):
         x.make_transparent()
         self.assertTrue(self.defaulted.is_transparent())
 
-
     def test_make_transparent(self):
         self.assertFalse(self.defaulted.is_transparent())
 
@@ -179,7 +168,6 @@ class TestModuleInput(unittest.TestCase):
         x.make_opaque()
         self.assertFalse(self.defaulted.is_transparent())
 
-
     def test_value(self):
         self.assertRaises(Exception, self.defaulted.value)
         self.assertRaises(Exception, self.ifloat.value)
@@ -188,17 +176,14 @@ class TestModuleInput(unittest.TestCase):
         # This ensures Python can play with C++ values
         self.assertEqual(self.ilist2.value(), [1, 2, 3])
 
-
     def test_description(self):
         self.assertRaises(Exception, self.defaulted.description)
 
         self.ifloat.set_description("Hello World")
         self.assertEqual(self.ifloat.description(), "Hello World")
 
-
     def test_check_descriptions(self):
         self.assertEqual(self.defaulted.check_descriptions(), set())
-
 
     def test_comparisons(self):
         # Default vs default
@@ -245,14 +230,12 @@ class TestModuleInput(unittest.TestCase):
         self.assertNotEqual(self.defaulted, other_default2)
         self.assertFalse(self.defaulted == other_default2)
 
-
     def test_cxx_can_unwrap_py_objects(self):
         self.ilist.change([1, 2, 3])
         self.assertTrue(test_pp.unwrap_python_list(self.ilist))
 
-
     def setUp(self):
         self.defaulted = pp.ModuleInput()
         self.ifloat = test_pp.get_i_float()
-        self.ilist  = test_pp.get_i_list()
+        self.ilist = test_pp.get_i_list()
         self.ilist2 = test_pp.get_filled_i_list()
