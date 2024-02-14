@@ -16,7 +16,9 @@ import pluginplay as pp
 import py_test_pluginplay as test_pp
 import unittest
 
+
 class APythonModule(pp.ModuleBase):
+
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.satisfies_property_type(test_pp.OneInOneOut())
@@ -26,11 +28,10 @@ class APythonModule(pp.ModuleBase):
         self.add_result("An extra result")
         self.add_submodule(test_pp.OneInOneOut(), "A submodule")
 
-
     def run_(self, inputs, submods):
         pt = test_pp.OneInOneOut()
         i0, = pt.unwrap_inputs(inputs)
-        i1  = inputs["An extra input"].value()
+        i1 = inputs["An extra input"].value()
 
         r0 = submods["A submodule"].run_as(pt, i0 + i1)
 
@@ -41,16 +42,15 @@ class APythonModule(pp.ModuleBase):
 
 
 class TestModuleBase(unittest.TestCase):
+
     def test_results(self):
         self.assertEqual(self.defaulted.results(), {})
         self.assertNotEqual(self.py_mod.results(), {})
-
 
     def test_run_as(self):
         self.mm.change_input(self.mod_key, 'An extra input', 2)
         r = self.mm.run_as(test_pp.OneInOneOut(), self.mod_key, 1)
         self.assertEqual(r, 3)
-
 
     def setUp(self):
         self.defaulted = pp.ModuleBase()

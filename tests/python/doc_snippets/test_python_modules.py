@@ -17,7 +17,9 @@ import pluginplay_examples as ppe
 import coulombslaw_force as clf
 import unittest
 
+
 class TestNewPythonModules(unittest.TestCase):
+
     def test_modules(self):
         p1 = ppe.PointCharge(1.0, [1.0, 0.0, 0.0])
         p2 = ppe.PointCharge(2.0, [2.0, 0.0, 0.0])

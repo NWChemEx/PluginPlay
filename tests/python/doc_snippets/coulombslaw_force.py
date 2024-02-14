@@ -49,16 +49,17 @@ class ClassicalForce(pp.ModuleBase):
         pp.ModuleBase.__init__(self)
         self.description("Classical Force Field")
         self.satisfies_property_type(ppe.Force())
-        self.add_submodule(ppe.ElectricField(), "electric field").set_description(
-            "Used to compute the electric field of the point charges")
+        self.add_submodule(
+            ppe.ElectricField(), "electric field").set_description(
+                "Used to compute the electric field of the point charges")
 
     def run_(self, inputs, submods):
         pt = ppe.Force()
         [q, m, a, charges] = pt.unwrap_inputs(inputs)
         F = [0.0, 0.0, 0.0]
-        E = submods["electric field"].run_as(ppe.ElectricField(), q.m_r, charges)
+        E = submods["electric field"].run_as(ppe.ElectricField(), q.m_r,
+                                             charges)
         for i in range(3):
             F[i] = m * a[i] + q.m_charge * E[i]
         rv = self.results()
         return pt.wrap_results(rv, F)
-

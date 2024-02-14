@@ -40,4 +40,8 @@ If you choose 4, please try browsing the topics on your own then...
    faqs
    bibliography/bibliography
 
-`C++ API <pluginplay_cxx_api/index.html>`_
+.. toctree::
+   :maxdepth: 2
+   :caption: APIs:
+
+   C++ API <https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html>

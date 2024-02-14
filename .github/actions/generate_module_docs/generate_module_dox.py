@@ -1,7 +1,6 @@
 import os
 import sys
 import importlib
-
 """This script will generate the module api documentation for a plugin library.
 
 Usage
@@ -47,4 +46,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An exception caught: {e}")
         sys.exit()
-

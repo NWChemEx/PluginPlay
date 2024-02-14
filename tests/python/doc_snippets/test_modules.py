@@ -18,16 +18,19 @@ import unittest
 import pluginplay as pp
 import pluginplay_examples as ppe
 
+
 class TestTutorialModules(unittest.TestCase):
+
     def test_modules(self):
         rv = pz.runtime.RuntimeView()
         mm = pp.ModuleManager()
         ppe.load_modules(mm)
-        self.assertEqual(mm.size(),4)
-        
-        module_names = ["Coulomb's Law", "Classical Force", 
-                        "Coulomb's Law with screening", 
-                        "Single-precision Coulomb's law"]
+        self.assertEqual(mm.size(), 4)
+
+        module_names = [
+            "Coulomb's Law", "Classical Force", "Coulomb's Law with screening",
+            "Single-precision Coulomb's law"
+        ]
         for name in module_names:
             self.assertTrue(mm.count(name))
 

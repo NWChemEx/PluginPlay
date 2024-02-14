@@ -17,14 +17,15 @@ import py_test_pluginplay as test_pp
 import py_test_pluginplay.test_submodule_request as test_sr
 import unittest
 
+
 class TestSubmoduleRequest(unittest.TestCase):
+
     def test_has_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.assertTrue(self.expects_null.has_type())
         self.assertTrue(self.expects_one_in.has_type())
         self.assertTrue(self.not_ready_mod.has_type())
         self.assertTrue(self.ready_mod.has_type())
-
 
     def test_has_module(self):
         self.assertFalse(self.defaulted.has_module())
@@ -33,14 +34,12 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.assertTrue(self.not_ready_mod.has_module())
         self.assertTrue(self.ready_mod.has_module())
 
-
     def test_has_description(self):
         self.assertFalse(self.defaulted.has_description())
         self.assertFalse(self.expects_null.has_description())
         self.assertFalse(self.expects_one_in.has_description())
         self.assertFalse(self.not_ready_mod.has_description())
         self.assertFalse(self.ready_mod.has_description())
-
 
     def test_ready(self):
         self.assertFalse(self.defaulted.ready())
@@ -49,12 +48,10 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.assertFalse(self.not_ready_mod.ready())
         self.assertTrue(self.ready_mod.ready())
 
-
     def test_set_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.defaulted.set_type(test_pp.NullPT())
         self.assertTrue(self.defaulted.has_type())
-
 
     def test_set_description(self):
         self.assertFalse(self.defaulted.has_description())
@@ -62,22 +59,18 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.assertTrue(self.defaulted.has_description())
         self.assertEqual(self.defaulted.description(), "Hello World!")
 
-
     def test_submod_uuids(self):
         # Throws if no module is set
         self.assertRaises(Exception, self.defaulted.submod_uuids)
-
 
     def test_uuid(self):
         # Throws if no module is set
         self.assertRaises(Exception, self.defaulted.uuid)
 
-
     def test_value(self):
         # Throws if no module is set
         self.assertRaises(Exception, self.defaulted.value)
         self.assertNotEqual(self.ready_mod.value(), None)
-
 
     def test_description(self):
         # Throws if no description is set
@@ -85,13 +78,11 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.defaulted.set_description("Hello World!")
         self.assertEqual(self.defaulted.description(), "Hello World!")
 
-
     def test_lock(self):
         # Throws if no module is set
         self.assertRaises(Exception, self.defaulted.lock)
         self.ready_mod.lock()
         self.assertTrue(self.ready_mod.value().locked())
-
 
     def test_comparisons(self):
         # Default vs default
@@ -117,7 +108,6 @@ class TestSubmoduleRequest(unittest.TestCase):
         # different PTs
         self.assertNotEqual(self.expects_null, self.expects_one_in)
         self.assertFalse(self.expects_null == self.expects_one_in)
-
 
     def setUp(self):
         self.defaulted = pp.SubmoduleRequest()
