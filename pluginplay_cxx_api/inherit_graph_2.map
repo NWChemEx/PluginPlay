@@ -1,10 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,260,117,287"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,100,117,127"/>
 <area shape="rect" id="node2" href="$structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper_3_01AnyFieldWrapper_3_01T_01_4_01_4.html" title="Specialization of is_any_field_wrapper for when the template parameter is an AnyFieldWrapper." alt="" coords="165,5,367,61"/>
 <area shape="rect" id="node3" href="$structpluginplay_1_1detail___1_1IsCString_3_01const_01char_07_6_08_0fN_0e_4.html" title="Specilization of IsCString for case when the type is a string literal." alt="" coords="193,85,339,141"/>
 <area shape="rect" id="node4" href="$structpluginplay_1_1detail___1_1IsSharedPtr_3_01std_1_1shared__ptr_3_01T_01_4_01_4.html" title="Specializes IsSharedPtr for when the template parameter is a shared_ptr." alt="" coords="190,165,342,221"/>
-<area shape="rect" id="node5" href="$structpluginplay_1_1detail___1_1is__input__type_3_01AnyTag_1_1General_01_4.html" title=" " alt="" coords="173,245,359,301"/>
-<area shape="rect" id="node6" href="$structpluginplay_1_1detail___1_1is__input__type_3_01AnyTag_1_1Input_01_4.html" title=" " alt="" coords="173,325,359,381"/>
-<area shape="rect" id="node7" href="$structpluginplay_1_1detail___1_1is__output__type_3_01AnyTag_1_1General_01_4.html" title=" " alt="" coords="169,405,363,461"/>
-<area shape="rect" id="node8" href="$structpluginplay_1_1detail___1_1is__output__type_3_01AnyTag_1_1Output_01_4.html" title=" " alt="" coords="169,485,363,541"/>
 </map>
