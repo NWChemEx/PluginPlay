@@ -42,6 +42,7 @@ class CoulombsLaw(pp.ModuleBase):
         rv = self.results()
         return pt.wrap_results(rv, E)
 
+
 class ScreenedCoulombsLaw(pp.ModuleBase):
 
     def __init__(self):
