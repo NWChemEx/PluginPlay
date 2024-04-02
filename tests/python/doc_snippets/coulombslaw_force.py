@@ -14,7 +14,7 @@
 
 import pluginplay as pp
 import pluginplay_examples as ppe
-from math import sqrt
+from math import sqrt, inf
 
 
 class CoulombsLaw(pp.ModuleBase):
@@ -37,6 +37,35 @@ class CoulombsLaw(pp.ModuleBase):
             for i in range(3):
                 rij[i] -= charge.m_r[i]
             rij2 = rij[0]**2 + rij[1]**2 + rij[2]**2
+            for i in range(3):
+                E[i] += (q * ri[i] / (mag_ri * rij2))
+        rv = self.results()
+        return pt.wrap_results(rv, E)
+
+class ScreenedCoulombsLaw(pp.ModuleBase):
+
+    def __init__(self):
+        pp.ModuleBase.__init__(self)
+        self.description("Screened Electric Field From Coulomb's Law")
+        self.satisfies_property_type(ppe.ElectricField())
+        self.add_input("threshold").set_default(inf)
+
+    def run_(self, inputs, submods):
+        pt = ppe.ElectricField()
+        [r, charges] = pt.unwrap_inputs(inputs)
+        thresh = inputs["threshold"].value()
+        E = [0.0, 0.0, 0.0]
+        for charge in charges:
+            q = charge.m_charge
+            ri = charge.m_r
+            rij = [i for i in r]
+            for i in range(3):
+                rij[i] -= charge.m_r[i]
+            rij2 = rij[0]**2 + rij[1]**2 + rij[2]**2
+            if sqrt(rij2) >= thresh:
+                continue
+            ri2 = ri[0]**2 + ri[1]**2 + ri[2]**2
+            mag_ri = sqrt(ri2)
             for i in range(3):
                 E[i] += (q * ri[i] / (mag_ri * rij2))
         rv = self.results()

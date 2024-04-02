@@ -32,10 +32,22 @@ class TestNewPythonModules(unittest.TestCase):
         mm = pp.ModuleManager()
 
         mm.add_module("My Coulomb's Law", clf.CoulombsLaw())
+        mm.add_module("My Screened Coulomb's Law 1", clf.ScreenedCoulombsLaw())
+        mm.add_module("My Screened Coulomb's Law 2", clf.ScreenedCoulombsLaw())
         mm.add_module("My Force", clf.ClassicalForce())
         mm.change_submod("My Force", "electric field", "My Coulomb's Law")
 
-        field = mm.at("My Coulomb's Law").run_as(ppe.ElectricField(), r, pvc)
-        self.assertTrue(field == [1.5, 0.0, 0.0])
+        efield = ppe.ElectricField()
+
+        field0 = mm.at("My Coulomb's Law").run_as(efield, r, pvc)
+        self.assertTrue(field0 == [1.5, 0.0, 0.0])
+
+        field1 = mm.at("My Screened Coulomb's Law 1").run_as(efield, r, pvc)
+        self.assertTrue(field1 == [1.5, 0.0, 0.0])
+
+        mm.change_input("My Screened Coulomb's Law 2", "threshold", 1.0)
+        field2 = mm.at("My Screened Coulomb's Law 2").run_as(efield, r, pvc)
+        self.assertTrue(field2 == [0.0, 0.0, 0.0])
+
         cforce = mm.at("My Force").run_as(ppe.Force(), q, m, a, pvc)
         self.assertTrue(cforce == [5.5, 0.0, 0.0])
