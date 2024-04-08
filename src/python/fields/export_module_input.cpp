@@ -35,15 +35,20 @@ void export_module_input(py_module_reference m) {
            [](ModuleInput& i, pybind11::object o) {
                return i.is_valid(any::make_any_field<PythonWrapper>(o));
            })
-      .def("change",
-           [](ModuleInput& i, pybind11::object o) {
-               i.change(any::make_any_field<PythonWrapper>(o));
-               return i;
-           })
-      .def("set_default",
-           [](ModuleInput& i, pybind11::object o) {
-               return i.set_default(any::make_any_field<PythonWrapper>(o));
-           })
+      .def(
+        "change",
+        [](ModuleInput& i, pybind11::object o) {
+            i.change(any::make_any_field<PythonWrapper>(o));
+            return &i;
+        },
+        pybind11::return_value_policy::reference)
+      .def(
+        "set_default",
+        [](ModuleInput& i, pybind11::object o) {
+            i.set_default(any::make_any_field<PythonWrapper>(o));
+            return &i;
+        },
+        pybind11::return_value_policy::reference)
       .def("set_description", &ModuleInput::set_description)
       //.def("add_check")
       .def("make_optional", &ModuleInput::make_optional)

@@ -45,27 +45,33 @@ void export_module_base(py_module_reference m) {
       //   .def("reset_internal_cache", &ModuleBase::reset_internal_cache)
       .def("description", &Publicist::description)
       .def("citation", &Publicist::citation)
-      .def("add_input",
-           [](ModuleBase& self, std::string key) {
-               auto& new_i = self.inputs()[key];
-               new_i.set_type<python::PythonWrapper>();
-               return new_i;
-           })
-      .def("add_result",
-           [](ModuleBase& self, std::string key) {
-               auto& new_r = self.results()[key];
-               new_r.set_type<python::PythonWrapper>();
-               return new_r;
-           })
-      .def("add_submodule",
-           [](ModuleBase& self, pybind11::object pt, std::string key) {
-               auto py_sr = pybind11::cast(SubmoduleRequest());
-               py_sr.attr("set_type")(pt);
-               auto sr     = py_sr.cast<SubmoduleRequest>();
-               auto& smods = self.submods();
-               smods.emplace(key, std::move(sr));
-               return smods.at(key);
-           })
+      .def(
+        "add_input",
+        [](ModuleBase& self, std::string key) {
+            auto& new_i = self.inputs()[key];
+            new_i.set_type<python::PythonWrapper>();
+            return &new_i;
+        },
+        pybind11::return_value_policy::reference)
+      .def(
+        "add_result",
+        [](ModuleBase& self, std::string key) {
+            auto& new_r = self.results()[key];
+            new_r.set_type<python::PythonWrapper>();
+            return &new_r;
+        },
+        pybind11::return_value_policy::reference)
+      .def(
+        "add_submodule",
+        [](ModuleBase& self, pybind11::object pt, std::string key) {
+            auto py_sr = pybind11::cast(SubmoduleRequest());
+            py_sr.attr("set_type")(pt);
+            auto sr     = py_sr.cast<SubmoduleRequest>();
+            auto& smods = self.submods();
+            smods.emplace(key, std::move(sr));
+            return &smods.at(key);
+        },
+        pybind11::return_value_policy::reference)
       .def("satisfies_property_type",
            [](ModuleBase& self, pybind11::object pt) {
                auto info    = pt.attr("type")().cast<python::PyTypeInfo>();

@@ -76,6 +76,18 @@ module to aid in defining the module's constructor. At a minimum the constructor
 must set the property type(s) that the module satisfies. It is also a good idea
 to provide a short description about the algorithm implemented in the module.
 
+.. hint::
+
+   The property type will be needed in a few places so it is a good idea to set
+   a typedef, this way if you need to change the property type for any reason
+   you only need to change it in the typedef.
+
+.. hint::
+
+   The raw string literal introduced in C++11 denoted by
+   ``auto str = R"(...)";`` is a great way to write a lengthy description
+   without having to use escapes or other workarounds for line endings.
+
 For our ``CoulombsLaw`` module a basic constructor looks like:
 
 .. tabs::
@@ -84,7 +96,7 @@ For our ``CoulombsLaw`` module a basic constructor looks like:
 
       .. literalinclude:: ../../../../tests/cxx/doc_snippets/coulombs_law.cpp
          :language: c++
-         :lines: 36-39
+         :lines: 21-33, 36-39
 
    .. tab:: Python
 
@@ -105,17 +117,28 @@ version. A full list of meta-data is available (TODO: Add link).
    PluginPlay automatically documents input parameters and submodules so there
    is no need to include these in your description.
 
-.. hint::
 
-   The property type will be needed in a few places so it is a good idea to set
-   a typedef, this way if you need to change the property type for any reason
-   you only need to change it in the typedef.
+For some modules, inputs that are not defined by the property type(s)
+may be needed. Additional inputs can be specified in the constructor with the
+``add_inputs`` method. A similar option for added results exist, though it is
+less common. Additional inputs have to be set before the module is run, either
+with a default value or by calling the ``change_input`` method. Here are 
+examples for adding a screening threshold to our ``ScreenedCoulombsLaw`` module:
 
-.. hint::
+.. tabs::
 
-   The raw string literal introduced in C++11 denoted by
-   ``auto str = R"(...)";`` is a great way to write a lengthy description
-   without having to use escapes or other workarounds for line endings.
+   .. tab:: C++
+
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/screened_coulombs_law.cpp
+         :language: c++
+         :lines: 39-46
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
+         :language: python
+         :lines: 47-51
+
 
 
 Defining the Run Member
@@ -155,8 +178,29 @@ vein the results of every module are also type-erased and every property type
 defines a static function ``wrap_results`` which takes the typed results and
 returns a result map with the type-erased results.
 
-The full definition of the ``run_`` member (including the source code for
-computing the electric field) is:
+.. note::
+
+   If a module has additional inputs beyond those specified by the property
+   type, they will have to be specifically unpacked from the ``inputs``. In the
+   case of the ``ScreenedCoulombsLaw`` module, the screening threshold is 
+   acquired as:
+
+   .. tabs::
+
+    .. tab:: C++
+
+        .. literalinclude:: ../../../../tests/cxx/doc_snippets/screened_coulombs_law.cpp
+            :language: c++
+            :lines: 48-50
+
+    .. tab:: Python
+
+        .. literalinclude:: ../../../../tests/python/doc_snippets/coulombslaw_force.py
+            :language: python
+            :lines: 53-56
+
+The full definition of the ``run_`` member for the ``CoulombsLaw`` module 
+(including the source code for computing the electric field) is:
 
 .. tabs::
 
