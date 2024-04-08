@@ -60,10 +60,13 @@ std::string document_module(std::string name, const Module& mod) {
     } else {
         p << "The following is a list of property types that this module "
              "satisfies.\n\n";
+        std::set<std::string> pt_set;
         for(const auto& x : mod.property_types()) {
-            p.print_verbatim(
-              "- ``" + utilities::printing::Demangler::demangle(x) + "``\n");
+            std::string pt_string =
+              "- ``" + utilities::printing::Demangler::demangle(x) + "``\n";
+            pt_set.insert(pt_string);
         }
+        for(const auto& x : pt_set) { p.print_verbatim(x); }
     }
     p << "\n";
     p.finish_section();
