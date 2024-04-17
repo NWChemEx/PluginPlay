@@ -353,6 +353,10 @@ public:
      */
     bool operator!=(const SubmoduleRequestPIMPL& rhs) const;
 
+    bool has_name() const;
+
+    const type::key& get_name() const;
+
 private:
     /// A description of what this submodule will be used for.
     std::optional<type::description> m_desc_;

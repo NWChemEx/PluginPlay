@@ -93,4 +93,14 @@ inline bool SubmoduleRequestPIMPL::operator!=(
     return !((*this) == rhs);
 }
 
+bool SubmoduleRequestPIMPL::has_name() const {
+    if(!has_module()) throw std::runtime_error("Submodule is not set");
+    return m_module_->has_name();
+}
+
+const type::key& SubmoduleRequestPIMPL::get_name() const {
+    if(!has_module()) throw std::runtime_error("Submodule is not set");
+    return m_module_->get_name();
+}
+
 } // namespace pluginplay::detail_

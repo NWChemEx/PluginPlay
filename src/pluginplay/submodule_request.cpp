@@ -88,4 +88,12 @@ bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
     return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
+bool SubmoduleRequest::has_name() const {
+    return m_pimpl_->has_name();
+}
+
+const type::key& SubmoduleRequest::get_name() const {
+    return m_pimpl_->get_name();
+}
+
 } // namespace pluginplay

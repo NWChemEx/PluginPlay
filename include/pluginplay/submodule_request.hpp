@@ -394,6 +394,10 @@ public:
      */
     bool operator!=(const SubmoduleRequest& rhs) const;
 
+    bool has_name() const;
+
+    const type::key& get_name() const;
+
 private:
     /// Object actually storing the state of this class
     std::unique_ptr<detail_::SubmoduleRequestPIMPL> m_pimpl_;

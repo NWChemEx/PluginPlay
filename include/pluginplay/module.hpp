@@ -673,6 +673,12 @@ public:
      */
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
 
+    bool has_name() const noexcept { return m_name_.has_value(); }
+
+    const type::key& get_name() const { return m_name_.value(); }
+
+    void set_name(type::key name) { m_name_.emplace(std::move(name)); }
+
 private:
     /** @brief Unlocks a locked module
      *
@@ -697,6 +703,8 @@ private:
 
     /// The instance that actually does everything for us.
     pimpl_ptr m_pimpl_;
+
+    std::optional<type::key> m_name_;
 }; // class Module
 
 std::string print_not_ready(const Module& mod, const type::input_map& ps = {},

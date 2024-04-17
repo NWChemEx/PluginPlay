@@ -97,7 +97,7 @@ type::result_map Module::run(type::input_map ps) {
 }
 
 bool Module::operator==(const Module& rhs) const {
-    return *m_pimpl_ == *rhs.m_pimpl_;
+    return (*m_pimpl_ == *rhs.m_pimpl_) && (m_name_ == rhs.m_name_);
 }
 
 const type::description& Module::description() const {

@@ -52,7 +52,9 @@ void export_submodule_request(py_module_reference m) {
       .def("lock", &SubmoduleRequest::lock)
       .def("run_as", &py_sr_run_as)
       .def(pybind11::self == pybind11::self)
-      .def(pybind11::self != pybind11::self);
+      .def(pybind11::self != pybind11::self)
+      .def("has_name", &SubmoduleRequest::has_name)
+      .def("get_name", &SubmoduleRequest::get_name);
 }
 
 } // namespace pluginplay

@@ -140,6 +140,7 @@ struct ModuleManagerPIMPL {
             pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
         }
         auto ptr = std::make_shared<Module>(std::move(pimpl));
+        ptr->set_name(key);
         m_modules.emplace(std::move(key), ptr);
     }
 
@@ -168,6 +169,7 @@ struct ModuleManagerPIMPL {
         assert_unique_key_(new_key);
         Module mod = std::move(m_modules.at(old_key)->unlocked_copy());
         auto ptr   = std::make_shared<Module>(std::move(mod));
+        ptr->set_name(new_key);
         m_modules.emplace(std::move(new_key), ptr);
     }
 

@@ -80,7 +80,10 @@ void export_module(py_module_reference m) {
       .def("submod_uuids", &Module::submod_uuids)
       .def("uuid", &Module::uuid)
       .def(pybind11::self == pybind11::self)
-      .def(pybind11::self != pybind11::self);
+      .def(pybind11::self != pybind11::self)
+      .def("has_name", &Module::has_name)
+      .def("get_name", &Module::get_name)
+      .def("set_name", &Module::set_name);
 
     m.def("print_not_ready", &print_not_ready, pybind11::arg("mod"),
           pybind11::arg("ps")     = type::input_map{},
