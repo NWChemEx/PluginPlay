@@ -142,7 +142,9 @@ TEST_CASE("ModuleManagerPIMPL : copy_module") {
 
     SECTION("Copies non-locked module") {
         pimpl1.copy_module("key", "new_key");
-        pimpl2.m_modules["new_key"] = pimpl2.m_modules["key"];
+        auto pimpl = std::make_unique<ModulePIMPL>(ptr1);
+        pimpl2.m_modules["new_key"] =
+          std::make_shared<Module>(std::move(pimpl));
         pimpl2.m_modules["new_key"]->set_name("new_key");
         REQUIRE(pimpl1 == pimpl2);
     }
