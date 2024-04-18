@@ -30,6 +30,7 @@ TEST_CASE("SubmoduleRequestPIMPL : Default ctor") {
     REQUIRE_FALSE(pimpl.has_type());
     REQUIRE_FALSE(pimpl.has_description());
     REQUIRE_FALSE(pimpl.ready());
+    REQUIRE_FALSE(pimpl.has_name());
 }
 
 TEST_CASE("SubmoduleRequestPIMPL : Copy ctor") {
@@ -99,6 +100,34 @@ TEST_CASE("SubmoduleRequestPIMPL : has_description") {
     SECTION("Has description") {
         pimpl.set_description("Hello world");
         REQUIRE(pimpl.has_description());
+    }
+}
+
+TEST_CASE("SubmoduleRequestPIMPL : has_name") {
+    SubmoduleRequestPIMPL pimpl;
+    SECTION("No submodule") { REQUIRE_FALSE(pimpl.has_name()); }
+    SECTION("Has nameless submodule") {
+        pimpl.set_module(testing::make_module<testing::NullModule>());
+        REQUIRE_FALSE(pimpl.has_name());
+    }
+    SECTION("Has not ready submodule") {
+        pimpl.set_module(testing::make_module<testing::NullModule>("test"));
+        REQUIRE(pimpl.has_name());
+    }
+}
+
+TEST_CASE("SubmoduleRequestPIMPL : get_name") {
+    SubmoduleRequestPIMPL pimpl;
+    SECTION("No submodule") {
+        REQUIRE_THROWS_AS(pimpl.get_name(), std::runtime_error);
+    }
+    SECTION("Has nameless submodule") {
+        pimpl.set_module(testing::make_module<testing::NullModule>());
+        REQUIRE_THROWS_AS(pimpl.get_name(), std::bad_optional_access);
+    }
+    SECTION("Has not ready submodule") {
+        pimpl.set_module(testing::make_module<testing::NullModule>("test"));
+        REQUIRE(pimpl.get_name() == "test");
     }
 }
 

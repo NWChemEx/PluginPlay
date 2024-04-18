@@ -94,7 +94,7 @@ inline bool SubmoduleRequestPIMPL::operator!=(
 }
 
 bool SubmoduleRequestPIMPL::has_name() const {
-    if(!has_module()) throw std::runtime_error("Submodule is not set");
+    if(!has_module()) return false;
     return m_module_->has_name();
 }
 
