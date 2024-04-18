@@ -45,9 +45,7 @@ bool SubmoduleRequest::has_description() const noexcept {
     return m_pimpl_->has_description();
 }
 
-bool SubmoduleRequest::has_name() const {
-    return m_pimpl_->has_name();
-}
+bool SubmoduleRequest::has_name() const { return m_pimpl_->has_name(); }
 
 bool SubmoduleRequest::ready() const noexcept { return m_pimpl_->ready(); }
 

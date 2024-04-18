@@ -26,7 +26,7 @@ using pimpl = detail_::ModulePIMPL;
 Module::Module() : m_pimpl_(std::make_unique<pimpl>()) {}
 
 Module::Module(const Module& rhs) :
-  m_pimpl_(std::make_unique<pimpl>(*rhs.m_pimpl_)), m_name_(rhs.m_name_){}
+  m_pimpl_(std::make_unique<pimpl>(*rhs.m_pimpl_)), m_name_(rhs.m_name_) {}
 
 Module& Module::operator=(const Module& rhs) {
     std::make_unique<detail_::ModulePIMPL>(*rhs.m_pimpl_).swap(m_pimpl_);
