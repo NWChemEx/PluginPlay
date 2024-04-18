@@ -41,6 +41,10 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.assertFalse(self.not_ready_mod.has_description())
         self.assertFalse(self.ready_mod.has_description())
 
+    def test_has_name(self):
+        self.assertFalse(self.defaulted.has_name())
+        self.assertTrue(self.ready_mod.has_name())
+
     def test_ready(self):
         self.assertFalse(self.defaulted.ready())
         self.assertFalse(self.expects_null.ready())
@@ -77,6 +81,10 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.assertRaises(Exception, self.defaulted.description)
         self.defaulted.set_description("Hello World!")
         self.assertEqual(self.defaulted.description(), "Hello World!")
+
+    def test_get_name(self):
+        self.assertRaises(RuntimeError, self.defaulted.get_name)
+        self.assertTrue(self.ready_mod.get_name(), "a_mod")
 
     def test_lock(self):
         # Throws if no module is set

@@ -46,6 +46,10 @@ class TestModule(unittest.TestCase):
         self.assertFalse(self.need_submod.has_description())
         self.assertFalse(self.ready_mod.has_description())
 
+    def test_has_name(self):
+        self.assertFalse(self.defaulted.has_name())
+        self.assertTrue(self.has_desc.has_name())
+
     def test_locked(self):
         self.assertFalse(self.defaulted.locked())
         self.assertFalse(self.has_desc.locked())
@@ -214,6 +218,15 @@ class TestModule(unittest.TestCase):
         self.assertEqual(self.not_ready.citations(), [])
         self.assertEqual(self.need_submod.citations(), [])
         self.assertEqual(self.ready_mod.citations(), [])
+
+    def test_get_name(self):
+        self.assertRaises(RuntimeError, self.defaulted.get_name)
+        self.defaulted.set_name("test")
+        self.assertEqual(self.defaulted.get_name(), "test")
+
+    def test_set_name(self):
+        self.has_desc.set_name("test")
+        self.assertEqual(self.has_desc.get_name(), "test")
 
     def test_change_input(self):
         # Throws if there's no implementation

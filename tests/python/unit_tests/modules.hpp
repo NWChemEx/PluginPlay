@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#pragma once
 #include "property_types.hpp"
 #include <pluginplay/module_base.hpp>
 #include <pluginplay/module_manager.hpp>

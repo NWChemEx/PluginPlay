@@ -171,13 +171,4 @@ auto make_module_with_cache() {
         make_module_pimpl_with_cache<T>()));
 }
 
-template<typename T>
-auto make_module_with_cache(std::string key) {
-    auto mod = std::make_shared<pluginplay::Module>(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(
-        make_module_pimpl_with_cache<T>()));
-    mod->set_name(key);
-    return mod;
-}
-
 } // namespace testing
