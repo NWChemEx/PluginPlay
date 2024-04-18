@@ -22,6 +22,11 @@ inline auto SubmoduleRequestPIMPL::clone() const {
     return std::make_unique<SubmoduleRequestPIMPL>(*this);
 }
 
+bool SubmoduleRequestPIMPL::has_name() const {
+    if(!has_module()) return false;
+    return m_module_->has_name();
+}
+
 inline bool SubmoduleRequestPIMPL::ready() const {
     // Relies on short-circuiting to avoid the segfault
     return has_type() && has_module() && m_module_->ready(m_inputs_);
@@ -65,6 +70,11 @@ inline void SubmoduleRequestPIMPL::lock() {
     m_module_->lock();
 }
 
+const type::key& SubmoduleRequestPIMPL::get_name() const {
+    if(!has_module()) throw std::runtime_error("Submodule is not set");
+    return m_module_->get_name();
+}
+
 inline SubmoduleRequestPIMPL::submod_uuid_map
 SubmoduleRequestPIMPL::submod_uuids() const {
     if(!has_module()) throw std::runtime_error("Submodule is not set");
@@ -91,16 +101,6 @@ inline bool SubmoduleRequestPIMPL::operator==(
 inline bool SubmoduleRequestPIMPL::operator!=(
   const SubmoduleRequestPIMPL& rhs) const {
     return !((*this) == rhs);
-}
-
-bool SubmoduleRequestPIMPL::has_name() const {
-    if(!has_module()) return false;
-    return m_module_->has_name();
-}
-
-const type::key& SubmoduleRequestPIMPL::get_name() const {
-    if(!has_module()) throw std::runtime_error("Submodule is not set");
-    return m_module_->get_name();
 }
 
 } // namespace pluginplay::detail_

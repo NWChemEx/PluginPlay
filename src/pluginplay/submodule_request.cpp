@@ -45,6 +45,10 @@ bool SubmoduleRequest::has_description() const noexcept {
     return m_pimpl_->has_description();
 }
 
+bool SubmoduleRequest::has_name() const {
+    return m_pimpl_->has_name();
+}
+
 bool SubmoduleRequest::ready() const noexcept { return m_pimpl_->ready(); }
 
 SubmoduleRequest& SubmoduleRequest::set_type(rtti_type type,
@@ -82,18 +86,14 @@ const type::description& SubmoduleRequest::description() const {
     return m_pimpl_->description();
 }
 
+const type::key& SubmoduleRequest::get_name() const {
+    return m_pimpl_->get_name();
+}
+
 void SubmoduleRequest::lock() { m_pimpl_->lock(); }
 
 bool SubmoduleRequest::operator==(const SubmoduleRequest& rhs) const {
     return *m_pimpl_ == *rhs.m_pimpl_;
-}
-
-bool SubmoduleRequest::has_name() const {
-    return m_pimpl_->has_name();
-}
-
-const type::key& SubmoduleRequest::get_name() const {
-    return m_pimpl_->get_name();
 }
 
 } // namespace pluginplay
