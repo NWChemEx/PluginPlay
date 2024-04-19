@@ -42,6 +42,7 @@ void export_submodule_request(py_module_reference m) {
       .def("has_type", &SubmoduleRequest::has_type)
       .def("has_module", &SubmoduleRequest::has_module)
       .def("has_description", &SubmoduleRequest::has_description)
+      .def("has_name", &SubmoduleRequest::has_name)
       .def("ready", &SubmoduleRequest::ready)
       .def("set_type", &py_set_type)
       .def("set_description", &SubmoduleRequest::set_description)
@@ -49,6 +50,14 @@ void export_submodule_request(py_module_reference m) {
       .def("uuid", &SubmoduleRequest::uuid)
       .def("value", static_cast<value_fxn>(&SubmoduleRequest::value))
       .def("description", &SubmoduleRequest::description)
+      .def("get_name",
+           [](SubmoduleRequest& self) {
+               try {
+                   return self.get_name();
+               } catch(const std::bad_optional_access& e) {
+                   throw std::runtime_error("No Name Set");
+               }
+           })
       .def("lock", &SubmoduleRequest::lock)
       .def("run_as", &py_sr_run_as)
       .def(pybind11::self == pybind11::self)

@@ -26,10 +26,11 @@ using pimpl = detail_::ModulePIMPL;
 Module::Module() : m_pimpl_(std::make_unique<pimpl>()) {}
 
 Module::Module(const Module& rhs) :
-  m_pimpl_(std::make_unique<pimpl>(*rhs.m_pimpl_)) {}
+  m_pimpl_(std::make_unique<pimpl>(*rhs.m_pimpl_)), m_name_(rhs.m_name_) {}
 
 Module& Module::operator=(const Module& rhs) {
     std::make_unique<detail_::ModulePIMPL>(*rhs.m_pimpl_).swap(m_pimpl_);
+    if(rhs.has_name()) m_name_ = rhs.m_name_;
     return *this;
 }
 
@@ -97,7 +98,7 @@ type::result_map Module::run(type::input_map ps) {
 }
 
 bool Module::operator==(const Module& rhs) const {
-    return *m_pimpl_ == *rhs.m_pimpl_;
+    return (*m_pimpl_ == *rhs.m_pimpl_) && (m_name_ == rhs.m_name_);
 }
 
 const type::description& Module::description() const {

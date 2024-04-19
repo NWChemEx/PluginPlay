@@ -125,6 +125,7 @@ TEST_CASE("ModuleManagerPIMPL : add_module") {
     pimpl2.m_bases[ptr1->type()] = ptr1;
     auto pimpl                   = std::make_unique<ModulePIMPL>(ptr1);
     pimpl2.m_modules["key1"]     = std::make_shared<Module>(std::move(pimpl));
+    pimpl2.m_modules["key1"]->set_name("key1");
     pimpl1.add_module("key1", ptr1);
     REQUIRE(pimpl1 == pimpl2);
     SECTION("Can't use the key") {
@@ -141,7 +142,10 @@ TEST_CASE("ModuleManagerPIMPL : copy_module") {
 
     SECTION("Copies non-locked module") {
         pimpl1.copy_module("key", "new_key");
-        pimpl2.m_modules["new_key"] = pimpl2.m_modules["key"];
+        auto pimpl = std::make_unique<ModulePIMPL>(ptr1);
+        pimpl2.m_modules["new_key"] =
+          std::make_shared<Module>(std::move(pimpl));
+        pimpl2.m_modules["new_key"]->set_name("new_key");
         REQUIRE(pimpl1 == pimpl2);
     }
     SECTION("Copy locked module") {

@@ -26,19 +26,23 @@ using not_set_t = typename Module::not_ready_type;
 TEST_CASE("Module : default ctor") {
     Module p;
     REQUIRE_FALSE(p.has_module());
+    REQUIRE_FALSE(p.has_name());
     REQUIRE_FALSE(p.locked());
 }
 
 TEST_CASE("Module : unlocked_copy") {
     SECTION("Copy an unlocked module") {
         Module p;
+        p.set_name("test");
         auto p2 = p.unlocked_copy();
         REQUIRE(p == p2);
         REQUIRE_FALSE(p.locked());
     }
     SECTION("Copy a locked module") {
         Module p, p3;
+        p.set_name("test");
         p.lock();
+        p3.set_name("test");
         auto p2 = p.unlocked_copy();
         REQUIRE_FALSE(p2.locked());
         REQUIRE(p != p2);
@@ -447,6 +451,27 @@ TEST_CASE("Module : profile_info") {
     }
 }
 
+TEST_CASE("Module : has_name") {
+    auto no_name  = make_module<NullModule>();
+    auto has_name = make_module<NullModule>("test");
+    REQUIRE(!no_name->has_name());
+    REQUIRE(has_name->has_name());
+}
+
+TEST_CASE("Module : get_name") {
+    auto no_name  = make_module<NullModule>();
+    auto has_name = make_module<NullModule>("test");
+    REQUIRE_THROWS_AS(no_name->get_name(), std::bad_optional_access);
+    REQUIRE(has_name->get_name() == "test");
+}
+
+TEST_CASE("Module : set_name") {
+    auto mod = make_module<NullModule>();
+    mod->set_name("test");
+    REQUIRE(mod->has_name());
+    REQUIRE(mod->get_name() == "test");
+}
+
 // Used to test that different implementations compare different
 struct NullModule2 : ModuleBase {
     NullModule2() : ModuleBase(this) { satisfies_property_type<NullPT>(); }
@@ -503,16 +528,25 @@ TEST_CASE("Module : comparisons") {
         REQUIRE(*mod != *mod2);
         REQUIRE_FALSE(*mod == *mod2);
     }
+    SECTION("Different name") {
+        auto mod0 = make_module<NullModule>();
+        auto mod1 = make_module<NullModule>("one");
+        auto mod2 = make_module<NullModule>("two");
+        mod0->set_name("one");
+        REQUIRE(*mod0 == *mod1);
+        REQUIRE(*mod1 != *mod2);
+        REQUIRE_FALSE(*mod1 == *mod2);
+    }
 }
 
 TEST_CASE("Module : copy ctor") {
-    auto mod = make_module<NullModule>();
+    auto mod = make_module<NullModule>("test");
     Module mod2(*mod);
     REQUIRE(*mod == mod2);
 }
 
 TEST_CASE("Module : copy assignment") {
-    auto mod = make_module<NullModule>();
+    auto mod = make_module<NullModule>("test");
     Module mod2;
     auto pmod2 = &(mod2 = *mod);
     REQUIRE(pmod2 == &mod2);
@@ -520,14 +554,14 @@ TEST_CASE("Module : copy assignment") {
 }
 
 TEST_CASE("Module : move ctor") {
-    auto mod = make_module<NullModule>();
+    auto mod = make_module<NullModule>("test");
     Module mod2(*mod);
     Module mod3(std::move(mod2));
     REQUIRE(*mod == mod3);
 }
 
 TEST_CASE("Module : move assignment") {
-    auto mod = make_module<NullModule>();
+    auto mod = make_module<NullModule>("test");
     Module mod2;
     Module mod3(*mod);
     auto pmod2 = &(mod2 = std::move(*mod));

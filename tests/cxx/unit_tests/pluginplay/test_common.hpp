@@ -153,6 +153,15 @@ auto make_module() {
         make_module_pimpl<T>()));
 }
 
+template<typename T>
+auto make_module(std::string key) {
+    auto mod = std::make_shared<pluginplay::Module>(
+      std::make_unique<pluginplay::detail_::ModulePIMPL>(
+        make_module_pimpl<T>()));
+    mod->set_name(key);
+    return mod;
+}
+
 // Wraps the creation of a module (with a cache) w/o going through a module
 // manager
 template<typename T>

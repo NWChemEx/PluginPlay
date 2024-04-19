@@ -166,6 +166,16 @@ public:
      */
     bool has_description() const noexcept;
 
+    /** @brief Does this module have a name?
+     *
+     *  This function is used to determine if the module has a name set.
+     *
+     *  @return true if the name has been set and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_name() const;
+
     /** @brief Determines if the wrapped submodule can be used
      *
      * A submodule can be used if there is actually a submodule wrapped in the
@@ -312,6 +322,15 @@ public:
      *                                 Strong throw guarantee.
      */
     const type::description& description() const;
+
+    /** @brief Get the name of the module, if set.
+     *
+     *  @return The name of the module.
+     *
+     *  @throw std::bad_optional_access if this module does not have an name
+     * set.
+     */
+    const type::key& get_name() const;
 
     /** @brief Locks the submodule.
      *

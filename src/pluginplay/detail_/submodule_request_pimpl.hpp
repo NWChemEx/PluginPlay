@@ -169,6 +169,16 @@ public:
      */
     bool has_description() const noexcept { return m_desc_.has_value(); }
 
+    /** @brief Does this module have a name?
+     *
+     *  This function is used to determine if the module has a name set.
+     *
+     *  @return true if the name has been set and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_name() const;
+
     /** @brief Has this request been fulfilled and is that module ready?
      *
      *  This function is slightly different than has_module. The former only
@@ -275,6 +285,15 @@ public:
      *                                 Strong throw guarantee.
      */
     const auto& description() const { return m_desc_.value(); }
+
+    /** @brief Get the name of the module, if set.
+     *
+     *  @return The name of the module.
+     *
+     *  @throw std::bad_optional_access if this module does not have an name
+     * set.
+     */
+    const type::key& get_name() const;
 
     /** @brief Convenience function for calling submod_uuids() on the wrapped
      *         module.

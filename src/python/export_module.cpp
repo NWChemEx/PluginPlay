@@ -41,6 +41,7 @@ void export_module(py_module_reference m) {
       .def("unlocked_copy", &Module::unlocked_copy)
       .def("has_module", &Module::has_module)
       .def("has_description", &Module::has_description)
+      .def("has_name", &Module::has_name)
       .def("locked", &Module::locked)
       .def("list_not_ready", &Module::list_not_ready,
            pybind11::arg("in_inputs") = type::input_map{})
@@ -63,6 +64,15 @@ void export_module(py_module_reference m) {
            })
       .def("description", &Module::description)
       .def("citations", &Module::citations)
+      .def("get_name",
+           [](Module& self) {
+               try {
+                   return self.get_name();
+               } catch(const std::bad_optional_access& e) {
+                   throw std::runtime_error("No Name Set");
+               }
+           })
+      .def("set_name", &Module::set_name)
       .def("change_input",
            [](Module& m, std::string key, pybind11::object o) {
                m.change_input(key,

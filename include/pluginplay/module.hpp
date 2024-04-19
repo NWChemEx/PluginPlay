@@ -217,6 +217,16 @@ public:
      */
     bool has_description() const;
 
+    /** @brief Does this module have a name?
+     *
+     *  This function is used to determine if the module has a name set.
+     *
+     *  @return true if the name has been set and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool has_name() const noexcept { return m_name_.has_value(); }
+
     /** @brief Is the current module locked?
      *
      *  A locked module can not have its state modified. This avoids situations
@@ -477,6 +487,21 @@ public:
      */
     const std::vector<type::description>& citations() const;
 
+    /** @brief Get the name of the module, if set.
+     *
+     *  @return The name of the module.
+     *
+     *  @throw std::bad_optional_access if this module does not have an name
+     * set.
+     */
+    const type::key& get_name() const { return m_name_.value(); }
+
+    /** @brief Set the name of the module.
+     *
+     *  @throw none No throw guarantee.
+     */
+    void set_name(type::key name) { m_name_.emplace(std::move(name)); }
+
     /** @brief Binds an input value to the specified input.
      *
      *  Inputs to a module can be set in one of two ways: by passing the inputs
@@ -697,6 +722,8 @@ private:
 
     /// The instance that actually does everything for us.
     pimpl_ptr m_pimpl_;
+
+    std::optional<type::key> m_name_;
 }; // class Module
 
 std::string print_not_ready(const Module& mod, const type::input_map& ps = {},

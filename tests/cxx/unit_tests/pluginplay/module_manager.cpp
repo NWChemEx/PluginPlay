@@ -25,7 +25,7 @@ TEST_CASE("ModuleManager") {
         using mod_t = testing::NoPTModule; // Type of the Module we're adding
 
         mm.add_module<mod_t>("a mod");
-        auto corr = testing::make_module<mod_t>();
+        auto corr = testing::make_module<mod_t>("a mod");
         REQUIRE(mm.at("a mod") == *corr);
     }
 
@@ -33,7 +33,7 @@ TEST_CASE("ModuleManager") {
         using mod_t = testing::NoPTModule; // Type of the Module we're adding
 
         mm.add_module("a mod", std::make_shared<mod_t>());
-        auto corr = testing::make_module<mod_t>();
+        auto corr = testing::make_module<mod_t>("a mod");
         REQUIRE(mm.at("a mod") == *corr);
     }
 
