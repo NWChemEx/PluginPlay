@@ -65,10 +65,12 @@ TEST_CASE("SubmoduleRequest : has_name") {
     SubmoduleRequest r;
     SECTION("No submodule") { REQUIRE_FALSE(r.has_name()); }
     SECTION("Has nameless submodule") {
+        r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>());
         REQUIRE_FALSE(r.has_name());
     }
-    SECTION("Has not ready submodule") {
+    SECTION("Has named submodule") {
+        r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>("test"));
         REQUIRE(r.has_name());
     }
@@ -80,10 +82,12 @@ TEST_CASE("SubmoduleRequest : get_name") {
         REQUIRE_THROWS_AS(r.get_name(), std::runtime_error);
     }
     SECTION("Has nameless submodule") {
+        r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>());
         REQUIRE_THROWS_AS(r.get_name(), std::bad_optional_access);
     }
-    SECTION("Has not ready submodule") {
+    SECTION("Has named submodule") {
+        r.set_type<testing::NullPT>();
         r.change(testing::make_module<testing::NullModule>("test"));
         REQUIRE(r.get_name() == "test");
     }

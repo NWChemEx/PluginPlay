@@ -107,10 +107,12 @@ TEST_CASE("SubmoduleRequestPIMPL : has_name") {
     SubmoduleRequestPIMPL pimpl;
     SECTION("No submodule") { REQUIRE_FALSE(pimpl.has_name()); }
     SECTION("Has nameless submodule") {
+        pimpl.set_type(null_pt_t, pluginplay::type::input_map{});
         pimpl.set_module(testing::make_module<testing::NullModule>());
         REQUIRE_FALSE(pimpl.has_name());
     }
-    SECTION("Has not ready submodule") {
+    SECTION("Has named submodule") {
+        pimpl.set_type(null_pt_t, pluginplay::type::input_map{});
         pimpl.set_module(testing::make_module<testing::NullModule>("test"));
         REQUIRE(pimpl.has_name());
     }
@@ -122,10 +124,12 @@ TEST_CASE("SubmoduleRequestPIMPL : get_name") {
         REQUIRE_THROWS_AS(pimpl.get_name(), std::runtime_error);
     }
     SECTION("Has nameless submodule") {
+        pimpl.set_type(null_pt_t, pluginplay::type::input_map{});
         pimpl.set_module(testing::make_module<testing::NullModule>());
         REQUIRE_THROWS_AS(pimpl.get_name(), std::bad_optional_access);
     }
-    SECTION("Has not ready submodule") {
+    SECTION("Has named submodule") {
+        pimpl.set_type(null_pt_t, pluginplay::type::input_map{});
         pimpl.set_module(testing::make_module<testing::NullModule>("test"));
         REQUIRE(pimpl.get_name() == "test");
     }
