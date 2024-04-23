@@ -53,7 +53,7 @@ public:
     using submod_uuid_map = typename Module::submod_uuid_map;
 
     /// Type used for RTTI
-    using rtti_type = std::type_index;
+    using rtti_type = type::rtti;
 
     /** @brief Makes an empty request.
      *
