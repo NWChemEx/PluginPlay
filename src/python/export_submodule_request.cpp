@@ -28,6 +28,12 @@ void py_set_type(SubmoduleRequest& sr, pybind11::object pt) {
     sr.set_type(rtti, py_inputs.cast<type::input_map>());
 }
 
+bool py_satisfies_property_type(SubmoduleRequest& sr, pybind11::object pt) {
+    auto py_rtti = pt.attr("type")();
+    auto rtti    = py_rtti.cast<python::PyTypeInfo>().value();
+    return sr.satisfies_property_type(rtti);
+}
+
 auto py_sr_run_as(pybind11::object sr, pybind11::object pt,
                   pybind11::args args) {
     auto py_mod = sr.attr("value")();
@@ -45,6 +51,7 @@ void export_submodule_request(py_module_reference m) {
       .def("has_name", &SubmoduleRequest::has_name)
       .def("ready", &SubmoduleRequest::ready)
       .def("set_type", &py_set_type)
+      .def("satisfies_property_type", &py_satisfies_property_type)
       .def("set_description", &SubmoduleRequest::set_description)
       .def("submod_uuids", &SubmoduleRequest::submod_uuids)
       .def("uuid", &SubmoduleRequest::uuid)

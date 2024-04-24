@@ -130,8 +130,11 @@ TEST_CASE("SubmoduleRequest : set_type") {
 
 TEST_CASE("SubmoduleRequest : satisfies_property_type") {
     SubmoduleRequest p;
+    SECTION("Type Not Set") {
+        REQUIRE_THROWS_AS(p.satisfies_property_type<testing::NullPT>(),
+                          std::runtime_error);
+    }
     p.set_type<testing::NullPT>();
-
     SECTION("Does Satisfy") {
         REQUIRE(p.satisfies_property_type<testing::NullPT>());
     }
