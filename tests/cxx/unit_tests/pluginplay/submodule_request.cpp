@@ -128,6 +128,18 @@ TEST_CASE("SubmoduleRequest : set_type") {
     }
 }
 
+TEST_CASE("SubmoduleRequest : satisfies_property_type") {
+    SubmoduleRequest p;
+    p.set_type<testing::NullPT>();
+
+    SECTION("Does Satisfy") {
+        REQUIRE(p.satisfies_property_type<testing::NullPT>());
+    }
+    SECTION("Doesn't Satisfy") {
+        REQUIRE_FALSE(p.satisfies_property_type<testing::OneIn>());
+    }
+}
+
 TEST_CASE("SubmoduleRequest : change") {
     SubmoduleRequest r;
     auto mod = testing::make_module<testing::NullModule>();

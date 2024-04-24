@@ -172,6 +172,17 @@ TEST_CASE("SubmoduleRequestPIMPL : set_type") {
     }
 }
 
+TEST_CASE("SubmoduleRequestPIMPL : satisfies_property_type") {
+    SubmoduleRequestPIMPL p;
+    pluginplay::type::input_map inputs;
+    p.set_type(null_pt_t, inputs);
+
+    SECTION("Does Satisfy") { REQUIRE(p.satisfies_property_type(null_pt_t)); }
+    SECTION("Doesn't Satisfy") {
+        REQUIRE_FALSE(p.satisfies_property_type(not_ready_pt_t));
+    }
+}
+
 TEST_CASE("SubmoduleRequestPIMPL : set_module") {
     SubmoduleRequestPIMPL p;
     auto mod = testing::make_module<testing::NullModule>();

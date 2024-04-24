@@ -195,9 +195,6 @@ public:
      */
     bool ready() const;
 
-    template<typename T>
-    bool sastisfies_property_type();
-
     /** @brief Sets the property type the submodule must satisfy
      *
      *
@@ -210,6 +207,15 @@ public:
      *        Strong throw guarantee.
      */
     void set_type(rtti_type type, type::input_map inputs);
+
+    /** @brief Check if the submodule satisfies a specific property type
+     *
+     *  @param[in] type The RTTI of the property type
+     *
+     * @throw std::runtime_error if a property type has not been set.
+     *        Strong throw guarantee.
+     */
+    bool satisfies_property_type(rtti_type type);
 
     /** @brief Sets the module that is to be used to satisfy the request
      *

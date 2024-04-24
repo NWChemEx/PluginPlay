@@ -32,20 +32,17 @@ inline bool SubmoduleRequestPIMPL::ready() const {
     return has_type() && has_module() && m_module_->ready(m_inputs_);
 }
 
-template<typename T>
-bool SubmoduleRequestPIMPL::sastisfies_property_type() {
-    if(!has_type()) throw std::runtime_error("Property Type Not Set");
-    using clean_t = std::decay_t<T>;
-    rtti_type t_rtti(typeid(clean_t));
-    return (t_rtti == m_type_.value());
-}
-
 inline void SubmoduleRequestPIMPL::set_type(type::rtti type,
                                             type::input_map inputs) {
     if(has_module() && !value().property_types().count(type))
         throw std::runtime_error("Can't change type after setting module");
     m_type_.emplace(type);
     m_inputs_ = std::move(inputs);
+}
+
+bool SubmoduleRequestPIMPL::satisfies_property_type(rtti_type type) {
+    if(!has_type()) throw std::runtime_error("Property Type Not Set");
+    return (type == m_type_.value());
 }
 
 inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {

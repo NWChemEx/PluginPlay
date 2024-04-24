@@ -214,6 +214,25 @@ public:
      */
     SubmoduleRequest& set_type(rtti_type type, type::input_map inputs);
 
+    /** @brief Check if the submodule satisfies a specific property type
+     *
+     *  @tparam T The property type that is being checked
+     *
+     * @throw std::runtime_error if a property type has not been set.
+     *        Strong throw guarantee.
+     */
+    template<typename T>
+    bool satisfies_property_type();
+
+    /** @brief Check by RTTI if the submodule satisfies a specific property type
+     *
+     *  @param type RTTI of the  property type that is being checked
+     *
+     * @throw std::runtime_error if a property type has not been set.
+     *        Strong throw guarantee.
+     */
+    bool satisfies_property_type(rtti_type type);
+
     /** @brief Sets the module that is to be used to satisfy the request
      *
      *  This function is designed to be called by the ModuleManager via the
@@ -433,9 +452,16 @@ auto& SubmoduleRequest::set_type() {
     return set_type(rtti_type(typeid(clean_t)), std::move(inputs));
 }
 
+template<typename T>
+bool SubmoduleRequest::satisfies_property_type() {
+    using clean_t = std::decay_t<T>;
+    rtti_type t_rtti(typeid(clean_t));
+    return satisfies_property_type(t_rtti);
+}
+
 template<typename property_type, typename... Args>
 auto SubmoduleRequest::run_as(Args&&... args) {
-    if(type() != std::type_index(typeid(property_type)))
+    if(type() != rtti_type(typeid(property_type)))
         throw std::invalid_argument("Wrong property type");
     return value().run_as<property_type>(std::forward<Args>(args)...);
 }
