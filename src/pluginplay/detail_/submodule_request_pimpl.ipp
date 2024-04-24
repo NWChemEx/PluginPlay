@@ -33,8 +33,8 @@ inline bool SubmoduleRequestPIMPL::ready() const {
 }
 
 template<typename T>
-bool sastisfies_property_type() {
-    if(!has_type()) throw RuntimeError("Property Type Not Set");
+bool SubmoduleRequestPIMPL::sastisfies_property_type() {
+    if(!has_type()) throw std::runtime_error("Property Type Not Set");
     using clean_t = std::decay_t<T>;
     rtti_type t_rtti(typeid(clean_t));
     return (t_rtti == m_type_.value());
