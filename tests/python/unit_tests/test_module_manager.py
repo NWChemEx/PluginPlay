@@ -57,6 +57,12 @@ class TestModuleManager(unittest.TestCase):
         # Can actually get a module
         self.assertNotEqual(self.has_mods.at('C++ no PT'), None)
 
+        # at returns reference
+        self.assertTrue(self.has_mods.at('C++ no PT').is_memoizable())
+        mod = self.has_mods.at('C++ no PT')
+        mod.turn_off_memoization()
+        self.assertFalse(self.has_mods.at('C++ no PT').is_memoizable())
+
     def test_copy_module(self):
         # Throws if there's no implementation
         self.assertRaises(Exception, self.defaulted.copy_module, 'foo', 'bar')
@@ -92,13 +98,11 @@ class TestModuleManager(unittest.TestCase):
 
     def test_rename_module(self):
         # Throws if there's not implementation
-        self.assertRaises(Exception, self.defaulted.rename_module, 'foo',
-                          'bar')
+        self.assertRaises(Exception, self.defaulted.rename_module, 'foo', 'bar')
 
         # Throws if from is not a valid key
         has_mods = self.has_mods
-        self.assertRaises(Exception, has_mods.rename_module, 'not a key',
-                          'bar')
+        self.assertRaises(Exception, has_mods.rename_module, 'not a key', 'bar')
 
         # Throws if to key is in use
         from_key = 'C++ no PT'
