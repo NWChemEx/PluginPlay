@@ -98,11 +98,13 @@ class TestModuleManager(unittest.TestCase):
 
     def test_rename_module(self):
         # Throws if there's not implementation
-        self.assertRaises(Exception, self.defaulted.rename_module, 'foo', 'bar')
+        self.assertRaises(Exception, self.defaulted.rename_module, 'foo',
+                          'bar')
 
         # Throws if from is not a valid key
         has_mods = self.has_mods
-        self.assertRaises(Exception, has_mods.rename_module, 'not a key', 'bar')
+        self.assertRaises(Exception, has_mods.rename_module, 'not a key',
+                          'bar')
 
         # Throws if to key is in use
         from_key = 'C++ no PT'

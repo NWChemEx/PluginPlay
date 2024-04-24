@@ -60,7 +60,8 @@ class TestSubmoduleRequest(unittest.TestCase):
     def test_satisfies_property_type(self):
         pt1 = test_pp.NullPT()
         pt2 = test_pp.OneIn()
-        self.assertRaises(RuntimeError, self.defaulted.satisfies_property_type, pt1)
+        self.assertRaises(RuntimeError, self.defaulted.satisfies_property_type,
+                          pt1)
         self.defaulted.set_type(pt1)
         self.assertTrue(self.defaulted.satisfies_property_type(pt1))
         self.assertFalse(self.defaulted.satisfies_property_type(pt2))
