@@ -57,6 +57,12 @@ class TestModuleManager(unittest.TestCase):
         # Can actually get a module
         self.assertNotEqual(self.has_mods.at('C++ no PT'), None)
 
+        # at returns reference
+        self.assertTrue(self.has_mods.at('C++ no PT').is_memoizable())
+        mod = self.has_mods.at('C++ no PT')
+        mod.turn_off_memoization()
+        self.assertFalse(self.has_mods.at('C++ no PT').is_memoizable())
+
     def test_copy_module(self):
         # Throws if there's no implementation
         self.assertRaises(Exception, self.defaulted.copy_module, 'foo', 'bar')

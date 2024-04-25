@@ -57,6 +57,15 @@ class TestSubmoduleRequest(unittest.TestCase):
         self.defaulted.set_type(test_pp.NullPT())
         self.assertTrue(self.defaulted.has_type())
 
+    def test_satisfies_property_type(self):
+        pt1 = test_pp.NullPT()
+        pt2 = test_pp.OneIn()
+        self.assertRaises(RuntimeError, self.defaulted.satisfies_property_type,
+                          pt1)
+        self.defaulted.set_type(pt1)
+        self.assertTrue(self.defaulted.satisfies_property_type(pt1))
+        self.assertFalse(self.defaulted.satisfies_property_type(pt2))
+
     def test_set_description(self):
         self.assertFalse(self.defaulted.has_description())
         self.defaulted.set_description("Hello World!")

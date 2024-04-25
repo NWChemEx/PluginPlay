@@ -51,6 +51,8 @@ public:
 
     using submod_uuid_map = typename SubmoduleRequest::submod_uuid_map;
 
+    using rtti_type = typename SubmoduleRequest::rtti_type;
+
     /** @brief Makes an empty request.
      *
      *  The PIMPL resulting from this call will have no description, no type,
@@ -204,7 +206,16 @@ public:
      * @throw std::runtime_error if the property type has already been set.
      *        Strong throw guarantee.
      */
-    void set_type(type::rtti type, type::input_map inputs);
+    void set_type(rtti_type type, type::input_map inputs);
+
+    /** @brief Check if the submodule satisfies a specific property type
+     *
+     *  @param[in] type The RTTI of the property type
+     *
+     * @throw std::runtime_error if a property type has not been set.
+     *        Strong throw guarantee.
+     */
+    bool satisfies_property_type(rtti_type type);
 
     /** @brief Sets the module that is to be used to satisfy the request
      *
@@ -377,7 +388,7 @@ private:
     std::optional<type::description> m_desc_;
 
     /// RTTI of the property type the module must satisfy
-    std::optional<std::type_index> m_type_;
+    std::optional<rtti_type> m_type_;
 
     /// Inputs representative of those provided to the required property type
     type::input_map m_inputs_;

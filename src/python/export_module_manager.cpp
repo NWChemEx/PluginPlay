@@ -40,7 +40,8 @@ void export_module_manager(py_module_reference m) {
         [](ModuleManager& mm, std::string key,
            std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); },
         pybind11::keep_alive<1, 3>())
-      .def("at", static_cast<at_fxn>(&ModuleManager::at))
+      .def("at", static_cast<at_fxn>(&ModuleManager::at),
+           pybind11::return_value_policy::reference_internal)
       .def("copy_module", &ModuleManager::copy_module)
       .def("erase", &ModuleManager::erase)
       .def("rename_module", &ModuleManager::rename_module)

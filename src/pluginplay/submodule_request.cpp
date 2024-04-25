@@ -55,6 +55,10 @@ SubmoduleRequest& SubmoduleRequest::set_type(rtti_type type,
     return *this;
 }
 
+bool SubmoduleRequest::satisfies_property_type(rtti_type type) {
+    return m_pimpl_->satisfies_property_type(type);
+}
+
 void SubmoduleRequest::change(module_ptr new_mod) {
     m_pimpl_->set_module(new_mod);
 }

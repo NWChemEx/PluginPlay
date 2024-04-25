@@ -40,6 +40,11 @@ inline void SubmoduleRequestPIMPL::set_type(type::rtti type,
     m_inputs_ = std::move(inputs);
 }
 
+bool SubmoduleRequestPIMPL::satisfies_property_type(rtti_type type) {
+    if(!has_type()) throw std::runtime_error("Property Type Not Set");
+    return (type == m_type_.value());
+}
+
 inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {
     if(!ptr) throw std::runtime_error("Pointer does not contain a module");
     // Type will check that a property type was set
