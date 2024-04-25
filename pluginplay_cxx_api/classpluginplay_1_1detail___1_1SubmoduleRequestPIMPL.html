@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.30</span>
+   &#160;<span id="projectnumber">1.0.31</span>
    </div>
   </td>
  </tr>
@@ -92,6 +92,9 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>uuid_type</b> = type
 <tr class="memitem:a23447e46de5afda8152126fbd6fb932e"><td class="memItemLeft" align="right" valign="top"><a id="a23447e46de5afda8152126fbd6fb932e"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>submod_uuid_map</b> = typename <a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a772757c21c35cf30fcdef7f98b7eff96">SubmoduleRequest::submod_uuid_map</a></td></tr>
 <tr class="separator:a23447e46de5afda8152126fbd6fb932e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af63bd9cc963fac7e936efeb3939af59f"><td class="memItemLeft" align="right" valign="top"><a id="af63bd9cc963fac7e936efeb3939af59f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>rtti_type</b> = typename <a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a7f992c56a0ffa57cacead2bde0046921">SubmoduleRequest::rtti_type</a></td></tr>
+<tr class="separator:af63bd9cc963fac7e936efeb3939af59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -128,9 +131,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aac785ef9ccf97ea7c720b7d792187d1a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aac785ef9ccf97ea7c720b7d792187d1a">ready</a> () const</td></tr>
 <tr class="memdesc:aac785ef9ccf97ea7c720b7d792187d1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Has this request been fulfilled and is that module ready?  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aac785ef9ccf97ea7c720b7d792187d1a">More...</a><br /></td></tr>
 <tr class="separator:aac785ef9ccf97ea7c720b7d792187d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4b3b1f3c9f42743fd10616c56dc1152"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ac4b3b1f3c9f42743fd10616c56dc1152">set_type</a> (<a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a> <a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ab77fb2553c37fd4b45dcf520f74fa414">type</a>, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> inputs)</td></tr>
-<tr class="memdesc:ac4b3b1f3c9f42743fd10616c56dc1152"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the property type the submodule must satisfy.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ac4b3b1f3c9f42743fd10616c56dc1152">More...</a><br /></td></tr>
-<tr class="separator:ac4b3b1f3c9f42743fd10616c56dc1152"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d01191d0d03a5b90f55dfdccbe45a5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a6d01191d0d03a5b90f55dfdccbe45a5a">set_type</a> (rtti_type <a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ab77fb2553c37fd4b45dcf520f74fa414">type</a>, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> inputs)</td></tr>
+<tr class="memdesc:a6d01191d0d03a5b90f55dfdccbe45a5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the property type the submodule must satisfy.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a6d01191d0d03a5b90f55dfdccbe45a5a">More...</a><br /></td></tr>
+<tr class="separator:a6d01191d0d03a5b90f55dfdccbe45a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71b354ec4badf2790f8d19d948f300ac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">satisfies_property_type</a> (rtti_type <a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ab77fb2553c37fd4b45dcf520f74fa414">type</a>)</td></tr>
+<tr class="memdesc:a71b354ec4badf2790f8d19d948f300ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the submodule satisfies a specific property type.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">More...</a><br /></td></tr>
+<tr class="separator:a71b354ec4badf2790f8d19d948f300ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af336194d69948d1060420485383e6206"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af336194d69948d1060420485383e6206">set_module</a> (<a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a168a30d6970804d34051e413d0180836">module_ptr</a> ptr)</td></tr>
 <tr class="memdesc:af336194d69948d1060420485383e6206"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the module that is to be used to satisfy the request.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af336194d69948d1060420485383e6206">More...</a><br /></td></tr>
 <tr class="separator:af336194d69948d1060420485383e6206"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -764,6 +770,38 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a71b354ec4badf2790f8d19d948f300ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71b354ec4badf2790f8d19d948f300ac">&#9670;&nbsp;</a></span>satisfies_property_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::detail_::SubmoduleRequestPIMPL::satisfies_property_type </td>
+          <td>(</td>
+          <td class="paramtype">rtti_type&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the submodule satisfies a specific property type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>The RTTI of the property type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if a property type has not been set. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aa441b7d4ad71b551915dc951fabe1012"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa441b7d4ad71b551915dc951fabe1012">&#9670;&nbsp;</a></span>set_description()</h2>
 
@@ -848,8 +886,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac4b3b1f3c9f42743fd10616c56dc1152"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4b3b1f3c9f42743fd10616c56dc1152">&#9670;&nbsp;</a></span>set_type()</h2>
+<a id="a6d01191d0d03a5b90f55dfdccbe45a5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d01191d0d03a5b90f55dfdccbe45a5a">&#9670;&nbsp;</a></span>set_type()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -860,7 +898,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void pluginplay::detail_::SubmoduleRequestPIMPL::set_type </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a>&#160;</td>
+          <td class="paramtype">rtti_type&#160;</td>
           <td class="paramname"><em>type</em>, </td>
         </tr>
         <tr>
