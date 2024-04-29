@@ -26,6 +26,6 @@ jobs:
     with:
       config_file: '.github/.licenserc.yaml'
       source_dir: 'include src tests'
-      compilers: '["gcc-11", "clang-11"]'
+      compilers: '["gcc-11", "clang-14"]'
       doc_target: 'pluginplay_cxx_api'
     secrets: inherit
