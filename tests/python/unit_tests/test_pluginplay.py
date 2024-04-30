@@ -27,6 +27,6 @@ if __name__ == '__main__':
 
     loader = unittest.TestLoader()
     tests = loader.discover(my_dir)
-    testrunner = unittest.runner.TextTestRunner()
+    testrunner = unittest.runner.TextTestRunner(verbosity=2)
     ret = not testrunner.run(tests).wasSuccessful()
     sys.exit(ret)

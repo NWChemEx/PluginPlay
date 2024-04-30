@@ -59,6 +59,9 @@ void export_module_input(py_module_reference m) {
       .def(
         "value",
         [](ModuleInput& i) {
+            const auto& tid1 = typeid(pybind11::object);
+            std::cout << "py_pluginplay hash: " << tid1.hash_code()
+                      << std::endl;
             return i.value<PythonWrapper>().template unwrap<pybind11::object>();
         })
       .def("description", &ModuleInput::description)
