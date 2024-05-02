@@ -24,7 +24,7 @@ T AnyFieldBase::cast() {
     using clean_type = std::decay_t<T>;
 
     if(storing_python_object()) {
-        auto& py_obj = std::any_cast<python_reference>(m_value_);
+        auto& py_obj = boost::any_cast<python_reference>(m_value_);
         return py_obj.unwrap<T>();
     }
 
@@ -39,12 +39,12 @@ T AnyFieldBase::cast() {
         if(storing_const_reference()) {
             // This is the only possible way we use a reference wrapper
             using ref_type = std::reference_wrapper<const clean_type>;
-            return std::any_cast<ref_type>(m_value_).get();
+            return boost::any_cast<ref_type>(m_value_).get();
         }
     } // else: assert_convertible will catch by_mutable_ref and
       // storing_const_ref
 
-    return std::any_cast<T>(m_value_);
+    return boost::any_cast<T>(m_value_);
 }
 
 template<typename T>
@@ -54,7 +54,7 @@ T AnyFieldBase::cast() const {
     using clean_type = std::decay_t<T>;
 
     if(storing_python_object()) {
-        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        const auto& py_obj = boost::any_cast<const_python_reference>(m_value_);
         return py_obj.unwrap<T>();
     }
 
@@ -68,9 +68,9 @@ T AnyFieldBase::cast() const {
 
     if(storing_const_reference()) {
         using ref_type = std::reference_wrapper<const clean_type>;
-        return std::any_cast<ref_type>(m_value_).get();
+        return boost::any_cast<ref_type>(m_value_).get();
     }
-    return std::any_cast<T>(m_value_);
+    return boost::any_cast<T>(m_value_);
 }
 
 template<typename T>
@@ -92,7 +92,7 @@ bool AnyFieldBase::is_convertible() noexcept {
 
     // Getting here means it's stored by mutable value and we can return it
     // however the user wants (as long as the object's actually that type...)
-    return std::any_cast<clean_type>(&m_value_) != nullptr;
+    return boost::any_cast<clean_type>(&m_value_) != nullptr;
 }
 
 template<typename T>
@@ -101,7 +101,7 @@ bool AnyFieldBase::is_convertible() const noexcept {
 
     // Trying to convert a Python object to a C++ object
     if(storing_python_object()) {
-        const auto& py_obj = std::any_cast<const_python_reference>(m_value_);
+        const auto& py_obj = boost::any_cast<const_python_reference>(m_value_);
         return py_obj.is_convertible<T>();
     }
 
@@ -125,10 +125,10 @@ bool AnyFieldBase::is_convertible() const noexcept {
         // before comparing
         if(storing_const_reference()) {
             using ref_type = std::reference_wrapper<const clean_type>;
-            return std::any_cast<ref_type>(&m_value_) != nullptr;
+            return boost::any_cast<ref_type>(&m_value_) != nullptr;
         }
         // Otherwise just compare them
-        return std::any_cast<clean_type>(&m_value_) != nullptr;
+        return boost::any_cast<clean_type>(&m_value_) != nullptr;
     } else {
         return false;
     }

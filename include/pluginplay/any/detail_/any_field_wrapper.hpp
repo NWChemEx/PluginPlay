@@ -69,7 +69,10 @@ public:
     /// Type used to wrap Python objects
     using typename base_type::python_value;
 
-    /// This is the type of the object actually in the std::any
+    /// Type used to store values
+    using typename base_type::value_type;
+
+    /// This is the type of the object actually in the any
     using wrapped_type = std::conditional_t<wrap_const_ref_v, ref_wrapper_t, T>;
 
     /** @brief Makes an AnyFieldWrapper by wrapping the provided value.
@@ -93,11 +96,11 @@ public:
      *    alive for the lifetime of the AnyFieldWrapper.
      *
      *  N.B. if @p U is not an implicityly convertible to type @p T you will get
-     *  a compiler error saying there is no valid std::any ctor for @p U.
+     *  a compiler error saying there is no valid any ctor for @p U.
      *
      *  @param[in] value2wrap The object being passed as an input.
      *
-     *  @throw ??? If wrapping @p value2wrap in a std::any throws. Same throw
+     *  @throw ??? If wrapping @p value2wrap in an any throws. Same throw
      *             guarantee.
      */
     template<typename U,
@@ -145,9 +148,9 @@ private:
     /// Implements storing_python_object
     bool storing_python_object_() const noexcept override;
 
-    /// Code factorization for wrapping an object of type @p U in a std::any
+    /// Code factorization for wrapping an object of type @p U in an any
     template<typename U>
-    std::any wrap_value_(U&& value2wrap) const;
+    value_type wrap_value_(U&& value2wrap) const;
 };
 
 } // namespace pluginplay::any::detail_

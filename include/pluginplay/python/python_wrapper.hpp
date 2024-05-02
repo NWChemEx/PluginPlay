@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <any>
+#include <boost/any.hpp>
 #include <stdexcept>
 #ifdef BUILD_PYBIND11
 #include <memory>
@@ -30,14 +30,14 @@ namespace pluginplay::python {
  *  the box, we just need a few redirections. The PythonWrapper class wraps a
  *  pybind11 Python object and gives it the expected API.
  *
- *  @note We actually hold the pybind11 object in a std::any. This is because
+ *  @note We actually hold the pybind11 object in an any. This is because
  *        Pybind11 has hidden symbols by default an trying to directly hold the
  *        Pybind11 object leads to compiler warnings.
  */
 class PythonWrapper {
 public:
     /// How we hold the object internally
-    using value_type = std::any;
+    using value_type = boost::any;
 
     /// The type of a Python object, as seen from C++
     using py_object_type = pybind11::object;
@@ -56,11 +56,10 @@ public:
      *
      *  @param[in] py_value The Python object to wrap
      *
-     *  @throw ??? if making the internal std::any fails. Strong throw
+     *  @throw ??? if making the internal any fails. Strong throw
      *             guarantee.
      */
-    explicit PythonWrapper(py_object_type py_value) :
-      m_value_(std::make_any<py_object_type>(py_value)) {}
+    explicit PythonWrapper(py_object_type py_value) : m_value_(py_value) {}
 
     /** @brief Determines whether or not the Python object *this was
      *         constructed with actually holds a value.
@@ -183,15 +182,15 @@ public:
     }
 
 private:
-    /// Code factorization for unwrapping the mutable std::any
-    py_reference unwrap_() { return std::any_cast<py_reference>(m_value_); }
+    /// Code factorization for unwrapping the mutable any
+    py_reference unwrap_() { return boost::any_cast<py_reference>(m_value_); }
 
-    /// Code factorization for unwrapping the read-only std::any
+    /// Code factorization for unwrapping the read-only any
     const_py_reference unwrap_() const {
-        return std::any_cast<const_py_reference>(m_value_);
+        return boost::any_cast<const_py_reference>(m_value_);
     }
 
-    /// The actual Python object, held in a std::any
+    /// The actual Python object, held in an any
     value_type m_value_;
 
     /// A buffer for holding the newly created C++ object
@@ -310,11 +309,11 @@ T PythonWrapper::unwrap() {
     }
     // User wants the converted C++ value by reference or const reference
     else {
-        if(!m_buffer_.has_value()) {
+        if(m_buffer_.empty()) {
             auto cxx_value = py_value.cast<clean_type>();
-            m_buffer_      = std::make_any<clean_type>(std::move(cxx_value));
+            m_buffer_      = std::move(cxx_value);
         }
-        return std::any_cast<T>(m_buffer_);
+        return boost::any_cast<T>(m_buffer_);
     }
 }
 
@@ -344,6 +343,9 @@ namespace pluginplay::python {
  */
 class PythonWrapper {
 public:
+    /// How we hold the object internally
+    using value_type = boost::any;
+
     PythonWrapper() { error_(); }
 
     template<typename T>
@@ -354,13 +356,13 @@ public:
     template<typename T>
     T unwrap() {
         error_();
-        return std::any_cast<T>(m_value_); // Won't actually get here...
+        return boost::any_cast<T>(m_value_); // Won't actually get here...
     }
 
     template<typename T>
     T unwrap() const {
         error_();
-        return std::any_cast<T>(m_value_); // Won't actually get here...
+        return boost::any_cast<T>(m_value_); // Won't actually get here...
     }
 
     template<typename T>
@@ -373,7 +375,7 @@ public:
     bool operator!=(const PythonWrapper& rhs) { return false; }
 
 private:
-    std::any m_value_;
+    value_type m_value_;
     void error_() const {
         throw std::runtime_error("PluginPlay was not configured with Pybind11 "
                                  "support");
