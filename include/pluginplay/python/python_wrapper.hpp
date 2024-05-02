@@ -73,11 +73,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    bool has_value() const noexcept {
-        try {
-            return static_cast<bool>(unwrap_());
-        } catch(const std::bad_any_cast& e) { return false; }
-    }
+    bool has_value() const noexcept { return static_cast<bool>(unwrap_()); }
 
     /** @brief Can the wrapped Python object be converted to type @p T?
      *
