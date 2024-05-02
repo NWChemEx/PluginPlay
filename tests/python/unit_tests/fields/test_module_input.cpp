@@ -21,8 +21,6 @@ namespace test_pluginplay {
 using namespace pluginplay;
 
 void test_module_input(pybind11::module_& m) {
-    const auto& tid1 = typeid(pybind11::object);
-    std::cout << "test_pluginplay hash: " << tid1.hash_code() << std::endl;
     auto m_test = m.def_submodule("test_module_input");
 
     // This makes a ModuleInput which expects an integer
