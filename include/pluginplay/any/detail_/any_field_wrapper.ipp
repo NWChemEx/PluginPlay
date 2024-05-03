@@ -105,8 +105,9 @@ bool ANY_FIELD_WRAPPER::storing_python_object_() const noexcept {
 
 TEMPLATE_PARAMS
 template<typename U>
-std::any ANY_FIELD_WRAPPER::wrap_value_(U&& value2wrap) const {
-    return std::make_any<wrapped_type>(std::forward<U>(value2wrap));
+typename ANY_FIELD_WRAPPER::value_type ANY_FIELD_WRAPPER::wrap_value_(
+  U&& value2wrap) const {
+    return boost::any(std::move(wrapped_type(std::forward<U>(value2wrap))));
 }
 
 #undef ANY_FIELD_WRAPPER

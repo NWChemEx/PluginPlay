@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <any>
+#include <boost/any.hpp>
 #include <exception>
 #include <memory>
 #include <ostream>
@@ -42,6 +42,9 @@ public:
 
     /// A read-only reference to a Python object
     using const_python_reference = const python_value&;
+
+    /// The type used to store the value
+    using value_type = boost::any;
 
     /** @brief Polymorphic copy
      *
@@ -307,7 +310,7 @@ public:
 protected:
     /// AnyWrappers are always created via AnyResultWrapper/AnyInputWrapper
     ///@{
-    AnyFieldBase(std::any da_any) : m_value_(std::move(da_any)) {}
+    AnyFieldBase(value_type da_any) : m_value_(std::move(da_any)) {}
     AnyFieldBase(const AnyFieldBase& other) = delete;
     ///@}
 
@@ -351,7 +354,7 @@ private:
     void error_if_not_convertible_() const;
 
     /// The type-erased value
-    std::any m_value_;
+    value_type m_value_;
 };
 
 } // namespace pluginplay::any::detail_
