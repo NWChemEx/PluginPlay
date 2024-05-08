@@ -84,6 +84,15 @@ class TestModule(unittest.TestCase):
         # Is actually ready to run
         self.assertEqual(self.ready_mod.list_not_ready(), {})
 
+    def test_ready(self):
+        self.assertFalse(self.not_ready.ready())
+        self.assertTrue(self.ready_mod.ready())
+
+        pt = test_pp.TwoIn()
+        inps = pt.inputs()
+        self.assertTrue(self.not_ready.ready(pt))
+        self.assertTrue(self.not_ready.ready(inps))
+
     def test_reset_cache(self):
         # The main cache lives in the PIMPL, not the implementation (so this
         # should work)

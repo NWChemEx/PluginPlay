@@ -45,7 +45,13 @@ void export_module(py_module_reference m) {
       .def("locked", &Module::locked)
       .def("list_not_ready", &Module::list_not_ready,
            pybind11::arg("in_inputs") = type::input_map{})
-      .def("ready", static_cast<ready_fxn>(&Module::ready))
+      .def("ready", static_cast<ready_fxn>(&Module::ready),
+           pybind11::arg("inps") = type::input_map{})
+      .def("ready",
+           [](Module& self, pybind11::object pt) {
+               auto py_inputs = pt.attr("inputs")();
+               return self.ready(py_inputs.cast<type::input_map>());
+           })
       .def("reset_cache", &Module::reset_cache)
       .def("reset_internal_cache", &Module::reset_internal_cache)
       .def("is_memoizable", &Module::is_memoizable)
