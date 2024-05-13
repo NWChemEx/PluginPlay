@@ -48,7 +48,7 @@
 // For the purposes of this tutorial we reuse the property types from our
 // property type tutorial and the modules from our module tutorial. The next
 // two lines include the relevant header files
-#include "workflow.hpp"
+#include "load_modules.hpp"
 #include <pluginplay/pluginplay.hpp>
 
 // TUTORIAL_START_SKIP

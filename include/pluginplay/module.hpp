@@ -28,7 +28,7 @@ class ModuleBase;
 
 namespace detail_ {
 class ModulePIMPL;
-class ModuleManagerPIMPL;
+struct ModuleManagerPIMPL;
 } // namespace detail_
 
 /** @brief The public API of all modules.

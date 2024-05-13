@@ -42,7 +42,7 @@ TEST_CASE("ModuleManager") {
 
         mm.add_module("a key", std::make_shared<mod_t>());
         mm.add_module("b key", std::make_shared<testing::ReadyModule>());
-        auto count = 0;
+        decltype(mm.size()) count = 0;
         for(auto& [key, mod] : mm) {
             count += 1;
             REQUIRE("key" == key.substr(key.size() - 3));

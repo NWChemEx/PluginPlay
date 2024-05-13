@@ -22,7 +22,7 @@
 
 namespace pluginplay::cache {
 namespace detail_ {
-class ModuleCachePIMPL;
+struct ModuleCachePIMPL;
 }
 
 /** @brief Class storing the memoized results for a particular module

@@ -132,7 +132,6 @@ TEMPLATE_LIST_TEST_CASE("ValueProxyMapper", "", testing::test_types) {
         // Still in ProxyMapMaker
         REQUIRE(pmapper->count(value0));
         // Check that we called backup on pmapper
-        TestType v{};
         REQUIRE(pproxy_sub_sub_db->count(1.23));
         REQUIRE(pproxy_sub_sub_db->at(1.23).get() == mapped_value0["foo"]);
         // No longer in sub_db

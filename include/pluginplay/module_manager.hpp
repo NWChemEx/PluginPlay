@@ -24,7 +24,7 @@
 namespace pluginplay {
 
 namespace detail_ {
-class ModuleManagerPIMPL;
+struct ModuleManagerPIMPL;
 }
 
 /** @brief Class responsible for manipulating

@@ -308,7 +308,7 @@ struct ABaseClass {
 struct DerivedClass : ABaseClass {
     double y;
 
-    DerivedClass(double _y, int _x) : y(_y), ABaseClass(_x) {}
+    DerivedClass(double _y, int _x) : ABaseClass(_x), y(_y)  {}
 
     bool operator==(const DerivedClass& rhs) const noexcept {
         return y == rhs.y && ABaseClass::operator==(rhs);
