@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.34</span>
+   &#160;<span id="projectnumber">1.0.35</span>
    </div>
   </td>
  </tr>
@@ -172,7 +172,7 @@ $(function() {
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
 <div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa41e4fd159a783b8c2c3c96940b2f26c">  168</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa41e4fd159a783b8c2c3c96940b2f26c">copy_module</a>(<span class="keyword">const</span> <a class="code" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&amp; old_key, <a class="code" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key) {</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        assert_unique_key_(new_key);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <a class="code" href="classpluginplay_1_1Module.html">Module</a> mod = std::move(m_modules.at(old_key)-&gt;unlocked_copy());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <a class="code" href="classpluginplay_1_1Module.html">Module</a> mod = m_modules.at(old_key)-&gt;unlocked_copy();</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keyword">auto</span> ptr   = std::make_shared&lt;Module&gt;(std::move(mod));</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        ptr-&gt;set_name(new_key);</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        m_modules.emplace(std::move(new_key), ptr);</div>
