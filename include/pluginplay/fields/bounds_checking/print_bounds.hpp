@@ -21,10 +21,10 @@
 namespace pluginplay::bounds_checking {
 
 template<typename T, typename Op>
-class CompareTo;
+struct CompareTo;
 
 template<typename T>
-class InRange;
+struct InRange;
 
 namespace detail_ {
 

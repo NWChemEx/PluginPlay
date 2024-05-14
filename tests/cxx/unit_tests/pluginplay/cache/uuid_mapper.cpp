@@ -34,7 +34,7 @@ TEMPLATE_LIST_TEST_CASE("UUIDMapper", "", testing::test_types) {
 
     auto [pinner, db] = testing::make_nested_native<key_type, uuid_type>();
 
-    key_type key0;
+    auto key0 = key_type{};
     auto key1 = testing::lexical_cast<key_type>("42");
 
     uuid_db_type uuid_db(std::make_unique<decltype(db)>(std::move(db)));
@@ -110,7 +110,6 @@ TEST_CASE("UUIDMapper<AnyField>") {
       testing::make_transposer<any_type, uuid_type>();
 
     auto sub_db = std::make_unique<decltype(sub)>(std::move(sub));
-    auto psub   = sub_db.get();
     uuid_db_type db(std::move(sub_db));
 
     SECTION("Wrap a double by const ref") {

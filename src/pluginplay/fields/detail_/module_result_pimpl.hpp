@@ -232,7 +232,7 @@ inline void ModuleResultPIMPL::set_type(type::rtti new_type) {
 
 inline void ModuleResultPIMPL::set_value(shared_any new_value) {
     // This'll throw bad optional_access if we haven't set the type
-    auto t            = type();
+    type();
     bool is_corr_type = (*m_type_check_)(*new_value);
     if(!is_corr_type) {
         std::string msg{"Value is not of type: "};

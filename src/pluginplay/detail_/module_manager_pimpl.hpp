@@ -167,7 +167,7 @@ struct ModuleManagerPIMPL {
      */
     void copy_module(const type::key& old_key, type::key new_key) {
         assert_unique_key_(new_key);
-        Module mod = std::move(m_modules.at(old_key)->unlocked_copy());
+        Module mod = m_modules.at(old_key)->unlocked_copy();
         auto ptr   = std::make_shared<Module>(std::move(mod));
         ptr->set_name(new_key);
         m_modules.emplace(std::move(new_key), ptr);

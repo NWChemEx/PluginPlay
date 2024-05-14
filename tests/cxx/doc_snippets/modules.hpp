@@ -26,7 +26,7 @@ DECLARE_MODULE(ClassicalForce);
 template<typename FloatingPointType>
 DECLARE_MODULE(TemplatedCoulombsLaw);
 
-extern template class TemplatedCoulombsLaw<float>;
-extern template class TemplatedCoulombsLaw<double>;
+extern template struct TemplatedCoulombsLaw<float>;
+extern template struct TemplatedCoulombsLaw<double>;
 
 } // namespace pluginplay_examples

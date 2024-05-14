@@ -441,7 +441,7 @@ private:
 
 inline SubmoduleRequest& SubmoduleRequest::operator=(
   const SubmoduleRequest& rhs) {
-    return *this = std::move(SubmoduleRequest(rhs));
+    return *this = SubmoduleRequest(rhs);
 }
 
 template<typename T>

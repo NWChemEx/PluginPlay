@@ -22,7 +22,7 @@ namespace pluginplay {
 //------------------------------Implementations---------------------------------
 
 inline ModuleResult& ModuleResult::operator=(const ModuleResult& rhs) {
-    return *this = std::move(ModuleResult(rhs));
+    return *this = ModuleResult(rhs);
 }
 
 template<typename T>
@@ -44,7 +44,7 @@ void ModuleResult::change(T&& new_value) {
     if constexpr(is_shared_any)
         change_(new_value);
     else if constexpr(detail_::IsCString<T>::value)
-        change_(std::move(wrap_value_(std::string(new_value))));
+        change_(wrap_value_(std::string(new_value)));
     else
         change_(std::move(wrap_value_(std::forward<T>(new_value))));
 }

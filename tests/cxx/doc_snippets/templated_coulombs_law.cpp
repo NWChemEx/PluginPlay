@@ -75,7 +75,7 @@ TEMPLATED_MODULE_RUN(TemplatedCoulombsLaw, FloatingPointType) {
     return prop_type::wrap_results(rv, E);
 }
 
-template class TemplatedCoulombsLaw<float>;
-template class TemplatedCoulombsLaw<double>;
+template struct TemplatedCoulombsLaw<float>;
+template struct TemplatedCoulombsLaw<double>;
 
 } // namespace pluginplay_examples

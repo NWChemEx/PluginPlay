@@ -231,7 +231,7 @@ private:
          * the string summary.
          */
         const auto area      = base * height;
-        const auto perimeter = 2 * (base + height);
+        const auto perimeter = 2 * (base1 + height1);
         const auto summary = name + " has an area of " + std::to_string(area) +
                              " and a perimeter of " + std::to_string(perimeter);
 

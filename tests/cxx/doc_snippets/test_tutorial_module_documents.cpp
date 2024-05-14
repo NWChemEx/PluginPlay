@@ -49,8 +49,9 @@ TEST_CASE("tutorial_modules_docs") {
         // Generate module documentation at the given path
         pluginplay::printing::document_modules(mm, docs_path);
 
-        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
-                              std::filesystem::directory_iterator{}) ==
-                mm.size() + 1); // +1 for index.rst
+        decltype(mm.size()) distance(
+          std::distance(std::filesystem::directory_iterator(docs_path),
+                        std::filesystem::directory_iterator{}));
+        REQUIRE(distance == mm.size() + 1); // +1 for index.rst
     }
 }

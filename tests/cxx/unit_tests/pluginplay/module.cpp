@@ -164,11 +164,11 @@ TEST_CASE("Module : reset_cache") {
     auto in = mod.inputs();
     in.at("Option 1").change(1);
 
-    auto result1 = mod.run(in).at("Result 1").value<int>();
+    mod.run(in).at("Result 1").value<int>();
     REQUIRE(mod_pimpl.is_cached(in));
     mod.reset_cache();
     REQUIRE_FALSE(mod_pimpl.is_cached(in));
-    auto result2 = mod.run(in).at("Result 1").value<int>();
+    mod.run(in).at("Result 1").value<int>();
     REQUIRE(mod_pimpl.is_cached(in));
 }
 

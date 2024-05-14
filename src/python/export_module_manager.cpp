@@ -24,9 +24,7 @@
 namespace pluginplay {
 
 void export_module_manager(py_module_reference m) {
-    using module_base_ptr = ModuleManager::module_base_ptr;
-    using at_fxn          = Module& (ModuleManager::*)(const type::key&);
-    using add_mod_fxn     = void (ModuleManager::*)(type::key, module_base_ptr);
+    using at_fxn = Module& (ModuleManager::*)(const type::key&);
 
     using py_obj = pybind11::object;
     using python::PythonWrapper;

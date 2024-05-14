@@ -20,7 +20,7 @@
 
 namespace pluginplay::cache {
 namespace detail_ {
-class ModuleManagerCachePIMPL;
+struct ModuleManagerCachePIMPL;
 }
 
 class ModuleCache;

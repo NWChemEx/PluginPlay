@@ -274,7 +274,7 @@ TEST_CASE("print_inputs") {
           "- Opaque? : True\n"
           "- Domain Restrictions :\n"
           "\n"
-          "- Type == int\n"
+          "  - Type == int\n"
           "\n"
           "Option 2\n"
           "========\n"
@@ -285,7 +285,8 @@ TEST_CASE("print_inputs") {
           "- Opaque? : True\n"
           "- Domain Restrictions :\n"
           "\n"
-          "- Type == double\n";
+          "  - Type == double\n\n";
         print_inputs(p, inputs);
+        REQUIRE(ss.str() == corr);
     }
 }

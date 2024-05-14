@@ -19,7 +19,7 @@
 namespace pluginplay {
 
 inline ModuleInput& ModuleInput::operator=(const ModuleInput& rhs) {
-    return *this = std::move(ModuleInput(rhs));
+    return *this = ModuleInput(rhs);
 }
 
 template<typename T>
@@ -118,7 +118,7 @@ auto& ModuleInput::change(T&& new_value) {
     // By convention we store strings as std::string, so we have to catch when
     // the user passed a C-string in
     if constexpr(detail_::IsCString<T>::value) {
-        change_(std::move(wrap_value_(std::string(new_value))));
+        change_(wrap_value_(std::string(new_value)));
     } else {
         change_(std::move(wrap_value_(std::forward<T>(new_value))));
     }
