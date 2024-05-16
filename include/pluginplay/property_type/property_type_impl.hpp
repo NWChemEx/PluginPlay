@@ -92,16 +92,13 @@ void PROP_TYPE::wrap_guts_(T&& rv, U&& builder, V&& value, Args&&... args) {
     using type            = std::tuple_element_t<ArgI, tuple_of_fields>;
     using clean_V         = std::decay_t<V>;
     constexpr bool is_any = std::is_same_v<clean_V, pluginplay::type::any>;
-    constexpr bool is_ref = std::is_reference_v<type>;
     detail_::STATIC_ASSERT_CONVERTIBLE_VERBOSE<V, type, ArgI>();
 
     auto key = (builder.begin() + ArgI)->first;
     if constexpr(is_any) {
         rv.at(key).change(std::forward<V>(value));
-    } else if constexpr(is_ref && !is_any) {
-        rv.at(key).change(static_cast<type>(value));
     } else {
-        rv.at(key).change(std::forward<V>(value));
+        rv.at(key).change(static_cast<type>(value));
     }
     if constexpr(sizeof...(Args) > 0)
         wrap_guts_<ArgI + 1>(std::forward<T>(rv), std::forward<U>(builder),
