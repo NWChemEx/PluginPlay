@@ -120,6 +120,7 @@ nwx_add_pybind11_module(
 if("${BUILD_TESTING}")
     set(cxx_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(tests_src_dir "${cxx_test_dir}/unit_tests/${PROJECT_NAME}")
+    set(regression_test_dir "${cxx_test_dir}/regression_tests")
     set(examples_src_dir "${cxx_test_dir}/doc_snippets")
 
     ### C++ Testing ###
@@ -134,6 +135,13 @@ if("${BUILD_TESTING}")
     cmaize_add_tests(
         test_unit_${PROJECT_NAME}
         SOURCE_DIR ${tests_src_dir}
+        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    )
+
+    cmaize_add_tests(
+        test_regression_${PROJECT_NAME}
+        SOURCE_DIR ${regression_test_dir}
         INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
