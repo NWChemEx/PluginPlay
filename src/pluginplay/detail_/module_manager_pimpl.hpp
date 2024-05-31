@@ -243,7 +243,7 @@ struct ModuleManagerPIMPL {
 
     void set_runtime(runtime_ptr runtime) noexcept { m_runtime_ = runtime; }
 
-    runtime_type& get_runtime() const { return *m_runtime_.get(); }
+    runtime_type& get_runtime() const { return *m_runtime_; }
 
     ModuleManager::key_container_type keys() const {
         ModuleManager::key_container_type keys;

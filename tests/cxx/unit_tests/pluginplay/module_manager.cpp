@@ -51,6 +51,16 @@ TEST_CASE("ModuleManager") {
         REQUIRE(count == mm.size());
     }
 
+    SECTION("set_runtime") {
+        auto prv = std::make_shared<parallelzone::runtime::RuntimeView>();
+        mm.set_runtime(prv);
+        REQUIRE(&mm.get_runtime() == prv.get());
+    }
+
+    SECTION("get_runtime") {
+        REQUIRE(mm.get_runtime() == parallelzone::runtime::RuntimeView());
+    }
+
     SECTION("keys") {
         using mod_t = testing::NoPTModule; // Type of the Module we're adding
 
