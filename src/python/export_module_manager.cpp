@@ -16,6 +16,7 @@
 
 #include "export_pluginplay.hpp"
 #include "py_module_base.hpp"
+#include <parallelzone/parallelzone.hpp>
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
@@ -24,7 +25,8 @@
 namespace pluginplay {
 
 void export_module_manager(py_module_reference m) {
-    using at_fxn = Module& (ModuleManager::*)(const type::key&);
+    using at_fxn       = Module& (ModuleManager::*)(const type::key&);
+    using runtime_type = typename ModuleManager::runtime_type;
 
     using py_obj = pybind11::object;
     using python::PythonWrapper;
@@ -54,6 +56,12 @@ void export_module_manager(py_module_reference m) {
            [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
            })
+      .def("set_runtime",
+           [](ModuleManager& mm, runtime_type rv) {
+               mm.set_runtime(std::make_shared<runtime_type>(std::move(rv)));
+           })
+      .def("get_runtime", &ModuleManager::get_runtime,
+           pybind11::return_value_policy::reference_internal)
       .def("keys", &ModuleManager::keys)
       .def("__getitem__", [](ModuleManager& self, const type::key& key) {
           return self.at(key);

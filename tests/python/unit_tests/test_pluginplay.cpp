@@ -50,7 +50,7 @@ PYBIND11_MODULE(py_test_pluginplay, m) {
     EXPORT_PROPERTY_TYPE(OneInOneOut, m);
 
     m.def("get_mm", []() {
-        pluginplay::ModuleManager mm(nullptr);
+        pluginplay::ModuleManager mm;
         mm.add_module<NoPTModule>("C++ no PT");
         mm.add_module<NullModule>("C++ Null PT");
         mm.add_module<DescModule>("C++ with description");

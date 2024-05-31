@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import pluginplay as pp
+import parallelzone
 import py_test_pluginplay as test_pp
 import unittest
 
@@ -202,6 +203,14 @@ class TestModuleManager(unittest.TestCase):
         module_with_description = self.has_mods['C++ with description']
         self.assertTrue(module_with_description.has_description())
         self.assertNotEqual(self.has_mods['C++ no PT'], None)
+
+    def test_set_runtime(self):
+        new_rv = parallelzone.runtime.RuntimeView()
+        self.defaulted.set_runtime(new_rv)
+        self.assertEqual(self.defaulted.get_runtime(), new_rv)
+
+    def test_get_runtime(self):
+        self.assertTrue(self.has_mods.get_runtime())
 
     def test_keys(self):
         self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
