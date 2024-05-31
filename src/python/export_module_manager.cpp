@@ -54,6 +54,8 @@ void export_module_manager(py_module_reference m) {
            [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
            })
+      .def("get_runtime", &ModuleManager::get_runtime,
+           pybind11::keep_alive<0, 1>())
       .def("keys", &ModuleManager::keys)
       .def("__getitem__", [](ModuleManager& self, const type::key& key) {
           return self.at(key);

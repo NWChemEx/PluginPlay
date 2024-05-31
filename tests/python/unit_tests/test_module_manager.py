@@ -203,6 +203,9 @@ class TestModuleManager(unittest.TestCase):
         self.assertTrue(module_with_description.has_description())
         self.assertNotEqual(self.has_mods['C++ no PT'], None)
 
+    def test_get_runtime(self):
+        self.assertIsNone(self.has_mods.get_runtime())
+
     def test_keys(self):
         self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
         self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
