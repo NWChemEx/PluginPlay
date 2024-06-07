@@ -132,12 +132,13 @@ struct ModuleManagerPIMPL {
             // added while avoiding the type_index collisions.
             // TODO: remove when a more elegant solution is determined
             m_py_bases[key] = base;
-            pimpl =
-              std::make_unique<ModulePIMPL>(m_py_bases[key], module_cache);
+            pimpl           = std::make_unique<ModulePIMPL>(m_py_bases[key],
+                                                  nullptr); //, module_cache);
         } else {
             std::type_index type(base->type());
             if(!m_bases.count(type)) m_bases[type] = base;
-            pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
+            pimpl = std::make_unique<ModulePIMPL>(m_bases[type],
+                                                  nullptr); // module_cache);
         }
         auto ptr = std::make_shared<Module>(std::move(pimpl));
         ptr->set_name(key);
