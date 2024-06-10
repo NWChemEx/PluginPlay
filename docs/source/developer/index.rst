@@ -26,3 +26,4 @@ PluginPlay work and why things are designed the way they are.
    :caption: Contents:
 
    design/index
+   how_does_run_as_work

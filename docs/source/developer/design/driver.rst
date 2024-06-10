@@ -1,5 +1,17 @@
 Driver Module Design
 
+*******************
+Why Do We Need XXX?
+*******************
+
+#. Facilitate swapping multiple modules
+#. Module conglomerates
+
+These needs are summarized in more detail below:
+
+Switching Multiple Modules
+==========================
+
 .. _fig_switching_modules:
 
 .. figure:: assets/switching_modules.png
@@ -25,3 +37,20 @@ same manner, "R" is loaded in by having "RC" call "E" and "RA" call "B" and
 "RC". While this solution works, it can be tedious depending on how nested
 the graph is. It also can be wasteful because the two graphs may have a
 substantial amount of overlap.
+
+Module Conglomerates
+====================
+
+
+API
+***
+
+template<typename PropertyType>
+std::tuple<InputMap, SubmoduleMap>
+ModuleDriver::pre_run_(InputMap inputs, SubmoduleMap submods);
+
+template<typename PropertyType>
+ResultMap ModuleDriver::run_(InputMap inputs, SubmoduleMap submods);
+
+template<typename PropertyType>
+ResultMap ModuleDriver::post_run_(InputMap inputs, SubmoduleMap submods, ResultMap results);
