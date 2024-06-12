@@ -96,7 +96,7 @@ Need for Driver Modules
    instead of "D". The question is how can both graphs be loaded into the
    ``ModuleManager`` simultaneously?
 
-Consider the two graphs shown in :numref:`_fig_switching_modules`. Let's call
+Consider the two graphs shown in :numref:`fig_switching_modules`. Let's call
 the left graph "L" and the right graph "R". If we choose to have graph "L" be
 the default graph that is loaded into the ``ModuleManager`` the user can go
 from  graph "L" to graph "R" by telling the ``ModuleManager`` to switch the
@@ -193,7 +193,7 @@ only need one or the other).
 Design 2.0
 ----------
 
-Ultimately it was realized that ``Module::run`` looks like:
+In prototyping design 1.0, it was realized that ``Module::run`` looks like:
 
 .. code-block:: c++
 
@@ -208,6 +208,9 @@ More specifically the same inputs and submods that would go to ``pre_run`` can
 just be fed to ``run``, then the same logic which would have happened in
 ``pre_run`` can just happen in ``run``. Similarly all information which would
 have been fed into ``post_run`` is also available in ``run``.
+
+Ultimately, it was thus realized that pre- and post- conditions can be handled
+as is.
 
 *******
 Summary

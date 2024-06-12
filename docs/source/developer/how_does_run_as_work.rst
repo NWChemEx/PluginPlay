@@ -22,14 +22,15 @@ function.
 
 .. _fig_run_as_call_graph:
 
-.. figure:: assets/fig_run_as_call_graph.png
+.. figure:: assets/run_as_call_graph.png
    :align: center
 
    Overview of the control flow of ``ModuleManager::run_as``. Boxes denote
    methods, ovals data. Arrows between methods point from caller to the callee.
    Arrows stemming from data indicate data is input. Arrows ending in data
    indicate that data results. When a method calls multiple sub-methods the
-   call order is depicted left-to-right.
+   call order is depicted left-to-right. Note ``pre_run`` and ``post_run`` are
+   conceptual
 
 The call graph of ``ModuleManager::run_as`` (as seen from C++)  is summarized in
 :numref:`fig_run_as_call_graph`. Briefly:
@@ -54,13 +55,7 @@ The call graph of ``ModuleManager::run_as`` (as seen from C++)  is summarized in
 #. Assuming the module is ready to run, ``Module::run`` then locks the module
    (and all submodules). A locked module can no longer have its options or
    submodules changed.
-#. Next ``Module::run`` runs any "pre-run" hooks. These are operations which
-   should be done before actually running the module. At present, this is
-   limited to checking for memoization options, but user expansion is possible.
-#. After pre-run hooks are run the actual module contents are run via
+#. After locking the module, the actual module contents are run via
    ``ModuleBase::run`` (which calls the derived class's ``run_`` method).
-#. After control returns to ``Module::run`` from ``ModuleBase::run``,
-   ``Module::run`` runs any post-run hooks (by default this includes caching
-   results, but again users can expand).
 #. The results of ``Module::run`` are type-erased, so the final step is for
    ``Module::run_as`` to restore their types before returning them to the user.
