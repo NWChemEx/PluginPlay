@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include "export_pluginplay.hpp"
+#include "../export_pluginplay.hpp"
 #include "module/py_module_base.hpp"
 #include <parallelzone/parallelzone.hpp>
 #include <pluginplay/any/any.hpp>
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
 #include <pybind11/stl.h>
 

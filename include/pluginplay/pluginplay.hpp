@@ -27,7 +27,7 @@
 #include <pluginplay/config/config.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/module/module.hpp>
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/plugin/plugin.hpp>
 #include <pluginplay/printing/printing.hpp>
 #include <pluginplay/property_type/property_type.hpp>

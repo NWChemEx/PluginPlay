@@ -26,7 +26,7 @@
 #pragma once
 #include "writing_a_module.hpp"
 #include "writing_a_property_type.hpp"
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/pluginplay.hpp>
 
 /* Populating the ModuleManager
  * ----------------------------

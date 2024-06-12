@@ -26,7 +26,7 @@
  */
 #pragma once
 #include "load_modules.hpp"
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/pluginplay.hpp>
 
 /* Running a Computation
  * ---------------------

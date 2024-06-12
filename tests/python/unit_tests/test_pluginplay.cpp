@@ -21,7 +21,7 @@
 #include "property_types.hpp"
 #include "python/test_python.hpp"
 #include "test_pluginplay.hpp"
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 

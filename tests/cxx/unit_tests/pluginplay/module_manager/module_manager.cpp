@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "pluginplay/module_manager.hpp"
+#include <pluginplay/module_manager/module_manager.hpp>
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
 
