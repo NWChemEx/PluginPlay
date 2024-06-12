@@ -63,6 +63,10 @@ void SubmoduleRequest::change(module_ptr new_mod) {
     m_pimpl_->set_module(new_mod);
 }
 
+void SubmoduleRequest::change(const SubmoduleRequest& new_mod) {
+    m_pimpl_->set_module(new_mod.m_pimpl_->data());
+}
+
 SubmoduleRequest& SubmoduleRequest::set_description(
   type::description desc) noexcept {
     m_pimpl_->set_description(std::move(desc));

@@ -51,6 +51,15 @@ private:
     using mm_cache = cache::ModuleManagerCache;
 
 public:
+    /// Type of the input-key to input-value map
+    using input_map_type = type::input_map;
+
+    /// Type of the submodule-key to submodule-value map
+    using submodule_map_type = type::submodule_map;
+
+    /// Type of result-key to result-value map
+    using result_map_type = type::result_map;
+
     /// Type of the UUID assigned to this module
     using uuid_type = utility::uuid_type;
 
@@ -95,7 +104,8 @@ public:
      *
      * This function is used by the pluginplay to run the module. Values
      * provided to it have already been validated, and memoization has been
-     * attempted. Ultimately all calls to run a module funnel to this function.
+     * attempted. Ultimately all calls to run a module funnel to this
+     * function.
      *
      * @param[in] inputs The values the module should use as input.
      * @param[in] submods The submodules the module should use.
@@ -105,8 +115,8 @@ public:
      * @throw ??? if the module throws. Strong throw guarantee because all
      *            inputs are copies.
      */
-    type::result_map run(type::input_map inputs,
-                         type::submodule_map submods) const;
+    type::result_map run(input_map_type inputs,
+                         submodule_map_type submods) const;
 
     /** @brief Used to determine if the module's description has been set.
      *
@@ -560,67 +570,6 @@ private:
     /// Is this module implemented in Python?
     bool m_is_python_ = false;
 }; // class ModuleBase
-
-// -------------------------------- Helper Macros ------------------------------
-
-/** @brief Declares a new module.
- *
- *  Modules are implemented by inheriting from ModuleBase and by implementing
- *  a default constructor and a run_ member. This macro will take care of
- *  declaring the derived class for you. The result of using this macro is a
- *  class @p module_name which properly inherits from ModuleBase.
- *
- *  @param[in] module_name The name of the class which will hold your module.
- */
-#define DECLARE_MODULE(module_name)                                \
-    struct module_name : pluginplay::ModuleBase {                  \
-        module_name();                                             \
-                                                                   \
-    private:                                                       \
-        pluginplay::type::result_map run_(                         \
-          pluginplay::type::input_map inputs,                      \
-          pluginplay::type::submodule_map submods) const override; \
-    }
-
-/** @brief Starts the definition of a Module's default constructor.
- *
- *  The module's default constructor establishes what property types it
- *  satisfies and associates meta-data with the module. This macro takes care of
- *  declaring the hook's signature so that all you need to do is declare the
- *  constructor's body.
- *
- *  @param[in] module_name The name of the class defining the module.
- */
-#define MODULE_CTOR(module_name) \
-    module_name::module_name() : pluginplay::ModuleBase(this)
-
-#define TEMPLATED_MODULE_CTOR(module_name, ...) \
-    module_name<__VA_ARGS__>::module_name() : pluginplay::ModuleBase(this)
-
-/** @brief Starts the definition of a module's run hook.
- *
- *  The run hook of a class derived from ModuleBase defines what a module does
- *  when it is executed. The hook is implemented as a member function of the
- *  @p module_name class with the macro taking care of declaring the hook's
- *  signature so that all you need to do is declare the function's body.
- *
- *  @param[in] module_name The name of the class implementing the module.
- *  @param[in] inputs Name given to the first input parameter of the run_
- *                    function. In your function's body use @p inputs to access
- *                    the inputs the user provided to your module.
- *  @param[in] submods Name given to the second input parameter of the run_
- *                     function. In your function's body use @p submods to
- *                     access the submodules provided to your module.
- */
-#define MODULE_RUN(module_name)                     \
-    pluginplay::type::result_map module_name::run_( \
-      pluginplay::type::input_map inputs,           \
-      pluginplay::type::submodule_map submods) const
-
-#define TEMPLATED_MODULE_RUN(module_name, ...)                   \
-    pluginplay::type::result_map module_name<__VA_ARGS__>::run_( \
-      pluginplay::type::input_map inputs,                        \
-      pluginplay::type::submodule_map submods) const
 
 //--------------------------------Implementations-------------------------------
 

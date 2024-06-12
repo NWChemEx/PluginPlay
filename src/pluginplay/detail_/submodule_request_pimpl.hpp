@@ -284,6 +284,16 @@ public:
      */
     Module& value();
 
+    /** @brief Retrieves the shared pointer to the module satisfying this
+     *         request.
+     *
+     *  @return The shared pointer used to hold the module satisfying this
+     *          request.
+     *
+     *  @throw None No throw guarantee.
+     */
+    module_ptr data() const { return m_module_; }
+
     /** @brief Used to retrieve the description of this request.
      *
      *  Developers are encouraged to set the description of how a submodule will

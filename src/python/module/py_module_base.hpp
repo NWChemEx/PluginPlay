@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module_base.hpp>
 #include <pluginplay/python/python.hpp>
 #include <pybind11/pybind11.h>
 

@@ -143,7 +143,7 @@ TEST_CASE("SubmoduleRequest : satisfies_property_type") {
     }
 }
 
-TEST_CASE("SubmoduleRequest : change") {
+TEST_CASE("SubmoduleRequest : change(module_ptr)") {
     SubmoduleRequest r;
     auto mod = testing::make_module<testing::NullModule>();
     SECTION("Throws if nullptr") {
@@ -161,6 +161,47 @@ TEST_CASE("SubmoduleRequest : change") {
     SECTION("Can set the module") {
         r.set_type<testing::NullPT>();
         r.change(mod);
+        REQUIRE(r.value() == *mod);
+    }
+}
+
+TEST_CASE("SubmoduleRequest : change(Module)") {
+    SubmoduleRequest r;
+    auto mod = testing::make_module<testing::NullModule>();
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(r.change(*mod), std::bad_optional_access);
+    }
+    SECTION("Throws if doesn't satisfy property type") {
+        r.set_type<testing::NullPT>();
+        auto mod2 = testing::make_module<testing::NotReadyModule>();
+        REQUIRE_THROWS_AS(r.change(*mod2), std::runtime_error);
+    }
+    SECTION("Can set the module") {
+        r.set_type<testing::NullPT>();
+        r.change(*mod);
+        REQUIRE(r.value() == *mod);
+    }
+}
+
+TEST_CASE("SubmoduleRequest : change(SubmoduleRequest)") {
+    SubmoduleRequest r, other;
+    other.set_type<testing::NullPT>();
+    auto mod = testing::make_module<testing::NullModule>();
+    other.change(mod);
+
+    SECTION("Throws if type is not set") {
+        REQUIRE_THROWS_AS(r.change(other), std::bad_optional_access);
+    }
+    SECTION("Throws if doesn't satisfy property type") {
+        r.set_type<testing::NullPT>();
+        SubmoduleRequest other2;
+        other2.set_type<testing::OneIn>();
+        other2.change(testing::make_module<testing::NotReadyModule>());
+        REQUIRE_THROWS_AS(r.change(other2), std::runtime_error);
+    }
+    SECTION("Can set the module") {
+        r.set_type<testing::NullPT>();
+        r.change(other);
         REQUIRE(r.value() == *mod);
     }
 }

@@ -15,7 +15,7 @@
  */
 
 #include "detail_/module_pimpl.hpp"
-#include "pluginplay/module.hpp"
+#include <pluginplay/module/module_class.hpp>
 #include <utilities/printing/demangler.hpp>
 
 namespace pluginplay {

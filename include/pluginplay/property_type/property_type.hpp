@@ -15,9 +15,9 @@
  */
 
 #pragma once
-#include "pluginplay/property_type/field_tuple.hpp"
-#include "pluginplay/type_traits/is_property_type.hpp"
 #include <pluginplay/fields/fields.hpp>
+#include <pluginplay/property_type/field_tuple.hpp>
+#include <pluginplay/type_traits/is_property_type.hpp>
 
 namespace pluginplay {
 namespace detail_ {

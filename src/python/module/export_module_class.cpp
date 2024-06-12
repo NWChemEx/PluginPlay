@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "export_pluginplay.hpp"
-#include <pluginplay/module.hpp>
+#include "../export_pluginplay.hpp"
+#include <pluginplay/module/module_class.hpp>
 #include <pluginplay/python/py_type_info.hpp>
 #include <pluginplay/submodule_request.hpp>
 #include <pybind11/operators.h>
@@ -32,7 +32,7 @@ pybind11::object py_module_run_as(Module& self, pybind11::object pt,
     return rv_tuple.size() != 1 ? rv_tuple : pybind11::object(rv_tuple[0]);
 }
 
-void export_module(py_module_reference m) {
+void export_module_class(py_module_reference m) {
     using ready_fxn         = bool (Module::*)(const type::input_map&) const;
     using change_submod_fxn = void (Module::*)(type::key, Module);
 

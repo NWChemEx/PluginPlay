@@ -16,9 +16,9 @@
 
 #pragma once
 #include "unit_testing_pts.hpp"
-#include <pluginplay/detail_/module_pimpl.hpp>
-#include <pluginplay/module.hpp>
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/detail_/module_pimpl.hpp>
+#include <pluginplay/module/macros.hpp>
+#include <pluginplay/module/module_class.hpp>
 #include <pluginplay/utility/uuid.hpp>
 
 namespace testing {

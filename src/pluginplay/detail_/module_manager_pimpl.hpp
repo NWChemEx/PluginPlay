@@ -15,11 +15,11 @@
  */
 
 #pragma once
-#include "module_pimpl.hpp"
+#include "../module/detail_/module_pimpl.hpp"
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/module_manager_cache.hpp>
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module_base.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <typeindex>
 

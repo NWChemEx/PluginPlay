@@ -18,7 +18,7 @@
 #include <chrono>
 #include <iomanip> // for put_time
 #include <pluginplay/cache/module_cache.hpp>
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module_base.hpp>
 #include <pluginplay/types.hpp>
 #include <utilities/timer.hpp>
 

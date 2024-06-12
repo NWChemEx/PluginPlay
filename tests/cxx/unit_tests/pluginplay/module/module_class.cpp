@@ -16,7 +16,7 @@
 
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <pluginplay/module.hpp>
+#include <pluginplay/module/module_class.hpp>
 #include <regex>
 
 using namespace pluginplay;
@@ -159,7 +159,7 @@ TEST_CASE("Module : ready") {
 TEST_CASE("Module : reset_cache") {
     auto mod_pimpl = make_module_pimpl_with_cache<RealDeal>();
     auto mod       = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
+            std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_pimpl));
 
     auto in = mod.inputs();
     in.at("Option 1").change(1);
@@ -175,7 +175,7 @@ TEST_CASE("Module : reset_cache") {
 TEST_CASE("Module : reset_internal_cache") {
     auto mod_base_ptr = std::make_shared<testing::NullModule>();
     auto mod          = pluginplay::Module(
-      std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
+               std::make_unique<pluginplay::detail_::ModulePIMPL>(mod_base_ptr));
 
     pluginplay::cache::ModuleManagerCache mm_cache;
     auto cache = mm_cache.get_or_make_user_cache("foo");

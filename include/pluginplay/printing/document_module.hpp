@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include "pluginplay/module.hpp"
+#include <pluginplay/module/module_class.hpp>
 #include <string>
 
 namespace pluginplay::printing {

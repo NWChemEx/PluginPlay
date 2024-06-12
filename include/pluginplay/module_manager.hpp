@@ -15,11 +15,11 @@
  */
 
 #pragma once
-#include "pluginplay/module.hpp"
-#include "pluginplay/module_base.hpp"
-#include "pluginplay/types.hpp"
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
+#include <pluginplay/module/module_base.hpp>
+#include <pluginplay/module/module_class.hpp>
+#include <pluginplay/types.hpp>
 
 namespace pluginplay {
 

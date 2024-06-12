@@ -20,8 +20,8 @@
 #include <string>
 #include <vector>
 
-#include "pluginplay/module_manager.hpp"
-#include "pluginplay/printing/document_module.hpp"
+#include <pluginplay/module_manager.hpp>
+#include <pluginplay/printing/document_module.hpp>
 
 namespace pluginplay::printing {
 

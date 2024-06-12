@@ -17,7 +17,7 @@
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
 #include <parallelzone/runtime/runtime_view.hpp>
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module_base.hpp>
 
 using namespace pluginplay;
 

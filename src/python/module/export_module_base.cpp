@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "export_pluginplay.hpp"
+#include "../export_pluginplay.hpp"
 #include "py_module_base.hpp"
 
 namespace pluginplay {

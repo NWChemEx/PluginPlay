@@ -15,7 +15,7 @@
  */
 
 #include "../test_common.hpp"
-#include "pluginplay/lambda_module.hpp"
+#include <pluginplay/module/lambda_module.hpp>
 #include <catch2/catch.hpp>
 
 /* Testing strategy.

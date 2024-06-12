@@ -25,11 +25,8 @@
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/cache/cache.hpp>
 #include <pluginplay/config/config.hpp>
-#include <pluginplay/facade_module.hpp>
 #include <pluginplay/fields/fields.hpp>
-#include <pluginplay/lambda_module.hpp>
-#include <pluginplay/module.hpp>
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module.hpp>
 #include <pluginplay/module_manager.hpp>
 #include <pluginplay/plugin/plugin.hpp>
 #include <pluginplay/printing/printing.hpp>
