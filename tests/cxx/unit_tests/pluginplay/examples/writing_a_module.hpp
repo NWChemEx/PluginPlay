@@ -26,7 +26,7 @@
  */
 #pragma once
 #include "writing_a_property_type.hpp"
-#include <pluginplay/module_base.hpp>
+#include <pluginplay/module/module_base.hpp>
 
 /* Declaring the Module
  * --------------------

@@ -16,7 +16,7 @@
 
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
-#include <pluginplay/module.hpp>
+#include <pluginplay/module/module_class.hpp>
 #include <regex>
 
 using namespace pluginplay;

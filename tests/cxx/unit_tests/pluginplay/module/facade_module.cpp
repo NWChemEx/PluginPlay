@@ -15,8 +15,8 @@
  */
 
 #include "../test_common.hpp"
-#include "pluginplay/facade_module.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/module/facade_module.hpp>
 
 TEST_CASE("FacadeModule : single return") {
     auto f = pluginplay::make_facade<testing::OneOut>(2);

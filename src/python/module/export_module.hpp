@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 NWChemEx-Project
+ * Copyright 2024 NWChemEx Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-#include "any/export_any.hpp"
-#include "fields/export_fields.hpp"
-#include "module/export_module.hpp"
-#include "printing/export_printing.hpp"
-#include "python/export_python.hpp"
-#include <pybind11/pybind11.h>
+#pragma once
+
+#include "../export_pluginplay.hpp"
 
 namespace pluginplay {
 
-PYBIND11_MODULE(pluginplay, m) {
-    any::export_any(m);
-    export_fields(m);
-    python::export_python(m);
-    export_module(m);
-    export_module_manager(m);
-    export_submodule_request(m);
-    export_printing(m);
+void export_module_base(py_module_reference m);
+void export_module_class(py_module_reference m);
+
+inline void export_module(py_module_reference m) {
+    export_module_base(m);
+    export_module_class(m);
 }
 
 } // namespace pluginplay

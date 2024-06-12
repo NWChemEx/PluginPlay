@@ -15,9 +15,9 @@
  */
 
 #pragma once
-#include "pluginplay/module.hpp"
-#include "pluginplay/types.hpp"
 #include <memory>
+#include <pluginplay/module/module_class.hpp>
+#include <pluginplay/types.hpp>
 #include <string>
 
 namespace pluginplay {
@@ -247,6 +247,40 @@ public:
      *                            Strong throw guarantee.
      */
     void change(module_ptr new_module);
+
+    /** @brief Fulfills the request with @p new_module.
+     *
+     *  This method is a convenience method for working with Module objects
+     *  instead of pointers. It simply wraps @p new_module in a shared_ptr and
+     *  dispatches to the shared_ptr overload.
+     *
+     *  @param[in] new_module The module which should be used to satisfy this
+     *                        request.
+     *
+     *  @throw std::bad_optional_access if the property type has not been set
+     *                                  yet. Strong throw guarantee.
+     *  @throw std::runtime_error if @p new_module is not of the correct
+     *                            property type. Strong throw guarantee.
+     */
+    void change(Module new_module) {
+        change(std::make_shared<Module>(std::move(new_module)));
+    }
+
+    /** @brief Fulfills the request with the module used to satisfy another
+     *         request.
+     *
+     *  This method fulfills *this with the same module used to satisfy request
+     *  @p new_module.
+     *
+     *  @param[in] new_module The request providing the module.
+     *
+     *  @throw std::bad_optional_access if the property type has not been set
+     *                                  yet. Strong throw guarantee.
+     *  @throw std::runtime_error if @p new_module is not of the correct
+     *                            property type. Strong throw guarantee.
+     *
+     */
+    void change(const SubmoduleRequest& new_module);
 
     /** @brief Sets the human-readable description for the this request.
      *

@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#include "pluginplay/detail_/field_tuple_traits.hpp"
 #include <functional>
+#include <pluginplay/detail_/field_tuple_traits.hpp>
 #include <stdexcept>
 
 namespace pluginplay {

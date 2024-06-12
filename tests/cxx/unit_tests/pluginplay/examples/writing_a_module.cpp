@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "pluginplay/detail_/module_pimpl.hpp"
+#include "pluginplay/module/detail_/module_pimpl.hpp"
 #include "writing_a_module.hpp"
 #include <catch2/catch.hpp>
 

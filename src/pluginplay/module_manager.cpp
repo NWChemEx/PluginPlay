@@ -15,7 +15,7 @@
  */
 
 #include "detail_/module_manager_pimpl.hpp"
-#include "detail_/module_pimpl.hpp"
+#include "module/detail_/module_pimpl.hpp"
 #include "pluginplay/module_manager.hpp"
 
 namespace pluginplay {

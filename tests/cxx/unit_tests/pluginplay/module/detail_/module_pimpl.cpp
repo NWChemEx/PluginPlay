@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "../test_common.hpp"
-#include "pluginplay/detail_/module_pimpl.hpp"
+#include "../../test_common.hpp"
+#include "pluginplay/module/detail_/module_pimpl.hpp"
 #include <catch2/catch.hpp>
 #include <regex>
 

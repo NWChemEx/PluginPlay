@@ -175,6 +175,7 @@ inline auto ModulePIMPL::run(type::input_map ps) {
 
     // not there so run
     auto rv = m_base_->run(ps, m_submods_);
+
     if(!m_cache_ || !is_memoizable()) {
         m_timer_.record(time_now);
         return rv;

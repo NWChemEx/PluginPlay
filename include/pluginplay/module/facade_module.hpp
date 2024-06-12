@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#include "pluginplay/module.hpp"
-#include "pluginplay/module_base.hpp"
+#include "pluginplay/module/module_base.hpp"
+#include "pluginplay/module/module_class.hpp"
 #include "pluginplay/types.hpp"
 #include <utilities/type_traits/tuple/is_tuple.hpp>
 
