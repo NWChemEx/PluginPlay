@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include <memory>
 #include <pluginplay/module/module_class.hpp>
 #include <pluginplay/types.hpp>
-#include <memory>
 #include <string>
 
 namespace pluginplay {

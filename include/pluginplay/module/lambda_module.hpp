@@ -96,10 +96,10 @@ public:
     template<typename FxnType>
     explicit LambdaModule(FxnType&& fxn);
 
-    LambdaModule(const LambdaModule&)            = delete;
-    LambdaModule(LambdaModule&&)                 = delete;
+    LambdaModule(const LambdaModule&) = delete;
+    LambdaModule(LambdaModule&&)      = delete;
     LambdaModule& operator=(const LambdaModule&) = delete;
-    LambdaModule& operator=(LambdaModule&&)      = delete;
+    LambdaModule& operator=(LambdaModule&&) = delete;
 
     /** @brief Implements the `run_as` function for the `Module` class.
      *
