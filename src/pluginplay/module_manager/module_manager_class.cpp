@@ -82,4 +82,18 @@ ModuleManager::runtime_type& ModuleManager::get_runtime() const noexcept {
 ModuleManager::key_container_type ModuleManager::keys() const {
     return pimpl_->keys();
 }
+
+bool ModuleManager::has_cache() const noexcept {
+    // Relies on short-circuiting to not dereference pimpl
+    return has_pimpl_() && pimpl_->has_cache();
+}
+
+// -----------------------------------------------------------------------------
+// -- Private Methods
+// -----------------------------------------------------------------------------
+
+bool ModuleManager::has_pimpl_() const noexcept {
+    return static_cast<bool>(pimpl_);
+}
+
 } // namespace pluginplay

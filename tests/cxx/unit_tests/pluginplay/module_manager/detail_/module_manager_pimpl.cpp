@@ -246,3 +246,10 @@ TEST_CASE("ModuleManagerPIMPL : keys") {
         REQUIRE(pimpl1.keys().at(1) == "rectangle");
     }
 }
+
+TEST_CASE("ModuleManagerPIMPL : has_cache") {
+    ModuleManagerPIMPL pimpl0;
+    ModuleManagerPIMPL pimpl1(nullptr, nullptr);
+    REQUIRE(pimpl0.has_cache());
+    REQUIRE_FALSE(pimpl1.has_cache());
+}

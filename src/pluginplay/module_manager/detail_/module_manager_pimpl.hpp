@@ -80,7 +80,7 @@ struct ModuleManagerPIMPL {
                          std::make_shared<cache_type>()) {}
 
     ModuleManagerPIMPL(runtime_ptr runtime, cache_pointer cache) :
-      m_runtime_(runtime), m_pcaches(cache) {}
+      m_pcaches(cache), m_runtime_(runtime) {}
 
     /// Makes a deep copy of this instance on the heap
     // auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
@@ -175,6 +175,8 @@ struct ModuleManagerPIMPL {
     runtime_type& get_runtime() const { return *m_runtime_; }
 
     ModuleManager::key_container_type keys() const;
+
+    bool has_cache() const noexcept { return static_cast<bool>(m_pcaches); }
     ///@}
 
     ///@{

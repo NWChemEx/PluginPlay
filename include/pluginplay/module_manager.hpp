@@ -17,7 +17,6 @@
 #pragma once
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
-#include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/module/module_class.hpp>
 #include <pluginplay/types.hpp>
@@ -28,7 +27,7 @@ namespace detail_ {
 struct ModuleManagerPIMPL;
 }
 
-/** @brief Class responsible for holding and managing modules.
+/** @brief Class responsible for manipulating
  *
  */
 class ModuleManager {
@@ -51,11 +50,7 @@ public:
     /// Type of module key container
     using key_container_type = std::vector<type::key>;
 
-    /// Type of the cache
-    using cache_type = cache::ModuleManagerCache;
-
-    /// Type of a pointer to the cache
-    using cache_pointer = std::shared_ptr<cache_type>;
+    /// Type of
 
     ///@{
     /** @name Ctors and assignment operators
@@ -63,7 +58,7 @@ public:
      */
     ModuleManager();
     ModuleManager(runtime_ptr runtime,
-                  cache_pointer cache = std::make_shared<cache_type>());
+                  cache_pointer cache = std::make_shared <);
     // ModuleManager(const ModuleManager& rhs);
     // ModuleManager& operator=(const ModuleManager& rhs) {
     //     return *this = std::move(ModuleManager(rhs));
@@ -250,20 +245,10 @@ public:
      */
     key_container_type keys() const;
 
-    /** @brief Does *this have a cache set?
-     *
-     *
-     *  @return True if *this has a place where it can cache input/result pairs
-     *          and false otherwise.
-     *
-     *  @throw none No throw guarantee.
-     */
-    bool has_cache() const noexcept;
-
 private:
-    /** @brief Does *this have a PIMPL?
+    /** @brief Checks whether pimpl_ is not null.
      *
-     *  @return False if pimpl_ is set to a null pointer and true otherwise.
+     *  @return False if pimpl_ is a null pointer and true otherwise.
      *
      *  @throw None No throw guarantee.
      */
