@@ -17,7 +17,7 @@
 #pragma once
 #include "property_types.hpp"
 #include <pluginplay/module/macros.hpp>
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 
 namespace test_pluginplay {
 

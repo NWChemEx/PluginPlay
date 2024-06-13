@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "pluginplay/module_manager.hpp"
 #include "test_common.hpp"
 #include <catch2/catch.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 
 TEST_CASE("ModuleManager") {
     pluginplay::ModuleManager mm;
@@ -70,5 +70,11 @@ TEST_CASE("ModuleManager") {
         REQUIRE(keys.size() == mm.size());
         REQUIRE(keys[0] == "a key");
         REQUIRE(keys[1] == "b key");
+    }
+
+    SECTION("has_cache") {
+        REQUIRE(mm.has_cache());
+        pluginplay::ModuleManager no_cache(nullptr, nullptr);
+        REQUIRE_FALSE(no_cache.has_cache());
     }
 }

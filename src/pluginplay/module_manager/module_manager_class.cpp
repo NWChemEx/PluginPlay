@@ -16,7 +16,7 @@
 
 #include "detail_/module_manager_pimpl.hpp"
 #include "module/detail_/module_pimpl.hpp"
-#include "pluginplay/module_manager.hpp"
+#include <pluginplay/module_manager/module_manager.hpp>
 
 namespace pluginplay {
 
@@ -30,8 +30,8 @@ using CIM = utilities::CaseInsensitiveMap<T>;
 
 ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
-ModuleManager::ModuleManager(runtime_ptr runtime) :
-  pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime)) {}
+ModuleManager::ModuleManager(runtime_ptr runtime, cache_pointer cache) :
+  pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime, cache)) {}
 ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;
@@ -82,4 +82,18 @@ ModuleManager::runtime_type& ModuleManager::get_runtime() const noexcept {
 ModuleManager::key_container_type ModuleManager::keys() const {
     return pimpl_->keys();
 }
+
+bool ModuleManager::has_cache() const noexcept {
+    // Relies on short-circuiting to not dereference pimpl
+    return has_pimpl_() && pimpl_->has_cache();
+}
+
+// -----------------------------------------------------------------------------
+// -- Private Methods
+// -----------------------------------------------------------------------------
+
+bool ModuleManager::has_pimpl_() const noexcept {
+    return static_cast<bool>(pimpl_);
+}
+
 } // namespace pluginplay

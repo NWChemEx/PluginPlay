@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-#include "export_pluginplay.hpp"
+#include "export_module_manager.hpp"
 #include "module/py_module_base.hpp"
 #include <parallelzone/parallelzone.hpp>
 #include <pluginplay/any/any.hpp>
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
 #include <pybind11/stl.h>
 
 namespace pluginplay {
 
-void export_module_manager(py_module_reference m) {
-    using at_fxn       = Module& (ModuleManager::*)(const type::key&);
-    using runtime_type = typename ModuleManager::runtime_type;
+void export_module_manager_class(py_module_reference m) {
+    using at_fxn        = Module& (ModuleManager::*)(const type::key&);
+    using runtime_type  = typename ModuleManager::runtime_type;
+    using cache_type    = typename ModuleManager::cache_type;
+    using cache_pointer = typename ModuleManager::cache_pointer;
 
     using py_obj = pybind11::object;
     using python::PythonWrapper;
 
     py_class_type<ModuleManager>(m, "ModuleManager")
       .def(pybind11::init<>())
+      .def(pybind11::init([](runtime_type rv, cache_pointer cache) {
+               auto prv = std::make_shared<runtime_type>(rv);
+               return ModuleManager(prv, cache);
+           }),
+           pybind11::arg("rv"),
+           pybind11::arg("cache") = std::make_shared<cache_type>())
       .def("count", &ModuleManager::count)
       .def("size", &ModuleManager::size)
       .def(
@@ -63,6 +71,7 @@ void export_module_manager(py_module_reference m) {
       .def("get_runtime", &ModuleManager::get_runtime,
            pybind11::return_value_policy::reference_internal)
       .def("keys", &ModuleManager::keys)
+      .def("has_cache", &ModuleManager::has_cache)
       .def("__getitem__", [](ModuleManager& self, const type::key& key) {
           return self.at(key);
       });

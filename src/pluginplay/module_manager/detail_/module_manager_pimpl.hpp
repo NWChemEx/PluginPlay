@@ -15,16 +15,15 @@
  */
 
 #pragma once
-#include "../module/detail_/module_pimpl.hpp"
+#include "../../module/detail_/module_pimpl.hpp"
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/module/module_base.hpp>
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <typeindex>
 
-namespace pluginplay {
-namespace detail_ {
+namespace pluginplay::detail_ {
 
 /** @brief The class that implements the ModuleManager.
  *
@@ -35,12 +34,15 @@ namespace detail_ {
  *  that it is easier to test the implementation.
  */
 struct ModuleManagerPIMPL {
+    /// Type *this implements
+    using module_manager_type = ModuleManager;
+
     ///@{
     /// Type of a pointer to a module's implemenation
-    using module_base_ptr = typename ModuleManager::module_base_ptr;
+    using module_base_ptr = module_manager_type::module_base_ptr;
 
     /// Type of a pointer to a read-only module implementation
-    using const_module_base_ptr = typename ModuleManager::const_module_base_ptr;
+    using const_module_base_ptr = module_manager_type::const_module_base_ptr;
 
     /// Type of a map from the module implementation's type to the
     /// implementation
@@ -50,16 +52,22 @@ struct ModuleManagerPIMPL {
     using shared_module = std::shared_ptr<Module>;
 
     /// Type of a map holding usable modules
-    using module_map = utilities::CaseInsensitiveMap<shared_module>;
+    using module_map = module_manager_type::module_map;
 
     /// Type of a map holding the default module key for a given property type
     using default_map = std::map<std::type_index, type::key>;
 
     /// The type of the runtime
-    using runtime_type = parallelzone::runtime::RuntimeView;
+    using runtime_type = module_manager_type::runtime_type;
 
     /// A pointer to a runtime
-    using runtime_ptr = std::shared_ptr<runtime_type>;
+    using runtime_ptr = module_manager_type::runtime_ptr;
+
+    /// Type of the cache
+    using cache_type = module_manager_type::cache_type;
+
+    /// Type of a pointer to the cache
+    using cache_pointer = module_manager_type::cache_pointer;
 
     /// Type of a map from key to Python implementation
     // TODO: remove when a more elegant solution is determined
@@ -67,9 +75,12 @@ struct ModuleManagerPIMPL {
 
     ///@}
 
-    ModuleManagerPIMPL(runtime_ptr runtime) : m_runtime_(runtime) {}
+    ModuleManagerPIMPL() :
+      ModuleManagerPIMPL(std::make_shared<runtime_type>(),
+                         std::make_shared<cache_type>()) {}
 
-    ModuleManagerPIMPL() : m_runtime_(std::make_shared<runtime_type>()) {}
+    ModuleManagerPIMPL(runtime_ptr runtime, cache_pointer cache) :
+      m_pcaches(cache), m_runtime_(runtime) {}
 
     /// Makes a deep copy of this instance on the heap
     // auto clone() { return std::make_unique<ModuleManagerPIMPL>(*this); }
@@ -106,11 +117,7 @@ struct ModuleManagerPIMPL {
      * @param key The module key for the module to use as the default
      */
     void set_default(const std::type_info& type, type::input_map inputs,
-                     type::key key) {
-        if(!count(key)) m_modules.at(key); // Throws a consistent error
-        m_defaults[std::type_index(type)] = key;
-        m_inputs[std::type_index(type)]   = std::move(inputs);
-    }
+                     type::key key);
 
     /** @brief This function actually adds a module to the list of available
      *         modules.
@@ -118,31 +125,7 @@ struct ModuleManagerPIMPL {
      * @param key The key under which the module will be registered.
      * @param base The instance containing the algorithm
      */
-    void add_module(type::key key, module_base_ptr base) {
-        assert_unique_key_(key);
-        auto uuid           = utility::generate_uuid();
-        auto internal_cache = m_caches.get_or_make_user_cache(uuid);
-        base->set_cache(internal_cache);
-        base->set_runtime(m_runtime_);
-        base->set_uuid(uuid);
-        auto module_cache = m_caches.get_or_make_module_cache(key);
-        std::unique_ptr<ModulePIMPL> pimpl;
-        if(base->is_python()) {
-            // This is a hacky patch to allow multiple python modules to be
-            // added while avoiding the type_index collisions.
-            // TODO: remove when a more elegant solution is determined
-            m_py_bases[key] = base;
-            pimpl =
-              std::make_unique<ModulePIMPL>(m_py_bases[key], module_cache);
-        } else {
-            std::type_index type(base->type());
-            if(!m_bases.count(type)) m_bases[type] = base;
-            pimpl = std::make_unique<ModulePIMPL>(m_bases[type], module_cache);
-        }
-        auto ptr = std::make_shared<Module>(std::move(pimpl));
-        ptr->set_name(key);
-        m_modules.emplace(std::move(key), ptr);
-    }
+    void add_module(type::key key, module_base_ptr base);
 
     /** @brief Unloads the specified module.
      *
@@ -165,13 +148,7 @@ struct ModuleManagerPIMPL {
      * @param old_key The key for the module to copy
      * @param new_key The key under which the new module will live
      */
-    void copy_module(const type::key& old_key, type::key new_key) {
-        assert_unique_key_(new_key);
-        Module mod = m_modules.at(old_key)->unlocked_copy();
-        auto ptr   = std::make_shared<Module>(std::move(mod));
-        ptr->set_name(new_key);
-        m_modules.emplace(std::move(new_key), ptr);
-    }
+    void copy_module(const type::key& old_key, type::key new_key);
 
     /** @brief Returns a module, filling in all non-set submodules with defaults
      *         if a ready default exists.
@@ -179,27 +156,7 @@ struct ModuleManagerPIMPL {
      * @param key The module you want
      * @return A shared_ptr to the requested module
      */
-    shared_module at(const type::key& key) {
-        if(!count(key)) {
-            const std::string msg =
-              "ModuleManager has no module with key: '" + key + "'";
-            throw std::out_of_range(msg);
-        }
-        auto mod = m_modules.at(key);
-        // Loop over submodules filling them in from the defaults
-        for(auto& [k, v] : mod->submods()) {
-            const auto& type = v.type();
-            // Only change non-ready submodules
-            if(!v.ready() && m_defaults.count(type)) {
-                // Recursive to make sure that that module gets filled in
-                auto default_mod = at(m_defaults.at(type));
-                // Only change if the module is also ready
-                if(default_mod->ready(m_inputs.at(type)))
-                    mod->change_submod(k, default_mod);
-            }
-        }
-        return mod;
-    }
+    shared_module at(const type::key& key);
 
     ///@{
     /** @name Comparison operators
@@ -207,35 +164,7 @@ struct ModuleManagerPIMPL {
      * @param rhs
      * @return
      */
-    bool operator==(const ModuleManagerPIMPL& rhs) const {
-        // Try to get out early
-        if(m_bases.size() != rhs.m_bases.size()) return false;
-        if(m_modules.size() != rhs.m_modules.size()) return false;
-        if(m_defaults.size() != rhs.m_defaults.size()) return false;
-
-        // TODO: Remove with the rest of the python hack
-        if(m_py_bases.size() != rhs.m_py_bases.size()) return false;
-        for(const auto& [k, v] : rhs.m_py_bases) {
-            if(!m_py_bases.count(k)) return false;
-            if(*m_py_bases.at(k) != *v) return false;
-        }
-
-        // Skip checking the values b/c implementations are compared by type
-        for(const auto& [k, v] : rhs.m_bases) {
-            if(!m_bases.count(k)) return false;
-        }
-
-        // Need to check the values b/c user may have switched options
-        for(const auto& [k, v] : rhs.m_modules) {
-            if(!m_modules.count(k)) return false;
-            if(*m_modules.at(k) != *v) return false;
-        }
-
-        // Easy since not pointers
-        if(m_defaults != rhs.m_defaults) return false;
-
-        return true;
-    }
+    bool operator==(const ModuleManagerPIMPL& rhs) const;
 
     bool operator!=(const ModuleManagerPIMPL& rhs) const {
         return !((*this) == rhs);
@@ -245,12 +174,9 @@ struct ModuleManagerPIMPL {
 
     runtime_type& get_runtime() const { return *m_runtime_; }
 
-    ModuleManager::key_container_type keys() const {
-        ModuleManager::key_container_type keys;
-        keys.reserve(m_modules.size());
-        for(const auto& [k, v] : m_modules) keys.push_back(k);
-        return keys;
-    }
+    ModuleManager::key_container_type keys() const;
+
+    bool has_cache() const noexcept { return static_cast<bool>(m_pcaches); }
     ///@}
 
     ///@{
@@ -270,7 +196,7 @@ struct ModuleManagerPIMPL {
     py_base_map m_py_bases;
 
     // These are the results of the modules running in the user's states
-    cache::ModuleManagerCache m_caches;
+    cache_pointer m_pcaches;
 
     // A map of property types
     default_map m_defaults;
@@ -288,5 +214,6 @@ private:
     }
 };
 
-} // namespace detail_
-} // namespace pluginplay
+} // namespace pluginplay::detail_
+
+#include "module_manager_pimpl.ipp"

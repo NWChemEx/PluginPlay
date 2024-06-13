@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <pluginplay/module_manager.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/python/python.hpp>
 
 #define DECLARE_PLUGIN(plugin_name) \

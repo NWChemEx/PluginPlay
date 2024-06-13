@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "../examples/writing_a_module.hpp"
-#include "pluginplay/detail_/module_manager_pimpl.hpp"
+#include "../../examples/writing_a_module.hpp"
+#include "pluginplay/module_manager/detail_/module_manager_pimpl.hpp"
 #include <catch2/catch.hpp>
 
 using namespace pluginplay;
@@ -38,7 +38,7 @@ TEST_CASE("ModuleManagerPIMPL : Default ctor") {
 TEST_CASE("ModuleManagerPIMPL : Runtime") {
     SECTION("ctor") {
         auto runtime = std::make_shared<parallelzone::runtime::RuntimeView>();
-        ModuleManagerPIMPL pimple(runtime);
+        ModuleManagerPIMPL pimple(runtime, nullptr);
         auto& internal_runtime = pimple.get_runtime();
         REQUIRE(&internal_runtime == runtime.get());
     }
@@ -245,4 +245,11 @@ TEST_CASE("ModuleManagerPIMPL : keys") {
         REQUIRE(pimpl1.keys().at(0) == "prism");
         REQUIRE(pimpl1.keys().at(1) == "rectangle");
     }
+}
+
+TEST_CASE("ModuleManagerPIMPL : has_cache") {
+    ModuleManagerPIMPL pimpl0;
+    ModuleManagerPIMPL pimpl1(nullptr, nullptr);
+    REQUIRE(pimpl0.has_cache());
+    REQUIRE_FALSE(pimpl1.has_cache());
 }

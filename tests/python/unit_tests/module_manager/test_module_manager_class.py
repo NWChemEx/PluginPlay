@@ -28,10 +28,20 @@ class APythonModule(pp.ModuleBase):
         pt = test_pp.OneInOneOut()
         i0, = pt.unwrap_inputs(inputs)
         rv = self.results()
-        return pt.wrap_results(rv, i0)
+        return pt.wrap_results(rv, i0)  #
 
 
 class TestModuleManager(unittest.TestCase):
+
+    def test_ctor(self):
+        rv = parallelzone.runtime.RuntimeView()
+        has_runtime_and_cache = pp.ModuleManager(rv)
+        self.assertEqual(rv, has_runtime_and_cache.get_runtime())
+        self.assertTrue(has_runtime_and_cache.has_cache())
+
+        has_runtime_only = pp.ModuleManager(rv, None)
+        self.assertEqual(rv, has_runtime_only.get_runtime())
+        self.assertFalse(has_runtime_only.has_cache())
 
     def test_count(self):
         # Defaulted is always false
@@ -220,4 +230,5 @@ class TestModuleManager(unittest.TestCase):
     def setUp(self):
         self.defaulted = pp.defaulted_mm()
         self.has_mods = test_pp.get_mm()
+
         self.corr_total = 10  # This should be the correct number of modules
