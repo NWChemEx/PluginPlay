@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PluginPlay Alternatives &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -118,7 +119,7 @@
            <div itemprop="articleBody">
              
   <section id="pluginplay-alternatives">
-<h1>PluginPlay Alternatives<a class="headerlink" href="#pluginplay-alternatives" title="Permalink to this headline"></a></h1>
+<h1>PluginPlay Alternatives<a class="headerlink" href="#pluginplay-alternatives" title="Link to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The developers of PluginPlay have limited to no experience actually using
@@ -141,13 +142,13 @@ the order of a function call. We also have not considered entity-component
 frameworks; these frameworks typically target game design where components
 are instance-like.</p>
 <section id="inversion-of-control-frameworks">
-<h2>Inversion of Control Frameworks<a class="headerlink" href="#inversion-of-control-frameworks" title="Permalink to this headline"></a></h2>
+<h2>Inversion of Control Frameworks<a class="headerlink" href="#inversion-of-control-frameworks" title="Link to this heading"></a></h2>
 <p>Frameworks satisfying our distilled considerations tend to rely on
 inversion of control (IoC) and dependency injection. We are aware of the
 following C++ IoC frameworks. <em>N.B.</em> that all of these frameworks are now
 abandoned.</p>
 <section id="autowiring">
-<h3>Autowiring<a class="headerlink" href="#autowiring" title="Permalink to this headline"></a></h3>
+<h3>Autowiring<a class="headerlink" href="#autowiring" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/leapmotion/autowiring">GitHub</a></p></li>
 <li><p>Last updated 2018</p></li>
@@ -160,7 +161,7 @@ type-safe APIs for interacting with the <code class="docutils literal notranslat
 appears to now be abandoned.</p>
 </section>
 <section id="ioc">
-<h3>ioc<a class="headerlink" href="#ioc" title="Permalink to this headline"></a></h3>
+<h3>ioc<a class="headerlink" href="#ioc" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/unixdev0/ioc">GitHub</a></p></li>
 <li><p>Last commit 2017</p></li>
@@ -171,7 +172,7 @@ applications using the inversion of control design pattern. The project looks
 like it was abandoned just after getting started.</p>
 </section>
 <section id="ioc-cpp">
-<h3>ioc-cpp<a class="headerlink" href="#ioc-cpp" title="Permalink to this headline"></a></h3>
+<h3>ioc-cpp<a class="headerlink" href="#ioc-cpp" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/mrts/ioc-cpp">GitHub</a></p></li>
 <li><p>Last commit 2014</p></li>
@@ -188,7 +189,7 @@ the ability to modify what dependency is injected). Development seems to have
 stopped in 2014 and the project is now abandoned.</p>
 </section>
 <section id="pococapsule">
-<h3>Pococapsule<a class="headerlink" href="#pococapsule" title="Permalink to this headline"></a></h3>
+<h3>Pococapsule<a class="headerlink" href="#pococapsule" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://code.google.com/archive/p/pococapsule">Google Code</a></p></li>
 <li><p><a class="reference external" href="https://github.com/onioncong/pococapsule">GitHub</a></p></li>
@@ -205,7 +206,7 @@ at GitHub, which would make resurrecting this project very difficult.</p>
 </section>
 </section>
 <section id="computational-chemistry-component-based-frameworks">
-<h2>Computational Chemistry Component-Based Frameworks<a class="headerlink" href="#computational-chemistry-component-based-frameworks" title="Permalink to this headline"></a></h2>
+<h2>Computational Chemistry Component-Based Frameworks<a class="headerlink" href="#computational-chemistry-component-based-frameworks" title="Link to this heading"></a></h2>
 <p>PluginPlay was motivated by the needs of NWChemEx, which is a scientific
 research software package targeting electronic structure theory. As such,
 one could reasonably argue that we need not code up a general component-based
@@ -222,7 +223,7 @@ reasonably stand alone. Notably we do not require interoperability in order
 for something to be modular.</p>
 </div>
 <section id="atomic-simulation-environment-ase">
-<h3>Atomic Simulation Environment (ASE)<a class="headerlink" href="#atomic-simulation-environment-ase" title="Permalink to this headline"></a></h3>
+<h3>Atomic Simulation Environment (ASE)<a class="headerlink" href="#atomic-simulation-environment-ase" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://gitlab.com/ase/ase">GitLab</a></p></li>
 <li><p>Active development</p></li>
@@ -241,7 +242,7 @@ thus a workflow tool. The hooks ASE provides are too high-level for our
 purposes and ASE does not seem to provide any mechanism for adding more hooks.</p>
 </section>
 <section id="common-component-architecture-cca">
-<h3>Common Component Architecture (CCA)<a class="headerlink" href="#common-component-architecture-cca" title="Permalink to this headline"></a></h3>
+<h3>Common Component Architecture (CCA)<a class="headerlink" href="#common-component-architecture-cca" title="Link to this heading"></a></h3>
 <p>The CCA <span id="id6"><sup><a class="reference internal" href="../bibliography/bibliography.html#id3" title="D. E. Bernholdt, B. A. Allan, R. Armstrong, F. Bertrand, K. Chiu, T. L. Dahlgren, K. Damevski, W. R. Elwasif, T. W. Epperly, M. Govindaraju, D. S. Katz, J. A. Kohl, M. Krishnan, G. Kumfert, J. W. Larson, S. Lefantzi, M. J. Lewis, A. D. Malony, L. C. McInnes, J. Nieplocha, B. Norris, S. G. Parker, J. Ray, S. Shende, T. L. Windus, and S. Zhou. A component architecture for high-performance scientific computing. International Journal of High-Performance Computing Applications, 20(2):163 – 202, 2006. doi:10.1177/1094342006064488.">17</a></sup></span> was one of the first attempts at designing a component-based
 framework for writing modular scientific software. Components had standardized
 APIs and relatively specific tasks (e.g., compute integrals, or diagonalize a
@@ -250,7 +251,7 @@ had a computational chemistry sub-community). Ultimately, the CCA was abandoned
 because it was too cumbersome for developers.</p>
 </section>
 <section id="massively-parallel-quantum-chemistry-mpqc">
-<h3>Massively Parallel Quantum Chemistry (MPQC)<a class="headerlink" href="#massively-parallel-quantum-chemistry-mpqc" title="Permalink to this headline"></a></h3>
+<h3>Massively Parallel Quantum Chemistry (MPQC)<a class="headerlink" href="#massively-parallel-quantum-chemistry-mpqc" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/ValeevGroup/mpqc">GitHub</a></p></li>
 <li><p>Active development (although most occurs in a private fork)</p></li>
@@ -268,7 +269,7 @@ link MPQC and their plugin to the driver.</p>
 plugins, nor is there a way to extend the set of hooks without modifying MPQC.</p>
 </section>
 <section id="molssi-driver-interface-mdi-library">
-<h3>MolSSI Driver Interface (MDI) Library<a class="headerlink" href="#molssi-driver-interface-mdi-library" title="Permalink to this headline"></a></h3>
+<h3>MolSSI Driver Interface (MDI) Library<a class="headerlink" href="#molssi-driver-interface-mdi-library" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MolSSI-MDI/MDI_Library">GitHub</a></p></li>
 <li><p>Active development</p></li>
@@ -287,7 +288,7 @@ contacting the developers). The interface aspects are heavily tied to
 computational chemistry.</p>
 </section>
 <section id="psi4">
-<h3>Psi4<a class="headerlink" href="#psi4" title="Permalink to this headline"></a></h3>
+<h3>Psi4<a class="headerlink" href="#psi4" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/psi4/psi4/">Github</a></p></li>
 <li><p>Active development</p></li>
@@ -320,7 +321,7 @@ opposed to more general APIs meant for extending Psi4). As of version 1.4
 capabilities are tied to the QCArchive project.</p>
 </section>
 <section id="pulsar-computational-chemistry-framework">
-<h3>Pulsar Computational Chemistry Framework<a class="headerlink" href="#pulsar-computational-chemistry-framework" title="Permalink to this headline"></a></h3>
+<h3>Pulsar Computational Chemistry Framework<a class="headerlink" href="#pulsar-computational-chemistry-framework" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/pulsar-chem">GitHub</a>.</p></li>
 <li><p>Last updated 2017</p></li>
@@ -333,7 +334,7 @@ that PluginPlay seems to have ripped off.” Well now you know we did rip it
 off, but then again we wrote it so…</p>
 </section>
 <section id="pyadf">
-<h3>PyADF<a class="headerlink" href="#pyadf" title="Permalink to this headline"></a></h3>
+<h3>PyADF<a class="headerlink" href="#pyadf" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/chjacob-tubs/pyadf-releases">GitHub</a></p></li>
 <li><p>Active development</p></li>
@@ -362,7 +363,7 @@ framework. Furthermore, the use of the GPL license makes using PyADF in another
 non-GPL project problematic.</p>
 </section>
 <section id="python-materials-genomics-pymatgen">
-<h3>Python Materials Genomics (pymatgen)<a class="headerlink" href="#python-materials-genomics-pymatgen" title="Permalink to this headline"></a></h3>
+<h3>Python Materials Genomics (pymatgen)<a class="headerlink" href="#python-materials-genomics-pymatgen" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen">GitHub</a></p></li>
 <li><p>Active development</p></li>
@@ -380,7 +381,7 @@ be as much of a problem with pymatgen since the existing interfaces seem quite
 generic.</p>
 </section>
 <section id="pyscf">
-<h3>PySCF<a class="headerlink" href="#pyscf" title="Permalink to this headline"></a></h3>
+<h3>PySCF<a class="headerlink" href="#pyscf" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/pyscf/pyscf">GitHub</a></p></li>
 <li><p>Active development</p></li>
@@ -406,7 +407,7 @@ Furthermore, both extension locations are very chemistry-based making it hard
 to, for example, change the numeric linear algebra used under the hood.</p>
 </section>
 <section id="qcarchive">
-<h3>QCArchive<a class="headerlink" href="#qcarchive" title="Permalink to this headline"></a></h3>
+<h3>QCArchive<a class="headerlink" href="#qcarchive" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MolSSI/QCEngine">QCEngine on GitHub</a></p></li>
 <li><p><a class="reference external" href="https://github.com/MolSSI/QCFractal">QCFractal on GitHub</a></p></li>
@@ -424,7 +425,7 @@ number of tasks including distributed runs of QCEngine, running workflow
 services, and creating databases of results.</p>
 </section>
 <section id="quantum-chemistry-automation-and-structure-manipulation-qchasm">
-<h3>Quantum Chemistry Automation and Structure Manipulation (QChASM)<a class="headerlink" href="#quantum-chemistry-automation-and-structure-manipulation-qchasm" title="Permalink to this headline"></a></h3>
+<h3>Quantum Chemistry Automation and Structure Manipulation (QChASM)<a class="headerlink" href="#quantum-chemistry-automation-and-structure-manipulation-qchasm" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/QChASM">GitHub</a></p></li>
 <li><p>Active development</p></li>
@@ -443,7 +444,7 @@ modifying it.</p>
 </section>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
 <p>In our opinion the highly multi-disciplinary nature of computational chemistry
 means that we need the ability to leverage developments and libraries from
 not just within computational chemistry, but from other scientific fields as

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -73,12 +73,9 @@ $(function() {
 <div class="textblock"><code>#include &lt;pluginplay/any/any.hpp&gt;</code><br />
 <code>#include &lt;pluginplay/cache/cache.hpp&gt;</code><br />
 <code>#include &lt;<a class="el" href="config_8hpp_source.html">pluginplay/config/config.hpp</a>&gt;</code><br />
-<code>#include &lt;pluginplay/facade_module.hpp&gt;</code><br />
 <code>#include &lt;<a class="el" href="fields_8hpp_source.html">pluginplay/fields/fields.hpp</a>&gt;</code><br />
-<code>#include &lt;pluginplay/lambda_module.hpp&gt;</code><br />
-<code>#include &lt;pluginplay/module.hpp&gt;</code><br />
-<code>#include &lt;pluginplay/module_base.hpp&gt;</code><br />
-<code>#include &lt;pluginplay/module_manager.hpp&gt;</code><br />
+<code>#include &lt;pluginplay/module/module.hpp&gt;</code><br />
+<code>#include &lt;pluginplay/module_manager/module_manager.hpp&gt;</code><br />
 <code>#include &lt;pluginplay/plugin/plugin.hpp&gt;</code><br />
 <code>#include &lt;pluginplay/printing/printing.hpp&gt;</code><br />
 <code>#include &lt;pluginplay/property_type/property_type.hpp&gt;</code><br />
@@ -92,56 +89,56 @@ Include dependency graph for pluginplay.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="pluginplay_8hpp__incl.png" border="0" usemap="#ainclude_2pluginplay_2pluginplay_8hpp" alt=""/></div>
 <map name="ainclude_2pluginplay_2pluginplay_8hpp" id="ainclude_2pluginplay_2pluginplay_8hpp">
-<area shape="rect" title=" " alt="" coords="1265,5,1406,47"/>
-<area shape="rect" href="any_8hpp_source.html" title=" " alt="" coords="1912,906,2084,933"/>
-<area shape="rect" href="cache_8hpp_source.html" title=" " alt="" coords="90,445,293,471"/>
-<area shape="rect" href="fields_8hpp.html" title=" " alt="" coords="725,727,921,754"/>
-<area shape="rect" href="types_8hpp_source.html" title=" " alt="" coords="1487,906,1645,933"/>
-<area shape="rect" href="utility_8hpp_source.html" title=" " alt="" coords="667,906,825,933"/>
-<area shape="rect" href="config_8hpp.html" title=" " alt="" coords="2361,102,2565,129"/>
-<area shape="rect" href="facade__module_8hpp_source.html" title=" " alt="" coords="972,273,1195,300"/>
-<area shape="rect" href="module_8hpp_source.html" title=" " alt="" coords="874,534,1045,561"/>
-<area shape="rect" href="module__base_8hpp_source.html" title=" " alt="" coords="943,355,1152,382"/>
-<area shape="rect" href="submodule__request_8hpp_source.html" title=" " alt="" coords="1209,437,1376,479"/>
-<area shape="rect" href="lambda__module_8hpp_source.html" title=" " alt="" coords="671,273,898,300"/>
-<area shape="rect" href="module__manager_8hpp_source.html" title=" " alt="" coords="1218,273,1453,300"/>
-<area shape="rect" href="plugin_8hpp_source.html" title=" " alt="" coords="1524,191,1731,218"/>
-<area shape="rect" href="python_8hpp.html" title=" " alt="" coords="2019,727,2235,754"/>
-<area shape="rect" href="printing_8hpp_source.html" title=" " alt="" coords="382,95,526,136"/>
-<area shape="rect" href="property__type_8hpp_source.html" title=" " alt="" coords="1854,527,2035,568"/>
-<area shape="rect" href="type__traits_8hpp_source.html" title=" " alt="" coords="2356,527,2520,568"/>
-<area shape="rect" href="any__field_8hpp_source.html" title=" " alt="" coords="1857,988,2003,1029"/>
-<area shape="rect" href="any__field__wrapper_8hpp_source.html" title=" " alt="" coords="2027,988,2206,1029"/>
-<area shape="rect" href="any__field__base_8hpp_source.html" title=" " alt="" coords="1537,1085,1731,1111"/>
-<area shape="rect" title=" " alt="" coords="667,1174,745,1201"/>
-<area shape="rect" href="python__wrapper_8hpp_source.html" title=" " alt="" coords="2205,1167,2393,1208"/>
-<area shape="rect" title=" " alt="" coords="1591,1174,1677,1201"/>
-<area shape="rect" href="any__field__wrapper__traits_8hpp_source.html" title=" " alt="" coords="2041,1077,2262,1119"/>
-<area shape="rect" title=" " alt="" coords="2436,1174,2528,1201"/>
-<area shape="rect" href="module__cache_8hpp_source.html" title=" " alt="" coords="107,623,292,665"/>
-<area shape="rect" href="module__manager__cache_8hpp_source.html" title=" " alt="" coords="5,720,191,761"/>
-<area shape="rect" href="user__cache_8hpp_source.html" title=" " alt="" coords="128,527,292,568"/>
-<area shape="rect" title=" " alt="" coords="447,995,506,1022"/>
-<area shape="rect" href="module__input_8hpp_source.html" title=" " alt="" coords="960,809,1143,851"/>
-<area shape="rect" href="module__result_8hpp_source.html" title=" " alt="" coords="701,809,884,851"/>
-<area shape="rect" title=" " alt="" coords="849,906,936,933"/>
-<area shape="rect" href="bounds__checking_8hpp_source.html" title=" " alt="" coords="1028,899,1259,940"/>
-<area shape="rect" title=" " alt="" coords="961,906,1003,933"/>
-<area shape="rect" title=" " alt="" coords="1213,988,1412,1029"/>
-<area shape="rect" title=" " alt="" coords="666,995,746,1022"/>
-<area shape="rect" title=" " alt="" coords="773,348,919,389"/>
-<area shape="rect" href="uuid_8hpp_source.html" title=" " alt="" coords="667,623,799,665"/>
-<area shape="rect" title=" " alt="" coords="926,437,1083,479"/>
-<area shape="rect" href="py__type__info_8hpp_source.html" title=" " alt="" coords="1857,1077,2016,1119"/>
-<area shape="rect" href="py__wrap__inputs_8hpp_source.html" title=" " alt="" coords="2153,809,2312,851"/>
-<area shape="rect" href="py__wrap__results_8hpp_source.html" title=" " alt="" coords="1919,809,2077,851"/>
-<area shape="rect" href="document__module_8hpp_source.html" title=" " alt="" coords="368,348,543,389"/>
-<area shape="rect" href="document__modules_8hpp_source.html" title=" " alt="" coords="363,184,545,225"/>
-<area shape="rect" href="field__tuple_8hpp_source.html" title=" " alt="" coords="1099,720,1257,761"/>
-<area shape="rect" href="is__property__type_8hpp_source.html" title=" " alt="" coords="2356,623,2520,665"/>
-<area shape="rect" href="macros_8hpp_source.html" title=" " alt="" coords="1806,623,1955,665"/>
-<area shape="rect" href="property__type__impl_8hpp_source.html" title=" " alt="" coords="1980,616,2133,672"/>
-<area shape="rect" href="base__property__type_8hpp_source.html" title=" " alt="" coords="2591,1077,2773,1119"/>
+<area shape="rect" title=" " alt="" coords="1323,5,1464,47"/>
+<area shape="rect" href="any_8hpp_source.html" title=" " alt="" coords="1882,1010,2054,1037"/>
+<area shape="rect" href="cache_8hpp_source.html" title=" " alt="" coords="195,549,397,575"/>
+<area shape="rect" href="fields_8hpp.html" title=" " alt="" coords="1065,831,1261,858"/>
+<area shape="rect" href="types_8hpp_source.html" title=" " alt="" coords="827,1010,986,1037"/>
+<area shape="rect" href="utility_8hpp_source.html" title=" " alt="" coords="1342,1010,1501,1037"/>
+<area shape="rect" href="config_8hpp.html" title=" " alt="" coords="1126,102,1330,129"/>
+<area shape="rect" href="module_8hpp_source.html" title=" " alt="" coords="837,281,1061,307"/>
+<area shape="rect" href="submodule__request_8hpp_source.html" title=" " alt="" coords="523,541,690,583"/>
+<area shape="rect" href="module__manager_8hpp_source.html" title=" " alt="" coords="289,273,497,315"/>
+<area shape="rect" href="plugin_8hpp_source.html" title=" " alt="" coords="1457,191,1663,218"/>
+<area shape="rect" href="python_8hpp.html" title=" " alt="" coords="1872,831,2088,858"/>
+<area shape="rect" href="printing_8hpp_source.html" title=" " alt="" coords="239,95,383,136"/>
+<area shape="rect" href="property__type_8hpp_source.html" title=" " alt="" coords="1460,631,1641,672"/>
+<area shape="rect" href="type__traits_8hpp_source.html" title=" " alt="" coords="2337,631,2501,672"/>
+<area shape="rect" href="any__field_8hpp_source.html" title=" " alt="" coords="1815,1092,1961,1133"/>
+<area shape="rect" href="any__field__wrapper_8hpp_source.html" title=" " alt="" coords="1985,1092,2164,1133"/>
+<area shape="rect" href="any__field__base_8hpp_source.html" title=" " alt="" coords="1495,1189,1689,1215"/>
+<area shape="rect" title=" " alt="" coords="809,1278,887,1305"/>
+<area shape="rect" href="python__wrapper_8hpp_source.html" title=" " alt="" coords="2107,1271,2295,1312"/>
+<area shape="rect" title=" " alt="" coords="1347,1278,1434,1305"/>
+<area shape="rect" href="any__field__wrapper__traits_8hpp_source.html" title=" " alt="" coords="2391,1181,2612,1223"/>
+<area shape="rect" title=" " alt="" coords="2629,1278,2721,1305"/>
+<area shape="rect" href="module__cache_8hpp_source.html" title=" " alt="" coords="251,727,437,769"/>
+<area shape="rect" href="module__manager__cache_8hpp_source.html" title=" " alt="" coords="145,824,330,865"/>
+<area shape="rect" href="user__cache_8hpp_source.html" title=" " alt="" coords="246,631,410,672"/>
+<area shape="rect" title=" " alt="" coords="423,1099,481,1126"/>
+<area shape="rect" href="module__input_8hpp_source.html" title=" " alt="" coords="1425,913,1607,955"/>
+<area shape="rect" href="module__result_8hpp_source.html" title=" " alt="" coords="1115,913,1298,955"/>
+<area shape="rect" title=" " alt="" coords="1163,1010,1250,1037"/>
+<area shape="rect" href="bounds__checking_8hpp_source.html" title=" " alt="" coords="1525,1003,1755,1044"/>
+<area shape="rect" title=" " alt="" coords="1275,1010,1317,1037"/>
+<area shape="rect" title=" " alt="" coords="658,1092,857,1133"/>
+<area shape="rect" title=" " alt="" coords="1381,1099,1461,1126"/>
+<area shape="rect" href="facade__module_8hpp_source.html" title=" " alt="" coords="1139,363,1330,404"/>
+<area shape="rect" href="module__base_8hpp_source.html" title=" " alt="" coords="681,452,877,493"/>
+<area shape="rect" href="module__class_8hpp_source.html" title=" " alt="" coords="817,631,1013,672"/>
+<area shape="rect" href="lambda__module_8hpp_source.html" title=" " alt="" coords="919,363,1115,404"/>
+<area shape="rect" href="module_2macros_8hpp_source.html" title=" " alt="" coords="571,370,794,397"/>
+<area shape="rect" href="module__manager__class_8hpp_source.html" title=" " alt="" coords="289,363,497,404"/>
+<area shape="rect" href="py__type__info_8hpp_source.html" title=" " alt="" coords="1311,1181,1470,1223"/>
+<area shape="rect" href="py__wrap__inputs_8hpp_source.html" title=" " alt="" coords="2106,913,2265,955"/>
+<area shape="rect" href="py__wrap__results_8hpp_source.html" title=" " alt="" coords="1923,913,2082,955"/>
+<area shape="rect" href="document__module_8hpp_source.html" title=" " alt="" coords="94,452,269,493"/>
+<area shape="rect" href="document__modules_8hpp_source.html" title=" " alt="" coords="219,184,402,225"/>
+<area shape="rect" href="field__tuple_8hpp_source.html" title=" " alt="" coords="1387,824,1546,865"/>
+<area shape="rect" href="is__property__type_8hpp_source.html" title=" " alt="" coords="2337,727,2501,769"/>
+<area shape="rect" href="property__type_2macros_8hpp_source.html" title=" " alt="" coords="1368,727,1517,769"/>
+<area shape="rect" href="property__type__impl_8hpp_source.html" title=" " alt="" coords="1542,720,1695,776"/>
+<area shape="rect" href="base__property__type_8hpp_source.html" title=" " alt="" coords="2789,1181,2971,1223"/>
 </map>
 </div>
 </div>

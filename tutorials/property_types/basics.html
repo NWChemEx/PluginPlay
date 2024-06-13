@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Basics of Writing a Property Type &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -101,13 +102,13 @@
            <div itemprop="articleBody">
              
   <section id="basics-of-writing-a-property-type">
-<h1>Basics of Writing a Property Type<a class="headerlink" href="#basics-of-writing-a-property-type" title="Permalink to this headline"></a></h1>
+<h1>Basics of Writing a Property Type<a class="headerlink" href="#basics-of-writing-a-property-type" title="Link to this heading"></a></h1>
 <p>A property type of type <code class="docutils literal notranslate"><span class="pre">T</span></code> is ultimately a class that inherits from
 <code class="docutils literal notranslate"><span class="pre">pluginplay::PropertyType&lt;T&gt;</span></code>. The property type defines the API for computing
 the associated property. This API has two parts: the positional input arguments
 and the returned value (multiple returns are possible, but rarely needed).</p>
 <section id="declaring-a-property-type">
-<h2>Declaring A Property Type<a class="headerlink" href="#declaring-a-property-type" title="Permalink to this headline"></a></h2>
+<h2>Declaring A Property Type<a class="headerlink" href="#declaring-a-property-type" title="Link to this heading"></a></h2>
 <p>Like declaring a module, declaring a property type involves a lot of
 boilerplate. For this reason we have provided macros to faciliate the process.
 To declare our <code class="docutils literal notranslate"><span class="pre">ElectricField</span></code> property type the relevant code is:</p>
@@ -125,7 +126,7 @@ to modules where it is not uncommon to declare several modules in one header
 file.</p>
 </section>
 <section id="defining-a-property-type">
-<h2>Defining a Property Type<a class="headerlink" href="#defining-a-property-type" title="Permalink to this headline"></a></h2>
+<h2>Defining a Property Type<a class="headerlink" href="#defining-a-property-type" title="Link to this heading"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Property types use, and are used in, a lot of template meta-programming. In
@@ -136,7 +137,7 @@ this pattern you likely will have to do quite a bit of template
 meta-programming on your own.</p>
 </div>
 <section id="defining-the-input-positional-arguments">
-<h3>Defining the Input Positional Arguments<a class="headerlink" href="#defining-the-input-positional-arguments" title="Permalink to this headline"></a></h3>
+<h3>Defining the Input Positional Arguments<a class="headerlink" href="#defining-the-input-positional-arguments" title="Link to this heading"></a></h3>
 <p>Defining a property type involves defining two functions: <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and
 <code class="docutils literal notranslate"><span class="pre">results_()</span></code>. Respectively these functions establish the positional input
 arguments (and their types) for computing the property and how the property is
@@ -201,7 +202,7 @@ important to declare the fields first and then set the meta-data. The meta-data
 is used in the automatically generated documentation.</p>
 </section>
 <section id="defining-the-result">
-<h3>Defining the Result<a class="headerlink" href="#defining-the-result" title="Permalink to this headline"></a></h3>
+<h3>Defining the Result<a class="headerlink" href="#defining-the-result" title="Link to this heading"></a></h3>
 <p>The definition of the <code class="docutils literal notranslate"><span class="pre">results_()</span></code> function looks very similar to
 <code class="docutils literal notranslate"><span class="pre">inputs_()</span></code> and follows the same rules except that we use
 <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_result</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pluginplay::declare_inputs</span></code>. The
@@ -227,7 +228,7 @@ forwent a more detailed description.</p>
 </section>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
 <p>Generally speaking for both the inputs and results follow this pattern when
 defining the function:</p>
 <ul class="simple">

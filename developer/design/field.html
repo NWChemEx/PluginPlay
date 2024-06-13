@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Field Component &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -69,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -106,11 +108,11 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-field-component">
-<span id="field-design"></span><h1>Designing the Field Component<a class="headerlink" href="#designing-the-field-component" title="Permalink to this headline"></a></h1>
+<span id="field-design"></span><h1>Designing the Field Component<a class="headerlink" href="#designing-the-field-component" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="property_type.html#property-type-design"><span class="std std-ref">Designing the Property Type Component</span></a> and <a class="reference internal" href="module.html#module-design"><span class="std std-ref">Designing the Module Component</span></a> both called for a
 mechanism to handle fields.</p>
 <section id="what-is-the-field-component">
-<h2>What is the Field Component?<a class="headerlink" href="#what-is-the-field-component" title="Permalink to this headline"></a></h2>
+<h2>What is the Field Component?<a class="headerlink" href="#what-is-the-field-component" title="Link to this heading"></a></h2>
 <p>Modules are meant to be black-box functions which take all the input (inputs
 and callbacks) they will need to compute their results. The inputs and
 results are the fields. Since callbacks are passed as inputs we consider how
@@ -118,7 +120,7 @@ they are passed to be part of the field component, while the actual callback
 mechanism falls to the call graph component (see <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>).</p>
 </section>
 <section id="field-component-considerations">
-<h2>Field Component Considerations<a class="headerlink" href="#field-component-considerations" title="Permalink to this headline"></a></h2>
+<h2>Field Component Considerations<a class="headerlink" href="#field-component-considerations" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Work with arbitrary types.</p>
 <ul class="simple">
@@ -156,13 +158,13 @@ synched.</p></li>
 </ol>
 </section>
 <section id="field-component-design">
-<h2>Field Component Design<a class="headerlink" href="#field-component-design" title="Permalink to this headline"></a></h2>
+<h2>Field Component Design<a class="headerlink" href="#field-component-design" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-field-design"></span><img alt="../../_images/field_design.png" src="../../_images/field_design.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 9 </span><span class="caption-text">The three major components of PluginPlay’s field component. ModuleInput/
 ModuleResult are responsible for respectively managing the inputs/results
-to/from a module and SubmoduleRequest is used to manage callback hooks.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+to/from a module and SubmoduleRequest is used to manage callback hooks.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-field-design"><span class="std std-numref">Fig. 9</span></a> shows the architecture of the field component.
@@ -179,7 +181,7 @@ module developer presumably is not trying to return invalid results). The
 <code class="docutils literal notranslate"><span class="pre">SubmoduleRequest</span></code> class is designed to hold a callback hook, and the callback
 once it is set.</p>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Work with arbitrary types.</p>
 <ul class="simple">

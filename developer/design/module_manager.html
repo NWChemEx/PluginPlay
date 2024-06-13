@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Module Manager &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -69,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -106,19 +108,19 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-module-manager">
-<span id="module-manager-design"></span><h1>Designing the Module Manager<a class="headerlink" href="#designing-the-module-manager" title="Permalink to this headline"></a></h1>
+<span id="module-manager-design"></span><h1>Designing the Module Manager<a class="headerlink" href="#designing-the-module-manager" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> calls for a module manager component which will be
 the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> of PluginPlay. This section describes the design of
 that component.</p>
 <section id="what-is-the-module-manager">
-<h2>What is the module manager?<a class="headerlink" href="#what-is-the-module-manager" title="Permalink to this headline"></a></h2>
+<h2>What is the module manager?<a class="headerlink" href="#what-is-the-module-manager" title="Link to this heading"></a></h2>
 <p>Based on object-oriented design principles we need an object to represent the
 PluginPlay framework. The majority of interactions with the framework can be
 summarized as “module management” so we have opted to call the corresponding
 component the “module manager” and the literal class <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p>
 </section>
 <section id="module-manager-considerations">
-<h2>Module Manager Considerations<a class="headerlink" href="#module-manager-considerations" title="Permalink to this headline"></a></h2>
+<h2>Module Manager Considerations<a class="headerlink" href="#module-manager-considerations" title="Link to this heading"></a></h2>
 <p>Since the module manager is the user-facing <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> every major feature of
 PluginPlay needs to be accessible through it. This means the module manager
 component needs to support:</p>
@@ -163,11 +165,11 @@ users also need to be able to override those configurations at runtime.</p></li>
 </ol>
 </section>
 <section id="module-manager-architecture">
-<h2>Module Manager Architecture<a class="headerlink" href="#module-manager-architecture" title="Permalink to this headline"></a></h2>
+<h2>Module Manager Architecture<a class="headerlink" href="#module-manager-architecture" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-mm-arch"></span><img alt="../../_images/mm_arch.png" src="../../_images/mm_arch.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Architecture of the module manager component.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-mm-arch"><span class="std std-numref">Fig. 4</span></a> shows the architecture of the module manager
@@ -186,11 +188,11 @@ design of the module manager component punts many of the module manager
 considerations to these components (see summary below), but provides
 user-facing APIs for doing them.</p>
 <section id="module-pool">
-<h3>Module Pool<a class="headerlink" href="#module-pool" title="Permalink to this headline"></a></h3>
+<h3>Module Pool<a class="headerlink" href="#module-pool" title="Link to this heading"></a></h3>
 <figure class="align-center" id="id2">
 <span id="fig-mm-module-pool"></span><img alt="../../_images/module_pool.png" src="../../_images/module_pool.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Architecture of the “Loaded Module” component, <em>i.e.</em>, a module pool.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Architecture of the “Loaded Module” component, <em>i.e.</em>, a module pool.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>The new component here is the “Loaded Module” component, which is an associative
@@ -225,7 +227,7 @@ copying the module on account of not knowing how expensive the copy actually
 will be.</p>
 </section>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
 <p>The current design of the module manager really only directly addresses concern
 two (<em>i.e.</em>, managing of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> pool) and punts the remaining concerns.
 More specifically:</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Property Type Component &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -69,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -106,11 +108,11 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-property-type-component">
-<span id="property-type-design"></span><h1>Designing the Property Type Component<a class="headerlink" href="#designing-the-property-type-component" title="Permalink to this headline"></a></h1>
+<span id="property-type-design"></span><h1>Designing the Property Type Component<a class="headerlink" href="#designing-the-property-type-component" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> calls for a property type component. This section
 outlines the design decisions that went into that component.</p>
 <section id="what-is-the-property-type-component">
-<h2>What is the Property Type Component?<a class="headerlink" href="#what-is-the-property-type-component" title="Permalink to this headline"></a></h2>
+<h2>What is the Property Type Component?<a class="headerlink" href="#what-is-the-property-type-component" title="Link to this heading"></a></h2>
 <p>At the lowest level all modules have the same <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>: take a series of
 type-erased inputs and return a set of type-erased outputs. In strongly typed
 languages like C++, type-erased objects are cumbersome to work with. The
@@ -118,7 +120,7 @@ property type component facilitates the wrapping/unwrapping of
 typed/type-erased objects while also enforcing a standardized <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>.</p>
 </section>
 <section id="property-type-considerations">
-<h2>Property Type Considerations<a class="headerlink" href="#property-type-considerations" title="Permalink to this headline"></a></h2>
+<h2>Property Type Considerations<a class="headerlink" href="#property-type-considerations" title="Link to this heading"></a></h2>
 <p>From <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> we have:</p>
 <ol class="arabic simple">
 <li><p>Dynamic determine module <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
@@ -157,14 +159,14 @@ avoiding duplication</p></li>
 </ol>
 </section>
 <section id="property-type-component-design">
-<h2>Property Type Component Design<a class="headerlink" href="#property-type-component-design" title="Permalink to this headline"></a></h2>
+<h2>Property Type Component Design<a class="headerlink" href="#property-type-component-design" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-property-type-design"></span><img alt="../../_images/property_type_design.png" src="../../_images/property_type_design.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 8 </span><span class="caption-text">Architecture of the property type component. Users derive from the
 <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to implement their property types. The template
 meta-programming needed for dealing with types is factored out into the
-<code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> class.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>Fig <a class="reference internal" href="#fig-property-type-design"><span class="std std-numref">Fig. 8</span></a> shows the architecture of the property
@@ -186,7 +188,7 @@ responsible for storing not only the types of the inputs, but also the default
 values, descriptions, etc. It is the responsibility of the <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code>
 objects to define as simple of an <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as possible.</p>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
 <p>Our design addresses the above considerations by:</p>
 <ol class="arabic simple">
 <li><p>Dynamic determine module <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>

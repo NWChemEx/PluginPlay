@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -67,6 +67,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -74,61 +75,64 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>The class that implements the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a>.  
+<p>The class that implements the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>.  
  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="module__manager__pimpl_8hpp_source.html">module_manager_pimpl.hpp</a>&gt;</code></p>
-<div class="dynheader">
-Collaboration diagram for pluginplay::detail_::ModuleManagerPIMPL:</div>
-<div class="dyncontent">
-<div class="center"><img src="structpluginplay_1_1detail___1_1ModuleManagerPIMPL__coll__graph.png" border="0" usemap="#apluginplay_1_1detail___1_1ModuleManagerPIMPL_coll__map" alt="Collaboration graph"/></div>
-<map name="apluginplay_1_1detail___1_1ModuleManagerPIMPL_coll__map" id="apluginplay_1_1detail___1_1ModuleManagerPIMPL_coll__map">
-<area shape="rect" title="The class that implements the ModuleManager." alt="" coords="5,109,187,151"/>
-<area shape="rect" href="classpluginplay_1_1cache_1_1ModuleManagerCache.html" title="&quot;The Cache&quot;. This object holds all of the data the ModuleManager needs to cache." alt="" coords="13,5,179,47"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:a742d8aff4407a45111ddd8effab64376"><td class="memItemLeft" align="right" valign="top"><a id="a742d8aff4407a45111ddd8effab64376"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a742d8aff4407a45111ddd8effab64376">module_manager_type</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html">ModuleManager</a></td></tr>
+<tr class="memdesc:a742d8aff4407a45111ddd8effab64376"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type *this implements. <br /></td></tr>
+<tr class="separator:a742d8aff4407a45111ddd8effab64376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
-<tr class="memitem:aa1ffd56ee317f3b75e32fb0eacbeac11"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa1ffd56ee317f3b75e32fb0eacbeac11">module_base_ptr</a> = typename <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">ModuleManager::module_base_ptr</a></td></tr>
-<tr class="separator:aa1ffd56ee317f3b75e32fb0eacbeac11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a182756f17829201570c9dd70e67ee526"><td class="memItemLeft" align="right" valign="top"><a id="a182756f17829201570c9dd70e67ee526"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a182756f17829201570c9dd70e67ee526">const_module_base_ptr</a> = typename <a class="el" href="classpluginplay_1_1ModuleManager.html#a709d144fe07f7e1a4cad0357b170bd6d">ModuleManager::const_module_base_ptr</a></td></tr>
-<tr class="memdesc:a182756f17829201570c9dd70e67ee526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to a read-only module implementation. <br /></td></tr>
-<tr class="separator:a182756f17829201570c9dd70e67ee526"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abef4cea5e253855401746745f27c02f4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">base_map</a> = std::map&lt; std::type_index, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a182756f17829201570c9dd70e67ee526">const_module_base_ptr</a> &gt;</td></tr>
+<tr class="memitem:a57d93e95e28e75287f5f6db69cc2ecb4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a57d93e95e28e75287f5f6db69cc2ecb4">module_base_ptr</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">module_manager_type::module_base_ptr</a></td></tr>
+<tr class="separator:a57d93e95e28e75287f5f6db69cc2ecb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9215f5e076632b314524263826a672f9"><td class="memItemLeft" align="right" valign="top"><a id="a9215f5e076632b314524263826a672f9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a9215f5e076632b314524263826a672f9">const_module_base_ptr</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a709d144fe07f7e1a4cad0357b170bd6d">module_manager_type::const_module_base_ptr</a></td></tr>
+<tr class="memdesc:a9215f5e076632b314524263826a672f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to a read-only module implementation. <br /></td></tr>
+<tr class="separator:a9215f5e076632b314524263826a672f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abef4cea5e253855401746745f27c02f4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">base_map</a> = std::map&lt; std::type_index, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a9215f5e076632b314524263826a672f9">const_module_base_ptr</a> &gt;</td></tr>
 <tr class="separator:abef4cea5e253855401746745f27c02f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea69e3a0fe511e38d2637af68335945e"><td class="memItemLeft" align="right" valign="top"><a id="aea69e3a0fe511e38d2637af68335945e"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">shared_module</a> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1Module.html">Module</a> &gt;</td></tr>
 <tr class="memdesc:aea69e3a0fe511e38d2637af68335945e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a usable module. <br /></td></tr>
 <tr class="separator:aea69e3a0fe511e38d2637af68335945e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55803300f0e51ec05ab06302ee1ab90d"><td class="memItemLeft" align="right" valign="top"><a id="a55803300f0e51ec05ab06302ee1ab90d"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a55803300f0e51ec05ab06302ee1ab90d">module_map</a> = utilities::CaseInsensitiveMap&lt; <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">shared_module</a> &gt;</td></tr>
-<tr class="memdesc:a55803300f0e51ec05ab06302ee1ab90d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding usable modules. <br /></td></tr>
-<tr class="separator:a55803300f0e51ec05ab06302ee1ab90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac51fc6c40213aa5ac909563780a8012e"><td class="memItemLeft" align="right" valign="top"><a id="ac51fc6c40213aa5ac909563780a8012e"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ac51fc6c40213aa5ac909563780a8012e">module_map</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a5890fdaeab7e35865b4f6de88c3e0892">module_manager_type::module_map</a></td></tr>
+<tr class="memdesc:ac51fc6c40213aa5ac909563780a8012e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding usable modules. <br /></td></tr>
+<tr class="separator:ac51fc6c40213aa5ac909563780a8012e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2379e2f590fa48050845a92aed64d7f"><td class="memItemLeft" align="right" valign="top"><a id="aa2379e2f590fa48050845a92aed64d7f"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa2379e2f590fa48050845a92aed64d7f">default_map</a> = std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt;</td></tr>
 <tr class="memdesc:aa2379e2f590fa48050845a92aed64d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding the default module key for a given property type. <br /></td></tr>
 <tr class="separator:aa2379e2f590fa48050845a92aed64d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abdd9879610f9ed93ce9ff6883d2f0dc9"><td class="memItemLeft" align="right" valign="top"><a id="abdd9879610f9ed93ce9ff6883d2f0dc9"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abdd9879610f9ed93ce9ff6883d2f0dc9">runtime_type</a> = parallelzone::runtime::RuntimeView</td></tr>
-<tr class="memdesc:abdd9879610f9ed93ce9ff6883d2f0dc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
-<tr class="separator:abdd9879610f9ed93ce9ff6883d2f0dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b61f29e24a2bfb68492d6a34e33a9a3"><td class="memItemLeft" align="right" valign="top"><a id="a6b61f29e24a2bfb68492d6a34e33a9a3"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> = std::shared_ptr&lt; <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abdd9879610f9ed93ce9ff6883d2f0dc9">runtime_type</a> &gt;</td></tr>
-<tr class="memdesc:a6b61f29e24a2bfb68492d6a34e33a9a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a runtime. <br /></td></tr>
-<tr class="separator:a6b61f29e24a2bfb68492d6a34e33a9a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5c01677075eafec37c471969afc51c3"><td class="memItemLeft" align="right" valign="top"><a id="ae5c01677075eafec37c471969afc51c3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae5c01677075eafec37c471969afc51c3">runtime_type</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">module_manager_type::runtime_type</a></td></tr>
+<tr class="memdesc:ae5c01677075eafec37c471969afc51c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
+<tr class="separator:ae5c01677075eafec37c471969afc51c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc22e9ed0b23d1a72b150b0f0d560a84"><td class="memItemLeft" align="right" valign="top"><a id="acc22e9ed0b23d1a72b150b0f0d560a84"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">module_manager_type::runtime_ptr</a></td></tr>
+<tr class="memdesc:acc22e9ed0b23d1a72b150b0f0d560a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a runtime. <br /></td></tr>
+<tr class="separator:acc22e9ed0b23d1a72b150b0f0d560a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93f4875101ff6383fbe27f4efa0572ce"><td class="memItemLeft" align="right" valign="top"><a id="a93f4875101ff6383fbe27f4efa0572ce"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a93f4875101ff6383fbe27f4efa0572ce">cache_type</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#ad45032f024d9669f7feb74d76a796cd0">module_manager_type::cache_type</a></td></tr>
+<tr class="memdesc:a93f4875101ff6383fbe27f4efa0572ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the cache. <br /></td></tr>
+<tr class="separator:a93f4875101ff6383fbe27f4efa0572ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c64b530d24fb243c47887c741333653"><td class="memItemLeft" align="right" valign="top"><a id="a2c64b530d24fb243c47887c741333653"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a2c64b530d24fb243c47887c741333653">cache_pointer</a> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a504bf3bd7177a586a51fdda6e7a42701">module_manager_type::cache_pointer</a></td></tr>
+<tr class="memdesc:a2c64b530d24fb243c47887c741333653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to the cache. <br /></td></tr>
+<tr class="separator:a2c64b530d24fb243c47887c741333653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63b90ea48db42becef1e47667de8e182"><td class="memItemLeft" align="right" valign="top"><a id="a63b90ea48db42becef1e47667de8e182"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a63b90ea48db42becef1e47667de8e182">py_base_map</a> = std::map&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a182756f17829201570c9dd70e67ee526">const_module_base_ptr</a> &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a63b90ea48db42becef1e47667de8e182">py_base_map</a> = std::map&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a9215f5e076632b314524263826a672f9">const_module_base_ptr</a> &gt;</td></tr>
 <tr class="memdesc:a63b90ea48db42becef1e47667de8e182"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map from key to Python implementation. <br /></td></tr>
 <tr class="separator:a63b90ea48db42becef1e47667de8e182"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abf4c7baa3fee7eed416d4007cadd6301"><td class="memItemLeft" align="right" valign="top"><a id="abf4c7baa3fee7eed416d4007cadd6301"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManagerPIMPL</b> (<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> runtime)</td></tr>
-<tr class="separator:abf4c7baa3fee7eed416d4007cadd6301"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b7a076e4b44908b2aefa17448940ffc"><td class="memItemLeft" align="right" valign="top"><a id="a5b7a076e4b44908b2aefa17448940ffc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManagerPIMPL</b> (<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a> runtime, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a2c64b530d24fb243c47887c741333653">cache_pointer</a> cache)</td></tr>
+<tr class="separator:a5b7a076e4b44908b2aefa17448940ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a156bd4b3be18eb8b5e1487a33c4dab4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a156bd4b3be18eb8b5e1487a33c4dab4b">count</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key) const noexcept</td></tr>
 <tr class="memdesc:a156bd4b3be18eb8b5e1487a33c4dab4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a deep copy of this instance on the heap.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a156bd4b3be18eb8b5e1487a33c4dab4b">More...</a><br /></td></tr>
 <tr class="separator:a156bd4b3be18eb8b5e1487a33c4dab4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,7 +149,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0b7272272282ab306960406e5aa61406"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a0b7272272282ab306960406e5aa61406">set_default</a> (const std::type_info &amp;type, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> inputs, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key)</td></tr>
 <tr class="memdesc:a0b7272272282ab306960406e5aa61406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default module to use for a given property type.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a0b7272272282ab306960406e5aa61406">More...</a><br /></td></tr>
 <tr class="separator:a0b7272272282ab306960406e5aa61406"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae95ab05fbd503c8e07738edf180a7eeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae95ab05fbd503c8e07738edf180a7eeb">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa1ffd56ee317f3b75e32fb0eacbeac11">module_base_ptr</a> base)</td></tr>
+<tr class="memitem:ae95ab05fbd503c8e07738edf180a7eeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae95ab05fbd503c8e07738edf180a7eeb">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a57d93e95e28e75287f5f6db69cc2ecb4">module_base_ptr</a> base)</td></tr>
 <tr class="memdesc:ae95ab05fbd503c8e07738edf180a7eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function actually adds a module to the list of available modules.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae95ab05fbd503c8e07738edf180a7eeb">More...</a><br /></td></tr>
 <tr class="separator:ae95ab05fbd503c8e07738edf180a7eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d7fb8c8d46b45ff3133b106696e9a8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a5d7fb8c8d46b45ff3133b106696e9a8c">erase</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key)</td></tr>
@@ -154,9 +158,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa41e4fd159a783b8c2c3c96940b2f26c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa41e4fd159a783b8c2c3c96940b2f26c">copy_module</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;old_key, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key)</td></tr>
 <tr class="memdesc:aa41e4fd159a783b8c2c3c96940b2f26c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a deep copy of a module.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa41e4fd159a783b8c2c3c96940b2f26c">More...</a><br /></td></tr>
 <tr class="separator:aa41e4fd159a783b8c2c3c96940b2f26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9229a669f41ecf142a6f894dd5dd12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">shared_module</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a5f9229a669f41ecf142a6f894dd5dd12">at</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key)</td></tr>
-<tr class="memdesc:a5f9229a669f41ecf142a6f894dd5dd12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a module, filling in all non-set submodules with defaults if a ready default exists.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a5f9229a669f41ecf142a6f894dd5dd12">More...</a><br /></td></tr>
-<tr class="separator:a5f9229a669f41ecf142a6f894dd5dd12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae63c575fd030637c5f03ece9ddba0605"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">shared_module</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae63c575fd030637c5f03ece9ddba0605">at</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key)</td></tr>
+<tr class="memdesc:ae63c575fd030637c5f03ece9ddba0605"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a module, filling in all non-set submodules with defaults if a ready default exists.  <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae63c575fd030637c5f03ece9ddba0605">More...</a><br /></td></tr>
+<tr class="separator:ae63c575fd030637c5f03ece9ddba0605"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Comparison operators</div></td></tr>
 <tr class="memitem:a2971b011c0c9669111b448c611e30064"><td class="memItemLeft" align="right" valign="top"><a id="a2971b011c0c9669111b448c611e30064"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html">ModuleManagerPIMPL</a> &amp;rhs) const</td></tr>
@@ -165,32 +169,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html">ModuleManagerPIMPL</a> &amp;rhs) const</td></tr>
 <tr class="separator:ac6e037e95c9d1980ab93d54fb8b739f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16b6a8c1d865de610b07b10dc98c6cd1"><td class="memItemLeft" align="right" valign="top"><a id="a16b6a8c1d865de610b07b10dc98c6cd1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_runtime</b> (<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a> runtime) noexcept</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_runtime</b> (<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a> runtime) noexcept</td></tr>
 <tr class="separator:a16b6a8c1d865de610b07b10dc98c6cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a5e8adb5ec0b9c4b073daeee5883975"><td class="memItemLeft" align="right" valign="top"><a id="a5a5e8adb5ec0b9c4b073daeee5883975"></a>
-<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abdd9879610f9ed93ce9ff6883d2f0dc9">runtime_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_runtime</b> () const</td></tr>
+<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae5c01677075eafec37c471969afc51c3">runtime_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_runtime</b> () const</td></tr>
 <tr class="separator:a5a5e8adb5ec0b9c4b073daeee5883975"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac5833930b6bf2889869dc30539a88d0"><td class="memItemLeft" align="right" valign="top"><a id="aac5833930b6bf2889869dc30539a88d0"></a>
 <a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">ModuleManager::key_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>keys</b> () const</td></tr>
 <tr class="separator:aac5833930b6bf2889869dc30539a88d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5a3244abc584a1f24c2af14262b5250"><td class="memItemLeft" align="right" valign="top"><a id="ac5a3244abc584a1f24c2af14262b5250"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_cache</b> () const noexcept</td></tr>
+<tr class="separator:ac5a3244abc584a1f24c2af14262b5250"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader">ModuleManager state</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>The members in this section are the state of the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> class. </p>
+<tr><td colspan="2"><div class="groupText"><p>The members in this section are the state of the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> class. </p>
 </div></td></tr>
 <tr class="memitem:a6bdbd621fe2f74dc95f09ea9c5e4aa21"><td class="memItemLeft" align="right" valign="top"><a id="a6bdbd621fe2f74dc95f09ea9c5e4aa21"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">base_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_bases</b></td></tr>
 <tr class="separator:a6bdbd621fe2f74dc95f09ea9c5e4aa21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c56512098f34acf3d4011c973c0bf34"><td class="memItemLeft" align="right" valign="top"><a id="a1c56512098f34acf3d4011c973c0bf34"></a>
-<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a55803300f0e51ec05ab06302ee1ab90d">module_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_modules</b></td></tr>
+<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ac51fc6c40213aa5ac909563780a8012e">module_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_modules</b></td></tr>
 <tr class="separator:a1c56512098f34acf3d4011c973c0bf34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa59272583ba5fd308455333272a51120"><td class="memItemLeft" align="right" valign="top"><a id="aa59272583ba5fd308455333272a51120"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a63b90ea48db42becef1e47667de8e182">py_base_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_py_bases</b></td></tr>
 <tr class="separator:aa59272583ba5fd308455333272a51120"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6591d78ec3f009058c33437b65cddaea"><td class="memItemLeft" align="right" valign="top"><a id="a6591d78ec3f009058c33437b65cddaea"></a>
-<a class="el" href="classpluginplay_1_1cache_1_1ModuleManagerCache.html">cache::ModuleManagerCache</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_caches</b></td></tr>
-<tr class="separator:a6591d78ec3f009058c33437b65cddaea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8f601def848f5d806a750e9e3405f8d"><td class="memItemLeft" align="right" valign="top"><a id="aa8f601def848f5d806a750e9e3405f8d"></a>
+<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a2c64b530d24fb243c47887c741333653">cache_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_pcaches</b></td></tr>
+<tr class="separator:aa8f601def848f5d806a750e9e3405f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd56b70df204fc01fde0834e8430ab19"><td class="memItemLeft" align="right" valign="top"><a id="afd56b70df204fc01fde0834e8430ab19"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa2379e2f590fa48050845a92aed64d7f">default_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_defaults</b></td></tr>
 <tr class="separator:afd56b70df204fc01fde0834e8430ab19"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,12 +205,12 @@ Public Attributes</h2></td></tr>
 std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_inputs</b></td></tr>
 <tr class="separator:a92d4842cc386daa0a0381865dcb0ad83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83987f76911022db85087245f26671e8"><td class="memItemLeft" align="right" valign="top"><a id="a83987f76911022db85087245f26671e8"></a>
-<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6b61f29e24a2bfb68492d6a34e33a9a3">runtime_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_runtime_</b></td></tr>
+<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_runtime_</b></td></tr>
 <tr class="separator:a83987f76911022db85087245f26671e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The class that implements the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a>. </p>
-<p>Users are expected to go through the API provided by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> class. Inside the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> class calls are redirected to this class. When using this class calls should go through the member functions as much as possible so that error checking occurs. That said members are public so that it is easier to test the implementation. </p>
+<div class="textblock"><p>The class that implements the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>. </p>
+<p>Users are expected to go through the API provided by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> class. Inside the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> class calls are redirected to this class. When using this class calls should go through the member functions as much as possible so that error checking occurs. That said members are public so that it is easier to test the implementation. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abef4cea5e253855401746745f27c02f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abef4cea5e253855401746745f27c02f4">&#9670;&nbsp;</a></span>base_map</h2>
@@ -212,7 +219,7 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">pluginplay::detail_::ModuleManagerPIMPL::base_map</a> =  std::map&lt;std::type_index, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a182756f17829201570c9dd70e67ee526">const_module_base_ptr</a>&gt;</td>
+          <td class="memname">using <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#abef4cea5e253855401746745f27c02f4">pluginplay::detail_::ModuleManagerPIMPL::base_map</a> =  std::map&lt;std::type_index, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a9215f5e076632b314524263826a672f9">const_module_base_ptr</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -220,14 +227,14 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 
 </div>
 </div>
-<a id="aa1ffd56ee317f3b75e32fb0eacbeac11"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1ffd56ee317f3b75e32fb0eacbeac11">&#9670;&nbsp;</a></span>module_base_ptr</h2>
+<a id="a57d93e95e28e75287f5f6db69cc2ecb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57d93e95e28e75287f5f6db69cc2ecb4">&#9670;&nbsp;</a></span>module_base_ptr</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa1ffd56ee317f3b75e32fb0eacbeac11">pluginplay::detail_::ModuleManagerPIMPL::module_base_ptr</a> =  typename <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">ModuleManager::module_base_ptr</a></td>
+          <td class="memname">using <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a57d93e95e28e75287f5f6db69cc2ecb4">pluginplay::detail_::ModuleManagerPIMPL::module_base_ptr</a> =  <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">module_manager_type::module_base_ptr</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -254,7 +261,7 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa1ffd56ee317f3b75e32fb0eacbeac11">module_base_ptr</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a57d93e95e28e75287f5f6db69cc2ecb4">module_base_ptr</a>&#160;</td>
           <td class="paramname"><em>base</em>&#160;</td>
         </tr>
         <tr>
@@ -281,8 +288,8 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 
 </div>
 </div>
-<a id="a5f9229a669f41ecf142a6f894dd5dd12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f9229a669f41ecf142a6f894dd5dd12">&#9670;&nbsp;</a></span>at()</h2>
+<a id="ae63c575fd030637c5f03ece9ddba0605"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae63c575fd030637c5f03ece9ddba0605">&#9670;&nbsp;</a></span>at()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,7 +298,7 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">shared_module</a> pluginplay::detail_::ModuleManagerPIMPL::at </td>
+          <td class="memname"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aea69e3a0fe511e38d2637af68335945e">ModuleManagerPIMPL::shared_module</a> pluginplay::detail_::ModuleManagerPIMPL::at </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -528,7 +535,7 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 </div><div class="memdoc">
 
 <p>Sets the default module to use for a given property type. </p>
-<p>When a user requests a module that module initially has no submodules set unless the user has bound some to that module. Instead, the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> is now responsible to provide the module with submodules using the defaults. This function allows one to specify what the defaults are.</p>
+<p>When a user requests a module that module initially has no submodules set unless the user has bound some to that module. Instead, the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> is now responsible to provide the module with submodules using the defaults. This function allows one to specify what the defaults are.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>The type of the property type this default is for </td></tr>
@@ -539,8 +546,9 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/pluginplay/detail_/<a class="el" href="module__manager__pimpl_8hpp_source.html">module_manager_pimpl.hpp</a></li>
+<hr/>The documentation for this struct was generated from the following files:<ul>
+<li>src/pluginplay/module_manager/detail_/<a class="el" href="module__manager__pimpl_8hpp_source.html">module_manager_pimpl.hpp</a></li>
+<li>src/pluginplay/module_manager/detail_/module_manager_pimpl.ipp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

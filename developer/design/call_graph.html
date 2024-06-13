@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Call Graph Component &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -70,6 +71,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -107,12 +109,12 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-call-graph-component">
-<span id="call-graph-design"></span><h1>Designing the Call Graph Component<a class="headerlink" href="#designing-the-call-graph-component" title="Permalink to this headline"></a></h1>
+<span id="call-graph-design"></span><h1>Designing the Call Graph Component<a class="headerlink" href="#designing-the-call-graph-component" title="Link to this heading"></a></h1>
 <p>Stemming from the discussions in <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and
 <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> PluginPlay needs a call graph component. This
 section describes the overall design of that component.</p>
 <section id="what-is-a-call-graph">
-<h2>What is a call graph?<a class="headerlink" href="#what-is-a-call-graph" title="Permalink to this headline"></a></h2>
+<h2>What is a call graph?<a class="headerlink" href="#what-is-a-call-graph" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To make contact with typical computer science terminology the use of static
@@ -139,7 +141,7 @@ individual function calls. The net result is that PluginPlay’s call graph
 component is a coarse-grained representation of the actual call graph.</p>
 </section>
 <section id="call-graph-considerations">
-<h2>Call Graph Considerations<a class="headerlink" href="#call-graph-considerations" title="Permalink to this headline"></a></h2>
+<h2>Call Graph Considerations<a class="headerlink" href="#call-graph-considerations" title="Link to this heading"></a></h2>
 <p>Sections <a class="reference internal" href="../../background/architecture.html#pp-architecture"><span class="std std-ref">Architecture of PluginPlay</span></a> and <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a> passed a
 number of considerations to the call graph component which we list here:</p>
 <ol class="arabic simple">
@@ -173,14 +175,14 @@ compile time. <em>N.B.</em>, Cppyy <span id="id1"><sup><a class="reference inter
 </ol>
 </section>
 <section id="id2">
-<h2>Call Graph Design<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>Call Graph Design<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>PluginPlay was designed before considering Cppyy and this discussion
 assumes that only pure Python bindings are being considered.</p>
 </div>
 <section id="node-design">
-<h3>Node Design<a class="headerlink" href="#node-design" title="Permalink to this headline"></a></h3>
+<h3>Node Design<a class="headerlink" href="#node-design" title="Link to this heading"></a></h3>
 <p>As established the nodes of the call graph will be PluginPlay <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a>
 objects and will need to be function-like. We propose the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class to
 describe the modules. Users will create <code class="docutils literal notranslate"><span class="pre">Module</span></code> instances which contain
@@ -277,7 +279,7 @@ a module in the wrong place. To address the runtime type-checking problem
 each property type also includes the types of the inputs and the results.</p>
 </section>
 <section id="data-flow-in-to-out-of-a-module">
-<h3>Data Flow in to/out of a Module<a class="headerlink" href="#data-flow-in-to-out-of-a-module" title="Permalink to this headline"></a></h3>
+<h3>Data Flow in to/out of a Module<a class="headerlink" href="#data-flow-in-to-out-of-a-module" title="Link to this heading"></a></h3>
 <p>The previous sections introduced the components of the call graph. With these
 pieces it is now possible to describe how nodes will actually call one another.</p>
 <figure class="align-center" id="id3">
@@ -286,7 +288,7 @@ pieces it is now possible to describe how nodes will actually call one another.<
 <p><span class="caption-number">Fig. 13 </span><span class="caption-text">Left how typed information traverses the user’s code into the module
 developer’s code and right how typed information leaves the module
 developer’s code and enters the user’s code. Note that all data traverses
-the code boundary in type-erased form.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+the code boundary in type-erased form.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>To try and make the design from the last section more intuitive consider
@@ -329,7 +331,7 @@ scientific simulations.</p></li>
 </ol>
 </section>
 <section id="assembling-the-call-graph">
-<h3>Assembling the Call Graph<a class="headerlink" href="#assembling-the-call-graph" title="Permalink to this headline"></a></h3>
+<h3>Assembling the Call Graph<a class="headerlink" href="#assembling-the-call-graph" title="Link to this heading"></a></h3>
 <p>With a design in place to wrap algorithms in modules, and a design for how
 to call the modules, the last piece of the call graph component is literally
 assembling the call graph. As a first pass we have adopted a simple solution
@@ -340,7 +342,7 @@ depicted in <a class="reference internal" href="#fig-assemble-call-graph"><span 
 <p><span class="caption-number">Fig. 14 </span><span class="caption-text">Each module must register with PluginPlay the number of callback points
 it exposes, and the property types which will be used at those points.
 PluginPlay chooses (with a lot of help from the user) the modules for
-each callback point and gives them to the module at run time.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+each callback point and gives them to the module at run time.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>Rather than create a literal call graph object to represent the call graph we
@@ -362,7 +364,7 @@ Once the callbacks are determined, the module is linked to them and the process
 is repeated recursively inside each callback module.</p>
 </section>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
 <p>The current design addresses the above considerations by:</p>
 <ol class="arabic simple">
 <li><p>Inspect and modify the call graph</p>
@@ -439,7 +441,7 @@ type,</p></li>
 </section>
 </section>
 <section id="additional-notes">
-<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline"></a></h2>
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>For simplicity we assumed that each module object stores a list of the
 modules it will call, and PluginPlay manipulates this list. We could

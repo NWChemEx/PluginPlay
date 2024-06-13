@@ -23,7 +23,7 @@ The :ref:`call_graph_design` section motivated the need for a module component
 ought to have suggested it too...).
 
 *****************************
-What is the module component?
+What is the Module Component?
 *****************************
 
 See :ref:`module` for PluginPlay's definition of a module. The module component
@@ -34,27 +34,84 @@ module developer wrote.
 Module Component Considerations
 *******************************
 
-Based on the discussions in the :ref:`call_graph_design` section, the module
-component must:
+.. _mc_user_interface:
 
-#. Provide a mechanism for a user to interface their algorithm with PluginPlay
+User interface.
+   Stemming from :ref:`call_graph_design`, one of the motivating factors for the
+   module component is to provide a mechanism for a user to interface their
+   algorithm with PluginPlay.
 
-#. Leverage cache component for memoization
+.. _mc_memoization:
+
+Memoization.
+   Also stemming from :ref:`call_graph_design`, caching/memoization of a module
+   is the responsibility of the module component.
 
    - Ideally largely automated
    - Developers may need mark modules as incapable of being memoized when they
      are not sufficiently "pure" (*i.e.*, they have side effects, are
      non-deterministic, and/or depend on global input).
 
-#. Have a setup phase (presumably in the constructor)
+.. _mc_construction_phase:
+
+Have a construction phase.
+   Modules will ultimately be classes. The construction phase will happen in the
+   constructor and may include:
 
    - Used by developer to register the module's metadata.
    - Also can initialize constant state needed by the module.
 
+.. _mc_run_hook:
 
-#. Expose a ``run`` member for actually running the module
+Expose a ``run`` hook.
+   As agreed upon in :ref:`call_graph_design`, executing a module happens by
+   calling a ``run`` member. Members of the module component must expose such a
+   member.
 
-#. Have the ability to store call-back points.
+   - The ``run`` member should contain minimal branching. Traditional if/else
+     logic needed for determining what function to run should be handled by
+     selecting submodules ahead of time.
+
+.. _mc_store_call_back_points:
+
+Store callback points.
+   The graph only works if nodes can call other nodes. Modules must be able to
+   call sub-modules, which requires somehow being able to hold the submodules.
+
+.. _mc_driver_modules:
+
+Driver modules.
+   Motivation for driver modules is given below. In short, we need modules whose
+   sole purpose is to do some setup and then call another/other module(s).
+
+Need for Driver Modules
+=======================
+
+.. _fig_switching_modules:
+
+.. figure:: assets/switching_modules.png
+   :align: center
+
+   Left the original graph. Right the graph resulting from using module "E"
+   instead of "D". The question is how can both graphs be loaded into the
+   ``ModuleManager`` simultaneously?
+
+Consider the two graphs shown in :numref:`fig_switching_modules`. Let's call
+the left graph "L" and the right graph "R". If we choose to have graph "L" be
+the default graph that is loaded into the ``ModuleManager`` the user can go
+from  graph "L" to graph "R" by telling the ``ModuleManager`` to switch the
+submodule node "C" uses from node "D" to node "E". While viable, this is not
+necessarily user-friendly as running "R" vs "L" means the user needs to know to
+switch "D" to "E".
+
+If we wanted to make it easy to run both "R" and "L" one option is to make
+copies of the "A" and "C" modules. Let "RA" and "RC" respectively be those
+copies. Then it becomes possible to have both the "L" and "R" graphs loaded into
+the ``ModuleManager`` by default. More specifically, "L" is loaded in in the
+same manner, "R" is loaded in by having "RC" call "E" and "RA" call "B" and
+"RC". While this solution works, it can be tedious depending on how nested
+the graph is. It also can be wasteful because the two graphs may have a
+substantial amount of overlap.
 
 ***********************
 Module Component Design
@@ -86,7 +143,7 @@ callback hooks used throughout, and the metadata (version, author, papers to
 cite, *etc.*). The actual state provided in the constructor is stored in the
 ``ModuleBase`` part of the object and preserved in the state provided. When
 users change inputs, or callbacks the user's requests are actually stored in
-the ``ModulePIMPL``. 
+the ``ModulePIMPL``.
 
 The other half of implementing a module is done when the module developer
 overrides the ``run_()`` member. This member is assumed to be a pure function
@@ -97,74 +154,97 @@ desired black-box nature and for memoization purposes. To be treated as a black
 box the module must receive no "hidden" inputs including from global variables,
 files, or state not registered with PluginPlay. In practice, particularly when
 considering modules meant to be called iteratively, a module may need access
-to modifable state. This is where the "Temporary Cache" comes in. The derived
+to modifiable state. This is where the "Temporary Cache" comes in. The derived
 class is able to put/get data in/out of the temporary cache using a key-value
 system.
 
+Driver Module Development
+=========================
 
-Module Usage
-============
+To address :ref:`mc_driver_modules` we introduce the idea of a driver module.
 
-.. _fig_calling_a_module:
+Design 1.0
+----------
 
-.. figure:: assets/calling_a_module.png
-   :align: center
+.. note::
 
-   How inputs traverse the module component.
+   This is here for historic context, it's NOT current.
 
-:numref:`fig_calling_a_module` depicts the process of a user interacting,
-*i.e.*, calling, the module. First, the user selects the property type to run
-the module as. The property type defines the inputs the user must provide, and
-the user passes the appropriate inputs into the ``Module`` class. Inside the
-``Module``, the bound inputs are added to the user's inputs (for each bound
-input, it is added only if it does not override a user specified input). The
-``Module`` (actually the ``ModulePIMPL``) then forwards the combined inputs,
-and the bound callbacks, to the ``ModuleBase`` class. The ``ModuleBase`` class
-unifies the provided inputs with the default inputs (again only adding a 
-default input if it does not override a provided input) and forwards the final
-set of inputs and the callbacks to the derived class. Returning values is much
-simpler as there are no default/bound returns and results are simply forwarded
-from the derived class through the ``ModuleBase``, ``ModulePIMPL``, and 
-``Module`` classes. To aid in memoization/parallelization the ``ModulePIMPL``
-locks during the aforementioned process to avoid concurrent modifications to
-its state.
+To ensure that driver modules interoperate with other modules, driver modules
+also inherit from ``ModuleBase``. Keeping with :ref:`mc_run_hook`, we want the
+``run`` member of the driver module to have minimal branching, thus logic for
+swapping modules should happen before ``run`` is called. Our solution is to
+introduce ``ModuleBase::pre_run``. This method allows the derived module to
+manipulate the input values and submodules ``run`` will call before they are
+passed to ``run``. By default ``ModuleBase::pre_run`` will just return the
+inputs and submodules provided to it. To define a driver module, the module
+developer overrides the default implementation. For symmetry we also introduce
+``ModuleBase::post_run`` which allows the derived class to manipulate the
+results before they are given back to the caller of ``Module::run``.
 
-While not shown in :numref:`fig_calling_a_module`, memoization occurs in
-the ``ModulePIMPL`` class (``ModuleBase`` is shared by all instances of the
-same module and, with the exception of the temporary cache, read-only). The
-design of the memoization process is covered in more detail 
-in :ref:`memoization_design`. For our current purposes it suffices to say that
-the user-provided inputs, unified with the bound inputs and the callbacks, are
-used as a key to the cache (which is module-base specific). If that key is
-found the result is simply returned, otherwise ``ModuleBase::run`` is called.
+The official C++ API for declaring a module is to use the ``DECLARE_MODULE``
+macro. If the user is going to override ``pre_run`` or ``post_run`` this changes
+the declaration needed (i.e., the signature for ``pre_run`` and/or ``post_run``
+must be part of the declaration). To avoid an API break we introduce a new macro
+``DECLARE_MODULE_DRIVER``, for symmetry we require users to override both
+``pre_run`` and ``post_run`` if they choose to write a driver (even if they
+only need one or the other).
 
+Design 2.0
+----------
+
+In prototyping design 1.0, it was realized that ``Module::run`` looks like:
+
+.. code-block:: c++
+
+   std::tie(inputs, submods) = module.pre_run(inputs, submods);
+   auto rv = module.run(inputs, submods);
+   rv = module.post_run(inputs, submods, rv);
+
+With nothing between ``pre_run`` and ``run`` (or ``run`` and ``post_run``) there
+is no reason (aside from partitioning preference) why the module developer can't
+just put their pre-run and post-run logic inside their module's run overload.
+More specifically the same inputs and submods that would go to ``pre_run`` can
+just be fed to ``run``, then the same logic which would have happened in
+``pre_run`` can just happen in ``run``. Similarly all information which would
+have been fed into ``post_run`` is also available in ``run``.
+
+Ultimately, it was thus realized that pre- and post- conditions can be handled
+as is.
+
+*******
 Summary
-=======
+*******
 
 The above design specifically addresses the stated considerations by:
 
-#. Provide a mechanism for a user to interface their algorithm with PluginPlay
+:ref:`mc_user_interface`
 
    - Module developers inherit from ``ModuleBase`` and fill in the virtual
      ``run_`` member.
    - Metadata for the module can be registered with ``ModuleBase`` (and thus
      PluginPlay) in the derived class's ctor.
 
-#. Leverage cache component for memoization
+
+:ref:`mc_memoization`
 
    - ``ModulePIMPL`` performs memoization.
 
-#. Have a setup phase (presumably in the constructor)
+:ref:`mc_construction_phase`
 
-   - Derived classes use their constructor
+   - Derived classes use their constructor to set meta-data.
 
-#. Expose a ``run`` member for actually running the module
+:ref:`mc_run_hook`
 
    - ``Module`` exposes the ``run`` (and more useful ``run_as``) which
-     executes the module.     
+     executes the module.
 
-#. Have the ability to store call-back points.
+:ref:`mc_store_call_back_points`
 
    - ``ModuleBase`` records the hooks (property types and associated tag) for
      each call back location.
    - ``ModulePIMPl`` holds the bound callbacks for each hook.
+
+:ref:`mc_driver_modules`
+
+   - Driver modules can be

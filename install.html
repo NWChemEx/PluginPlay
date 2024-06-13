@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installing PluginPlay &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -112,7 +113,7 @@
            <div itemprop="articleBody">
              
   <section id="installing-pluginplay">
-<span id="id1"></span><h1>Installing PluginPlay<a class="headerlink" href="#installing-pluginplay" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Installing PluginPlay<a class="headerlink" href="#installing-pluginplay" title="Link to this heading"></a></h1>
 <p>PluginPlay uses <a class="reference external" href="https://cmakepp.github.io/CMaize/index.html">CMaize</a> as
 its build system, more detailed build instructions can be found
 <a class="reference external" href="https://cmakepp.github.io/CMaize/getting_started/building/index.html">here</a>.</p>
@@ -126,7 +127,7 @@ usually just sets configuration values set via the standard CMake <code class="d
 function, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">set(&lt;option_name&gt;</span> <span class="pre">&lt;value&gt;)</span></code>.</p>
 </div>
 <section id="install-command">
-<h2>Install Command<a class="headerlink" href="#install-command" title="Permalink to this headline"></a></h2>
+<h2>Install Command<a class="headerlink" href="#install-command" title="Link to this heading"></a></h2>
 <p>In many cases PluginPlay can be installed by:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/NWChemEx/PluginPlay</span>
 <span class="go">cd PluginPlay</span>
@@ -150,7 +151,7 @@ above code block, <em>i.e.</em>,</p>
 </div>
 </section>
 <section id="configuration-options">
-<h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline"></a></h2>
+<h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Link to this heading"></a></h2>
 <p>This is a list of configuration options recognized by PluginPlay’s build
 system.</p>
 <dl class="simple">
@@ -170,17 +171,17 @@ the <code class="docutils literal notranslate"><span class="pre">PluginPlay_cxx_
 </dl>
 </section>
 <section id="pluginplay-dependencies">
-<h2>PluginPlay Dependencies<a class="headerlink" href="#pluginplay-dependencies" title="Permalink to this headline"></a></h2>
+<h2>PluginPlay Dependencies<a class="headerlink" href="#pluginplay-dependencies" title="Link to this heading"></a></h2>
 <p>If you have a problem building PluginPlay it’s most likely because you
 don’t have a new enough version of CMake installed or because CMake can’t find
 one of PluginPlay’s dependencies. This section enumerates PluginPlay’s
 dependencies.</p>
 <section id="required-dependencies">
-<h3>Required Dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline"></a></h3>
+<h3>Required Dependencies<a class="headerlink" href="#required-dependencies" title="Link to this heading"></a></h3>
 <p>These are dependencies which must be pre-installed and can not be built by
 PluginPlay’s build system.</p>
 <section id="c-compiler">
-<h4>C++ Compiler<a class="headerlink" href="#c-compiler" title="Permalink to this headline"></a></h4>
+<h4>C++ Compiler<a class="headerlink" href="#c-compiler" title="Link to this heading"></a></h4>
 <p>PluginPlay relies on the C++17 standard and should work with any C++17
 compliant compiler (GCC 9.x or newer). C++ compilers can often be installed by
 your OS’s package manager. CMake detects your C++ compiler via the value of
@@ -188,7 +189,7 @@ your OS’s package manager. CMake detects your C++ compiler via the value of
 compiler you want to use.</p>
 </section>
 <section id="mpi">
-<h4>MPI<a class="headerlink" href="#mpi" title="Permalink to this headline"></a></h4>
+<h4>MPI<a class="headerlink" href="#mpi" title="Link to this heading"></a></h4>
 <p>PluginPlay’s heaviest dependency is ParallelZone which implicitly brings in
 MPI (the message passing interface). Users must have an MPI distribution
 installed prior to building ParallelZone. MPI distributions exist in most
@@ -204,11 +205,11 @@ it’s best to let CMake discover MPI via the C++ wrapper. Add:</p>
 </section>
 </section>
 <section id="optional-dependencies">
-<h3>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline"></a></h3>
+<h3>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h3>
 <p>These are dependencies that PluginPlay’s build system can not build; however,
 they are only required if certain features are enabled.</p>
 <section id="cppyy">
-<h4>Cppyy<a class="headerlink" href="#cppyy" title="Permalink to this headline"></a></h4>
+<h4>Cppyy<a class="headerlink" href="#cppyy" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://github.com/wlav/cppyy">https://github.com/wlav/cppyy</a></p>
 <p>If Python bindings are enabled (controlled by the CMake variable
 <code class="docutils literal notranslate"><span class="pre">BUILD_PYBINDINGS</span></code>, which is <code class="docutils literal notranslate"><span class="pre">ON</span></code> by default).  Cppyy is obtainable via
@@ -216,13 +217,13 @@ PyPI (<em>i.e.</em>, the <code class="docutils literal notranslate"><span class=
 the python executable found by CMake must have Cppyy installed.</p>
 </section>
 <section id="doxygen">
-<h4>Doxygen<a class="headerlink" href="#doxygen" title="Permalink to this headline"></a></h4>
+<h4>Doxygen<a class="headerlink" href="#doxygen" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://www.doxygen.nl/">https://www.doxygen.nl/</a></p>
 <p>Used to generate the C++ API documentation. Only needed if <code class="docutils literal notranslate"><span class="pre">BUILD_DOCS</span></code> is
 set to a truth-y value.</p>
 </section>
 <section id="rocksdb">
-<h4>RocksDB<a class="headerlink" href="#rocksdb" title="Permalink to this headline"></a></h4>
+<h4>RocksDB<a class="headerlink" href="#rocksdb" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://github.com/facebook/rocksdb">https://github.com/facebook/rocksdb</a></p>
 <p>If <code class="docutils literal notranslate"><span class="pre">BUILD_ROCKSDB</span></code> is enabled (default is <code class="docutils literal notranslate"><span class="pre">OFF</span></code>) an installed version of
 RocksDB must be locatable by CMaize. RocksDB is used as an optimized backend
@@ -230,42 +231,42 @@ for the cache.</p>
 </section>
 </section>
 <section id="other-dependencies">
-<h3>Other Dependencies<a class="headerlink" href="#other-dependencies" title="Permalink to this headline"></a></h3>
+<h3>Other Dependencies<a class="headerlink" href="#other-dependencies" title="Link to this heading"></a></h3>
 <p>The dependencies in this section can be built by PluginPlay’s build system
 when they are not located. Under normal circumstances users can ignore them.
 They are listed here primarily for completeness.</p>
 <section id="catch2">
-<h4>Catch2<a class="headerlink" href="#catch2" title="Permalink to this headline"></a></h4>
+<h4>Catch2<a class="headerlink" href="#catch2" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://github.com/catchorg/Catch2">https://github.com/catchorg/Catch2</a></p>
 <p>Used for unit testing. Only needed if unit testing is enabled (controlled by
 the CMake variable <code class="docutils literal notranslate"><span class="pre">BUILD_TESTING</span></code>, which is <code class="docutils literal notranslate"><span class="pre">OFF</span></code> by default).</p>
 </section>
 <section id="cereal">
-<h4>Cereal<a class="headerlink" href="#cereal" title="Permalink to this headline"></a></h4>
+<h4>Cereal<a class="headerlink" href="#cereal" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://github.com/USCiLab/cereal">https://github.com/USCiLab/cereal</a></p>
 <p>Used for serialization. The build system can automatically build Cereal for
 you if it’s not found.</p>
 </section>
 <section id="cmaize">
-<h4>CMaize<a class="headerlink" href="#cmaize" title="Permalink to this headline"></a></h4>
+<h4>CMaize<a class="headerlink" href="#cmaize" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://cmakepp.github.io/CMaize/index.html">https://cmakepp.github.io/CMaize/index.html</a></p>
 <p>Used to simplify writing a CMake-based build system. The build system will grab
 it for you.</p>
 </section>
 <section id="libfort">
-<h4>libfort<a class="headerlink" href="#libfort" title="Permalink to this headline"></a></h4>
+<h4>libfort<a class="headerlink" href="#libfort" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://www.github.com/seleznevae/libfort">https://www.github.com/seleznevae/libfort</a></p>
 <p>Used to create formatted tables in auto-generated module documentation.</p>
 </section>
 <section id="parallelzone">
-<h4>ParallelZone<a class="headerlink" href="#parallelzone" title="Permalink to this headline"></a></h4>
+<h4>ParallelZone<a class="headerlink" href="#parallelzone" title="Link to this heading"></a></h4>
 <p>URL: <cite>&lt;https://www.github.com/&gt;</cite></p>
 <p>Parallel runtime system built and maintained by the NWChemEx team. As a
 slight caveat, PluginPlay’s build system can only automatically build
 ParallelZone if MPI is installed and visible to CMake.</p>
 </section>
 <section id="utilities">
-<h4>utilities<a class="headerlink" href="#utilities" title="Permalink to this headline"></a></h4>
+<h4>utilities<a class="headerlink" href="#utilities" title="Link to this heading"></a></h4>
 <p>URL: <a class="reference external" href="https://www.github.com/NWChemEx/utilities">https://www.github.com/NWChemEx/utilities</a></p>
 <p>Utility classes used throughout the NWChemEx stack.</p>
 </section>

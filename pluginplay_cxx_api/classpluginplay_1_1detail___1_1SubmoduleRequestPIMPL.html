@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -152,6 +152,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a73dc27a51be6ae225149c7f32e014351"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a73dc27a51be6ae225149c7f32e014351">value</a> ()</td></tr>
 <tr class="memdesc:a73dc27a51be6ae225149c7f32e014351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the module used to satisfy this request in a read/write state.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a73dc27a51be6ae225149c7f32e014351">More...</a><br /></td></tr>
 <tr class="separator:a73dc27a51be6ae225149c7f32e014351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7ef1b6bc12e02914e2734e6481e1958"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a168a30d6970804d34051e413d0180836">module_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af7ef1b6bc12e02914e2734e6481e1958">data</a> () const</td></tr>
+<tr class="memdesc:af7ef1b6bc12e02914e2734e6481e1958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the shared pointer to the module satisfying this request.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af7ef1b6bc12e02914e2734e6481e1958">More...</a><br /></td></tr>
+<tr class="separator:af7ef1b6bc12e02914e2734e6481e1958"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49a445916431672187da6933a99373cc"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a49a445916431672187da6933a99373cc">description</a> () const</td></tr>
 <tr class="memdesc:a49a445916431672187da6933a99373cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to retrieve the description of this request.  <a href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a49a445916431672187da6933a99373cc">More...</a><br /></td></tr>
 <tr class="separator:a49a445916431672187da6933a99373cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -326,6 +329,40 @@ Public Member Functions</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::bad_alloc</td><td>if there is insufficient memory to make the copy. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af7ef1b6bc12e02914e2734e6481e1958"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7ef1b6bc12e02914e2734e6481e1958">&#9670;&nbsp;</a></span>data()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a168a30d6970804d34051e413d0180836">module_ptr</a> pluginplay::detail_::SubmoduleRequestPIMPL::data </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieves the shared pointer to the module satisfying this request. </p>
+<dl class="section return"><dt>Returns</dt><dd>The shared pointer used to hold the module satisfying this request.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -868,7 +905,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the module that is to be used to satisfy the request. </p>
-<p>This function is designed to be called by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> via the <a class="el" href="classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule.">SubmoduleRequest</a> class in order to fulfill the request.</p>
+<p>This function is designed to be called by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> via the <a class="el" href="classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule.">SubmoduleRequest</a> class in order to fulfill the request.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ptr</td><td>Pointer to the module to use.</td></tr>
@@ -1031,7 +1068,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convenience function for calling uuid on the wrapped module. </p>
-<p>The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> assigns UUIDs to modules when they are loaded. This method is used to retrieve the UUID assigned to the wrapped module. This method is simply a convenience function for calling Module::uuid() on the wrapped module.</p>
+<p>The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> assigns UUIDs to modules when they are loaded. This method is used to retrieve the UUID assigned to the wrapped module. This method is simply a convenience function for calling Module::uuid() on the wrapped module.</p>
 <dl class="section return"><dt>Returns</dt><dd>The UUID of the wrapped module.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Templated Modules &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -99,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="templated-modules">
-<h1>Templated Modules<a class="headerlink" href="#templated-modules" title="Permalink to this headline"></a></h1>
+<h1>Templated Modules<a class="headerlink" href="#templated-modules" title="Link to this heading"></a></h1>
 <p>Our <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module hard-coded the floating type to <code class="docutils literal notranslate"><span class="pre">double</span></code>. In
 practice we can get a factor of 2 speed-up by using <code class="docutils literal notranslate"><span class="pre">float</span></code> instead of
 <code class="docutils literal notranslate"><span class="pre">double</span></code>. The trade-off is that <code class="docutils literal notranslate"><span class="pre">float</span></code> has reduced precision and is thus

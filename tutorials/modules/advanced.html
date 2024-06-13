@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Advanced Module Implementation &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -106,12 +107,12 @@
            <div itemprop="articleBody">
              
   <section id="advanced-module-implementation">
-<h1>Advanced Module Implementation<a class="headerlink" href="#advanced-module-implementation" title="Permalink to this headline"></a></h1>
+<h1>Advanced Module Implementation<a class="headerlink" href="#advanced-module-implementation" title="Link to this heading"></a></h1>
 <p>The previous page covered the basics of writing a module, which is fine for
 many applications. For more complicated algorithms however, there are additional
 considerations. That is what this page focuses on.</p>
 <section id="module-specific-inputs">
-<h2>Module-Specific Inputs<a class="headerlink" href="#module-specific-inputs" title="Permalink to this headline"></a></h2>
+<h2>Module-Specific Inputs<a class="headerlink" href="#module-specific-inputs" title="Link to this heading"></a></h2>
 <p>Continuing from our electric field example, the factor of:
 <span class="math notranslate nohighlight">\(||\vec{r} - \vec{r}_i||^2\)</span> means that point charges which are far from
 the evaluation point, <span class="math notranslate nohighlight">\(\vec{r}\)</span>, minimally contributes to the electric
@@ -161,7 +162,7 @@ advance versus parameters that would typically be passed as an input.</p>
 </div>
 </section>
 <section id="satisfying-multiple-property-types">
-<h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Permalink to this headline"></a></h2>
+<h2>Satisfying Multiple Property Types<a class="headerlink" href="#satisfying-multiple-property-types" title="Link to this heading"></a></h2>
 <p>Sometimes an algorithm will compute more than one property. Reasons why this may
 occur include performance (the two quantities may share many common
 intermediates) and wrapping code not originally designed for PluginPlay (for
@@ -176,7 +177,7 @@ any module-specific results that the module returns.</p>
 <p>TODO: Add examples</p>
 </section>
 <section id="lambda-modules">
-<h2>Lambda Modules<a class="headerlink" href="#lambda-modules" title="Permalink to this headline"></a></h2>
+<h2>Lambda Modules<a class="headerlink" href="#lambda-modules" title="Link to this heading"></a></h2>
 <p>Lambda modules are one-off modules which satisfy a single property type. They
 can be used anywhere the property type is needed. Unlike a normal module which
 requires defining a class and metadata, lambda modules can be written inline in
@@ -186,7 +187,7 @@ lambda function).</p>
 <p>TODO: Add examples</p>
 </section>
 <section id="facade-modules">
-<h2>Facade Modules<a class="headerlink" href="#facade-modules" title="Permalink to this headline"></a></h2>
+<h2>Facade Modules<a class="headerlink" href="#facade-modules" title="Link to this heading"></a></h2>
 <p>Facade modules are modules which ignore the arguments they are given and return
 a specified value. They are a simplified version of a lambda module which can
 be created by providing a single value (instead of a function like a lambda

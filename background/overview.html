@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PluginPlay Overview &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -99,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="pluginplay-overview">
-<span id="pp-overview"></span><h1>PluginPlay Overview<a class="headerlink" href="#pluginplay-overview" title="Permalink to this headline"></a></h1>
+<span id="pp-overview"></span><h1>PluginPlay Overview<a class="headerlink" href="#pluginplay-overview" title="Link to this heading"></a></h1>
 <p>The background section of the PluginPlay documentation is extensive. This is
 because PluginPlay is targeted at scientific research software and thus it
 is important to understand the scientific merits of PluginPlay and how it
@@ -107,7 +108,7 @@ relates to other software. That said, most users can safely ignore most of the
 content in the background section, and this overview page is designed to give you
 the essentials in about a 5 minute read.</p>
 <section id="what-is-pluginplay">
-<h2>What is PluginPlay?<a class="headerlink" href="#what-is-pluginplay" title="Permalink to this headline"></a></h2>
+<h2>What is PluginPlay?<a class="headerlink" href="#what-is-pluginplay" title="Link to this heading"></a></h2>
 <p>There is a need for modular scientific software. Using PluginPlay, developers
 write algorithms inside self-contained <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects. Software packages
 are then created by “wiring” <a class="reference internal" href="terminology.html#module"><span class="std std-ref">Module</span></a> objects together. As additional
@@ -132,7 +133,7 @@ for:</p>
 </ol>
 </section>
 <section id="who-should-use-pluginplay">
-<h2>Who should use PluginPlay?<a class="headerlink" href="#who-should-use-pluginplay" title="Permalink to this headline"></a></h2>
+<h2>Who should use PluginPlay?<a class="headerlink" href="#who-should-use-pluginplay" title="Link to this heading"></a></h2>
 <p>PluginPlay is meant as a framework on which to build a software package.
 PluginPlay is thus really targeted at developers who fall into two groups. The
 first group of developers actively write and maintain modular software
@@ -147,7 +148,7 @@ cases developers can serve their community better by wrapping the PluginPlay
 calls needed for domain-specific tasks in domain-specific <a class="reference internal" href="terminology.html#api"><span class="std std-ref">API</span></a>.</p>
 </section>
 <section id="how-does-pluginplay-work">
-<h2>How does PluginPlay work?<a class="headerlink" href="#how-does-pluginplay-work" title="Permalink to this headline"></a></h2>
+<h2>How does PluginPlay work?<a class="headerlink" href="#how-does-pluginplay-work" title="Link to this heading"></a></h2>
 <p>The PluginPlay framework relies on four concepts:</p>
 <ul class="simple">
 <li><p>Modules. These are components of the software. Aside from the inputs to the
@@ -170,7 +171,7 @@ assembles the program.</p></li>
 PluginPlay through the module manager. The module manager builds the call
 graph representation of the program. When users run the program, results
 are stored in the cache, and developers can write new modules using the
-module utilities.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+module utilities.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-pp-arch"><span class="std std-numref">Fig. 1</span></a> is a simplified architecture diagram of PluginPlay. The

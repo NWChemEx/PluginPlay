@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terminology and Abbreviations &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -116,15 +117,15 @@
            <div itemprop="articleBody">
              
   <section id="terminology-and-abbreviations">
-<span id="id1"></span><h1>Terminology and Abbreviations<a class="headerlink" href="#terminology-and-abbreviations" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Terminology and Abbreviations<a class="headerlink" href="#terminology-and-abbreviations" title="Link to this heading"></a></h1>
 <p>The purpose of this page is to define abbreviations and terminology used
 throughout the PluginPlay documentation. Terms and abbreviations are listed in
 alphabetic order. Other pages are encouraged to link to the terms and
 abbreviations.</p>
 <section id="terminology">
-<h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline"></a></h2>
+<h2>Terminology<a class="headerlink" href="#terminology" title="Link to this heading"></a></h2>
 <section id="bound-input">
-<span id="id2"></span><h3>Bound Input<a class="headerlink" href="#bound-input" title="Permalink to this headline"></a></h3>
+<span id="id2"></span><h3>Bound Input<a class="headerlink" href="#bound-input" title="Link to this heading"></a></h3>
 <p>For a particular <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>, <code class="docutils literal notranslate"><span class="pre">M</span></code>, an input <code class="docutils literal notranslate"><span class="pre">k</span></code> is said to be
 bound if the <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> instance returned by <code class="docutils literal notranslate"><span class="pre">M.inputs().at(&quot;k&quot;)</span></code> has
 a value. When a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is called as a particular <a class="reference internal" href="#property-type"><span class="std std-ref">Property Type</span></a>,
@@ -132,44 +133,44 @@ all inputs not appearing in the definition of the <a class="reference internal" 
 bound.</p>
 </section>
 <section id="bound-submodule">
-<span id="id3"></span><h3>Bound Submodule<a class="headerlink" href="#bound-submodule" title="Permalink to this headline"></a></h3>
+<span id="id3"></span><h3>Bound Submodule<a class="headerlink" href="#bound-submodule" title="Link to this heading"></a></h3>
 <p>Same as a <a class="reference internal" href="#bound-input"><span class="std std-ref">Bound Input</span></a> except that it refers to one of the
 submodules that a module will call instead of one of the input options.</p>
 </section>
 <section id="field">
-<span id="id4"></span><h3>Field<a class="headerlink" href="#field" title="Permalink to this headline"></a></h3>
+<span id="id4"></span><h3>Field<a class="headerlink" href="#field" title="Link to this heading"></a></h3>
 <p>A term for generically referring to the arguments to/from a function, <em>i.e.</em>,
 both inputs and results are fields.</p>
 </section>
 <section id="locked">
-<span id="id5"></span><h3>Locked<a class="headerlink" href="#locked" title="Permalink to this headline"></a></h3>
+<span id="id5"></span><h3>Locked<a class="headerlink" href="#locked" title="Link to this heading"></a></h3>
 <p>A <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is said to be locked if the end-user accessible state can no
 longer be changed. This occurs when a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is run and prevents
 concurrent access from invalidating <a class="reference internal" href="#memoization"><span class="std std-ref">Memoization</span></a>.</p>
 </section>
 <section id="memoization">
-<span id="id6"></span><h3>Memoization<a class="headerlink" href="#memoization" title="Permalink to this headline"></a></h3>
+<span id="id6"></span><h3>Memoization<a class="headerlink" href="#memoization" title="Link to this heading"></a></h3>
 <p>A technique where repeated calls to an expensive function, with
 the same input, are avoided by saving the input to the function, and the
 result of calling the function.</p>
 </section>
 <section id="module">
-<span id="id7"></span><h3>Module<a class="headerlink" href="#module" title="Permalink to this headline"></a></h3>
+<span id="id7"></span><h3>Module<a class="headerlink" href="#module" title="Link to this heading"></a></h3>
 <p>Self-contained pieces of code. Modules wrap developer provided code
 in a common <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> that can be used by the rest of PluginPlay.</p>
 </section>
 <section id="opaque">
-<span id="id8"></span><h3>Opaque<a class="headerlink" href="#opaque" title="Permalink to this headline"></a></h3>
+<span id="id8"></span><h3>Opaque<a class="headerlink" href="#opaque" title="Link to this heading"></a></h3>
 <p>The opposite of <a class="reference internal" href="#transparent"><span class="std std-ref">Transparent</span></a>. An option is “opaque” if changing its
 value changes the result of a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>.</p>
 </section>
 <section id="plugin">
-<span id="id9"></span><h3>Plugin<a class="headerlink" href="#plugin" title="Permalink to this headline"></a></h3>
+<span id="id9"></span><h3>Plugin<a class="headerlink" href="#plugin" title="Link to this heading"></a></h3>
 <p>These are groups of <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> that are distributed together. In C++ plugins
 will be libraries, whereas in Python they will be Python packages.</p>
 </section>
 <section id="property-type">
-<span id="id10"></span><h3>Property Type<a class="headerlink" href="#property-type" title="Permalink to this headline"></a></h3>
+<span id="id10"></span><h3>Property Type<a class="headerlink" href="#property-type" title="Link to this heading"></a></h3>
 <p>A property type is a domain-specific quantity of interest. For
 example if your code computes geometric properties of shapes then you may
 have property types for area, volume, and perimeter. Basically these are the
@@ -177,7 +178,7 @@ quantities that users of your code will want to compute and they define the
 <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> for calling a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> which can compute the namesake property.</p>
 </section>
 <section id="strong-type">
-<span id="id11"></span><h3>Strong Type<a class="headerlink" href="#strong-type" title="Permalink to this headline"></a></h3>
+<span id="id11"></span><h3>Strong Type<a class="headerlink" href="#strong-type" title="Link to this heading"></a></h3>
 <p>In C++ a strong type <code class="docutils literal notranslate"><span class="pre">U</span></code> is a class which wraps an object of type <code class="docutils literal notranslate"><span class="pre">T</span></code> so
 that it has a different type than other objects of type <code class="docutils literal notranslate"><span class="pre">T</span></code>.  This is mainly
 used when arguments to a function have the same type, but different meanings.
@@ -200,14 +201,14 @@ modern compilers can optimize the additional indirection out so the use of
 strong types should have little to no performance overhead.</p>
 </section>
 <section id="submodule">
-<span id="id12"></span><h3>Submodule<a class="headerlink" href="#submodule" title="Permalink to this headline"></a></h3>
+<span id="id12"></span><h3>Submodule<a class="headerlink" href="#submodule" title="Link to this heading"></a></h3>
 <p>A <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> called from within the body of a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a>. In most cases
 the “sub-” prefix is simply to discern the caller from the callee. The notable
 exception is when discussing the <code class="docutils literal notranslate"><span class="pre">Submodule</span></code> class, which defines the
 interface for how the caller will call the callee.</p>
 </section>
 <section id="transparent">
-<span id="id13"></span><h3>Transparent<a class="headerlink" href="#transparent" title="Permalink to this headline"></a></h3>
+<span id="id13"></span><h3>Transparent<a class="headerlink" href="#transparent" title="Link to this heading"></a></h3>
 <p>An input to a <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> is “transparent” if the result of the
 <a class="reference internal" href="#module"><span class="std std-ref">Module</span></a> does not depend on the value. Most inputs are <a class="reference internal" href="#opaque"><span class="std std-ref">Opaque</span></a> in
 that their values do change the resulting value. Examples of transparent
@@ -217,14 +218,14 @@ the accuracy.</p>
 </section>
 </section>
 <section id="abbreviations">
-<h2>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline"></a></h2>
+<h2>Abbreviations<a class="headerlink" href="#abbreviations" title="Link to this heading"></a></h2>
 <section id="api">
-<span id="id14"></span><h3>API<a class="headerlink" href="#api" title="Permalink to this headline"></a></h3>
+<span id="id14"></span><h3>API<a class="headerlink" href="#api" title="Link to this heading"></a></h3>
 <p>Application Programming Interface. The literal functions you call to
 programmatically interact with a software package.</p>
 </section>
 <section id="pimpl">
-<span id="id15"></span><h3>PIMPL<a class="headerlink" href="#pimpl" title="Permalink to this headline"></a></h3>
+<span id="id15"></span><h3>PIMPL<a class="headerlink" href="#pimpl" title="Link to this heading"></a></h3>
 <p>Pointer to IMPLementation. A common C++ technique used to separate the
 <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> of the class from its implementation. The <a class="reference internal" href="#api"><span class="std std-ref">API</span></a> of the class
 is declared in an “outer” class. The outer class has a (usually private) member

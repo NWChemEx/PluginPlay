@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Memoization Design &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -72,6 +73,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -109,13 +111,13 @@
            <div itemprop="articleBody">
              
   <section id="memoization-design">
-<span id="id1"></span><h1>Memoization Design<a class="headerlink" href="#memoization-design" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Memoization Design<a class="headerlink" href="#memoization-design" title="Link to this heading"></a></h1>
 <p>This page documents the design process and decisions affecting memoization in
 PluginPlay. The need for memoization stems from considerations
 <a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a>, specifically to ensure efficient call graph
 execution and for saving/loading previous sessions.</p>
 <section id="what-is-memoization">
-<h2>What is Memoization?<a class="headerlink" href="#what-is-memoization" title="Permalink to this headline"></a></h2>
+<h2>What is Memoization?<a class="headerlink" href="#what-is-memoization" title="Link to this heading"></a></h2>
 <p>Memoization is a run-time optimization technique used to speed up a program by
 storing the inputs and results of function calls (cacheing). When a function is
 called with already cached inputs, the cached results are returned without
@@ -123,7 +125,7 @@ actually recomputing the function. Memoization thus represents a time-for-space
 trade off.</p>
 </section>
 <section id="why-does-pluginplay-need-memoization">
-<span id="why-memoization"></span><h2>Why does PluginPlay Need Memoization?<a class="headerlink" href="#why-does-pluginplay-need-memoization" title="Permalink to this headline"></a></h2>
+<span id="why-memoization"></span><h2>Why does PluginPlay Need Memoization?<a class="headerlink" href="#why-does-pluginplay-need-memoization" title="Link to this heading"></a></h2>
 <p>PluginPlay relies on rigid property type APIs to define what data is directly
 passed to and from modules. Inevitably, users will have modules for which these
 APIs fail to provide all of the necessary inputs. PluginPlay’s solution to this
@@ -148,7 +150,7 @@ our point here is that in PluginPlay, we consider C/R part of the overall
 memoization strategy.</p>
 </section>
 <section id="memoization-considerations">
-<h2>Memoization Considerations<a class="headerlink" href="#memoization-considerations" title="Permalink to this headline"></a></h2>
+<h2>Memoization Considerations<a class="headerlink" href="#memoization-considerations" title="Link to this heading"></a></h2>
 <p>This section lists the considerations which went into the memoization design for
 PluginPlay.  These points relate to how the process of memoization is
 implemented or how the memoized data is used.</p>
@@ -244,7 +246,7 @@ recoverable and preventing memoization of the object.</p></li>
 </ul>
 </section>
 <section id="memoization-implementations">
-<h2>Memoization Implementations<a class="headerlink" href="#memoization-implementations" title="Permalink to this headline"></a></h2>
+<h2>Memoization Implementations<a class="headerlink" href="#memoization-implementations" title="Link to this heading"></a></h2>
 <p>Having PluginPlay automate memoization means it happens under the hood of
 PluginPlay. In turn, it is possible to incorporate existing memoization
 solutions into PluginPlay if they are written in C or C++. A quick search for
@@ -295,7 +297,7 @@ information was accurate as of March 2022 and may have changed since then.</p>
 </div>
 </section>
 <section id="memoization-strategy">
-<span id="id2"></span><h2>Memoization Strategy<a class="headerlink" href="#memoization-strategy" title="Permalink to this headline"></a></h2>
+<span id="id2"></span><h2>Memoization Strategy<a class="headerlink" href="#memoization-strategy" title="Link to this heading"></a></h2>
 <p>With the lack of well supported, feature-rich memoization libraries writing our
 own memoization routine seems like the best route. Conceptually the actual
 memoization process is straightforward since the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class’s <code class="docutils literal notranslate"><span class="pre">run</span></code>
@@ -352,7 +354,7 @@ container the <code class="docutils literal notranslate"><span class="pre">Cache
 <a class="reference internal" href="cache.html#cache-design"><span class="std std-ref">Cache Design</span></a>.</p>
 </section>
 <section id="memoization-implementation">
-<h2>Memoization Implementation<a class="headerlink" href="#memoization-implementation" title="Permalink to this headline"></a></h2>
+<h2>Memoization Implementation<a class="headerlink" href="#memoization-implementation" title="Link to this heading"></a></h2>
 <p>The actual implementation of memoization requires:</p>
 <ul class="simple">
 <li><p>Adding <code class="docutils literal notranslate"><span class="pre">turn_off_memoization</span></code>, <code class="docutils literal notranslate"><span class="pre">turn_on_memoization</span></code>, and

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -78,7 +78,7 @@ $(function() {
 <p>The public API of all modules.  
  <a href="classpluginplay_1_1Module.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="module_8hpp_source.html">module.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="module__class_8hpp_source.html">module_class.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -250,7 +250,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Makes a module with no implementation. </p>
-<p>The <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instance resulting from this ctor wraps no algorithm, has no description, and is not locked. The only way to make the instance have an algorithm is to assign to it from an instance that already has an algorithm. In general working <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instances will be made by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> and the only reason to make a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instance without an algorithm is as a placeholder.</p>
+<p>The <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instance resulting from this ctor wraps no algorithm, has no description, and is not locked. The only way to make the instance have an algorithm is to assign to it from an instance that already has an algorithm. In general working <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instances will be made by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> and the only reason to make a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instance without an algorithm is as a placeholder.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
@@ -400,7 +400,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Instantiates a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> with the provided backend. </p>
-<p>This ctor is primarily designed to be used by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a>; however, it can also be used by consumers who do not want to use the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a>.</p>
+<p>This ctor is primarily designed to be used by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>; however, it can also be used by consumers who do not want to use the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">base</td><td>The backend and state that will be used to implement this module.</td></tr>
@@ -440,7 +440,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Standard destructor. </p>
-<p>After this call the cache and results may still persist depending on whether or not their reference counts went to zero upon deletion. Of note the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> usually holds a shared_ptr to the cache and the cache usually holds one to the result.</p>
+<p>After this call the cache and results may still persist depending on whether or not their reference counts went to zero upon deletion. Of note the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> usually holds a shared_ptr to the cache and the cache usually holds one to the result.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
@@ -571,7 +571,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Changes the specified submodule to the provided module. </p>
-<p>This overload will register the submodule <code>new_submod</code> under the key <code>key</code>. This overload is a convenience overload that is useful when the submodule is not stored in the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> or when the user wants to break aliasing. Most of the time, when the submodule is in the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> one wants to use the overload of this function which takes a shared_ptr in order to keep the connections synchronized.</p>
+<p>This overload will register the submodule <code>new_submod</code> under the key <code>key</code>. This overload is a convenience overload that is useful when the submodule is not stored in the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> or when the user wants to break aliasing. Most of the time, when the submodule is in the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> one wants to use the overload of this function which takes a shared_ptr in order to keep the connections synchronized.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key under which the module should be registered. <code>key</code> must be one of the keys defined by this module's implementation.</td></tr>
@@ -777,7 +777,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Does this module contain an implementation? </p>
-<p>The <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> class is responsible for implementing most of this class. The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> only takes <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instances and therefore always has modules with implementations; however, we allow users to default construct (and copy/move from default constructed instances) which means it is possible for a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> to not have an implementation. This function is used to check whether or not the current module has an implementation.</p>
+<p>The <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> class is responsible for implementing most of this class. The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> only takes <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instances and therefore always has modules with implementations; however, we allow users to default construct (and copy/move from default constructed instances) which means it is possible for a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> to not have an implementation. This function is used to check whether or not the current module has an implementation.</p>
 <dl class="section return"><dt>Returns</dt><dd>True if the module has an implementation and false otherwise.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
@@ -1547,8 +1547,8 @@ template&lt;typename property_type , typename... Args&gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/pluginplay/<a class="el" href="module_8hpp_source.html">module.hpp</a></li>
-<li>src/pluginplay/module.cpp</li>
+<li>include/pluginplay/module/<a class="el" href="module__class_8hpp_source.html">module_class.hpp</a></li>
+<li>src/pluginplay/module/module.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

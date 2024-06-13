@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -151,6 +151,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a935fd0118e827ca0cba99324fe5d0419"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a935fd0118e827ca0cba99324fe5d0419">change</a> (<a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a372e835f584280aa70cb34553d17f97a">module_ptr</a> new_module)</td></tr>
 <tr class="memdesc:a935fd0118e827ca0cba99324fe5d0419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the module that is to be used to satisfy the request.  <a href="classpluginplay_1_1SubmoduleRequest.html#a935fd0118e827ca0cba99324fe5d0419">More...</a><br /></td></tr>
 <tr class="separator:a935fd0118e827ca0cba99324fe5d0419"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c877a265524500aa5dcdba2b78078f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#ac9c877a265524500aa5dcdba2b78078f">change</a> (<a class="el" href="classpluginplay_1_1Module.html">Module</a> new_module)</td></tr>
+<tr class="memdesc:ac9c877a265524500aa5dcdba2b78078f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fulfills the request with <code>new_module</code>.  <a href="classpluginplay_1_1SubmoduleRequest.html#ac9c877a265524500aa5dcdba2b78078f">More...</a><br /></td></tr>
+<tr class="separator:ac9c877a265524500aa5dcdba2b78078f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7c28c9c75a3cca4eadea1d6654e1856"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#af7c28c9c75a3cca4eadea1d6654e1856">change</a> (const <a class="el" href="classpluginplay_1_1SubmoduleRequest.html">SubmoduleRequest</a> &amp;new_module)</td></tr>
+<tr class="memdesc:af7c28c9c75a3cca4eadea1d6654e1856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fulfills the request with the module used to satisfy another request.  <a href="classpluginplay_1_1SubmoduleRequest.html#af7c28c9c75a3cca4eadea1d6654e1856">More...</a><br /></td></tr>
+<tr class="separator:af7c28c9c75a3cca4eadea1d6654e1856"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bcb8f922e95c2320ef585b01585b453"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html">SubmoduleRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1SubmoduleRequest.html#a6bcb8f922e95c2320ef585b01585b453">set_description</a> (<a class="el" href="namespacepluginplay_1_1type.html#a6ac6703e3c574d225a21b4abec89e29a">type::description</a> desc) noexcept</td></tr>
 <tr class="memdesc:a6bcb8f922e95c2320ef585b01585b453"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the human-readable description for the this request.  <a href="classpluginplay_1_1SubmoduleRequest.html#a6bcb8f922e95c2320ef585b01585b453">More...</a><br /></td></tr>
 <tr class="separator:a6bcb8f922e95c2320ef585b01585b453"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,8 +335,84 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="af7c28c9c75a3cca4eadea1d6654e1856"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7c28c9c75a3cca4eadea1d6654e1856">&#9670;&nbsp;</a></span>change() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::SubmoduleRequest::change </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1SubmoduleRequest.html">SubmoduleRequest</a> &amp;&#160;</td>
+          <td class="paramname"><em>new_module</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fulfills the request with the module used to satisfy another request. </p>
+<p>This method fulfills *this with the same module used to satisfy request <code>new_module</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_module</td><td>The request providing the module.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_optional_access</td><td>if the property type has not been set yet. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if <code>new_module</code> is not of the correct property type. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac9c877a265524500aa5dcdba2b78078f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9c877a265524500aa5dcdba2b78078f">&#9670;&nbsp;</a></span>change() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::SubmoduleRequest::change </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1Module.html">Module</a>&#160;</td>
+          <td class="paramname"><em>new_module</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Fulfills the request with <code>new_module</code>. </p>
+<p>This method is a convenience method for working with <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> objects instead of pointers. It simply wraps <code>new_module</code> in a shared_ptr and dispatches to the shared_ptr overload.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_module</td><td>The module which should be used to satisfy this request.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_optional_access</td><td>if the property type has not been set yet. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if <code>new_module</code> is not of the correct property type. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a935fd0118e827ca0cba99324fe5d0419"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a935fd0118e827ca0cba99324fe5d0419">&#9670;&nbsp;</a></span>change()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a935fd0118e827ca0cba99324fe5d0419">&#9670;&nbsp;</a></span>change() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -346,7 +428,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the module that is to be used to satisfy the request. </p>
-<p>This function is designed to be called by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for manipulating.">ModuleManager</a> via the <a class="el" href="classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule.">SubmoduleRequest</a> class in order to fulfill the request.</p>
+<p>This function is designed to be called by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> via the <a class="el" href="classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule.">SubmoduleRequest</a> class in order to fulfill the request.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ptr</td><td>Pointer to the module to use.</td></tr>
@@ -799,8 +881,8 @@ template&lt;typename property_type , typename... Args&gt; </div>
 <p>Runs the submodule with the given arguments. </p>
 <p>This function is a convenience function for running the wrapped submodule as a particular property type. It is semantically the same as calling:</p>
 <div class="fragment"><div class="line">this-&gt;<a class="code" href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">value</a>().<a class="code" href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">run_as</a>&lt;T&gt;(args...);</div>
-<div class="ttc" id="aclasspluginplay_1_1Module_html_a200b448a122dbe825c75bcbce82c64a7"><div class="ttname"><a href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">pluginplay::Module::run_as</a></div><div class="ttdeci">auto run_as(Args &amp;&amp;... args)</div><div class="ttdoc">The primary API for running the encapsulated code.</div><div class="ttdef"><b>Definition:</b> module.hpp:764</div></div>
-<div class="ttc" id="aclasspluginplay_1_1SubmoduleRequest_html_aaa7e1c8be2f4595773a20fa37f0e8a6d"><div class="ttname"><a href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">pluginplay::SubmoduleRequest::value</a></div><div class="ttdeci">const Module &amp; value() const</div><div class="ttdoc">Provides the module used to satisfy this request in a read-only state.</div><div class="ttdef"><b>Definition:</b> submodule_request.cpp:83</div></div>
+<div class="ttc" id="aclasspluginplay_1_1Module_html_a200b448a122dbe825c75bcbce82c64a7"><div class="ttname"><a href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">pluginplay::Module::run_as</a></div><div class="ttdeci">auto run_as(Args &amp;&amp;... args)</div><div class="ttdoc">The primary API for running the encapsulated code.</div><div class="ttdef"><b>Definition:</b> module_class.hpp:764</div></div>
+<div class="ttc" id="aclasspluginplay_1_1SubmoduleRequest_html_aaa7e1c8be2f4595773a20fa37f0e8a6d"><div class="ttname"><a href="classpluginplay_1_1SubmoduleRequest.html#aaa7e1c8be2f4595773a20fa37f0e8a6d">pluginplay::SubmoduleRequest::value</a></div><div class="ttdeci">const Module &amp; value() const</div><div class="ttdoc">Provides the module used to satisfy this request in a read-only state.</div><div class="ttdef"><b>Definition:</b> submodule_request.cpp:87</div></div>
 </div><!-- fragment --><p>aside from the fact that it also asserts that the submodule is being run as the correct property type. Expert users can access the wrapped module via the <code>value</code> member and perform more advanced runs that way.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

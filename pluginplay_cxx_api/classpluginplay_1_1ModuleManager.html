@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -75,10 +75,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Class responsible for manipulating.  
+<p>Class responsible for holding and managing modules.  
  <a href="classpluginplay_1_1ModuleManager.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="module__manager_8hpp_source.html">module_manager.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="module__manager__class_8hpp_source.html">module_manager_class.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -106,6 +106,14 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">key_container_type</a> = std::vector&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt;</td></tr>
 <tr class="memdesc:aba62f3cefe36f671b36cbd432f4f1243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of module key container. <br /></td></tr>
 <tr class="separator:aba62f3cefe36f671b36cbd432f4f1243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad45032f024d9669f7feb74d76a796cd0"><td class="memItemLeft" align="right" valign="top"><a id="ad45032f024d9669f7feb74d76a796cd0"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ad45032f024d9669f7feb74d76a796cd0">cache_type</a> = <a class="el" href="classpluginplay_1_1cache_1_1ModuleManagerCache.html">cache::ModuleManagerCache</a></td></tr>
+<tr class="memdesc:ad45032f024d9669f7feb74d76a796cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the cache. <br /></td></tr>
+<tr class="separator:ad45032f024d9669f7feb74d76a796cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a504bf3bd7177a586a51fdda6e7a42701"><td class="memItemLeft" align="right" valign="top"><a id="a504bf3bd7177a586a51fdda6e7a42701"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a504bf3bd7177a586a51fdda6e7a42701">cache_pointer</a> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#ad45032f024d9669f7feb74d76a796cd0">cache_type</a> &gt;</td></tr>
+<tr class="memdesc:a504bf3bd7177a586a51fdda6e7a42701"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to the cache. <br /></td></tr>
+<tr class="separator:a504bf3bd7177a586a51fdda6e7a42701"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -165,13 +173,16 @@ template&lt;typename ModuleType &gt; </td></tr>
 <tr class="memitem:a26f8d8ff840c2d115ab583c797675f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">key_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">keys</a> () const</td></tr>
 <tr class="memdesc:a26f8d8ff840c2d115ab583c797675f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the keys of all the modules in the module manager.  <a href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">More...</a><br /></td></tr>
 <tr class="separator:a26f8d8ff840c2d115ab583c797675f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2c9e5e4267f5980326fd925d44adf22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ab2c9e5e4267f5980326fd925d44adf22">has_cache</a> () const noexcept</td></tr>
+<tr class="memdesc:ab2c9e5e4267f5980326fd925d44adf22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does *this have a cache set?  <a href="classpluginplay_1_1ModuleManager.html#ab2c9e5e4267f5980326fd925d44adf22">More...</a><br /></td></tr>
+<tr class="separator:ab2c9e5e4267f5980326fd925d44adf22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Ctors and assignment operators</div></td></tr>
 <tr class="memitem:a31bd760a21a6d7a0ef43987f631f8678"><td class="memItemLeft" align="right" valign="top"><a id="a31bd760a21a6d7a0ef43987f631f8678"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManager</b> ()</td></tr>
 <tr class="separator:a31bd760a21a6d7a0ef43987f631f8678"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf595b51079720e3027f10d8c13b9097"><td class="memItemLeft" align="right" valign="top"><a id="aaf595b51079720e3027f10d8c13b9097"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManager</b> (<a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> runtime)</td></tr>
-<tr class="separator:aaf595b51079720e3027f10d8c13b9097"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a672bdbaad7dc6198c731f33181e708b9"><td class="memItemLeft" align="right" valign="top"><a id="a672bdbaad7dc6198c731f33181e708b9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManager</b> (<a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> runtime, <a class="el" href="classpluginplay_1_1ModuleManager.html#a504bf3bd7177a586a51fdda6e7a42701">cache_pointer</a> cache=std::make_shared&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#ad45032f024d9669f7feb74d76a796cd0">cache_type</a> &gt;())</td></tr>
+<tr class="separator:a672bdbaad7dc6198c731f33181e708b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a510086d57e14b8346907615572e7eeeb"><td class="memItemLeft" align="right" valign="top"><a id="a510086d57e14b8346907615572e7eeeb"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ModuleManager</b> (<a class="el" href="classpluginplay_1_1ModuleManager.html">ModuleManager</a> &amp;&amp;rhs) noexcept</td></tr>
 <tr class="separator:a510086d57e14b8346907615572e7eeeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,7 +206,7 @@ const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;
 <tr class="separator:a0c6ff22dd0e3a6771429562f788aa199"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class responsible for manipulating. </p>
+<div class="textblock"><p>Class responsible for holding and managing modules. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a595ba8ca5e9a1be484613dc111c9bd77"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a595ba8ca5e9a1be484613dc111c9bd77">&#9670;&nbsp;</a></span>add_module()</h2>
@@ -541,6 +552,40 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ab2c9e5e4267f5980326fd925d44adf22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2c9e5e4267f5980326fd925d44adf22">&#9670;&nbsp;</a></span>has_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::ModuleManager::has_cache </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Does *this have a cache set? </p>
+<dl class="section return"><dt>Returns</dt><dd>True if *this has a place where it can cache input/result pairs and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a26f8d8ff840c2d115ab583c797675f62"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26f8d8ff840c2d115ab583c797675f62">&#9670;&nbsp;</a></span>keys()</h2>
 
@@ -785,8 +830,8 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/pluginplay/<a class="el" href="module__manager_8hpp_source.html">module_manager.hpp</a></li>
-<li>src/pluginplay/module_manager.cpp</li>
+<li>include/pluginplay/module_manager/<a class="el" href="module__manager__class_8hpp_source.html">module_manager_class.hpp</a></li>
+<li>src/pluginplay/module_manager/module_manager_class.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

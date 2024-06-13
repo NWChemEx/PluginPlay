@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pluginplay: include/pluginplay/facade_module.hpp Source File</title>
+<title>pluginplay: include/pluginplay/module/facade_module.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.36</span>
+   &#160;<span id="projectnumber">1.0.37</span>
    </div>
   </td>
  </tr>
@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_970edf345eec2bf0d6ca125401c0f58a.html">pluginplay</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_970edf345eec2bf0d6ca125401c0f58a.html">pluginplay</a></li><li class="navelem"><a class="el" href="dir_deab3e52f8adc27947ccd823c63c1b73.html">module</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,8 +87,8 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;pluginplay/module.hpp&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;pluginplay/module_base.hpp&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;pluginplay/module/module_base.hpp&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;pluginplay/module/module_class.hpp&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;pluginplay/types.hpp&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;utilities/type_traits/tuple/is_tuple.hpp&gt;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
@@ -162,7 +162,7 @@ $(function() {
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;} <span class="comment">// namespace pluginplay</span></div>
 <div class="ttc" id="aclasspluginplay_1_1ModuleBase_html"><div class="ttname"><a href="classpluginplay_1_1ModuleBase.html">pluginplay::ModuleBase</a></div><div class="ttdoc">API determining how the pluginplay interacts with a module's implementation.</div><div class="ttdef"><b>Definition:</b> module_base.hpp:48</div></div>
-<div class="ttc" id="aclasspluginplay_1_1ModuleBase_html_a3683db39f96d4ffbb1d708b83c12d125"><div class="ttname"><a href="classpluginplay_1_1ModuleBase.html#a3683db39f96d4ffbb1d708b83c12d125">pluginplay::ModuleBase::results</a></div><div class="ttdeci">const type::result_map &amp; results() const noexcept</div><div class="ttdoc">Retrieves the results this module can compute.</div><div class="ttdef"><b>Definition:</b> module_base.hpp:144</div></div>
+<div class="ttc" id="aclasspluginplay_1_1ModuleBase_html_a3683db39f96d4ffbb1d708b83c12d125"><div class="ttname"><a href="classpluginplay_1_1ModuleBase.html#a3683db39f96d4ffbb1d708b83c12d125">pluginplay::ModuleBase::results</a></div><div class="ttdeci">const type::result_map &amp; results() const noexcept</div><div class="ttdoc">Retrieves the results this module can compute.</div><div class="ttdef"><b>Definition:</b> module_base.hpp:154</div></div>
 <div class="ttc" id="aclasspluginplay_1_1PropertyType_html"><div class="ttname"><a href="classpluginplay_1_1PropertyType.html">pluginplay::PropertyType</a></div><div class="ttdoc">Base class for defining the API a module uses to compute a particular property.</div><div class="ttdef"><b>Definition:</b> property_type.hpp:68</div></div>
 <div class="ttc" id="aclasspluginplay_1_1detail___1_1FacadeModule_html"><div class="ttname"><a href="classpluginplay_1_1detail___1_1FacadeModule.html">pluginplay::detail_::FacadeModule</a></div><div class="ttdoc">Implements a facade module.</div><div class="ttdef"><b>Definition:</b> facade_module.hpp:39</div></div>
 <div class="ttc" id="aclasspluginplay_1_1detail___1_1FacadeModule_html_a0a2fbb6011740e128a2ff20d13ccc537"><div class="ttname"><a href="classpluginplay_1_1detail___1_1FacadeModule.html#a0a2fbb6011740e128a2ff20d13ccc537">pluginplay::detail_::FacadeModule::FacadeModule</a></div><div class="ttdeci">FacadeModule(Args &amp;&amp;... args)</div><div class="ttdoc">Creates a FacadeModule by wrapping the provided arguments.</div></div>

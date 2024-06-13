@@ -1,14 +1,16 @@
 <map id="src/pluginplay" name="src/pluginplay">
-<area shape="rect" id="node2" href="dir_e001c649b0c302e1d64ef42dad2f48b8.html" title="any" alt="" coords="613,63,685,111"/>
-<area shape="rect" id="node3" href="dir_aaf55077fabb34893a2bedda243db57d.html" title="cache" alt="" coords="517,63,589,111"/>
-<area shape="rect" id="node9" href="dir_d44c64559bbebec7f509842c48db8b23.html" title="include" alt="" coords="469,159,541,207"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000020_000000.html" title="2" alt="" coords="528,139,538,154"/>
-<area shape="rect" id="node4" href="dir_e40d7512788be48be9fa30f6985741e3.html" title="config" alt="" coords="421,63,493,111"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000024_000000.html" title="1" alt="" coords="488,131,497,146"/>
-<area shape="rect" id="node5" href="dir_6e15a140ab26aff97f91d619e2458560.html" title="detail_" alt="" coords="325,63,397,111"/>
-<area shape="rect" id="node6" href="dir_f0c3705be3a539a52f41b426eb42bf23.html" title="fields" alt="" coords="229,63,301,111"/>
-<area shape="rect" id="node7" href="dir_1386b0f986364c9eb27b920b70ce1abc.html" title="printing" alt="" coords="133,63,205,111"/>
-<area shape="rect" id="node8" href="dir_4a46dadce4dabf3a20475d213638f2a5.html" title="utility" alt="" coords="37,63,109,111"/>
-<area shape="rect" id="clust2" href="dir_8f3cb34546d0bb3cae2c4fc7b3e624ff.html" alt="" coords="27,52,811,121"/>
-<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,821,132"/>
+<area shape="rect" id="node2" href="dir_e001c649b0c302e1d64ef42dad2f48b8.html" title="any" alt="" coords="869,63,941,111"/>
+<area shape="rect" id="node3" href="dir_aaf55077fabb34893a2bedda243db57d.html" title="cache" alt="" coords="773,63,845,111"/>
+<area shape="rect" id="node11" href="dir_d44c64559bbebec7f509842c48db8b23.html" title="include" alt="" coords="725,159,797,207"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000022_000000.html" title="2" alt="" coords="784,139,794,154"/>
+<area shape="rect" id="node4" href="dir_e40d7512788be48be9fa30f6985741e3.html" title="config" alt="" coords="677,63,749,111"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000026_000000.html" title="1" alt="" coords="744,131,753,146"/>
+<area shape="rect" id="node5" href="dir_6e15a140ab26aff97f91d619e2458560.html" title="detail_" alt="" coords="581,63,653,111"/>
+<area shape="rect" id="node6" href="dir_f0c3705be3a539a52f41b426eb42bf23.html" title="fields" alt="" coords="485,63,557,111"/>
+<area shape="rect" id="node7" href="dir_a236d76ecf1ff2eae0806628045f15ec.html" title="module" alt="" coords="389,63,461,111"/>
+<area shape="rect" id="node8" href="dir_1bb97ac93c23cc6412afc870bb78431b.html" title="module_manager" alt="" coords="229,63,365,111"/>
+<area shape="rect" id="node9" href="dir_1386b0f986364c9eb27b920b70ce1abc.html" title="printing" alt="" coords="133,63,205,111"/>
+<area shape="rect" id="node10" href="dir_4a46dadce4dabf3a20475d213638f2a5.html" title="utility" alt="" coords="37,63,109,111"/>
+<area shape="rect" id="clust2" href="dir_8f3cb34546d0bb3cae2c4fc7b3e624ff.html" alt="" coords="27,52,1067,121"/>
+<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,1077,132"/>
 </map>

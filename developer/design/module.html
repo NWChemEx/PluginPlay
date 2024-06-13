@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Module Component &mdash; PluginPlay 1.0.0 documentation</title>
@@ -12,10 +12,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -55,9 +56,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Module Component</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#what-is-the-module-component">What is the module component?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-module-component">What is the Module Component?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-component-considerations">Module Component Considerations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-component-design">Module Component Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
@@ -69,6 +71,7 @@
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
@@ -106,56 +109,108 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-module-component">
-<span id="module-design"></span><h1>Designing the Module Component<a class="headerlink" href="#designing-the-module-component" title="Permalink to this headline"></a></h1>
+<span id="module-design"></span><h1>Designing the Module Component<a class="headerlink" href="#designing-the-module-component" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section motivated the need for a module component
 (although the fact that we’ve written “module” like a thousand times by now
 ought to have suggested it too…).</p>
 <section id="what-is-the-module-component">
-<h2>What is the module component?<a class="headerlink" href="#what-is-the-module-component" title="Permalink to this headline"></a></h2>
+<h2>What is the Module Component?<a class="headerlink" href="#what-is-the-module-component" title="Link to this heading"></a></h2>
 <p>See <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> for PluginPlay’s definition of a module. The module component
 is primarily responsible for interfacing PluginPlay to the algorithm the
 module developer wrote.</p>
 </section>
 <section id="module-component-considerations">
-<h2>Module Component Considerations<a class="headerlink" href="#module-component-considerations" title="Permalink to this headline"></a></h2>
-<p>Based on the discussions in the <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> section, the module
-component must:</p>
-<ol class="arabic simple">
-<li><p>Provide a mechanism for a user to interface their algorithm with PluginPlay</p></li>
-<li><p>Leverage cache component for memoization</p>
+<h2>Module Component Considerations<a class="headerlink" href="#module-component-considerations" title="Link to this heading"></a></h2>
+<dl class="simple" id="mc-user-interface">
+<dt>User interface.</dt><dd><p>Stemming from <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>, one of the motivating factors for the
+module component is to provide a mechanism for a user to interface their
+algorithm with PluginPlay.</p>
+</dd>
+</dl>
+<dl class="simple" id="mc-memoization">
+<dt>Memoization.</dt><dd><p>Also stemming from <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>, caching/memoization of a module
+is the responsibility of the module component.</p>
 <ul class="simple">
 <li><p>Ideally largely automated</p></li>
 <li><p>Developers may need mark modules as incapable of being memoized when they
 are not sufficiently “pure” (<em>i.e.</em>, they have side effects, are
 non-deterministic, and/or depend on global input).</p></li>
 </ul>
-</li>
-<li><p>Have a setup phase (presumably in the constructor)</p>
+</dd>
+</dl>
+<dl class="simple" id="mc-construction-phase">
+<dt>Have a construction phase.</dt><dd><p>Modules will ultimately be classes. The construction phase will happen in the
+constructor and may include:</p>
 <ul class="simple">
 <li><p>Used by developer to register the module’s metadata.</p></li>
 <li><p>Also can initialize constant state needed by the module.</p></li>
 </ul>
-</li>
-<li><p>Expose a <code class="docutils literal notranslate"><span class="pre">run</span></code> member for actually running the module</p></li>
-<li><p>Have the ability to store call-back points.</p></li>
-</ol>
+</dd>
+</dl>
+<dl class="simple" id="mc-run-hook">
+<dt>Expose a <code class="docutils literal notranslate"><span class="pre">run</span></code> hook.</dt><dd><p>As agreed upon in <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a>, executing a module happens by
+calling a <code class="docutils literal notranslate"><span class="pre">run</span></code> member. Members of the module component must expose such a
+member.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> member should contain minimal branching. Traditional if/else
+logic needed for determining what function to run should be handled by
+selecting submodules ahead of time.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple" id="mc-store-call-back-points">
+<dt>Store callback points.</dt><dd><p>The graph only works if nodes can call other nodes. Modules must be able to
+call sub-modules, which requires somehow being able to hold the submodules.</p>
+</dd>
+</dl>
+<dl class="simple" id="mc-driver-modules">
+<dt>Driver modules.</dt><dd><p>Motivation for driver modules is given below. In short, we need modules whose
+sole purpose is to do some setup and then call another/other module(s).</p>
+</dd>
+</dl>
+<section id="need-for-driver-modules">
+<h3>Need for Driver Modules<a class="headerlink" href="#need-for-driver-modules" title="Link to this heading"></a></h3>
+<figure class="align-center" id="id1">
+<span id="fig-switching-modules"></span><img alt="../../_images/switching_modules.png" src="../../_images/switching_modules.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Left the original graph. Right the graph resulting from using module “E”
+instead of “D”. The question is how can both graphs be loaded into the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> simultaneously?</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Consider the two graphs shown in <a class="reference internal" href="#fig-switching-modules"><span class="std std-numref">Fig. 6</span></a>. Let’s call
+the left graph “L” and the right graph “R”. If we choose to have graph “L” be
+the default graph that is loaded into the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> the user can go
+from  graph “L” to graph “R” by telling the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> to switch the
+submodule node “C” uses from node “D” to node “E”. While viable, this is not
+necessarily user-friendly as running “R” vs “L” means the user needs to know to
+switch “D” to “E”.</p>
+<p>If we wanted to make it easy to run both “R” and “L” one option is to make
+copies of the “A” and “C” modules. Let “RA” and “RC” respectively be those
+copies. Then it becomes possible to have both the “L” and “R” graphs loaded into
+the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> by default. More specifically, “L” is loaded in in the
+same manner, “R” is loaded in by having “RC” call “E” and “RA” call “B” and
+“RC”. While this solution works, it can be tedious depending on how nested
+the graph is. It also can be wasteful because the two graphs may have a
+substantial amount of overlap.</p>
+</section>
 </section>
 <section id="module-component-design">
-<h2>Module Component Design<a class="headerlink" href="#module-component-design" title="Permalink to this headline"></a></h2>
-<figure class="align-center" id="id1">
+<h2>Module Component Design<a class="headerlink" href="#module-component-design" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id2">
 <span id="fig-module-design"></span><img alt="../../_images/module_design.png" src="../../_images/module_design.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Module component design showing the contact points. Users of the
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Module component design showing the contact points. Users of the
 module go through the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a>. PluginPlay interacts with
 the user of the module via the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> class and the module developer
 via the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. Module developers interact with the component
-by deriving from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+by deriving from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>The design of the module component is shown in Fig <a class="reference internal" href="#fig-module-design"><span class="std std-numref">Fig. 6</span></a>.
+<p>The design of the module component is shown in Fig <a class="reference internal" href="#fig-module-design"><span class="std std-numref">Fig. 7</span></a>.
 The subsections below go over the major pieces in more detail.</p>
 <section id="module-development">
-<h3>Module Development<a class="headerlink" href="#module-development" title="Permalink to this headline"></a></h3>
+<h3>Module Development<a class="headerlink" href="#module-development" title="Link to this heading"></a></h3>
 <p>Following traditional object-oriented practices module developers implement
 modules by deriving from the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. In the constructor of their
 module, module developers set the property type(s) their module satisfies,
@@ -174,80 +229,103 @@ desired black-box nature and for memoization purposes. To be treated as a black
 box the module must receive no “hidden” inputs including from global variables,
 files, or state not registered with PluginPlay. In practice, particularly when
 considering modules meant to be called iteratively, a module may need access
-to modifable state. This is where the “Temporary Cache” comes in. The derived
+to modifiable state. This is where the “Temporary Cache” comes in. The derived
 class is able to put/get data in/out of the temporary cache using a key-value
 system.</p>
 </section>
-<section id="module-usage">
-<h3>Module Usage<a class="headerlink" href="#module-usage" title="Permalink to this headline"></a></h3>
-<figure class="align-center" id="id2">
-<span id="fig-calling-a-module"></span><img alt="../../_images/calling_a_module.png" src="../../_images/calling_a_module.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 7 </span><span class="caption-text">How inputs traverse the module component.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
-<p><a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a> depicts the process of a user interacting,
-<em>i.e.</em>, calling, the module. First, the user selects the property type to run
-the module as. The property type defines the inputs the user must provide, and
-the user passes the appropriate inputs into the <code class="docutils literal notranslate"><span class="pre">Module</span></code> class. Inside the
-<code class="docutils literal notranslate"><span class="pre">Module</span></code>, the bound inputs are added to the user’s inputs (for each bound
-input, it is added only if it does not override a user specified input). The
-<code class="docutils literal notranslate"><span class="pre">Module</span></code> (actually the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>) then forwards the combined inputs,
-and the bound callbacks, to the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class. The <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> class
-unifies the provided inputs with the default inputs (again only adding a
-default input if it does not override a provided input) and forwards the final
-set of inputs and the callbacks to the derived class. Returning values is much
-simpler as there are no default/bound returns and results are simply forwarded
-from the derived class through the <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>, <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">Module</span></code> classes. To aid in memoization/parallelization the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>
-locks during the aforementioned process to avoid concurrent modifications to
-its state.</p>
-<p>While not shown in <a class="reference internal" href="#fig-calling-a-module"><span class="std std-numref">Fig. 7</span></a>, memoization occurs in
-the <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> class (<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> is shared by all instances of the
-same module and, with the exception of the temporary cache, read-only). The
-design of the memoization process is covered in more detail
-in <a class="reference internal" href="memoization.html#memoization-design"><span class="std std-ref">Memoization Design</span></a>. For our current purposes it suffices to say that
-the user-provided inputs, unified with the bound inputs and the callbacks, are
-used as a key to the cache (which is module-base specific). If that key is
-found the result is simply returned, otherwise <code class="docutils literal notranslate"><span class="pre">ModuleBase::run</span></code> is called.</p>
+<section id="driver-module-development">
+<h3>Driver Module Development<a class="headerlink" href="#driver-module-development" title="Link to this heading"></a></h3>
+<p>To address <a class="reference internal" href="#mc-driver-modules"><span class="std std-ref">Driver modules.</span></a> we introduce the idea of a driver module.</p>
+<section id="design-1-0">
+<h4>Design 1.0<a class="headerlink" href="#design-1-0" title="Link to this heading"></a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is here for historic context, it’s NOT current.</p>
+</div>
+<p>To ensure that driver modules interoperate with other modules, driver modules
+also inherit from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>. Keeping with <a class="reference internal" href="#mc-run-hook"><span class="std std-ref">Expose a run hook.</span></a>, we want the
+<code class="docutils literal notranslate"><span class="pre">run</span></code> member of the driver module to have minimal branching, thus logic for
+swapping modules should happen before <code class="docutils literal notranslate"><span class="pre">run</span></code> is called. Our solution is to
+introduce <code class="docutils literal notranslate"><span class="pre">ModuleBase::pre_run</span></code>. This method allows the derived module to
+manipulate the input values and submodules <code class="docutils literal notranslate"><span class="pre">run</span></code> will call before they are
+passed to <code class="docutils literal notranslate"><span class="pre">run</span></code>. By default <code class="docutils literal notranslate"><span class="pre">ModuleBase::pre_run</span></code> will just return the
+inputs and submodules provided to it. To define a driver module, the module
+developer overrides the default implementation. For symmetry we also introduce
+<code class="docutils literal notranslate"><span class="pre">ModuleBase::post_run</span></code> which allows the derived class to manipulate the
+results before they are given back to the caller of <code class="docutils literal notranslate"><span class="pre">Module::run</span></code>.</p>
+<p>The official C++ API for declaring a module is to use the <code class="docutils literal notranslate"><span class="pre">DECLARE_MODULE</span></code>
+macro. If the user is going to override <code class="docutils literal notranslate"><span class="pre">pre_run</span></code> or <code class="docutils literal notranslate"><span class="pre">post_run</span></code> this changes
+the declaration needed (i.e., the signature for <code class="docutils literal notranslate"><span class="pre">pre_run</span></code> and/or <code class="docutils literal notranslate"><span class="pre">post_run</span></code>
+must be part of the declaration). To avoid an API break we introduce a new macro
+<code class="docutils literal notranslate"><span class="pre">DECLARE_MODULE_DRIVER</span></code>, for symmetry we require users to override both
+<code class="docutils literal notranslate"><span class="pre">pre_run</span></code> and <code class="docutils literal notranslate"><span class="pre">post_run</span></code> if they choose to write a driver (even if they
+only need one or the other).</p>
+</section>
+<section id="design-2-0">
+<h4>Design 2.0<a class="headerlink" href="#design-2-0" title="Link to this heading"></a></h4>
+<p>In prototyping design 1.0, it was realized that <code class="docutils literal notranslate"><span class="pre">Module::run</span></code> looks like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">submods</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">module</span><span class="p">.</span><span class="n">pre_run</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">submods</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">module</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">submods</span><span class="p">);</span>
+<span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">module</span><span class="p">.</span><span class="n">post_run</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">submods</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>With nothing between <code class="docutils literal notranslate"><span class="pre">pre_run</span></code> and <code class="docutils literal notranslate"><span class="pre">run</span></code> (or <code class="docutils literal notranslate"><span class="pre">run</span></code> and <code class="docutils literal notranslate"><span class="pre">post_run</span></code>) there
+is no reason (aside from partitioning preference) why the module developer can’t
+just put their pre-run and post-run logic inside their module’s run overload.
+More specifically the same inputs and submods that would go to <code class="docutils literal notranslate"><span class="pre">pre_run</span></code> can
+just be fed to <code class="docutils literal notranslate"><span class="pre">run</span></code>, then the same logic which would have happened in
+<code class="docutils literal notranslate"><span class="pre">pre_run</span></code> can just happen in <code class="docutils literal notranslate"><span class="pre">run</span></code>. Similarly all information which would
+have been fed into <code class="docutils literal notranslate"><span class="pre">post_run</span></code> is also available in <code class="docutils literal notranslate"><span class="pre">run</span></code>.</p>
+<p>Ultimately, it was thus realized that pre- and post- conditions can be handled
+as is.</p>
+</section>
+</section>
 </section>
 <section id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h3>
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
 <p>The above design specifically addresses the stated considerations by:</p>
-<ol class="arabic simple">
-<li><p>Provide a mechanism for a user to interface their algorithm with PluginPlay</p>
-<ul class="simple">
+<p><a class="reference internal" href="#mc-user-interface"><span class="std std-ref">User interface.</span></a></p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Module developers inherit from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> and fill in the virtual
 <code class="docutils literal notranslate"><span class="pre">run_</span></code> member.</p></li>
 <li><p>Metadata for the module can be registered with <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> (and thus
 PluginPlay) in the derived class’s ctor.</p></li>
 </ul>
-</li>
-<li><p>Leverage cache component for memoization</p>
-<ul class="simple">
+</div></blockquote>
+<p><a class="reference internal" href="#mc-memoization"><span class="std std-ref">Memoization.</span></a></p>
+<blockquote>
+<div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> performs memoization.</p></li>
 </ul>
-</li>
-<li><p>Have a setup phase (presumably in the constructor)</p>
-<ul class="simple">
-<li><p>Derived classes use their constructor</p></li>
+</div></blockquote>
+<p><a class="reference internal" href="#mc-construction-phase"><span class="std std-ref">Have a construction phase.</span></a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Derived classes use their constructor to set meta-data.</p></li>
 </ul>
-</li>
-<li><p>Expose a <code class="docutils literal notranslate"><span class="pre">run</span></code> member for actually running the module</p>
-<ul class="simple">
+</div></blockquote>
+<p><a class="reference internal" href="#mc-run-hook"><span class="std std-ref">Expose a run hook.</span></a></p>
+<blockquote>
+<div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Module</span></code> exposes the <code class="docutils literal notranslate"><span class="pre">run</span></code> (and more useful <code class="docutils literal notranslate"><span class="pre">run_as</span></code>) which
 executes the module.</p></li>
 </ul>
-</li>
-<li><p>Have the ability to store call-back points.</p>
-<ul class="simple">
+</div></blockquote>
+<p><a class="reference internal" href="#mc-store-call-back-points"><span class="std std-ref">Store callback points.</span></a></p>
+<blockquote>
+<div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> records the hooks (property types and associated tag) for
 each call back location.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPl</span></code> holds the bound callbacks for each hook.</p></li>
 </ul>
-</li>
-</ol>
-</section>
+</div></blockquote>
+<p><a class="reference internal" href="#mc-driver-modules"><span class="std std-ref">Driver modules.</span></a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Driver modules can be</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 
