@@ -44,7 +44,9 @@ std::string input_quick_ref_table(const type::input_map& inputs) {
     table.set_border_style(NWX_RST_STYLE);
 
     // Add the header
-    table << fort::header << "Key" << "Default" << "Description" << fort::endr;
+    table << fort::header << "Key"
+          << "Default"
+          << "Description" << fort::endr;
 
     // Add all data rows
     for(const auto& [name, value] : inputs) {
