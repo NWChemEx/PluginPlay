@@ -77,8 +77,9 @@ reSTPrinter& input_full_list(reSTPrinter& p, const type::input_map& inputs) {
     for(const auto& [name, input] : inputs) {
         p.start_section(name);
         p << "\n";
-        p << std::string("- Description : ") +
-               (input.has_description() ? input.description() : "N/A") + "\n";
+        p.print_verbatim(
+          std::string("- Description : ") +
+          (input.has_description() ? input.description() : "N/A") + "\n");
         p << std::string("- Default Value : ") +
                (input.has_value() ? input.str() : "N/A") + "\n";
         p << std::string("- Optional? : ") +
