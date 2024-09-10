@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <pluginplay/fields/module_input.hpp>
 
 #include <utilities/printing/demangler.hpp>

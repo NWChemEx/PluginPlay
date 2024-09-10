@@ -18,6 +18,7 @@
 #include "database_api.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 namespace pluginplay::cache::database {
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "../../test_common.hpp"
 #include "pluginplay/module/detail_/module_pimpl.hpp"
-#include <catch2/catch.hpp>
 #include <regex>
 
 using namespace pluginplay;

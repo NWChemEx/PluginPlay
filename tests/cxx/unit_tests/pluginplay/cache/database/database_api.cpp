@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <pluginplay/cache/database/database_api.hpp>
 #include <pluginplay/cache/database/native.hpp>
 

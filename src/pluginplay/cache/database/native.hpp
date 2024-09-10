@@ -17,6 +17,7 @@
 #pragma once
 #include "database_api.hpp"
 #include <map>
+#include <memory>
 
 namespace pluginplay::cache::database {
 

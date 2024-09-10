@@ -15,7 +15,9 @@
  */
 
 #include "pluginplay/property_type/property_type.hpp"
-#include <catch2/catch.hpp>
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 struct FromClass {

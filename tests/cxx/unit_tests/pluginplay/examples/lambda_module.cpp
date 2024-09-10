@@ -15,7 +15,7 @@
  */
 
 // TUTORIAL_START_SKIP
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 // TUTORIAL_STOP_SKIP
 
 // TUTORIAL

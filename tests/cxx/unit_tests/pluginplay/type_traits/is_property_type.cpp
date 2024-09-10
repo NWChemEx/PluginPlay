@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "pluginplay/property_type/property_type.hpp"
 #include "pluginplay/type_traits/is_property_type.hpp"
-#include <catch2/catch.hpp>
 #include <type_traits>
 
 // Declare some property types (they don't have to be instantiatable)

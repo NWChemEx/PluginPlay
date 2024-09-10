@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <filesystem>
 #include <iterator>
 #include <pluginplay/printing/document_modules.hpp>

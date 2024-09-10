@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "lexical_cast.hpp"
 #include "test_cache.hpp"
-#include <catch2/catch.hpp>
 #include <iostream>
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/cache/database/native.hpp>

@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <pluginplay/cache/database/native.hpp>
 #include <pluginplay/cache/database/transposer.hpp>
 #include <pluginplay/cache/proxy_map_maker.hpp>

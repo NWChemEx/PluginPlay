@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include <memory>
 #include <pluginplay/utility.hpp>
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/fields/bounds_checking/bounds_checking.hpp>
 

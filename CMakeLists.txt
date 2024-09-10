@@ -44,7 +44,6 @@ cmaize_option_list(
 cmaize_find_or_build_dependency(
     utilities
     URL github.com/NWChemEx/utilities
-    VERSION ${NWX_UTILITIES_VERSION}
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
     CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
@@ -53,7 +52,6 @@ cmaize_find_or_build_dependency(
 cmaize_find_or_build_dependency(
     libfort
     URL github.com/seleznevae/libfort
-    VERSION ${NWX_LIBFORT_VERSION}
     BUILD_TARGET fort
     FIND_TARGET libfort::fort
     CMAKE_ARGS FORT_ENABLE_TESTING=OFF
@@ -62,7 +60,6 @@ cmaize_find_or_build_dependency(
 cmaize_find_or_build_dependency(
     parallelzone
     URL github.com/NWChemEx/ParallelZone
-    VERSION ${NWX_PARALLELZONE_VERSION}
     BUILD_TARGET parallelzone
     FIND_TARGET nwx::parallelzone
     CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
@@ -129,7 +126,7 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-        VERSION ${NWX_CATCH2_VERSION}
+        VERSION v3.6.0
     )
 
     cmaize_add_tests(
