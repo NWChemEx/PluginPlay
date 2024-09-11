@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "test_common.hpp"
-#include <catch2/catch.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>
 
 TEST_CASE("ModuleManager") {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "../../examples/writing_a_module.hpp"
 #include "pluginplay/module_manager/detail_/module_manager_pimpl.hpp"
-#include <catch2/catch.hpp>
 
 using namespace pluginplay;
 using namespace pluginplay::detail_;

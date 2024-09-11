@@ -15,7 +15,7 @@
  */
 
 #ifdef BUILD_ROCKS_DB
-#include <catch2/catch.hpp>
+#include "../../../../catch.hpp"
 #include <filesystem>
 #include <pluginplay/cache/database/rocksdb/detail_/rocksdb_pimpl.hpp>
 using namespace pluginplay::cache::database::detail_;

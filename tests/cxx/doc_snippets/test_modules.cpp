@@ -18,7 +18,9 @@
 #include "force.hpp"
 #include "load_modules.hpp"
 #include "modules.hpp"
-#include <catch2/catch.hpp>
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 using namespace pluginplay_examples;
 TEST_CASE("Tutorial modules") {

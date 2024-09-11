@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "../test_common.hpp"
 #include "pluginplay/detail_/submodule_request_pimpl.hpp"
-#include <catch2/catch.hpp>
 
 using namespace pluginplay::detail_;
 using module_ptr = typename SubmoduleRequestPIMPL::module_ptr;

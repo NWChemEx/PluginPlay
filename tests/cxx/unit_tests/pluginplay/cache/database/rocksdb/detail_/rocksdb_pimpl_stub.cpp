@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../../../catch.hpp"
 
 /* This unit test ensures that attempting to create a RocksDBPIMPL fails when
  * RocksDB support has not been enabled.

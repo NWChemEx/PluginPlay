@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "../test_cache.hpp"
-#include <catch2/catch.hpp>
 #include <pluginplay/cache/database/make_any.hpp>
 #include <vector>
 

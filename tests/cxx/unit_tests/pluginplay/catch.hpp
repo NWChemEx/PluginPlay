@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 NWChemEx-Project
+ * Copyright 2024 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-#include "../catch.hpp"
-#include "lexical_cast.hpp"
-
-using namespace testing;
-
-TEST_CASE("lexical_cast") {
-    REQUIRE(lexical_cast<int>("42") == int{42});
-    REQUIRE(lexical_cast<double>("42") == double{42});
-    REQUIRE(lexical_cast<std::string>("42") == std::string{"42"});
-}
+#pragma once
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>

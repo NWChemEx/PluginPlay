@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/property_type/field_tuple.hpp>
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "../test_common.hpp"
 #include "pluginplay/printing/document_module.hpp"
-#include <catch2/catch.hpp>
 
 using namespace pluginplay::printing;
 using namespace testing;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "workflow.hpp"
-#include <catch2/catch.hpp>
 #include <vector>
 
 TEST_CASE("load_modules") {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "../lexical_cast.hpp"
-#include <catch2/catch.hpp>
 #include <map>
 #include <pluginplay/cache/database/key_injector.hpp>
 #include <pluginplay/cache/database/native.hpp>

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "pluginplay/module/detail_/module_pimpl.hpp"
 #include "writing_a_module.hpp"
-#include <catch2/catch.hpp>
 
 using namespace pluginplay;
 using namespace pluginplay::detail_;
@@ -73,8 +73,8 @@ TEST_CASE("Rectangle Class : run") {
     in.at("Dimension 2").change(4.56);
     in.at("Name").change("Test");
     auto out = r.run(in, r.submods());
-    REQUIRE(out.at("Area").value<double>() == Approx(5.6088));
-    REQUIRE(out.at("Perimeter").value<double>() == Approx(11.58));
+    REQUIRE(out.at("Area").value<double>() == Catch::Approx(5.6088));
+    REQUIRE(out.at("Perimeter").value<double>() == Catch::Approx(11.58));
     REQUIRE(out.at("Summary").value<std::string>() ==
             "Test has an area of 5.608800 and a perimeter of 11.580000");
 }
@@ -119,8 +119,8 @@ TEST_CASE("Prism Class : run") {
 
     auto out            = r.run(in, submods);
     auto [area, volume] = PrismVolume::unwrap_results(out);
-    REQUIRE(area == Approx(5.6088));
-    REQUIRE(volume == Approx(44.253432));
+    REQUIRE(area == Catch::Approx(5.6088));
+    REQUIRE(volume == Catch::Approx(44.253432));
 }
 
 template<size_t N>

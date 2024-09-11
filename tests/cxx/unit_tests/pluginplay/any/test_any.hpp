@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <string>
 #include <type_traits>
 #include <vector>

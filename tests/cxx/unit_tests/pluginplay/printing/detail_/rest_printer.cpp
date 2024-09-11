@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "pluginplay/printing/detail_/rest_printer.hpp"
-#include <catch2/catch.hpp>
 #include <sstream>
 using namespace pluginplay::printing::detail_;
 

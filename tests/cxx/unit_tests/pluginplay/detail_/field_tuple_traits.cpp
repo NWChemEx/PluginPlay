@@ -26,7 +26,7 @@
  * sure we test cv-qualified reference types (ModuleResults are unqualified).
  */
 
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <pluginplay/detail_/field_tuple_traits.hpp>
 #include <pluginplay/fields/fields.hpp>
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../catch.hpp"
 #include <filesystem>
 #include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/config/config.hpp>

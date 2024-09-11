@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "writing_a_property_type.hpp"
-#include <catch2/catch.hpp>
 
 /* This test focuses on the property_type class. The property_type class can not
  * be directly tested as it is an abstract class relying on compile-time

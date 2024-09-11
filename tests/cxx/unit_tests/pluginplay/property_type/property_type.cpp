@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../catch.hpp"
 #include "../test_common.hpp"
 #include "pluginplay/property_type/property_type.hpp"
-#include <catch2/catch.hpp>
 #include <type_traits>
 
 TEST_CASE("PropertyType<T> T = NullPT") {

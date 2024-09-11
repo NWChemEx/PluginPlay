@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <pluginplay/fields/detail_/module_input_pimpl.hpp>
 
 using namespace pluginplay;

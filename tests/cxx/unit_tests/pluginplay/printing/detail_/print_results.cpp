@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "../../catch.hpp"
 #include "../../test_common.hpp"
 #include "pluginplay/printing/detail_/print_results.hpp"
-#include <catch2/catch.hpp>
 #include <utilities/printing/word_wrap_stream.hpp>
 
 using namespace pluginplay::printing::detail_;
