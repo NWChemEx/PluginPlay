@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import pluginplay as pp
+import parallelzone as pz
 import py_test_pluginplay as test_pp
 import unittest
 
@@ -33,6 +34,7 @@ class APythonModule(pp.ModuleBase):
         i0, = pt.unwrap_inputs(inputs)
         i1 = inputs["An extra input"].value()
 
+        assert (self.get_runtime() == pz.runtime.RuntimeView())
         r0 = submods["A submodule"].run_as(pt, i0 + i1)
 
         rv = self.results()
