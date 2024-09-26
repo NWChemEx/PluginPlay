@@ -46,7 +46,7 @@ cmaize_find_or_build_dependency(
     URL github.com/NWChemEx/utilities
     BUILD_TARGET utilities
     FIND_TARGET nwx::utilities
-    CMAKE_ARGS BUILD_TESTING=${UTILITIES_BUILD_TESTING}
+    CMAKE_ARGS BUILD_TESTING=OFF
 )
 
 cmaize_find_or_build_dependency(
@@ -62,7 +62,7 @@ cmaize_find_or_build_dependency(
     URL github.com/NWChemEx/ParallelZone
     BUILD_TARGET parallelzone
     FIND_TARGET nwx::parallelzone
-    CMAKE_ARGS BUILD_TESTING=${PARALLELZONE_BUILD_TESTING}
+    CMAKE_ARGS BUILD_TESTING=OFF
 )
 
 # CI doesn't like this
