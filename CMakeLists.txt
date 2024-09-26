@@ -36,7 +36,7 @@ nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 ### Options ###
 cmaize_option_list(
     BUILD_TESTING OFF "Should we build unit tests?"
-    BUILD_PYBIND11_PYBINDINGS OFF "Build Pybind11 Python bindings?"
+    BUILD_PYBIND11_PYBINDINGS ON "Build Pybind11 Python bindings?"
     BUILD_ROCKSDB OFF "Enable RocksDB backend of the cache?"
 )
 
@@ -152,10 +152,6 @@ if("${BUILD_TESTING}")
 
     ### Python Tests ###
     set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-    cmaize_find_or_build_dependency(
-        tox
-        PACKAGE_MANAGER pip
-    )
 
     # In the python tests we will pass Python into PluginPlay, we will then
     # need to know that C++ can handle those Python types. To this end we
@@ -166,11 +162,11 @@ if("${BUILD_TESTING}")
         INSTALL OFF
         SOURCE_DIR "${python_test_dir}/unit_tests"
         INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS ${PROJECT_NAME} tox
+        DEPENDS ${PROJECT_NAME}
     )
 
-    nwx_tox_test(
-        py_pluginplay ${python_test_dir}/unit_tests
+    nwx_pybind11_tests(
+        py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
         SUBMODULES parallelzone
     )
 

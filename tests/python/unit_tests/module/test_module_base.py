@@ -34,6 +34,7 @@ class APythonModule(pp.ModuleBase):
         i0, = pt.unwrap_inputs(inputs)
         i1 = inputs["An extra input"].value()
 
+        assert (self.get_runtime() == pz.runtime.RuntimeView())
         r0 = submods["A submodule"].run_as(pt, i0 + i1)
 
         rv = self.results()
@@ -52,10 +53,6 @@ class TestModuleBase(unittest.TestCase):
         self.mm.change_input(self.mod_key, 'An extra input', 2)
         r = self.mm.run_as(test_pp.OneInOneOut(), self.mod_key, 1)
         self.assertEqual(r, 3)
-
-    def test_get_runtime(self):
-        mod = self.mm.at(self.mod_key)
-        self.assertEqual(mod.get_runtime(), pz.runtime.RuntimeView())
 
     def setUp(self):
         self.defaulted = pp.ModuleBase()
