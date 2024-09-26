@@ -40,6 +40,7 @@ void export_module_base(py_module_reference m) {
       .def("property_types", &ModuleBase::property_types)
       .def("get_desc", &ModuleBase::get_desc)
       .def("citations", &ModuleBase::citations)
+      .def("get_runtime", &ModuleBase::get_runtime)
       //   //.def("set_cache", &ModuleBase::set_cache)
       //   .def("get_cache", &ModuleBase::get_cache)
       //   .def("reset_internal_cache", &ModuleBase::reset_internal_cache)
