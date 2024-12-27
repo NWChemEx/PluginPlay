@@ -1,8 +1,13 @@
 #include <iostream>
-#include "mermaid.hpp"
+#include "../catch.hpp"
+#include "../test_common.hpp"
+#include "pluginplay/printing/mermaid.hpp"
 
-int main() {
-    std::string message = hello_world();
-    std::cout << message << std::endl;
-    return 0;
+using namespace testing;
+
+TEST_CASE("hello_world") {
+    SECTION("huh") {
+        auto hello = "Hello World!";
+        REQUIRE(hello_world() == "Hello World!");
+    }
 }
