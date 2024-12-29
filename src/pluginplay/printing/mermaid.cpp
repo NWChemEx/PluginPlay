@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "../../../include/pluginplay/printing/mermaid.hpp"
+#include <pluginplay/printing/mermaid.hpp>
 #include <string>
 
 std::string hello_world() { return "Hello World!"; }
