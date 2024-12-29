@@ -1,8 +1,7 @@
 #include <string>
+#include "../../../include/pluginplay/printing/mermaid.hpp"
 
 std::string hello_world() {
-    std::string hello = "Hello World!";
-
-    return hello;
+    return "Hello World!";
 }
 

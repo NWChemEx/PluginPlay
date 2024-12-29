@@ -1,13 +1,10 @@
-#include <iostream>
 #include "../catch.hpp"
 #include "../test_common.hpp"
-#include "pluginplay/printing/mermaid.hpp"
-
-using namespace testing;
+#include "../../../../../include/pluginplay/printing/mermaid.hpp"
 
 TEST_CASE("hello_world") {
     SECTION("huh") {
-        auto hello = "Hello World!";
-        REQUIRE(hello_world() == "Hello World!");
+        auto hello = hello_world();
+        REQUIRE(hello == "Hello World!");
     }
 }
