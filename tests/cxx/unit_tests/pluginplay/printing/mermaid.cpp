@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <pluginplay/printing/mermaid.hpp>
 #include "../catch.hpp"
 #include "../test_common.hpp"
+#include <pluginplay/printing/mermaid.hpp>
 
 TEST_CASE("hello_world") {
     SECTION("huh") {
