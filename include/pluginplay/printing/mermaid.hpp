@@ -15,6 +15,7 @@
  */
 
 #pragma once
+#include "module_manager/module_manager_class.hpp"
 #include <string>
 
-std::string hello_world();
+std::string hello_world(const pluginplay::ModuleManager& mm);

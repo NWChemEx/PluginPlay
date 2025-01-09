@@ -16,11 +16,19 @@
 
 #include "../catch.hpp"
 #include "../test_common.hpp"
+#include "module_manager/module_manager_class.hpp"
 #include <pluginplay/printing/mermaid.hpp>
+#include <pluginplay/module_manager/module_manager.hpp>
+
 
 TEST_CASE("hello_world") {
+    pluginplay::ModuleManager mm;
+
     SECTION("huh") {
-        auto hello = hello_world();
+        using mod_t = testing::NoPTModule;
+        mm.add_module<mod_t>("A mod");
+        auto hello = hello_world(mm);
+        std::cout << "Bro the test ran but idk if the internals ran" << std::endl;
         REQUIRE(hello == "Hello World!");
     }
 }

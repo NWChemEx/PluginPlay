@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
+#include "module_manager/module_manager_class.hpp"
 #include <pluginplay/printing/mermaid.hpp>
-#include <string>
+#include <pluginplay/pluginplay.hpp>
 
-std::string hello_world() { return "Hello World!"; }
+std::string hello_world(const pluginplay::ModuleManager& mm) {
+ for (int i = 0; i < mm.size(); i++) {
+  std::cout << "There are at least some modules in here" << std::endl;
+ }
+ return "Hello World!";
+}
