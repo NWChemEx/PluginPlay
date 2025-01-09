@@ -15,12 +15,12 @@
  */
 
 #include "module_manager/module_manager_class.hpp"
-#include <pluginplay/printing/mermaid.hpp>
 #include <pluginplay/pluginplay.hpp>
+#include <pluginplay/printing/mermaid.hpp>
 
 std::string hello_world(const pluginplay::ModuleManager& mm) {
- for (int i = 0; i < mm.size(); i++) {
-  std::cout << "There are at least some modules in here" << std::endl;
- }
- return "Hello World!";
+    for(int i = 0; i < mm.size(); i++) {
+        std::cout << "There are at least some modules in here" << std::endl;
+    }
+    return "Hello World!";
 }
