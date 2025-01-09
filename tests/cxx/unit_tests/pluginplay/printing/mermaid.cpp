@@ -16,7 +16,6 @@
 
 #include "../catch.hpp"
 #include "../test_common.hpp"
-#include "module_manager/module_manager_class.hpp"
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
 
