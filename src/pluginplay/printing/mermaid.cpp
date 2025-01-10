@@ -19,11 +19,11 @@
 std::string hello_world(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
-        auto mod = mm.keys()[i];
+        auto mod    = mm.keys()[i];
         auto module = mm.at(mod);
         std::cout << mod << std::endl;
         auto submods = module.submods();
-        for (const auto& [key, value] : submods)
+        for(const auto& [key, value] : submods)
             std::cout << "This is a submod: " << key << std::endl;
     }
     return "Hello World!";

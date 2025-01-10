@@ -33,23 +33,20 @@ inline MODULE_CTOR(SubModLvl9) {
     add_submodule<testing::NullPT>("Submod 9");
 }
 
-
 DECLARE_MODULE(TooManySubmods);
 inline MODULE_CTOR(TooManySubmods) {
     satisfies_property_type<testing::NullPT>();
-    
-    
 }
 
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
-    
+
     SECTION("huh") {
         using mod_t = testing::NoPTModule;
         mm.add_module<mod_t>("A mod");
         using mod_s = testing::SubModModule;
         mm.add_module<mod_s>("SubModModule");
-        
+
         auto hello = hello_world(mm);
         std::cout << "Bro the test ran but idk if the internals ran"
                   << std::endl;
