@@ -22,13 +22,13 @@
 #include <pluginplay/printing/mermaid.hpp>
 #include <string>
 
-#define DECLARE_TEST_MODULE(number) \
-DECLARE_MODULE(SubmodLvl ## number); \
-inline MODULE_CTOR(SubmodLvl ## number) { \
-    satisfies_property_type<testing::NullPT>(); \
-    add_submodule<testing::NullPT>("Submod " #number); \
-} \
-inline MODULE_RUN(SubmodLvl ## number) { return results(); }
+#define DECLARE_TEST_MODULE(number)                        \
+    DECLARE_MODULE(SubmodLvl##number);                     \
+    inline MODULE_CTOR(SubmodLvl##number) {                \
+        satisfies_property_type<testing::NullPT>();        \
+        add_submodule<testing::NullPT>("Submod " #number); \
+    }                                                      \
+    inline MODULE_RUN(SubmodLvl##number) { return results(); }
 
 DECLARE_TEST_MODULE(10)
 DECLARE_TEST_MODULE(9)
@@ -48,7 +48,7 @@ inline MODULE_CTOR(TooManySubmods) {
     satisfies_property_type<testing::NullPT>();
     add_submodule<testing::NullPT>("Submods");
 }
-inline MODULE_RUN(TooManySubmods) {return results();}
+inline MODULE_RUN(TooManySubmods) { return results(); }
 
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
