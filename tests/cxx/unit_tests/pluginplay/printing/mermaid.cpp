@@ -20,7 +20,6 @@
 #include "unit_testing_pts.hpp"
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
-#include <string>
 
 #define DECLARE_TEST_MODULE(number)                        \
     DECLARE_MODULE(SubmodLvl##number);                     \
@@ -65,7 +64,6 @@ TEST_CASE("hello_world") {
     mm.add_module<SubmodLvl1>("SubmodLvl1");
     SECTION("huh") {
         mm.add_module<TooManySubmods>("TooManySubmods");
-        mm.add_module<SubmodLvl1>("SubmodLvl1");
         mm.change_submod("TooManySubmods", "Submods", "SubmodLvl10");
 
         auto hello = hello_world(mm);
