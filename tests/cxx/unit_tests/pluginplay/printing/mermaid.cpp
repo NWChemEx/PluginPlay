@@ -20,32 +20,53 @@
 #include "unit_testing_pts.hpp"
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
+#include <string>
 
-DECLARE_MODULE(SubModLvl10);
-inline MODULE_CTOR(SubModLvl10) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Submod 10");
-}
+#define DECLARE_TEST_MODULE(number) \
+DECLARE_MODULE(SubmodLvl ## number); \
+inline MODULE_CTOR(SubmodLvl ## number) { \
+    satisfies_property_type<testing::NullPT>(); \
+    add_submodule<testing::NullPT>("Submod " #number); \
+} \
+inline MODULE_RUN(SubmodLvl ## number) { return results(); }
 
-DECLARE_MODULE(SubModLvl9);
-inline MODULE_CTOR(SubModLvl9) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Submod 9");
-}
+DECLARE_TEST_MODULE(10)
+DECLARE_TEST_MODULE(9)
+DECLARE_TEST_MODULE(8)
+DECLARE_TEST_MODULE(7)
+DECLARE_TEST_MODULE(6)
+DECLARE_TEST_MODULE(5)
+DECLARE_TEST_MODULE(4)
+DECLARE_TEST_MODULE(3)
+DECLARE_TEST_MODULE(2)
+DECLARE_TEST_MODULE(1)
+
+#undef DECLARE_TEST_MODULE
 
 DECLARE_MODULE(TooManySubmods);
 inline MODULE_CTOR(TooManySubmods) {
     satisfies_property_type<testing::NullPT>();
+    add_submodule<testing::NullPT>("Submods");
 }
+inline MODULE_RUN(TooManySubmods) {return results();}
 
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
 
+    mm.add_module<SubmodLvl10>("SubmodLvl10");
+    mm.add_module<SubmodLvl9>("SubmodLvl9");
+    mm.add_module<SubmodLvl8>("SubmodLvl8");
+    mm.add_module<SubmodLvl7>("SubmodLvl7");
+    mm.add_module<SubmodLvl6>("SubmodLvl6");
+    mm.add_module<SubmodLvl5>("SubmodLvl5");
+    mm.add_module<SubmodLvl4>("SubmodLvl4");
+    mm.add_module<SubmodLvl3>("SubmodLvl3");
+    mm.add_module<SubmodLvl2>("SubmodLvl2");
+    mm.add_module<SubmodLvl1>("SubmodLvl1");
     SECTION("huh") {
-        using mod_t = testing::NoPTModule;
-        mm.add_module<mod_t>("A mod");
-        using mod_s = testing::SubModModule;
-        mm.add_module<mod_s>("SubModModule");
+        mm.add_module<TooManySubmods>("TooManySubmods");
+        mm.add_module<SubmodLvl1>("SubmodLvl1");
+        mm.change_submod("TooManySubmods", "Submods", "SubmodLvl10");
 
         auto hello = hello_world(mm);
         std::cout << "Bro the test ran but idk if the internals ran"
