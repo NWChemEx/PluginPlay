@@ -31,7 +31,6 @@
 // Module Name: SubmodLvl#
 // Submodule Name: Submod #
 
-DECLARE_TEST_MODULE(10)
 DECLARE_TEST_MODULE(9)
 DECLARE_TEST_MODULE(8)
 DECLARE_TEST_MODULE(7)
@@ -50,11 +49,11 @@ inline MODULE_CTOR(TooManySubmods) {
     add_submodule<testing::NullPT>("Submods");
 }
 inline MODULE_RUN(TooManySubmods) { return results(); }
+// Make it to where the modules branch
 
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
     // Load in Modules
-    mm.add_module<SubmodLvl10>("SubmodLvl10");
     mm.add_module<SubmodLvl9>("SubmodLvl9");
     mm.add_module<SubmodLvl8>("SubmodLvl8");
     mm.add_module<SubmodLvl7>("SubmodLvl7");
@@ -74,7 +73,6 @@ TEST_CASE("hello_world") {
     mm.change_submod("SubmodLvl6", "Submod 6", "SubmodLvl7");
     mm.change_submod("SubmodLvl7", "Submod 7", "SubmodLvl8");
     mm.change_submod("SubmodLvl8", "Submod 8", "SubmodLvl9");
-    mm.change_submod("SubmodLvl9", "Submod 9", "SubmodLvl10");
 
     SECTION("huh") {
         auto hello = hello_world(mm);
