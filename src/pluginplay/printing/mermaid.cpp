@@ -19,28 +19,23 @@
 #include <pluginplay/pluginplay.hpp>
 
 void print_submods(const pluginplay::Module& module, int level = 0) {
-    for (int i = 0; i < level; ++i) {
-        std::cout << "    ";
-    }
+    for(int i = 0; i < level; ++i) { std::cout << "    "; }
     auto submods = module.submods();
 
-    for (const auto& [key, value] : submods) {
-        if (value.ready() == false) {
-            continue;
-        }
+    for(const auto& [key, value] : submods) {
+        if(value.ready() == false) { continue; }
         auto submod_name = value.get_name();
         std::cout << "Submod Name: " << submod_name << std::endl;
 
         pluginplay::ModuleManager mm;
 
-        for (const auto& [key, submod] : mm.at(submod_name).submods()){
+        for(const auto& [key, submod] : mm.at(submod_name).submods()) {
             print_submods(submod, level + 1);
         }
     }
 }
 
 std::string hello_world(const pluginplay::ModuleManager& mm) {
-
     auto n_modules = mm.size();
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod    = mm.keys()[i];
@@ -57,7 +52,8 @@ std::string hello_world(const pluginplay::ModuleManager& mm) {
 
         //     auto submod_name = value.get_name();
 
-        //     std::cout << "This is the true name: " << submod_name << std::endl;
+        //     std::cout << "This is the true name: " << submod_name <<
+        //     std::endl;
 
         //     auto mm_submod = mm.at(submod_name);
         //}
