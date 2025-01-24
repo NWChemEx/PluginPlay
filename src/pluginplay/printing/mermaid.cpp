@@ -20,14 +20,13 @@
 
 void print_submods(const std::string module,
                    const pluginplay::ModuleManager& mm, int level = 0) {
-    for(int i = 0; i < level; ++i) { std::cout << "    "; }
     auto mm_module = mm.at(module);
     auto submods   = mm_module.submods();
 
     std::cout << "STARTING FOR LOOP ON SUBMODS" << std::endl;
     for(const auto& [key, value] : submods) {
-        if(value.ready() == false) { continue; }
         std::cout << "Submod ID: " << key << std::endl;
+        if (value.has_module() == false) { std::cout << "No Submodule associated with Key yet" << std::endl; continue;}
         std::cout << "Submod Name: " << value.get_name() << std::endl;
 
         std::string submod_name = value.get_name();
