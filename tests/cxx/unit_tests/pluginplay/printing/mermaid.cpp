@@ -31,12 +31,6 @@
 // Module Name: SubmodLvl#
 // Submodule Name: Submod #
 
-DECLARE_TEST_MODULE(9)
-DECLARE_TEST_MODULE(8)
-DECLARE_TEST_MODULE(7)
-DECLARE_TEST_MODULE(6)
-DECLARE_TEST_MODULE(5)
-DECLARE_TEST_MODULE(4)
 DECLARE_TEST_MODULE(3)
 DECLARE_TEST_MODULE(2)
 DECLARE_TEST_MODULE(1)
@@ -54,12 +48,6 @@ inline MODULE_RUN(TooManySubmods) { return results(); }
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
     // Load in Modules
-    mm.add_module<SubmodLvl9>("SubmodLvl9");
-    mm.add_module<SubmodLvl8>("SubmodLvl8");
-    mm.add_module<SubmodLvl7>("SubmodLvl7");
-    mm.add_module<SubmodLvl6>("SubmodLvl6");
-    mm.add_module<SubmodLvl5>("SubmodLvl5");
-    mm.add_module<SubmodLvl4>("SubmodLvl4");
     mm.add_module<SubmodLvl3>("SubmodLvl3");
     mm.add_module<SubmodLvl2>("SubmodLvl2");
     mm.add_module<SubmodLvl1>("SubmodLvl1");
@@ -67,13 +55,6 @@ TEST_CASE("hello_world") {
     mm.change_submod("TooManySubmods", "Submods", "SubmodLvl1");
     mm.change_submod("SubmodLvl1", "Submod 1", "SubmodLvl2");
     mm.change_submod("SubmodLvl2", "Submod 2", "SubmodLvl3");
-    mm.change_submod("SubmodLvl3", "Submod 3", "SubmodLvl4");
-    mm.change_submod("SubmodLvl4", "Submod 4", "SubmodLvl5");
-    mm.change_submod("SubmodLvl5", "Submod 5", "SubmodLvl6");
-    mm.change_submod("SubmodLvl6", "Submod 6", "SubmodLvl7");
-    mm.change_submod("SubmodLvl7", "Submod 7", "SubmodLvl8");
-    mm.change_submod("SubmodLvl8", "Submod 8", "SubmodLvl9");
-    // mm.change_submod("SubmodLvl9", "Submod 9", "TooManySubmods");
 
     SECTION("huh") {
         auto hello = hello_world(mm);

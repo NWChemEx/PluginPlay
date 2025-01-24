@@ -17,31 +17,39 @@
 #include "module/module_class.hpp"
 #include "module_manager/module_manager_class.hpp"
 #include <pluginplay/pluginplay.hpp>
+#include <sstream>
 
 void print_submods(const std::string module,
-                   const pluginplay::ModuleManager& mm, int level = 0) {
-    auto mm_module = mm.at(module);
+                   const pluginplay::ModuleManager& mm,
+                   std::stringstream& ss, int level = 0) {
+    const auto& mm_module = mm.at(module);
     auto submods   = mm_module.submods();
+    std::string indent(level * 4, '-');
 
     for(const auto& [key, value] : submods) {
-        std::cout << "Submod ID: " << key << std::endl;
+        ss << indent <<  "1 Submod ID: " << key << std::endl;
         if(value.has_module() == false) {
-            std::cout << "No Submodule associated with Key yet" << std::endl;
-            continue;
+            ss << indent <<  "No Submodule associated with Key yet" << std::endl;
+            break;
+        } else {
+            ss << indent << "2 Submod Name: " << value.get_name() << std::endl;
+            std::string submod_name = value.get_name();
+            print_submods(submod_name, mm, ss, level + 1);
         }
-        std::cout << "Submod Name: " << value.get_name() << std::endl;
-
-        std::string submod_name = value.get_name();
-
-        print_submods(submod_name, mm, level + 1);
     }
+    std::cout << ss.str();
 }
 
 std::string hello_world(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
+    std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
-        print_submods(mod, mm);
+        std::string indent(i*4, '-');
+        ss << indent;
+        ss << "Level: " << i << std::endl;
+        print_submods(mod, mm, ss);
     }
+    std::cout << ss.str();
     return "Hello World!";
 }
