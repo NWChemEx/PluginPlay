@@ -26,7 +26,10 @@ void print_submods(const std::string module,
     std::cout << "STARTING FOR LOOP ON SUBMODS" << std::endl;
     for(const auto& [key, value] : submods) {
         std::cout << "Submod ID: " << key << std::endl;
-        if (value.has_module() == false) { std::cout << "No Submodule associated with Key yet" << std::endl; continue;}
+        if(value.has_module() == false) {
+            std::cout << "No Submodule associated with Key yet" << std::endl;
+            continue;
+        }
         std::cout << "Submod Name: " << value.get_name() << std::endl;
 
         std::string submod_name = value.get_name();
