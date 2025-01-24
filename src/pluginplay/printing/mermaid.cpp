@@ -23,7 +23,6 @@ void print_submods(const std::string module,
     auto mm_module = mm.at(module);
     auto submods   = mm_module.submods();
 
-    std::cout << "STARTING FOR LOOP ON SUBMODS" << std::endl;
     for(const auto& [key, value] : submods) {
         std::cout << "Submod ID: " << key << std::endl;
         if(value.has_module() == false) {
@@ -42,7 +41,6 @@ std::string hello_world(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
-        std::cout << "RUNNING PRINT_SUBMODS in hello_world" << std::endl;
         print_submods(mod, mm);
     }
     return "Hello World!";
