@@ -20,16 +20,16 @@
 #include <sstream>
 
 void print_submods(const std::string module,
-                   const pluginplay::ModuleManager& mm,
-                   std::stringstream& ss, int level = 0) {
+                   const pluginplay::ModuleManager& mm, std::stringstream& ss,
+                   int level = 0) {
     const auto& mm_module = mm.at(module);
-    auto submods   = mm_module.submods();
+    auto submods          = mm_module.submods();
     std::string indent(level * 4, '-');
 
     for(const auto& [key, value] : submods) {
-        ss << indent <<  "1 Submod ID: " << key << std::endl;
+        ss << indent << "1 Submod ID: " << key << std::endl;
         if(value.has_module() == false) {
-            ss << indent <<  "No Submodule associated with Key yet" << std::endl;
+            ss << indent << "No Submodule associated with Key yet" << std::endl;
             break;
         } else {
             ss << indent << "2 Submod Name: " << value.get_name() << std::endl;
@@ -45,7 +45,7 @@ std::string hello_world(const pluginplay::ModuleManager& mm) {
     std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
-        std::string indent(i*4, '-');
+        std::string indent(i * 4, '-');
         ss << indent;
         ss << "Level: " << i << std::endl;
         print_submods(mod, mm, ss);
