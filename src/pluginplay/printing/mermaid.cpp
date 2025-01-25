@@ -19,24 +19,26 @@
 #include <pluginplay/pluginplay.hpp>
 #include <sstream>
 
-void print_submods(const std::string module,
+void print_submods(const std::string module_key,
                    const pluginplay::ModuleManager& mm, std::stringstream& ss,
-                   int level = 0) {
-    const auto& mm_module = mm.at(module);
-    auto submods          = mm_module.submods();
+                   int level) {
+    const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
+    const auto& submods = mm_module.submods(); // Results in list of Submodules
     std::string indent(level * 4, '-');
 
+    // Key is the ID/Tag, Value is the reference to the Module
     for(const auto& [key, value] : submods) {
         ss << indent << "1 Submod ID: " << key << std::endl;
         if(value.has_module() == false) {
-            ss << indent << "No Submodule associated with Key yet" << std::endl;
-            break;
+            ss << indent
+               << "2 Submod Name: No Submodule associated with Key yet"
+               << std::endl;
+            continue;
         } else {
             ss << indent << "2 Submod Name: " << value.get_name() << std::endl;
             std::string submod_name = value.get_name();
         }
     }
-    std::cout << ss.str();
 }
 
 std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
@@ -48,7 +50,7 @@ std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
         std::string indent(i * 4, '-');
         ss << indent;
         ss << "Level: " << i << std::endl;
-        print_submods(mod, mm, ss);
+        print_submods(mod, mm, ss, i);
     }
     std::cout << ss.str();
     return "Hello World!";
