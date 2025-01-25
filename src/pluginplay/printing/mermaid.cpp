@@ -34,17 +34,17 @@ void print_submods(const std::string module,
         } else {
             ss << indent << "2 Submod Name: " << value.get_name() << std::endl;
             std::string submod_name = value.get_name();
-            print_submods(submod_name, mm, ss, level + 1);
         }
     }
     std::cout << ss.str();
 }
 
-std::string hello_world(const pluginplay::ModuleManager& mm) {
+std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
+        std::cout << mod << std::endl;
         std::string indent(i * 4, '-');
         ss << indent;
         ss << "Level: " << i << std::endl;

@@ -18,4 +18,4 @@
 #include <pluginplay/module_manager/module_manager_class.hpp>
 #include <string>
 
-std::string hello_world(const pluginplay::ModuleManager& mm);
+std::string create_mermaid_graph(const pluginplay::ModuleManager& mm);

@@ -57,7 +57,7 @@ TEST_CASE("hello_world") {
     mm.change_submod("SubmodLvl2", "Submod 2", "SubmodLvl3");
 
     SECTION("huh") {
-        auto hello = hello_world(mm);
+        auto hello = create_mermaid_graph(mm);
         std::cout << "Bro the test ran but idk if the internals ran"
                   << std::endl;
         REQUIRE(hello == "Hello World!");
