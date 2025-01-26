@@ -24,18 +24,21 @@ void print_submods(const std::string module_key,
                    int level) {
     const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
     const auto& submods = mm_module.submods(); // Results in list of Submodules
-    std::string indent((level + 1) * 4, '-');
+    std::string indent_2((level + 1) * 4, '-');
+    std::string indent_3((level + 1) * 4, '/');
 
     // Key is the ID/Tag, Value is the reference to the Module
     for(const auto& [key, value] : submods) {
-        ss << indent << "Step 2: Submod ID: " << key << std::endl;
+        ss << indent_2 << "Step 2: Submod ID: " << key
+           << std::endl; // Second indent: ----
         if(value.has_module() == false) {
-            ss << indent
+            ss << indent_3 // Third indent -----
                << "Step 3: Submod Name: No Submodule associated with Key yet\n"
                << std::endl;
             continue;
         } else {
-            ss << indent << "Step 3: Submod Name: " << value.get_name() << "\n"
+            ss << indent_3 << "Step 3: Submod Name: " << value.get_name()
+               << "\n"
                << std::endl;
         }
     }
@@ -46,9 +49,9 @@ std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
+        std::string indent_1(i * 4, '+');
+        ss << indent_1; // First Indent: ''
         ss << "Step 1: " << mod << std::endl;
-        std::string indent(i * 4, '-');
-        ss << indent;
         print_submods(mod, mm, ss, i);
     }
     std::cout << ss.str();
