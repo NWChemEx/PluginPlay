@@ -21,7 +21,7 @@
 
 void print_submods(const std::string module_key,
                    const pluginplay::ModuleManager& mm, std::stringstream& ss,
-                   int level) {
+                   int level = 0) {
     const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
     const auto& submods = mm_module.submods(); // Results in list of Submodules
     std::string indent_2((level + 1) * 4, '-');
@@ -49,10 +49,8 @@ std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
         auto mod = mm.keys()[i];
-        std::string indent_1(i * 4, '+');
-        ss << indent_1; // First Indent: ''
         ss << "Step 1: " << mod << std::endl;
-        print_submods(mod, mm, ss, i);
+        print_submods(mod, mm, ss);
     }
     std::cout << ss.str();
     return "Hello World!";
