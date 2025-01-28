@@ -40,6 +40,7 @@ void print_submods(const std::string module_key,
             ss << indent_3 << "Step 3: Submod Name: " << value.get_name()
                << "\n"
                << std::endl;
+            print_submods(value.get_name(), mm, ss, level + 1);
         }
     }
 }
