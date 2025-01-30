@@ -44,7 +44,6 @@
 // }
 // inline MODULE_RUN(TooManySubmods) { return results(); }
 
-
 DECLARE_MODULE(Allnmers);
 inline MODULE_CTOR(Allnmers) {
     satisfies_property_type<testing::NullPT>();
@@ -65,9 +64,7 @@ inline MODULE_CTOR(BondBasedFragmenter) {
 inline MODULE_RUN(BondBasedFragmenter) { return results(); }
 
 DECLARE_MODULE(BrokenBonds);
-inline MODULE_CTOR(BrokenBonds) {
-    satisfies_property_type<testing::NullPT>();
-}
+inline MODULE_CTOR(BrokenBonds) { satisfies_property_type<testing::NullPT>(); }
 inline MODULE_RUN(BrokenBonds) { return results(); }
 
 DECLARE_MODULE(ClusterPartition);
@@ -90,9 +87,7 @@ inline MODULE_CTOR(DCLCCapping) {
 inline MODULE_RUN(DCLCCapping) { return results(); }
 
 DECLARE_MODULE(EnergyMethod);
-inline MODULE_CTOR(EnergyMethod) {
-    satisfies_property_type<testing::NullPT>();
-}
+inline MODULE_CTOR(EnergyMethod) { satisfies_property_type<testing::NullPT>(); }
 inline MODULE_RUN(EnergyMethod) { return results(); }
 
 DECLARE_MODULE(FragmentBasedMethod);
@@ -101,7 +96,6 @@ inline MODULE_CTOR(FragmentBasedMethod) {
     add_submodule<testing::NullPT>("Energy method");
     add_submodule<testing::NullPT>("Subsystem former");
     add_submodule<testing::NullPT>("Weighter");
-
 }
 inline MODULE_RUN(FragmentBasedMethod) { return results(); }
 
@@ -115,7 +109,6 @@ inline MODULE_CTOR(FragmentDriver) {
     add_submodule<testing::NullPT>("Intersection finder");
     add_submodule<testing::NullPT>("Molecular graph");
     add_submodule<testing::NullPT>("N-mer builder");
-
 }
 inline MODULE_RUN(FragmentDriver) { return results(); }
 
@@ -127,9 +120,7 @@ inline MODULE_CTOR(FragmentedChemicalSystemDriver) {
 inline MODULE_RUN(FragmentedChemicalSystemDriver) { return results(); }
 
 DECLARE_MODULE(GMBEWeights);
-inline MODULE_CTOR(GMBEWeights) {
-    satisfies_property_type<testing::NullPT>();
-}
+inline MODULE_CTOR(GMBEWeights) { satisfies_property_type<testing::NullPT>(); }
 inline MODULE_RUN(GMBEWeights) { return results(); }
 
 DECLARE_MODULE(HeavyAtomPartition);
@@ -159,8 +150,6 @@ inline MODULE_CTOR(WeightedDistance) {
 }
 inline MODULE_RUN(WeightedDistance) { return results(); }
 
-
-
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
     // Load in Modules
@@ -181,7 +170,8 @@ TEST_CASE("hello_world") {
     mm.add_module<EnergyMethod>("Energy Method");
     mm.add_module<FragmentBasedMethod>("Fragment Based Method");
     mm.add_module<FragmentDriver>("Fragment Driver");
-    mm.add_module<FragmentedChemicalSystemDriver>("FragmentedChemicalSystem Driver");
+    mm.add_module<FragmentedChemicalSystemDriver>(
+      "FragmentedChemicalSystem Driver");
     mm.add_module<GMBEWeights>("GMBE Weights");
     mm.add_module<HeavyAtomPartition>("Heavy Atom Partition");
     mm.add_module<Intersections>("Intersections");
@@ -189,20 +179,24 @@ TEST_CASE("hello_world") {
     mm.add_module<WeightedDistance>("Weighted Distance");
     mm.change_submod("DCLC Capping", "Connectivity", "Covalent Radius");
     mm.change_submod("Fragment Based Method", "Energy method", "Energy Method");
-    mm.change_submod("Fragment Based Method", "Subsystem former", "FragmentedChemicalSystem Driver");
+    mm.change_submod("Fragment Based Method", "Subsystem former",
+                     "FragmentedChemicalSystem Driver");
     mm.change_submod("Fragment Based Method", "Weighter", "GMBE Weights");
-    mm.change_submod("Fragment Driver", "Atomic connectivity", "Covalent Radius");
-    mm.change_submod("Fragment Driver", "Cap broken bonds", "Weighted Distance");
+    mm.change_submod("Fragment Driver", "Atomic connectivity",
+                     "Covalent Radius");
+    mm.change_submod("Fragment Driver", "Cap broken bonds",
+                     "Weighted Distance");
     mm.change_submod("Fragment Driver", "Find broken bonds", "Broken Bonds");
-    mm.change_submod("Fragment Driver", "Fragment builder", "Bond-Based Fragmenter");
+    mm.change_submod("Fragment Driver", "Fragment builder",
+                     "Bond-Based Fragmenter");
     mm.change_submod("Fragment Driver", "Intersection finder", "Intersections");
     mm.change_submod("Fragment Driver", "Molecular graph", "Nuclear Graph");
     mm.change_submod("Fragment Driver", "N-mer builder", "All nmers");
-    mm.change_submod("FragmentedChemicalSystem Driver", "Fragmenter", "Fragment Driver");
+    mm.change_submod("FragmentedChemicalSystem Driver", "Fragmenter",
+                     "Fragment Driver");
     mm.change_submod("Heavy Atom Partition", "Connectivity", "Covalent Radius");
     mm.change_submod("Nuclear Graph", "Connectivity", "Covalent Radius");
     mm.change_submod("Nuclear Graph", "Nodes", "Heavy Atom Partition");
-
 
     SECTION("huh") {
         auto hello = create_mermaid_graph(mm);
