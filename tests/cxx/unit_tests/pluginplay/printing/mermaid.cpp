@@ -21,29 +21,6 @@
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
 
-// #define DECLARE_TEST_MODULE(number)                        \
-//     DECLARE_MODULE(SubmodLvl##number);                     \
-//     inline MODULE_CTOR(SubmodLvl##number) {                \
-//         satisfies_property_type<testing::NullPT>();        \
-//         add_submodule<testing::NullPT>("Submod " #number); \
-//     }                                                      \
-//     inline MODULE_RUN(SubmodLvl##number) { return results(); }
-// // Module Name: SubmodLvl#
-// // Submodule Name: Submod #
-
-// DECLARE_TEST_MODULE(3)
-// DECLARE_TEST_MODULE(2)
-// DECLARE_TEST_MODULE(1)
-
-// #undef DECLARE_TEST_MODULE
-
-// DECLARE_MODULE(TooManySubmods);
-// inline MODULE_CTOR(TooManySubmods) {
-//     satisfies_property_type<testing::NullPT>();
-//     add_submodule<testing::NullPT>("Submods");
-// }
-// inline MODULE_RUN(TooManySubmods) { return results(); }
-
 DECLARE_MODULE(Allnmers);
 inline MODULE_CTOR(Allnmers) {
     satisfies_property_type<testing::NullPT>();
@@ -152,14 +129,6 @@ inline MODULE_RUN(WeightedDistance) { return results(); }
 
 TEST_CASE("hello_world") {
     pluginplay::ModuleManager mm;
-    // Load in Modules
-    // mm.add_module<SubmodLvl3>("SubmodLvl3");
-    // mm.add_module<SubmodLvl2>("SubmodLvl2");
-    // mm.add_module<SubmodLvl1>("SubmodLvl1");
-    // mm.add_module<TooManySubmods>("TooManySubmods");
-    // mm.change_submod("TooManySubmods", "Submods", "SubmodLvl1");
-    // mm.change_submod("SubmodLvl1", "Submod 1", "SubmodLvl2");
-    // mm.change_submod("SubmodLvl2", "Submod 2", "SubmodLvl3");
     mm.add_module<Allnmers>("All nmers");
     mm.add_module<AtomicCapping>("Atomic Capping");
     mm.add_module<BondBasedFragmenter>("Bond-Based Fragmenter");
