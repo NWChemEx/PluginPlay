@@ -41,13 +41,9 @@ cmaize_option_list(
 )
 
 ### Dependendencies ###
-cmaize_find_or_build_dependency(
-    utilities
-    URL github.com/NWChemEx/utilities
-    BUILD_TARGET utilities
-    FIND_TARGET nwx::utilities
-    CMAKE_ARGS BUILD_TESTING=OFF
-)
+include(get_utilities)
+
+include(get_parallelzone)
 
 cmaize_find_or_build_dependency(
     libfort
@@ -56,21 +52,6 @@ cmaize_find_or_build_dependency(
     FIND_TARGET libfort::fort
     CMAKE_ARGS FORT_ENABLE_TESTING=OFF
 )
-
-cmaize_find_or_build_dependency(
-    parallelzone
-    URL github.com/NWChemEx/ParallelZone
-    BUILD_TARGET parallelzone
-    FIND_TARGET nwx::parallelzone
-    CMAKE_ARGS BUILD_TESTING=OFF
-)
-
-# CI doesn't like this
-#cmaize_find_dependency(
-#    boost_container
-#    URL github.com/boostorg/container
-#    FIND_TARGET Boost::container
-#)
 
 find_package(Boost REQUIRED)
 
@@ -121,13 +102,7 @@ if("${BUILD_TESTING}")
     set(examples_src_dir "${cxx_test_dir}/doc_snippets")
 
     ### C++ Testing ###
-    cmaize_find_or_build_dependency(
-        Catch2
-        URL github.com/catchorg/Catch2
-        BUILD_TARGET Catch2
-        FIND_TARGET Catch2::Catch2
-        VERSION v3.6.0
-    )
+    include(get_catch2)
 
     cmaize_add_tests(
         test_unit_${PROJECT_NAME}
