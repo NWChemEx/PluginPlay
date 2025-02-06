@@ -24,18 +24,19 @@ void print_submods(const std::string module_key,
                    int level = 0) {
     const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
     const auto& submods = mm_module.submods(); // Results in list of Submodules
-    char letter         = 65 + level;
+    char letter         = (65 + level);
 
     // Key is the ID/Tag, Value is the reference to the Module
     for(const auto& [key, value] : submods) {
-        ss << "\t" << letter + level << level + 1 << "[" << key
+        letter += level;
+        ss << "\t" << letter << level + 1 << "[" << key
            << "]\n"; // Second indent: ----
         if(value.has_module() == false) {
-            ss << "\t" << letter + level << level + 2
+            ss << "\t" << letter << level + 2
                << "[Submod Name: No Submodule associated with Key]\n";
             continue;
         } else {
-            ss << "\t" << letter + level << level + 2 << "[" << value.get_name()
+            ss << "\t" << letter << level + 2 << "[" << value.get_name()
                << "]\n"; // Second indent: ----
             print_submods(value.get_name(), mm, ss, level + 1);
         }
