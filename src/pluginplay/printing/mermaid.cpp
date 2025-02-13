@@ -29,7 +29,8 @@ void print_submods(const std::string module_key,
 
     // Key is the ID/Tag, Value is the reference to the Module
     for(const auto& [key, value] : submods) {
-        ss << "\n\tA--" << "|" << key << "|--";
+        ss << "\n\tA--"
+           << "|" << key << "|--";
         if(value.has_module() == false) {
             ss << submod_letter << level + 1
                << "[No Submodule associated with Key]\n";
