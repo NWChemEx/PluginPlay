@@ -21,23 +21,21 @@
 
 void print_submods(const std::string module_key,
                    const pluginplay::ModuleManager& mm, std::stringstream& ss,
-                   int level = 0) {
+                   int level) {
     const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
     const auto& submods = mm_module.submods(); // Results in list of Submodules
-    char letter         = (65 + level);
+    char mod_letter     = 65;
+    char submod_letter  = (65 + level);
 
     // Key is the ID/Tag, Value is the reference to the Module
     for(const auto& [key, value] : submods) {
-        letter += level;
-        ss << "\t" << letter << level + 1 << "[" << key
-           << "]\n"; // Second indent: ----
+        ss << "\n\tA--" << "|" << key << "|--";
         if(value.has_module() == false) {
-            ss << "\t" << letter << level + 2
-               << "[Submod Name: No Submodule associated with Key]\n";
+            ss << submod_letter << level + 1
+               << "[No Submodule associated with Key]\n";
             continue;
         } else {
-            ss << "\t" << letter << level + 2 << "[" << value.get_name()
-               << "]\n"; // Second indent: ----
+            ss << submod_letter << level + 1 << "[" << value.get_name() << "]";
             print_submods(value.get_name(), mm, ss, level + 1);
         }
     }
@@ -47,11 +45,11 @@ std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     std::stringstream ss;
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
-        ss << "flowchart LR\n";
+        ss << "\nflowchart LR\n";
         auto mod    = mm.keys()[i];
         char letter = 65;
-        ss << "\t" << letter << "[" << mod << "]\n";
-        print_submods(mod, mm, ss);
+        ss << "\t" << letter << "[" << mod << "]";
+        print_submods(mod, mm, ss, 0);
     }
     std::cout << ss.str();
     return "Hello World!";
