@@ -19,38 +19,57 @@
 #include <pluginplay/pluginplay.hpp>
 #include <sstream>
 
-void print_submods(const std::string module_key,
-                   const pluginplay::ModuleManager& mm, std::stringstream& ss,
-                   int level) {
-    const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
-    const auto& submods = mm_module.submods(); // Results in list of Submodules
-    char mod_letter     = 65;
-    char submod_letter  = (65 + level);
-
-    // Key is the ID/Tag, Value is the reference to the Module
-    for(const auto& [key, value] : submods) {
-        ss << "\n\tA--"
-           << "|" << key << "|--";
-        if(value.has_module() == false) {
-            ss << submod_letter << level + 1
-               << "[No Submodule associated with Key]\n";
-            continue;
+void add_letter(std::string& code) {
+    for (int i = 2; i >= 0; --i) {
+        if (code[i] == 'Z') {
+            code[i] = 'A';
         } else {
-            ss << submod_letter << level + 1 << "[" << value.get_name() << "]";
-            print_submods(value.get_name(), mm, ss, level + 1);
+            code[i]++;
+            return;
         }
     }
 }
 
+void print_submods(const std::string module_key,
+                   const pluginplay::ModuleManager& mm, std::stringstream& ss,  std::string& module_code) {
+    const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
+    const auto& submods = mm_module.submods(); // Results in list of Submodules
+    auto main_mod_code = module_code;
+
+    // Key is the ID/Tag, Value is the reference to the Module
+    for(const auto& [key, value] : submods) {
+        ss << "\n\t"
+           << main_mod_code
+           << "-->"
+           << "|"
+           << key
+           << "| ";
+        if(value.has_module() == false) {
+            add_letter(module_code);
+            ss << module_code
+               << "[No Submodule associated with Key]";
+            continue;
+        } else {
+            add_letter(module_code);
+            ss << module_code << "[" << value.get_name() << "]";
+            print_submods(value.get_name(), mm, ss, module_code);
+        }
+    }
+}
+
+
 std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     std::stringstream ss;
+    std::string module_code = "AAA";
     for(decltype(n_modules) i = 0; i < n_modules; i++) {
+        ss << "\n```mermaid";
         ss << "\nflowchart LR\n";
         auto mod    = mm.keys()[i];
-        char letter = 65;
-        ss << "\t" << letter << "[" << mod << "]";
-        print_submods(mod, mm, ss, 0);
+        ss << "\t" << module_code << "[" << mod << "]";
+        print_submods(mod, mm, ss, module_code);
+        ss << "\n```";
+        add_letter(module_code);
     }
     std::cout << ss.str();
     return "Hello World!";
