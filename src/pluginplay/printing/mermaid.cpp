@@ -57,10 +57,9 @@ std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     std::stringstream ss;
     std::string module_code = "AAA";
-    if (n_modules == 0) {
+    if(n_modules == 0) {
         ss << "No modules are loaded, load some modules!";
-    }
-    else {
+    } else {
         for(decltype(n_modules) i = 0; i < n_modules; i++) {
             ss << "\n```mermaid";
             ss << "\nflowchart LR\n";
