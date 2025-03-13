@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#include "module/module_class.hpp"
-#include "module_manager/module_manager_class.hpp"
-#include <pluginplay/pluginplay.hpp>
+#include <pluginplay/module/module_class.hpp>
+#include <pluginplay/module_manager/module_manager_class.hpp>
 #include <sstream>
 
 void add_letter(std::string& code) {
+    assert(code.size() == 2);
     for(int i = 2; i >= 0; --i) {
         if(code[i] == 'Z') {
             code[i] = 'A';
@@ -28,6 +28,7 @@ void add_letter(std::string& code) {
             return;
         }
     }
+    throw std::runtime_error("String is maxed out");
 }
 
 void print_submods(const std::string module_key,
@@ -44,7 +45,6 @@ void print_submods(const std::string module_key,
         if(value.has_module() == false) {
             add_letter(module_code);
             ss << module_code << "[No Submodule associated with Key]";
-            continue;
         } else {
             add_letter(module_code);
             ss << module_code << "[" << value.get_name() << "]";
