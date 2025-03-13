@@ -53,19 +53,24 @@ void print_submods(const std::string module_key,
     }
 }
 
-std::string create_mermaid_graph(const pluginplay::ModuleManager& mm) {
+std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     auto n_modules = mm.size();
     std::stringstream ss;
     std::string module_code = "AAA";
-    for(decltype(n_modules) i = 0; i < n_modules; i++) {
-        ss << "\n```mermaid";
-        ss << "\nflowchart LR\n";
-        auto mod = mm.keys()[i];
-        ss << "\t" << module_code << "[" << mod << "]";
-        print_submods(mod, mm, ss, module_code);
-        ss << "\n```";
-        add_letter(module_code);
+    if (n_modules == 0) {
+        ss << "No modules are loaded, load some modules!";
+    }
+    else {
+        for(decltype(n_modules) i = 0; i < n_modules; i++) {
+            ss << "\n```mermaid";
+            ss << "\nflowchart LR\n";
+            auto mod = mm.keys()[i];
+            ss << "\t" << module_code << "[" << mod << "]";
+            print_submods(mod, mm, ss, module_code);
+            ss << "\n```";
+            add_letter(module_code);
+        }
     }
     std::cout << ss.str();
-    return "Hello World!";
+    return ss;
 }

@@ -16,161 +16,151 @@
 
 #include "../catch.hpp"
 #include "../test_common.hpp"
+#include "catch2/catch_test_macros.hpp"
 #include "module/macros.hpp"
+#include "module_manager/module_manager_class.hpp"
 #include "unit_testing_pts.hpp"
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
+#include <sstream>
+#include <string>
 
-DECLARE_MODULE(Allnmers);
-inline MODULE_CTOR(Allnmers) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Monomer Maker");
+DECLARE_MODULE(OneModule);
+inline MODULE_CTOR(OneModule) {
+	satisfies_property_type<testing::NullPT>();
 }
-inline MODULE_RUN(Allnmers) { return results(); }
+inline MODULE_RUN(OneModule) { return results();}
 
-DECLARE_MODULE(AtomicCapping);
-inline MODULE_CTOR(AtomicCapping) {
-    satisfies_property_type<testing::NullPT>();
+DECLARE_MODULE(TwoModule);
+inline MODULE_CTOR(TwoModule) {
+	satisfies_property_type<testing::NullPT>();
 }
-inline MODULE_RUN(AtomicCapping) { return results(); }
+inline MODULE_RUN(TwoModule) { return results();}
 
-DECLARE_MODULE(BondBasedFragmenter);
-inline MODULE_CTOR(BondBasedFragmenter) {
-    satisfies_property_type<testing::NullPT>();
+DECLARE_MODULE(ThreeModule);
+inline MODULE_CTOR(ThreeModule) {
+	satisfies_property_type<testing::NullPT>();
 }
-inline MODULE_RUN(BondBasedFragmenter) { return results(); }
+inline MODULE_RUN(ThreeModule) { return results();}
 
-DECLARE_MODULE(BrokenBonds);
-inline MODULE_CTOR(BrokenBonds) { satisfies_property_type<testing::NullPT>(); }
-inline MODULE_RUN(BrokenBonds) { return results(); }
-
-DECLARE_MODULE(ClusterPartition);
-inline MODULE_CTOR(ClusterPartition) {
+DECLARE_MODULE(OneModuleSubTwo);
+inline MODULE_CTOR(OneModuleSubTwo) {
     satisfies_property_type<testing::NullPT>();
+    add_submodule<testing::NullPT>("Submodule");
 }
-inline MODULE_RUN(ClusterPartition) { return results(); }
+inline MODULE_RUN(OneModuleSubTwo) { return results(); }
 
-DECLARE_MODULE(CovalentRadius);
-inline MODULE_CTOR(CovalentRadius) {
+DECLARE_MODULE(TwoModuleSubThree);
+inline MODULE_CTOR(TwoModuleSubThree) {
     satisfies_property_type<testing::NullPT>();
+    add_submodule<testing::NullPT>("Submodule");
 }
-inline MODULE_RUN(CovalentRadius) { return results(); }
+inline MODULE_RUN(TwoModuleSubThree) { return results(); }
 
-DECLARE_MODULE(DCLCCapping);
-inline MODULE_CTOR(DCLCCapping) {
+DECLARE_MODULE(OneModuleSubTwoThree);
+inline MODULE_CTOR(OneModuleSubTwoThree) {
     satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Connectivity");
+    add_submodule<testing::NullPT>("Submodule 1");
+    add_submodule<testing::NullPT>("Submodule 2");
 }
-inline MODULE_RUN(DCLCCapping) { return results(); }
+inline MODULE_RUN(OneModuleSubTwoThree) { return results(); }
 
-DECLARE_MODULE(EnergyMethod);
-inline MODULE_CTOR(EnergyMethod) { satisfies_property_type<testing::NullPT>(); }
-inline MODULE_RUN(EnergyMethod) { return results(); }
 
-DECLARE_MODULE(FragmentBasedMethod);
-inline MODULE_CTOR(FragmentBasedMethod) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Energy method");
-    add_submodule<testing::NullPT>("Subsystem former");
-    add_submodule<testing::NullPT>("Weighter");
-}
-inline MODULE_RUN(FragmentBasedMethod) { return results(); }
+TEST_CASE("Mermaid Graph") {
 
-DECLARE_MODULE(FragmentDriver);
-inline MODULE_CTOR(FragmentDriver) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Atomic connectivity");
-    add_submodule<testing::NullPT>("Cap broken bonds");
-    add_submodule<testing::NullPT>("Find broken bonds");
-    add_submodule<testing::NullPT>("Fragment builder");
-    add_submodule<testing::NullPT>("Intersection finder");
-    add_submodule<testing::NullPT>("Molecular graph");
-    add_submodule<testing::NullPT>("N-mer builder");
-}
-inline MODULE_RUN(FragmentDriver) { return results(); }
+    SECTION("No Modules") {
+        pluginplay::ModuleManager no_mods;
+        auto hello = create_mermaid_graph(no_mods);
+        REQUIRE(hello.str() == "No modules are loaded, load some modules!");
+    }
 
-DECLARE_MODULE(FragmentedChemicalSystemDriver);
-inline MODULE_CTOR(FragmentedChemicalSystemDriver) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Fragmenter");
-}
-inline MODULE_RUN(FragmentedChemicalSystemDriver) { return results(); }
+    SECTION("One Module") {
+    	pluginplay::ModuleManager one_mod;
+    	one_mod.add_module<OneModule>("One Module");
+    	auto onemod = create_mermaid_graph(one_mod);
+    	std::string val = "\n```mermaid\nflowchart LR\n\tAAA[One Module]\n```";
 
-DECLARE_MODULE(GMBEWeights);
-inline MODULE_CTOR(GMBEWeights) { satisfies_property_type<testing::NullPT>(); }
-inline MODULE_RUN(GMBEWeights) { return results(); }
+    	REQUIRE(val == onemod.str());
+    }
 
-DECLARE_MODULE(HeavyAtomPartition);
-inline MODULE_CTOR(HeavyAtomPartition) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Connectivity");
-}
-inline MODULE_RUN(HeavyAtomPartition) { return results(); }
+    SECTION("2 Modules, Not Related") {
+        std::stringstream ss;
+        pluginplay::ModuleManager two_mods_unrelated;
+        two_mods_unrelated.add_module<OneModule>("One Module");
+        two_mods_unrelated.add_module<TwoModule>("Two Module");
+        auto twomod = create_mermaid_graph(two_mods_unrelated);
+        ss << "\n```mermaid\nflowchart LR\n\tAAA[One Module]\n```";
+        ss << "\n```mermaid\nflowchart LR\n\tAAB[Two Module]\n```";
 
-DECLARE_MODULE(Intersections);
-inline MODULE_CTOR(Intersections) {
-    satisfies_property_type<testing::NullPT>();
-}
-inline MODULE_RUN(Intersections) { return results(); }
+        REQUIRE(ss.str() == twomod.str());
+    }
+    
+    SECTION("2 Modules, Related") {
+        std::stringstream ss2;
+        pluginplay::ModuleManager two_mods_related;
+        two_mods_related.add_module<OneModuleSubTwo>("One Module Submod Two");
+        two_mods_related.add_module<TwoModule>("Two Module");
+        two_mods_related.change_submod("One Module Submod Two", "Submodule", "Two Module");
+        auto twomodrelated = create_mermaid_graph(two_mods_related);
+        ss2 << "\n```mermaid\nflowchart LR\n\tAAA[One Module Submod Two]\n";
+        ss2 << "\tAAA-->|Submodule| AAB[Two Module]\n```";
+        ss2 << "\n```mermaid\nflowchart LR\n\tAAC[Two Module]\n```";
+        REQUIRE(ss2.str() == twomodrelated.str());
+    }
 
-DECLARE_MODULE(NuclearGraph);
-inline MODULE_CTOR(NuclearGraph) {
-    satisfies_property_type<testing::NullPT>();
-    add_submodule<testing::NullPT>("Connectivity");
-    add_submodule<testing::NullPT>("Nodes");
-}
-inline MODULE_RUN(NuclearGraph) { return results(); }
+    SECTION("3 Modules, Nested") {
+      std::stringstream ss3;
+      pluginplay::ModuleManager three_mods_recursive;
+      three_mods_recursive.add_module<OneModuleSubTwo>("One Module Submod Two");
+      three_mods_recursive.add_module<TwoModuleSubThree>("Two Module Submod Three");
+      three_mods_recursive.add_module<ThreeModule>("Three Module");
+      three_mods_recursive.change_submod("One Module Submod Two", "Submodule", "Two Module Submod Three");
+      three_mods_recursive.change_submod("Two Module Submod Three", "Submodule", "Three Module");
+      auto threemodrecursive = create_mermaid_graph(three_mods_recursive);
+      ss3 << "\n```mermaid\n";
+      ss3 << "flowchart LR\n";
+      ss3 << "\tAAA[One Module Submod Two]\n";
+      ss3 << "\tAAA-->|Submodule| AAB[Two Module Submod Three]\n";
+      ss3 << "\tAAB-->|Submodule| AAC[Three Module]\n";
+      ss3 << "```";
+      ss3 << "\n```mermaid\n";
+      ss3 << "flowchart LR\n";
+      ss3 << "\tAAD[Three Module]\n";
+      ss3 << "```";
+      ss3 << "\n```mermaid\n";
+      ss3 << "flowchart LR\n";
+      ss3 << "\tAAE[Two Module Submod Three]\n";
+      ss3 << "\tAAE-->|Submodule| AAF[Three Module]\n";
+      ss3 << "```";
 
-DECLARE_MODULE(WeightedDistance);
-inline MODULE_CTOR(WeightedDistance) {
-    satisfies_property_type<testing::NullPT>();
-}
-inline MODULE_RUN(WeightedDistance) { return results(); }
+      REQUIRE(ss3.str() == threemodrecursive.str());
+    }
 
-TEST_CASE("hello_world") {
-    pluginplay::ModuleManager mm;
-    mm.add_module<Allnmers>("All nmers");
-    mm.add_module<AtomicCapping>("Atomic Capping");
-    mm.add_module<BondBasedFragmenter>("Bond-Based Fragmenter");
-    mm.add_module<BrokenBonds>("Broken Bonds");
-    mm.add_module<ClusterPartition>("Cluster Partition");
-    mm.add_module<CovalentRadius>("Covalent Radius");
-    mm.add_module<DCLCCapping>("DCLC Capping");
-    mm.add_module<EnergyMethod>("Energy Method");
-    mm.add_module<FragmentBasedMethod>("Fragment Based Method");
-    mm.add_module<FragmentDriver>("Fragment Driver");
-    mm.add_module<FragmentedChemicalSystemDriver>(
-      "FragmentedChemicalSystem Driver");
-    mm.add_module<GMBEWeights>("GMBE Weights");
-    mm.add_module<HeavyAtomPartition>("Heavy Atom Partition");
-    mm.add_module<Intersections>("Intersections");
-    mm.add_module<NuclearGraph>("Nuclear Graph");
-    mm.add_module<WeightedDistance>("Weighted Distance");
-    mm.change_submod("DCLC Capping", "Connectivity", "Covalent Radius");
-    mm.change_submod("Fragment Based Method", "Energy method", "Energy Method");
-    mm.change_submod("Fragment Based Method", "Subsystem former",
-                     "FragmentedChemicalSystem Driver");
-    mm.change_submod("Fragment Based Method", "Weighter", "GMBE Weights");
-    mm.change_submod("Fragment Driver", "Atomic connectivity",
-                     "Covalent Radius");
-    mm.change_submod("Fragment Driver", "Cap broken bonds",
-                     "Weighted Distance");
-    mm.change_submod("Fragment Driver", "Find broken bonds", "Broken Bonds");
-    mm.change_submod("Fragment Driver", "Fragment builder",
-                     "Bond-Based Fragmenter");
-    mm.change_submod("Fragment Driver", "Intersection finder", "Intersections");
-    mm.change_submod("Fragment Driver", "Molecular graph", "Nuclear Graph");
-    mm.change_submod("Fragment Driver", "N-mer builder", "All nmers");
-    mm.change_submod("FragmentedChemicalSystem Driver", "Fragmenter",
-                     "Fragment Driver");
-    mm.change_submod("Heavy Atom Partition", "Connectivity", "Covalent Radius");
-    mm.change_submod("Nuclear Graph", "Connectivity", "Covalent Radius");
-    mm.change_submod("Nuclear Graph", "Nodes", "Heavy Atom Partition");
+    SECTION("3 Modules, Branched") {
+      std::stringstream ss4;
+      pluginplay::ModuleManager three_mods_branched;
+      three_mods_branched.add_module<OneModuleSubTwoThree>("One Module Submod Two Three");
+      three_mods_branched.add_module<OneModule>("One Module");
+      three_mods_branched.add_module<TwoModule>("Two Module");
+      three_mods_branched.change_submod("One Module Submod Two Three", "Submodule 1", "One Module");
+      three_mods_branched.change_submod("One Module Submod Two Three", "Submodule 2", "Two Module");
+      auto threemodsbranched = create_mermaid_graph(three_mods_branched);
 
-    SECTION("huh") {
-        auto hello = create_mermaid_graph(mm);
-        std::cout << "Bro the test ran but idk if the internals ran"
-                  << std::endl;
-        REQUIRE(hello == "Hello World!");
+      ss4 << "\n```mermaid\n";
+      ss4 << "flowchart LR\n";
+      ss4 << "\tAAA[One Module]\n";
+      ss4 << "```";
+      ss4 << "\n```mermaid\n";
+      ss4 << "flowchart LR\n";
+      ss4 << "\tAAB[One Module Submod Two Three]\n";
+      ss4 << "\tAAB-->|Submodule 1| AAC[One Module]\n";
+      ss4 << "\tAAB-->|Submodule 2| AAD[Two Module]\n";
+      ss4 << "```";
+      ss4 << "\n```mermaid\n";
+      ss4 << "flowchart LR\n";
+      ss4 << "\tAAE[Two Module]\n";
+      ss4 << "```";
+
+      REQUIRE(ss4.str() == threemodsbranched.str());
     }
 }
