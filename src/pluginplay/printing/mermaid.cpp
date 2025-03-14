@@ -70,6 +70,5 @@ std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm) {
             add_letter(module_code);
         }
     }
-    std::cout << ss.str();
     return ss;
 }
