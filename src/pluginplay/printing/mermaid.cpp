@@ -21,8 +21,7 @@
 namespace pluginplay::printing {
 
 void add_letter(std::string& code) {
-    assert(code.size() == 3);
-    for(int i = 2; i >= 0; --i) {
+    for(int i = (code.size() - 1); i >= 0; --i) {
         if(code[i] == 'Z') {
             code[i] = 'A';
         } else {
@@ -30,7 +29,6 @@ void add_letter(std::string& code) {
             return;
         }
     }
-    throw std::runtime_error("String is maxed out");
 }
 
 void print_submods(const std::string module_key,
