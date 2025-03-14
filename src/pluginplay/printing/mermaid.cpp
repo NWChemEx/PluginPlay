@@ -21,6 +21,7 @@
 namespace pluginplay::printing {
 
 void add_letter(std::string& code) {
+    if(code.size() == 0) return;
     for(int i = (code.size() - 1); i >= 0; --i) {
         if(code[i] == 'Z') {
             code[i] = 'A';
