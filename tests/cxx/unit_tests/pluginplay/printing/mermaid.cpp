@@ -16,7 +16,7 @@
 
 #include "../catch.hpp"
 #include "../test_common.hpp"
-#include "catch2/catch_test_macros.hpp"
+#include <catch2/catch_test_macros.hpp>
 #include "module/macros.hpp"
 #include "unit_testing_pts.hpp"
 #include <pluginplay/module_manager/module_manager.hpp>
