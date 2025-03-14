@@ -16,9 +16,9 @@
 
 #include "../catch.hpp"
 #include "../test_common.hpp"
-#include "module/macros.hpp"
 #include "unit_testing_pts.hpp"
 #include <catch2/catch_test_macros.hpp>
+#include <pluginplay/module/macros.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/printing/mermaid.hpp>
 #include <sstream>
@@ -61,14 +61,14 @@ inline MODULE_RUN(OneModuleSubTwoThree) { return results(); }
 TEST_CASE("Mermaid Graph") {
     SECTION("No Modules") {
         pluginplay::ModuleManager no_mods;
-        auto hello = create_mermaid_graph(no_mods);
+        auto hello = pluginplay::printing::create_mermaid_graph(no_mods);
         REQUIRE(hello.str() == "No modules are loaded, load some modules!");
     }
 
     SECTION("One Module") {
         pluginplay::ModuleManager one_mod;
         one_mod.add_module<OneModule>("One Module");
-        auto onemod     = create_mermaid_graph(one_mod);
+        auto onemod     = pluginplay::printing::create_mermaid_graph(one_mod);
         std::string val = "\n```mermaid\nflowchart LR\n\tAAA[One Module]\n```";
 
         REQUIRE(val == onemod.str());
@@ -79,7 +79,8 @@ TEST_CASE("Mermaid Graph") {
         pluginplay::ModuleManager two_mods_unrelated;
         two_mods_unrelated.add_module<OneModule>("One Module");
         two_mods_unrelated.add_module<TwoModule>("Two Module");
-        auto twomod = create_mermaid_graph(two_mods_unrelated);
+        auto twomod =
+          pluginplay::printing::create_mermaid_graph(two_mods_unrelated);
         ss << "\n```mermaid\nflowchart LR\n\tAAA[One Module]\n```";
         ss << "\n```mermaid\nflowchart LR\n\tAAB[Two Module]\n```";
 
@@ -93,7 +94,8 @@ TEST_CASE("Mermaid Graph") {
         two_mods_related.add_module<TwoModule>("Two Module");
         two_mods_related.change_submod("One Module Submod Two", "Submodule",
                                        "Two Module");
-        auto twomodrelated = create_mermaid_graph(two_mods_related);
+        auto twomodrelated =
+          pluginplay::printing::create_mermaid_graph(two_mods_related);
         ss2 << "\n```mermaid\nflowchart LR\n\tAAA[One Module Submod Two]\n";
         ss2 << "\tAAA-->|Submodule| AAB[Two Module]\n```";
         ss2 << "\n```mermaid\nflowchart LR\n\tAAC[Two Module]\n```";
@@ -112,7 +114,8 @@ TEST_CASE("Mermaid Graph") {
                                            "Two Module Submod Three");
         three_mods_recursive.change_submod("Two Module Submod Three",
                                            "Submodule", "Three Module");
-        auto threemodrecursive = create_mermaid_graph(three_mods_recursive);
+        auto threemodrecursive =
+          pluginplay::printing::create_mermaid_graph(three_mods_recursive);
         ss3 << "\n```mermaid\n";
         ss3 << "flowchart LR\n";
         ss3 << "\tAAA[One Module Submod Two]\n";
@@ -143,7 +146,8 @@ TEST_CASE("Mermaid Graph") {
                                           "Submodule 1", "One Module");
         three_mods_branched.change_submod("One Module Submod Two Three",
                                           "Submodule 2", "Two Module");
-        auto threemodsbranched = create_mermaid_graph(three_mods_branched);
+        auto threemodsbranched =
+          pluginplay::printing::create_mermaid_graph(three_mods_branched);
 
         ss4 << "\n```mermaid\n";
         ss4 << "flowchart LR\n";

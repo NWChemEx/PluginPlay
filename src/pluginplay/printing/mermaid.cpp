@@ -18,6 +18,8 @@
 #include <pluginplay/module_manager/module_manager_class.hpp>
 #include <sstream>
 
+namespace pluginplay::printing {
+
 void add_letter(std::string& code) {
     assert(code.size() == 2);
     for(int i = 2; i >= 0; --i) {
@@ -72,3 +74,4 @@ std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm) {
     }
     return ss;
 }
+} // namespace pluginplay::printing
