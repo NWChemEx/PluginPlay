@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pluginplay
-   &#160;<span id="projectnumber">1.0.44</span>
+   &#160;<span id="projectnumber">1.0.45</span>
    </div>
   </td>
  </tr>
@@ -227,7 +227,7 @@ $(function() {
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    }</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="comment">// User wants the converted C++ value by reference or const reference</span></div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <span class="keywordflow">if</span>(m_buffer_.empty()) {</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <span class="keywordflow">if</span>(m_buffer_.empty() || m_buffer_.type() != <span class="keyword">typeid</span>(clean_type)) {</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;            <span class="keyword">auto</span> cxx_value = py_value.cast&lt;clean_type&gt;();</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            m_buffer_      = std::move(cxx_value);</div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        }</div>
