@@ -195,7 +195,7 @@ without having to use escapes or other workarounds for line endings.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">(</span><span class="s2">&quot;Electric Field From Coulomb&#39;s Law&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">())</span>
@@ -231,7 +231,7 @@ examples for adding a screening threshold to our <code class="docutils literal n
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">(</span><span class="s2">&quot;Screened Electric Field From Coulomb&#39;s Law&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">())</span>
@@ -260,7 +260,7 @@ code are:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
         <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">()</span>
         <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
         <span class="n">E</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
@@ -291,7 +291,7 @@ acquired as:</p>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
         <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">()</span>
         <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 </pre></div>
@@ -330,7 +330,7 @@ acquired as:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-4-1" class="sphinx-tabs-panel" hidden="true" id="panel-4-4-1" name="4-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+</div><div aria-labelledby="tab-4-4-1" class="sphinx-tabs-panel" hidden="true" id="panel-4-4-1" name="4-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
         <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">()</span>
         <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
         <span class="n">E</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
