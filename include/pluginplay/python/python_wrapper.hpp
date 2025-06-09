@@ -18,7 +18,6 @@
 #include <boost/any.hpp>
 #include <stdexcept>
 #ifdef BUILD_PYBIND11
-#include <iostream>
 #include <memory>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
