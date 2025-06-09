@@ -66,7 +66,8 @@ cmaize_find_optional_dependency(
 set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
 
 # As of 1.0.0 CMaize does not support multiple build or find targets. This will
-# be fixed in a future feature release. For now we handle the
+# be fixed in a future feature release. For now we handle the exposed CMake
+# targets separately instead of a CMaize target
 include(nwx_pybind11)
 if("${BUILD_PYBIND11_PYBINDINGS}")
     nwx_find_pybind11()
