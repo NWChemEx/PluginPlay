@@ -72,7 +72,7 @@ if("${BUILD_PYBIND11_PYBINDINGS}")
     nwx_find_pybind11()
     list(
         APPEND pluginplay_depends
-        pybind11_headers pybind11::embed Python::Python
+        pybind11::headers pybind11::embed Python::Python
     )
 endif()
 
