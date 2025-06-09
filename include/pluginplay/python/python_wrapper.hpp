@@ -305,7 +305,7 @@ T PythonWrapper::unwrap() {
     }
     // User wants the converted C++ value by reference or const reference
     else {
-        if(m_buffer_.empty()) {
+        if(m_buffer_.empty() || m_buffer_.type() != typeid(clean_type)) {
             auto cxx_value = py_value.cast<clean_type>();
             m_buffer_      = std::move(cxx_value);
         }
