@@ -135,6 +135,12 @@ void Module::add_property_type_(pluginplay::type::rtti prop_type) {
 
 void Module::check_property_type_(type::rtti prop_type) {
     if(property_types().count(prop_type)) return;
+
+    // Work around for libc++ typeid inconsistency in Python
+    for(const auto& m_prop_type : property_types()) {
+        if(prop_type.name() == m_prop_type.name()) return;
+    }
+
     std::string msg = "Module does not satisfy property type ";
     msg += utilities::printing::Demangler::demangle(prop_type);
     throw std::runtime_error(msg);

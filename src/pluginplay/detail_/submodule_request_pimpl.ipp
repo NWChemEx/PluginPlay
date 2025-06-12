@@ -48,11 +48,24 @@ bool SubmoduleRequestPIMPL::satisfies_property_type(rtti_type type) {
 inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {
     if(!ptr) throw std::runtime_error("Pointer does not contain a module");
     // Type will check that a property type was set
-    if(ptr->property_types().count(type()) == 0) {
+    bool suitable = (ptr->property_types().count(type()) > 0);
+
+    // Work around for libc++ typeid inconsistency in Python
+    if(!suitable) {
+        for(const auto& property_type_info : ptr->property_types()) {
+            if(type().name() == property_type_info.name()) {
+                suitable = true;
+                break;
+            }
+        }
+    }
+
+    if(!suitable) {
         std::string msg("Module does not satisfy property type: ");
         msg += utilities::printing::Demangler::demangle(type());
         throw std::runtime_error(msg);
     }
+
     m_module_ = ptr;
 }
 
