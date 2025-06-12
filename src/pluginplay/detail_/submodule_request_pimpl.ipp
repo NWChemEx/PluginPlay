@@ -53,7 +53,8 @@ inline void SubmoduleRequestPIMPL::set_module(module_ptr ptr) {
     // Work around for libc++ typeid inconsistency in Python
     if(!suitable) {
         for(const auto& property_type_info : ptr->property_types()) {
-            if(type().name() == property_type_info.name()) {
+            if(type().name() == property_type_info.name() ||
+               std::strcmp(type().name(), property_type_info.name()) == 0) {
                 suitable = true;
                 break;
             }

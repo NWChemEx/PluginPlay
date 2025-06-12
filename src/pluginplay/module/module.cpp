@@ -138,7 +138,9 @@ void Module::check_property_type_(type::rtti prop_type) {
 
     // Work around for libc++ typeid inconsistency in Python
     for(const auto& m_prop_type : property_types()) {
-        if(prop_type.name() == m_prop_type.name()) return;
+        if(prop_type.name() == m_prop_type.name() ||
+           std::strcmp(prop_type.name(), m_prop_type.name()) == 0)
+            return;
     }
 
     std::string msg = "Module does not satisfy property type ";
