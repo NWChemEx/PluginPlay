@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-name: .github Merge Workflow
+name: Merge Workflow
 
 on:
   push:
@@ -21,9 +21,12 @@ on:
       - master
 
 jobs:
-  Common-Merge:
-    uses: NWChemEx/.github/.github/workflows/common_merge.yaml@master
+  tag-commit:
+    uses: NWChemEx/.github/.github/workflows/tag.yaml@master
+    secrets: inherit
+
+  deploy_nwx_docs:
+    uses: NWChemEx/.github/.github/workflows/deploy_nwx_docs.yaml@master
     with:
-      doc_target: 'pluginplay_cxx_api'
-      generate_module_docs: false
+      doc_target: "pluginplay_cxx_api"
     secrets: inherit
