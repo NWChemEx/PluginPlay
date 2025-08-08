@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay.test_module_result as test_pp
 import unittest
+
+import py_test_pluginplay.test_module_result as test_pp
+
+import pluginplay as pp
 
 
 class TestModuleResult(unittest.TestCase):
-
     def test_has_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.assertTrue(self.rfloat.has_type())

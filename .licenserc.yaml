@@ -24,5 +24,6 @@ header:
     - cmake/generate_module_docs.cpp.in
     - LICENSE
     - version.txt
+    - build/
 
   comment: never

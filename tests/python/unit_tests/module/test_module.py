@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay as test_pp
 import unittest
+
+import py_test_pluginplay as test_pp
+
+import pluginplay as pp
 
 
 class TestModule(unittest.TestCase):
-
     def test_unlocked_copy(self):
         other_defaulted = self.defaulted.unlocked_copy()
         self.assertEqual(self.defaulted, other_defaulted)
@@ -38,7 +39,7 @@ class TestModule(unittest.TestCase):
 
     def test_has_description(self):
         # See issue #301
-        #self.assertFalse(self.defaulted.has_description())
+        # self.assertFalse(self.defaulted.has_description())
 
         self.assertTrue(self.has_desc.has_description())
         self.assertFalse(self.has_cite.has_description())
@@ -65,18 +66,18 @@ class TestModule(unittest.TestCase):
         self.assertEqual(self.has_cite.list_not_ready(), {})
 
         # Has two inputs that aren't set
-        corr = {'Inputs': {'Option 2', 'Option 1'}}
+        corr = {"Inputs": {"Option 2", "Option 1"}}
         self.assertEqual(self.not_ready.list_not_ready(), corr)
 
         # If one input comes from say a property type
-        corr = {'Inputs': {'Option 2'}}
+        corr = {"Inputs": {"Option 2"}}
         inps = test_pp.OneIn().inputs()
         self.assertEqual(self.not_ready.list_not_ready(inps), corr)
 
         # Not ready b/c of an unset submodule
         corr = {
-            'Submodules': {
-                'Submodule 1',
+            "Submodules": {
+                "Submodule 1",
             }
         }
         self.assertEqual(self.need_submod.list_not_ready(), corr)
@@ -178,7 +179,7 @@ class TestModule(unittest.TestCase):
         self.assertEqual(self.has_desc.submods(), {})
         self.assertEqual(self.has_cite.submods(), {})
         self.assertEqual(self.not_ready.submods(), {})
-        self.assertIn('Submodule 1', self.need_submod.submods())
+        self.assertIn("Submodule 1", self.need_submod.submods())
         self.assertEqual(self.ready_mod.submods(), {})
 
     def test_property_types(self):
@@ -186,31 +187,46 @@ class TestModule(unittest.TestCase):
         self.assertRaises(Exception, self.defaulted.property_types)
 
         null_pt = test_pp.NullPT().type()
-        self.assertEqual(self.has_desc.property_types(), {
-            null_pt,
-        })
-        self.assertEqual(self.has_cite.property_types(), {
-            null_pt,
-        })
-        self.assertEqual(self.need_submod.property_types(), {
-            null_pt,
-        })
+        self.assertEqual(
+            self.has_desc.property_types(),
+            {
+                null_pt,
+            },
+        )
+        self.assertEqual(
+            self.has_cite.property_types(),
+            {
+                null_pt,
+            },
+        )
+        self.assertEqual(
+            self.need_submod.property_types(),
+            {
+                null_pt,
+            },
+        )
 
         one_in_pt = test_pp.OneIn().type()
-        self.assertEqual(self.not_ready.property_types(), {
-            one_in_pt,
-        })
+        self.assertEqual(
+            self.not_ready.property_types(),
+            {
+                one_in_pt,
+            },
+        )
 
         opt_pt = test_pp.OptionalInput().type()
-        self.assertEqual(self.ready_mod.property_types(), {
-            opt_pt,
-        })
+        self.assertEqual(
+            self.ready_mod.property_types(),
+            {
+                opt_pt,
+            },
+        )
 
     def test_description(self):
         # Throws if there's no implementation
         self.assertRaises(Exception, self.defaulted.description)
 
-        self.assertEqual(self.has_desc.description(), 'A description')
+        self.assertEqual(self.has_desc.description(), "A description")
 
         # Throws if there's no description
         self.assertRaises(Exception, self.has_cite.description)
@@ -223,7 +239,7 @@ class TestModule(unittest.TestCase):
         self.assertRaises(Exception, self.defaulted.citations)
 
         self.assertEqual(self.has_desc.citations(), [])
-        self.assertEqual(self.has_cite.citations(), ['A citation'])
+        self.assertEqual(self.has_cite.citations(), ["A citation"])
         self.assertEqual(self.not_ready.citations(), [])
         self.assertEqual(self.need_submod.citations(), [])
         self.assertEqual(self.ready_mod.citations(), [])
@@ -239,28 +255,28 @@ class TestModule(unittest.TestCase):
 
     def test_change_input(self):
         # Throws if there's no implementation
-        self.assertRaises(Exception, self.defaulted.change_input, 'hello')
+        self.assertRaises(Exception, self.defaulted.change_input, "hello")
 
         # Throws if there's no input w/ provided name
         not_ready = self.not_ready
-        self.assertRaises(Exception, not_ready.change_input, 'nope', 3)
+        self.assertRaises(Exception, not_ready.change_input, "nope", 3)
 
         # Throws if input is not convertible
-        self.assertRaises(Exception, not_ready.change_input, 'Option 2', [])
+        self.assertRaises(Exception, not_ready.change_input, "Option 2", [])
 
         # Can change an input
-        self.not_ready.change_input('Option 2', 3)
-        self.assertEqual(not_ready.inputs()['Option 2'].value(), 3)
+        self.not_ready.change_input("Option 2", 3)
+        self.assertEqual(not_ready.inputs()["Option 2"].value(), 3)
 
     def test_change_submod(self):
         # Throws if there's not implementation
-        self.assertRaises(Exception, self.defaulted.change_submod, 'hello')
+        self.assertRaises(Exception, self.defaulted.change_submod, "hello")
 
         # Throws if there's no submodule with the key
         submod = self.has_desc
         has_submod = self.need_submod
-        key = 'Submodule 1'
-        self.assertRaises(Exception, has_submod.change_submod, 'nope', submod)
+        key = "Submodule 1"
+        self.assertRaises(Exception, has_submod.change_submod, "nope", submod)
 
         # Throws if submod is wrong PT
         wrong_pt = self.not_ready
@@ -294,19 +310,19 @@ class TestModule(unittest.TestCase):
 
         # Can call ready module
         rv = self.ready_mod.run({})
-        self.assertEqual(rv['Result 1'].value(), 1)
+        self.assertEqual(rv["Result 1"].value(), 1)
 
     def test_profile_info(self):
         # No implementation means no profile info
-        self.assertEqual(self.defaulted.profile_info(), '')
+        self.assertEqual(self.defaulted.profile_info(), "")
 
         # Module which hasn't run, has no profile info
-        self.assertEqual(self.ready_mod.profile_info(), '')
+        self.assertEqual(self.ready_mod.profile_info(), "")
 
         # A run module has profile info
         rv = self.ready_mod.run_as(test_pp.OptionalInput())
         self.assertEqual(rv, 1)
-        self.assertNotEqual(self.ready_mod.profile_info(), '')
+        self.assertNotEqual(self.ready_mod.profile_info(), "")
 
     def test_submod_uuids(self):
         # Throws if no module is set
@@ -319,8 +335,8 @@ class TestModule(unittest.TestCase):
         self.assertRaises(Exception, self.need_submod.submod_uuids)
 
         # Module has a set submodule
-        self.need_submod.change_submod('Submodule 1', self.has_desc)
-        corr = {'Submodule 1': self.has_desc.uuid()}
+        self.need_submod.change_submod("Submodule 1", self.has_desc)
+        corr = {"Submodule 1": self.has_desc.uuid()}
         self.assertEqual(self.need_submod.submod_uuids(), corr)
 
     def test_uuid(self):
@@ -349,16 +365,15 @@ class TestModule(unittest.TestCase):
     def setUp(self):
         mm = test_pp.get_mm()
         self.defaulted = pp.Module()
-        self.has_desc = mm.at('C++ with description')
-        self.has_cite = mm.at('C++ with a citation')
-        self.not_ready = mm.at('C++ module which also isn\'t ready')
-        self.need_submod = mm.at('C++ module needing a submodule')
-        self.ready_mod = mm.at('C++ module which is ready to run')
-        self.real_deal = mm.at('C++ module using every feature')
+        self.has_desc = mm.at("C++ with description")
+        self.has_cite = mm.at("C++ with a citation")
+        self.not_ready = mm.at("C++ module which also isn't ready")
+        self.need_submod = mm.at("C++ module needing a submodule")
+        self.ready_mod = mm.at("C++ module which is ready to run")
+        self.real_deal = mm.at("C++ module using every feature")
 
 
 class TestPrintNotReady(unittest.TestCase):
-
     def test_print_not_ready(self):
         # Raises an error if module has no implementation
         self.assertRaises(Exception, pp.print_not_ready, pp.Module())

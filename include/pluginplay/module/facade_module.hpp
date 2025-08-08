@@ -71,10 +71,10 @@ public:
     template<typename... Args>
     explicit FacadeModule(Args&&... args);
 
-    FacadeModule(const FacadeModule&) = delete;
-    FacadeModule(FacadeModule&&)      = delete;
+    FacadeModule(const FacadeModule&)            = delete;
+    FacadeModule(FacadeModule&&)                 = delete;
     FacadeModule& operator=(const FacadeModule&) = delete;
-    FacadeModule& operator=(FacadeModule&&) = delete;
+    FacadeModule& operator=(FacadeModule&&)      = delete;
 
     /** @brief Implements the `run_as` function for the `Module` class.
      *

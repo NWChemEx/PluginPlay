@@ -32,7 +32,7 @@ ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
 ModuleManager::ModuleManager(runtime_ptr runtime, cache_pointer cache) :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>(runtime, cache)) {}
-ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept = default;
+ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept            = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;
 

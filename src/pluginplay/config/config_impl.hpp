@@ -22,7 +22,7 @@ namespace pluginplay {
 #ifdef BUILD_ROCKS_DB
 static constexpr bool with_rocksdb_v = true;
 #else
-static constexpr bool with_rocksdb_v  = false;
+static constexpr bool with_rocksdb_v = false;
 #endif
 
 /// Used throughout PluginPlay to enable/disable pybind11 support at compiletime

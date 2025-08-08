@@ -24,7 +24,7 @@ jobs:
   check_formatting:
     uses: NWChemEx/.github/.github/workflows/check_formatting.yaml@master
     with:
-      license_config: ".github/.licenserc.yaml"
+      license_config: ".licenserc.yaml"
 
   test_nwx_docs:
     uses: NWChemEx/.github/.github/workflows/test_nwx_docs.yaml@master

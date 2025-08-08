@@ -145,7 +145,7 @@ public:
         rv["Area"].set_description("The area of the shape");
         return rv;
     } // end results_()
-};    // end Area
+}; // end Area
 
 /* This concludes the property type tutorial. We leave you with the
  * definition of the ``Perimeter`` and ``PrismVolume`` classes which we will
@@ -173,7 +173,7 @@ public:
         rv["Perimeter"].set_description("The perimeter of the shape");
         return rv;
     } // end results_()
-};    // end Perimeter
+}; // end Perimeter
 
 class PrismVolume : public pluginplay::PropertyType<PrismVolume> {
 public:
@@ -193,4 +193,4 @@ public:
         rv["Volume"].set_description("The volume of the prism");
         return rv;
     } // end results_()
-};    // end PrismVolume
+}; // end PrismVolume

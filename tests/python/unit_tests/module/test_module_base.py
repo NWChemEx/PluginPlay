@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
+import unittest
+
 import parallelzone as pz
 import py_test_pluginplay as test_pp
-import unittest
+
+import pluginplay as pp
 
 
 class APythonModule(pp.ModuleBase):
-
     def __init__(self):
         pp.ModuleBase.__init__(self)
         self.satisfies_property_type(test_pp.OneInOneOut())
@@ -31,34 +32,33 @@ class APythonModule(pp.ModuleBase):
 
     def run_(self, inputs, submods):
         pt = test_pp.OneInOneOut()
-        i0, = pt.unwrap_inputs(inputs)
+        (i0,) = pt.unwrap_inputs(inputs)
         i1 = inputs["An extra input"].value()
 
-        assert (self.get_runtime() == pz.runtime.RuntimeView())
+        assert self.get_runtime() == pz.runtime.RuntimeView()
         r0 = submods["A submodule"].run_as(pt, i0 + i1)
 
         rv = self.results()
         rv = pt.wrap_results(rv, r0)
-        rv['An extra result'].change(42)
+        rv["An extra result"].change(42)
         return rv
 
 
 class TestModuleBase(unittest.TestCase):
-
     def test_results(self):
         self.assertEqual(self.defaulted.results(), {})
         self.assertNotEqual(self.py_mod.results(), {})
 
     def test_run_as(self):
-        self.mm.change_input(self.mod_key, 'An extra input', 2)
+        self.mm.change_input(self.mod_key, "An extra input", 2)
         r = self.mm.run_as(test_pp.OneInOneOut(), self.mod_key, 1)
         self.assertEqual(r, 3)
 
     def setUp(self):
         self.defaulted = pp.ModuleBase()
         self.mm = test_pp.get_mm()
-        self.mod_key = 'Python module'
+        self.mod_key = "Python module"
         self.py_mod = APythonModule()
         self.mm.add_module(self.mod_key, self.py_mod)
-        submod_key = 'C++ module using every feature'
+        submod_key = "C++ module using every feature"
         self.mm.change_submod(self.mod_key, "A submodule", submod_key)
