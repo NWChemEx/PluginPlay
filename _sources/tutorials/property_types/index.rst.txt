@@ -16,10 +16,10 @@
 Property Type Development
 #########################
 
-The topics in this chapter will walk you through writing and designing property 
-types. Needing to design a property type is common when a project starts and 
-becomes less common when an established set of property types already exists 
-(because the likelihood that a property type already exists for your property 
+The topics in this chapter will walk you through writing and designing property
+types. Needing to design a property type is common when a project starts and
+becomes less common when an established set of property types already exists
+(because the likelihood that a property type already exists for your property
 increases).
 
 We continue the electric field example started in the modules chapter, here

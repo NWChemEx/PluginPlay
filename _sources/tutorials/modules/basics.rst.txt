@@ -122,7 +122,7 @@ For some modules, inputs that are not defined by the property type(s)
 may be needed. Additional inputs can be specified in the constructor with the
 ``add_inputs`` method. A similar option for added results exist, though it is
 less common. Additional inputs have to be set before the module is run, either
-with a default value or by calling the ``change_input`` method. Here are 
+with a default value or by calling the ``change_input`` method. Here are
 examples for adding a screening threshold to our ``ScreenedCoulombsLaw`` module:
 
 .. tabs::
@@ -182,7 +182,7 @@ returns a result map with the type-erased results.
 
    If a module has additional inputs beyond those specified by the property
    type, they will have to be specifically unpacked from the ``inputs``. In the
-   case of the ``ScreenedCoulombsLaw`` module, the screening threshold is 
+   case of the ``ScreenedCoulombsLaw`` module, the screening threshold is
    acquired as:
 
    .. tabs::
@@ -199,7 +199,7 @@ returns a result map with the type-erased results.
             :language: python
             :lines: 53-56
 
-The full definition of the ``run_`` member for the ``CoulombsLaw`` module 
+The full definition of the ``run_`` member for the ``CoulombsLaw`` module
 (including the source code for computing the electric field) is:
 
 .. tabs::
