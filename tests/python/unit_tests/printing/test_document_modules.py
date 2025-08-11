@@ -12,23 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-import pluginplay as pp
 import os
-import tempfile
 import shutil
+import unittest
+
+import pluginplay as pp
 
 
 class TestDocumentModules(unittest.TestCase):
-
     def test_export_printing(self):
-
         # Get the current directory
         current_dir_path = os.getcwd()
 
         # Get the docs directory
         docs_dir_path = os.path.abspath(
-            os.path.join(current_dir_path, "../docs/test_document_modules"))
+            os.path.join(current_dir_path, "../docs/test_document_modules")
+        )
 
         # Empty docs directory
         try:

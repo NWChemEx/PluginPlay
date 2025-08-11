@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import pluginplay_examples as ppe
-import coulombslaw_force as clf
 import unittest
+
+import coulombslaw_force as clf
+import pluginplay_examples as ppe
+
+import pluginplay as pp
 
 
 class TestNewPythonModules(unittest.TestCase):
-
     def test_modules(self):
         p1 = ppe.PointCharge(1.0, [1.0, 0.0, 0.0])
         p2 = ppe.PointCharge(2.0, [2.0, 0.0, 0.0])

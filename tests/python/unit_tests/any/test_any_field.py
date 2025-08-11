@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay.test_any_field as test_pp
 import unittest
+
+import py_test_pluginplay.test_any_field as test_pp
+
+import pluginplay as pp
 
 
 class TestAnyField(unittest.TestCase):
-
     def test_reset(self):
         self.assertFalse(self.defaulted.has_value())
         self.defaulted.reset()

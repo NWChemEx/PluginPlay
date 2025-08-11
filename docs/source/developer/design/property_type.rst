@@ -28,7 +28,7 @@ What is the Property Type Component?
 At the lowest level all modules have the same :ref:`api`: take a series of
 type-erased inputs and return a set of type-erased outputs. In strongly typed
 languages like C++, type-erased objects are cumbersome to work with. The
-property type component facilitates the wrapping/unwrapping of 
+property type component facilitates the wrapping/unwrapping of
 typed/type-erased objects while also enforcing a standardized :ref:`api`.
 
 ****************************
@@ -62,7 +62,7 @@ While not explicitly called for at this point we also want:
 
    - Many properties are related via "is-a-type-of" relationships.
    - Inheritance captures "is-a-type-of" relationships and can be used for
-     avoiding duplication 
+     avoiding duplication
 
 ******************************
 Property Type Component Design
@@ -81,7 +81,7 @@ Property Type Component Design
 Fig :numref:`fig_property_type_design` shows the architecture of the property
 type component. The ``PropertyType`` class holds the bulk of the implementation.
 Users derive their property types from ``PropertyType``, using the curiously-
-recursive template pattern (CRTP). CRTP facilitates PluginPlay implementing 
+recursive template pattern (CRTP). CRTP facilitates PluginPlay implementing
 features on behalf of the user, without PluginPlay knowing the types. *N.B.*,
 normal inheritance would not allow the ``PropertyType`` class to access the
 types defined in the derived class. In our implementation ``PropertyType`` is
@@ -91,7 +91,7 @@ will implement four functions ``wrap_inputs``, ``wrap_results``,
 un-type-erase data on behalf of the user.
 
 In the derived class, users fill in two ``FieldTuple`` objects, one for the
-inputs and one for the results. The process of doing this is wrapped by 
+inputs and one for the results. The process of doing this is wrapped by
 "virtual" functions (since we're using CRTP they're not actually virtual)
 ``inputs_`` and ``results_`` respectively. The ``FieldTuple`` objects are
 responsible for storing not only the types of the inputs, but also the default
@@ -105,19 +105,19 @@ Our design addresses the above considerations by:
 
 #. Dynamic determine module :ref:`api`
 
-   - ``unwrap_inputs`` / ``unwrap_results`` and 
-     ``wrap_inputs`` / ``wrap_results`` functions can be used at runtime to go 
+   - ``unwrap_inputs`` / ``unwrap_results`` and
+     ``wrap_inputs`` / ``wrap_results`` functions can be used at runtime to go
      from/to type-erased inputs/results.
 
 #. Domain agnostic
 
    - CRTP allows the ``PropertyType`` class to access derived class's types
      through "inheritance".
-   - Derived classes, and their types, live in downstream code. 
+   - Derived classes, and their types, live in downstream code.
 
 #. Avoid exposing templates to the user (to the extent possible)
 
-   - Largely falls to ``FieldTuple`` component. 
+   - Largely falls to ``FieldTuple`` component.
    - Macros further de-template the :ref:`api`.
 
 #. Use property types to factor out input/result provenance
@@ -128,4 +128,3 @@ Our design addresses the above considerations by:
 #. Allow property type inheritance
 
    - ``PropertyType`` is templated on base property types.
-

@@ -337,4 +337,4 @@ private:
         auto out = results();
         return PrismVolume::wrap_results(out, area, volume);
     } // end run_()
-};    // end Prism
+}; // end Prism

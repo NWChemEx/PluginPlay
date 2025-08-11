@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay.test_python_wrapper as test_pp
 import unittest
+
+import py_test_pluginplay.test_python_wrapper as test_pp
+
+import pluginplay as pp
 
 
 class TestPythonWrapper(unittest.TestCase):
-
     def test_has_value(self):
         self.assertTrue(self.list.has_value())
         self.assertTrue(self.dict.has_value())

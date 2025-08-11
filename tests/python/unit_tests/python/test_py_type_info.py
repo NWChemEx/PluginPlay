@@ -12,24 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay.test_py_test_info as test_pp
 import unittest
+
+import py_test_pluginplay.test_py_test_info as test_pp
+
+import pluginplay as pp
 
 
 class TestPyTestInfo(unittest.TestCase):
-
     def test_has_value(self):
         self.assertFalse(self.defaulted.has_value())
         self.assertTrue(self.wrap_int.has_value())
         self.assertTrue(self.wrap_double.has_value())
 
     def test_str(self):
-        self.assertEqual(str(self.defaulted), '')
+        self.assertEqual(str(self.defaulted), "")
 
         # Actual string is implementation dependent
-        self.assertNotEqual(str(self.wrap_int), '')
-        self.assertNotEqual(str(self.wrap_double), '')
+        self.assertNotEqual(str(self.wrap_int), "")
+        self.assertNotEqual(str(self.wrap_double), "")
 
     def test_hash(self):
         self.assertEqual(hash(self.defaulted), 0)

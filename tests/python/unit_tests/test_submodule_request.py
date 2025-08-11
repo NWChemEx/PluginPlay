@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
+import unittest
+
 import py_test_pluginplay as test_pp
 import py_test_pluginplay.test_submodule_request as test_sr
-import unittest
+
+import pluginplay as pp
 
 
 class TestSubmoduleRequest(unittest.TestCase):
-
     def test_has_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.assertTrue(self.expects_null.has_type())
@@ -60,8 +61,9 @@ class TestSubmoduleRequest(unittest.TestCase):
     def test_satisfies_property_type(self):
         pt1 = test_pp.NullPT()
         pt2 = test_pp.OneIn()
-        self.assertRaises(RuntimeError, self.defaulted.satisfies_property_type,
-                          pt1)
+        self.assertRaises(
+            RuntimeError, self.defaulted.satisfies_property_type, pt1
+        )
         self.defaulted.set_type(pt1)
         self.assertTrue(self.defaulted.satisfies_property_type(pt1))
         self.assertFalse(self.defaulted.satisfies_property_type(pt2))

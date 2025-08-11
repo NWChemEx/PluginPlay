@@ -15,11 +15,12 @@
 #
 
 import os
-import parallelzone as pz
 import sys
 import unittest
 
-if __name__ == '__main__':
+import parallelzone as pz
+
+if __name__ == "__main__":
     # Make a RuntimeView to ensure MPI isn't finalized early
     rv = pz.runtime.RuntimeView()
 

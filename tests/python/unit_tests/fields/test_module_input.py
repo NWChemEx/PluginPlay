@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pluginplay as pp
-import py_test_pluginplay.test_module_input as test_pp
 import unittest
+
+import py_test_pluginplay.test_module_input as test_pp
+
+import pluginplay as pp
 
 
 class TestModuleInput(unittest.TestCase):
-
     def test_has_type(self):
         self.assertFalse(self.defaulted.has_type())
         self.assertTrue(self.ifloat.has_type())
@@ -101,7 +102,7 @@ class TestModuleInput(unittest.TestCase):
         # Sanity check
         self.assertFalse(self.ilist.has_value())
 
-        x = self.ilist.set_default([1, 2, 3])
+        self.ilist.set_default([1, 2, 3])
         self.assertTrue(self.ilist.has_value())
         self.assertEqual(self.ilist.value(), [1, 2, 3])
 
