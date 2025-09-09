@@ -16,6 +16,7 @@
 
 #pragma once
 #include <optional>
+#include <string>
 #include <typeindex>
 
 namespace pluginplay::python {
