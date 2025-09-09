@@ -143,6 +143,7 @@
     inline auto prop_type<__VA_ARGS__>::results_()
 
 #define EXPORT_PROPERTY_TYPE(prop_type, m)                                  \
+    pybind11::module_::import("pluginplay");                                \
     pybind11::class_<prop_type>(m, #prop_type)                              \
       .def(pybind11::init<>())                                              \
       .def("type",                                                          \

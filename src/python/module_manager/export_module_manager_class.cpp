@@ -33,6 +33,8 @@ void export_module_manager_class(py_module_reference m) {
     using py_obj = pybind11::object;
     using python::PythonWrapper;
 
+    py_module_type::import("parallelzone"); // For runtime interface
+
     py_class_type<ModuleManager>(m, "ModuleManager")
       .def(pybind11::init<>())
       .def(pybind11::init([](runtime_type rv, cache_pointer cache) {

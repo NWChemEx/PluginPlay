@@ -26,6 +26,7 @@
 namespace pluginplay {
 
 PYBIND11_MODULE(pluginplay, m) {
+    m.doc() = "PyPluginPlay: Python bindings for PluginPlay";
     any::export_any(m);
     export_cache(m);
     export_fields(m);
