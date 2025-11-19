@@ -120,7 +120,7 @@ auto& ModuleInput::change(T&& new_value) {
     if constexpr(detail_::IsCString<T>::value) {
         change_(wrap_value_(std::string(new_value)));
     } else {
-        change_(std::move(wrap_value_(std::forward<T>(new_value))));
+        change_(wrap_value_(std::forward<T>(new_value)));
     }
     return *this;
 }
