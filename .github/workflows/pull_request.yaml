@@ -32,4 +32,4 @@ jobs:
   test_library:
     uses: NWChemEx/.github/.github/workflows/test_nwx_library.yaml@master
     with:
-      compilers: '["gcc-14", "clang-19"]'
+      compilers: '["gcc-14", "clang-18"]'
