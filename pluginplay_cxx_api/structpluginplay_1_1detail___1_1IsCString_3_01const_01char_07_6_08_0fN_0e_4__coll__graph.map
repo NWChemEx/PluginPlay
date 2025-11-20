@@ -1,4 +1,5 @@
 <map id="pluginplay::detail_::IsCString&lt; const char(&amp;)[N]&gt;" name="pluginplay::detail_::IsCString&lt; const char(&amp;)[N]&gt;">
-<area shape="rect" id="node1" title="Specilization of IsCString for case when the type is a string literal." alt="" coords="5,80,151,136"/>
-<area shape="rect" id="node2" title=" " alt="" coords="22,5,134,32"/>
+<area shape="rect" id="Node000001" title="Specilization of IsCString for case when the type is a string literal." alt="" coords="5,79,151,133"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="22,5,134,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,44,81,79,75,79,75,44"/>
 </map>

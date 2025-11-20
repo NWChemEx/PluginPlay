@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule." alt="" coords="5,5,228,32"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,99,117,124"/>
+<area shape="rect" id="Node000001" href="$structpluginplay_1_1any_1_1detail___1_1is__any__field__wrapper_3_01AnyFieldWrapper_3_01T_01_4_01_4.html" title="Specialization of is_any_field_wrapper for when the template parameter is an AnyFieldWrapper." alt="" coords="165,5,367,60"/>
+<area shape="poly" id="edge15_Node000000_Node000001" title=" " alt="" coords="107,91,164,69,193,58,195,63,166,74,109,96"/>
+<area shape="rect" id="Node000002" href="$structpluginplay_1_1detail___1_1IsCString_3_01const_01char_07_6_08_0fN_0e_4.html" title="Specilization of IsCString for case when the type is a string literal." alt="" coords="193,84,339,139"/>
+<area shape="poly" id="edge16_Node000000_Node000002" title=" " alt="" coords="131,109,193,109,193,114,131,114"/>
+<area shape="rect" id="Node000003" href="$structpluginplay_1_1detail___1_1IsSharedPtr_3_01std_1_1shared__ptr_3_01T_01_4_01_4.html" title="Specializes IsSharedPtr for when the template parameter is a shared_ptr." alt="" coords="190,163,342,217"/>
+<area shape="poly" id="edge17_Node000000_Node000003" title=" " alt="" coords="109,127,195,160,193,165,107,132"/>
 </map>

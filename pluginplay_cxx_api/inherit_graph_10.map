@@ -1,11 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html" title="Implements a Database object." alt="" coords="5,285,185,341"/>
-<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1KeyInjector.html" title="The purpose of this class is to add a pre&#45;defined key/value pair to a key." alt="" coords="254,5,434,61"/>
-<area shape="rect" id="node3" href="$classpluginplay_1_1cache_1_1database_1_1KeyProxyMapper.html" title="Automatically proxies the keys before storing them." alt="" coords="244,85,444,141"/>
-<area shape="rect" id="node4" href="$classpluginplay_1_1cache_1_1database_1_1Native.html" title="An in memory database the preserves objects in their native form." alt="" coords="241,165,447,221"/>
-<area shape="rect" id="node5" href="$classpluginplay_1_1cache_1_1database_1_1RocksDB.html" title="Wraps RocksDB in PluginPlay&#39;s database API." alt="" coords="233,245,455,301"/>
-<area shape="rect" id="node6" href="$classpluginplay_1_1cache_1_1database_1_1Serialized.html" title="Extends an existing binary&#45;based database&#39;s API to be object&#45;oriented." alt="" coords="254,325,434,381"/>
-<area shape="rect" id="node7" href="$classpluginplay_1_1cache_1_1database_1_1Transposer.html" title="Satisfies the API of a DatabaseAPI&lt;KeyType, ValueType&gt;, but really is a DatabaseAPI&lt;ValueType,..." alt="" coords="254,405,434,461"/>
-<area shape="rect" id="node8" href="$classpluginplay_1_1cache_1_1database_1_1TypeEraser.html" title="Converts the keys to type&#45;erased objects before storing." alt="" coords="254,485,434,541"/>
-<area shape="rect" id="node9" href="$classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html" title="Automatically proxies the values before storing them." alt="" coords="238,565,450,621"/>
+<area shape="rect" id="Node000000" href="$classpluginplay_1_1cache_1_1database_1_1DBValue.html" title="Wraps a database value so users don&#39;t need to worry about memory." alt="" coords="5,5,188,45"/>
 </map>

@@ -1,11 +1,19 @@
 <map id="pluginplay::cache::database::DatabaseAPI&lt; KeyType, ValueType &gt;" name="pluginplay::cache::database::DatabaseAPI&lt; KeyType, ValueType &gt;">
-<area shape="rect" id="node1" title="Implements a Database object." alt="" coords="5,285,185,341"/>
-<area shape="rect" id="node2" href="$classpluginplay_1_1cache_1_1database_1_1KeyInjector.html" title="The purpose of this class is to add a pre&#45;defined key/value pair to a key." alt="" coords="254,5,434,61"/>
-<area shape="rect" id="node3" href="$classpluginplay_1_1cache_1_1database_1_1KeyProxyMapper.html" title="Automatically proxies the keys before storing them." alt="" coords="244,85,444,141"/>
-<area shape="rect" id="node4" href="$classpluginplay_1_1cache_1_1database_1_1Native.html" title="An in memory database the preserves objects in their native form." alt="" coords="241,165,447,221"/>
-<area shape="rect" id="node5" href="$classpluginplay_1_1cache_1_1database_1_1RocksDB.html" title="Wraps RocksDB in PluginPlay&#39;s database API." alt="" coords="233,245,455,301"/>
-<area shape="rect" id="node6" href="$classpluginplay_1_1cache_1_1database_1_1Serialized.html" title="Extends an existing binary&#45;based database&#39;s API to be object&#45;oriented." alt="" coords="254,325,434,381"/>
-<area shape="rect" id="node7" href="$classpluginplay_1_1cache_1_1database_1_1Transposer.html" title="Satisfies the API of a DatabaseAPI&lt;KeyType, ValueType&gt;, but really is a DatabaseAPI&lt;ValueType,..." alt="" coords="254,405,434,461"/>
-<area shape="rect" id="node8" href="$classpluginplay_1_1cache_1_1database_1_1TypeEraser.html" title="Converts the keys to type&#45;erased objects before storing." alt="" coords="254,485,434,541"/>
-<area shape="rect" id="node9" href="$classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html" title="Automatically proxies the values before storing them." alt="" coords="238,565,450,621"/>
+<area shape="rect" id="Node000001" title="Implements a Database object." alt="" coords="5,281,185,336"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1cache_1_1database_1_1KeyInjector.html" title="The purpose of this class is to add a pre&#45;defined key/value pair to a key." alt="" coords="254,5,434,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,267,126,222,153,169,188,115,232,69,252,56,255,60,235,73,192,119,157,171,131,224,112,269"/>
+<area shape="rect" id="Node000003" href="$classpluginplay_1_1cache_1_1database_1_1KeyProxyMapper.html" title="Automatically proxies the keys before storing them." alt="" coords="244,84,444,139"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="119,268,167,207,198,175,232,148,251,137,254,141,235,152,201,179,171,210,123,271"/>
+<area shape="rect" id="Node000004" href="$classpluginplay_1_1cache_1_1database_1_1Native.html" title="An in memory database the preserves objects in their native form." alt="" coords="241,163,447,217"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="149,272,232,226,259,215,261,220,234,231,152,276"/>
+<area shape="rect" id="Node000005" href="$classpluginplay_1_1cache_1_1database_1_1RocksDB.html" title="Wraps RocksDB in PluginPlay&#39;s database API." alt="" coords="233,241,455,296"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="198,289,233,284,233,289,199,295"/>
+<area shape="rect" id="Node000006" href="$classpluginplay_1_1cache_1_1database_1_1Serialized.html" title="Extends an existing binary&#45;based database&#39;s API to be object&#45;oriented." alt="" coords="254,320,434,375"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="199,322,254,331,254,336,198,327"/>
+<area shape="rect" id="Node000007" href="$classpluginplay_1_1cache_1_1database_1_1Transposer.html" title="Satisfies the API of a DatabaseAPI&lt;KeyType, ValueType&gt;, but really is a DatabaseAPI&lt;ValueType,..." alt="" coords="254,399,434,453"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="154,341,234,384,264,396,262,401,232,388,152,346"/>
+<area shape="rect" id="Node000008" href="$classpluginplay_1_1cache_1_1database_1_1TypeEraser.html" title="Converts the keys to type&#45;erased objects before storing." alt="" coords="254,477,434,532"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="124,346,172,405,202,436,235,462,257,475,254,480,232,467,198,440,168,409,120,349"/>
+<area shape="rect" id="Node000009" href="$classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html" title="Automatically proxies the values before storing them." alt="" coords="238,556,450,611"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="113,348,131,393,158,445,192,496,235,541,253,554,250,558,232,545,188,500,153,447,127,395,108,350"/>
 </map>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['valueproxymapper_396',['ValueProxyMapper',['../classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html',1,'pluginplay::cache::database']]]
+  ['valueproxymapper_0',['ValueProxyMapper',['../classpluginplay_1_1cache_1_1database_1_1ValueProxyMapper.html',1,'pluginplay::cache::database']]]
 ];

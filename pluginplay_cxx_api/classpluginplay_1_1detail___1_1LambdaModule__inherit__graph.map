@@ -1,4 +1,5 @@
 <map id="pluginplay::detail_::LambdaModule&lt; PropertyType &gt;" name="pluginplay::detail_::LambdaModule&lt; PropertyType &gt;">
-<area shape="rect" id="node1" title="Implements a lambda module." alt="" coords="5,80,257,121"/>
-<area shape="rect" id="node2" href="$classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="43,5,220,32"/>
+<area shape="rect" id="Node000001" title="Implements a lambda module." alt="" coords="5,79,257,119"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="43,5,220,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="134,44,134,79,129,79,129,44"/>
 </map>
