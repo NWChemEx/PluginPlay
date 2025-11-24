@@ -25,6 +25,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include(nwx_versions)
 include(get_cmaize)
+include(cmake/cmaize_find_package.cmake)
 
 # Work out full paths to the project's include/source dirs
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -72,9 +73,18 @@ set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
 include(nwx_pybind11)
 if("${BUILD_PYBIND11_PYBINDINGS}")
     nwx_find_pybind11()
+
+    cmaize_find_package(Python3
+        COMPONENTS Interpreter Development
+        TARGETS
+            python Python::Python
+    )
+    cmaize_wrap_target(pybind11_headers pybind11::headers)
+    cmaize_wrap_target(pybind11_embed pybind11::embed)
+
     list(
         APPEND pluginplay_depends
-        pybind11::headers pybind11::embed Python::Python
+        pybind11_headers pybind11_embed python
     )
 endif()
 
