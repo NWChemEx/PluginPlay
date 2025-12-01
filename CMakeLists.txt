@@ -25,6 +25,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include(nwx_versions)
 include(get_cmaize)
+include(cmake/cmaize_find_package.cmake)
 
 # Work out full paths to the project's include/source dirs
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -71,10 +72,32 @@ set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
 # targets separately instead of a CMaize target
 include(nwx_pybind11)
 if("${BUILD_PYBIND11_PYBINDINGS}")
+    cmaize_find_package(
+        Python3
+        # NOTE: Right now only the first component is added to find_dependency()
+        # so Development is listed first since it provides Python3::Python
+        COMPONENTS Development Interpreter
+        REQUIRED
+        TARGETS
+            python Python3::Python
+    )
+
     nwx_find_pybind11()
+    cmaize_find_package(
+        pybind11
+        # pybind11 won't be found if it is built in the above nwx_find_pybind11().
+        # QUIET helps hide the error that would be output and even though
+        # pybind11 is REQUIRED, we will ignore the error here for now.
+        QUIET
+        # REQUIRED
+        TARGETS
+            pybind11_headers pybind11::headers
+            pybind11_embed pybind11::embed
+    )
+
     list(
         APPEND pluginplay_depends
-        pybind11::headers pybind11::embed Python::Python
+        pybind11_headers pybind11_embed python
     )
 endif()
 
