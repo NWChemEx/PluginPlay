@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-name: Pull Request Workflow
+name: Nightly Workflow
 
 on:
   schedule:
