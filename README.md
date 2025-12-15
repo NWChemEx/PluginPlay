@@ -16,7 +16,7 @@
 
 ![alt text](docs/source/assets/full_logo.png)
 
-[![Actions](https://github.com/NWChemEx/PluginPlay/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx/PluginPlay)
+[![Nightly Workflow](https://github.com/NWChemEx/PluginPlay/actions/workflows/nightly.yaml/badge.svg)](https://github.com/NWChemEx/PluginPlay/actions/workflows/nightly.yaml)
 
 [![Citation Badge](https://api.juleskreuer.eu/citation-badge.php?doi=10.1063/5.0147903)](https://juleskreuer.eu/projekte/citation-badge/)
 
