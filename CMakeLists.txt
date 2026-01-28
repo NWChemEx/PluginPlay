@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.14)
 # Downloads common CMake modules used throughout NWChemEx
 include(cmake/get_nwx_cmake.cmake)
 
-#Sets the version to whatever git thinks it is
+# Sets the version to whatever git thinks it is
 include(get_version_from_git)
 get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
 project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
