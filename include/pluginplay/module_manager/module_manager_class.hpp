@@ -100,6 +100,13 @@ public:
      */
     type::size size() const noexcept;
 
+    /** @brief Used to add a new module to the list
+     *
+     * @tparam ModuleType The type of the module being added. This type must be
+     *                    constructible with no arguments and must inherit from
+     *                    ModuleBase.
+     * @param module_key
+     */
     template<typename ModuleType>
     void add_module(type::key module_key);
 
@@ -108,7 +115,6 @@ public:
      * @param module_key
      * @param base
      */
-
     void add_module(type::key module_key, module_base_ptr base);
 
     ///@{

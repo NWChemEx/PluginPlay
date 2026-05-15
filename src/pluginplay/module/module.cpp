@@ -78,6 +78,14 @@ void Module::lock() { m_pimpl_->lock(); }
 
 void Module::change_submod(type::key key, std::shared_ptr<Module> new_module) {
     assert_not_locked_();
+    if(!submods().count(key)) {
+        std::string msg = " does not have submodule \"" + key + "\"";
+        if(has_name())
+            msg = "Module \"" + get_name() + "\"" + msg;
+        else
+            msg = "Unnamed module" + msg;
+        throw std::out_of_range(msg);
+    }
     m_pimpl_->submods().at(key).change(new_module);
 }
 
