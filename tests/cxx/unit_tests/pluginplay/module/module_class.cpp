@@ -290,7 +290,12 @@ TEST_CASE("Module : change_input") {
     }
     SECTION("Throws if input does not exist") {
         auto mod = make_module<NotReadyModule>();
-        REQUIRE_THROWS_AS(mod->change_input("Not a key", 3), std::out_of_range);
+        REQUIRE_THROWS_WITH(mod->change_input("Not a key", 3),
+                            "Unnamed module does not have input \"Not a key\"");
+        mod->set_name("Test");
+        REQUIRE_THROWS_WITH(
+          mod->change_input("Not a key", 3),
+          "Module \"Test\" does not have input \"Not a key\"");
     }
     SECTION("Throws if value is wrong type") {
         auto mod = make_module<NotReadyModule>();
@@ -316,8 +321,13 @@ TEST_CASE("Module : change_submod") {
         REQUIRE_THROWS_AS(p.change_submod(key, value), std::runtime_error);
     }
     SECTION("Throws if request does not exist") {
-        REQUIRE_THROWS_AS(mod->change_submod("Not a key", value),
-                          std::out_of_range);
+        REQUIRE_THROWS_WITH(
+          mod->change_submod("Not a key", value),
+          "Unnamed module does not have submodule \"Not a key\"");
+        mod->set_name("Test");
+        REQUIRE_THROWS_WITH(
+          mod->change_submod("Not a key", value),
+          "Module \"Test\" does not have submodule \"Not a key\"");
     }
     SECTION("Throws if value is wrong type") {
         auto mod2 = make_module<NotReadyModule>();

@@ -747,6 +747,14 @@ bool Module::ready() const {
 template<typename T>
 void Module::change_input(const type::key& key, T&& value) {
     assert_not_locked_();
+    if(!inputs().count(key)) {
+        std::string msg = " does not have input \"" + key + "\"";
+        if(has_name())
+            msg = "Module \"" + get_name() + "\"" + msg;
+        else
+            msg = "Unnamed module" + msg;
+        throw std::out_of_range(msg);
+    }
     get_input_(key).change(std::forward<T>(value));
 }
 
