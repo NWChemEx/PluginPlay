@@ -139,9 +139,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6c40d48908819bd00e71526211691779" id="r_a6c40d48908819bd00e71526211691779"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a6c40d48908819bd00e71526211691779">size</a> () const noexcept</td></tr>
 <tr class="memdesc:a6c40d48908819bd00e71526211691779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of modules loaded.  <br /></td></tr>
 <tr class="separator:a6c40d48908819bd00e71526211691779"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2" id="r_a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplParams" colspan="2"><a id="a6c9bebeb1efe4e2af21d60d5923236e2" name="a6c9bebeb1efe4e2af21d60d5923236e2"></a>
-template&lt;typename ModuleType &gt; </td></tr>
-<tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>add_module</b> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> module_key)</td></tr>
+<tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2" id="r_a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplParams" colspan="2">template&lt;typename ModuleType &gt; </td></tr>
+<tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a6c9bebeb1efe4e2af21d60d5923236e2">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> module_key)</td></tr>
+<tr class="memdesc:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to add a new module to the list.  <br /></td></tr>
 <tr class="separator:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a595ba8ca5e9a1be484613dc111c9bd77" id="r_a595ba8ca5e9a1be484613dc111c9bd77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a595ba8ca5e9a1be484613dc111c9bd77">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> module_key, <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">module_base_ptr</a> base)</td></tr>
 <tr class="memdesc:a595ba8ca5e9a1be484613dc111c9bd77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to add a new module to the list.  <br /></td></tr>
@@ -211,8 +211,42 @@ const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class responsible for holding and managing modules. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6c9bebeb1efe4e2af21d60d5923236e2" name="a6c9bebeb1efe4e2af21d60d5923236e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c9bebeb1efe4e2af21d60d5923236e2">&#9670;&#160;</a></span>add_module() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ModuleType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleManager::add_module </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&#160;</td>
+          <td class="paramname"><em>module_key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Used to add a new module to the list. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ModuleType</td><td>The type of the module being added. This type must be constructible with no arguments and must inherit from <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">module_key</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a595ba8ca5e9a1be484613dc111c9bd77" name="a595ba8ca5e9a1be484613dc111c9bd77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a595ba8ca5e9a1be484613dc111c9bd77">&#9670;&#160;</a></span>add_module()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a595ba8ca5e9a1be484613dc111c9bd77">&#9670;&#160;</a></span>add_module() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
