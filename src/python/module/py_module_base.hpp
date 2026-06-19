@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include "../export_pluginplay.hpp"
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/python/python.hpp>
-#include <pybind11/pybind11.h>
 
 namespace pluginplay {
 
@@ -27,8 +27,7 @@ namespace pluginplay {
  */
 class PyModuleBase : public ModuleBase {
 public:
-    PyModuleBase() :
-      ModuleBase(python::PythonWrapper(pybind11::object()), true) {}
+    PyModuleBase() : ModuleBase(python::PythonWrapper(py::object()), true) {}
 
     type::result_map run_(type::input_map inputs,
                           type::submodule_map submods) const override;

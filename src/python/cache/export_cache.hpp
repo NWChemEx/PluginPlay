@@ -17,7 +17,7 @@
 #pragma once
 #include "../export_pluginplay.hpp"
 
-namespace pluginplay {
+namespace pluginplay::cache {
 
 void export_module_manager_cache(py_module_reference m);
 
@@ -26,4 +26,4 @@ inline void export_cache(py_module_reference m) {
     export_module_manager_cache(m_cache);
 }
 
-} // namespace pluginplay
+} // namespace pluginplay::cache

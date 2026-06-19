@@ -21,20 +21,19 @@
 #include "module_manager/export_module_manager.hpp"
 #include "printing/export_printing.hpp"
 #include "python/export_python.hpp"
-#include <pybind11/pybind11.h>
 
 namespace pluginplay {
 
 PYBIND11_MODULE(pluginplay, m) {
     m.doc() = "PyPluginPlay: Python bindings for PluginPlay";
     any::export_any(m);
-    export_cache(m);
+    cache::export_cache(m);
     export_fields(m);
     python::export_python(m);
     export_module(m);
     export_module_manager(m);
     export_submodule_request(m);
-    export_printing(m);
+    printing::export_printing(m);
 }
 
 } // namespace pluginplay

@@ -16,7 +16,6 @@
 
 #include "export_fields.hpp"
 #include <pluginplay/fields/module_input.hpp>
-#include <pybind11/operators.h>
 
 namespace pluginplay {
 
@@ -24,7 +23,7 @@ void export_module_input(py_module_reference m) {
     using python::PythonWrapper;
 
     py_class_type<ModuleInput>(m, "ModuleInput")
-      .def(pybind11::init<>())
+      .def(py::init<>())
       .def("has_type", &ModuleInput::has_type)
       .def("has_value", &ModuleInput::has_value)
       .def("has_description", &ModuleInput::has_description)
@@ -32,23 +31,23 @@ void export_module_input(py_module_reference m) {
       .def("is_transparent", &ModuleInput::is_transparent)
       .def("ready", &ModuleInput::ready)
       .def("is_valid",
-           [](ModuleInput& i, pybind11::object o) {
+           [](ModuleInput& i, py::object o) {
                return i.is_valid(any::make_any_field<PythonWrapper>(o));
            })
       .def(
         "change",
-        [](ModuleInput& i, pybind11::object o) {
+        [](ModuleInput& i, py::object o) {
             i.change(any::make_any_field<PythonWrapper>(o));
             return &i;
         },
-        pybind11::return_value_policy::reference)
+        py::return_value_policy::reference)
       .def(
         "set_default",
-        [](ModuleInput& i, pybind11::object o) {
+        [](ModuleInput& i, py::object o) {
             i.set_default(any::make_any_field<PythonWrapper>(o));
             return &i;
         },
-        pybind11::return_value_policy::reference)
+        py::return_value_policy::reference)
       .def("set_description", &ModuleInput::set_description)
       //.def("add_check")
       .def("make_optional", &ModuleInput::make_optional)
@@ -56,15 +55,14 @@ void export_module_input(py_module_reference m) {
       .def("make_opaque", &ModuleInput::make_opaque)
       .def("make_transparent", &ModuleInput::make_transparent)
       .def("__str__", &ModuleInput::str)
-      .def(
-        "value",
-        [](ModuleInput& i) {
-            return i.value<PythonWrapper>().template unwrap<pybind11::object>();
-        })
+      .def("value",
+           [](ModuleInput& i) {
+               return i.value<PythonWrapper>().template unwrap<py::object>();
+           })
       .def("description", &ModuleInput::description)
       .def("check_descriptions", &ModuleInput::check_descriptions)
-      .def(pybind11::self == pybind11::self)
-      .def(pybind11::self != pybind11::self);
+      .def(py::self == py::self)
+      .def(py::self != py::self);
 }
 
 } // namespace pluginplay

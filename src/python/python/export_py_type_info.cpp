@@ -16,13 +16,12 @@
 
 #include "export_python.hpp"
 #include <pluginplay/python/py_type_info.hpp>
-#include <pybind11/operators.h>
 
 namespace pluginplay::python {
 
 void export_py_type_info(py_module_reference m) {
     py_class_type<PyTypeInfo>(m, "PyTypeInfo")
-      .def(pybind11::init<>())
+      .def(py::init<>())
       .def("has_value", &PyTypeInfo::has_value)
       .def("__str__", &PyTypeInfo::name)
       .def("__hash__",
@@ -30,8 +29,8 @@ void export_py_type_info(py_module_reference m) {
                return self.has_value() ? self.value().hash_code() :
                                          std::size_t{};
            })
-      .def(pybind11::self == pybind11::self)
-      .def(pybind11::self != pybind11::self);
+      .def(py::self == py::self)
+      .def(py::self != py::self);
 }
 
 } // namespace pluginplay::python
