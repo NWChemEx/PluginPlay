@@ -18,7 +18,6 @@
 #include <pluginplay/module/module_class.hpp>
 #include <pluginplay/python/py_type_info.hpp>
 #include <pluginplay/submodule_request.hpp>
-#include <pybind11/operators.h>
 
 namespace pluginplay {
 

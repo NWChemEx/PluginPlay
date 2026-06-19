@@ -20,7 +20,6 @@
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
-#include <pybind11/stl.h>
 
 namespace pluginplay {
 
@@ -30,28 +29,27 @@ void export_module_manager_class(py_module_reference m) {
     using cache_type    = typename ModuleManager::cache_type;
     using cache_pointer = typename ModuleManager::cache_pointer;
 
-    using py_obj = pybind11::object;
+    using py_obj = py::object;
     using python::PythonWrapper;
 
     py_module_type::import("parallelzone"); // For runtime interface
 
     py_class_type<ModuleManager>(m, "ModuleManager")
-      .def(pybind11::init<>())
-      .def(pybind11::init([](runtime_type rv, cache_pointer cache) {
+      .def(py::init<>())
+      .def(py::init([](runtime_type rv, cache_pointer cache) {
                auto prv = std::make_shared<runtime_type>(rv);
                return ModuleManager(prv, cache);
            }),
-           pybind11::arg("rv"),
-           pybind11::arg("cache") = std::make_shared<cache_type>())
+           py::arg("rv"), py::arg("cache") = std::make_shared<cache_type>())
       .def("count", &ModuleManager::count)
       .def("size", &ModuleManager::size)
       .def(
         "add_module",
         [](ModuleManager& mm, std::string key,
            std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); },
-        pybind11::keep_alive<1, 3>())
+        py::keep_alive<1, 3>())
       .def("at", static_cast<at_fxn>(&ModuleManager::at),
-           pybind11::return_value_policy::reference_internal)
+           py::return_value_policy::reference_internal)
       .def("copy_module", &ModuleManager::copy_module)
       .def("erase", &ModuleManager::erase)
       .def("rename_module", &ModuleManager::rename_module)
@@ -63,7 +61,7 @@ void export_module_manager_class(py_module_reference m) {
            })
       .def("change_submod", &ModuleManager::change_submod)
       .def("run_as",
-           [](py_obj self, py_obj pt, py_obj key, pybind11::args args) {
+           [](py_obj self, py_obj pt, py_obj key, py::args args) {
                return self.attr("at")(key).attr("run_as")(pt, *args);
            })
       .def("set_runtime",
@@ -71,7 +69,7 @@ void export_module_manager_class(py_module_reference m) {
                mm.set_runtime(std::make_shared<runtime_type>(std::move(rv)));
            })
       .def("get_runtime", &ModuleManager::get_runtime,
-           pybind11::return_value_policy::reference_internal)
+           py::return_value_policy::reference_internal)
       .def("keys", &ModuleManager::keys)
       .def("has_cache", &ModuleManager::has_cache)
       .def("__getitem__", [](ModuleManager& self, const type::key& key) {

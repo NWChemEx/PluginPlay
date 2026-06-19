@@ -33,7 +33,7 @@ void export_module_base(py_module_reference m) {
 
     using pointer_type = std::shared_ptr<ModuleBase>;
     py_class_type<ModuleBase, PyModuleBase, pointer_type>(m, "ModuleBase")
-      .def(pybind11::init<>())
+      .def(py::init<>())
       .def("results", static_cast<results_fxn>(&ModuleBase::results))
       .def("inputs", static_cast<inputs_fxn>(&ModuleBase::inputs))
       .def("submods", static_cast<submod_fxn>(&ModuleBase::submods))
@@ -53,7 +53,7 @@ void export_module_base(py_module_reference m) {
             new_i.set_type<python::PythonWrapper>();
             return &new_i;
         },
-        pybind11::return_value_policy::reference)
+        py::return_value_policy::reference)
       .def(
         "add_result",
         [](ModuleBase& self, std::string key) {
@@ -61,20 +61,20 @@ void export_module_base(py_module_reference m) {
             new_r.set_type<python::PythonWrapper>();
             return &new_r;
         },
-        pybind11::return_value_policy::reference)
+        py::return_value_policy::reference)
       .def(
         "add_submodule",
-        [](ModuleBase& self, pybind11::object pt, std::string key) {
-            auto py_sr = pybind11::cast(SubmoduleRequest());
+        [](ModuleBase& self, py::object pt, std::string key) {
+            auto py_sr = py::cast(SubmoduleRequest());
             py_sr.attr("set_type")(pt);
             auto sr     = py_sr.cast<SubmoduleRequest>();
             auto& smods = self.submods();
             smods.emplace(key, std::move(sr));
             return &smods.at(key);
         },
-        pybind11::return_value_policy::reference)
+        py::return_value_policy::reference)
       .def("satisfies_property_type",
-           [](ModuleBase& self, pybind11::object pt) {
+           [](ModuleBase& self, py::object pt) {
                auto info    = pt.attr("type")().cast<python::PyTypeInfo>();
                auto inputs  = pt.attr("inputs")().cast<type::input_map>();
                auto results = pt.attr("results")().cast<type::result_map>();
