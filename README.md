@@ -22,7 +22,7 @@
 
 [Documentation](https://nwchemex.github.io/PluginPlay/)
 
-PluginPlay is an inversion-of-control (IoC) framework to facilitate wrtiting
+PluginPlay is an inversion-of-control (IoC) framework to facilitate writing
 high-performance modular scientific software. More specifically, using
 PluginPlay scientific software is written as a series of disconnected modules.
 At runtime the modules are loaded into PluginPlay and then PluginPlay wires the
