@@ -1,4 +1,4 @@
-# Copyright 2022 NWChemEx-Project
+# Copyright 2026 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,180 +14,81 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-# Downloads common CMake modules used throughout NWChemEx
+# Downloads common CMake modules used throughout NWChemEx. Included before
+# project() so nwx_set_version() is available to compute the version.
 include(cmake/get_nwx_cmake.cmake)
 
-# Sets the version to whatever git thinks it is
-include(get_version_from_git)
-get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
-project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
+# Version from scikit-build-core (wheels/sdists) or the latest git tag.
+include(nwx_set_version)
+nwx_set_version(pp_version "${CMAKE_CURRENT_LIST_DIR}")
+project(pluginplay VERSION "${pp_version}" LANGUAGES CXX)
+
+include(disable_in_source_builds)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
-include(get_cmaize)
-include(nwx_find_package)
+option(BUILD_TESTING          "Whether to build the unit tests"        OFF)
+option(BUILD_PYBIND11_BINDINGS "Build Python bindings via pybind11"    ON)
+option(BUILD_ROCKSDB          "Enable RocksDB backend of the cache"    OFF)
 
-# Work out full paths to the project's include/source dirs
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
-
-# Builds C++ API documentation
+# Documentation target
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+nwx_cxx_api_docs("cxx/include" "cxx/src")
 
-### Options ###
-cmaize_option_list(
-    BUILD_TESTING OFF "Should we build unit tests?"
-    BUILD_PYBIND11_PYBINDINGS ON "Build Pybind11 Python bindings?"
-    BUILD_ROCKSDB OFF "Enable RocksDB backend of the cache?"
-)
+# Dependencies
+include(get_dependencies)
+get_dependencies(utilities parallelzone libfort boost)
 
-### Dependendencies ###
-include(get_utilities)
+# TODO: add RocksDB handling when BUILD_ROCKSDB=ON
 
-include(get_parallelzone)
+# Build the library
+include(nwx_library)
+nwx_library(${PROJECT_NAME} "cxx/include" "cxx/src"
+    utilities parallelzone)
+# libfort and Boost are implementation details; link PRIVATE so they are not
+# exported as required transitive dependencies in pluginplayTargets.cmake.
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
+target_link_libraries(${PROJECT_NAME} PRIVATE fort)
 
-cmaize_find_or_build_dependency(
-    libfort
-    URL github.com/seleznevae/libfort
-    BUILD_TARGET fort
-    FIND_TARGET libfort::fort
-    CMAKE_ARGS FORT_ENABLE_TESTING=OFF
-)
-
-find_package(Boost REQUIRED)
-
-## Optional Dependencies ##
-cmaize_find_optional_dependency(
-    RocksDB
-    BUILD_ROCKSDB
-    URL github.com/facebook/rocksdb
-    FIND_TARGET RocksDB::rocksdb-shared
-)
-
-set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
-
-# As of 1.0.0 CMaize does not support multiple build or find targets. This will
-# be fixed in a future feature release. For now we handle the exposed CMake
-# targets separately instead of a CMaize target
-include(nwx_pybind11)
-if("${BUILD_PYBIND11_PYBINDINGS}")
-    nwx_find_package(
-        Python3
-        # NOTE: Right now only the first component is added to find_dependency()
-        # so Development is listed first since it provides Python3::Python
-        COMPONENTS Development Interpreter
-        REQUIRED
-        TARGETS
-            python Python3::Python
-    )
-
-    nwx_find_pybind11()
-    nwx_find_package(
-        pybind11
-        # pybind11 won't be found if it is built in the above nwx_find_pybind11().
-        # QUIET helps hide the error that would be output and even though
-        # pybind11 is REQUIRED, we will ignore the error here for now.
-        QUIET
-        # REQUIRED
-        TARGETS
-            pybind11_headers pybind11::headers
-            pybind11_embed pybind11::embed
-    )
-
-    list(
-        APPEND pluginplay_depends
-        pybind11_headers pybind11_embed python
-    )
+# PluginPlay exposes a compile-time flag so its source can #ifdef pybind11 paths
+if(BUILD_PYBIND11_BINDINGS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC BUILD_PYBIND11)
 endif()
 
-cmaize_add_library(
-    ${PROJECT_NAME}
-    SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS "${pluginplay_depends}"
-)
+# Python module
+include(nwx_python_module)
+nwx_python_module(${PROJECT_NAME} "cxx/src")
 
-# TODO: Update source to use BUILD_PYBIND11_PYBINDINGS, then goes away when
-# CMaize supports mulitple targets
-if("${BUILD_PYBIND11_PYBINDINGS}")
-    target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
-endif()
-
-nwx_add_pybind11_module(
-    ${PROJECT_NAME}
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
-    DEPENDS "${PROJECT_NAME}"
-)
-
-if("${BUILD_TESTING}")
-    set(cxx_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    set(tests_src_dir "${cxx_test_dir}/unit_tests/${PROJECT_NAME}")
-    set(regression_test_dir "${cxx_test_dir}/regression_tests")
-    set(examples_src_dir "${cxx_test_dir}/doc_snippets")
-
-    ### C++ Testing ###
-    include(get_catch2)
-
-    cmaize_add_tests(
-        test_unit_${PROJECT_NAME}
-        SOURCE_DIR ${tests_src_dir}
-        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+# C++ tests
+if(BUILD_TESTING)
+    include(catch2_tests_from_dir)
+    catch2_tests_from_dir(
+        "unit_test_${PROJECT_NAME}"
+        "tests/cxx/unit_tests/${PROJECT_NAME}"
+        ${PROJECT_NAME}
+    )
+    target_include_directories(
+        "unit_test_${PROJECT_NAME}" PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
     )
 
-    cmaize_add_tests(
-        test_regression_${PROJECT_NAME}
-        SOURCE_DIR ${regression_test_dir}
-        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    catch2_tests_from_dir(
+        "test_regression_${PROJECT_NAME}"
+        "tests/cxx/regression_tests"
+        ${PROJECT_NAME}
+    )
+    target_include_directories(
+        "test_regression_${PROJECT_NAME}" PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
     )
 
-    cmaize_add_tests(
-        test_${PROJECT_NAME}_docs
-        SOURCE_DIR "${cxx_test_dir}/doc_snippets"
-        INCLUDE_DIRS "${project_src_dir}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    catch2_tests_from_dir(
+        "test_${PROJECT_NAME}_docs"
+        "tests/cxx/doc_snippets"
+        ${PROJECT_NAME}
     )
-
-    ### Python Tests ###
-    set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-
-    # In the python tests we will pass Python into PluginPlay, we will then
-    # need to know that C++ can handle those Python types. To this end we
-    # create a series of Python bindings for unit testing this functionality
-    # which live in the py_test_pluginplay library.
-    nwx_add_pybind11_module(
-        py_test_pluginplay
-        INSTALL OFF
-        SOURCE_DIR "${python_test_dir}/unit_tests"
-        INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS ${PROJECT_NAME}
-    )
-
-    nwx_pybind11_tests(
-        py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
-        SUBMODULES parallelzone
-    )
-
-    cmaize_add_library(
-        ${PROJECT_NAME}_examples
-        SOURCE_DIR ${examples_src_dir}
-        INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    nwx_add_pybind11_module(
-        ${PROJECT_NAME}_examples
-        INSTALL OFF
-        SOURCE_DIR "${python_test_dir}/doc_snippets"
-        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
-    )
-
-    nwx_pybind11_tests(
-        py_${PROJECT_NAME}_docs
-        "${python_test_dir}/doc_snippets/test_doc_snippets.py"
-        SUBMODULES parallelzone pluginplay
+    target_include_directories(
+        "test_${PROJECT_NAME}_docs" PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
     )
 endif()
-
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

@@ -22,7 +22,7 @@ inline auto SubmoduleRequestPIMPL::clone() const {
     return std::make_unique<SubmoduleRequestPIMPL>(*this);
 }
 
-bool SubmoduleRequestPIMPL::has_name() const {
+inline bool SubmoduleRequestPIMPL::has_name() const {
     if(!has_module()) return false;
     return m_module_->has_name();
 }
@@ -40,7 +40,7 @@ inline void SubmoduleRequestPIMPL::set_type(type::rtti type,
     m_inputs_ = std::move(inputs);
 }
 
-bool SubmoduleRequestPIMPL::satisfies_property_type(rtti_type type) {
+inline bool SubmoduleRequestPIMPL::satisfies_property_type(rtti_type type) {
     if(!has_type()) throw std::runtime_error("Property Type Not Set");
     return (type == m_type_.value());
 }
@@ -89,7 +89,7 @@ inline void SubmoduleRequestPIMPL::lock() {
     m_module_->lock();
 }
 
-const type::key& SubmoduleRequestPIMPL::get_name() const {
+inline const type::key& SubmoduleRequestPIMPL::get_name() const {
     if(!has_module()) throw std::runtime_error("Submodule is not set");
     return m_module_->get_name();
 }
