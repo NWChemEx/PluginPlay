@@ -44,11 +44,9 @@ get_dependencies(utilities parallelzone libfort boost)
 # Build the library
 include(nwx_library)
 nwx_library(${PROJECT_NAME} "cxx/include" "cxx/src"
-    utilities parallelzone)
-# libfort and Boost are implementation details; link PRIVATE so they are not
-# exported as required transitive dependencies in pluginplayTargets.cmake.
-target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
-target_link_libraries(${PROJECT_NAME} PRIVATE fort)
+    utilities parallelzone
+    PUBLIC  boost
+    PRIVATE libfort)
 
 # PluginPlay exposes a compile-time flag so its source can #ifdef pybind11 paths
 if(BUILD_PYBIND11_BINDINGS)
@@ -66,29 +64,18 @@ if(BUILD_TESTING)
         "unit_test_${PROJECT_NAME}"
         "tests/cxx/unit_tests/${PROJECT_NAME}"
         ${PROJECT_NAME}
+        PRIVATE_INCLUDES cxx/src
     )
-    target_include_directories(
-        "unit_test_${PROJECT_NAME}" PRIVATE
-        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
-    )
-
     catch2_tests_from_dir(
         "test_regression_${PROJECT_NAME}"
         "tests/cxx/regression_tests"
         ${PROJECT_NAME}
+        PRIVATE_INCLUDES cxx/src
     )
-    target_include_directories(
-        "test_regression_${PROJECT_NAME}" PRIVATE
-        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
-    )
-
     catch2_tests_from_dir(
         "test_${PROJECT_NAME}_docs"
         "tests/cxx/doc_snippets"
         ${PROJECT_NAME}
-    )
-    target_include_directories(
-        "test_${PROJECT_NAME}_docs" PRIVATE
-        "${CMAKE_CURRENT_LIST_DIR}/cxx/src"
+        PRIVATE_INCLUDES cxx/src
     )
 endif()
