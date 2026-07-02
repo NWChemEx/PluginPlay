@@ -53,7 +53,7 @@ and that the header file ``electric_field.hpp`` defines a property type
 Here the first argument is the point we are evaluating the electric field at,
 the second argument is the set of point charges, and the return is the value
 of the electric field at that point. Designing property types is a separate
-topic covered (TODO: add link).
+topic covered :doc:`here </tutorials/property_types/index>`.
 
 .. toctree::
     :maxdepth: 2
