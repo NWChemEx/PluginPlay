@@ -27,6 +27,10 @@ dynamic = ["version"]
 description = "Plugin-based software framework for the NWChemEx ecosystem"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.8"
+dependencies = [
+    "nwchemex-utilities",
+    "nwchemex-parallelzone",
+]
 
 [tool.scikit-build]
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"

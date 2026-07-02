@@ -15,7 +15,7 @@
  */
 
 #include "export_module_manager.hpp"
-#include "module/py_module_base.hpp"
+#include "../module/py_module_base.hpp"
 #include <parallelzone/parallelzone.hpp>
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>

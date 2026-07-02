@@ -39,6 +39,15 @@ nwx_cxx_api_docs("cxx/include" "cxx/src")
 include(get_dependencies)
 get_dependencies(utilities parallelzone libfort boost)
 
+# pybind11 must be fetched before nwx_library because python_wrapper.hpp is a
+# public PluginPlay header that conditionally includes pybind11/pybind11.h when
+# BUILD_PYBIND11 is defined.  Without pybind11 on the include path the library
+# sources themselves fail to compile.
+if(BUILD_PYBIND11_BINDINGS)
+    get_dependencies(pybind11)
+    find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+endif()
+
 # TODO: add RocksDB handling when BUILD_ROCKSDB=ON
 
 # Build the library
@@ -48,9 +57,14 @@ nwx_library(${PROJECT_NAME} "cxx/include" "cxx/src"
     PUBLIC  boost
     PRIVATE libfort)
 
-# PluginPlay exposes a compile-time flag so its source can #ifdef pybind11 paths
+# PluginPlay exposes a compile-time flag so its source can #ifdef pybind11 paths.
+# pybind11::pybind11 is added PUBLIC so downstream consumers that include
+# python_wrapper.hpp (a public header) also get the pybind11 include dirs.
 if(BUILD_PYBIND11_BINDINGS)
     target_compile_definitions(${PROJECT_NAME} PUBLIC BUILD_PYBIND11)
+    # pybind11::pybind11 provides pybind11 headers; Python::Module provides
+    # Python.h (the Development.Module component of find_package(Python)).
+    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
 endif()
 
 # Python module
