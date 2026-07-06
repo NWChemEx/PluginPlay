@@ -24,11 +24,7 @@ nwx_set_version(pp_version "${CMAKE_CURRENT_LIST_DIR}")
 project(pluginplay VERSION "${pp_version}" LANGUAGES CXX)
 
 include(disable_in_source_builds)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
-
-option(BUILD_TESTING          "Whether to build the unit tests"        OFF)
-option(BUILD_PYBIND11_BINDINGS "Build Python bindings via pybind11"    ON)
+include(set_default_nwx_options)
 option(BUILD_ROCKSDB          "Enable RocksDB backend of the cache"    OFF)
 
 # Documentation target
@@ -72,24 +68,22 @@ include(nwx_python_module)
 nwx_python_module(${PROJECT_NAME} "cxx/src")
 
 # C++ tests
-if(BUILD_TESTING)
-    include(catch2_tests_from_dir)
-    catch2_tests_from_dir(
-        "unit_test_${PROJECT_NAME}"
-        "tests/cxx/unit_tests/${PROJECT_NAME}"
-        ${PROJECT_NAME}
-        PRIVATE_INCLUDES cxx/src
-    )
-    catch2_tests_from_dir(
-        "test_regression_${PROJECT_NAME}"
-        "tests/cxx/regression_tests"
-        ${PROJECT_NAME}
-        PRIVATE_INCLUDES cxx/src
-    )
-    catch2_tests_from_dir(
-        "test_${PROJECT_NAME}_docs"
-        "tests/cxx/doc_snippets"
-        ${PROJECT_NAME}
-        PRIVATE_INCLUDES cxx/src
-    )
-endif()
+include(catch2_tests_from_dir)
+catch2_tests_from_dir(
+    "unit_test_${PROJECT_NAME}"
+    "tests/cxx/unit_tests/${PROJECT_NAME}"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES cxx/src
+)
+catch2_tests_from_dir(
+    "test_regression_${PROJECT_NAME}"
+    "tests/cxx/regression_tests"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES cxx/src
+)
+catch2_tests_from_dir(
+    "test_${PROJECT_NAME}_docs"
+    "tests/cxx/doc_snippets"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES cxx/src
+)
