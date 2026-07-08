@@ -57,7 +57,7 @@ macro(get_nwx_cmake)
             include(FetchContent)
             FetchContent_Declare(
                 nwx_cmake
-                GIT_REPOSITORY https://github.com/NWChemEx/NWXCMake
+                GIT_REPOSITORY https://github.com/ryanmrichard/NWXCMake
             )
             FetchContent_MakeAvailable(nwx_cmake)
             set(_gnc_resolved "${nwx_cmake_SOURCE_DIR}/cmake")

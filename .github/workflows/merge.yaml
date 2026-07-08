@@ -18,15 +18,15 @@ name: Merge Workflow
 on:
   push:
     branches:
-      - master
+      - build_overhaul
 
 jobs:
   tag-commit:
-    uses: NWChemEx/.github/.github/workflows/tag.yaml@master
+    uses: ryanmrichard/.github/.github/workflows/tag.yaml@master
     secrets: inherit
 
   deploy_nwx_docs:
-    uses: NWChemEx/.github/.github/workflows/deploy_nwx_docs.yaml@master
+    uses: ryanmrichard/.github/.github/workflows/deploy_nwx_docs.yaml@master
     with:
       doc_target: "pluginplay_cxx_api"
     secrets: inherit
