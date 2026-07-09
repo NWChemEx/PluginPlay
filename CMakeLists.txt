@@ -45,9 +45,8 @@ if(BUILD_PYBIND11_BINDINGS)
     # pybind11_add_module, which intentionally avoids linking libpython so
     # the module can be loaded by any Python that provides the symbols at
     # runtime). Development.Embed additionally provides the Python::Python
-    # target, which links libpython -- needed by unit_test_pluginplay below,
-    # a standalone executable that calls into the CPython C API directly
-    # rather than being loaded by an interpreter.
+    # target (see below), which links libpython -- needed because
+    # ${PROJECT_NAME} itself calls into the CPython C API directly.
     find_package(Python REQUIRED
         COMPONENTS Interpreter Development.Module Development.Embed)
 endif()
@@ -66,9 +65,18 @@ nwx_library(${PROJECT_NAME} "cxx/include" "cxx/src"
 # python_wrapper.hpp (a public header) also get the pybind11 include dirs.
 if(BUILD_PYBIND11_BINDINGS)
     target_compile_definitions(${PROJECT_NAME} PUBLIC BUILD_PYBIND11)
-    # pybind11::pybind11 provides pybind11 headers; Python::Module provides
-    # Python.h (the Development.Module component of find_package(Python)).
-    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
+    # pybind11::pybind11 provides pybind11 headers. python_wrapper.hpp (a
+    # public header, compiled into this library whenever BUILD_PYBIND11 is
+    # set) calls the CPython C API directly, so ${PROJECT_NAME} itself needs
+    # libpython linked in -- Python::Python (Development.Embed) rather than
+    # Python::Module (Development.Module, which intentionally omits linking
+    # libpython so a portable .so extension can be loaded by any Python
+    # providing those symbols at runtime; that's still how the extension
+    # itself is built, via pybind11_add_module in nwx_python_module). Without
+    # this, anything that links ${PROJECT_NAME} as a normal executable (the
+    # Catch2 test binaries below) fails with undefined references to
+    # _Py_Dealloc and friends.
+    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Python)
 endif()
 
 # Python module
@@ -77,19 +85,10 @@ nwx_python_module(${PROJECT_NAME} "cxx/src")
 
 # C++ tests
 include(catch2_tests_from_dir)
-
-# unit_test_pluginplay directly exercises the CPython C API (see
-# tests/cxx/unit_tests/pluginplay/python/python_wrapper.cpp), so unlike the
-# .so extension it needs libpython itself linked in, not just Python.h.
-set(_pluginplay_unit_test_libs ${PROJECT_NAME})
-if(BUILD_PYBIND11_BINDINGS)
-    list(APPEND _pluginplay_unit_test_libs Python::Python)
-endif()
-
 catch2_tests_from_dir(
     "unit_test_${PROJECT_NAME}"
     "tests/cxx/unit_tests/${PROJECT_NAME}"
-    ${_pluginplay_unit_test_libs}
+    ${PROJECT_NAME}
     PRIVATE_INCLUDES cxx/src
 )
 catch2_tests_from_dir(
