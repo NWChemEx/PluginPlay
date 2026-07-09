@@ -31,9 +31,49 @@ jobs:
       doc_target: "pluginplay_cxx_api"
     secrets: inherit
 
+  platform_matrix:
+    uses: ryanmrichard/.github/.github/workflows/platform_matrix.yaml@master
+
+  build_pypi_dist:
+    needs: [tag-commit, platform_matrix]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.platform_matrix.outputs.release_matrix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Build PyPI Distribution
+        uses: ryanmrichard/.github/.github/actions/build_pypi_dist@master
+        with:
+          cibw_build: ${{ matrix.cibw_build }}
+          build_sdist: ${{ matrix.os == 'ubuntu-latest' && 'true' || 'false' }}
+          extra_index_url: https://test.pypi.org/simple/
+
+      - name: Upload Distribution Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist/
+
+  # A separate, ubuntu-only publish job (rather than a publish step per
+  # build_pypi_dist leg) because pypa/gh-action-pypi-publish only runs on
+  # Linux, and because PyPI trusted publishing does not support reusable
+  # workflows (this job must be defined directly here, not delegated).
   deploy_to_pypi:
-    needs: tag-commit
-    uses: ryanmrichard/.github/.github/workflows/deploy_to_pypi.yaml@master
-    with:
-      extra_index_url: https://test.pypi.org/simple/
-    secrets: inherit
+    needs: build_pypi_dist
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download All Distributions
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/
