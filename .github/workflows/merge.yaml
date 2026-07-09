@@ -30,3 +30,29 @@ jobs:
     with:
       doc_target: "pluginplay_cxx_api"
     secrets: inherit
+
+  platform_matrix:
+    uses: ryanmrichard/.github/.github/workflows/platform_matrix.yaml@master
+
+  deploy_to_pypi:
+    needs: [tag-commit, platform_matrix]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.platform_matrix.outputs.release_matrix) }}
+    runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Build PyPI Distribution
+        uses: ryanmrichard/.github/.github/actions/build_pypi_dist@master
+        with:
+          cibw_build: ${{ matrix.cibw_build }}
+          build_sdist: ${{ matrix.os == 'ubuntu-latest' && 'true' || 'false' }}
+          extra_index_url: https://test.pypi.org/simple/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/

@@ -17,7 +17,7 @@ requires = [
     "scikit-build-core>=0.10",
     "pybind11",
     "setuptools-scm>=8",
-    "nwchemex-nwxcmake @ git+https://github.com/NWChemEx/NWXCMake",
+    "nwchemex-nwxcmake @ git+https://github.com/ryanmrichard/NWXCMake",
 ]
 build-backend = "scikit_build_core.build"
 
