@@ -108,17 +108,10 @@ catch2_tests_from_dir(
 # property types, etc.) to tests/python/unit_tests/*.py. Not part of the
 # installed package -- test-only, built in place alongside the other test
 # binaries. The old build system built this via nwx_add_pybind11_module(...);
-# NWXCMake's nwx_python_module is specific to building ${PROJECT_NAME}'s own
-# extension, so this is wired up directly with pybind11_add_module instead.
+# reuses nwx_python_module (its NO_INSTALL keeps this out of the wheel). Its
+# sources are prefixed export_ so they match the macro's source filter.
 if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
-    file(GLOB_RECURSE _pluginplay_py_test_sources CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/unit_tests/*.cpp"
-    )
-    pybind11_add_module(py_test_pluginplay ${_pluginplay_py_test_sources})
-    target_link_libraries(py_test_pluginplay PRIVATE ${PROJECT_NAME})
-    target_include_directories(py_test_pluginplay PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/unit_tests"
-    )
+    nwx_python_module(py_test_pluginplay "tests/python/unit_tests" NO_INSTALL)
 endif()
 
 # pluginplay_examples: a pybind11 module (EXPORT_PLUGIN, in
@@ -128,9 +121,10 @@ endif()
 # (non-test) implementation files under tests/cxx/doc_snippets -- listed
 # explicitly rather than globbed, since that directory also holds Catch2
 # TEST_CASE files and a custom main() (used by test_pluginplay_docs above)
-# that aren't part of the example modules themselves. Old build system built
-# this via nwx_add_pybind11_module(${PROJECT_NAME}_examples ...); no NWXCMake
-# equivalent exists, so it's wired up directly here too.
+# that aren't part of the example modules themselves. The pybind11 module
+# itself reuses nwx_python_module (DEPENDS for the extra link libraries,
+# NO_INSTALL to keep it out of the wheel); the supporting library is plain
+# C++, not a pybind11 module, so it's built directly here.
 if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
     set(_pluginplay_examples_dir "${CMAKE_CURRENT_SOURCE_DIR}/tests/cxx/doc_snippets")
     add_library(pluginplay_examples_impl STATIC
@@ -143,10 +137,7 @@ if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
     target_include_directories(pluginplay_examples_impl PUBLIC "${_pluginplay_examples_dir}")
     target_link_libraries(pluginplay_examples_impl PUBLIC ${PROJECT_NAME})
 
-    pybind11_add_module(pluginplay_examples
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/doc_snippets/export_pluginplay_examples.cpp"
-    )
-    target_link_libraries(pluginplay_examples PRIVATE
-        pluginplay_examples_impl parallelzone
+    nwx_python_module(pluginplay_examples "tests/python/doc_snippets" NO_INSTALL
+        DEPENDS parallelzone pluginplay_examples_impl
     )
 endif()
