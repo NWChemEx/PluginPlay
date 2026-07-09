@@ -120,3 +120,33 @@ if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/unit_tests"
     )
 endif()
+
+# pluginplay_examples: a pybind11 module (EXPORT_PLUGIN, in
+# tests/python/doc_snippets/export_pluginplay_examples.cpp) exposing the
+# tutorial "Classical Force"/"Coulomb's Law" example modules to
+# tests/python/doc_snippets/*.py. Depends on a small library built from the
+# (non-test) implementation files under tests/cxx/doc_snippets -- listed
+# explicitly rather than globbed, since that directory also holds Catch2
+# TEST_CASE files and a custom main() (used by test_pluginplay_docs above)
+# that aren't part of the example modules themselves. Old build system built
+# this via nwx_add_pybind11_module(${PROJECT_NAME}_examples ...); no NWXCMake
+# equivalent exists, so it's wired up directly here too.
+if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
+    set(_pluginplay_examples_dir "${CMAKE_CURRENT_SOURCE_DIR}/tests/cxx/doc_snippets")
+    add_library(pluginplay_examples_impl STATIC
+        "${_pluginplay_examples_dir}/classical_force.cpp"
+        "${_pluginplay_examples_dir}/coulombs_law.cpp"
+        "${_pluginplay_examples_dir}/load_modules.cpp"
+        "${_pluginplay_examples_dir}/screened_coulombs_law.cpp"
+        "${_pluginplay_examples_dir}/templated_coulombs_law.cpp"
+    )
+    target_include_directories(pluginplay_examples_impl PUBLIC "${_pluginplay_examples_dir}")
+    target_link_libraries(pluginplay_examples_impl PUBLIC ${PROJECT_NAME})
+
+    pybind11_add_module(pluginplay_examples
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/doc_snippets/export_pluginplay_examples.cpp"
+    )
+    target_link_libraries(pluginplay_examples PRIVATE
+        pluginplay_examples_impl parallelzone
+    )
+endif()
