@@ -103,3 +103,20 @@ catch2_tests_from_dir(
     ${PROJECT_NAME}
     PRIVATE_INCLUDES cxx/src
 )
+
+# py_test_pluginplay: a pybind11 module exposing C++ test fixtures (BaseClass,
+# property types, etc.) to tests/python/unit_tests/*.py. Not part of the
+# installed package -- test-only, built in place alongside the other test
+# binaries. The old build system built this via nwx_add_pybind11_module(...);
+# NWXCMake's nwx_python_module is specific to building ${PROJECT_NAME}'s own
+# extension, so this is wired up directly with pybind11_add_module instead.
+if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
+    file(GLOB_RECURSE _pluginplay_py_test_sources CONFIGURE_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/unit_tests/*.cpp"
+    )
+    pybind11_add_module(py_test_pluginplay ${_pluginplay_py_test_sources})
+    target_link_libraries(py_test_pluginplay PRIVATE ${PROJECT_NAME})
+    target_include_directories(py_test_pluginplay PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/python/unit_tests"
+    )
+endif()
