@@ -41,7 +41,15 @@ get_dependencies(utilities parallelzone libfort boost)
 # sources themselves fail to compile.
 if(BUILD_PYBIND11_BINDINGS)
     get_dependencies(pybind11)
-    find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+    # Development.Module is enough for the .so extension (built via
+    # pybind11_add_module, which intentionally avoids linking libpython so
+    # the module can be loaded by any Python that provides the symbols at
+    # runtime). Development.Embed additionally provides the Python::Python
+    # target, which links libpython -- needed by unit_test_pluginplay below,
+    # a standalone executable that calls into the CPython C API directly
+    # rather than being loaded by an interpreter.
+    find_package(Python REQUIRED
+        COMPONENTS Interpreter Development.Module Development.Embed)
 endif()
 
 # TODO: add RocksDB handling when BUILD_ROCKSDB=ON
@@ -69,10 +77,19 @@ nwx_python_module(${PROJECT_NAME} "cxx/src")
 
 # C++ tests
 include(catch2_tests_from_dir)
+
+# unit_test_pluginplay directly exercises the CPython C API (see
+# tests/cxx/unit_tests/pluginplay/python/python_wrapper.cpp), so unlike the
+# .so extension it needs libpython itself linked in, not just Python.h.
+set(_pluginplay_unit_test_libs ${PROJECT_NAME})
+if(BUILD_PYBIND11_BINDINGS)
+    list(APPEND _pluginplay_unit_test_libs Python::Python)
+endif()
+
 catch2_tests_from_dir(
     "unit_test_${PROJECT_NAME}"
     "tests/cxx/unit_tests/${PROJECT_NAME}"
-    ${PROJECT_NAME}
+    ${_pluginplay_unit_test_libs}
     PRIVATE_INCLUDES cxx/src
 )
 catch2_tests_from_dir(

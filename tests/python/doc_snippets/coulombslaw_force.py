@@ -14,9 +14,8 @@
 
 from math import inf, sqrt
 
-import pluginplay_examples as ppe
-
 import pluginplay as pp
+import pluginplay_examples as ppe
 
 
 class CoulombsLaw(pp.ModuleBase):

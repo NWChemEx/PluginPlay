@@ -14,10 +14,9 @@
 
 import unittest
 
+import pluginplay as pp
 import py_test_pluginplay as test_pp
 import py_test_pluginplay.test_submodule_request as test_sr
-
-import pluginplay as pp
 
 
 class TestSubmoduleRequest(unittest.TestCase):
