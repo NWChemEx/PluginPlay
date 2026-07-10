@@ -49,6 +49,7 @@ jobs:
           build_sdist: ${{ matrix.os == 'ubuntu-latest' && 'true' || 'false' }}
           extra_index_url: https://test.pypi.org/simple/
           needs_mpi: "true"
+          needs_boost: "true"
 
       - name: Upload Distribution Artifact
         uses: actions/upload-artifact@v4
