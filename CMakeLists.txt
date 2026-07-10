@@ -45,10 +45,19 @@ if(BUILD_PYBIND11_BINDINGS)
     # pybind11_add_module, which intentionally avoids linking libpython so
     # the module can be loaded by any Python that provides the symbols at
     # runtime). Development.Embed additionally provides the Python::Python
-    # target (see below), which links libpython -- needed because
-    # ${PROJECT_NAME} itself calls into the CPython C API directly.
-    find_package(Python REQUIRED
-        COMPONENTS Interpreter Development.Module Development.Embed)
+    # target (see below), needed only so the Catch2 test *executables*
+    # link cleanly (an executable can't defer symbol resolution to runtime
+    # the way a shared library/extension can) -- so only require it when
+    # those executables will actually be built. manylinux wheel-build
+    # containers deliberately don't ship libpython.so at all (portable
+    # wheels aren't supposed to assume one), so requiring Development.Embed
+    # unconditionally broke the BUILD_TESTING=OFF wheel-build path there.
+    if(BUILD_TESTING)
+        find_package(Python REQUIRED
+            COMPONENTS Interpreter Development.Module Development.Embed)
+    else()
+        find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+    endif()
 endif()
 
 # TODO: add RocksDB handling when BUILD_ROCKSDB=ON
@@ -67,16 +76,19 @@ if(BUILD_PYBIND11_BINDINGS)
     target_compile_definitions(${PROJECT_NAME} PUBLIC BUILD_PYBIND11)
     # pybind11::pybind11 provides pybind11 headers. python_wrapper.hpp (a
     # public header, compiled into this library whenever BUILD_PYBIND11 is
-    # set) calls the CPython C API directly, so ${PROJECT_NAME} itself needs
-    # libpython linked in -- Python::Python (Development.Embed) rather than
-    # Python::Module (Development.Module, which intentionally omits linking
-    # libpython so a portable .so extension can be loaded by any Python
-    # providing those symbols at runtime; that's still how the extension
-    # itself is built, via pybind11_add_module in nwx_python_module). Without
-    # this, anything that links ${PROJECT_NAME} as a normal executable (the
-    # Catch2 test binaries below) fails with undefined references to
-    # _Py_Dealloc and friends.
-    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Python)
+    # set) calls the CPython C API directly. As a *shared* library,
+    # ${PROJECT_NAME} itself tolerates those symbols staying undefined until
+    # runtime (same as the pybind11 extension module); it's only the Catch2
+    # test *executables* below that need them fully resolved at link time,
+    # so only link libpython (Python::Python, from Development.Embed above)
+    # when those executables are actually built.
+    # Python::Module (Development.Module) provides the Python.h include path
+    # python_wrapper.hpp needs to even compile; it's always available (see
+    # find_package above) and, unlike Python::Python, doesn't link libpython.
+    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
+    if(BUILD_TESTING)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Python::Python)
+    endif()
 endif()
 
 # Python module
