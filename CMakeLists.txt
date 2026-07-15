@@ -136,18 +136,22 @@ endif()
 # that aren't part of the example modules themselves. The pybind11 module
 # itself reuses nwx_python_module (DEPENDS for the extra link libraries,
 # NO_INSTALL to keep it out of the wheel); the supporting library is plain
-# C++, not a pybind11 module, so it's built directly here.
+# C++, not a pybind11 module, so it's built via nwx_library(... SOURCES ...
+# NO_INSTALL) instead.
 if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
     set(_pluginplay_examples_dir "${CMAKE_CURRENT_SOURCE_DIR}/tests/cxx/doc_snippets")
-    add_library(pluginplay_examples_impl STATIC
-        "${_pluginplay_examples_dir}/classical_force.cpp"
-        "${_pluginplay_examples_dir}/coulombs_law.cpp"
-        "${_pluginplay_examples_dir}/load_modules.cpp"
-        "${_pluginplay_examples_dir}/screened_coulombs_law.cpp"
-        "${_pluginplay_examples_dir}/templated_coulombs_law.cpp"
+    nwx_library(pluginplay_examples_impl
+        "tests/cxx/doc_snippets" "tests/cxx/doc_snippets"
+        ${PROJECT_NAME}
+        SOURCES
+            "${_pluginplay_examples_dir}/classical_force.cpp"
+            "${_pluginplay_examples_dir}/coulombs_law.cpp"
+            "${_pluginplay_examples_dir}/load_modules.cpp"
+            "${_pluginplay_examples_dir}/screened_coulombs_law.cpp"
+            "${_pluginplay_examples_dir}/templated_coulombs_law.cpp"
+        TYPE STATIC
+        NO_INSTALL
     )
-    target_include_directories(pluginplay_examples_impl PUBLIC "${_pluginplay_examples_dir}")
-    target_link_libraries(pluginplay_examples_impl PUBLIC ${PROJECT_NAME})
 
     nwx_python_module(pluginplay_examples "tests/python/doc_snippets" NO_INSTALL
         DEPENDS parallelzone pluginplay_examples_impl
