@@ -17,7 +17,7 @@ List of PluginPlay Features
 ###########################
 
 This page is intended to collect the major selling points of PluginPlay. This
-necessarily is not a complete list; the complete list can be garnered by
+necessarilly is not a complete list; the complete list can be garnered by
 reviewing the list of merged pull requests on GitHub.
 
 ********************
@@ -49,6 +49,6 @@ Features available in PluginPlay 1.0.0
 
 - Memoization of the call graph.
 - RocksDB as a cache backend.
-- Ability to automatically generate reStructuredText documentation for
+- Ability to automatically generate reStructured Text documentation for
   modules.
 - Annotated module bounds checking.

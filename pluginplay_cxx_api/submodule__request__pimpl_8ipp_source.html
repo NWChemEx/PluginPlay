@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pluginplay: src/pluginplay/detail_/submodule_request_pimpl.ipp Source File</title>
+<title>pluginplay: cxx/src/pluginplay/detail_/submodule_request_pimpl.ipp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(document).ready(function() { init_codefold(0); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_8f3cb34546d0bb3cae2c4fc7b3e624ff.html">pluginplay</a></li><li class="navelem"><a class="el" href="dir_6e15a140ab26aff97f91d619e2458560.html">detail_</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8fb20675bc3e1682e6cd2ca1ed0f7deb.html">cxx</a></li><li class="navelem"><a class="el" href="dir_df021466bc7b7e3053d254cdbb2647a5.html">src</a></li><li class="navelem"><a class="el" href="dir_0ade5008b2edc5aef9308962fbd1eb4a.html">pluginplay</a></li><li class="navelem"><a class="el" href="dir_c7a5b721ffffe537c0ee08ffd536b00a.html">detail_</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -108,7 +108,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
 <div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af3f8690b8fdedd0b6e7ad3d3951bee60">   25</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af3f8690b8fdedd0b6e7ad3d3951bee60">SubmoduleRequestPIMPL::has_name</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af3f8690b8fdedd0b6e7ad3d3951bee60">   25</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#af3f8690b8fdedd0b6e7ad3d3951bee60">SubmoduleRequestPIMPL::has_name</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordflow">if</span>(!<a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a2ed36aaa4386b599a05de3dd52ae13b9">has_module</a>()) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordflow">return</span> m_module_-&gt;has_name();</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
@@ -132,7 +132,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
 <div class="foldopen" id="foldopen00043" data-start="{" data-end="}">
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">   43</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">SubmoduleRequestPIMPL::satisfies_property_type</a>(rtti_type type) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">   43</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a71b354ec4badf2790f8d19d948f300ac">SubmoduleRequestPIMPL::satisfies_property_type</a>(rtti_type type) {</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordflow">if</span>(!<a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a37bc6a5768c02361f90954cf6511bc45">has_type</a>()) <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Property Type Not Set&quot;</span>);</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordflow">return</span> (<a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#ab77fb2553c37fd4b45dcf520f74fa414">type</a> == m_type_.value());</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
@@ -193,7 +193,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="foldopen" id="foldopen00092" data-start="{" data-end="}">
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aeae698bb362f0da6177628226ac29615">   92</a></span><span class="keyword">const</span> <a class="code hl_typedef" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&amp; <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aeae698bb362f0da6177628226ac29615">SubmoduleRequestPIMPL::get_name</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aeae698bb362f0da6177628226ac29615">   92</a></span><span class="keyword">inline</span> <span class="keyword">const</span> <a class="code hl_typedef" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&amp; <a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#aeae698bb362f0da6177628226ac29615">SubmoduleRequestPIMPL::get_name</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordflow">if</span>(!<a class="code hl_function" href="classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html#a2ed36aaa4386b599a05de3dd52ae13b9">has_module</a>()) <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Submodule is not set&quot;</span>);</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordflow">return</span> m_module_-&gt;get_name();</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>}</div>
