@@ -28,8 +28,8 @@ description = "Plugin-based software framework for the NWChemEx ecosystem"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.8"
 dependencies = [
-    "nwchemex-utilities",
-    "nwchemex-parallelzone",
+    "nwchemex-utilities @ git+https://github.com/ryanmrichard/Utilities",
+    "nwchemex-parallelzone @ git+https://github.com/ryanmrichard/ParallelZone",
 ]
 
 [tool.scikit-build]
