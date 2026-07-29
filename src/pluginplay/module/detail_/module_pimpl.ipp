@@ -23,7 +23,9 @@ inline ModulePIMPL::ModulePIMPL(base_ptr base, cache_ptr cache) :
   m_cache_(cache),
   m_inputs_(base ? base->inputs() : type::input_map{}),
   m_submods_(base ? base->submods() : type::submodule_map{}),
-  m_property_types_(base ? base->property_types() : std::set<type::rtti>{}) {}
+  m_property_types_(base ? base->property_types() : std::set<type::rtti>{}),
+  m_python_property_types_(base ? base->python_property_types() :
+                                  std::set<std::string>{}) {}
 
 inline bool ModulePIMPL::has_description() const {
     assert_mod_();
@@ -86,6 +88,16 @@ inline auto& ModulePIMPL::property_types() {
 inline auto& ModulePIMPL::property_types() const {
     assert_mod_();
     return m_property_types_;
+}
+
+inline auto& ModulePIMPL::python_property_types() {
+    assert_mod_();
+    return m_python_property_types_;
+}
+
+inline auto& ModulePIMPL::python_property_types() const {
+    assert_mod_();
+    return m_python_property_types_;
 }
 
 inline auto& ModulePIMPL::description() const {
@@ -192,8 +204,9 @@ inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
     if(locked() != rhs.locked()) return false;
     if(!has_module()) return true;
 
-    if(std::tie(inputs(), submods(), property_types()) !=
-       std::tie(rhs.inputs(), rhs.submods(), rhs.property_types()))
+    if(std::tie(inputs(), submods(), property_types(), python_property_types()) !=
+       std::tie(rhs.inputs(), rhs.submods(), rhs.property_types(),
+                rhs.python_property_types()))
         return false;
     return (*m_base_ == *rhs.m_base_);
 }

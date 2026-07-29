@@ -21,10 +21,12 @@ namespace pluginplay::python {
 
 void export_py_type_info(py_module_reference m);
 void export_python_wrapper(py_module_reference m);
+void export_python_only_property_type(py_module_reference m);
 
 inline void export_python(py_module_reference m) {
     export_py_type_info(m);
     export_python_wrapper(m);
+    export_python_only_property_type(m);
 }
 
 } // namespace pluginplay::python

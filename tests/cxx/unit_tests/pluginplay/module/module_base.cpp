@@ -93,6 +93,21 @@ TEST_CASE("ModuleBase : property_types()") {
     }
 }
 
+TEST_CASE("ModuleBase : python_property_types()") {
+    SECTION("No Python-only property type") {
+        testing::NoPTModule mod;
+        REQUIRE(mod.python_property_types().empty());
+    }
+    SECTION("Has a Python-only property type") {
+        testing::PythonOnlyPTModule mod;
+        REQUIRE(mod.python_property_types() == std::set<std::string>{"PydanticAPI"});
+        REQUIRE(mod.property_types() ==
+               std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
+        REQUIRE(mod.inputs().count("input schema") == 1);
+        REQUIRE(mod.results().count("result schema") == 1);
+    }
+}
+
 TEST_CASE("ModuleBase : type") {
     testing::NotReadyModule mod;
     REQUIRE(mod.type() == type::rtti(typeid(testing::NotReadyModule)));

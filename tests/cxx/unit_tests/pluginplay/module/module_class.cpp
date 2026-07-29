@@ -18,6 +18,9 @@
 #include "test_common.hpp"
 #include <pluginplay/module/module_class.hpp>
 #include <regex>
+#ifdef BUILD_PYBIND11
+#include <pybind11/pybind11.h>
+#endif
 
 using namespace pluginplay;
 using namespace testing;
@@ -275,6 +278,37 @@ TEST_CASE("Module : property_types") {
         REQUIRE(mod->property_types() == std::set{type::rtti{typeid(NullPT)}});
     }
 }
+
+TEST_CASE("Module : python_property_types") {
+    SECTION("Throws if no implementation") {
+        Module p;
+        REQUIRE_THROWS_AS(p.python_property_types(), std::runtime_error);
+    }
+    SECTION("No Python-only property types") {
+        auto mod = make_module<NullModule>();
+        REQUIRE(mod->python_property_types().empty());
+    }
+    SECTION("Has a Python-only property type") {
+        auto mod = make_module<PythonOnlyPTModule>();
+        REQUIRE(mod->python_property_types() == std::set<std::string>{"PydanticAPI"});
+        // Also visible (shared marker) via the ordinary RTTI-keyed set
+        REQUIRE(mod->property_types() ==
+               std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
+    }
+}
+
+#ifdef BUILD_PYBIND11
+TEST_CASE("Module : run_as(PythonOnlyPropertyType)") {
+    SECTION("Throws if module does not satisfy the property type") {
+        auto mod = make_module<NullModule>();
+        python::PythonOnlyPropertyType pt("PydanticAPI");
+        // check_python_property_type_ throws before touching args, so it's
+        // safe to pass a default-constructed (empty-handle) args here even
+        // without an initialized Python interpreter.
+        REQUIRE_THROWS_AS(mod->run_as(pt, pybind11::args{}), std::runtime_error);
+    }
+}
+#endif
 
 TEST_CASE("Module : change_input") {
     const std::string key{"Option 1"};

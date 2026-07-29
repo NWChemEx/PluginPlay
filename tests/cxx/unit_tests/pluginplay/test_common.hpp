@@ -19,6 +19,7 @@
 #include <pluginplay/module/detail_/module_pimpl.hpp>
 #include <pluginplay/module/macros.hpp>
 #include <pluginplay/module/module_class.hpp>
+#include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/utility/uuid.hpp>
 
 namespace testing {
@@ -38,6 +39,17 @@ inline MODULE_RUN(NoPTModule) { return results(); }
 DECLARE_MODULE(NullModule);
 inline MODULE_CTOR(NullModule) { satisfies_property_type<NullPT>(); }
 inline MODULE_RUN(NullModule) { return results(); }
+
+// Module satisfying a Python-only property type named "PydanticAPI", with
+// one input ("input schema") and one result ("result schema")
+DECLARE_MODULE(PythonOnlyPTModule);
+inline MODULE_CTOR(PythonOnlyPTModule) {
+    pluginplay::python::PythonOnlyPropertyType pt("PydanticAPI");
+    pt.declare_input("input schema");
+    pt.declare_result("result schema");
+    satisfies_property_type(pt);
+}
+inline MODULE_RUN(PythonOnlyPTModule) { return results(); }
 
 // Module with a description "A description"
 DECLARE_MODULE(DescModule);

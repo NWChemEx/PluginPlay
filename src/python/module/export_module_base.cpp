@@ -16,6 +16,7 @@
 
 #include "../export_pluginplay.hpp"
 #include "py_module_base.hpp"
+#include <pluginplay/property_type/python_only_property_type.hpp>
 
 namespace pluginplay {
 
@@ -38,6 +39,7 @@ void export_module_base(py_module_reference m) {
       .def("inputs", static_cast<inputs_fxn>(&ModuleBase::inputs))
       .def("submods", static_cast<submod_fxn>(&ModuleBase::submods))
       .def("property_types", &ModuleBase::property_types)
+      .def("python_property_types", &ModuleBase::python_property_types)
       .def("get_desc", &ModuleBase::get_desc)
       .def("citations", &ModuleBase::citations)
       .def("get_runtime", &ModuleBase::get_runtime)
@@ -75,6 +77,11 @@ void export_module_base(py_module_reference m) {
         py::return_value_policy::reference)
       .def("satisfies_property_type",
            [](ModuleBase& self, py::object pt) {
+               if(py::isinstance<python::PythonOnlyPropertyType>(pt)) {
+                   self.satisfies_property_type(
+                     pt.cast<const python::PythonOnlyPropertyType&>());
+                   return;
+               }
                auto info    = pt.attr("type")().cast<python::PyTypeInfo>();
                auto inputs  = pt.attr("inputs")().cast<type::input_map>();
                auto results = pt.attr("results")().cast<type::result_map>();

@@ -403,6 +403,28 @@ public:
      */
     auto& property_types() const;
 
+    /** @brief Returns the set of Python-only property types (by name) that
+     *         this module can be run as, in a read/write state.
+     *
+     *  @return The set of Python-only property type names that this module
+     *          satisfies.
+     *
+     * @throw std::runtime_error if this PIMPL does not have an implementation.
+     *                           Strong throw guarantee.
+     */
+    auto& python_property_types();
+
+    /** @brief Returns the set of Python-only property types (by name) that
+     *         this module can be run as, in a read-only state.
+     *
+     *  @return The set of Python-only property type names that this module
+     *          satisfies.
+     *
+     * @throw std::runtime_error if this PIMPL does not have an implementation.
+     *                           Strong throw guarantee.
+     */
+    auto& python_property_types() const;
+
     /** @brief Returns the human-readable description provided by the developer
      *
      *  Developers are encouraged to provide human-readable descriptions of what
@@ -643,6 +665,9 @@ private:
 
     /// The set of property types that his module satisfies
     std::set<type::rtti> m_property_types_;
+
+    /// The names of the Python-only property types this module satisfies
+    std::set<std::string> m_python_property_types_;
 
     /// Timer used to time runs of this module
     utilities::Timer m_timer_;

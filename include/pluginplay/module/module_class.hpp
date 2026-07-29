@@ -17,6 +17,7 @@
 #pragma once
 #include "pluginplay/types.hpp"
 #include <pluginplay/fields/fields.hpp>
+#include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/utility/uuid.hpp>
 #include <utilities/containers/case_insensitive_map.hpp>
 
@@ -455,6 +456,23 @@ public:
      */
     const std::set<type::rtti>& property_types() const;
 
+    /** @brief Returns the set of Python-only property types (by name) that
+     *         this module can be run as.
+     *
+     *  Python-only property types (python::PythonOnlyPropertyType) share a
+     *  single RTTI, so unlike property_types() (which is keyed on RTTI),
+     *  this set is keyed on the property type's name() -- see
+     *  ModuleBase::satisfies_property_type(const
+     *  python::PythonOnlyPropertyType&).
+     *
+     * @return The set of Python-only property type names that this module
+     *         satisfies.
+     *
+     * @throw std::runtime_error if this instance does not have an
+     *                           implementation. Strong throw guarantee.
+     */
+    const std::set<std::string>& python_property_types() const;
+
     /** @brief Returns the human-readable description provided by the developer
      *
      *  Developers are encouraged to provide human-readable descriptions of what
@@ -617,6 +635,34 @@ public:
     template<typename property_type, typename... Args>
     auto run_as(Args&&... args);
 
+    /** @brief Runs this module as the provided Python-only property type.
+     *
+     *  Same purpose as the templated run_as above, but for
+     *  python::PythonOnlyPropertyType, whose identity is a name() string
+     *  rather than a compile-time C++ type. @p args is bound positionally,
+     *  in @p pt's declared input order, wrapped opaquely as Python objects;
+     *  the results are unwrapped the same way and returned in @p pt's
+     *  declared result order. Dispatch still funnels through the ordinary
+     *  Module::run(), so memoization and submodule resolution behave exactly
+     *  as they do for C++ property types.
+     *
+     *  @tparam ArgsType The type representing Python's "args" concept
+     *          (expected to be pybind11::args; templated so this header
+     *          stays includable without pybind11 support).
+     *
+     *  @param[in] pt The Python-only property type to run this module as.
+     *  @param[in] args The input values that will be forwarded to the module.
+     *
+     *  @return The unwrapped results, in @p pt's declared result order.
+     *
+     *  @throw std::runtime_error if the module does not satisfy @p pt (by
+     *                            name), or the usual run() failure modes.
+     *                            Strong throw guarantee.
+     */
+    template<typename ArgsType>
+    std::vector<python::PythonWrapper> run_as(
+      const python::PythonOnlyPropertyType& pt, ArgsType&& args);
+
     /** @brief The advanced API for running the module.
      *
      *  This member allows you to set whatever inputs you would like and gives
@@ -720,6 +766,9 @@ private:
     /// Hides the check of the property type
     void check_property_type_(type::rtti prop_type);
 
+    /// Hides the check of a Python-only property type (checked by name)
+    void check_python_property_type_(const std::string& name);
+
     /// The instance that actually does everything for us.
     pimpl_ptr m_pimpl_;
 
@@ -786,6 +835,14 @@ auto Module::run_as(Args&&... args) {
             return rv;
         }
     }
+}
+
+template<typename ArgsType>
+std::vector<python::PythonWrapper> Module::run_as(
+  const python::PythonOnlyPropertyType& pt, ArgsType&& args) {
+    check_python_property_type_(pt.name());
+    auto temp = pt.wrap_inputs(inputs(), std::forward<ArgsType>(args));
+    return pt.unwrap_results(run(temp));
 }
 
 inline void Module::assert_not_locked_() {
