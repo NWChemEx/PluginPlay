@@ -100,9 +100,10 @@ TEST_CASE("ModuleBase : python_property_types()") {
     }
     SECTION("Has a Python-only property type") {
         testing::PythonOnlyPTModule mod;
-        REQUIRE(mod.python_property_types() == std::set<std::string>{"PydanticAPI"});
+        REQUIRE(mod.python_property_types() ==
+                std::set<std::string>{"PydanticAPI"});
         REQUIRE(mod.property_types() ==
-               std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
+                std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
         REQUIRE(mod.inputs().count("input schema") == 1);
         REQUIRE(mod.results().count("result schema") == 1);
     }

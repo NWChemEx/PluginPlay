@@ -51,12 +51,12 @@ TEST_CASE("PythonOnlyPropertyType") {
         REQUIRE(pt.inputs().count("input schema") == 1);
         REQUIRE(pt.input_order() == std::vector<type::key>{"input schema"});
         REQUIRE(pt.inputs().at("input schema").description() ==
-               "A pydantic BaseModel instance");
+                "A pydantic BaseModel instance");
 
         SECTION("multiple inputs preserve declaration order") {
             pt.declare_input("another input");
             REQUIRE(pt.input_order() ==
-                   std::vector<type::key>{"input schema", "another input"});
+                    std::vector<type::key>{"input schema", "another input"});
         }
     }
 
@@ -67,6 +67,6 @@ TEST_CASE("PythonOnlyPropertyType") {
         REQUIRE(pt.results().count("result schema") == 1);
         REQUIRE(pt.result_order() == std::vector<type::key>{"result schema"});
         REQUIRE(pt.results().at("result schema").description() ==
-               "A pydantic BaseModel instance");
+                "A pydantic BaseModel instance");
     }
 }

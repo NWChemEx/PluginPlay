@@ -37,8 +37,7 @@ pybind11::object py_module_run_as(Module& self, pybind11::object pt,
 /// Module::run_as(const python::PythonOnlyPropertyType&, ...), which checks
 /// (by name) that the module actually satisfies @p pt before running it.
 pybind11::object py_module_run_as_python_only(
-  Module& self, const python::PythonOnlyPropertyType& pt,
-  pybind11::args args) {
+  Module& self, const python::PythonOnlyPropertyType& pt, pybind11::args args) {
     auto rv = self.run_as(pt, args);
     pybind11::tuple rv_tuple(rv.size());
     for(std::size_t i = 0; i < rv.size(); ++i)

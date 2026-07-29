@@ -24,7 +24,8 @@ namespace {
 pybind11::tuple py_unwrap(const std::vector<PythonWrapper>& unwrapped) {
     pybind11::tuple rv(unwrapped.size());
     for(std::size_t i = 0; i < unwrapped.size(); ++i)
-        rv[i] = const_cast<PythonWrapper&>(unwrapped[i]).unwrap<pybind11::object>();
+        rv[i] =
+          const_cast<PythonWrapper&>(unwrapped[i]).unwrap<pybind11::object>();
     return rv;
 }
 

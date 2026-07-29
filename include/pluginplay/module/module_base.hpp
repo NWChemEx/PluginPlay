@@ -376,8 +376,9 @@ public:
      *                        guarantee.
      */
     void satisfies_property_type(const python::PythonOnlyPropertyType& pt) {
-        satisfies_property_type(type::rtti(typeid(python::PythonOnlyPropertyType)),
-                                pt.inputs(), pt.results());
+        satisfies_property_type(
+          type::rtti(typeid(python::PythonOnlyPropertyType)), pt.inputs(),
+          pt.results());
         m_python_property_types_.insert(pt.name());
     }
 

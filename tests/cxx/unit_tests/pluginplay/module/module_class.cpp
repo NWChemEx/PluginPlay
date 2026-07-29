@@ -290,10 +290,11 @@ TEST_CASE("Module : python_property_types") {
     }
     SECTION("Has a Python-only property type") {
         auto mod = make_module<PythonOnlyPTModule>();
-        REQUIRE(mod->python_property_types() == std::set<std::string>{"PydanticAPI"});
+        REQUIRE(mod->python_property_types() ==
+                std::set<std::string>{"PydanticAPI"});
         // Also visible (shared marker) via the ordinary RTTI-keyed set
         REQUIRE(mod->property_types() ==
-               std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
+                std::set{type::rtti{typeid(python::PythonOnlyPropertyType)}});
     }
 }
 
@@ -305,7 +306,8 @@ TEST_CASE("Module : run_as(PythonOnlyPropertyType)") {
         // check_python_property_type_ throws before touching args, so it's
         // safe to pass a default-constructed (empty-handle) args here even
         // without an initialized Python interpreter.
-        REQUIRE_THROWS_AS(mod->run_as(pt, pybind11::args{}), std::runtime_error);
+        REQUIRE_THROWS_AS(mod->run_as(pt, pybind11::args{}),
+                          std::runtime_error);
     }
 }
 #endif
