@@ -101,9 +101,11 @@ objects to define as simple of an :ref:`api` as possible.
 Python Property Types
 =====================
 
-Property types defined in C++ can be used in Python too. Some users will want to
-define their property types in Python so that the inputs/results are Python 
-types. 
+Property types defined in C++ can be used in Python so long as the types in the
+interface are registered with pybind11. Some users will want to
+define their property types in Python though. In such case sthe inputs/results
+are Python types and will not be visible to C++ (without some sort of
+registration system).
 
 We propose to develop a class ``PythonOnlyPropertyType`` that defines the base
 API for property types written in Python. Python property types are then
@@ -116,7 +118,7 @@ type API is envisioned as working like:
          def __init__(self):
             super().__init__(self)
             self.satisfies_property_type(MyPythonPropertyType())
-   
+
          def run_(self, inputs, submods):
             [inp0, inp1, inp2] = MyPythonPropertyType.unwrap_inputs(inputs)
 
@@ -140,7 +142,7 @@ The definition of the property type would look like:
             self.declare_results("res2").set_description("Result 2 description")
 
 The property type would be responsible for knowing how many inputs/results there
-are and the descriptions of each. Consistent with typical Python usage, the 
+are and the descriptions of each. Consistent with typical Python usage, the
 property type should allow duck typing. The latter means that the property type
 can not be used from C++ without some sort of type registration system.
 
