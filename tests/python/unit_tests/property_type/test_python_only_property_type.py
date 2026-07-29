@@ -16,6 +16,7 @@ import unittest
 
 import pluginplay as pp
 
+
 class PydanticAPI(pp.PythonOnlyPropertyType):
     """A Python-only property type with one input, "input schema", and one
     result, "result schema", each an opaque Python object. A real module would
@@ -67,7 +68,9 @@ class TestPythonOnlyPropertyType(unittest.TestCase):
         self.assertEqual(unwrapped, {"y": 2})
 
     def test_module_satisfies_and_runs(self):
-        mod = EchoModule()
+        mm = pp.ModuleManager()
+        mm.add_module("echo", EchoModule())
+        mod = mm.at("echo")
         self.assertIn("PydanticAPI", mod.python_property_types())
 
         # Round-trips a Python object through the module, exercising the
@@ -83,7 +86,9 @@ class TestPythonOnlyPropertyType(unittest.TestCase):
             def run_(self, inputs, submods):
                 return self.results()
 
-        mod = NotPydanticModule()
+        mm = pp.ModuleManager()
+        mm.add_module("not pydantic", NotPydanticModule())
+        mod = mm.at("not pydantic")
         with self.assertRaises(RuntimeError):
             mod.run_as(self.pt, {"x": 1})
 
