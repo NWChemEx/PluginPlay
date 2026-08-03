@@ -103,7 +103,7 @@ Python Property Types
 
 Property types defined in C++ can be used in Python so long as the types in the
 interface are registered with pybind11. Some users will want to
-define their property types in Python though. In such case sthe inputs/results
+define their property types in Python though. In such cases the inputs/results
 are Python types and will not be visible to C++ (without some sort of
 registration system).
 
