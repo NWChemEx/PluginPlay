@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['name_0',['name',['../classpluginplay_1_1python_1_1PythonOnlyPropertyType.html#abdfdd19cfaf1327bac4087cc57f65dc5',1,'pluginplay::python::PythonOnlyPropertyType::name()'],['../classpluginplay_1_1python_1_1PyTypeInfo.html#a1b3f287f582b75641026bdf5cde25583',1,'pluginplay::python::PyTypeInfo::name()']]],
+  ['name_0',['name',['../classpluginplay_1_1python_1_1PyTypeInfo.html#a1b3f287f582b75641026bdf5cde25583',1,'pluginplay::python::PyTypeInfo']]],
   ['native_1',['native',['../classpluginplay_1_1cache_1_1database_1_1Native.html',1,'pluginplay::cache::database::Native&lt; KeyType, ValueType &gt;'],['../classpluginplay_1_1cache_1_1database_1_1Native.html#aeaa582de3921cb12fa6183e68b6a098d',1,'pluginplay::cache::database::Native::Native(map_type map={}, backup_db_pointer backup={})'],['../classpluginplay_1_1cache_1_1database_1_1Native.html#ab37a85674f0a52193f84f3883f111072',1,'pluginplay::cache::database::Native::Native(backup_db_pointer backup)']]],
   ['new_5ffield_5ftuple_2',['new_field_tuple',['../structpluginplay_1_1detail___1_1FieldTupleTraits.html#a734dd236a15f798b542a69245c560391',1,'pluginplay::detail_::FieldTupleTraits']]],
   ['nfields_3',['nfields',['../structpluginplay_1_1detail___1_1FieldTupleTraits.html#a6ab7556577030c7ee86c3008a8fc7937',1,'pluginplay::detail_::FieldTupleTraits']]],
