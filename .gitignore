@@ -54,3 +54,6 @@ install/
 
 # These are MacOS files
 .DS_Store
+
+# Automatically installed in dev mode
+.pre-commit-config.yaml

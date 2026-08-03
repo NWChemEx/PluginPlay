@@ -15,6 +15,7 @@
  */
 
 #pragma once
+#include <cstring>
 #include <string>
 #include <typeindex>
 #include <utilities/containers/case_insensitive_map.hpp>
@@ -73,6 +74,18 @@ using result_map = utilities::CaseInsensitiveMap<ModuleResult>;
 
 /// Type of the RTTI
 using rtti = std::type_index;
+
+/// True if @p lhs and @p rhs denote the same C++ type.
+///
+/// pybind11 extension modules are commonly loaded with independent RTTI
+/// state across shared objects (e.g. via dlopen with hidden symbol
+/// visibility), so comparing two std::type_index for the identical C++
+/// type can spuriously return false when the two sides originate from
+/// different DSOs. Falling back to a name-string comparison works around
+/// this libc++/Python cross-DSO quirk.
+inline bool rtti_equal(const rtti& lhs, const rtti& rhs) {
+    return lhs == rhs || std::strcmp(lhs.name(), rhs.name()) == 0;
+}
 
 /// Type of a natural number, including zero
 using size = std::size_t;

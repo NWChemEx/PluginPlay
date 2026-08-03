@@ -16,6 +16,7 @@
 
 #pragma once
 #include "pluginplay/submodule_request.hpp"
+#include <algorithm>
 #include <optional>
 #include <utilities/printing/demangler.hpp>
 

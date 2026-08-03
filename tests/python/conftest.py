@@ -14,8 +14,18 @@
 # limitations under the License.
 #
 
+import pathlib
+import sys
+
 import parallelzone as pz
 import pytest
+
+# py_test_pluginplay and pluginplay_examples are NO_INSTALL pybind11 modules
+# (test-only fixtures/tutorial bindings) that only ever land in the CMake
+# build directory, never in site-packages. Make them importable here.
+_build_dir = pathlib.Path(__file__).resolve().parents[2] / "build"
+if _build_dir.is_dir():
+    sys.path.insert(0, str(_build_dir))
 
 
 @pytest.fixture(scope="session", autouse=True)

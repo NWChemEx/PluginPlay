@@ -32,6 +32,9 @@ dependencies = [
     "nwchemex-parallelzone @ git+https://github.com/ryanmrichard/ParallelZone",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest", "pre-commit"]
+
 [tool.scikit-build]
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
 cmake.build-type = "Release"
@@ -46,4 +49,4 @@ fallback_version = "0.0.0"
 # For editable (developer) installs, also build the tests.
 [[tool.scikit-build.overrides]]
 if.state = "editable"
-cmake.args = ["-DBUILD_PYBIND11_BINDINGS=ON", "-DBUILD_TESTING=ON"]
+cmake.args = ["-DDEVELOPER_SETUP=ON"]
