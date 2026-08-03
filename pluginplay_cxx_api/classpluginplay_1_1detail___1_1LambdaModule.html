@@ -227,6 +227,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5a66d34ef3aff119dd2b2700cc1731a1 inherit pub_methods_classpluginplay_1_1ModuleBase" id="r_a5a66d34ef3aff119dd2b2700cc1731a1"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a5a66d34ef3aff119dd2b2700cc1731a1">property_types</a> () const noexcept</td></tr>
 <tr class="memdesc:a5a66d34ef3aff119dd2b2700cc1731a1 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of property types this module satisfies.  <br /></td></tr>
 <tr class="separator:a5a66d34ef3aff119dd2b2700cc1731a1 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab829f149db50c169ff0ceb8cff704a12 inherit pub_methods_classpluginplay_1_1ModuleBase" id="r_ab829f149db50c169ff0ceb8cff704a12"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ab829f149db50c169ff0ceb8cff704a12">python_property_types</a> () const noexcept</td></tr>
+<tr class="memdesc:ab829f149db50c169ff0ceb8cff704a12 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of Python-only property types this module satisfies.  <br /></td></tr>
+<tr class="separator:ab829f149db50c169ff0ceb8cff704a12 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a57e5f833a35bc22c3681e7d9bdf5d0 inherit pub_methods_classpluginplay_1_1ModuleBase" id="r_a7a57e5f833a35bc22c3681e7d9bdf5d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a7a57e5f833a35bc22c3681e7d9bdf5d0">type</a> () const noexcept</td></tr>
 <tr class="memdesc:a7a57e5f833a35bc22c3681e7d9bdf5d0 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the RTTI of the derived class.  <br /></td></tr>
 <tr class="separator:a7a57e5f833a35bc22c3681e7d9bdf5d0 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -274,6 +277,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_python</b> () cons
 template&lt;typename InputContainer , typename ResultContainer &gt; </td></tr>
 <tr class="memitem:a7e1ec1feb15dcc57c3c7441cfbcec8e4 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>satisfies_property_type</b> (<a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a> rtti, InputContainer &amp;&amp;<a class="el" href="classpluginplay_1_1ModuleBase.html#a67d774e749e793fbb7ecbf40801914d7">inputs</a>, ResultContainer &amp;&amp;<a class="el" href="classpluginplay_1_1ModuleBase.html#ac14bf20477aedf9745eb8f34132db1c4">results</a>)</td></tr>
 <tr class="separator:a7e1ec1feb15dcc57c3c7441cfbcec8e4 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc66f1abd303b18b0cb696362950f567 inherit pub_methods_classpluginplay_1_1ModuleBase" id="r_abc66f1abd303b18b0cb696362950f567"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#abc66f1abd303b18b0cb696362950f567">satisfies_property_type</a> (const <a class="el" href="classpluginplay_1_1python_1_1PythonOnlyPropertyType.html">python::PythonOnlyPropertyType</a> &amp;pt)</td></tr>
+<tr class="memdesc:abc66f1abd303b18b0cb696362950f567 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies that the derived module satisfies the Python-only property type <code>pt</code>.  <br /></td></tr>
+<tr class="separator:abc66f1abd303b18b0cb696362950f567 inherit pub_methods_classpluginplay_1_1ModuleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="related" name="related"></a>
 Related Symbols</h2></td></tr>
@@ -498,7 +504,7 @@ template&lt;typename <a class="el" href="classpluginplay_1_1PropertyType.html">P
 <p>Creates a lambda module by wrapping the provided callback in a <a class="el" href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module.">LambdaModule</a> instance. </p>
 <p>This is the public API for creating a lambda module, it requires you to specify the property type that the module satisfies and provide a callback to implement the lambda module. Typical usage is something like:</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classpluginplay_1_1Module.html">Module</a> my_lambda = make_lambda&lt;PropertyType&gt;([](){ ...});</div>
-<div class="ttc" id="aclasspluginplay_1_1Module_html"><div class="ttname"><a href="classpluginplay_1_1Module.html">pluginplay::Module</a></div><div class="ttdoc">The public API of all modules.</div><div class="ttdef"><b>Definition</b> module_class.hpp:52</div></div>
+<div class="ttc" id="aclasspluginplay_1_1Module_html"><div class="ttname"><a href="classpluginplay_1_1Module.html">pluginplay::Module</a></div><div class="ttdoc">The public API of all modules.</div><div class="ttdef"><b>Definition</b> module_class.hpp:53</div></div>
 </div><!-- fragment --><p>where <code><a class="el" href="classpluginplay_1_1PropertyType.html" title="Base class for defining the API a module uses to compute a particular property.">PropertyType</a></code> would be replaced with the class type defining the API of the property your module computes and the C++ lambda is the callback the resulting lambda module will wrap.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -518,7 +524,7 @@ template&lt;typename <a class="el" href="classpluginplay_1_1PropertyType.html">P
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>cxx/include/pluginplay/module/<a class="el" href="lambda__module_8hpp_source.html">lambda_module.hpp</a></li>
+<li>include/pluginplay/module/<a class="el" href="lambda__module_8hpp_source.html">lambda_module.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

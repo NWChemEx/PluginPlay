@@ -7,8 +7,7 @@ var searchData=
   ['propertytypebase_4',['PropertyTypeBase',['../structpluginplay_1_1detail___1_1PropertyTypeBase.html',1,'pluginplay::detail_']]],
   ['propertytypebase_3c_20propertytype_3c_20t_2c_20u_20_3e_20_3e_5',['PropertyTypeBase&lt; PropertyType&lt; T, U &gt; &gt;',['../structpluginplay_1_1detail___1_1PropertyTypeBase_3_01PropertyType_3_01T_00_01U_01_4_01_4.html',1,'pluginplay::detail_']]],
   ['proxymapmaker_6',['ProxyMapMaker',['../classpluginplay_1_1cache_1_1ProxyMapMaker.html',1,'pluginplay::cache']]],
-  ['publicist_7',['Publicist',['../classpluginplay_1_1Publicist.html',1,'pluginplay']]],
-  ['pymodulebase_8',['PyModuleBase',['../classpluginplay_1_1PyModuleBase.html',1,'pluginplay']]],
-  ['pythonwrapper_9',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
-  ['pytypeinfo_10',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
+  ['pythononlypropertytype_7',['PythonOnlyPropertyType',['../classpluginplay_1_1python_1_1PythonOnlyPropertyType.html',1,'pluginplay::python']]],
+  ['pythonwrapper_8',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
+  ['pytypeinfo_9',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
 ];

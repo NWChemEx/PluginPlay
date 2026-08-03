@@ -186,6 +186,48 @@ inputs and one for the results. The process of doing this is wrapped by
 responsible for storing not only the types of the inputs, but also the default
 values, descriptions, etc. It is the responsibility of the <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code>
 objects to define as simple of an <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a> as possible.</p>
+<section id="python-property-types">
+<h3>Python Property Types<a class="headerlink" href="#python-property-types" title="Link to this heading"></a></h3>
+<p>Property types defined in C++ can be used in Python so long as the types in the
+interface are registered with pybind11. Some users will want to
+define their property types in Python though. In such cases the inputs/results
+are Python types and will not be visible to C++ (without some sort of
+registration system).</p>
+<p>We propose to develop a class <code class="docutils literal notranslate"><span class="pre">PythonOnlyPropertyType</span></code> that defines the base
+API for property types written in Python. Python property types are then
+implemented by deriving from <code class="docutils literal notranslate"><span class="pre">PythonOnlyPropertyType</span></code>. Use of the property
+type API is envisioned as working like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyPythonModule</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">ModuleBase</span><span class="p">):</span>
+      <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">MyPythonPropertyType</span><span class="p">())</span>
+
+      <span class="k">def</span><span class="w"> </span><span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+         <span class="p">[</span><span class="n">inp0</span><span class="p">,</span> <span class="n">inp1</span><span class="p">,</span> <span class="n">inp2</span><span class="p">]</span> <span class="o">=</span> <span class="n">MyPythonPropertyType</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+         <span class="c1"># Do work with inp0, inp1, inp2</span>
+
+         <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
+         <span class="k">return</span> <span class="n">MyPythonPropertyType</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">res0</span><span class="p">,</span> <span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The definition of the property type would look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyPythonPropertyType</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">PythonOnlyPropertyType</span><span class="p">):</span>
+      <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_inputs</span><span class="p">(</span><span class="s2">&quot;inp0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Input 0 description&quot;</span><span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_inputs</span><span class="p">(</span><span class="s2">&quot;inp1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Input 1 description&quot;</span><span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_inputs</span><span class="p">(</span><span class="s2">&quot;inp2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Input 2 description&quot;</span><span class="p">)</span>
+
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_results</span><span class="p">(</span><span class="s2">&quot;res0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Result 0 description&quot;</span><span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_results</span><span class="p">(</span><span class="s2">&quot;res1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Result 1 description&quot;</span><span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">declare_results</span><span class="p">(</span><span class="s2">&quot;res2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s2">&quot;Result 2 description&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The property type would be responsible for knowing how many inputs/results there
+are and the descriptions of each. Consistent with typical Python usage, the
+property type should allow duck typing. The latter means that the property type
+can not be used from C++ without some sort of type registration system.</p>
+</section>
 <section id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
 <p>Our design addresses the above considerations by:</p>
