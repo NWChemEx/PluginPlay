@@ -45,19 +45,22 @@ if(BUILD_PYBIND11_BINDINGS)
     # pybind11_add_module, which intentionally avoids linking libpython so
     # the module can be loaded by any Python that provides the symbols at
     # runtime). Development.Embed additionally provides the Python::Python
-    # target (see below), needed only so the Catch2 test *executables*
-    # link cleanly (an executable can't defer symbol resolution to runtime
-    # the way a shared library/extension can) -- so only require it when
-    # those executables will actually be built. manylinux wheel-build
-    # containers deliberately don't ship libpython.so at all (portable
-    # wheels aren't supposed to assume one), so requiring Development.Embed
-    # unconditionally broke the BUILD_TESTING=OFF wheel-build path there.
-    if(BUILD_TESTING)
-        find_package(Python REQUIRED
-            COMPONENTS Interpreter Development.Module Development.Embed)
-    else()
-        find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
-    endif()
+    # target (see below), needed so any C++-only executable that transitively
+    # links this library (e.g. a Catch2 test binary, here or in a downstream
+    # ecosystem project) gets those symbols resolved at link time instead --
+    # an executable can't defer resolution to runtime the way a shared
+    # library/extension can. This used to be gated on BUILD_TESTING, but
+    # get_dependencies() force-sets BUILD_TESTING=OFF while FetchContent'ing
+    # this project as someone else's dependency, which left downstream test
+    # executables (e.g. simde's unit_test_simde) linking a libpluginplay.dylib
+    # with no libpython and unresolved CPython symbols, aborting at load time.
+    # Probing for Development.Embed instead of requiring it keeps manylinux
+    # wheel-build containers (which deliberately don't ship libpython.so, and
+    # never link a C++ executable against this library anyway) working: the
+    # component there just won't be found, and Python::Python is skipped
+    # below.
+    find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+    find_package(Python QUIET COMPONENTS Development.Embed)
 endif()
 
 # TODO: add RocksDB handling when BUILD_ROCKSDB=ON
@@ -86,7 +89,7 @@ if(BUILD_PYBIND11_BINDINGS)
     # python_wrapper.hpp needs to even compile; it's always available (see
     # find_package above) and, unlike Python::Python, doesn't link libpython.
     target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
-    if(BUILD_TESTING)
+    if(TARGET Python::Python)
         target_link_libraries(${PROJECT_NAME} PUBLIC Python::Python)
     endif()
 endif()
