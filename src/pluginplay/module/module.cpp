@@ -101,6 +101,10 @@ const std::set<type::rtti>& Module::property_types() const {
     return m_pimpl_->property_types();
 }
 
+const std::set<std::string>& Module::python_property_types() const {
+    return m_pimpl_->python_property_types();
+}
+
 type::result_map Module::run(type::input_map ps) {
     return m_pimpl_->run(std::move(ps));
 }
@@ -153,6 +157,14 @@ void Module::check_property_type_(type::rtti prop_type) {
 
     std::string msg = "Module does not satisfy property type ";
     msg += utilities::printing::Demangler::demangle(prop_type);
+    throw std::runtime_error(msg);
+}
+
+void Module::check_python_property_type_(const std::string& name) {
+    if(python_property_types().count(name)) return;
+
+    std::string msg =
+      "Module does not satisfy Python-only property type \"" + name + "\"";
     throw std::runtime_error(msg);
 }
 

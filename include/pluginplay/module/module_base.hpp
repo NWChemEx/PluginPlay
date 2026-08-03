@@ -19,6 +19,7 @@
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/cache.hpp>
 #include <pluginplay/fields/fields.hpp>
+#include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
 #include <pluginplay/submodule_request.hpp>
 #include <pluginplay/utility/uuid.hpp>
@@ -207,6 +208,24 @@ public:
      */
     const auto& property_types() const noexcept { return m_property_types_; }
 
+    /** @brief Returns the set of Python-only property types this module
+     *         satisfies.
+     *
+     *  Python-only property types (`python::PythonOnlyPropertyType`) don't
+     *  have a distinct C++ RTTI -- every instance shares
+     *  `typeid(python::PythonOnlyPropertyType)` -- so their real identity,
+     *  the `name()` string, is tracked separately from
+     *  ModuleBase::property_types.
+     *
+     *  @return The set of names of Python-only property types that this
+     *          module can be run as.
+     *
+     *  @throw none No throw guarantee.
+     */
+    const auto& python_property_types() const noexcept {
+        return m_python_property_types_;
+    }
+
     /** @brief Returns the RTTI of the derived class.
      *
      *  The type of the derived class is used to index caches. More
@@ -339,6 +358,28 @@ public:
         m_property_types_.insert(std::move(rtti));
         m_inputs_.insert(inputs.begin(), inputs.end());
         m_results_.insert(results.begin(), results.end());
+    }
+
+    /** @brief Specifies that the derived module satisfies the Python-only
+     *         property type @p pt.
+     *
+     *  Merges @p pt's declared inputs/results into this module's inputs and
+     *  results (same as the RTTI-keyed overload above), records the shared
+     *  `typeid(python::PythonOnlyPropertyType)` marker in property_types()
+     *  for visibility, and records @p pt.name() -- the real identity -- in
+     *  python_property_types().
+     *
+     *  @param[in] pt The Python-only property type this module satisfies.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to add the
+     *                        property type's inputs and results. Weak throw
+     *                        guarantee.
+     */
+    void satisfies_property_type(const python::PythonOnlyPropertyType& pt) {
+        satisfies_property_type(
+          type::rtti(typeid(python::PythonOnlyPropertyType)), pt.inputs(),
+          pt.results());
+        m_python_property_types_.insert(pt.name());
     }
 
 protected:
@@ -552,6 +593,9 @@ private:
     /// The property types this module satisfies
     std::set<type::rtti> m_property_types_;
 
+    /// The names of the Python-only property types this module satisfies
+    std::set<std::string> m_python_property_types_;
+
     /// The RTTI of the derived class
     type::rtti m_type_;
 
@@ -584,9 +628,10 @@ inline bool ModuleBase::operator==(const ModuleBase& rhs) const noexcept {
     if(has_description() && get_desc() != rhs.get_desc()) return false;
     if(m_citations_ != rhs.m_citations_) return false;
     if(m_is_python_ != rhs.m_is_python_) return false;
-    return std::tie(inputs(), results(), submods(), property_types()) ==
+    return std::tie(inputs(), results(), submods(), property_types(),
+                    python_property_types()) ==
            std::tie(rhs.inputs(), rhs.results(), rhs.submods(),
-                    rhs.property_types());
+                    rhs.property_types(), rhs.python_property_types());
 }
 
 inline bool ModuleBase::operator!=(const ModuleBase& rhs) const noexcept {

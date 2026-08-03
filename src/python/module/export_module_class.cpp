@@ -16,6 +16,7 @@
 
 #include "../export_pluginplay.hpp"
 #include <pluginplay/module/module_class.hpp>
+#include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/python/py_type_info.hpp>
 #include <pluginplay/submodule_request.hpp>
 
@@ -29,6 +30,20 @@ pybind11::object py_module_run_as(Module& self, pybind11::object pt,
     auto cxx_rvs             = self.run(cxx_inps);
     pybind11::tuple rv_tuple = pt.attr("unwrap_results")(cxx_rvs);
     return rv_tuple.size() != 1 ? rv_tuple : pybind11::object(rv_tuple[0]);
+}
+
+/// Same purpose as py_module_run_as, but for PythonOnlyPropertyType. Unlike
+/// the generic duck-typed path above, this goes through
+/// Module::run_as(const python::PythonOnlyPropertyType&, ...), which checks
+/// (by name) that the module actually satisfies @p pt before running it.
+pybind11::object py_module_run_as_python_only(
+  Module& self, const python::PythonOnlyPropertyType& pt, pybind11::args args) {
+    auto rv = self.run_as(pt, args);
+    pybind11::tuple rv_tuple(rv.size());
+    for(std::size_t i = 0; i < rv.size(); ++i)
+        rv_tuple[i] = rv[i].unwrap<pybind11::object>();
+    return rv_tuple.size() != 1 ? pybind11::object(rv_tuple) :
+                                  pybind11::object(rv_tuple[0]);
 }
 
 void export_module_class(py_module_reference m) {
@@ -67,6 +82,7 @@ void export_module_class(py_module_reference m) {
                    rv.emplace(python::PyTypeInfo(pt));
                return rv;
            })
+      .def("python_property_types", &Module::python_property_types)
       .def("description", &Module::description)
       .def("citations", &Module::citations)
       .def("get_name",
@@ -87,9 +103,20 @@ void export_module_class(py_module_reference m) {
            static_cast<change_submod_fxn>(&Module::change_submod))
       .def("run_as",
            [](Module& self, pybind11::object pt) {
+               if(pybind11::isinstance<python::PythonOnlyPropertyType>(pt))
+                   return py_module_run_as_python_only(
+                     self, pt.cast<const python::PythonOnlyPropertyType&>(),
+                     pybind11::args{});
                return py_module_run_as(self, pt, pybind11::args{});
            })
-      .def("run_as", &py_module_run_as)
+      .def("run_as",
+           [](Module& self, pybind11::object pt, pybind11::args args) {
+               if(pybind11::isinstance<python::PythonOnlyPropertyType>(pt))
+                   return py_module_run_as_python_only(
+                     self, pt.cast<const python::PythonOnlyPropertyType&>(),
+                     std::move(args));
+               return py_module_run_as(self, pt, std::move(args));
+           })
       .def("run", &Module::run)
       .def("profile_info", &Module::profile_info)
       .def("submod_uuids", &Module::submod_uuids)
