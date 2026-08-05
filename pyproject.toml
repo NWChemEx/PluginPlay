@@ -27,9 +27,9 @@ license = { text = "Apache-2.0" }
 requires-python = ">=3.8"
 dependencies = [
     "pybind11",
-    "nwchemex-nwxcmake @ git+https://github.com/ryanmrichard/NWXCMake",
-    "nwchemex-utilities @ git+https://github.com/ryanmrichard/Utilities",
-    "nwchemex-parallelzone @ git+https://github.com/ryanmrichard/ParallelZone",
+    "nwchemex-nwxcmake>=0.1.0",
+    "nwchemex-utilities>=0.1.45",
+    "nwchemex-parallelzone>=0.1.43",
 ]
 
 [project.optional-dependencies]

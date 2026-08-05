@@ -25,9 +25,9 @@ on:
 
 jobs:
   test_cmake_build:
-    uses: ryanmrichard/.github/.github/workflows/test_nwx_cmake_build.yaml@master
+    uses: NWChemEx/.github/.github/workflows/test_nwx_cmake_build.yaml@master
     with:
       run_python_tests: "true"
 
   test_pip_build:
-    uses: ryanmrichard/.github/.github/workflows/test_nwx_pip_build.yaml@master
+    uses: NWChemEx/.github/.github/workflows/test_nwx_pip_build.yaml@master

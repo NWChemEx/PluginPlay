@@ -18,21 +18,21 @@ name: Merge Workflow
 on:
   push:
     branches:
-      - build_overhaul
+      - master
 
 jobs:
   tag-commit:
-    uses: ryanmrichard/.github/.github/workflows/tag.yaml@master
+    uses: NWChemEx/.github/.github/workflows/tag.yaml@master
     secrets: inherit
 
   deploy_nwx_docs:
-    uses: ryanmrichard/.github/.github/workflows/deploy_nwx_docs.yaml@master
+    uses: NWChemEx/.github/.github/workflows/deploy_nwx_docs.yaml@master
     with:
       doc_target: "pluginplay_cxx_api"
     secrets: inherit
 
   platform_matrix:
-    uses: ryanmrichard/.github/.github/workflows/platform_matrix.yaml@master
+    uses: NWChemEx/.github/.github/workflows/platform_matrix.yaml@master
 
   build_pypi_dist:
     needs: [tag-commit, platform_matrix]
@@ -43,11 +43,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Build PyPI Distribution
-        uses: ryanmrichard/.github/.github/actions/build_pypi_dist@master
+        uses: NWChemEx/.github/.github/actions/build_pypi_dist@master
         with:
           cibw_build: ${{ matrix.cibw_build }}
           build_sdist: ${{ matrix.os == 'ubuntu-latest' && 'true' || 'false' }}
-          extra_index_url: https://test.pypi.org/simple/
           needs_mpi: "true"
           needs_boost: "true"
 
@@ -78,4 +77,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
-          repository-url: https://test.pypi.org/legacy/
