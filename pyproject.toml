@@ -15,9 +15,7 @@
 [build-system]
 requires = [
     "scikit-build-core>=0.10",
-    "pybind11",
     "setuptools-scm>=8",
-    "nwchemex-nwxcmake @ git+https://github.com/ryanmrichard/NWXCMake",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -28,6 +26,8 @@ description = "Plugin-based software framework for the NWChemEx ecosystem"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.8"
 dependencies = [
+    "pybind11",
+    "nwchemex-nwxcmake @ git+https://github.com/ryanmrichard/NWXCMake",
     "nwchemex-utilities @ git+https://github.com/ryanmrichard/Utilities",
     "nwchemex-parallelzone @ git+https://github.com/ryanmrichard/ParallelZone",
 ]
