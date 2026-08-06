@@ -186,6 +186,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad5a4ec2878bdc6ab27a1ca89498fb7ac" id="r_ad5a4ec2878bdc6ab27a1ca89498fb7ac"><td class="memItemLeft" align="right" valign="top">const std::set&lt; <a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#ad5a4ec2878bdc6ab27a1ca89498fb7ac">property_types</a> () const</td></tr>
 <tr class="memdesc:ad5a4ec2878bdc6ab27a1ca89498fb7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of property types that this module can be run as.  <br /></td></tr>
 <tr class="separator:ad5a4ec2878bdc6ab27a1ca89498fb7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac890fa08289b2b2ba6c4c6cae1623ea" id="r_aac890fa08289b2b2ba6c4c6cae1623ea"><td class="memItemLeft" align="right" valign="top">const std::set&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#aac890fa08289b2b2ba6c4c6cae1623ea">python_property_types</a> () const</td></tr>
+<tr class="memdesc:aac890fa08289b2b2ba6c4c6cae1623ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of Python-only property types (by name) that this module can be run as.  <br /></td></tr>
+<tr class="separator:aac890fa08289b2b2ba6c4c6cae1623ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaef84f57112cd902829816b71e1c7f43" id="r_aaef84f57112cd902829816b71e1c7f43"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a6ac6703e3c574d225a21b4abec89e29a">type::description</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#aaef84f57112cd902829816b71e1c7f43">description</a> () const</td></tr>
 <tr class="memdesc:aaef84f57112cd902829816b71e1c7f43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the human-readable description provided by the developer.  <br /></td></tr>
 <tr class="separator:aaef84f57112cd902829816b71e1c7f43"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -216,6 +219,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a200b448a122dbe825c75bcbce82c64a7"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a200b448a122dbe825c75bcbce82c64a7">run_as</a> (Args &amp;&amp;... args)</td></tr>
 <tr class="memdesc:a200b448a122dbe825c75bcbce82c64a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The primary API for running the encapsulated code.  <br /></td></tr>
 <tr class="separator:a200b448a122dbe825c75bcbce82c64a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a515d2cc9c7b56737affe9988c74ca1e5" id="r_a515d2cc9c7b56737affe9988c74ca1e5"><td class="memTemplParams" colspan="2">template&lt;typename ArgsType &gt; </td></tr>
+<tr class="memitem:a515d2cc9c7b56737affe9988c74ca1e5"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classpluginplay_1_1python_1_1PythonWrapper.html">python::PythonWrapper</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a515d2cc9c7b56737affe9988c74ca1e5">run_as</a> (const <a class="el" href="classpluginplay_1_1python_1_1PythonOnlyPropertyType.html">python::PythonOnlyPropertyType</a> &amp;pt, ArgsType &amp;&amp;args)</td></tr>
+<tr class="memdesc:a515d2cc9c7b56737affe9988c74ca1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs this module as the provided Python-only property type.  <br /></td></tr>
+<tr class="separator:a515d2cc9c7b56737affe9988c74ca1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2804d89909214cd9e2d8f85f4ead2fb5" id="r_a2804d89909214cd9e2d8f85f4ead2fb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a2804d89909214cd9e2d8f85f4ead2fb5">run</a> (<a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> ps={})</td></tr>
 <tr class="memdesc:a2804d89909214cd9e2d8f85f4ead2fb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The advanced API for running the module.  <br /></td></tr>
 <tr class="separator:a2804d89909214cd9e2d8f85f4ead2fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1197,6 +1204,34 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="aac890fa08289b2b2ba6c4c6cae1623ea" name="aac890fa08289b2b2ba6c4c6cae1623ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac890fa08289b2b2ba6c4c6cae1623ea">&#9670;&#160;</a></span>python_property_types()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::set&lt; std::string &gt; &amp; pluginplay::Module::python_property_types </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the set of Python-only property types (by name) that this module can be run as. </p>
+<p>Python-only property types (<a class="el" href="classpluginplay_1_1python_1_1PythonOnlyPropertyType.html" title="Runtime (non-CRTP) analog of PropertyType&lt;T&gt; for property types defined entirely in Python.">python::PythonOnlyPropertyType</a>) share a single RTTI, so unlike <a class="el" href="classpluginplay_1_1Module.html#ad5a4ec2878bdc6ab27a1ca89498fb7ac" title="Returns the set of property types that this module can be run as.">property_types()</a> (which is keyed on RTTI), this set is keyed on the property type's name() &ndash; see <a class="el" href="classpluginplay_1_1ModuleBase.html#abc66f1abd303b18b0cb696362950f567" title="Specifies that the derived module satisfies the Python-only property type pt.">ModuleBase::satisfies_property_type(const
+ python::PythonOnlyPropertyType&amp;)</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>The set of Python-only property type names that this module satisfies.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if this instance does not have an implementation. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aabcdba1b4d9fd278a89b4b451cbb1956" name="aabcdba1b4d9fd278a89b4b451cbb1956"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aabcdba1b4d9fd278a89b4b451cbb1956">&#9670;&#160;</a></span>ready() <span class="overload">[1/2]</span></h2>
 
@@ -1374,7 +1409,7 @@ template&lt;typename <a class="el" href="classpluginplay_1_1PropertyType.html">P
 </div>
 </div>
 <a id="a200b448a122dbe825c75bcbce82c64a7" name="a200b448a122dbe825c75bcbce82c64a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a200b448a122dbe825c75bcbce82c64a7">&#9670;&#160;</a></span>run_as()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a200b448a122dbe825c75bcbce82c64a7">&#9670;&#160;</a></span>run_as() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1410,6 +1445,59 @@ template&lt;typename property_type , typename... Args&gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if the module does not have an implementation, the provided inputs are not ready, if the module is not ready, or if the module is not of the specified property type. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a515d2cc9c7b56737affe9988c74ca1e5" name="a515d2cc9c7b56737affe9988c74ca1e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a515d2cc9c7b56737affe9988c74ca1e5">&#9670;&#160;</a></span>run_as() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ArgsType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classpluginplay_1_1python_1_1PythonWrapper.html">python::PythonWrapper</a> &gt; pluginplay::Module::run_as </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1python_1_1PythonOnlyPropertyType.html">python::PythonOnlyPropertyType</a> &amp;&#160;</td>
+          <td class="paramname"><em>pt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArgsType &amp;&amp;&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Runs this module as the provided Python-only property type. </p>
+<p>Same purpose as the templated run_as above, but for <a class="el" href="classpluginplay_1_1python_1_1PythonOnlyPropertyType.html" title="Runtime (non-CRTP) analog of PropertyType&lt;T&gt; for property types defined entirely in Python.">python::PythonOnlyPropertyType</a>, whose identity is a name() string rather than a compile-time C++ type. <code>args</code> is bound positionally, in <code>pt's</code> declared input order, wrapped opaquely as Python objects; the results are unwrapped the same way and returned in <code>pt's</code> declared result order. Dispatch still funnels through the ordinary <a class="el" href="classpluginplay_1_1Module.html#a2804d89909214cd9e2d8f85f4ead2fb5" title="The advanced API for running the module.">Module::run()</a>, so memoization and submodule resolution behave exactly as they do for C++ property types.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ArgsType</td><td>The type representing Python's "args" concept (expected to be pybind11::args; templated so this header stays includable without pybind11 support).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">pt</td><td>The Python-only property type to run this module as. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">args</td><td>The input values that will be forwarded to the module.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The unwrapped results, in <code>pt's</code> declared result order.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the module does not satisfy <code>pt</code> (by name), or the usual <a class="el" href="classpluginplay_1_1Module.html#a2804d89909214cd9e2d8f85f4ead2fb5" title="The advanced API for running the module.">run()</a> failure modes. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

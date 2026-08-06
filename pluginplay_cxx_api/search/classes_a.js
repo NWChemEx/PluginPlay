@@ -9,6 +9,7 @@ var searchData=
   ['proxymapmaker_6',['ProxyMapMaker',['../classpluginplay_1_1cache_1_1ProxyMapMaker.html',1,'pluginplay::cache']]],
   ['publicist_7',['Publicist',['../classpluginplay_1_1Publicist.html',1,'pluginplay']]],
   ['pymodulebase_8',['PyModuleBase',['../classpluginplay_1_1PyModuleBase.html',1,'pluginplay']]],
-  ['pythonwrapper_9',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
-  ['pytypeinfo_10',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
+  ['pythononlypropertytype_9',['PythonOnlyPropertyType',['../classpluginplay_1_1python_1_1PythonOnlyPropertyType.html',1,'pluginplay::python']]],
+  ['pythonwrapper_10',['PythonWrapper',['../classpluginplay_1_1python_1_1PythonWrapper.html',1,'pluginplay::python']]],
+  ['pytypeinfo_11',['PyTypeInfo',['../classpluginplay_1_1python_1_1PyTypeInfo.html',1,'pluginplay::python']]]
 ];

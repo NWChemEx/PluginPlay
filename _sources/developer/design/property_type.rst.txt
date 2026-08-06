@@ -98,6 +98,55 @@ responsible for storing not only the types of the inputs, but also the default
 values, descriptions, etc. It is the responsibility of the ``FieldTuple``
 objects to define as simple of an :ref:`api` as possible.
 
+Python Property Types
+=====================
+
+Property types defined in C++ can be used in Python so long as the types in the
+interface are registered with pybind11. Some users will want to
+define their property types in Python though. In such cases the inputs/results
+are Python types and will not be visible to C++ (without some sort of
+registration system).
+
+We propose to develop a class ``PythonOnlyPropertyType`` that defines the base
+API for property types written in Python. Python property types are then
+implemented by deriving from ``PythonOnlyPropertyType``. Use of the property
+type API is envisioned as working like:
+
+.. code-block:: python
+
+   class MyPythonModule(pp.ModuleBase):
+         def __init__(self):
+            super().__init__(self)
+            self.satisfies_property_type(MyPythonPropertyType())
+
+         def run_(self, inputs, submods):
+            [inp0, inp1, inp2] = MyPythonPropertyType.unwrap_inputs(inputs)
+
+            # Do work with inp0, inp1, inp2
+
+            rv = self.results()
+            return MyPythonPropertyType.wrap_results(rv, res0, res1, res2)
+
+The definition of the property type would look like:
+
+.. code-block:: python
+
+   class MyPythonPropertyType(pp.PythonOnlyPropertyType):
+         def __init__(self):
+            self.declare_inputs("inp0").set_description("Input 0 description")
+            self.declare_inputs("inp1").set_description("Input 1 description")
+            self.declare_inputs("inp2").set_description("Input 2 description")
+
+            self.declare_results("res0").set_description("Result 0 description")
+            self.declare_results("res1").set_description("Result 1 description")
+            self.declare_results("res2").set_description("Result 2 description")
+
+The property type would be responsible for knowing how many inputs/results there
+are and the descriptions of each. Consistent with typical Python usage, the
+property type should allow duck typing. The latter means that the property type
+can not be used from C++ without some sort of type registration system.
+
+
 Summary
 =======
 
