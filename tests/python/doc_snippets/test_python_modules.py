@@ -15,9 +15,8 @@
 import unittest
 
 import coulombslaw_force as clf
-import pluginplay_examples as ppe
-
 import pluginplay as pp
+import pluginplay_examples as ppe
 
 
 class TestNewPythonModules(unittest.TestCase):

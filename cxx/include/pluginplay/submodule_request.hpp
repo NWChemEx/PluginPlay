@@ -495,7 +495,7 @@ bool SubmoduleRequest::satisfies_property_type() {
 
 template<typename property_type, typename... Args>
 auto SubmoduleRequest::run_as(Args&&... args) {
-    if(type() != rtti_type(typeid(property_type)))
+    if(!type::rtti_equal(type(), rtti_type(typeid(property_type))))
         throw std::invalid_argument("Wrong property type");
     return value().run_as<property_type>(std::forward<Args>(args)...);
 }

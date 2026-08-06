@@ -14,9 +14,8 @@
 
 import unittest
 
-import py_test_pluginplay.test_any_field as test_pp
-
 import pluginplay as pp
+import py_test_pluginplay.test_any_field as test_pp
 
 
 class TestAnyField(unittest.TestCase):

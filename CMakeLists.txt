@@ -1,4 +1,4 @@
-# Copyright 2022 NWChemEx-Project
+# Copyright 2026 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,180 +14,149 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-# Downloads common CMake modules used throughout NWChemEx
+# Downloads common CMake modules used throughout NWChemEx. Included before
+# project() so nwx_set_version() is available to compute the version.
 include(cmake/get_nwx_cmake.cmake)
 
-# Sets the version to whatever git thinks it is
-include(get_version_from_git)
-get_version_from_git(pluginplay_version "${CMAKE_CURRENT_LIST_DIR}")
-project(pluginplay VERSION "${pluginplay_version}" LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 20)
+# Version from scikit-build-core (wheels/sdists) or the latest git tag.
+include(nwx_set_version)
+nwx_set_version(pp_version "${CMAKE_CURRENT_LIST_DIR}")
+project(pluginplay VERSION "${pp_version}" LANGUAGES CXX)
 
-include(get_cmaize)
-include(nwx_find_package)
+include(disable_in_source_builds)
+include(set_default_nwx_options)
+option(BUILD_ROCKSDB          "Enable RocksDB backend of the cache"    OFF)
 
-# Work out full paths to the project's include/source dirs
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
-
-# Builds C++ API documentation
+# Documentation target
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+nwx_cxx_api_docs("cxx/include" "cxx/src")
 
-### Options ###
-cmaize_option_list(
-    BUILD_TESTING OFF "Should we build unit tests?"
-    BUILD_PYBIND11_PYBINDINGS ON "Build Pybind11 Python bindings?"
-    BUILD_ROCKSDB OFF "Enable RocksDB backend of the cache?"
-)
+# Dependencies
+include(get_dependencies)
+get_dependencies(utilities parallelzone libfort boost)
 
-### Dependendencies ###
-include(get_utilities)
-
-include(get_parallelzone)
-
-cmaize_find_or_build_dependency(
-    libfort
-    URL github.com/seleznevae/libfort
-    BUILD_TARGET fort
-    FIND_TARGET libfort::fort
-    CMAKE_ARGS FORT_ENABLE_TESTING=OFF
-)
-
-find_package(Boost REQUIRED)
-
-## Optional Dependencies ##
-cmaize_find_optional_dependency(
-    RocksDB
-    BUILD_ROCKSDB
-    URL github.com/facebook/rocksdb
-    FIND_TARGET RocksDB::rocksdb-shared
-)
-
-set(pluginplay_depends utilities parallelzone libfort Boost::boost RocksDB)
-
-# As of 1.0.0 CMaize does not support multiple build or find targets. This will
-# be fixed in a future feature release. For now we handle the exposed CMake
-# targets separately instead of a CMaize target
-include(nwx_pybind11)
-if("${BUILD_PYBIND11_PYBINDINGS}")
-    nwx_find_package(
-        Python3
-        # NOTE: Right now only the first component is added to find_dependency()
-        # so Development is listed first since it provides Python3::Python
-        COMPONENTS Development Interpreter
-        REQUIRED
-        TARGETS
-            python Python3::Python
-    )
-
-    nwx_find_pybind11()
-    nwx_find_package(
-        pybind11
-        # pybind11 won't be found if it is built in the above nwx_find_pybind11().
-        # QUIET helps hide the error that would be output and even though
-        # pybind11 is REQUIRED, we will ignore the error here for now.
-        QUIET
-        # REQUIRED
-        TARGETS
-            pybind11_headers pybind11::headers
-            pybind11_embed pybind11::embed
-    )
-
-    list(
-        APPEND pluginplay_depends
-        pybind11_headers pybind11_embed python
-    )
+# pybind11 must be fetched before nwx_library because python_wrapper.hpp is a
+# public PluginPlay header that conditionally includes pybind11/pybind11.h when
+# BUILD_PYBIND11 is defined.  Without pybind11 on the include path the library
+# sources themselves fail to compile.
+if(BUILD_PYBIND11_BINDINGS)
+    get_dependencies(pybind11)
+    # Development.Module is enough for the .so extension (built via
+    # pybind11_add_module, which intentionally avoids linking libpython so
+    # the module can be loaded by any Python that provides the symbols at
+    # runtime). Development.Embed additionally provides the Python::Python
+    # target (see below), needed so any C++-only executable that transitively
+    # links this library (e.g. a Catch2 test binary, here or in a downstream
+    # ecosystem project) gets those symbols resolved at link time instead --
+    # an executable can't defer resolution to runtime the way a shared
+    # library/extension can. This used to be gated on BUILD_TESTING, but
+    # get_dependencies() force-sets BUILD_TESTING=OFF while FetchContent'ing
+    # this project as someone else's dependency, which left downstream test
+    # executables (e.g. simde's unit_test_simde) linking a libpluginplay.dylib
+    # with no libpython and unresolved CPython symbols, aborting at load time.
+    # Probing for Development.Embed instead of requiring it keeps manylinux
+    # wheel-build containers (which deliberately don't ship libpython.so, and
+    # never link a C++ executable against this library anyway) working: the
+    # component there just won't be found, and Python::Python is skipped
+    # below.
+    find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+    find_package(Python QUIET COMPONENTS Development.Embed)
 endif()
 
-cmaize_add_library(
+# TODO: add RocksDB handling when BUILD_ROCKSDB=ON
+
+# Build the library
+include(nwx_library)
+nwx_library(${PROJECT_NAME} "cxx/include" "cxx/src"
+    utilities parallelzone
+    PUBLIC  boost
+    PRIVATE libfort)
+
+# PluginPlay exposes a compile-time flag so its source can #ifdef pybind11 paths.
+# pybind11::pybind11 is added PUBLIC so downstream consumers that include
+# python_wrapper.hpp (a public header) also get the pybind11 include dirs.
+if(BUILD_PYBIND11_BINDINGS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC BUILD_PYBIND11)
+    # pybind11::pybind11 provides pybind11 headers. python_wrapper.hpp (a
+    # public header, compiled into this library whenever BUILD_PYBIND11 is
+    # set) calls the CPython C API directly. As a *shared* library,
+    # ${PROJECT_NAME} itself tolerates those symbols staying undefined until
+    # runtime (same as the pybind11 extension module); it's only the Catch2
+    # test *executables* below that need them fully resolved at link time,
+    # so only link libpython (Python::Python, from Development.Embed above)
+    # when those executables are actually built.
+    # Python::Module (Development.Module) provides the Python.h include path
+    # python_wrapper.hpp needs to even compile; it's always available (see
+    # find_package above) and, unlike Python::Python, doesn't link libpython.
+    target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
+    if(TARGET Python::Python)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Python::Python)
+    endif()
+endif()
+
+# Python module
+include(nwx_python_module)
+nwx_python_module(${PROJECT_NAME} "cxx/src")
+
+# C++ tests
+include(catch2_tests_from_dir)
+catch2_tests_from_dir(
+    "unit_test_${PROJECT_NAME}"
+    "tests/cxx/unit_tests/${PROJECT_NAME}"
     ${PROJECT_NAME}
-    SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS "${pluginplay_depends}"
+    PRIVATE_INCLUDES cxx/src
 )
-
-# TODO: Update source to use BUILD_PYBIND11_PYBINDINGS, then goes away when
-# CMaize supports mulitple targets
-if("${BUILD_PYBIND11_PYBINDINGS}")
-    target_compile_definitions("${PROJECT_NAME}" PUBLIC BUILD_PYBIND11)
-endif()
-
-nwx_add_pybind11_module(
+catch2_tests_from_dir(
+    "test_regression_${PROJECT_NAME}"
+    "tests/cxx/regression_tests"
     ${PROJECT_NAME}
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
-    DEPENDS "${PROJECT_NAME}"
+    PRIVATE_INCLUDES cxx/src
+)
+catch2_tests_from_dir(
+    "test_${PROJECT_NAME}_docs"
+    "tests/cxx/doc_snippets"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES cxx/src
 )
 
-if("${BUILD_TESTING}")
-    set(cxx_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    set(tests_src_dir "${cxx_test_dir}/unit_tests/${PROJECT_NAME}")
-    set(regression_test_dir "${cxx_test_dir}/regression_tests")
-    set(examples_src_dir "${cxx_test_dir}/doc_snippets")
-
-    ### C++ Testing ###
-    include(get_catch2)
-
-    cmaize_add_tests(
-        test_unit_${PROJECT_NAME}
-        SOURCE_DIR ${tests_src_dir}
-        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    cmaize_add_tests(
-        test_regression_${PROJECT_NAME}
-        SOURCE_DIR ${regression_test_dir}
-        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    cmaize_add_tests(
-        test_${PROJECT_NAME}_docs
-        SOURCE_DIR "${cxx_test_dir}/doc_snippets"
-        INCLUDE_DIRS "${project_src_dir}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    ### Python Tests ###
-    set(python_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-
-    # In the python tests we will pass Python into PluginPlay, we will then
-    # need to know that C++ can handle those Python types. To this end we
-    # create a series of Python bindings for unit testing this functionality
-    # which live in the py_test_pluginplay library.
-    nwx_add_pybind11_module(
-        py_test_pluginplay
-        INSTALL OFF
-        SOURCE_DIR "${python_test_dir}/unit_tests"
-        INCLUDE_DIRS "${project_inc_dir}"
-        DEPENDS ${PROJECT_NAME}
-    )
-
-    nwx_pybind11_tests(
-        py_pluginplay ${python_test_dir}/unit_tests/test_pluginplay.py
-        SUBMODULES parallelzone
-    )
-
-    cmaize_add_library(
-        ${PROJECT_NAME}_examples
-        SOURCE_DIR ${examples_src_dir}
-        INCLUDE_DIRS ${examples_src_dir}
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    nwx_add_pybind11_module(
-        ${PROJECT_NAME}_examples
-        INSTALL OFF
-        SOURCE_DIR "${python_test_dir}/doc_snippets"
-        DEPENDS parallelzone ${PROJECT_NAME} ${PROJECT_NAME}_examples
-    )
-
-    nwx_pybind11_tests(
-        py_${PROJECT_NAME}_docs
-        "${python_test_dir}/doc_snippets/test_doc_snippets.py"
-        SUBMODULES parallelzone pluginplay
-    )
+# py_test_pluginplay: a pybind11 module exposing C++ test fixtures (BaseClass,
+# property types, etc.) to tests/python/unit_tests/*.py. Not part of the
+# installed package -- test-only, built in place alongside the other test
+# binaries. The old build system built this via nwx_add_pybind11_module(...);
+# reuses nwx_python_module (its NO_INSTALL keeps this out of the wheel). Its
+# sources are prefixed export_ so they match the macro's source filter.
+if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
+    nwx_python_module(py_test_pluginplay "tests/python/unit_tests" NO_INSTALL)
 endif()
 
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+# pluginplay_examples: a pybind11 module (EXPORT_PLUGIN, in
+# tests/python/doc_snippets/export_pluginplay_examples.cpp) exposing the
+# tutorial "Classical Force"/"Coulomb's Law" example modules to
+# tests/python/doc_snippets/*.py. Depends on a small library built from the
+# (non-test) implementation files under tests/cxx/doc_snippets -- listed
+# explicitly rather than globbed, since that directory also holds Catch2
+# TEST_CASE files and a custom main() (used by test_pluginplay_docs above)
+# that aren't part of the example modules themselves. The pybind11 module
+# itself reuses nwx_python_module (DEPENDS for the extra link libraries,
+# NO_INSTALL to keep it out of the wheel); the supporting library is plain
+# C++, not a pybind11 module, so it's built via nwx_library(... SOURCES ...
+# NO_INSTALL) instead.
+if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
+    set(_pluginplay_examples_dir "${CMAKE_CURRENT_SOURCE_DIR}/tests/cxx/doc_snippets")
+    nwx_library(pluginplay_examples_impl
+        "tests/cxx/doc_snippets" "tests/cxx/doc_snippets"
+        ${PROJECT_NAME}
+        SOURCES
+            "${_pluginplay_examples_dir}/classical_force.cpp"
+            "${_pluginplay_examples_dir}/coulombs_law.cpp"
+            "${_pluginplay_examples_dir}/load_modules.cpp"
+            "${_pluginplay_examples_dir}/screened_coulombs_law.cpp"
+            "${_pluginplay_examples_dir}/templated_coulombs_law.cpp"
+        TYPE STATIC
+        NO_INSTALL
+    )
+
+    nwx_python_module(pluginplay_examples "tests/python/doc_snippets" NO_INSTALL
+        DEPENDS parallelzone pluginplay_examples_impl
+    )
+endif()
