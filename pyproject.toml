@@ -16,6 +16,14 @@
 requires = [
     "scikit-build-core>=0.10",
     "setuptools-scm>=8",
+    # Ecosystem packages this build resolves from installed wheels rather
+    # than fetching from git master, so the wheel links against exactly the
+    # binaries users get at runtime and ships only its own files. Mirror
+    # [project].dependencies; leave the floors unbounded so the newest
+    # release is always resolved.
+    "nwchemex-nwxcmake>=0.1.0",
+    "nwchemex-utilities>=0.1.45",
+    "nwchemex-parallelzone>=0.1.43",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -44,6 +52,11 @@ cmake.build-type = "Release"
 cmake.args = ["-DBUILD_PYBIND11_BINDINGS=ON", "-DBUILD_TESTING=OFF"]
 # All installed content comes from the CMake install; no pure-Python packages.
 wheel.packages = []
+# Ship only this project's own install rules ("pluginplay") plus third-party
+# dependencies this build had to fetch itself ("Unspecified", CMake's default
+# component). Ecosystem dependencies are resolved from their own wheels, and
+# their files belong to those wheels.
+install.components = ["pluginplay", "Unspecified"]
 build-dir = "build"
 
 [tool.setuptools_scm]
