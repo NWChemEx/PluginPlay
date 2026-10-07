@@ -89,8 +89,17 @@ if(BUILD_PYBIND11_BINDINGS)
     # python_wrapper.hpp needs to even compile; it's always available (see
     # find_package above) and, unlike Python::Python, doesn't link libpython.
     target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::pybind11 Python::Module)
+    # BUILD_INTERFACE: only executables built in the same tree as this library
+    # get libpython through it. It must stay out of the installed package's
+    # link interface: the generated pluginplayConfig.cmake only finds Python's
+    # Development.Module, so an exported Python::Python is a dangling target
+    # in every consumer of a wheel built where Development.Embed exists (e.g.
+    # an sdist built on a CI runner) -- a generate-time error there. Test
+    # executables downstream get libpython from catch2_tests_from_dir instead.
     if(TARGET Python::Python)
-        target_link_libraries(${PROJECT_NAME} PUBLIC Python::Python)
+        target_link_libraries(${PROJECT_NAME} PUBLIC
+            $<BUILD_INTERFACE:Python::Python>
+        )
     endif()
 endif()
 
