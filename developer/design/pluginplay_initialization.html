@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Initializing the ModuleManager &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Call Graph Component" href="call_graph.html" />
+    <link rel="prev" title="Database Design" href="database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Initializing the ModuleManager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-modulemanager-initialization">What is ModuleManager Initialization?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#previous-approaches-to-initialization">Previous Approaches to Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialization-considerations">Initialization Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialization-strategy">Initialization Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Initializing the ModuleManager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/pluginplay_initialization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="initializing-the-modulemanager">
+<span id="pp-initialization-design"></span><h1>Initializing the ModuleManager<a class="headerlink" href="#initializing-the-modulemanager" title="Link to this heading"></a></h1>
+<p>This page describes how a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> goes from empty to holding a
+wired call graph built from a set of plugins. Plugins themselves are
+described in <a class="reference internal" href="plugins.html#plugin-design"><span class="std std-ref">Designing the Plugin Class</span></a>. The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> is described in
+<a class="reference internal" href="module_manager.html#module-manager-design"><span class="std std-ref">Designing the Module Manager</span></a>.</p>
+<section id="what-is-modulemanager-initialization">
+<h2>What is ModuleManager Initialization?<a class="headerlink" href="#what-is-modulemanager-initialization" title="Link to this heading"></a></h2>
+<p>Initialization is the process that:</p>
+<ol class="arabic simple">
+<li><p>loads the modules from each plugin the user asks for, and</p></li>
+<li><p>sets default submodules between plugins, <em>e.g.</em>, makes SCF’s driver use
+NUX’s Born-Oppenheimer Hamiltonian module when NUX is loaded.</p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> is then ready for the user to change it further and
+run it.</p>
+</section>
+<section id="previous-approaches-to-initialization">
+<h2>Previous Approaches to Initialization<a class="headerlink" href="#previous-approaches-to-initialization" title="Link to this heading"></a></h2>
+<p>Originally, the end user managed initialization by hand. There was a convention
+that plugins would declare/define <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> and <code class="docutils literal notranslate"><span class="pre">set_defaults</span></code>
+functions. The end user would call them. This approach has several problems:</p>
+<ul class="simple">
+<li><p>Wiring only works if every provider has been loaded before any
+<code class="docutils literal notranslate"><span class="pre">set_defaults</span></code> is called. Nothing enforces that order.</p></li>
+<li><p>Every package that combines plugins has to rewrite this sequence.</p></li>
+<li><p>PluginPlay cannot tell which plugin a module came from or which plugins
+are loaded.</p></li>
+</ul>
+<p>To try to add some level of automation, we added a function
+<code class="docutils literal notranslate"><span class="pre">ModuleManager::set_default&lt;PT&gt;</span></code>. The idea was that a user could call it to
+set a default module for a property type. <code class="docutils literal notranslate"><span class="pre">ModuleManagerPIMPL::at</span></code>
+then quietly filled unready submodules of that type whenever a module is
+looked up. This feature had no users outside PluginPlay’s own tests, and was
+removed. The problem was that property types are not unique enough for a single
+default to make sense.</p>
+</section>
+<section id="initialization-considerations">
+<h2>Initialization Considerations<a class="headerlink" href="#initialization-considerations" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Loading order does not matter</p>
+<ul class="simple">
+<li><p>Plugins can be loaded in any order.</p></li>
+</ul>
+</li>
+<li><p>Wiring happens after loading</p>
+<ul class="simple">
+<li><p>“Is my preferred provider loaded?” only has a reliable answer once all
+plugins are loaded. Wiring is therefore a separate step that runs
+afterwards.</p></li>
+</ul>
+</li>
+<li><p>User choices win</p>
+<ul class="simple">
+<li><p>Between loading and wiring, the user may change modules, <em>e.g.</em>, pick
+submodules or add modules of their own. Wiring must not overwrite those
+choices.</p></li>
+</ul>
+</li>
+<li><p>Unique names</p>
+<ul class="simple">
+<li><p>Two plugins may use the same module key, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;Overlap&quot;</span></code>. Every
+module must still be addressable without ambiguity.</p></li>
+</ul>
+</li>
+<li><p>Wiring can be run again</p>
+<ul class="simple">
+<li><p>Running the wiring step again, <em>e.g.</em>, after loading another plugin,
+only fills submodules that are still unset.</p></li>
+</ul>
+</li>
+<li><p>No early errors</p>
+<ul class="simple">
+<li><p>A submodule that is still unset after wiring is not an error. The user
+can set it at any time before running the call graph.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="initialization-strategy">
+<h2>Initialization Strategy<a class="headerlink" href="#initialization-strategy" title="Link to this heading"></a></h2>
+<section id="storage">
+<h3>Storage<a class="headerlink" href="#storage" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> owns each loaded plugin object, and each plugin owns
+its <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> (see <a class="reference internal" href="plugins.html#plugin-design"><span class="std std-ref">Designing the Plugin Class</span></a>). So the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> has
+one <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> per loaded plugin, plus a <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> of its own. The
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map holds modules that do not come from a plugin,
+such as modules added directly by the user, lambda modules, and facade
+modules. The maps are <strong>not</strong> merged into one pool. A submodule may still be
+any module in any map, so links can cross maps.</p>
+<p>The empty plugin name, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, is reserved for the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own
+map.</p>
+</section>
+<section id="uniqueness-and-lookup">
+<h3>Uniqueness and Lookup<a class="headerlink" href="#uniqueness-and-lookup" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> enforces unique module keys within a plugin.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> enforces unique plugin names. Loading a second plugin
+with the same name throws.</p></li>
+</ul>
+<p>Together these guarantee that the pair (plugin name, module key) is unique.
+The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> therefore offers two ways to look up a module, and
+every function that takes a module key (<code class="docutils literal notranslate"><span class="pre">at</span></code>, <code class="docutils literal notranslate"><span class="pre">change_input</span></code>,
+<code class="docutils literal notranslate"><span class="pre">change_submod</span></code>, <code class="docutils literal notranslate"><span class="pre">run_as</span></code>, and so on) supports both:</p>
+<ol class="arabic simple">
+<li><p>With a plugin name and a module key. This always works. The <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> plugin
+name means the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map.</p></li>
+<li><p>With only a module key. This works as long as the key appears in exactly
+one map. If it appears in more than one map the call throws and the error
+lists the plugins that contain the key. To support this, the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> keeps track of which keys appear in more than one map.</p></li>
+</ol>
+<p>The key-only form keeps current code working, since today’s module keys are
+effectively unique across the NWChemEx plugins.</p>
+</section>
+<section id="loading-plugins">
+<h3>Loading Plugins<a class="headerlink" href="#loading-plugins" title="Link to this heading"></a></h3>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">scf</span><span class="o">::</span><span class="n">scf</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">integrals</span><span class="o">::</span><span class="n">integrals</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">nux</span><span class="o">::</span><span class="n">nux</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">chemcache</span><span class="o">::</span><span class="n">chemcache</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">load_plugin&lt;T&gt;()</span></code>:</p>
+<ol class="arabic simple">
+<li><p>creates a <code class="docutils literal notranslate"><span class="pre">T</span></code> (<code class="docutils literal notranslate"><span class="pre">T</span></code> must derive from <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> and be default
+constructible). <code class="docutils literal notranslate"><span class="pre">T</span></code>’s constructor sets the plugin’s name and preferred
+providers and builds its <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>, including its internal wiring,</p></li>
+<li><p>throws if a plugin with the same <code class="docutils literal notranslate"><span class="pre">name()</span></code> is already loaded,</p></li>
+<li><p>takes ownership of the plugin object. The plugin’s <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> is now
+the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s map for that plugin; nothing is copied, and</p></li>
+<li><p>updates the record of which keys appear in more than one map.</p></li>
+</ol>
+<p>Python has an equivalent, <code class="docutils literal notranslate"><span class="pre">mm.load_plugin(scf.scf())</span></code>, which takes an
+instance because Python has no template parameters. Because the plugin holds
+live modules, the same instance must not be loaded into two
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> objects.</p>
+</section>
+<section id="wiring-defaults">
+<h3>Wiring Defaults<a class="headerlink" href="#wiring-defaults" title="Link to this heading"></a></h3>
+<p>After loading, the user may make changes, and then calls:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">mm</span><span class="p">.</span><span class="n">wire_defaults</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>It iterates over the loaded plugins in the order they were loaded, and for each
+plugin <code class="docutils literal notranslate"><span class="pre">P</span></code>:</p>
+<ol class="arabic simple">
+<li><p>For each name <code class="docutils literal notranslate"><span class="pre">N</span></code> in <code class="docutils literal notranslate"><span class="pre">P.preferred_providers()</span></code>, in order:</p>
+<ul class="simple">
+<li><p>If no plugin named <code class="docutils literal notranslate"><span class="pre">N</span></code> is loaded, skip it.</p></li>
+<li><p>Otherwise call <code class="docutils literal notranslate"><span class="pre">P.default_submods_from(N)</span></code>.</p></li>
+<li><p>The result is a list of defaults, each of which is a triple
+(<code class="docutils literal notranslate"><span class="pre">module_key</span></code>, <code class="docutils literal notranslate"><span class="pre">callback_key</span></code>, <code class="docutils literal notranslate"><span class="pre">provider_key</span></code>)</p></li>
+</ul>
+</li>
+<li><p>For each default triple:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">P</span></code>’s module <code class="docutils literal notranslate"><span class="pre">module_key</span></code> has  a submodule with key
+<code class="docutils literal notranslate"><span class="pre">callback_key</span></code> that is already set, move to the next triple.</p></li>
+<li><p>Else, if the provider does not have a module with key <code class="docutils literal notranslate"><span class="pre">provider_key</span></code>,
+move to the next triple.</p></li>
+<li><p>Otherwise set <code class="docutils literal notranslate"><span class="pre">callback_key</span></code> to the provider’s module <code class="docutils literal notranslate"><span class="pre">provider_key</span></code>.</p></li>
+</ul>
+</li>
+</ol>
+<p>These changes are done to <code class="docutils literal notranslate"><span class="pre">P</span></code>’s live map, so it includes any changes the user
+made and any wiring done by earlier calls in the loop. Because wiring only
+sets unset submodules:</p>
+<ul class="simple">
+<li><p>choices the user made before <code class="docutils literal notranslate"><span class="pre">wire_defaults</span></code> are kept,</p></li>
+<li><p>the order of <code class="docutils literal notranslate"><span class="pre">preferred_providers</span></code> sets priority, since the first
+provider to set a submodule wins, and</p></li>
+<li><p>calling <code class="docutils literal notranslate"><span class="pre">wire_defaults</span></code> again does not change submodules that are
+already set.</p></li>
+</ul>
+<p>The order in which plugins are loaded does not change the result. Each
+plugin only changes its own map, so the result for <code class="docutils literal notranslate"><span class="pre">P</span></code> depends only on its
+own provider list.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database.html" class="btn btn-neutral float-left" title="Database Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="call_graph.html" class="btn btn-neutral float-right" title="Designing the Call Graph Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

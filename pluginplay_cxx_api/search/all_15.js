@@ -12,6 +12,7 @@ var searchData=
   ['_7emodulemanagercache_9',['~ModuleManagerCache',['../classpluginplay_1_1cache_1_1ModuleManagerCache.html#afdaf0579be72e9088cfb475df9993969',1,'pluginplay::cache::ModuleManagerCache']]],
   ['_7emodulepimpl_10',['~ModulePIMPL',['../classpluginplay_1_1detail___1_1ModulePIMPL.html#ac87631914649e864134495c2c3d072fe',1,'pluginplay::detail_::ModulePIMPL']]],
   ['_7emoduleresult_11',['~ModuleResult',['../classpluginplay_1_1ModuleResult.html#a2f9996782b53beb0144cf83301359ed9',1,'pluginplay::ModuleResult']]],
-  ['_7erocksdb_12',['~RocksDB',['../classpluginplay_1_1cache_1_1database_1_1RocksDB.html#af666add57604863fb92bdae213b75239',1,'pluginplay::cache::database::RocksDB']]],
-  ['_7esubmodulerequest_13',['~SubmoduleRequest',['../classpluginplay_1_1SubmoduleRequest.html#abbcf10c693cce09fa8ab4d67abb8c5ec',1,'pluginplay::SubmoduleRequest']]]
+  ['_7eplugin_12',['~Plugin',['../classpluginplay_1_1Plugin.html#ab4d5dee229ea6dc3cca25d45db1a09c6',1,'pluginplay::Plugin']]],
+  ['_7erocksdb_13',['~RocksDB',['../classpluginplay_1_1cache_1_1database_1_1RocksDB.html#af666add57604863fb92bdae213b75239',1,'pluginplay::cache::database::RocksDB']]],
+  ['_7esubmodulerequest_14',['~SubmoduleRequest',['../classpluginplay_1_1SubmoduleRequest.html#abbcf10c693cce09fa8ab4d67abb8c5ec',1,'pluginplay::SubmoduleRequest']]]
 ];

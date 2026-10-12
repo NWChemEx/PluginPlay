@@ -1,0 +1,7 @@
+<map id="pluginplay::Plugin" name="pluginplay::Plugin">
+<area shape="rect" id="Node000001" title="Base class for all plugins." alt="" coords="131,5,269,31"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1PluginPublicist.html" title="Exposes Plugin&#39;s protected members to the Python bindings." alt="" coords="5,79,197,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="175,41,119,81,116,76,172,36"/>
+<area shape="rect" id="Node000003" href="$classpluginplay_1_1PyPlugin.html" title="The class Python plugins derive from." alt="" coords="222,79,375,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,36,284,76,281,81,225,41"/>
+</map>

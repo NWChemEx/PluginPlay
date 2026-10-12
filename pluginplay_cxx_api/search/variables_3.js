@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_0',['value',['../structpluginplay_1_1detail___1_1IsPropertyType.html#a3a6bd9428a1d53fbf1e9c57df6216a70',1,'pluginplay::detail_::IsPropertyType']]]
+  ['nfields_0',['nfields',['../structpluginplay_1_1detail___1_1FieldTupleTraits.html#a6ab7556577030c7ee86c3008a8fc7937',1,'pluginplay::detail_::FieldTupleTraits']]]
 ];

@@ -109,10 +109,6 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>shared_module</b> = 
 using&#160;</td><td class="memItemRight" valign="bottom"><b>module_map</b> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a5890fdaeab7e35865b4f6de88c3e0892">module_manager_type::module_map</a></td></tr>
 <tr class="memdesc:ac51fc6c40213aa5ac909563780a8012e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding usable modules. <br /></td></tr>
 <tr class="separator:ac51fc6c40213aa5ac909563780a8012e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2379e2f590fa48050845a92aed64d7f" id="r_aa2379e2f590fa48050845a92aed64d7f"><td class="memItemLeft" align="right" valign="top"><a id="aa2379e2f590fa48050845a92aed64d7f" name="aa2379e2f590fa48050845a92aed64d7f"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>default_map</b> = std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt;</td></tr>
-<tr class="memdesc:aa2379e2f590fa48050845a92aed64d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding the default module key for a given property type. <br /></td></tr>
-<tr class="separator:aa2379e2f590fa48050845a92aed64d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5c01677075eafec37c471969afc51c3" id="r_ae5c01677075eafec37c471969afc51c3"><td class="memItemLeft" align="right" valign="top"><a id="ae5c01677075eafec37c471969afc51c3" name="ae5c01677075eafec37c471969afc51c3"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_type</b> = <a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">module_manager_type::runtime_type</a></td></tr>
 <tr class="memdesc:ae5c01677075eafec37c471969afc51c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
@@ -152,9 +148,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8b18dce75e700f5ab48327dcb740c160" id="r_a8b18dce75e700f5ab48327dcb740c160"><td class="memItemLeft" align="right" valign="top">module_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a8b18dce75e700f5ab48327dcb740c160">end</a> () noexcept</td></tr>
 <tr class="memdesc:a8b18dce75e700f5ab48327dcb740c160"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator to the past-the-end element of the module map.  <br /></td></tr>
 <tr class="separator:a8b18dce75e700f5ab48327dcb740c160"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b7272272282ab306960406e5aa61406" id="r_a0b7272272282ab306960406e5aa61406"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a0b7272272282ab306960406e5aa61406">set_default</a> (const std::type_info &amp;type, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> inputs, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key)</td></tr>
-<tr class="memdesc:a0b7272272282ab306960406e5aa61406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default module to use for a given property type.  <br /></td></tr>
-<tr class="separator:a0b7272272282ab306960406e5aa61406"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae95ab05fbd503c8e07738edf180a7eeb" id="r_ae95ab05fbd503c8e07738edf180a7eeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ae95ab05fbd503c8e07738edf180a7eeb">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key, <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a57d93e95e28e75287f5f6db69cc2ecb4">module_base_ptr</a> base)</td></tr>
 <tr class="memdesc:ae95ab05fbd503c8e07738edf180a7eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function actually adds a module to the list of available modules.  <br /></td></tr>
 <tr class="separator:ae95ab05fbd503c8e07738edf180a7eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,12 +197,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa8f601def848f5d806a750e9e3405f8d" id="r_aa8f601def848f5d806a750e9e3405f8d"><td class="memItemLeft" align="right" valign="top"><a id="aa8f601def848f5d806a750e9e3405f8d" name="aa8f601def848f5d806a750e9e3405f8d"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a2c64b530d24fb243c47887c741333653">cache_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_pcaches</b></td></tr>
 <tr class="separator:aa8f601def848f5d806a750e9e3405f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd56b70df204fc01fde0834e8430ab19" id="r_afd56b70df204fc01fde0834e8430ab19"><td class="memItemLeft" align="right" valign="top"><a id="afd56b70df204fc01fde0834e8430ab19" name="afd56b70df204fc01fde0834e8430ab19"></a>
-<a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#aa2379e2f590fa48050845a92aed64d7f">default_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_defaults</b></td></tr>
-<tr class="separator:afd56b70df204fc01fde0834e8430ab19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92d4842cc386daa0a0381865dcb0ad83" id="r_a92d4842cc386daa0a0381865dcb0ad83"><td class="memItemLeft" align="right" valign="top"><a id="a92d4842cc386daa0a0381865dcb0ad83" name="a92d4842cc386daa0a0381865dcb0ad83"></a>
-std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_inputs</b></td></tr>
-<tr class="separator:a92d4842cc386daa0a0381865dcb0ad83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83987f76911022db85087245f26671e8" id="r_a83987f76911022db85087245f26671e8"><td class="memItemLeft" align="right" valign="top"><a id="a83987f76911022db85087245f26671e8" name="a83987f76911022db85087245f26671e8"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_runtime_</b></td></tr>
 <tr class="separator:a83987f76911022db85087245f26671e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -494,58 +481,6 @@ std::map&lt; std::type_index, <a class="el" href="namespacepluginplay_1_1type.ht
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a0b7272272282ab306960406e5aa61406" name="a0b7272272282ab306960406e5aa61406"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b7272272282ab306960406e5aa61406">&#9670;&#160;</a></span>set_default()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pluginplay::detail_::ModuleManagerPIMPL::set_default </td>
-          <td>(</td>
-          <td class="paramtype">const std::type_info &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a>&#160;</td>
-          <td class="paramname"><em>inputs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&#160;</td>
-          <td class="paramname"><em>key</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sets the default module to use for a given property type. </p>
-<p>When a user requests a module that module initially has no submodules set unless the user has bound some to that module. Instead, the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> is now responsible to provide the module with submodules using the defaults. This function allows one to specify what the defaults are.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">type</td><td>The type of the property type this default is for </td></tr>
-    <tr><td class="paramname">key</td><td>The module key for the module to use as the default </td></tr>
   </table>
   </dd>
 </dl>

@@ -54,11 +54,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Design Topics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
@@ -113,6 +115,14 @@ the design) of PluginPlay.</p>
 <li class="toctree-l2"><a class="reference internal" href="module_manager.html#module-manager-architecture">Module Manager Architecture</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#what-is-a-plugin">What is a Plugin?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#why-do-we-need-a-plugin-class">Why Do We Need a Plugin Class?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#plugin-considerations">Plugin Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#plugin-strategy">Plugin Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#further-considerations">Further Considerations</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="module.html">Designing the Module Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="module.html#what-is-the-module-component">What is the Module Component?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module.html#module-component-considerations">Module Component Considerations</a></li>
@@ -153,6 +163,13 @@ the design) of PluginPlay.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Processes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#what-is-modulemanager-initialization">What is ModuleManager Initialization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#previous-approaches-to-initialization">Previous Approaches to Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#initialization-considerations">Initialization Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#initialization-strategy">Initialization Strategy</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="call_graph.html#what-is-a-call-graph">What is a call graph?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="call_graph.html#call-graph-considerations">Call Graph Considerations</a></li>

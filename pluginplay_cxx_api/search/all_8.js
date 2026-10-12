@@ -23,5 +23,5 @@ var searchData=
   ['ispropertytype_20',['IsPropertyType',['../structpluginplay_1_1detail___1_1IsPropertyType.html',1,'pluginplay::detail_']]],
   ['issharedptr_21',['IsSharedPtr',['../structpluginplay_1_1detail___1_1IsSharedPtr.html',1,'pluginplay::detail_']]],
   ['issharedptr_3c_20std_3a_3ashared_5fptr_3c_20t_20_3e_20_3e_22',['IsSharedPtr&lt; std::shared_ptr&lt; T &gt; &gt;',['../structpluginplay_1_1detail___1_1IsSharedPtr_3_01std_1_1shared__ptr_3_01T_01_4_01_4.html',1,'pluginplay::detail_']]],
-  ['iterator_23',['iterator',['../structpluginplay_1_1detail___1_1FieldTupleTraits.html#a266202a6989f26aec9d48cb433ff7115',1,'pluginplay::detail_::FieldTupleTraits::iterator'],['../classpluginplay_1_1FieldTuple.html#ab46d1646953ecd9bb3f3f11a95e6a387',1,'pluginplay::FieldTuple::iterator']]]
+  ['iterator_23',['iterator',['../structpluginplay_1_1detail___1_1FieldTupleTraits.html#a266202a6989f26aec9d48cb433ff7115',1,'pluginplay::detail_::FieldTupleTraits::iterator'],['../classpluginplay_1_1ModuleMap.html#a91fd2e11360916e4becafa266128bbe0',1,'pluginplay::ModuleMap::iterator'],['../classpluginplay_1_1FieldTuple.html#ab46d1646953ecd9bb3f3f11a95e6a387',1,'pluginplay::FieldTuple::iterator']]]
 ];

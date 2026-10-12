@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Plugin Class &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Module Component" href="module.html" />
+    <link rel="prev" title="Designing the Module Manager" href="module_manager.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Plugin Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-plugin">What is a Plugin?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-do-we-need-a-plugin-class">Why Do We Need a Plugin Class?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plugin-considerations">Plugin Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plugin-strategy">Plugin Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#further-considerations">Further Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../how_does_run_as_work.html">How Does run_as work?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Topics</a></li>
+      <li class="breadcrumb-item active">Designing the Plugin Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/plugins.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="designing-the-plugin-class">
+<span id="plugin-design"></span><h1>Designing the Plugin Class<a class="headerlink" href="#designing-the-plugin-class" title="Link to this heading"></a></h1>
+<p>This page describes the design of the <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> class, which represents a
+plugin in PluginPlay. How plugins are used to initialize a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>
+is described in <a class="reference internal" href="pluginplay_initialization.html#pp-initialization-design"><span class="std std-ref">Initializing the ModuleManager</span></a>.</p>
+<section id="what-is-a-plugin">
+<h2>What is a Plugin?<a class="headerlink" href="#what-is-a-plugin" title="Link to this heading"></a></h2>
+<p>A plugin is a named, distributable collection of <a class="reference internal" href="../../background/terminology.html#module"><span class="std std-ref">Module</span></a> objects. A
+plugin is also responsible for the default wiring among its own modules,
+<em>e.g.</em>, telling its driver module which of the plugin’s step modules to use.
+A plugin is loaded into a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> as a single unit.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Plugins are ultimately C++ or Python classes. The examples on this page use
+three plugins. <code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code> is the type of the plugin being written.
+<code class="docutils literal notranslate"><span class="pre">ProviderA</span></code> and <code class="docutils literal notranslate"><span class="pre">ProviderB</span></code> are the types of the other plugins that
+<code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code> would like to get default submodules from. We will assume that
+<code class="docutils literal notranslate"><span class="pre">ProviderA</span></code> and <code class="docutils literal notranslate"><span class="pre">ProviderB</span></code> are already written and loaded into the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> under keys <code class="docutils literal notranslate"><span class="pre">&quot;provider_a&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;provider_b&quot;</span></code>,
+respectively.</p>
+</div>
+</section>
+<section id="why-do-we-need-a-plugin-class">
+<h2>Why Do We Need a Plugin Class?<a class="headerlink" href="#why-do-we-need-a-plugin-class" title="Link to this heading"></a></h2>
+<p>The original approach was a set of free functions. <code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DEFINE_PLUGIN</span></code> (in <code class="docutils literal notranslate"><span class="pre">pluginplay/plugin/plugin.hpp</span></code>) declare and define a
+<code class="docutils literal notranslate"><span class="pre">load_modules(ModuleManager&amp;)</span></code> function. By convention, most plugins also
+wrote a <code class="docutils literal notranslate"><span class="pre">set_defaults(ModuleManager&amp;)</span></code> function for wiring that depended on
+other plugins. This approach has several problems:</p>
+<ol class="arabic simple">
+<li><p>Plugins have no identity. PluginPlay cannot tell which plugins are loaded
+or which modules came from which plugin. This makes it cumbersome to know
+if a module came from a particular plugin, or if another plugin loaded a
+module with the same key.</p></li>
+<li><p>Cross-plugin wiring was ad hoc. Every plugin reinvented “set this submodule
+if the provider happens to be loaded.” The end user, <em>e.g.</em>, a package
+that combines several plugins, must call every <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> and then
+every <code class="docutils literal notranslate"><span class="pre">set_defaults</span></code> in the right order.</p></li>
+<li><p>Creating modules was tied to a live <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>. A plugin could not
+describe its modules without also inserting them into a particular
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p></li>
+<li><p>Nothing recorded which plugins a plugin expects to get defaults from.</p></li>
+</ol>
+<p>Making plugins first-class objects allows PluginPlay to own the process of
+loading and wiring plugins. This solves these problems and more.</p>
+</section>
+<section id="plugin-considerations">
+<h2>Plugin Considerations<a class="headerlink" href="#plugin-considerations" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Identity</p>
+<ul class="simple">
+<li><p>Each plugin has a name, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code>.</p></li>
+<li><p>Plugin names must be unique within a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Module creation is separate from the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code></p>
+<ul class="simple">
+<li><p>A plugin creates its modules and stores them itself. It does not insert
+them into a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p></li>
+<li><p>The plugin’s modules already include its internal wiring. For example,
+<code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code>’s driver module will already link to any step modules
+provided by <code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code>.</p></li>
+<li><p>Plugins can no longer accidentally modify other plugins’ modules.</p></li>
+</ul>
+</li>
+<li><p>Declared dependencies on default providers</p>
+<ul class="simple">
+<li><p>A plugin lists the plugins it would like to get default submodules from,
+<em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code> lists <code class="docutils literal notranslate"><span class="pre">ProviderA</span></code> and <code class="docutils literal notranslate"><span class="pre">ProviderB</span></code>.</p></li>
+<li><p>These are preferences, not requirements. The plugin will still load
+when a preferred provider is not loaded, but some of its submodules will
+remain in an unset state until the user provides the needed modules.</p></li>
+</ul>
+</li>
+<li><p>Cross-plugin defaults never overwrite existing choices</p>
+<ul class="simple">
+<li><p>A default from a provider only fills a submodule that has not been set
+yet. It never replaces a choice made by the user or by a provider with
+higher priority.</p></li>
+</ul>
+</li>
+<li><p>Ease of use</p>
+<ul class="simple">
+<li><p>Declaring a plugin should stay about as easy as it is with today’s
+macros.</p></li>
+<li><p>Writing a plugin should feel like writing a module: everything is set
+up in the constructor.</p></li>
+<li><p>Plugins must be default constructible so the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> should be
+able to create them from their type alone, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">load_plugin&lt;T&gt;()</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Python</p>
+<ul class="simple">
+<li><p>Plugins written in C++ must be loadable from Python.</p></li>
+<li><p>It should also be possible to write a plugin in Python, the same way
+modules can be written in Python today.</p></li>
+</ul>
+</li>
+<li><p>Provenance</p>
+<ul class="simple">
+<li><p>Plugins should know their versions, citations, etc.</p></li>
+</ul>
+</li>
+<li><p>Options</p>
+<ul class="simple">
+<li><p>Plugins may have options, e.g., enabling or disabling features.</p></li>
+<li><p>Options would need to be set before or while the plugin is loaded.</p></li>
+<li><p>Not yet designed. Would conceptually be similar to module options, but at
+the plugin level.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="plugin-strategy">
+<h2>Plugin Strategy<a class="headerlink" href="#plugin-strategy" title="Link to this heading"></a></h2>
+<p>The design has two new classes: <code class="docutils literal notranslate"><span class="pre">Plugin</span></code>, the base class for all plugins,
+and <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>, the container a plugin stores its modules in.</p>
+<section id="the-plugin-class">
+<h3>The Plugin Class<a class="headerlink" href="#the-plugin-class" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Plugin</span></code> is declared in <code class="docutils literal notranslate"><span class="pre">pluginplay/plugin/plugin.hpp</span></code>. It follows the
+same convention as <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>. A module’s constructor calls base class
+functions such as <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">add_input</span></code>, and <code class="docutils literal notranslate"><span class="pre">add_submodule</span></code> to
+describe the module. In the same way, a plugin’s constructor calls base class
+functions to describe the plugin:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_name(name)</span></code> sets the plugin’s name, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_module&lt;T&gt;(key)</span></code> and <code class="docutils literal notranslate"><span class="pre">add_module(key,</span> <span class="pre">module_base_ptr)</span></code> create a
+module and add it to the plugin’s <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">change_submod(module_key,</span> <span class="pre">callback_key,</span> <span class="pre">submod_key)</span></code> links two of the
+plugin’s own modules. It is used for intra-plugin defaults.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_preferred_providers(name0,</span> <span class="pre">name1,</span> <span class="pre">...)</span></code> lists the plugins to get
+defaults from, highest priority first.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_submod_from(provider,</span> <span class="pre">module_key,</span> <span class="pre">callback_key,</span> <span class="pre">provider_key)</span></code>
+records a cross-plugin default: “if <code class="docutils literal notranslate"><span class="pre">provider</span></code> is loaded, set submodule
+<code class="docutils literal notranslate"><span class="pre">callback_key</span></code> of my module <code class="docutils literal notranslate"><span class="pre">module_key</span></code> to the provider’s module
+<code class="docutils literal notranslate"><span class="pre">provider_key</span></code>.” The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> applies these records during
+wiring (see below).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modules()</span></code> returns a non-const reference to the plugin’s <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>,
+so the constructor can pass it to helper functions (see
+<a class="reference internal" href="#declaring-a-plugin">Declaring a Plugin</a>).</p></li>
+</ul>
+<p>These functions are <code class="docutils literal notranslate"><span class="pre">protected</span></code>, so only the plugin itself can call them.
+After construction, the public interface is read-only: <code class="docutils literal notranslate"><span class="pre">name()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">preferred_providers()</span></code>, <code class="docutils literal notranslate"><span class="pre">default_submods_from()</span></code>, and <code class="docutils literal notranslate"><span class="pre">get_modules()</span></code>.</p>
+<section id="cross-plugin-defaults">
+<h4>Cross-Plugin Defaults<a class="headerlink" href="#cross-plugin-defaults" title="Link to this heading"></a></h4>
+<p>Cross-plugin defaults are stored in the Plugin. The plugin does not have to
+write any wiring logic.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">provider</span></code> must already be listed in <code class="docutils literal notranslate"><span class="pre">set_preferred_providers</span></code>.
+Otherwise <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> throws. This catches typos in provider
+names, and it means priority always comes from one place: the order of
+<code class="docutils literal notranslate"><span class="pre">preferred_providers</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">module_key</span></code> must be a module that the plugin has already added.
+Otherwise <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> throws.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provider_key</span></code> cannot be checked in the constructor, because the
+provider is not available yet. If the provider is loaded but has no module
+<code class="docutils literal notranslate"><span class="pre">provider_key</span></code>, the record is skipped during wiring. This matches how
+plugins’ hand-written <code class="docutils literal notranslate"><span class="pre">set_defaults</span></code> functions behave today.</p></li>
+</ul>
+<p>Wiring of the plugins is done when the user calls <code class="docutils literal notranslate"><span class="pre">wire_defaults</span></code> (see
+<a class="reference internal" href="pluginplay_initialization.html#pp-initialization-design"><span class="std std-ref">Initializing the ModuleManager</span></a>).</p>
+</section>
+<section id="the-class">
+<h4>The Class<a class="headerlink" href="#the-class" title="Link to this heading"></a></h4>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Plugin</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">name_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">provider_list_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">name_type</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">/// One default_submod_from record</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">DefaultSubmod</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">module_key</span><span class="p">;</span>
+<span class="w">        </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">callback_key</span><span class="p">;</span>
+<span class="w">        </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">provider_key</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">default_list_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">DefaultSubmod</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">Plugin</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">/// The name of the plugin, e.g., &quot;my_plugin&quot;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">name_type</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">name</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">/// Names of plugins to get defaults from, highest priority first</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">provider_list_type</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">preferred_providers</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">/// Recorded cross-plugin defaults</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">default_list_type</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">default_submods_from</span><span class="p">(</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">name_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">provider</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">/// The plugin&#39;s modules, in their current state</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">ModuleMap</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">get_modules</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Called from the derived class&#39;s constructor</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">set_name</span><span class="p">(</span><span class="n">name_type</span><span class="w"> </span><span class="n">name</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">add_module</span><span class="p">(</span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_module</span><span class="p">(</span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">module_base_ptr</span><span class="w"> </span><span class="n">base</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">change_submod</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="o">&amp;</span><span class="w"> </span><span class="n">module_key</span><span class="p">,</span>
+<span class="w">                       </span><span class="k">const</span><span class="w"> </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="o">&amp;</span><span class="w"> </span><span class="n">callback_key</span><span class="p">,</span>
+<span class="w">                       </span><span class="k">const</span><span class="w"> </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="o">&amp;</span><span class="w"> </span><span class="n">submod_key</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Args</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">set_preferred_providers</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span><span class="w"> </span><span class="n">names</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">default_submod_from</span><span class="p">(</span><span class="n">name_type</span><span class="w"> </span><span class="n">provider</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">module_key</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">callback_key</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">type</span><span class="o">::</span><span class="n">key</span><span class="w"> </span><span class="n">provider_key</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ModuleMap</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">modules</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">name_type</span><span class="w"> </span><span class="n">m_name_</span><span class="p">;</span>
+<span class="w">    </span><span class="n">provider_list_type</span><span class="w"> </span><span class="n">m_providers_</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">name_type</span><span class="p">,</span><span class="w"> </span><span class="n">default_list_type</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_defaults_</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ModuleMap</span><span class="w"> </span><span class="n">m_modules_</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Notes on the members:</p>
+<ul class="simple">
+<li><p><strong>Where modules live.</strong> A plugin object owns its <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>.
+<code class="docutils literal notranslate"><span class="pre">load_plugin</span></code> takes ownership of the plugin object, and the plugin’s map
+<em>is</em> the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s map for that plugin (see
+<a class="reference internal" href="pluginplay_initialization.html#pp-initialization-design"><span class="std std-ref">Initializing the ModuleManager</span></a>). The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> changes the map
+through a non-const accessor that only it can use. <code class="docutils literal notranslate"><span class="pre">get_modules()</span></code>
+therefore always returns the current state of the plugin’s modules,
+including any changes made by the user or by wiring.</p></li>
+<li><p><strong>One instance per ModuleManager.</strong> Since a plugin holds live modules, a
+plugin object must not be loaded into two <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> objects.
+<code class="docutils literal notranslate"><span class="pre">load_plugin&lt;T&gt;()</span></code> creates a new <code class="docutils literal notranslate"><span class="pre">T</span></code> each time, so this only matters
+for the Python form, which takes an instance.</p></li>
+<li><p><strong>Provenance.</strong> Setters for version and citations would follow the same
+convention, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">set_version</span></code> and <code class="docutils literal notranslate"><span class="pre">add_citation</span></code> in the
+constructor, mirroring <code class="docutils literal notranslate"><span class="pre">ModuleBase::citation</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="the-modulemap-class">
+<h3>The ModuleMap Class<a class="headerlink" href="#the-modulemap-class" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> is a thin wrapper around
+<code class="docutils literal notranslate"><span class="pre">utilities::CaseInsensitiveMap&lt;std::shared_ptr&lt;Module&gt;&gt;</span></code>. This is the same
+type as the current <code class="docutils literal notranslate"><span class="pre">ModuleManager::module_map</span></code>. <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> provides:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add_module&lt;T&gt;(key)</span></code> and <code class="docutils literal notranslate"><span class="pre">add_module(key,</span> <span class="pre">module_base_ptr)</span></code>, which
+mirror the existing <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> functions. <code class="docutils literal notranslate"><span class="pre">Plugin::add_module</span></code>
+forwards to these.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">at</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, and iteration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">change_submod(module_key,</span> <span class="pre">callback_key,</span> <span class="pre">submod_key)</span></code>, which links two
+modules in the same map. <code class="docutils literal notranslate"><span class="pre">Plugin::change_submod</span></code> forwards to this.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">change_submod(module_key,</span> <span class="pre">callback_key,</span> <span class="pre">std::shared_ptr&lt;Module&gt;)</span></code>, which
+links a module in this map to a module from another map. It is used for
+cross-plugin defaults.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has_submod(module_key,</span> <span class="pre">callback_key)</span></code>, which returns whether that
+submodule has been set. It wraps <code class="docutils literal notranslate"><span class="pre">SubmoduleRequest::has_module</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_submod(...)</span></code>, a convenience function with the same overloads
+as <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>. It sets the submodule only if it is unset. The
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> uses it to apply <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> records.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> enforces that module keys are unique within the map, which
+means they are unique within a plugin. Uniqueness across plugins is the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s job (see <a class="reference internal" href="pluginplay_initialization.html#pp-initialization-design"><span class="std std-ref">Initializing the ModuleManager</span></a>).</p>
+</section>
+<section id="declaring-a-plugin">
+<h3>Declaring a Plugin<a class="headerlink" href="#declaring-a-plugin" title="Link to this heading"></a></h3>
+<p>The plugin macros mirror the module macros (<code class="docutils literal notranslate"><span class="pre">DECLARE_MODULE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">MODULE_CTOR</span></code>, and <code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN(plugin_name)</span></code> declares a class <code class="docutils literal notranslate"><span class="pre">plugin_name</span></code> that
+derives from <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> and has a default constructor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLUGIN_CTOR(plugin_name)</span></code> starts the definition of the constructor.</p></li>
+</ul>
+<p>A plugin’s constructor can also pass <code class="docutils literal notranslate"><span class="pre">modules()</span></code> to helper functions that
+take a <code class="docutils literal notranslate"><span class="pre">ModuleMap&amp;</span></code>. This lets a large plugin split module registration
+across files, <em>e.g.</em>, one helper per subdirectory. Each helper adds its
+modules and sets intra-plugin defaults with <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>’s <code class="docutils literal notranslate"><span class="pre">add_module</span></code>
+and <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>.</p>
+<section id="example-declarative-defaults">
+<h4>Example: Declarative Defaults<a class="headerlink" href="#example-declarative-defaults" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code> has two modules. <code class="docutils literal notranslate"><span class="pre">&quot;My</span> <span class="pre">driver&quot;</span></code> has a <code class="docutils literal notranslate"><span class="pre">&quot;Step&quot;</span></code> submodule,
+which <code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code> fills itself, and a <code class="docutils literal notranslate"><span class="pre">&quot;Data&quot;</span></code> submodule, which it would
+like a provider to fill. <code class="docutils literal notranslate"><span class="pre">&quot;My</span> <span class="pre">step&quot;</span></code> has a <code class="docutils literal notranslate"><span class="pre">&quot;Helper&quot;</span></code> submodule, which it
+would also like a provider to fill. <code class="docutils literal notranslate"><span class="pre">ProviderA</span></code> provides the modules
+<code class="docutils literal notranslate"><span class="pre">&quot;A</span> <span class="pre">data&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;A</span> <span class="pre">helper&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">ProviderB</span></code> provides <code class="docutils literal notranslate"><span class="pre">&quot;B</span> <span class="pre">data&quot;</span></code>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// my_plugin/my_plugin.hpp</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">my_plugin</span><span class="w"> </span><span class="p">{</span>
+<span class="n">DECLARE_PLUGIN</span><span class="p">(</span><span class="n">MyPlugin</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// my_plugin/driver/driver.hpp</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">my_plugin</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">load_driver_modules</span><span class="p">(</span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleMap</span><span class="o">&amp;</span><span class="w"> </span><span class="n">modules</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">modules</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">MyDriver</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;My driver&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">modules</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">MyStep</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;My step&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Intra-plugin default</span>
+<span class="w">    </span><span class="n">modules</span><span class="p">.</span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;My driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Step&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My step&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace my_plugin</span>
+
+<span class="c1">// my_plugin/my_plugin.cpp</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">my_plugin</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">PLUGIN_CTOR</span><span class="p">(</span><span class="n">MyPlugin</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">set_name</span><span class="p">(</span><span class="s">&quot;my_plugin&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">set_preferred_providers</span><span class="p">(</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;provider_b&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">load_driver_modules</span><span class="p">(</span><span class="n">modules</span><span class="p">());</span>
+
+<span class="w">    </span><span class="c1">// Cross-plugin defaults</span>
+<span class="w">    </span><span class="n">default_submod_from</span><span class="p">(</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Data&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A data&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">default_submod_from</span><span class="p">(</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My step&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Helper&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A helper&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">default_submod_from</span><span class="p">(</span><span class="s">&quot;provider_b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Data&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B data&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace my_plugin</span>
+</pre></div>
+</div>
+<p>Both providers can fill <code class="docutils literal notranslate"><span class="pre">&quot;My</span> <span class="pre">driver&quot;</span></code>’s <code class="docutils literal notranslate"><span class="pre">&quot;Data&quot;</span></code> submodule. Since
+<code class="docutils literal notranslate"><span class="pre">&quot;provider_a&quot;</span></code> comes first in the preferred providers, <code class="docutils literal notranslate"><span class="pre">&quot;A</span> <span class="pre">data&quot;</span></code> is used
+when both are loaded, and <code class="docutils literal notranslate"><span class="pre">&quot;B</span> <span class="pre">data&quot;</span></code> is used when only <code class="docutils literal notranslate"><span class="pre">ProviderB</span></code> is
+loaded. <a class="reference internal" href="pluginplay_initialization.html#pp-initialization-design"><span class="std std-ref">Initializing the ModuleManager</span></a> walks through these cases.</p>
+</section>
+</section>
+<section id="python">
+<h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
+<p>Python support follows the pattern used for modules:</p>
+<ul class="simple">
+<li><p>A Python plugin subclasses <code class="docutils literal notranslate"><span class="pre">pluginplay.Plugin</span></code>. Its <code class="docutils literal notranslate"><span class="pre">__init__</span></code> calls
+<code class="docutils literal notranslate"><span class="pre">set_name</span></code>, <code class="docutils literal notranslate"><span class="pre">add_module</span></code>, <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>,
+<code class="docutils literal notranslate"><span class="pre">set_preferred_providers</span></code>, and <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code>, just as a Python
+module’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> calls <code class="docutils literal notranslate"><span class="pre">description</span></code> and <code class="docutils literal notranslate"><span class="pre">add_input</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXPORT_PLUGIN(plugin_name,</span> <span class="pre">m)</span></code> exports the C++ plugin class to Python
+(instead of a <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function), so a Python user can pass an
+instance to <code class="docutils literal notranslate"><span class="pre">ModuleManager.load_plugin</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> is exported so Python plugins can use <code class="docutils literal notranslate"><span class="pre">default_submod</span></code> and
+related functions.</p></li>
+</ul>
+</section>
+</section>
+<section id="further-considerations">
+<h2>Further Considerations<a class="headerlink" href="#further-considerations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Missing provider modules.</strong> A <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> record whose
+provider is loaded but has no module <code class="docutils literal notranslate"><span class="pre">provider_key</span></code> is skipped, which
+matches today’s behavior. This can hide a typo or a module that a newer
+version of the provider renamed. A warning through the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s
+logger may be useful.</p></li>
+<li><p><strong>Plugins that are loaded later.</strong> <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> records are
+kept after wiring, so calling <code class="docutils literal notranslate"><span class="pre">wire_defaults</span></code> again after loading
+another plugin applies the records for the new plugin.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="module_manager.html" class="btn btn-neutral float-left" title="Designing the Module Manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="module.html" class="btn btn-neutral float-right" title="Designing the Module Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

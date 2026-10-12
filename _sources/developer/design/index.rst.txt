@@ -26,6 +26,7 @@ the design) of PluginPlay.
    :caption: PluginPlay and Components:
 
    module_manager
+   plugins
    module
    property_type
    field
@@ -36,6 +37,7 @@ the design) of PluginPlay.
    :maxdepth: 2
    :caption: Processes
 
+   pluginplay_initialization
    call_graph
    memoization
    checkpoint_restart
