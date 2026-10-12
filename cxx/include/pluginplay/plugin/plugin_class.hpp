@@ -66,7 +66,7 @@ public:
         /// The key of the provider's module to use as the submodule
         key_type provider_key;
 
-        /// True if all three keys are the same
+        /// True if all three keys equal their counterparts in @p rhs
         bool operator==(const DefaultSubmod& rhs) const {
             return std::tie(module_key, callback_key, provider_key) ==
                    std::tie(rhs.module_key, rhs.callback_key, rhs.provider_key);
