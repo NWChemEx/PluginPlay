@@ -187,8 +187,8 @@ plugin ``P``:
    - Otherwise set ``callback_key`` to the provider's module ``provider_key``.
 
 These changes are done to ``P``'s live map, so it includes any changes the user
-made and any wiring done by earlier calls in the loop. Because
-``module_defaults_from_plugin`` only sets unset submodules:
+made and any wiring done by earlier calls in the loop. Because wiring only
+sets unset submodules:
 
 - choices the user made before ``wire_defaults`` are kept,
 - the order of ``preferred_providers`` sets priority, since the first

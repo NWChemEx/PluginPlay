@@ -19,6 +19,7 @@
 #include "fields/export_fields.hpp"
 #include "module/export_module.hpp"
 #include "module_manager/export_module_manager.hpp"
+#include "plugin/export_plugin.hpp"
 #include "printing/export_printing.hpp"
 #include "python/export_python.hpp"
 
@@ -32,6 +33,7 @@ PYBIND11_MODULE(pluginplay, m) {
     python::export_python(m);
     export_module(m);
     export_module_manager(m);
+    export_plugin(m);
     export_submodule_request(m);
     printing::export_printing(m);
 }

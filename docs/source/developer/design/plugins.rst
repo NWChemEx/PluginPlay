@@ -238,10 +238,9 @@ The Class
        ModuleMap& modules() noexcept;
 
    private:
-
        name_type m_name_;
-       std::maps<name_type, provider_list_type> m_providers_;
-       default_list_type m_defaults_;
+       provider_list_type m_providers_;
+       std::map<name_type, default_list_type> m_defaults_;
        ModuleMap m_modules_;
    };
 
@@ -282,8 +281,7 @@ type as the current ``ModuleManager::module_map``. ``ModuleMap`` provides:
   submodule has been set. It wraps ``SubmoduleRequest::has_module``.
 - ``default_submod(...)``, a convenience function with the same overloads
   as ``change_submod``. It sets the submodule only if it is unset. The
-  ``ModuleManager`` uses it to apply ``default_submod_from`` records, and
-  overrides of ``module_defaults_from_plugin_`` can use it too.
+  ``ModuleManager`` uses it to apply ``default_submod_from`` records.
 
 ``ModuleMap`` enforces that module keys are unique within the map, which
 means they are unique within a plugin. Uniqueness across plugins is the
@@ -353,7 +351,6 @@ Both providers can fill ``"My driver"``'s ``"Data"`` submodule. Since
 ``"provider_a"`` comes first in the preferred providers, ``"A data"`` is used
 when both are loaded, and ``"B data"`` is used when only ``ProviderB`` is
 loaded. :ref:`pp_initialization_design` walks through these cases.
-``MyPlugin`` does not need ``PLUGIN_DEFAULTS``.
 
 Python
 ======
