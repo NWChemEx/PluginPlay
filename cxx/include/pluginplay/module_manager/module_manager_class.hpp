@@ -169,18 +169,6 @@ public:
      */
     void rename_module(const type::key& old_key, type::key new_key);
 
-    /** @brief Defines the default module for a particular property type
-     *
-     *  @tparam T The type of the property type the default is for
-     *  @param key The module key of the default module
-     */
-    template<typename T>
-    void set_default(type::key key) {
-        auto temp = T::inputs();
-        type::input_map inps(temp.begin(), temp.end());
-        set_default_(typeid(T), std::move(inps), std::move(key));
-    }
-
     /** @brief Changes the value of an input bound to a module
      *
      * @tparam T
@@ -274,10 +262,6 @@ private:
      *  @throw None No throw guarantee.
      */
     bool has_pimpl_() const noexcept;
-
-    /// Bridges the gap between the set_default and the PIMPL
-    void set_default_(const std::type_info& type, type::input_map inps,
-                      type::key key);
 
     /// The object that actually implements the ModuleManager
     std::unique_ptr<detail_::ModuleManagerPIMPL> pimpl_;

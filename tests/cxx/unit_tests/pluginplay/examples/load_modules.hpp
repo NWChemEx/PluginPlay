@@ -63,12 +63,9 @@ inline void load_modules(pluginplay::ModuleManager& mm) {
     mm.add_module("Rectangle", std::make_shared<Rectangle>());
     mm.add_module("Prism", std::make_shared<Prism>());
 
-    /* Since our modules introduced two new property types we should also set
-     * default modules for each of them. These defaults will be used when
-     * a module needs, say an ``Area``, and the user has not specifically stated
-     * which submodule to use. Setting the defaults for our library is easy
-     * since it only provides one of each...
+    /* Our ``Prism`` module needs a submodule which computes an ``Area``. Since
+     * our library provides one, we set it as the default submodule. Users can
+     * still choose a different submodule later.
      */
-    mm.set_default<Area>("Rectangle");
-    mm.set_default<PrismVolume>("Prism");
+    mm.change_submod("Prism", "area", "Rectangle");
 } // end load_modules()

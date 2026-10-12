@@ -16,7 +16,19 @@
 
 #pragma once
 #include <pluginplay/module_manager/module_manager.hpp>
+#include <pluginplay/plugin/plugin_class.hpp>
 #include <pluginplay/python/python.hpp>
+
+/** @brief Starts the definition of a plugin's constructor.
+ *
+ *  The plugin class must derive from pluginplay::Plugin and declare a default
+ *  constructor. The body of the constructor describes the plugin by calling
+ *  the protected member functions of Plugin, *e.g.*, set_name and add_module.
+ *
+ *  @param[in] plugin_name The name of the plugin class.
+ */
+#define PLUGIN_CTOR(plugin_name) \
+    plugin_name::plugin_name() : pluginplay::Plugin()
 
 #define DECLARE_PLUGIN(plugin_name) \
     void load_modules(pluginplay::ModuleManager& mm)
