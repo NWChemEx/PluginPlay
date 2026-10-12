@@ -76,8 +76,15 @@ void Plugin::default_submod_from(const name_type& provider, key_type module_key,
                                 "' has no submodule with key: '" +
                                 callback_key + "'");
 
-    m_defaults_[provider].push_back(DefaultSubmod{
-      std::move(module_key), std::move(callback_key), std::move(provider_key)});
+    auto [itr, inserted] = m_defaults_.try_emplace(provider);
+    try {
+        itr->second.push_back(DefaultSubmod{std::move(module_key),
+                                            std::move(callback_key),
+                                            std::move(provider_key)});
+    } catch(...) {
+        if(inserted) m_defaults_.erase(itr);
+        throw;
+    }
 }
 
 } // namespace pluginplay
