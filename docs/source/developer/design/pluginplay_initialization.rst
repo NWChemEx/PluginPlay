@@ -42,7 +42,7 @@ Previous Approaches to Initialization
 
 Originally, the end user managed initialization by hand. There was a convention
 that plugins would declare/define ``load_modules`` and ``set_defaults``
-functions. The the end user would call them. This approach has several problems:
+functions. The end user would call them. This approach has several problems:
 
 - Wiring only works if every provider has been loaded before any
   ``set_defaults`` is called. Nothing enforces that order.
