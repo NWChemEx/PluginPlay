@@ -21,9 +21,8 @@
 using namespace pluginplay;
 using namespace pluginplay::detail_;
 
-using base_map    = typename ModuleManagerPIMPL::base_map;
-using module_map  = typename ModuleManagerPIMPL::module_map;
-using default_map = typename ModuleManagerPIMPL::default_map;
+using base_map   = typename ModuleManagerPIMPL::base_map;
+using module_map = typename ModuleManagerPIMPL::module_map;
 
 TEST_CASE("ModuleManagerPIMPL : Default ctor") {
     ModuleManagerPIMPL pimpl;
@@ -31,7 +30,6 @@ TEST_CASE("ModuleManagerPIMPL : Default ctor") {
         REQUIRE(pimpl.size() == 0);
         REQUIRE(pimpl.m_bases == base_map{});
         REQUIRE(pimpl.m_modules == module_map{});
-        REQUIRE(pimpl.m_defaults == default_map{});
     }
 }
 
@@ -103,20 +101,6 @@ TEST_CASE("ModuleManagerPIMPL : comparison") {
             }
         }
     }
-    SECTION("Different defaults") {
-        SECTION("Different types") {
-            pimpl1.m_defaults[std::type_index(typeid(double))] = "key1";
-            pimpl2.m_defaults[std::type_index(typeid(int))]    = "key1";
-            REQUIRE(pimpl1 != pimpl2);
-            REQUIRE(!(pimpl1 == pimpl2));
-        }
-        SECTION("Different keys") {
-            pimpl1.m_defaults[std::type_index(typeid(int))] = "key1";
-            pimpl2.m_defaults[std::type_index(typeid(int))] = "key2";
-            REQUIRE(pimpl1 != pimpl2);
-            REQUIRE(!(pimpl1 == pimpl2));
-        }
-    }
 }
 
 TEST_CASE("ModuleManagerPIMPL : add_module") {
@@ -160,23 +144,6 @@ TEST_CASE("ModuleManagerPIMPL : copy_module") {
     }
 }
 
-TEST_CASE("ModuleManagerPIMPL : set_default") {
-    auto ptr1 = std::make_shared<Rectangle>();
-    ModuleManagerPIMPL pimpl1, pimpl2;
-    pimpl1.add_module("key", ptr1);
-    pimpl2.add_module("key", ptr1);
-    SECTION("Can't set to non-exisitant module") {
-        REQUIRE_THROWS_AS(
-          pimpl1.set_default(typeid(double), type::input_map{}, "not a key"),
-          std::out_of_range);
-    }
-    SECTION("Good key") {
-        pimpl1.set_default(typeid(Area), type::input_map{}, "key");
-        pimpl2.m_defaults[typeid(Area)] = "key";
-        REQUIRE(pimpl1 == pimpl2);
-    }
-}
-
 TEST_CASE("ModuleManagerPIMPL : count") {
     auto ptr1 = std::make_shared<Rectangle>();
     ModuleManagerPIMPL pimpl1;
@@ -210,21 +177,10 @@ TEST_CASE("ModuleManagerPIMPL : at") {
         auto ptr2 = std::make_shared<Prism>();
         pimpl1.add_module("key1", ptr1);
         pimpl1.add_module("key2", ptr2);
-        REQUIRE(!pimpl1.m_modules.at("key2")->ready());
-        SECTION("No default") {
-            auto ptr3 = pimpl1.m_modules.at("key2");
-            REQUIRE(ptr3 == pimpl1.at("key2"));
-            REQUIRE(!ptr3->ready());
-        }
-        SECTION("Default") {
-            pimpl1.set_default(typeid(Area), ptr1->inputs(), "key1");
-            auto old_mod  = *pimpl1.m_modules.at("key2");
-            auto smod     = *pimpl1.m_modules.at("key1");
-            auto& new_mod = *pimpl1.at("key2");
-            REQUIRE(old_mod != new_mod);
-            REQUIRE(new_mod.ready(ptr2->inputs()));
-            REQUIRE(new_mod.submods().at("area").value() == smod);
-        }
+        // at() does not fill in unset submodules
+        auto ptr3 = pimpl1.m_modules.at("key2");
+        REQUIRE(ptr3 == pimpl1.at("key2"));
+        REQUIRE(!ptr3->ready());
     }
 }
 

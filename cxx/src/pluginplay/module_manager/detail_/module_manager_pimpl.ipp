@@ -20,14 +20,6 @@
 
 namespace pluginplay::detail_ {
 
-inline void ModuleManagerPIMPL::set_default(const std::type_info& type,
-                                            type::input_map inputs,
-                                            type::key key) {
-    if(!count(key)) m_modules.at(key); // Throws a consistent error
-    m_defaults[std::type_index(type)] = key;
-    m_inputs[std::type_index(type)]   = std::move(inputs);
-}
-
 inline void ModuleManagerPIMPL::add_module(type::key key,
                                            module_base_ptr base) {
     assert_unique_key_(key);
@@ -75,20 +67,7 @@ inline ModuleManagerPIMPL::shared_module ModuleManagerPIMPL::at(
           "ModuleManager has no module with key: '" + key + "'";
         throw std::out_of_range(msg);
     }
-    auto mod = m_modules.at(key);
-    // Loop over submodules filling them in from the defaults
-    for(auto& [k, v] : mod->submods()) {
-        const auto& type = v.type();
-        // Only change non-ready submodules
-        if(!v.ready() && m_defaults.count(type)) {
-            // Recursive to make sure that that module gets filled in
-            auto default_mod = at(m_defaults.at(type));
-            // Only change if the module is also ready
-            if(default_mod->ready(m_inputs.at(type)))
-                mod->change_submod(k, default_mod);
-        }
-    }
-    return mod;
+    return m_modules.at(key);
 }
 
 inline bool ModuleManagerPIMPL::operator==(
@@ -96,7 +75,6 @@ inline bool ModuleManagerPIMPL::operator==(
     // Try to get out early
     if(m_bases.size() != rhs.m_bases.size()) return false;
     if(m_modules.size() != rhs.m_modules.size()) return false;
-    if(m_defaults.size() != rhs.m_defaults.size()) return false;
 
     // TODO: Remove with the rest of the python hack
     if(m_py_bases.size() != rhs.m_py_bases.size()) return false;
@@ -115,9 +93,6 @@ inline bool ModuleManagerPIMPL::operator==(
         if(!m_modules.count(k)) return false;
         if(*m_modules.at(k) != *v) return false;
     }
-
-    // Easy since not pointers
-    if(m_defaults != rhs.m_defaults) return false;
 
     return true;
 }

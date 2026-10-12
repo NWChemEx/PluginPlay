@@ -54,9 +54,6 @@ struct ModuleManagerPIMPL {
     /// Type of a map holding usable modules
     using module_map = module_manager_type::module_map;
 
-    /// Type of a map holding the default module key for a given property type
-    using default_map = std::map<std::type_index, type::key>;
-
     /// The type of the runtime
     using runtime_type = module_manager_type::runtime_type;
 
@@ -104,20 +101,6 @@ struct ModuleManagerPIMPL {
      * @return Iterator to the past-the-end element of the map
      */
     module_map::iterator end() noexcept { return m_modules.end(); };
-
-    /** @brief Sets the default module to use for a given property type
-     *
-     * When a user requests a module that module initially has no submodules
-     * set unless the user has bound some to that module. Instead, the
-     * ModuleManager is now responsible to provide the module with submodules
-     * using the defaults. This function allows one to specify what the
-     * defaults are.
-     *
-     * @param type The type of the property type this default is for
-     * @param key The module key for the module to use as the default
-     */
-    void set_default(const std::type_info& type, type::input_map inputs,
-                     type::key key);
 
     /** @brief This function actually adds a module to the list of available
      *         modules.
@@ -197,12 +180,6 @@ struct ModuleManagerPIMPL {
 
     // These are the results of the modules running in the user's states
     cache_pointer m_pcaches;
-
-    // A map of property types
-    default_map m_defaults;
-
-    // A map of inputs for property types
-    std::map<std::type_index, type::input_map> m_inputs;
 
     // Pointer to this modules current runtime
     runtime_ptr m_runtime_;
