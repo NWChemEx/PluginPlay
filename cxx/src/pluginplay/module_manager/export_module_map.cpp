@@ -16,7 +16,9 @@
 
 #include "../module/py_module_base.hpp"
 #include "export_module_manager.hpp"
+#include <pluginplay/any/any.hpp>
 #include <pluginplay/module_manager/module_map.hpp>
+#include <pluginplay/python/python_wrapper.hpp>
 
 namespace pluginplay {
 
@@ -50,6 +52,15 @@ void export_module_map(py_module_reference m) {
             self.add_module(std::move(key), p);
         },
         py::keep_alive<1, 3>())
+      .def("copy_module", &ModuleMap::copy_module)
+      .def("erase", &ModuleMap::erase)
+      .def("change_input",
+           [](ModuleMap& self, const key_type& key, const key_type& option,
+              py::object value) {
+               using python::PythonWrapper;
+               self.change_input(key, option,
+                                 any::make_any_field<PythonWrapper>(value));
+           })
       .def("change_submod",
            static_cast<change_by_key>(&ModuleMap::change_submod))
       .def("has_submod", &ModuleMap::has_submod)

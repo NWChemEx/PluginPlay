@@ -45,8 +45,8 @@ A plugin is loaded into a ``ModuleManager`` as a single unit.
 Why Do We Need a Plugin Class?
 ******************************
 
-The original approach was a set of free functions. ``DECLARE_PLUGIN`` and
-``DEFINE_PLUGIN`` (in ``pluginplay/plugin/plugin.hpp``) declare and define a
+The original approach was a set of free functions. The original
+``DECLARE_PLUGIN`` and ``DEFINE_PLUGIN`` macros declared and defined a
 ``load_modules(ModuleManager&)`` function. By convention, most plugins also
 wrote a ``set_defaults(ModuleManager&)`` function for wiring that depended on
 other plugins. This approach has several problems:
@@ -75,6 +75,8 @@ Plugin Considerations
 
    - Each plugin has a name, *e.g.*, ``"my_plugin"``.
    - Plugin names must be unique within a ``ModuleManager``.
+   - Like module keys, plugin names are case-insensitive, *e.g.*,
+     ``"my_plugin"`` and ``"My_Plugin"`` are the same name.
 
 #. Module creation is separate from the ``ModuleManager``
 
@@ -256,7 +258,9 @@ Notes on the members:
 - **One instance per ModuleManager.** Since a plugin holds live modules, a
   plugin object must not be loaded into two ``ModuleManager`` objects.
   ``load_plugin<T>()`` creates a new ``T`` each time, so this only matters
-  for the Python form, which takes an instance.
+  for the Python form, which takes an instance. ``load_plugin`` takes the
+  plugin by ``std::unique_ptr``, and in Python it takes ownership from the
+  Python object, so loading the same instance again throws.
 - **Provenance.** Setters for version and citations would follow the same
   convention, *e.g.*, ``set_version`` and ``add_citation`` in the
   constructor, mirroring ``ModuleBase::citation``.
@@ -282,6 +286,12 @@ type as the current ``ModuleManager::module_map``. ``ModuleMap`` provides:
 - ``default_submod(...)``, a convenience function with the same overloads
   as ``change_submod``. It sets the submodule only if it is unset. The
   ``ModuleManager`` uses it to apply ``default_submod_from`` records.
+- ``copy_module(old_key, new_key)``, ``change_input(key, option, value)``,
+  and ``erase(key)``, which mirror the ``ModuleManager`` functions. They let
+  a plugin set up variants of its own modules, *e.g.*, a copy of a module
+  with a tighter threshold.
+- ``add_module(key, Module)``, which stores an already-created module, *e.g.*,
+  a copy of a module.
 
 ``ModuleMap`` enforces that module keys are unique within the map, which
 means they are unique within a plugin. Uniqueness across plugins is the
@@ -291,11 +301,15 @@ Declaring a Plugin
 ==================
 
 The plugin macros mirror the module macros (``DECLARE_MODULE``,
-``MODULE_CTOR``, and ``MODULE_RUN``):
+``MODULE_CTOR``, and ``MODULE_RUN``). They are declared in
+``pluginplay/plugin/plugin.hpp``:
 
 - ``DECLARE_PLUGIN(plugin_name)`` declares a class ``plugin_name`` that
-  derives from ``Plugin`` and has a default constructor.
+  derives from ``Plugin`` and has a default constructor. Like any other class,
+  ``plugin_name`` is CamelCase, *e.g.*, ``MyPlugin``.
 - ``PLUGIN_CTOR(plugin_name)`` starts the definition of the constructor.
+- ``EXPORT_PLUGIN(module_name, plugin_name, m)`` creates the Python module
+  for the plugin (see `Python`_).
 
 A plugin's constructor can also pass ``modules()`` to helper functions that
 take a ``ModuleMap&``. This lets a large plugin split module registration
@@ -361,9 +375,20 @@ Python support follows the pattern used for modules:
   ``set_name``, ``add_module``, ``change_submod``,
   ``set_preferred_providers``, and ``default_submod_from``, just as a Python
   module's ``__init__`` calls ``description`` and ``add_input``.
-- ``EXPORT_PLUGIN(plugin_name, m)`` exports the C++ plugin class to Python
+- ``EXPORT_PLUGIN(module_name, plugin_name, m)`` creates the Python module
+  ``module_name`` and exports the C++ plugin class to it as ``plugin_name``
   (instead of a ``load_modules`` function), so a Python user can pass an
-  instance to ``ModuleManager.load_plugin``.
+  instance to ``ModuleManager.load_plugin``. The Python module and the plugin
+  class have different names because the module name is lowercase, while the
+  class name follows the CamelCase convention for classes. The macro is
+  followed by a function body that can export anything else the module needs,
+  *e.g.*, property types:
+
+  .. code-block:: c++
+
+     EXPORT_PLUGIN(my_plugin, MyPlugin, m) {
+         export_property_types(m);
+     }
 - ``ModuleMap`` is exported so Python plugins can use ``default_submod`` and
   related functions.
 

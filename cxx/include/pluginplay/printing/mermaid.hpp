@@ -22,7 +22,7 @@ namespace pluginplay::printing {
 
 std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm);
 
-void print_submods(const std::string module_key,
+void print_submods(const QualifiedKey& module_key,
                    const pluginplay::ModuleManager& mm, std::stringstream& ss,
                    std::string& module_code);
 } // namespace pluginplay::printing

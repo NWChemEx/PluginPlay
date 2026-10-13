@@ -181,6 +181,52 @@ TEST_CASE("ModuleMap") {
         REQUIRE(same != has_mods);
     }
 
+    SECTION("add_module(key, Module)") {
+        defaulted.add_module("Copy", has_mods.at("Rectangle")->unlocked_copy());
+        auto mod = defaulted.at("Copy");
+        REQUIRE(mod->get_name() == "Copy");
+        REQUIRE(mod != has_mods.at("Rectangle"));
+        REQUIRE_THROWS_AS(defaulted.add_module("Copy", Module{}),
+                          std::invalid_argument);
+    }
+
+    SECTION("copy_module") {
+        has_mods.at("Rectangle")->lock();
+        has_mods.copy_module("Rectangle", "Copy");
+        auto copy = has_mods.at("Copy");
+        REQUIRE(copy->get_name() == "Copy");
+        REQUIRE_FALSE(copy->locked());
+
+        // The copy has its own inputs
+        copy->change_input("Dimension 1", 1.23);
+        REQUIRE(*copy != *has_mods.at("Rectangle"));
+
+        REQUIRE_THROWS_AS(has_mods.copy_module("not a key", "Copy 2"),
+                          std::out_of_range);
+        REQUIRE_THROWS_AS(has_mods.copy_module("Rectangle", "Prism"),
+                          std::invalid_argument);
+    }
+
+    SECTION("erase") {
+        has_mods.erase("Rectangle");
+        REQUIRE(has_mods.count("Rectangle") == 0);
+        REQUIRE(has_mods.size() == 1);
+        has_mods.erase("not a key"); // No-op
+        REQUIRE(has_mods.size() == 1);
+    }
+
+    SECTION("change_input") {
+        has_mods.change_input("Rectangle", "Dimension 1", 1.23);
+        const auto& inputs = has_mods.at("Rectangle")->inputs();
+        REQUIRE(inputs.at("Dimension 1").value<double>() == 1.23);
+        REQUIRE_THROWS_AS(
+          has_mods.change_input("not a key", "Dimension 1", 1.0),
+          std::out_of_range);
+        REQUIRE_THROWS_AS(
+          has_mods.change_input("Rectangle", "not an input", 1.0),
+          std::out_of_range);
+    }
+
     SECTION("copies share modules") {
         ModuleMap copy(has_mods);
         REQUIRE(copy.at("Prism") == has_mods.at("Prism"));

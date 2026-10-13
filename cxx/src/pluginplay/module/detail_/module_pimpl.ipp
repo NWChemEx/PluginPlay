@@ -126,6 +126,16 @@ inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     return m_cache_->count(ps);
 }
 
+inline void ModulePIMPL::attach(runtime_ptr runtime, const mm_cache_ptr& caches,
+                                const type::key& cache_key) {
+    assert_mod_();
+    m_base_->set_runtime(runtime);
+    if(!m_base_->has_uuid()) m_base_->set_uuid(utility::generate_uuid());
+    if(!caches) return;
+    m_base_->set_cache(caches->get_or_make_user_cache(m_base_->uuid()));
+    m_cache_ = caches->get_or_make_module_cache(cache_key);
+}
+
 inline void ModulePIMPL::reset_cache() {
     if(m_cache_) m_cache_->clear();
 }
@@ -204,7 +214,8 @@ inline bool ModulePIMPL::operator==(const ModulePIMPL& rhs) const {
     if(locked() != rhs.locked()) return false;
     if(!has_module()) return true;
 
-    if(std::tie(inputs(), submods(), property_types(), python_property_types()) !=
+    if(std::tie(inputs(), submods(), property_types(),
+                python_property_types()) !=
        std::tie(rhs.inputs(), rhs.submods(), rhs.property_types(),
                 rhs.python_property_types()))
         return false;

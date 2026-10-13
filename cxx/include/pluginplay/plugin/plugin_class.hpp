@@ -19,10 +19,14 @@
 #include <pluginplay/module_manager/module_map.hpp>
 #include <string>
 #include <tuple>
+#include <utilities/containers/case_insensitive_map.hpp>
 #include <utility>
 #include <vector>
 
 namespace pluginplay {
+namespace detail_ {
+struct ModuleManagerPIMPL;
+}
 
 /** @brief Base class for all plugins.
  *
@@ -128,6 +132,9 @@ protected:
 
     /** @brief Sets the name of the plugin.
      *
+     *  Like module keys, plugin names are case-insensitive. The name is stored
+     *  as given.
+     *
      *  @param[in] name The name of the plugin.
      *
      *  @throw std::invalid_argument if @p name is empty. The empty name is
@@ -214,6 +221,9 @@ protected:
     ModuleMap& modules() noexcept { return m_modules_; }
 
 private:
+    /// The ModuleManager owns loaded plugins and changes their modules
+    friend struct detail_::ModuleManagerPIMPL;
+
     /// The name of the plugin
     name_type m_name_;
 
@@ -221,7 +231,7 @@ private:
     provider_list_type m_providers_;
 
     /// The recorded default submodules, keyed by provider
-    std::map<name_type, default_list_type> m_defaults_;
+    utilities::CaseInsensitiveMap<default_list_type> m_defaults_;
 
     /// The plugin's modules
     ModuleMap m_modules_;

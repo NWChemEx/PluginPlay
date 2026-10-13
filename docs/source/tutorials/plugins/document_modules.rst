@@ -18,7 +18,7 @@ Documenting Modules in a Collection
 
 This page shows how to document the modules in your module collection using the
 ``document_modules`` function in the SDE. This page assumes that you can create
-a module collection according to :doc:`./overview` and :doc:`load_modules`.
+a module collection according to :doc:`./overview` and :doc:`writing_a_plugin`.
 
 Generate the Documentation
 ==========================
@@ -29,22 +29,21 @@ documentation program code below in :ref:`example-module-doc-gen`.
 
 Currently, documentation generation is expected to be performed in its own
 binary, which we will refer to as ``build_docs`` here. This program must
-include both the ``sde::printing::document_modules`` function and the
-``load_modules`` function defined for your modules.
+include both the ``pluginplay::printing::document_modules`` function and the
+header declaring your plugin.
 
 .. literalinclude:: ../../../../tests/cxx/doc_snippets/generate_module_documentation.cpp
    :language: c++
    :lines: 17, 19-21
 
-Next, set up a ``sde::ModuleManager`` and load your modules with the
-``load_modules`` you wrote.
+Next, set up a ``pluginplay::ModuleManager`` and load your plugin.
 
 .. literalinclude:: ../../../../tests/cxx/doc_snippets/generate_module_documentation.cpp
    :language: c++
    :lines: 33-37
 
 The final step is to generate documentation through
-``sde::printing::document_modules``, by providing your ``ModuleManager``
+``pluginplay::printing::document_modules``, by providing your ``ModuleManager``
 instance (``mm`` here) and the ``std::filesystem::path`` to an existing
 directory where the documentation should be output (``doc_path`` here). How this
 path is generated is a detail left to the developer's discretion. For simplicity
@@ -61,7 +60,8 @@ Example Program
 ===============
 
 The following code is a minimal example program generating documentation for
-the test modules in SDE. Modify the code according to the TODO comments to
+the test modules in PluginPlay. A plugin's modules are documented in a
+subdirectory of the output directory, named after the plugin. Modify the code according to the TODO comments to
 generate documentation for your modules.
 
 .. literalinclude:: ../../../../tests/cxx/doc_snippets/generate_module_documentation.cpp

@@ -48,7 +48,7 @@
 // For the purposes of this tutorial we reuse the property types from our
 // property type tutorial and the modules from our module tutorial. The next
 // two lines include the relevant header files
-#include "load_modules.hpp"
+#include "writing_a_plugin.hpp"
 #include <pluginplay/pluginplay.hpp>
 
 // TUTORIAL_START_SKIP
@@ -96,7 +96,7 @@ TEST_CASE("How to use a lambda module") {
     // instance and then retrieves the relevant modules for this tutorial:
 
     pluginplay::ModuleManager mm;
-    load_modules(mm);
+    mm.load_plugin<ExamplePlugin>();
 
     // At this point volume_mod's "area" submodule is set to Rectangle
     auto volume_mod = mm.at("Prism");

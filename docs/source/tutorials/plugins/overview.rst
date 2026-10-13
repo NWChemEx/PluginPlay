@@ -44,12 +44,12 @@ code will look something like:
 where:
 
 - the ``include/`` directory contains the public API,
-- ``our_module.hpp`` includes the ``load_modules`` function (TODO: add link) and
-  any other headers needed to use the collection,
+- ``our_module.hpp`` declares the plugin (see :doc:`writing_a_plugin`) and
+  includes any other headers needed to use the collection,
 - the ``src/`` directory contains the implementation of the collection,
 - ``module1.cpp`` and ``module2.cpp`` are the implementation of the modules,
 - ``modules.hpp`` contains the declaration of the modules, and
-- ``our_module.cpp`` contains the definition of the ``load_modules`` function.
+- ``our_module.cpp`` contains the definition of the plugin's constructor.
 
 In practice you will also have build system files, readmes, licenses, unit tests
 (hopefully), etc, but from the perspective of the pluginplay those are the key parts.

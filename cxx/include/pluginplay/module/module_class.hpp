@@ -745,6 +745,9 @@ public:
     bool operator!=(const Module& rhs) const { return !((*this) == rhs); }
 
 private:
+    /// Lets the ModuleManager attach its runtime and caches to the module
+    friend struct detail_::ModuleManagerPIMPL;
+
     /** @brief Unlocks a locked module
      *
      *  There are very select circumstances when we need to unlock a locked

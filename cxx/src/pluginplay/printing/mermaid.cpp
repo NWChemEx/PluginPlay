@@ -32,15 +32,17 @@ void add_letter(std::string& code) {
     }
 }
 
-void print_submods(const std::string module_key,
-                   const pluginplay::ModuleManager& mm, std::stringstream& ss,
-                   std::string& module_code) {
-    const auto& mm_module = mm.at(module_key); // Results in a PluginPlay Module
-    const auto& submods = mm_module.submods(); // Results in list of Submodules
-    auto main_mod_code  = module_code;
+namespace {
+
+// Recurses over the submodules of mod. Submodules are followed through the
+// Module objects, not looked up by key, because a submodule's key may be used
+// by more than one plugin.
+void print_submods_(const Module& mod, std::stringstream& ss,
+                    std::string& module_code) {
+    auto main_mod_code = module_code;
 
     // Key is the ID/Tag, Value is the reference to the Module
-    for(const auto& [key, value] : submods) {
+    for(const auto& [key, value] : mod.submods()) {
         ss << "\n\t" << main_mod_code << "-->"
            << "|" << key << "| ";
         if(value.has_module() == false) {
@@ -49,23 +51,33 @@ void print_submods(const std::string module_key,
         } else {
             add_letter(module_code);
             ss << module_code << "[" << value.get_name() << "]";
-            print_submods(value.get_name(), mm, ss, module_code);
+            print_submods_(value.value(), ss, module_code);
         }
     }
 }
 
+} // namespace
+
+void print_submods(const QualifiedKey& module_key,
+                   const pluginplay::ModuleManager& mm, std::stringstream& ss,
+                   std::string& module_code) {
+    print_submods_(mm.at(module_key), ss, module_code);
+}
+
 std::stringstream create_mermaid_graph(const pluginplay::ModuleManager& mm) {
-    auto n_modules = mm.size();
     std::stringstream ss;
     std::string module_code = "AAA";
-    if(n_modules == 0) {
+    const auto keys         = mm.keys();
+    if(keys.empty()) {
         ss << "No modules are loaded, load some modules!";
     } else {
-        for(decltype(n_modules) i = 0; i < n_modules; i++) {
+        for(const auto& mod : keys) {
+            // The ModuleManager's own modules are labeled by key alone
+            const auto label =
+              mod.plugin().empty() ? mod.key() : mod.to_string();
             ss << "\n```mermaid";
             ss << "\nflowchart LR\n";
-            auto mod = mm.keys()[i];
-            ss << "\t" << module_code << "[" << mod << "]";
+            ss << "\t" << module_code << "[" << label << "]";
             print_submods(mod, mm, ss, module_code);
             ss << "\n```";
             add_letter(module_code);

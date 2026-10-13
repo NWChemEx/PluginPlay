@@ -19,6 +19,7 @@
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/module/module_class.hpp>
 #include <pluginplay/types.hpp>
+#include <utility>
 #include <vector>
 
 namespace pluginplay {
@@ -86,6 +87,70 @@ public:
      *                        Strong throw guarantee.
      */
     void add_module(key_type key, module_base_ptr base);
+
+    /** @brief Stores the already-created module @p module under @p key.
+     *
+     *  This overload is for adding a module that already exists, *e.g.*, a
+     *  copy of a module. The module's name is set to @p key.
+     *
+     *  @param[in] key The key to store the module under.
+     *  @param[in] module The module to store.
+     *
+     *  @throw std::invalid_argument if @p key is already in use. Strong throw
+     *                               guarantee.
+     *  @throw std::bad_alloc if there is a problem allocating the module.
+     *                        Strong throw guarantee.
+     */
+    void add_module(key_type key, Module module);
+
+    /** @brief Stores an unlocked copy of the module @p old_key under
+     *         @p new_key.
+     *
+     *  The copy has its own inputs and submodules, so changing them does not
+     *  change the module stored under @p old_key. The copy shares the
+     *  implementation of @p old_key.
+     *
+     *  @param[in] old_key The key of the module to copy.
+     *  @param[in] new_key The key to store the copy under.
+     *
+     *  @throw std::out_of_range if *this does not have a module with key
+     *                           @p old_key. Strong throw guarantee.
+     *  @throw std::invalid_argument if @p new_key is already in use. Strong
+     *                               throw guarantee.
+     *  @throw std::bad_alloc if there is a problem allocating the copy. Strong
+     *                        throw guarantee.
+     */
+    void copy_module(const key_type& old_key, key_type new_key);
+
+    /** @brief Removes the module stored under @p key.
+     *
+     *  Modules that use the removed module as a submodule keep using it. This
+     *  function is a no-op if *this does not have a module with key @p key.
+     *
+     *  @param[in] key The key of the module to remove.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void erase(const key_type& key) noexcept { m_modules_.erase(key); }
+
+    /** @brief Changes the value of an input of the module @p key.
+     *
+     *  @tparam T The type of the new value.
+     *
+     *  @param[in] key The key of the module whose input is being changed.
+     *  @param[in] option The key of the input to change.
+     *  @param[in] new_value The new value of the input.
+     *
+     *  @throw std::out_of_range if *this does not have a module with key
+     *                           @p key, or if that module has no input
+     *                           @p option. Strong throw guarantee.
+     *  @throw ??? Throws if Module::change_input throws. Same guarantee.
+     */
+    template<typename T>
+    void change_input(const key_type& key, const key_type& option,
+                      T&& new_value) {
+        at(key)->change_input(option, std::forward<T>(new_value));
+    }
 
     /** @brief Determines if *this contains a module with key @p key.
      *

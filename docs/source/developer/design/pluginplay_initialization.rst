@@ -105,7 +105,10 @@ its ``ModuleMap`` (see :ref:`plugin_design`). So the ``ModuleManager`` has
 one ``ModuleMap`` per loaded plugin, plus a ``ModuleMap`` of its own. The
 ``ModuleManager``'s own map holds modules that do not come from a plugin,
 such as modules added directly by the user, lambda modules, and facade
-modules. The maps are **not** merged into one pool. A submodule may still be
+modules. Copies the user makes through the ``ModuleManager`` (``copy_module``
+and ``rename_module``) also go in its own map, even when the original is one
+of a plugin's modules, so a plugin's map only holds the modules the plugin
+provides. The maps are **not** merged into one pool. A submodule may still be
 any module in any map, so links can cross maps.
 
 The empty plugin name, ``""``, is reserved for the ``ModuleManager``'s own
@@ -116,7 +119,9 @@ Uniqueness and Lookup
 
 - ``ModuleMap`` enforces unique module keys within a plugin.
 - The ``ModuleManager`` enforces unique plugin names. Loading a second plugin
-  with the same name throws.
+  with the same name throws. Like module keys, plugin names are compared
+  case-insensitively, everywhere they are used: when loading, in lookups, and
+  when matching preferred providers.
 
 Together these guarantee that the pair (plugin name, module key) is unique.
 The ``ModuleManager`` therefore offers two ways to look up a module, and
@@ -127,11 +132,60 @@ every function that takes a module key (``at``, ``change_input``,
    name means the ``ModuleManager``'s own map.
 #. With only a module key. This works as long as the key appears in exactly
    one map. If it appears in more than one map the call throws and the error
-   lists the plugins that contain the key. To support this, the
-   ``ModuleManager`` keeps track of which keys appear in more than one map.
+   lists the plugins that contain the key.
+
+Both forms are spelled with a ``QualifiedKey``, a small class holding an
+optional plugin name and a module key. A ``QualifiedKey`` is implicitly
+created from a string, which gives the key-only form, so the functions keep
+a single signature and existing calls keep working:
+
+.. code-block:: c++
+
+   mm.at("SCF Driver");                  // key-only
+   mm.at({"scf", "SCF Driver"});         // plugin name and module key
+   mm.change_submod({"scf", "SCF Driver"}, "Hamiltonian",
+                    {"nux", "Born-Oppenheimer approximation"});
+
+In Python, a string or a ``(plugin name, module key)`` tuple can be passed
+wherever a ``QualifiedKey`` is expected.
+
+Note that ``{"", key}`` is a qualified key, not a key-only one. The two forms
+look up different things: a key-only key searches every map, while ``{"",
+key}`` only looks in the ``ModuleManager``'s own map. They find the same
+module only when no plugin uses ``key``. The qualified form is the only way to
+reach a module in the ``ModuleManager``'s own map when a plugin also uses its
+key:
+
+.. code-block:: c++
+
+   mm.add_module<Rectangle>("Shared");   // own map
+   mm.load_plugin<ProviderA>();          // also has a "Shared" module
+
+   mm.at("Shared");                      // throws: ambiguous
+   mm.at({"", "Shared"});                // the own map's module
+   mm.at({"provider_a", "Shared"});      // ProviderA's module
 
 The key-only form keeps current code working, since today's module keys are
 effectively unique across the NWChemEx plugins.
+
+The ``ModuleManager`` does not store which keys appear in more than one map.
+Instead, a key-only lookup searches every map. There are only a handful of
+plugins, so this is cheap, and a stored record could go out of date when the
+user copies or erases a module after loading.
+
+``count(key)`` returns the number of maps with the key, ``size()`` returns
+the total number of modules, and ``keys()`` returns the qualified key of
+every module. The ``ModuleManager`` no longer offers ``begin()`` and
+``end()``; code that needs the modules loops over ``plugin_names()`` and
+calls ``get_modules(name)``, which returns that map.
+
+Caches
+======
+
+Memoized results are stored in module caches, which are looked up by name.
+Two plugins may use the same module key, so a plugin's module uses the cache
+named ``"<plugin name>::<module key>"``. Modules in the ``ModuleManager``'s
+own map use the module key, as before.
 
 Loading Plugins
 ===============
@@ -139,10 +193,10 @@ Loading Plugins
 .. code-block:: c++
 
    pluginplay::ModuleManager mm;
-   mm.load_plugin<scf::scf>();
-   mm.load_plugin<integrals::integrals>();
-   mm.load_plugin<nux::nux>();
-   mm.load_plugin<chemcache::chemcache>();
+   mm.load_plugin<scf::SCF>();
+   mm.load_plugin<integrals::Integrals>();
+   mm.load_plugin<nux::NUX>();
+   mm.load_plugin<chemcache::ChemCache>();
 
 ``load_plugin<T>()``:
 
@@ -150,11 +204,12 @@ Loading Plugins
    constructible). ``T``'s constructor sets the plugin's name and preferred
    providers and builds its ``ModuleMap``, including its internal wiring,
 #. throws if a plugin with the same ``name()`` is already loaded,
+#. gives each of the plugin's modules the ``ModuleManager``'s runtime and
+   caches, and
 #. takes ownership of the plugin object. The plugin's ``ModuleMap`` is now
-   the ``ModuleManager``'s map for that plugin; nothing is copied, and
-#. updates the record of which keys appear in more than one map.
+   the ``ModuleManager``'s map for that plugin; nothing is copied.
 
-Python has an equivalent, ``mm.load_plugin(scf.scf())``, which takes an
+Python has an equivalent, ``mm.load_plugin(scf.SCF())``, which takes an
 instance because Python has no template parameters. Because the plugin holds
 live modules, the same instance must not be loaded into two
 ``ModuleManager`` objects.
@@ -180,10 +235,12 @@ plugin ``P``:
 
 #. For each default triple:
 
-   - If ``P``'s module ``module_key`` has  a submodule with key
+   - If the user erased ``P``'s module ``module_key``, move to the next
+     triple.
+   - If ``P``'s module ``module_key`` has a submodule with key
      ``callback_key`` that is already set, move to the next triple.
    - Else, if the provider does not have a module with key ``provider_key``,
-     move to the next triple.
+     log a warning and move to the next triple.
    - Otherwise set ``callback_key`` to the provider's module ``provider_key``.
 
 These changes are done to ``P``'s live map, so it includes any changes the user

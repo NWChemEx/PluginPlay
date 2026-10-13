@@ -32,6 +32,10 @@ namespace pluginplay::printing {
  * an index file for the modules to be imported into a documentation generator
  * like Sphinx.
  *
+ * Modules that do not come from a plugin are documented in @p docs_path. A
+ * plugin's modules are documented in a subdirectory of @p docs_path named after
+ * the plugin.
+ *
  * @param[in] mm Module manager with modules loaded into it.
  * @param[in] docs_path Path to the directory where documentation is output.
  */

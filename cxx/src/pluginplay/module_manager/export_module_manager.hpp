@@ -21,8 +21,10 @@ namespace pluginplay {
 
 void export_module_manager_class(py_module_reference m);
 void export_module_map(py_module_reference m);
+void export_qualified_key(py_module_reference m);
 
 inline void export_module_manager(py_module_reference m) {
+    export_qualified_key(m);
     export_module_map(m);
     export_module_manager_class(m);
 }

@@ -16,6 +16,7 @@
 
 #pragma once
 #include <pluginplay/plugin/plugin_class.hpp>
+#include <pybind11/pybind11.h>
 
 namespace pluginplay {
 
@@ -23,9 +24,14 @@ namespace pluginplay {
  *
  *  Plugin's constructor is protected, so pybind11 cannot create a Plugin
  *  directly. PyPlugin makes the constructor public. Plugin has no virtual
- *  functions to forward to Python, so PyPlugin adds nothing else.
+ *  functions to forward to Python.
+ *
+ *  ModuleManager::load_plugin takes ownership of the plugin away from Python.
+ *  Deriving from trampoline_self_life_support keeps the Python part of a
+ *  plugin written in Python (*e.g.*, its Python modules) alive for as long as
+ *  the ModuleManager owns the plugin.
  */
-class PyPlugin : public Plugin {
+class PyPlugin : public Plugin, public pybind11::trampoline_self_life_support {
 public:
     PyPlugin() = default;
 };

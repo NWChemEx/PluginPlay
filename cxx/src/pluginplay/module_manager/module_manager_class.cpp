@@ -20,13 +20,9 @@
 
 namespace pluginplay {
 
-using module_map      = typename ModuleManager::module_map;
 using module_base_ptr = typename ModuleManager::module_base_ptr;
-using cache_type      = typename detail_::ModulePIMPL::cache_type;
 using runtime_type    = typename ModuleManager::runtime_type;
 using runtime_ptr     = typename ModuleManager::runtime_ptr;
-template<typename T>
-using CIM = utilities::CaseInsensitiveMap<T>;
 
 ModuleManager::ModuleManager() :
   pimpl_(std::make_unique<detail_::ModuleManagerPIMPL>()) {}
@@ -36,35 +32,60 @@ ModuleManager::ModuleManager(ModuleManager&& rhs) noexcept            = default;
 ModuleManager& ModuleManager::operator=(ModuleManager&& rhs) noexcept = default;
 ModuleManager::~ModuleManager() noexcept                              = default;
 
-type::size ModuleManager::count(type::key key) const noexcept {
+type::size ModuleManager::count(const qualified_key& key) const noexcept {
     return pimpl_->count(key);
+}
+
+type::size ModuleManager::size() const noexcept { return pimpl_->size(); }
+
+void ModuleManager::load_plugin(plugin_pointer plugin) {
+    pimpl_->load_plugin(std::move(plugin));
+}
+
+void ModuleManager::wire_defaults() { pimpl_->wire_defaults(); }
+
+bool ModuleManager::has_plugin(const name_type& name) const noexcept {
+    return pimpl_->has_plugin(name);
+}
+
+ModuleManager::name_container_type ModuleManager::plugin_names() const {
+    return pimpl_->plugin_names();
+}
+
+const Plugin& ModuleManager::get_plugin(const name_type& name) const {
+    return pimpl_->get_plugin(name);
+}
+
+const ModuleMap& ModuleManager::get_modules(const name_type& name) const {
+    return const_cast<const detail_::ModuleManagerPIMPL&>(*pimpl_).get_modules(
+      name);
 }
 
 void ModuleManager::add_module(type::key key, module_base_ptr base) {
     pimpl_->add_module(std::move(key), base);
 }
 
-void ModuleManager::erase(const type::key& key) { pimpl_->erase(key); }
+void ModuleManager::erase(const qualified_key& key) { pimpl_->erase(key); }
 
-void ModuleManager::copy_module(const type::key& old_key, type::key new_key) {
+void ModuleManager::copy_module(const qualified_key& old_key,
+                                type::key new_key) {
     pimpl_->copy_module(old_key, std::move(new_key));
 }
 
-void ModuleManager::change_submod(const type::key& module_key,
+void ModuleManager::rename_module(const qualified_key& old_key,
+                                  type::key new_key) {
+    pimpl_->rename_module(old_key, std::move(new_key));
+}
+
+void ModuleManager::change_submod(const qualified_key& module_key,
                                   const type::key& callback_key,
-                                  const type::key& submod_key) {
+                                  const qualified_key& submod_key) {
     pimpl_->at(module_key)->change_submod(callback_key, pimpl_->at(submod_key));
 }
 
-const Module& ModuleManager::at(const type::key& module_key) const {
+const Module& ModuleManager::at(const qualified_key& module_key) const {
     return *pimpl_->at(module_key);
 }
-
-module_map::iterator ModuleManager::begin() noexcept { return pimpl_->begin(); }
-
-module_map::iterator ModuleManager::end() noexcept { return pimpl_->end(); }
-
-type::size ModuleManager::size() const noexcept { return pimpl_->size(); }
 
 void ModuleManager::set_runtime(runtime_ptr runtime) noexcept {
     pimpl_->set_runtime(runtime);

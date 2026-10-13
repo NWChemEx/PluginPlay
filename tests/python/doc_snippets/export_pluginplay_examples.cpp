@@ -16,14 +16,14 @@
 
 #include "../../cxx/doc_snippets/electric_field.hpp"
 #include "../../cxx/doc_snippets/force.hpp"
-#include "../../cxx/doc_snippets/load_modules.hpp"
+#include "../../cxx/doc_snippets/pluginplay_examples.hpp"
 #include "../../cxx/doc_snippets/point_charge.hpp"
 #include <pluginplay/plugin/plugin.hpp>
 #include <pybind11/operators.h>
 
 namespace pluginplay_examples {
 
-EXPORT_PLUGIN(pluginplay_examples, m) {
+EXPORT_PLUGIN(pluginplay_examples, PluginplayExamples, m) {
     pybind11::class_<PointCharge>(m, "PointCharge")
       .def(pybind11::init<>())
       .def(pybind11::init<double, Point>())

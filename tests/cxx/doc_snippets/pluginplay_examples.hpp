@@ -19,6 +19,6 @@
 
 namespace pluginplay_examples {
 
-void load_modules(pluginplay::ModuleManager& mm);
+DECLARE_PLUGIN(PluginplayExamples);
 
 }

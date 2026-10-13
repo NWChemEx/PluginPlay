@@ -19,6 +19,7 @@
 #include <set>
 #include <stdexcept>
 #include <tuple>
+#include <utilities/strings/string_tools.hpp>
 
 namespace pluginplay {
 
@@ -44,7 +45,9 @@ void Plugin::set_name(name_type name) {
 }
 
 void Plugin::set_preferred_providers(provider_list_type names) {
-    std::set<name_type> seen;
+    // Plugin names are case-insensitive
+    using name_less = utilities::CaseInsensitiveMap<name_type>::key_compare;
+    std::set<name_type, name_less> seen;
     for(const auto& name : names) {
         if(name.empty())
             throw std::invalid_argument("Provider names can not be empty");
@@ -63,9 +66,12 @@ void Plugin::set_preferred_providers(provider_list_type names) {
 
 void Plugin::default_submod_from(const name_type& provider, key_type module_key,
                                  key_type callback_key, key_type provider_key) {
-    auto begin = m_providers_.begin();
-    auto end   = m_providers_.end();
-    if(std::find(begin, end, provider) == end)
+    auto begin   = m_providers_.begin();
+    auto end     = m_providers_.end();
+    auto matches = [&provider](const name_type& name) {
+        return utilities::strings::case_insensitive_equal(name, provider);
+    };
+    if(std::find_if(begin, end, matches) == end)
         throw std::invalid_argument(
           "'" + provider +
           "' is not a preferred provider. Call set_preferred_providers first.");

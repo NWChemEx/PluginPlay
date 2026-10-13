@@ -38,7 +38,7 @@ void export_plugin_class(py_module_reference m) {
     auto modules = static_cast<modules_fxn>(&PluginPublicist::modules);
 
     auto py_plugin =
-      py_class_type<Plugin, PyPlugin, std::shared_ptr<Plugin>>(m, "Plugin");
+      py_class_type<Plugin, PyPlugin, py::smart_holder>(m, "Plugin");
 
     py_class_type<default_submod>(py_plugin, "DefaultSubmod")
       .def_readonly("module_key", &default_submod::module_key)

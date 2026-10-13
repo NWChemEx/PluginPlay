@@ -25,25 +25,27 @@
  * remainder of the following header files are needed for this tutorial.
  */
 #pragma once
-#include "load_modules.hpp"
+#include "writing_a_plugin.hpp"
 #include <pluginplay/pluginplay.hpp>
 
 /* Running a Computation
  * ---------------------
  *
- * The ``load_modules()`` functions are provided by libraries designed to
- * interact with the pluginplay. You typically will not be instantiating them,
- * rather you will simply be consuming them in your workflow. The following
+ * Plugins are provided by libraries designed to interact with pluginplay.
+ * You typically will not be writing them, rather you will simply be consuming
+ * them in your workflow. The following
  * function is an example workflow that a end-user would actually do. Typically
  * it would be run from Python (the contents being nearly identical).
  */
 static void example_main() {
     /* Ultimately the run starts by creating and initializing a ``ModuleManger``
-     * instance. This is where we leverage the ``load_modules()`` functions
-     * provided by libraries .
+     * instance. This is where we load the plugins provided by libraries. Once
+     * all plugins are loaded, ``wire_defaults`` sets the default submodules
+     * the plugins want from each other (our single plugin has none).
      */
     pluginplay::ModuleManager mm;
-    load_modules(mm);
+    mm.load_plugin<ExamplePlugin>();
+    mm.wire_defaults();
 
     /* With the modules loaded it's time to set the options up so that they
      * suite our specific run. For sake of example we'll change the name of
