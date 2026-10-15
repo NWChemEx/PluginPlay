@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing a Plugin &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Documenting Modules in a Collection" href="document_modules.html" />
+    <link rel="prev" title="About Module Collections" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PluginPlay Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Module Collections</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html">About Module Collections</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing a Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#public-api">Public API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#defaults-from-other-plugins">Defaults From Other Plugins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python">Python</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="document_modules.html">Documenting Modules in a Collection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PluginPlay Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module Collections</a></li>
+      <li class="breadcrumb-item active">Writing a Plugin</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/plugins/writing_a_plugin.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="writing-a-plugin">
+<h1>Writing a Plugin<a class="headerlink" href="#writing-a-plugin" title="Link to this heading"></a></h1>
+<p>A module collection is distributed as a plugin. When a user starts a run with
+PluginPlay one of the first things they do is initialize a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>
+instance and load the plugins they want to use. The code to do this looks
+something like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Initialize ModuleManager</span>
+<span class="n">ModuleManager</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">library1</span><span class="o">::</span><span class="n">Library1</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">library2</span><span class="o">::</span><span class="n">Library2</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">wire_defaults</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>where the <code class="docutils literal notranslate"><span class="pre">load_plugin</span></code> calls load the plugins provided by the various
+libraries and <code class="docutils literal notranslate"><span class="pre">wire_defaults</span></code> sets the default submodules the plugins want
+from each other (see <a class="reference internal" href="#defaults-from-other-plugins">Defaults From Other Plugins</a>).</p>
+<section id="public-api">
+<h2>Public API<a class="headerlink" href="#public-api" title="Link to this heading"></a></h2>
+<p>As far as the public API for a plugin goes, the declaration is simple:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">DECLARE_PLUGIN</span><span class="p">(</span><span class="n">PluginplayExamples</span><span class="p">);</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN</span></code> declares a class (here <code class="docutils literal notranslate"><span class="pre">PluginplayExamples</span></code>) that derives
+from <code class="docutils literal notranslate"><span class="pre">pluginplay::Plugin</span></code> and has a default constructor. Note that it is not
+necessary for the user to know the types of your modules and more importantly
+any libraries you use to implement them.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If your modules use property types defined elsewhere (such as in centralized
+community resources like NWChemEx/SimDE) and your
+module-specific inputs are standard C++ types (or types found in the
+property types) this is your entire public API!!!</p>
+</div>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h2>
+<p>Plugins are written like modules: everything is set up in the plugin’s
+constructor, which is started with the <code class="docutils literal notranslate"><span class="pre">PLUGIN_CTOR</span></code> macro. The constructor
+typically does three things: names the plugin, adds the plugin’s modules, and
+sets the default submodules.</p>
+<p>Every plugin has a name, set by calling <code class="docutils literal notranslate"><span class="pre">set_name</span></code>. Plugin names must be
+identifiers: letters, digits, and underscores, not starting with a digit,
+<em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;pluginplay_examples&quot;</span></code>. Plugin names must be unique within a
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>. Like module keys, plugin names are case-insensitive.</p>
+<p>Modules are added to the plugin by calling <code class="docutils literal notranslate"><span class="pre">add_module</span></code>. For your
+convenience <code class="docutils literal notranslate"><span class="pre">add_module</span></code> has an overload which takes a template type
+parameter that is the type of your module (as in the name of the class which
+contains the algorithm) and a module key. The module key is how users will
+refer to your module, <em>e.g.</em>, when they want to run your module they will call
+<code class="docutils literal notranslate"><span class="pre">ModuleManager::run_as</span></code> providing your module’s key. Module keys must be
+unique within your plugin. If your module requires more detailed set-up other
+overloads exist that will bind to existing instances.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Avoid using <code class="docutils literal notranslate"><span class="pre">&quot;::&quot;</span></code> in module keys. PluginPlay names the caches of a
+plugin’s modules <code class="docutils literal notranslate"><span class="pre">&quot;&lt;plugin</span> <span class="pre">name&gt;::&lt;module</span> <span class="pre">key&gt;&quot;</span></code>, and caches of modules
+added directly to the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> after the module key alone. A
+module key containing <code class="docutils literal notranslate"><span class="pre">&quot;::&quot;</span></code> can therefore end up sharing a cache with a
+different module, <em>e.g.</em>, a module added to the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> under
+<code class="docutils literal notranslate"><span class="pre">&quot;my_plugin::Area&quot;</span></code> and the module <code class="docutils literal notranslate"><span class="pre">&quot;Area&quot;</span></code> of the plugin
+<code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code>.</p>
+</div>
+<p>Continuing with our electric field examples, naming our plugin and adding our
+modules looks like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;pluginplay_examples.hpp&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">PLUGIN_CTOR</span><span class="p">(</span><span class="n">PluginplayExamples</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">set_name</span><span class="p">(</span><span class="s">&quot;pluginplay_examples&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">coulombs_law_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Once you have added all your modules the next step is to set the default
+submodules. In our examples, the <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code> module needed a submodule
+which can compute electric fields. Presently we have already loaded three such
+modules; their keys are:</p>
+<ul class="simple">
+<li><p>“Coulomb’s Law”</p></li>
+<li><p>“Coulomb’s Law with screening”</p></li>
+<li><p>“Single-precision Coulomb’s law”</p></li>
+</ul>
+<p>If by default we want the <code class="docutils literal notranslate"><span class="pre">ClassicalForce</span></code> module we loaded under the key
+“Classical Force” to use a <code class="docutils literal notranslate"><span class="pre">CoulombsLaw</span></code> module we can accomplish this by:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is not necessary to set all submodules in the plugin’s constructor.
+In particular if your module depends on a property that none of your modules
+can compute you would not set that submodule. In this case, the submodule
+can come from another plugin (see <a class="reference internal" href="#defaults-from-other-plugins">Defaults From Other Plugins</a>), or it
+will be the responsibility of the caller to set the submodule.</p>
+</div>
+<p>The entire implementation of our plugin looks like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;pluginplay_examples.hpp&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">PLUGIN_CTOR</span><span class="p">(</span><span class="n">PluginplayExamples</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">set_name</span><span class="p">(</span><span class="s">&quot;pluginplay_examples&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">coulombs_law_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemplatedCoulombsLaw</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ClassicalForce</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">CoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">ScreenedCoulombsLaw</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">coulombs_law_float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Single-precision Coulomb&#39;s law&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">change_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
+</pre></div>
+</div>
+</section>
+<section id="defaults-from-other-plugins">
+<h2>Defaults From Other Plugins<a class="headerlink" href="#defaults-from-other-plugins" title="Link to this heading"></a></h2>
+<p>A plugin can not set a submodule to a module from another plugin in its
+constructor, because the other plugin may not be loaded. Instead, the plugin
+lists the plugins it would like defaults from, highest priority first, and
+records which of their modules it would like to use:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">PLUGIN_CTOR</span><span class="p">(</span><span class="n">MyPlugin</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">set_name</span><span class="p">(</span><span class="s">&quot;my_plugin&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">set_preferred_providers</span><span class="p">(</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;provider_b&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">MyDriver</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;My driver&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">default_submod_from</span><span class="p">(</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Data&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A data&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">default_submod_from</span><span class="p">(</span><span class="s">&quot;provider_b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Data&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B data&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When the user calls <code class="docutils literal notranslate"><span class="pre">ModuleManager::wire_defaults</span></code>, the <code class="docutils literal notranslate"><span class="pre">&quot;Data&quot;</span></code>
+submodule of <code class="docutils literal notranslate"><span class="pre">&quot;My</span> <span class="pre">driver&quot;</span></code> is set to <code class="docutils literal notranslate"><span class="pre">&quot;A</span> <span class="pre">data&quot;</span></code> if <code class="docutils literal notranslate"><span class="pre">provider_a</span></code> is
+loaded, otherwise to <code class="docutils literal notranslate"><span class="pre">&quot;B</span> <span class="pre">data&quot;</span></code> if <code class="docutils literal notranslate"><span class="pre">provider_b</span></code> is loaded. Submodules the
+user has already set are never changed.</p>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h2>
+<p>To make your plugin usable from Python, create its Python module with the
+<code class="docutils literal notranslate"><span class="pre">EXPORT_PLUGIN</span></code> macro. The macro takes the name of the Python module, the
+name of the plugin class, and the name of the pybind11 module variable. It is
+followed by the body of a function which can export anything else the Python
+module needs, <em>e.g.</em>, property types:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">EXPORT_PLUGIN</span><span class="p">(</span><span class="n">pluginplay_examples</span><span class="p">,</span><span class="w"> </span><span class="n">PluginplayExamples</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">pybind11</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">PointCharge</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PointCharge&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">pybind11</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">pybind11</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">Point</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def_readwrite</span><span class="p">(</span><span class="s">&quot;m_charge&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">PointCharge</span><span class="o">::</span><span class="n">m_charge</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def_readwrite</span><span class="p">(</span><span class="s">&quot;m_r&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">PointCharge</span><span class="o">::</span><span class="n">m_r</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">pybind11</span><span class="o">::</span><span class="n">self</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">pybind11</span><span class="o">::</span><span class="n">self</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">pybind11</span><span class="o">::</span><span class="n">self</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pybind11</span><span class="o">::</span><span class="n">self</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">EXPORT_PROPERTY_TYPE</span><span class="p">(</span><span class="n">ElectricField</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+<span class="w">    </span><span class="n">EXPORT_PROPERTY_TYPE</span><span class="p">(</span><span class="n">Force</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
+</pre></div>
+</div>
+<p>Python users then load the plugin with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pluginplay</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppe</span>
+
+<span class="n">mm</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">ModuleManager</span><span class="p">()</span>
+<span class="n">mm</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">PluginplayExamples</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="About Module Collections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="document_modules.html" class="btn btn-neutral float-right" title="Documenting Modules in a Collection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

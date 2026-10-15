@@ -76,6 +76,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classpluginplay_1_1Module-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">pluginplay::Module Class Reference</div></div>
 </div><!--header-->
@@ -85,6 +86,26 @@ $(function() {
  <a href="classpluginplay_1_1Module.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="module__class_8hpp_source.html">module_class.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for pluginplay::Module:</div>
+<div class="dyncontent">
+<div class="center"><img src="classpluginplay_1_1Module__inherit__graph.png" border="0" usemap="#apluginplay_1_1Module_inherit__map" alt="Inheritance graph"/></div>
+<map name="apluginplay_1_1Module_inherit__map" id="apluginplay_1_1Module_inherit__map">
+<area shape="rect" title="The public API of all modules." alt="" coords="17,93,163,119"/>
+<area shape="rect" title=" " alt="" coords="5,5,175,45"/>
+<area shape="poly" title=" " alt="" coords="93,59,93,93,87,93,87,59"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
+<div class="dynheader">
+Collaboration diagram for pluginplay::Module:</div>
+<div class="dyncontent">
+<div class="center"><img src="classpluginplay_1_1Module__coll__graph.png" border="0" usemap="#apluginplay_1_1Module_coll__map" alt="Collaboration graph"/></div>
+<map name="apluginplay_1_1Module_coll__map" id="apluginplay_1_1Module_coll__map">
+<area shape="rect" title="The public API of all modules." alt="" coords="17,93,163,119"/>
+<area shape="rect" title=" " alt="" coords="5,5,175,45"/>
+<area shape="poly" title=" " alt="" coords="93,59,93,93,87,93,87,59"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -241,11 +262,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f926ec6d17fbf95bd616e9d99489ccd" id="r_a8f926ec6d17fbf95bd616e9d99489ccd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a8f926ec6d17fbf95bd616e9d99489ccd">operator!=</a> (const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;rhs) const</td></tr>
 <tr class="memdesc:a8f926ec6d17fbf95bd616e9d99489ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if two <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> instances are different.  <br /></td></tr>
 <tr class="separator:a8f926ec6d17fbf95bd616e9d99489ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a701c9e81adfd7a74a52bb47a5b05ea32" id="r_a701c9e81adfd7a74a52bb47a5b05ea32"><td class="memItemLeft" align="right" valign="top"><a id="a701c9e81adfd7a74a52bb47a5b05ea32" name="a701c9e81adfd7a74a52bb47a5b05ea32"></a>
+struct&#160;</td><td class="memItemRight" valign="bottom"><b>detail_::ModuleManagerPIMPL</b></td></tr>
+<tr class="memdesc:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lets the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> attach its runtime and caches to the module. <br /></td></tr>
+<tr class="separator:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The public API of all modules. </p>
 <p>Developers implement classes that derive from <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a>. <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> acts as a PIMPL (a <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instance is hidden inside the ModulePIMPL class) decoupling the algorithm details from the API. Users of the pluginplay interact with the algorithm through the common API implemented by the <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> class.</p>
-<p>The state of the <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> class is divided in two. The first set of state is referred to as the algorithm's state and includes the list of allowed inputs, values of bound inputs, a list of all callback points, values of the submodules bound to those callback points, and the list of all possible results. This is state that is directly accessed during the execution of the algorithm, hence the name. The second set of state is termed module state and is needed by the pluginplay framework to correctly use the module. This state is not accessible (nor relevant) once the module is running. For the most part users will only be interested in algorithm state. </p>
+<p>The state of the <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> class is divided in two. The first set of state is referred to as the algorithm's state and includes the list of allowed inputs, values of bound inputs, a list of all callback points, values of the submodules bound to those callback points, and the list of all possible results. This is state that is directly accessed during the execution of the algorithm, hence the name. The second set of state is termed module state and is needed by the pluginplay framework to correctly use the module. This state is not accessible (nor relevant) once the module is running. For the most part users will only be interested in algorithm state.</p>
+<p>Modules stored in a <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>, <a class="el" href="classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key.">ModuleMap</a>, or <a class="el" href="classpluginplay_1_1SubmoduleRequest.html" title="Class that wraps a module&#39;s request for a particular submodule.">SubmoduleRequest</a> are owned by shared_ptrs. <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> derives from enable_shared_from_this so the Python bindings can hand out shared ownership of those modules; a copy of a <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> is still an independent module. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7fb7dd7c55aaab5d692677d34b91de09" name="a7fb7dd7c55aaab5d692677d34b91de09"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7fb7dd7c55aaab5d692677d34b91de09">&#9670;&#160;</a></span>Module() <span class="overload">[1/5]</span></h2>

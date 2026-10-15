@@ -1,0 +1,5 @@
+<map id="pluginplay::detail_::ModuleManagerPIMPL" name="pluginplay::detail_::ModuleManagerPIMPL">
+<area shape="rect" id="Node000001" title="The class that implements the ModuleManager." alt="" coords="5,93,187,133"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key." alt="" coords="9,5,183,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,44,99,93,93,93,93,44"/>
+</map>

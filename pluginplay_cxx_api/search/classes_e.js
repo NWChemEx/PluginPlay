@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['usercache_0',['UserCache',['../classpluginplay_1_1cache_1_1UserCache.html',1,'pluginplay::cache']]],
-  ['uuidmapper_1',['UUIDMapper',['../classpluginplay_1_1cache_1_1UUIDMapper.html',1,'pluginplay::cache']]]
+  ['transposer_0',['Transposer',['../classpluginplay_1_1cache_1_1database_1_1Transposer.html',1,'pluginplay::cache::database']]],
+  ['typecheck_1',['TypeCheck',['../classpluginplay_1_1bounds__checking_1_1TypeCheck.html',1,'pluginplay::bounds_checking']]],
+  ['typeeraser_2',['TypeEraser',['../classpluginplay_1_1cache_1_1database_1_1TypeEraser.html',1,'pluginplay::cache::database']]]
 ];

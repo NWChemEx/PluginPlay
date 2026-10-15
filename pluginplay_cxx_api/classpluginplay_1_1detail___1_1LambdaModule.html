@@ -504,7 +504,7 @@ template&lt;typename <a class="el" href="classpluginplay_1_1PropertyType.html">P
 <p>Creates a lambda module by wrapping the provided callback in a <a class="el" href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module.">LambdaModule</a> instance. </p>
 <p>This is the public API for creating a lambda module, it requires you to specify the property type that the module satisfies and provide a callback to implement the lambda module. Typical usage is something like:</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classpluginplay_1_1Module.html">Module</a> my_lambda = make_lambda&lt;PropertyType&gt;([](){ ...});</div>
-<div class="ttc" id="aclasspluginplay_1_1Module_html"><div class="ttname"><a href="classpluginplay_1_1Module.html">pluginplay::Module</a></div><div class="ttdoc">The public API of all modules.</div><div class="ttdef"><b>Definition</b> module_class.hpp:53</div></div>
+<div class="ttc" id="aclasspluginplay_1_1Module_html"><div class="ttname"><a href="classpluginplay_1_1Module.html">pluginplay::Module</a></div><div class="ttdoc">The public API of all modules.</div><div class="ttdef"><b>Definition</b> module_class.hpp:59</div></div>
 </div><!-- fragment --><p>where <code><a class="el" href="classpluginplay_1_1PropertyType.html" title="Base class for defining the API a module uses to compute a particular property.">PropertyType</a></code> would be replaced with the class type defining the API of the property your module computes and the C++ lambda is the callback the resulting lambda module will wrap.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

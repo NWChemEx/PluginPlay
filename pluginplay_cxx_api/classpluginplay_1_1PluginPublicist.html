@@ -184,6 +184,10 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>module_base_ptr</b> 
 using&#160;</td><td class="memItemRight" valign="bottom"><b>default_list_type</b> = std::vector&lt; <a class="el" href="structpluginplay_1_1Plugin_1_1DefaultSubmod.html">DefaultSubmod</a> &gt;</td></tr>
 <tr class="memdesc:acc6d75a53159b0ae3bcdd14f600d01ab inherit pub_types_classpluginplay_1_1Plugin"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a list of recorded default submodules. <br /></td></tr>
 <tr class="separator:acc6d75a53159b0ae3bcdd14f600d01ab inherit pub_types_classpluginplay_1_1Plugin"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classpluginplay_1_1Plugin"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classpluginplay_1_1Plugin')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classpluginplay_1_1Plugin.html">pluginplay::Plugin</a></td></tr>
+<tr class="memitem:ab23f6d66606c73524c384d82f0a88382 inherit pub_static_methods_classpluginplay_1_1Plugin" id="r_ab23f6d66606c73524c384d82f0a88382"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Plugin.html#ab23f6d66606c73524c384d82f0a88382">is_valid_name</a> (const <a class="el" href="classpluginplay_1_1Plugin.html#ad83289d97574f961066c1f17a0f52b16">name_type</a> &amp;<a class="el" href="classpluginplay_1_1Plugin.html#a6debecdac9d967e7d3b9ca7c2b5d8369">name</a>) noexcept</td></tr>
+<tr class="memdesc:ab23f6d66606c73524c384d82f0a88382 inherit pub_static_methods_classpluginplay_1_1Plugin"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if <code>name</code> can be used as a plugin name.  <br /></td></tr>
+<tr class="separator:ab23f6d66606c73524c384d82f0a88382 inherit pub_static_methods_classpluginplay_1_1Plugin"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classpluginplay_1_1Plugin"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpluginplay_1_1Plugin')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classpluginplay_1_1Plugin.html">pluginplay::Plugin</a></td></tr>
 <tr class="memitem:a2114cf03fbec8142a55e5aa647e67388 inherit pro_methods_classpluginplay_1_1Plugin" id="r_a2114cf03fbec8142a55e5aa647e67388"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>Plugin</b> ()=default</td></tr>
@@ -427,15 +431,16 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Sets the name of the plugin. </p>
+<p>Like module keys, plugin names are case-insensitive. The name is stored as given.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin. Must be an identifier (see is_valid_name).</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::invalid_argument</td><td>if <code>name</code> is empty. The empty name is reserved for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s own modules. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>name</code> is not a valid plugin name. This includes the empty name, which is reserved for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s own modules. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -516,7 +521,7 @@ template&lt;typename... Args&gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::invalid_argument</td><td>if a name is empty, if a name appears more than once, or if a provider that already has recorded defaults is not in <code>names</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if a name is not a valid plugin name (see is_valid_name), if a name appears more than once, or if a provider that already has recorded defaults is not in <code>names</code>. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

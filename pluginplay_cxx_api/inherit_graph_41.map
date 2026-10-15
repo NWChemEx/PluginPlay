@@ -1,7 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$classpluginplay_1_1Plugin.html" title="Base class for all plugins." alt="" coords="5,31,143,56"/>
-<area shape="rect" id="Node000001" href="$classpluginplay_1_1PluginPublicist.html" title="Exposes Plugin&#39;s protected members to the Python bindings." alt="" coords="191,5,383,31"/>
-<area shape="poly" id="edge14_Node000000_Node000001" title=" " alt="" coords="156,31,190,27,191,32,157,36"/>
-<area shape="rect" id="Node000002" href="$classpluginplay_1_1PyPlugin.html" title="The class Python plugins derive from." alt="" coords="210,55,363,80"/>
-<area shape="poly" id="edge15_Node000000_Node000002" title=" " alt="" coords="157,50,210,56,210,61,156,55"/>
+<area shape="rect" id="Node000000" href="$classpluginplay_1_1Plugin.html" title="Base class for all plugins." alt="" coords="17,5,155,31"/>
+<area shape="rect" id="Node000001" href="$classpluginplay_1_1PluginPublicist.html" title="Exposes Plugin&#39;s protected members to the Python bindings." alt="" coords="215,5,407,31"/>
+<area shape="poly" id="edge14_Node000000_Node000001" title=" " alt="" coords="169,15,215,15,215,21,169,21"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1PyPlugin.html" title="The class Python plugins derive from." alt="" coords="234,59,387,84"/>
+<area shape="poly" id="edge15_Node000000_Node000002" title=" " alt="" coords="154,31,257,56,256,61,153,37"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,55,167,95"/>
+<area shape="poly" id="edge16_Node000003_Node000002" title=" " alt="" coords="180,71,234,70,234,75,180,76"/>
 </map>

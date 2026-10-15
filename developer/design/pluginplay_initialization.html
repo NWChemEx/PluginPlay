@@ -197,7 +197,10 @@ its <code class="docutils literal notranslate"><span class="pre">ModuleMap</span
 one <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> per loaded plugin, plus a <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> of its own. The
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map holds modules that do not come from a plugin,
 such as modules added directly by the user, lambda modules, and facade
-modules. The maps are <strong>not</strong> merged into one pool. A submodule may still be
+modules. Copies the user makes through the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> (<code class="docutils literal notranslate"><span class="pre">copy_module</span></code>
+and <code class="docutils literal notranslate"><span class="pre">rename_module</span></code>) also go in its own map, even when the original is one
+of a plugin’s modules, so a plugin’s map only holds the modules the plugin
+provides. The maps are <strong>not</strong> merged into one pool. A submodule may still be
 any module in any map, so links can cross maps.</p>
 <p>The empty plugin name, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, is reserved for the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own
 map.</p>
@@ -207,7 +210,9 @@ map.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> enforces unique module keys within a plugin.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> enforces unique plugin names. Loading a second plugin
-with the same name throws.</p></li>
+with the same name throws. Like module keys, plugin names are compared
+case-insensitively, everywhere they are used: when loading, in lookups, and
+when matching preferred providers.</p></li>
 </ul>
 <p>Together these guarantee that the pair (plugin name, module key) is unique.
 The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> therefore offers two ways to look up a module, and
@@ -218,19 +223,71 @@ every function that takes a module key (<code class="docutils literal notranslat
 name means the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map.</p></li>
 <li><p>With only a module key. This works as long as the key appears in exactly
 one map. If it appears in more than one map the call throws and the error
-lists the plugins that contain the key. To support this, the
-<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> keeps track of which keys appear in more than one map.</p></li>
+lists the plugins that contain the key.</p></li>
 </ol>
+<p>Both forms are spelled with a <code class="docutils literal notranslate"><span class="pre">QualifiedKey</span></code>, a small class holding an
+optional plugin name and a module key. A <code class="docutils literal notranslate"><span class="pre">QualifiedKey</span></code> is implicitly
+created from a string, which gives the key-only form, so the functions keep
+a single signature and existing calls keep working:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">mm</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;SCF Driver&quot;</span><span class="p">);</span><span class="w">                  </span><span class="c1">// key-only</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">at</span><span class="p">({</span><span class="s">&quot;scf&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SCF Driver&quot;</span><span class="p">});</span><span class="w">         </span><span class="c1">// plugin name and module key</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">change_submod</span><span class="p">({</span><span class="s">&quot;scf&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SCF Driver&quot;</span><span class="p">},</span><span class="w"> </span><span class="s">&quot;Hamiltonian&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="p">{</span><span class="s">&quot;nux&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Born-Oppenheimer approximation&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>In Python, a string or a <code class="docutils literal notranslate"><span class="pre">(plugin</span> <span class="pre">name,</span> <span class="pre">module</span> <span class="pre">key)</span></code> tuple can be passed
+wherever a <code class="docutils literal notranslate"><span class="pre">QualifiedKey</span></code> is expected.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">{&quot;&quot;,</span> <span class="pre">key}</span></code> is a qualified key, not a key-only one. The two forms
+look up different things: a key-only key searches every map, while <code class="docutils literal notranslate"><span class="pre">{&quot;&quot;,</span>
+<span class="pre">key}</span></code> only looks in the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map. They find the same
+module only when no plugin uses <code class="docutils literal notranslate"><span class="pre">key</span></code>. The qualified form is the only way to
+reach a module in the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own map when a plugin also uses its
+key:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">mm</span><span class="p">.</span><span class="n">add_module</span><span class="o">&lt;</span><span class="n">Rectangle</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Shared&quot;</span><span class="p">);</span><span class="w">   </span><span class="c1">// own map</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">ProviderA</span><span class="o">&gt;</span><span class="p">();</span><span class="w">          </span><span class="c1">// also has a &quot;Shared&quot; module</span>
+
+<span class="n">mm</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;Shared&quot;</span><span class="p">);</span><span class="w">                      </span><span class="c1">// throws: ambiguous</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">at</span><span class="p">({</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Shared&quot;</span><span class="p">});</span><span class="w">                </span><span class="c1">// the own map&#39;s module</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">at</span><span class="p">({</span><span class="s">&quot;provider_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Shared&quot;</span><span class="p">});</span><span class="w">      </span><span class="c1">// ProviderA&#39;s module</span>
+</pre></div>
+</div>
 <p>The key-only form keeps current code working, since today’s module keys are
 effectively unique across the NWChemEx plugins.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> does not store which keys appear in more than one map.
+Instead, a key-only lookup searches every map. There are only a handful of
+plugins, so this is cheap, and a stored record could go out of date when the
+user copies or erases a module after loading.</p>
+<p><code class="docutils literal notranslate"><span class="pre">count(key)</span></code> returns the number of maps with the key, <code class="docutils literal notranslate"><span class="pre">size()</span></code> returns
+the total number of modules, and <code class="docutils literal notranslate"><span class="pre">keys()</span></code> returns the qualified key of
+every module. The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> no longer offers <code class="docutils literal notranslate"><span class="pre">begin()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">end()</span></code>; code that needs the modules loops over <code class="docutils literal notranslate"><span class="pre">plugin_names()</span></code> and
+calls <code class="docutils literal notranslate"><span class="pre">get_modules(name)</span></code>, which returns that map.</p>
+</section>
+<section id="caches">
+<h3>Caches<a class="headerlink" href="#caches" title="Link to this heading"></a></h3>
+<p>Memoized results are stored in module caches, which are looked up by name.
+Two plugins may use the same module key, so a plugin’s module uses the cache
+named <code class="docutils literal notranslate"><span class="pre">&quot;&lt;plugin</span> <span class="pre">name&gt;::&lt;module</span> <span class="pre">key&gt;&quot;</span></code>. Modules in the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s
+own map use the module key, as before.</p>
+<p>This naming is not collision-free: a module in the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own
+map with the key <code class="docutils literal notranslate"><span class="pre">&quot;my_plugin::Area&quot;</span></code> shares a cache with the module
+<code class="docutils literal notranslate"><span class="pre">&quot;Area&quot;</span></code> of the plugin <code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code>. Since plugin names must be
+identifiers, plugin names can not collide this way, only module keys
+containing <code class="docutils literal notranslate"><span class="pre">&quot;::&quot;</span></code> can. Rather than change the cache names of the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s own modules, the user documentation asks developers to
+avoid <code class="docutils literal notranslate"><span class="pre">&quot;::&quot;</span></code> in module keys.</p>
+<p>A plugin may set a submodule and then erase that module’s key. The module is
+still used, so <code class="docutils literal notranslate"><span class="pre">load_plugin</span></code> also gives every module reachable through
+submodules the runtime and caches, naming its cache after the key it was last
+stored under.</p>
 </section>
 <section id="loading-plugins">
 <h3>Loading Plugins<a class="headerlink" href="#loading-plugins" title="Link to this heading"></a></h3>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pluginplay</span><span class="o">::</span><span class="n">ModuleManager</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span>
-<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">scf</span><span class="o">::</span><span class="n">scf</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">integrals</span><span class="o">::</span><span class="n">integrals</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">nux</span><span class="o">::</span><span class="n">nux</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">chemcache</span><span class="o">::</span><span class="n">chemcache</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">scf</span><span class="o">::</span><span class="n">SCF</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">integrals</span><span class="o">::</span><span class="n">Integrals</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">nux</span><span class="o">::</span><span class="n">NUX</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">mm</span><span class="p">.</span><span class="n">load_plugin</span><span class="o">&lt;</span><span class="n">chemcache</span><span class="o">::</span><span class="n">ChemCache</span><span class="o">&gt;</span><span class="p">();</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">load_plugin&lt;T&gt;()</span></code>:</p>
@@ -239,11 +296,12 @@ effectively unique across the NWChemEx plugins.</p>
 constructible). <code class="docutils literal notranslate"><span class="pre">T</span></code>’s constructor sets the plugin’s name and preferred
 providers and builds its <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code>, including its internal wiring,</p></li>
 <li><p>throws if a plugin with the same <code class="docutils literal notranslate"><span class="pre">name()</span></code> is already loaded,</p></li>
+<li><p>gives each of the plugin’s modules the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s runtime and
+caches, and</p></li>
 <li><p>takes ownership of the plugin object. The plugin’s <code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> is now
-the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s map for that plugin; nothing is copied, and</p></li>
-<li><p>updates the record of which keys appear in more than one map.</p></li>
+the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s map for that plugin; nothing is copied.</p></li>
 </ol>
-<p>Python has an equivalent, <code class="docutils literal notranslate"><span class="pre">mm.load_plugin(scf.scf())</span></code>, which takes an
+<p>Python has an equivalent, <code class="docutils literal notranslate"><span class="pre">mm.load_plugin(scf.SCF())</span></code>, which takes an
 instance because Python has no template parameters. Because the plugin holds
 live modules, the same instance must not be loaded into two
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> objects.</p>
@@ -267,10 +325,12 @@ plugin <code class="docutils literal notranslate"><span class="pre">P</span></co
 </li>
 <li><p>For each default triple:</p>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">P</span></code>’s module <code class="docutils literal notranslate"><span class="pre">module_key</span></code> has  a submodule with key
+<li><p>If the user erased <code class="docutils literal notranslate"><span class="pre">P</span></code>’s module <code class="docutils literal notranslate"><span class="pre">module_key</span></code>, move to the next
+triple.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">P</span></code>’s module <code class="docutils literal notranslate"><span class="pre">module_key</span></code> has a submodule with key
 <code class="docutils literal notranslate"><span class="pre">callback_key</span></code> that is already set, move to the next triple.</p></li>
 <li><p>Else, if the provider does not have a module with key <code class="docutils literal notranslate"><span class="pre">provider_key</span></code>,
-move to the next triple.</p></li>
+log a warning and move to the next triple.</p></li>
 <li><p>Otherwise set <code class="docutils literal notranslate"><span class="pre">callback_key</span></code> to the provider’s module <code class="docutils literal notranslate"><span class="pre">provider_key</span></code>.</p></li>
 </ul>
 </li>

@@ -134,8 +134,8 @@ respectively.</p>
 </section>
 <section id="why-do-we-need-a-plugin-class">
 <h2>Why Do We Need a Plugin Class?<a class="headerlink" href="#why-do-we-need-a-plugin-class" title="Link to this heading"></a></h2>
-<p>The original approach was a set of free functions. <code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN</span></code> and
-<code class="docutils literal notranslate"><span class="pre">DEFINE_PLUGIN</span></code> (in <code class="docutils literal notranslate"><span class="pre">pluginplay/plugin/plugin.hpp</span></code>) declare and define a
+<p>The original approach was a set of free functions. The original
+<code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN</span></code> and <code class="docutils literal notranslate"><span class="pre">DEFINE_PLUGIN</span></code> macros declared and defined a
 <code class="docutils literal notranslate"><span class="pre">load_modules(ModuleManager&amp;)</span></code> function. By convention, most plugins also
 wrote a <code class="docutils literal notranslate"><span class="pre">set_defaults(ModuleManager&amp;)</span></code> function for wiring that depended on
 other plugins. This approach has several problems:</p>
@@ -162,7 +162,13 @@ loading and wiring plugins. This solves these problems and more.</p>
 <li><p>Identity</p>
 <ul class="simple">
 <li><p>Each plugin has a name, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code>.</p></li>
+<li><p>Plugin names must be identifiers (letters, digits, and underscores, not
+starting with a digit). Plugin names are used as directory names when
+documenting modules and in the names of module caches, so they can not
+contain spaces, path separators, <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;::&quot;</span></code>.</p></li>
 <li><p>Plugin names must be unique within a <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p></li>
+<li><p>Like module keys, plugin names are case-insensitive, <em>e.g.</em>,
+<code class="docutils literal notranslate"><span class="pre">&quot;my_plugin&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;My_Plugin&quot;</span></code> are the same name.</p></li>
 </ul>
 </li>
 <li><p>Module creation is separate from the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code></p>
@@ -345,7 +351,9 @@ including any changes made by the user or by wiring.</p></li>
 <li><p><strong>One instance per ModuleManager.</strong> Since a plugin holds live modules, a
 plugin object must not be loaded into two <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> objects.
 <code class="docutils literal notranslate"><span class="pre">load_plugin&lt;T&gt;()</span></code> creates a new <code class="docutils literal notranslate"><span class="pre">T</span></code> each time, so this only matters
-for the Python form, which takes an instance.</p></li>
+for the Python form, which takes an instance. <code class="docutils literal notranslate"><span class="pre">load_plugin</span></code> takes the
+plugin by <code class="docutils literal notranslate"><span class="pre">std::unique_ptr</span></code>, and in Python it takes ownership from the
+Python object, so loading the same instance again throws.</p></li>
 <li><p><strong>Provenance.</strong> Setters for version and citations would follow the same
 convention, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">set_version</span></code> and <code class="docutils literal notranslate"><span class="pre">add_citation</span></code> in the
 constructor, mirroring <code class="docutils literal notranslate"><span class="pre">ModuleBase::citation</span></code>.</p></li>
@@ -372,6 +380,12 @@ submodule has been set. It wraps <code class="docutils literal notranslate"><spa
 <li><p><code class="docutils literal notranslate"><span class="pre">default_submod(...)</span></code>, a convenience function with the same overloads
 as <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>. It sets the submodule only if it is unset. The
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> uses it to apply <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code> records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copy_module(old_key,</span> <span class="pre">new_key)</span></code>, <code class="docutils literal notranslate"><span class="pre">change_input(key,</span> <span class="pre">option,</span> <span class="pre">value)</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">erase(key)</span></code>, which mirror the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> functions. They let
+a plugin set up variants of its own modules, <em>e.g.</em>, a copy of a module
+with a tighter threshold.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_module(key,</span> <span class="pre">Module)</span></code>, which stores an already-created module, <em>e.g.</em>,
+a copy of a module.</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> enforces that module keys are unique within the map, which
 means they are unique within a plugin. Uniqueness across plugins is the
@@ -380,11 +394,15 @@ means they are unique within a plugin. Uniqueness across plugins is the
 <section id="declaring-a-plugin">
 <h3>Declaring a Plugin<a class="headerlink" href="#declaring-a-plugin" title="Link to this heading"></a></h3>
 <p>The plugin macros mirror the module macros (<code class="docutils literal notranslate"><span class="pre">DECLARE_MODULE</span></code>,
-<code class="docutils literal notranslate"><span class="pre">MODULE_CTOR</span></code>, and <code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>):</p>
+<code class="docutils literal notranslate"><span class="pre">MODULE_CTOR</span></code>, and <code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>). They are declared in
+<code class="docutils literal notranslate"><span class="pre">pluginplay/plugin/plugin.hpp</span></code>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DECLARE_PLUGIN(plugin_name)</span></code> declares a class <code class="docutils literal notranslate"><span class="pre">plugin_name</span></code> that
-derives from <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> and has a default constructor.</p></li>
+derives from <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> and has a default constructor. Like any other class,
+<code class="docutils literal notranslate"><span class="pre">plugin_name</span></code> is CamelCase, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">MyPlugin</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">PLUGIN_CTOR(plugin_name)</span></code> starts the definition of the constructor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXPORT_PLUGIN(module_name,</span> <span class="pre">plugin_name,</span> <span class="pre">m)</span></code> creates the Python module
+for the plugin (see <a class="reference internal" href="#python">Python</a>).</p></li>
 </ul>
 <p>A plugin’s constructor can also pass <code class="docutils literal notranslate"><span class="pre">modules()</span></code> to helper functions that
 take a <code class="docutils literal notranslate"><span class="pre">ModuleMap&amp;</span></code>. This lets a large plugin split module registration
@@ -441,16 +459,34 @@ loaded. <a class="reference internal" href="pluginplay_initialization.html#pp-in
 <section id="python">
 <h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
 <p>Python support follows the pattern used for modules:</p>
-<ul class="simple">
+<ul>
 <li><p>A Python plugin subclasses <code class="docutils literal notranslate"><span class="pre">pluginplay.Plugin</span></code>. Its <code class="docutils literal notranslate"><span class="pre">__init__</span></code> calls
 <code class="docutils literal notranslate"><span class="pre">set_name</span></code>, <code class="docutils literal notranslate"><span class="pre">add_module</span></code>, <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>,
 <code class="docutils literal notranslate"><span class="pre">set_preferred_providers</span></code>, and <code class="docutils literal notranslate"><span class="pre">default_submod_from</span></code>, just as a Python
 module’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> calls <code class="docutils literal notranslate"><span class="pre">description</span></code> and <code class="docutils literal notranslate"><span class="pre">add_input</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">EXPORT_PLUGIN(plugin_name,</span> <span class="pre">m)</span></code> exports the C++ plugin class to Python
+<li><p><code class="docutils literal notranslate"><span class="pre">EXPORT_PLUGIN(module_name,</span> <span class="pre">plugin_name,</span> <span class="pre">m)</span></code> creates the Python module
+<code class="docutils literal notranslate"><span class="pre">module_name</span></code> and exports the C++ plugin class to it as <code class="docutils literal notranslate"><span class="pre">plugin_name</span></code>
 (instead of a <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function), so a Python user can pass an
-instance to <code class="docutils literal notranslate"><span class="pre">ModuleManager.load_plugin</span></code>.</p></li>
+instance to <code class="docutils literal notranslate"><span class="pre">ModuleManager.load_plugin</span></code>. The Python module and the plugin
+class have different names because the module name is lowercase, while the
+class name follows the CamelCase convention for classes. The macro is
+followed by a function body that can export anything else the module needs,
+<em>e.g.</em>, property types:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">EXPORT_PLUGIN</span><span class="p">(</span><span class="n">my_plugin</span><span class="p">,</span><span class="w"> </span><span class="n">MyPlugin</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">export_property_types</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ModuleMap</span></code> is exported so Python plugins can use <code class="docutils literal notranslate"><span class="pre">default_submod</span></code> and
 related functions.</p></li>
+<li><p>Python has no <code class="docutils literal notranslate"><span class="pre">const</span></code>. Functions that return a read-only plugin or map in
+C++ (<code class="docutils literal notranslate"><span class="pre">ModuleManager::get_plugin</span></code>, <code class="docutils literal notranslate"><span class="pre">ModuleManager::get_modules</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">Plugin::get_modules</span></code>) return a <code class="docutils literal notranslate"><span class="pre">PluginView</span></code> or <code class="docutils literal notranslate"><span class="pre">ModuleMapView</span></code> in
+Python instead. The views only expose the read-only members, so a loaded
+plugin can not be changed through them, <em>e.g.</em>, by adding a module that
+never receives the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s runtime and caches. The modules
+themselves can still be changed, as with <code class="docutils literal notranslate"><span class="pre">ModuleManager.at</span></code>.</p></li>
 </ul>
 </section>
 </section>

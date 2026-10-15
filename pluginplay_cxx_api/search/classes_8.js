@@ -14,7 +14,8 @@ var searchData=
   ['modulemanagercachepimpl_11',['ModuleManagerCachePIMPL',['../structpluginplay_1_1cache_1_1detail___1_1ModuleManagerCachePIMPL.html',1,'pluginplay::cache::detail_']]],
   ['modulemanagerpimpl_12',['ModuleManagerPIMPL',['../structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html',1,'pluginplay::detail_']]],
   ['modulemap_13',['ModuleMap',['../classpluginplay_1_1ModuleMap.html',1,'pluginplay']]],
-  ['modulepimpl_14',['ModulePIMPL',['../classpluginplay_1_1detail___1_1ModulePIMPL.html',1,'pluginplay::detail_']]],
-  ['moduleresult_15',['ModuleResult',['../classpluginplay_1_1ModuleResult.html',1,'pluginplay']]],
-  ['moduleresultpimpl_16',['ModuleResultPIMPL',['../classpluginplay_1_1detail___1_1ModuleResultPIMPL.html',1,'pluginplay::detail_']]]
+  ['modulemapview_14',['ModuleMapView',['../classpluginplay_1_1ModuleMapView.html',1,'pluginplay']]],
+  ['modulepimpl_15',['ModulePIMPL',['../classpluginplay_1_1detail___1_1ModulePIMPL.html',1,'pluginplay::detail_']]],
+  ['moduleresult_16',['ModuleResult',['../classpluginplay_1_1ModuleResult.html',1,'pluginplay']]],
+  ['moduleresultpimpl_17',['ModuleResultPIMPL',['../classpluginplay_1_1detail___1_1ModuleResultPIMPL.html',1,'pluginplay::detail_']]]
 ];

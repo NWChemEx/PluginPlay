@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['transposer_0',['Transposer',['../classpluginplay_1_1cache_1_1database_1_1Transposer.html',1,'pluginplay::cache::database']]],
-  ['typecheck_1',['TypeCheck',['../classpluginplay_1_1bounds__checking_1_1TypeCheck.html',1,'pluginplay::bounds_checking']]],
-  ['typeeraser_2',['TypeEraser',['../classpluginplay_1_1cache_1_1database_1_1TypeEraser.html',1,'pluginplay::cache::database']]]
+  ['serialized_0',['Serialized',['../classpluginplay_1_1cache_1_1database_1_1Serialized.html',1,'pluginplay::cache::database']]],
+  ['static_5fassert_5fconvertible_5fverbose_1',['STATIC_ASSERT_CONVERTIBLE_VERBOSE',['../structpluginplay_1_1detail___1_1STATIC__ASSERT__CONVERTIBLE__VERBOSE.html',1,'pluginplay::detail_']]],
+  ['submodulerequest_2',['SubmoduleRequest',['../classpluginplay_1_1SubmoduleRequest.html',1,'pluginplay']]],
+  ['submodulerequestpimpl_3',['SubmoduleRequestPIMPL',['../classpluginplay_1_1detail___1_1SubmoduleRequestPIMPL.html',1,'pluginplay::detail_']]]
 ];

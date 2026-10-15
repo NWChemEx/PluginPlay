@@ -1,18 +1,13 @@
 var searchData=
 [
-  ['_7eanyfield_0',['~AnyField',['../classpluginplay_1_1any_1_1AnyField.html#aad47cec1b53de6071ef865e553856ef4',1,'pluginplay::any::AnyField']]],
-  ['_7eanyfieldbase_1',['~AnyFieldBase',['../classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a411bd0df14f9c9cdb960dde3445dd44f',1,'pluginplay::any::detail_::AnyFieldBase']]],
-  ['_7edatabaseapi_2',['~DatabaseAPI',['../classpluginplay_1_1cache_1_1database_1_1DatabaseAPI.html#a484dc761e702d66453773d41475bcf7f',1,'pluginplay::cache::database::DatabaseAPI']]],
-  ['_7efieldtuple_3',['~FieldTuple',['../classpluginplay_1_1FieldTuple.html#a6766bb08829d4293780133260fb7e906',1,'pluginplay::FieldTuple']]],
-  ['_7emodule_4',['~Module',['../classpluginplay_1_1Module.html#a5d0d950f321b5030ee8ac9e9c8741dcb',1,'pluginplay::Module']]],
-  ['_7emodulebase_5',['~ModuleBase',['../classpluginplay_1_1ModuleBase.html#a3b609656ac268db1bea3bc5fb9f88421',1,'pluginplay::ModuleBase']]],
-  ['_7emodulecache_6',['~ModuleCache',['../classpluginplay_1_1cache_1_1ModuleCache.html#a475d139b8999e2563ceaafec067af39f',1,'pluginplay::cache::ModuleCache']]],
-  ['_7emoduleinput_7',['~ModuleInput',['../classpluginplay_1_1ModuleInput.html#a54abdba0a1028f654fac27d9c0e856f0',1,'pluginplay::ModuleInput']]],
-  ['_7emodulemanager_8',['~ModuleManager',['../classpluginplay_1_1ModuleManager.html#a1119ea79a4c4944157bebc50c2cc60ab',1,'pluginplay::ModuleManager']]],
-  ['_7emodulemanagercache_9',['~ModuleManagerCache',['../classpluginplay_1_1cache_1_1ModuleManagerCache.html#afdaf0579be72e9088cfb475df9993969',1,'pluginplay::cache::ModuleManagerCache']]],
-  ['_7emodulepimpl_10',['~ModulePIMPL',['../classpluginplay_1_1detail___1_1ModulePIMPL.html#ac87631914649e864134495c2c3d072fe',1,'pluginplay::detail_::ModulePIMPL']]],
-  ['_7emoduleresult_11',['~ModuleResult',['../classpluginplay_1_1ModuleResult.html#a2f9996782b53beb0144cf83301359ed9',1,'pluginplay::ModuleResult']]],
-  ['_7eplugin_12',['~Plugin',['../classpluginplay_1_1Plugin.html#ab4d5dee229ea6dc3cca25d45db1a09c6',1,'pluginplay::Plugin']]],
-  ['_7erocksdb_13',['~RocksDB',['../classpluginplay_1_1cache_1_1database_1_1RocksDB.html#af666add57604863fb92bdae213b75239',1,'pluginplay::cache::database::RocksDB']]],
-  ['_7esubmodulerequest_14',['~SubmoduleRequest',['../classpluginplay_1_1SubmoduleRequest.html#abbcf10c693cce09fa8ab4d67abb8c5ec',1,'pluginplay::SubmoduleRequest']]]
+  ['wire_5fdefaults_0',['wire_defaults',['../classpluginplay_1_1ModuleManager.html#a80deba235c1e0236ebcbc7a1ada122f8',1,'pluginplay::ModuleManager::wire_defaults()'],['../structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a9618e8d31a523ac3ec7e82c4ed71145c',1,'pluginplay::detail_::ModuleManagerPIMPL::wire_defaults()']]],
+  ['with_5fpybind11_1',['with_pybind11',['../config_8hpp.html#ab186981ed2f8785aa76726f89331253c',1,'pluginplay']]],
+  ['with_5frocksdb_2',['with_rocksdb',['../config_8hpp.html#a732bdea2424b0ad6275cc17345ac6331',1,'pluginplay']]],
+  ['wrap_5finputs_3',['wrap_inputs',['../classpluginplay_1_1python_1_1PythonOnlyPropertyType.html#af0eefec956fe0eda5ec149c60c8cf716',1,'pluginplay::python::PythonOnlyPropertyType']]],
+  ['wrap_5fresults_4',['wrap_results',['../classpluginplay_1_1python_1_1PythonOnlyPropertyType.html#a89f23b68febe65b02270e35ba2d58811',1,'pluginplay::python::PythonOnlyPropertyType']]],
+  ['wrapped_5fdb_5',['wrapped_db',['../classpluginplay_1_1cache_1_1database_1_1TypeEraser.html#acdfae54751f2d422580c311f67009ed9',1,'pluginplay::cache::database::TypeEraser']]],
+  ['wrapped_5fdb_5fpointer_6',['wrapped_db_pointer',['../classpluginplay_1_1cache_1_1database_1_1Transposer.html#a825ceef3befaab6c4c4e6de0d53e3970',1,'pluginplay::cache::database::Transposer']]],
+  ['wrapped_5fdb_5ftype_7',['wrapped_db_type',['../classpluginplay_1_1cache_1_1database_1_1Transposer.html#a1e00730237cec9f0c06d28130c381446',1,'pluginplay::cache::database::Transposer']]],
+  ['wrapped_5fmapper_5fpointer_8',['wrapped_mapper_pointer',['../classpluginplay_1_1cache_1_1database_1_1TypeEraser.html#adb43ea0adf228125ffc966a5063fa1bb',1,'pluginplay::cache::database::TypeEraser']]],
+  ['wrapped_5ftype_9',['wrapped_type',['../classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html#a86f39d3578a8580e83ec7451486adbe6',1,'pluginplay::any::detail_::AnyFieldWrapper']]]
 ];

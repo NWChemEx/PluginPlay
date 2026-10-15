@@ -77,7 +77,9 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classpluginplay_1_1Plugin-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">pluginplay::Plugin Class Reference</div></div>
 </div><!--header-->
@@ -157,6 +159,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const
 <tr class="memdesc:a65f488bf0bbeab8869fc85c16cdbefd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Negates operator==. <br /></td></tr>
 <tr class="separator:a65f488bf0bbeab8869fc85c16cdbefd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ab23f6d66606c73524c384d82f0a88382" id="r_ab23f6d66606c73524c384d82f0a88382"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Plugin.html#ab23f6d66606c73524c384d82f0a88382">is_valid_name</a> (const <a class="el" href="classpluginplay_1_1Plugin.html#ad83289d97574f961066c1f17a0f52b16">name_type</a> &amp;<a class="el" href="classpluginplay_1_1Plugin.html#a6debecdac9d967e7d3b9ca7c2b5d8369">name</a>) noexcept</td></tr>
+<tr class="memdesc:ab23f6d66606c73524c384d82f0a88382"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if <code>name</code> can be used as a plugin name.  <br /></td></tr>
+<tr class="separator:ab23f6d66606c73524c384d82f0a88382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a2114cf03fbec8142a55e5aa647e67388" id="r_a2114cf03fbec8142a55e5aa647e67388"><td class="memItemLeft" align="right" valign="top"><a id="a2114cf03fbec8142a55e5aa647e67388" name="a2114cf03fbec8142a55e5aa647e67388"></a>
@@ -190,6 +198,13 @@ Protected Member Functions</h2></td></tr>
 <a class="el" href="classpluginplay_1_1ModuleMap.html">ModuleMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>modules</b> () noexcept</td></tr>
 <tr class="memdesc:acec6742f3381a95762c384f2c1c84544"><td class="mdescLeft">&#160;</td><td class="mdescRight">The plugin's modules, for passing to helper functions. <br /></td></tr>
 <tr class="separator:acec6742f3381a95762c384f2c1c84544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a701c9e81adfd7a74a52bb47a5b05ea32" id="r_a701c9e81adfd7a74a52bb47a5b05ea32"><td class="memItemLeft" align="right" valign="top"><a id="a701c9e81adfd7a74a52bb47a5b05ea32" name="a701c9e81adfd7a74a52bb47a5b05ea32"></a>
+struct&#160;</td><td class="memItemRight" valign="bottom"><b>detail_::ModuleManagerPIMPL</b></td></tr>
+<tr class="memdesc:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> owns loaded plugins and changes their modules. <br /></td></tr>
+<tr class="separator:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for all plugins. </p>
@@ -434,6 +449,48 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ab23f6d66606c73524c384d82f0a88382" name="ab23f6d66606c73524c384d82f0a88382"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab23f6d66606c73524c384d82f0a88382">&#9670;&#160;</a></span>is_valid_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::Plugin::is_valid_name </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1Plugin.html#ad83289d97574f961066c1f17a0f52b16">name_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determines if <code>name</code> can be used as a plugin name. </p>
+<p><a class="el" href="classpluginplay_1_1Plugin.html" title="Base class for all plugins.">Plugin</a> names must be identifiers: a letter or an underscore, followed by letters, digits, and underscores, <em>e.g.</em>, "my_plugin". <a class="el" href="classpluginplay_1_1Plugin.html" title="Base class for all plugins.">Plugin</a> names are used as directory names (see printing::document_modules) and in module cache names, so they can not contain spaces, path separators, or "::".</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if <code>name</code> is a valid plugin name and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a41928dcd00a86aaba9b2e3b1f0e05e8f" name="a41928dcd00a86aaba9b2e3b1f0e05e8f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41928dcd00a86aaba9b2e3b1f0e05e8f">&#9670;&#160;</a></span>operator==()</h2>
 
@@ -514,15 +571,16 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Sets the name of the plugin. </p>
+<p>Like module keys, plugin names are case-insensitive. The name is stored as given.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin. Must be an identifier (see is_valid_name).</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::invalid_argument</td><td>if <code>name</code> is empty. The empty name is reserved for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s own modules. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>name</code> is not a valid plugin name. This includes the empty name, which is reserved for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s own modules. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -611,7 +669,7 @@ template&lt;typename... Args&gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::invalid_argument</td><td>if a name is empty, if a name appears more than once, or if a provider that already has recorded defaults is not in <code>names</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if a name is not a valid plugin name (see is_valid_name), if a name appears more than once, or if a provider that already has recorded defaults is not in <code>names</code>. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

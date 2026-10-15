@@ -92,14 +92,22 @@ Public Types</h2></td></tr>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>module_base_ptr</b> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &gt;</td></tr>
 <tr class="memdesc:ae507121faff2c11b50d3151bff64c873"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a pointer to a read/write module. <br /></td></tr>
 <tr class="separator:ae507121faff2c11b50d3151bff64c873"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a709d144fe07f7e1a4cad0357b170bd6d" id="r_a709d144fe07f7e1a4cad0357b170bd6d"><td class="memItemLeft" align="right" valign="top"><a id="a709d144fe07f7e1a4cad0357b170bd6d" name="a709d144fe07f7e1a4cad0357b170bd6d"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>const_module_base_ptr</b> = std::shared_ptr&lt; const <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &gt;</td></tr>
-<tr class="memdesc:a709d144fe07f7e1a4cad0357b170bd6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a pointer to a read-only module. <br /></td></tr>
-<tr class="separator:a709d144fe07f7e1a4cad0357b170bd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5890fdaeab7e35865b4f6de88c3e0892" id="r_a5890fdaeab7e35865b4f6de88c3e0892"><td class="memItemLeft" align="right" valign="top"><a id="a5890fdaeab7e35865b4f6de88c3e0892" name="a5890fdaeab7e35865b4f6de88c3e0892"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>module_map</b> = utilities::CaseInsensitiveMap&lt; std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1Module.html">Module</a> &gt; &gt;</td></tr>
-<tr class="memdesc:a5890fdaeab7e35865b4f6de88c3e0892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a map holding usable modules. <br /></td></tr>
-<tr class="separator:a5890fdaeab7e35865b4f6de88c3e0892"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f71efe8c2caa5b5dc78379cffd183ea" id="r_a2f71efe8c2caa5b5dc78379cffd183ea"><td class="memItemLeft" align="right" valign="top"><a id="a2f71efe8c2caa5b5dc78379cffd183ea" name="a2f71efe8c2caa5b5dc78379cffd183ea"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>qualified_key</b> = <a class="el" href="classpluginplay_1_1QualifiedKey.html">QualifiedKey</a></td></tr>
+<tr class="memdesc:a2f71efe8c2caa5b5dc78379cffd183ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used to identify modules. <br /></td></tr>
+<tr class="separator:a2f71efe8c2caa5b5dc78379cffd183ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa59ef92f70e78aa093b77eba9ff1d761" id="r_aa59ef92f70e78aa093b77eba9ff1d761"><td class="memItemLeft" align="right" valign="top"><a id="aa59ef92f70e78aa093b77eba9ff1d761" name="aa59ef92f70e78aa093b77eba9ff1d761"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>name_type</b> = <a class="el" href="classpluginplay_1_1Plugin.html#ad83289d97574f961066c1f17a0f52b16">Plugin::name_type</a></td></tr>
+<tr class="memdesc:aa59ef92f70e78aa093b77eba9ff1d761"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used for the names of plugins. <br /></td></tr>
+<tr class="separator:aa59ef92f70e78aa093b77eba9ff1d761"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69925abc369178b62dfd0abfc2714bef" id="r_a69925abc369178b62dfd0abfc2714bef"><td class="memItemLeft" align="right" valign="top"><a id="a69925abc369178b62dfd0abfc2714bef" name="a69925abc369178b62dfd0abfc2714bef"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>name_container_type</b> = std::vector&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &gt;</td></tr>
+<tr class="memdesc:a69925abc369178b62dfd0abfc2714bef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a container of plugin names. <br /></td></tr>
+<tr class="separator:a69925abc369178b62dfd0abfc2714bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e23fdfc29f0f6e5edb5fc45b1daae29" id="r_a1e23fdfc29f0f6e5edb5fc45b1daae29"><td class="memItemLeft" align="right" valign="top"><a id="a1e23fdfc29f0f6e5edb5fc45b1daae29" name="a1e23fdfc29f0f6e5edb5fc45b1daae29"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>plugin_pointer</b> = std::unique_ptr&lt; <a class="el" href="classpluginplay_1_1Plugin.html">Plugin</a> &gt;</td></tr>
+<tr class="memdesc:a1e23fdfc29f0f6e5edb5fc45b1daae29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to a plugin. <br /></td></tr>
+<tr class="separator:a1e23fdfc29f0f6e5edb5fc45b1daae29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c5eed45f0f8c4d939b2f24ff4280704" id="r_a1c5eed45f0f8c4d939b2f24ff4280704"><td class="memItemLeft" align="right" valign="top"><a id="a1c5eed45f0f8c4d939b2f24ff4280704" name="a1c5eed45f0f8c4d939b2f24ff4280704"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_type</b> = parallelzone::runtime::RuntimeView</td></tr>
 <tr class="memdesc:a1c5eed45f0f8c4d939b2f24ff4280704"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the runtime. <br /></td></tr>
@@ -108,10 +116,10 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_type</b> = p
 using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_ptr</b> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">runtime_type</a> &gt;</td></tr>
 <tr class="memdesc:a8b13e7a0da82f1d5464e6012d9558018"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a runtime. <br /></td></tr>
 <tr class="separator:a8b13e7a0da82f1d5464e6012d9558018"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba62f3cefe36f671b36cbd432f4f1243" id="r_aba62f3cefe36f671b36cbd432f4f1243"><td class="memItemLeft" align="right" valign="top"><a id="aba62f3cefe36f671b36cbd432f4f1243" name="aba62f3cefe36f671b36cbd432f4f1243"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>key_container_type</b> = std::vector&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &gt;</td></tr>
-<tr class="memdesc:aba62f3cefe36f671b36cbd432f4f1243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of module key container. <br /></td></tr>
-<tr class="separator:aba62f3cefe36f671b36cbd432f4f1243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbd5e42d31850ddef9cd0d6b91d0923d" id="r_afbd5e42d31850ddef9cd0d6b91d0923d"><td class="memItemLeft" align="right" valign="top"><a id="afbd5e42d31850ddef9cd0d6b91d0923d" name="afbd5e42d31850ddef9cd0d6b91d0923d"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>key_container_type</b> = std::vector&lt; <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &gt;</td></tr>
+<tr class="memdesc:afbd5e42d31850ddef9cd0d6b91d0923d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of module key container. <br /></td></tr>
+<tr class="separator:afbd5e42d31850ddef9cd0d6b91d0923d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad45032f024d9669f7feb74d76a796cd0" id="r_ad45032f024d9669f7feb74d76a796cd0"><td class="memItemLeft" align="right" valign="top"><a id="ad45032f024d9669f7feb74d76a796cd0" name="ad45032f024d9669f7feb74d76a796cd0"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>cache_type</b> = <a class="el" href="classpluginplay_1_1cache_1_1ModuleManagerCache.html">cache::ModuleManagerCache</a></td></tr>
 <tr class="memdesc:ad45032f024d9669f7feb74d76a796cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the cache. <br /></td></tr>
@@ -127,18 +135,34 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~ModuleManager</b> () noexcept</td></tr>
 <tr class="memdesc:a1119ea79a4c4944157bebc50c2cc60ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard dtor. <br /></td></tr>
 <tr class="separator:a1119ea79a4c4944157bebc50c2cc60ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8099a69a623c53d077dd99b0bf4694a3" id="r_a8099a69a623c53d077dd99b0bf4694a3"><td class="memItemLeft" align="right" valign="top">module_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a8099a69a623c53d077dd99b0bf4694a3">begin</a> () noexcept</td></tr>
-<tr class="memdesc:a8099a69a623c53d077dd99b0bf4694a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator to the first element of the module map.  <br /></td></tr>
-<tr class="separator:a8099a69a623c53d077dd99b0bf4694a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55538f1084bd238d234fb92f59a98069" id="r_a55538f1084bd238d234fb92f59a98069"><td class="memItemLeft" align="right" valign="top">module_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a55538f1084bd238d234fb92f59a98069">end</a> () noexcept</td></tr>
-<tr class="memdesc:a55538f1084bd238d234fb92f59a98069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator to the past-the-end element of the module map.  <br /></td></tr>
-<tr class="separator:a55538f1084bd238d234fb92f59a98069"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fa8d19f014f2daf30d677f68729bbec" id="r_a7fa8d19f014f2daf30d677f68729bbec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a7fa8d19f014f2daf30d677f68729bbec">count</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> key) const noexcept</td></tr>
-<tr class="memdesc:a7fa8d19f014f2daf30d677f68729bbec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to see if we have a module.  <br /></td></tr>
-<tr class="separator:a7fa8d19f014f2daf30d677f68729bbec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba1b9643dd88b56368940998a042db8" id="r_aeba1b9643dd88b56368940998a042db8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#aeba1b9643dd88b56368940998a042db8">count</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key) const noexcept</td></tr>
+<tr class="memdesc:aeba1b9643dd88b56368940998a042db8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines how many modules <code>key</code> refers to.  <br /></td></tr>
+<tr class="separator:aeba1b9643dd88b56368940998a042db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c40d48908819bd00e71526211691779" id="r_a6c40d48908819bd00e71526211691779"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a6c40d48908819bd00e71526211691779">size</a> () const noexcept</td></tr>
 <tr class="memdesc:a6c40d48908819bd00e71526211691779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of modules loaded.  <br /></td></tr>
 <tr class="separator:a6c40d48908819bd00e71526211691779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accd23c5881af72fae184a7c096b063d0" id="r_accd23c5881af72fae184a7c096b063d0"><td class="memTemplParams" colspan="2">template&lt;typename PluginType &gt; </td></tr>
+<tr class="memitem:accd23c5881af72fae184a7c096b063d0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#accd23c5881af72fae184a7c096b063d0">load_plugin</a> ()</td></tr>
+<tr class="memdesc:accd23c5881af72fae184a7c096b063d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a plugin of type <code>PluginType</code> and loads it.  <br /></td></tr>
+<tr class="separator:accd23c5881af72fae184a7c096b063d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a778fe39d4f717495eec04769d8e58ac3" id="r_a778fe39d4f717495eec04769d8e58ac3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a778fe39d4f717495eec04769d8e58ac3">load_plugin</a> (<a class="el" href="classpluginplay_1_1ModuleManager.html#a1e23fdfc29f0f6e5edb5fc45b1daae29">plugin_pointer</a> plugin)</td></tr>
+<tr class="memdesc:a778fe39d4f717495eec04769d8e58ac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads <code>plugin</code>.  <br /></td></tr>
+<tr class="separator:a778fe39d4f717495eec04769d8e58ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80deba235c1e0236ebcbc7a1ada122f8" id="r_a80deba235c1e0236ebcbc7a1ada122f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a80deba235c1e0236ebcbc7a1ada122f8">wire_defaults</a> ()</td></tr>
+<tr class="memdesc:a80deba235c1e0236ebcbc7a1ada122f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets default submodules between the loaded plugins.  <br /></td></tr>
+<tr class="separator:a80deba235c1e0236ebcbc7a1ada122f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac45835f39e3c6b715cad270989083733" id="r_ac45835f39e3c6b715cad270989083733"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ac45835f39e3c6b715cad270989083733">has_plugin</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;name) const noexcept</td></tr>
+<tr class="memdesc:ac45835f39e3c6b715cad270989083733"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is a plugin named <code>name</code> loaded?  <br /></td></tr>
+<tr class="separator:ac45835f39e3c6b715cad270989083733"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb6058dd722de9fd5b5ba54ec4257c8c" id="r_aeb6058dd722de9fd5b5ba54ec4257c8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#a69925abc369178b62dfd0abfc2714bef">name_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#aeb6058dd722de9fd5b5ba54ec4257c8c">plugin_names</a> () const</td></tr>
+<tr class="memdesc:aeb6058dd722de9fd5b5ba54ec4257c8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The names of the maps in *this.  <br /></td></tr>
+<tr class="separator:aeb6058dd722de9fd5b5ba54ec4257c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41410c73f6b8c96956c6c165c1013914" id="r_a41410c73f6b8c96956c6c165c1013914"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classpluginplay_1_1Plugin.html">Plugin</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a41410c73f6b8c96956c6c165c1013914">get_plugin</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;name) const</td></tr>
+<tr class="memdesc:a41410c73f6b8c96956c6c165c1013914"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the loaded plugin named <code>name</code>.  <br /></td></tr>
+<tr class="separator:a41410c73f6b8c96956c6c165c1013914"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b65c520f496f8ce460c587caa54e142" id="r_a2b65c520f496f8ce460c587caa54e142"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classpluginplay_1_1ModuleMap.html">ModuleMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a2b65c520f496f8ce460c587caa54e142">get_modules</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;name) const</td></tr>
+<tr class="memdesc:a2b65c520f496f8ce460c587caa54e142"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the modules in the map named <code>name</code>.  <br /></td></tr>
+<tr class="separator:a2b65c520f496f8ce460c587caa54e142"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2" id="r_a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplParams" colspan="2">template&lt;typename ModuleType &gt; </td></tr>
 <tr class="memitem:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a6c9bebeb1efe4e2af21d60d5923236e2">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> module_key)</td></tr>
 <tr class="memdesc:a6c9bebeb1efe4e2af21d60d5923236e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to add a new module to the list.  <br /></td></tr>
@@ -146,33 +170,33 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a595ba8ca5e9a1be484613dc111c9bd77" id="r_a595ba8ca5e9a1be484613dc111c9bd77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a595ba8ca5e9a1be484613dc111c9bd77">add_module</a> (<a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> module_key, <a class="el" href="classpluginplay_1_1ModuleManager.html#ae507121faff2c11b50d3151bff64c873">module_base_ptr</a> base)</td></tr>
 <tr class="memdesc:a595ba8ca5e9a1be484613dc111c9bd77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to add a new module to the list.  <br /></td></tr>
 <tr class="separator:a595ba8ca5e9a1be484613dc111c9bd77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbdf585168474fedc77b1290cb68555b" id="r_adbdf585168474fedc77b1290cb68555b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#adbdf585168474fedc77b1290cb68555b">copy_module</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;old_key, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key)</td></tr>
-<tr class="memdesc:adbdf585168474fedc77b1290cb68555b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a "deep copy" of a module.  <br /></td></tr>
-<tr class="separator:adbdf585168474fedc77b1290cb68555b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ed47216b6b5f7c7553e305cc11be309" id="r_a8ed47216b6b5f7c7553e305cc11be309"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a8ed47216b6b5f7c7553e305cc11be309">erase</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key)</td></tr>
-<tr class="memdesc:a8ed47216b6b5f7c7553e305cc11be309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unloads the specified module.  <br /></td></tr>
-<tr class="separator:a8ed47216b6b5f7c7553e305cc11be309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a275c30266320d7823e8494da181b0a56" id="r_a275c30266320d7823e8494da181b0a56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a275c30266320d7823e8494da181b0a56">rename_module</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;old_key, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key)</td></tr>
-<tr class="memdesc:a275c30266320d7823e8494da181b0a56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the key a module is stored under.  <br /></td></tr>
-<tr class="separator:a275c30266320d7823e8494da181b0a56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d756392522c4b36860dee40d074a10c" id="r_a2d756392522c4b36860dee40d074a10c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a2d756392522c4b36860dee40d074a10c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a2d756392522c4b36860dee40d074a10c">change_input</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;option, T &amp;&amp;new_value)</td></tr>
-<tr class="memdesc:a2d756392522c4b36860dee40d074a10c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the value of an input bound to a module.  <br /></td></tr>
-<tr class="separator:a2d756392522c4b36860dee40d074a10c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f9e5dde9ff8dce1b76e8df2e7e2dcd7" id="r_a9f9e5dde9ff8dce1b76e8df2e7e2dcd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a9f9e5dde9ff8dce1b76e8df2e7e2dcd7">change_submod</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;module_key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;callback_key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;submod_key)</td></tr>
-<tr class="memdesc:a9f9e5dde9ff8dce1b76e8df2e7e2dcd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the submodule a module calls.  <br /></td></tr>
-<tr class="separator:a9f9e5dde9ff8dce1b76e8df2e7e2dcd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71e54fd304cf6d058e6737086168da44" id="r_a71e54fd304cf6d058e6737086168da44"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Args&gt; </td></tr>
-<tr class="memitem:a71e54fd304cf6d058e6737086168da44"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a71e54fd304cf6d058e6737086168da44">run_as</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key, Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a71e54fd304cf6d058e6737086168da44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs a given module.  <br /></td></tr>
-<tr class="separator:a71e54fd304cf6d058e6737086168da44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a383593d88991de0d00d9e48a2c4fcba2" id="r_a383593d88991de0d00d9e48a2c4fcba2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a383593d88991de0d00d9e48a2c4fcba2">copy_module</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;old_key, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key)</td></tr>
+<tr class="memdesc:a383593d88991de0d00d9e48a2c4fcba2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a "deep copy" of a module.  <br /></td></tr>
+<tr class="separator:a383593d88991de0d00d9e48a2c4fcba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bddcf42085bdf9dc47e7a1ef7fdd02c" id="r_a2bddcf42085bdf9dc47e7a1ef7fdd02c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a2bddcf42085bdf9dc47e7a1ef7fdd02c">erase</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key)</td></tr>
+<tr class="memdesc:a2bddcf42085bdf9dc47e7a1ef7fdd02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unloads the specified module.  <br /></td></tr>
+<tr class="separator:a2bddcf42085bdf9dc47e7a1ef7fdd02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae116196ba39498315e838df11a288a31" id="r_ae116196ba39498315e838df11a288a31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ae116196ba39498315e838df11a288a31">rename_module</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;old_key, <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> new_key)</td></tr>
+<tr class="memdesc:ae116196ba39498315e838df11a288a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the key a module is stored under.  <br /></td></tr>
+<tr class="separator:ae116196ba39498315e838df11a288a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c282b8c3605f3fc038723593186aa67" id="r_a1c282b8c3605f3fc038723593186aa67"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1c282b8c3605f3fc038723593186aa67"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1c282b8c3605f3fc038723593186aa67">change_input</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;option, T &amp;&amp;new_value)</td></tr>
+<tr class="memdesc:a1c282b8c3605f3fc038723593186aa67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the value of an input bound to a module.  <br /></td></tr>
+<tr class="separator:a1c282b8c3605f3fc038723593186aa67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74a8dc308ad70e378231e94e787028c5" id="r_a74a8dc308ad70e378231e94e787028c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a74a8dc308ad70e378231e94e787028c5">change_submod</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;module_key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;callback_key, const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;submod_key)</td></tr>
+<tr class="memdesc:a74a8dc308ad70e378231e94e787028c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the submodule a module calls.  <br /></td></tr>
+<tr class="separator:a74a8dc308ad70e378231e94e787028c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5680e4d8e41581a23de5f276fe12cfd5" id="r_a5680e4d8e41581a23de5f276fe12cfd5"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Args&gt; </td></tr>
+<tr class="memitem:a5680e4d8e41581a23de5f276fe12cfd5"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a5680e4d8e41581a23de5f276fe12cfd5">run_as</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key, Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a5680e4d8e41581a23de5f276fe12cfd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs a given module.  <br /></td></tr>
+<tr class="separator:a5680e4d8e41581a23de5f276fe12cfd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab832aaecab563174813c9dfe5be7f7df" id="r_ab832aaecab563174813c9dfe5be7f7df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ab832aaecab563174813c9dfe5be7f7df">set_runtime</a> (<a class="el" href="classpluginplay_1_1ModuleManager.html#a8b13e7a0da82f1d5464e6012d9558018">runtime_ptr</a> runtime) noexcept</td></tr>
 <tr class="memdesc:ab832aaecab563174813c9dfe5be7f7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the runtime of the module mananger and its modules.  <br /></td></tr>
 <tr class="separator:ab832aaecab563174813c9dfe5be7f7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60095a7da6e1e1445699d747ec8f3d68" id="r_a60095a7da6e1e1445699d747ec8f3d68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1c5eed45f0f8c4d939b2f24ff4280704">runtime_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a60095a7da6e1e1445699d747ec8f3d68">get_runtime</a> () const noexcept</td></tr>
 <tr class="memdesc:a60095a7da6e1e1445699d747ec8f3d68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides the runtime of the module manager.  <br /></td></tr>
 <tr class="separator:a60095a7da6e1e1445699d747ec8f3d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26f8d8ff840c2d115ab583c797675f62" id="r_a26f8d8ff840c2d115ab583c797675f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">key_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">keys</a> () const</td></tr>
+<tr class="memitem:a26f8d8ff840c2d115ab583c797675f62" id="r_a26f8d8ff840c2d115ab583c797675f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleManager.html#afbd5e42d31850ddef9cd0d6b91d0923d">key_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a26f8d8ff840c2d115ab583c797675f62">keys</a> () const</td></tr>
 <tr class="memdesc:a26f8d8ff840c2d115ab583c797675f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the keys of all the modules in the module manager.  <br /></td></tr>
 <tr class="separator:a26f8d8ff840c2d115ab583c797675f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2c9e5e4267f5980326fd925d44adf22" id="r_ab2c9e5e4267f5980326fd925d44adf22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#ab2c9e5e4267f5980326fd925d44adf22">has_cache</a> () const noexcept</td></tr>
@@ -191,21 +215,30 @@ Public Member Functions</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader">Module retrievers</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">module_key</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">module_key</td><td>The module to retrieve.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to the requested module.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>module_key</code> does not refer to a module. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>module_key</code> is key-only and more than one map has the key. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div></td></tr>
-<tr class="memitem:a18d5a4ae9733e0c4ddd654fef44cb376" id="r_a18d5a4ae9733e0c4ddd654fef44cb376"><td class="memItemLeft" align="right" valign="top"><a id="a18d5a4ae9733e0c4ddd654fef44cb376" name="a18d5a4ae9733e0c4ddd654fef44cb376"></a>
-<a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>at</b> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;module_key)</td></tr>
-<tr class="separator:a18d5a4ae9733e0c4ddd654fef44cb376"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c6ff22dd0e3a6771429562f788aa199" id="r_a0c6ff22dd0e3a6771429562f788aa199"><td class="memItemLeft" align="right" valign="top"><a id="a0c6ff22dd0e3a6771429562f788aa199" name="a0c6ff22dd0e3a6771429562f788aa199"></a>
-const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>at</b> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;module_key) const</td></tr>
-<tr class="separator:a0c6ff22dd0e3a6771429562f788aa199"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57a064e11806c569d0fa9313389f7c7c" id="r_a57a064e11806c569d0fa9313389f7c7c"><td class="memItemLeft" align="right" valign="top"><a id="a57a064e11806c569d0fa9313389f7c7c" name="a57a064e11806c569d0fa9313389f7c7c"></a>
+<a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>at</b> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;module_key)</td></tr>
+<tr class="separator:a57a064e11806c569d0fa9313389f7c7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d0024da1a184aeafea4dd5ef8d2fd0e" id="r_a3d0024da1a184aeafea4dd5ef8d2fd0e"><td class="memItemLeft" align="right" valign="top"><a id="a3d0024da1a184aeafea4dd5ef8d2fd0e" name="a3d0024da1a184aeafea4dd5ef8d2fd0e"></a>
+const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>at</b> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;module_key) const</td></tr>
+<tr class="separator:a3d0024da1a184aeafea4dd5ef8d2fd0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class responsible for holding and managing modules. </p>
+<p>Modules are loaded into a <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> in two ways: as part of a plugin (see load_plugin), or one at a time (see add_module). The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> keeps one <a class="el" href="classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key.">ModuleMap</a> per loaded plugin, plus a <a class="el" href="classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key.">ModuleMap</a> of its own for the modules that do not come from a plugin. The empty plugin name, "", refers to the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s own modules.</p>
+<p><a class="el" href="classpluginplay_1_1Plugin.html" title="Base class for all plugins.">Plugin</a> names and module keys are case-insensitive. <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> keys are unique within a map, but two maps may use the same key. Functions that take a module accept a <a class="el" href="classpluginplay_1_1QualifiedKey.html" title="Identifies a module in a ModuleManager.">QualifiedKey</a>. A plain module key works as long as exactly one map has that key; otherwise the plugin name must be given too, <em>e.g.</em>, <code>mm.at({"integrals", "Overlap"})</code>. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6c9bebeb1efe4e2af21d60d5923236e2" name="a6c9bebeb1efe4e2af21d60d5923236e2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c9bebeb1efe4e2af21d60d5923236e2">&#9670;&#160;</a></span>add_module() <span class="overload">[1/2]</span></h2>
@@ -226,6 +259,7 @@ template&lt;typename ModuleType &gt; </div>
 </div><div class="memdoc">
 
 <p>Used to add a new module to the list. </p>
+<p>The module is added to *this's own map (plugin name "").</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">ModuleType</td><td>The type of the module being added. This type must be constructible with no arguments and must inherit from <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a>. </td></tr>
@@ -268,6 +302,7 @@ template&lt;typename ModuleType &gt; </div>
 </div><div class="memdoc">
 
 <p>Used to add a new module to the list. </p>
+<p>The module is added to *this's own map (plugin name "").</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">module_key</td><td></td></tr>
@@ -278,36 +313,8 @@ template&lt;typename ModuleType &gt; </div>
 
 </div>
 </div>
-<a id="a8099a69a623c53d077dd99b0bf4694a3" name="a8099a69a623c53d077dd99b0bf4694a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8099a69a623c53d077dd99b0bf4694a3">&#9670;&#160;</a></span>begin()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">module_map::iterator pluginplay::ModuleManager::begin </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns an iterator to the first element of the module map. </p>
-<dl class="section return"><dt>Returns</dt><dd>Iterator to the first element of the map </dd></dl>
-
-</div>
-</div>
-<a id="a2d756392522c4b36860dee40d074a10c" name="a2d756392522c4b36860dee40d074a10c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d756392522c4b36860dee40d074a10c">&#9670;&#160;</a></span>change_input()</h2>
+<a id="a1c282b8c3605f3fc038723593186aa67" name="a1c282b8c3605f3fc038723593186aa67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c282b8c3605f3fc038723593186aa67">&#9670;&#160;</a></span>change_input()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -320,7 +327,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void pluginplay::ModuleManager::change_input </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
         </tr>
         <tr>
@@ -366,8 +373,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a9f9e5dde9ff8dce1b76e8df2e7e2dcd7" name="a9f9e5dde9ff8dce1b76e8df2e7e2dcd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f9e5dde9ff8dce1b76e8df2e7e2dcd7">&#9670;&#160;</a></span>change_submod()</h2>
+<a id="a74a8dc308ad70e378231e94e787028c5" name="a74a8dc308ad70e378231e94e787028c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74a8dc308ad70e378231e94e787028c5">&#9670;&#160;</a></span>change_submod()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -375,7 +382,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void pluginplay::ModuleManager::change_submod </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>module_key</em>, </td>
         </tr>
         <tr>
@@ -387,7 +394,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>submod_key</em>&#160;</td>
         </tr>
         <tr>
@@ -402,23 +409,24 @@ template&lt;typename T &gt; </div>
 <p>Modules can call other modules at predesignated callback points. Each of these callback points has a key associated with it. This function allows the user to change which module is called at a particular callback point by specifying the key of the module, the callback point's key, and the key for tne new submodule.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">module_key</td><td>The key for the module whose submodule is being changed. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">module_key</td><td>The module whose submodule is being changed. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">callback_key</td><td>The name of the callback point in the module assigned to <code>module_key</code> </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">submod_key</td><td>The key for the submodule to call.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">submod_key</td><td>The submodule to call. It may be in a different map than <code>module_key</code>.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::out_of_range</td><td>if any of the keys do not refer to valid, already present modules or callback points. Weak throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>module_key</code> or <code>submod_key</code> is ambiguous. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="adbdf585168474fedc77b1290cb68555b" name="adbdf585168474fedc77b1290cb68555b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbdf585168474fedc77b1290cb68555b">&#9670;&#160;</a></span>copy_module()</h2>
+<a id="a383593d88991de0d00d9e48a2c4fcba2" name="a383593d88991de0d00d9e48a2c4fcba2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a383593d88991de0d00d9e48a2c4fcba2">&#9670;&#160;</a></span>copy_module()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -426,7 +434,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void pluginplay::ModuleManager::copy_module </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>old_key</em>, </td>
         </tr>
         <tr>
@@ -445,15 +453,18 @@ template&lt;typename T &gt; </div>
 
 <p>Makes a "deep copy" of a module. </p>
 <p>This function will copy the module stored under <code>old_key</code> and store the copy under <code>new_key</code>. The copy will be unlocked, with a deep copy of <code>old_key</code> 's inputs and submodules. Deep copy in this context meaning that changing <code>new_key</code> 's inputs or submodules will not affect the module stored under <code>old_key</code>.</p>
+<p>The copy is always stored in *this's own map (plugin name ""), even if <code>old_key</code> is one of a plugin's modules. Plugins' maps only hold the modules the plugins provide.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">old_key</td><td>The key for the module which is being copied. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">old_key</td><td>The module which is being copied. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">new_key</td><td>The key for the resulting copy.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>old_key</code> does not refer to a module. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>old_key</code> is ambiguous or *this's own map already has a module with key <code>new_key</code>. Strong throw guarantee. </td></tr>
     <tr><td class="paramname">std::bad_alloc</td><td>if an allocation error arises. </td></tr>
   </table>
   </dd>
@@ -461,8 +472,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a7fa8d19f014f2daf30d677f68729bbec" name="a7fa8d19f014f2daf30d677f68729bbec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fa8d19f014f2daf30d677f68729bbec">&#9670;&#160;</a></span>count()</h2>
+<a id="aeba1b9643dd88b56368940998a042db8" name="aeba1b9643dd88b56368940998a042db8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba1b9643dd88b56368940998a042db8">&#9670;&#160;</a></span>count()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -473,7 +484,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a> pluginplay::ModuleManager::count </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -485,47 +496,25 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Used to see if we have a module. </p>
+<p>Determines how many modules <code>key</code> refers to. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The module to look for. If <code>key</code> is key-only, all maps are searched.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>For a key-only <code>key</code>, the number of maps that have the key. For a qualified <code>key</code>, 1 if the plugin is loaded and has the module and 0 otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="a55538f1084bd238d234fb92f59a98069" name="a55538f1084bd238d234fb92f59a98069"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55538f1084bd238d234fb92f59a98069">&#9670;&#160;</a></span>end()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">module_map::iterator pluginplay::ModuleManager::end </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns an iterator to the past-the-end element of the module map. </p>
-<dl class="section return"><dt>Returns</dt><dd>Iterator to the past-the-end element of the map </dd></dl>
-
-</div>
-</div>
-<a id="a8ed47216b6b5f7c7553e305cc11be309" name="a8ed47216b6b5f7c7553e305cc11be309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ed47216b6b5f7c7553e305cc11be309">&#9670;&#160;</a></span>erase()</h2>
+<a id="a2bddcf42085bdf9dc47e7a1ef7fdd02c" name="a2bddcf42085bdf9dc47e7a1ef7fdd02c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bddcf42085bdf9dc47e7a1ef7fdd02c">&#9670;&#160;</a></span>erase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -533,7 +522,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void pluginplay::ModuleManager::erase </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td></td>
         </tr>
@@ -544,7 +533,79 @@ template&lt;typename T &gt; </div>
 <p>This function unloads the module with the specified key. After this operation the key is free to be used again. Calling this function does NOT clean any data out of the cache. This function is a no-op if <code>key</code> does not exist.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key for the module which should be erased. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The module which should be erased.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>key</code> is key-only and more than one map has the key. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2b65c520f496f8ce460c587caa54e142" name="a2b65c520f496f8ce460c587caa54e142"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b65c520f496f8ce460c587caa54e142">&#9670;&#160;</a></span>get_modules()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classpluginplay_1_1ModuleMap.html">ModuleMap</a> &amp; pluginplay::ModuleManager::get_modules </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the modules in the map named <code>name</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of a loaded plugin, or "" for the modules that do not come from a plugin.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A read-only reference to the map.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>name</code> is not "" and no plugin named <code>name</code> is loaded. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a41410c73f6b8c96956c6c165c1013914" name="a41410c73f6b8c96956c6c165c1013914"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41410c73f6b8c96956c6c165c1013914">&#9670;&#160;</a></span>get_plugin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classpluginplay_1_1Plugin.html">Plugin</a> &amp; pluginplay::ModuleManager::get_plugin </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the loaded plugin named <code>name</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A read-only reference to the plugin.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if no plugin named <code>name</code> is loaded. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -619,6 +680,47 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ac45835f39e3c6b715cad270989083733" name="ac45835f39e3c6b715cad270989083733"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac45835f39e3c6b715cad270989083733">&#9670;&#160;</a></span>has_plugin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::ModuleManager::has_plugin </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#aa59ef92f70e78aa093b77eba9ff1d761">name_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Is a plugin named <code>name</code> loaded? </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the plugin.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a plugin named <code>name</code> is loaded and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a26f8d8ff840c2d115ab583c797675f62" name="a26f8d8ff840c2d115ab583c797675f62"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26f8d8ff840c2d115ab583c797675f62">&#9670;&#160;</a></span>keys()</h2>
 
@@ -626,7 +728,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleManager.html#aba62f3cefe36f671b36cbd432f4f1243">ModuleManager::key_container_type</a> pluginplay::ModuleManager::keys </td>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleManager.html#afbd5e42d31850ddef9cd0d6b91d0923d">ModuleManager::key_container_type</a> pluginplay::ModuleManager::keys </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -635,7 +737,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Returns the keys of all the modules in the module manager. </p>
-<dl class="section return"><dt>Returns</dt><dd>A vector of keys for all the modules in the module manager.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The qualified keys of all the modules, *this's own modules first, followed by each plugin's modules in load order.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::bad_alloc</td><td>if an allocation error arises. </td></tr>
@@ -645,19 +747,111 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a275c30266320d7823e8494da181b0a56" name="a275c30266320d7823e8494da181b0a56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a275c30266320d7823e8494da181b0a56">&#9670;&#160;</a></span>rename_module()</h2>
+<a id="accd23c5881af72fae184a7c096b063d0" name="accd23c5881af72fae184a7c096b063d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accd23c5881af72fae184a7c096b063d0">&#9670;&#160;</a></span>load_plugin() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+<div class="memtemplate">
+template&lt;typename PluginType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleManager::load_plugin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a plugin of type <code>PluginType</code> and loads it. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">PluginType</td><td>The type of the plugin. Must derive from <a class="el" href="classpluginplay_1_1Plugin.html" title="Base class for all plugins.">Plugin</a> and be default constructible.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if a plugin with the same name is already loaded. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the plugin. Weak throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a778fe39d4f717495eec04769d8e58ac3" name="a778fe39d4f717495eec04769d8e58ac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a778fe39d4f717495eec04769d8e58ac3">&#9670;&#160;</a></span>load_plugin() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleManager::load_plugin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1ModuleManager.html#a1e23fdfc29f0f6e5edb5fc45b1daae29">plugin_pointer</a>&#160;</td>
+          <td class="paramname"><em>plugin</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads <code>plugin</code>. </p>
+<p>*this takes ownership of <code>plugin</code> and its modules. Nothing is copied: the plugin's <a class="el" href="classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key.">ModuleMap</a> is the map <em>this uses for the plugin's modules. Each module is given *this's runtime and caches. A plugin's modules use the module cache named <code>"&lt;plugin name&gt;::&lt;module key&gt;"</code>. Modules that are reachable through submodules, but no longer in the plugin's map (*e.g.</em>, the plugin erased them after using them as submodules), are given the runtime and caches too, using the key they were last stored under.</p>
+<p>Loading does not set default submodules between plugins; call wire_defaults after all plugins are loaded.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">plugin</td><td>The plugin to load. If this function throws, the plugin is destroyed.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>plugin</code> is null, has no name, or has the same name as a loaded plugin. Strong throw guarantee for *this. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the caches. Weak throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aeb6058dd722de9fd5b5ba54ec4257c8c" name="aeb6058dd722de9fd5b5ba54ec4257c8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb6058dd722de9fd5b5ba54ec4257c8c">&#9670;&#160;</a></span>plugin_names()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleManager.html#a69925abc369178b62dfd0abfc2714bef">ModuleManager::name_container_type</a> pluginplay::ModuleManager::plugin_names </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The names of the maps in *this. </p>
+<dl class="section return"><dt>Returns</dt><dd>"", for *this's own modules, followed by the names of the loaded plugins in the order they were loaded.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the return. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae116196ba39498315e838df11a288a31" name="ae116196ba39498315e838df11a288a31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae116196ba39498315e838df11a288a31">&#9670;&#160;</a></span>rename_module()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void pluginplay::ModuleManager::rename_module </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>old_key</em>, </td>
         </tr>
         <tr>
@@ -672,33 +866,29 @@ template&lt;typename T &gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Changes the key a module is stored under. </p>
 <p>This function can be used to rename the key a module is stored under. After a call to this function there will be no module stored under <code>old_key</code>.</p>
+<p>Like copy_module, the renamed module is stored in *this's own map, so renaming one of a plugin's modules moves it out of the plugin's map.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">old_key</td><td>The key we are renaming. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">old_key</td><td>The module we are renaming. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">new_key</td><td>The value for the new key.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::bad_alloc</td><td>if there is an allocation error. </td></tr>
+    <tr><td class="paramname">???</td><td>Throws if copy_module throws. Same guarantee. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a71e54fd304cf6d058e6737086168da44" name="a71e54fd304cf6d058e6737086168da44"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71e54fd304cf6d058e6737086168da44">&#9670;&#160;</a></span>run_as()</h2>
+<a id="a5680e4d8e41581a23de5f276fe12cfd5" name="a5680e4d8e41581a23de5f276fe12cfd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5680e4d8e41581a23de5f276fe12cfd5">&#9670;&#160;</a></span>run_as()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -711,7 +901,7 @@ template&lt;typename T , typename... Args&gt; </div>
         <tr>
           <td class="memname">auto pluginplay::ModuleManager::run_as </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
         </tr>
         <tr>
@@ -816,7 +1006,34 @@ template&lt;typename T , typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Gets the number of modules loaded. </p>
-<dl class="section return"><dt>Returns</dt><dd>Number of modules loaded. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of modules loaded, summed over all maps. </dd></dl>
+
+</div>
+</div>
+<a id="a80deba235c1e0236ebcbc7a1ada122f8" name="a80deba235c1e0236ebcbc7a1ada122f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80deba235c1e0236ebcbc7a1ada122f8">&#9670;&#160;</a></span>wire_defaults()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleManager::wire_defaults </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets default submodules between the loaded plugins. </p>
+<p>For each loaded plugin, in load order, and for each of its preferred providers that is loaded, in priority order, this applies the default submodules the plugin recorded for that provider (see <a class="el" href="classpluginplay_1_1Plugin.html#a2a22ca1d92fc5d3bfe2a4bb528f3f8bc" title="Records a default submodule from another plugin.">Plugin::default_submod_from</a>). A default only sets a submodule that is still unset, so choices made by the user, or by a provider with higher priority, are kept. Defaults that name a module the provider does not have are skipped, with a warning through the runtime's logger.</p>
+<p>Calling this function again, <em>e.g.</em>, after loading another plugin, only fills submodules that are still unset.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if a provider's module does not satisfy the property type of the submodule. Weak throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

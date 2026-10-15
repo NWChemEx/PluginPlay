@@ -126,6 +126,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0e45fde1ca0a9bb29412bced609ac743" id="r_a0e45fde1ca0a9bb29412bced609ac743"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#a0e45fde1ca0a9bb29412bced609ac743">add_module</a> (<a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> key, <a class="el" href="classpluginplay_1_1ModuleMap.html#a24e17d3a0a06af8a947ffd3660821db5">module_base_ptr</a> base)</td></tr>
 <tr class="memdesc:a0e45fde1ca0a9bb29412bced609ac743"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a module from the implementation <code>base</code> and stores it under <code>key</code>.  <br /></td></tr>
 <tr class="separator:a0e45fde1ca0a9bb29412bced609ac743"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4abe116fdb88a274fed4d0d52dfe63a8" id="r_a4abe116fdb88a274fed4d0d52dfe63a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#a4abe116fdb88a274fed4d0d52dfe63a8">add_module</a> (<a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> key, <a class="el" href="classpluginplay_1_1Module.html">Module</a> module)</td></tr>
+<tr class="memdesc:a4abe116fdb88a274fed4d0d52dfe63a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the already-created module <code>module</code> under <code>key</code>.  <br /></td></tr>
+<tr class="separator:a4abe116fdb88a274fed4d0d52dfe63a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe884ff12d2ce808216e2adfbb2e47aa" id="r_afe884ff12d2ce808216e2adfbb2e47aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#afe884ff12d2ce808216e2adfbb2e47aa">copy_module</a> (const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;old_key, <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> new_key)</td></tr>
+<tr class="memdesc:afe884ff12d2ce808216e2adfbb2e47aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores an unlocked copy of the module <code>old_key</code> under <code>new_key</code>.  <br /></td></tr>
+<tr class="separator:afe884ff12d2ce808216e2adfbb2e47aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c3f1b27aeccadfd8365ec364be7780" id="r_ac9c3f1b27aeccadfd8365ec364be7780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#ac9c3f1b27aeccadfd8365ec364be7780">erase</a> (const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;key) noexcept</td></tr>
+<tr class="memdesc:ac9c3f1b27aeccadfd8365ec364be7780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the module stored under <code>key</code>.  <br /></td></tr>
+<tr class="separator:ac9c3f1b27aeccadfd8365ec364be7780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e443fc2f36f6e9b127a7e3bf61c9c3c" id="r_a9e443fc2f36f6e9b127a7e3bf61c9c3c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9e443fc2f36f6e9b127a7e3bf61c9c3c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#a9e443fc2f36f6e9b127a7e3bf61c9c3c">change_input</a> (const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;key, const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;option, T &amp;&amp;new_value)</td></tr>
+<tr class="memdesc:a9e443fc2f36f6e9b127a7e3bf61c9c3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the value of an input of the module <code>key</code>.  <br /></td></tr>
+<tr class="separator:a9e443fc2f36f6e9b127a7e3bf61c9c3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2046e2ab84ac16e77b3b1dae8783988c" id="r_a2046e2ab84ac16e77b3b1dae8783988c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a0bb9e510e66e3efb204cf5c278dabd7c">type::size</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleMap.html#a2046e2ab84ac16e77b3b1dae8783988c">count</a> (const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;key) const noexcept</td></tr>
 <tr class="memdesc:a2046e2ab84ac16e77b3b1dae8783988c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if *this contains a module with key <code>key</code>.  <br /></td></tr>
 <tr class="separator:a2046e2ab84ac16e77b3b1dae8783988c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,7 +199,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>default_submod</b> (c
 <p>Copies of a <a class="el" href="classpluginplay_1_1ModuleMap.html" title="A container of modules, indexed by module key.">ModuleMap</a> are shallow, <em>i.e.</em>, the copy and the original share the same <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> objects. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5a145c8422f8cb39a9ed6bea5de901d0" name="a5a145c8422f8cb39a9ed6bea5de901d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a145c8422f8cb39a9ed6bea5de901d0">&#9670;&#160;</a></span>add_module() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a145c8422f8cb39a9ed6bea5de901d0">&#9670;&#160;</a></span>add_module() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,8 +247,53 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a4abe116fdb88a274fed4d0d52dfe63a8" name="a4abe116fdb88a274fed4d0d52dfe63a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4abe116fdb88a274fed4d0d52dfe63a8">&#9670;&#160;</a></span>add_module() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleMap::add_module </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a>&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1Module.html">Module</a>&#160;</td>
+          <td class="paramname"><em>module</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stores the already-created module <code>module</code> under <code>key</code>. </p>
+<p>This overload is for adding a module that already exists, <em>e.g.</em>, a copy of a module. The module's name is set to <code>key</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key to store the module under. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">module</td><td>The module to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>key</code> is already in use. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the module. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a0e45fde1ca0a9bb29412bced609ac743" name="a0e45fde1ca0a9bb29412bced609ac743"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e45fde1ca0a9bb29412bced609ac743">&#9670;&#160;</a></span>add_module() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e45fde1ca0a9bb29412bced609ac743">&#9670;&#160;</a></span>add_module() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,6 +392,73 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Iterators over the key/module pairs in *this </p>
+
+</div>
+</div>
+<a id="a9e443fc2f36f6e9b127a7e3bf61c9c3c" name="a9e443fc2f36f6e9b127a7e3bf61c9c3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e443fc2f36f6e9b127a7e3bf61c9c3c">&#9670;&#160;</a></span>change_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleMap::change_input </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>option</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>new_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Changes the value of an input of the module <code>key</code>. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of the new value.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key of the module whose input is being changed. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">option</td><td>The key of the input to change. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_value</td><td>The new value of the input.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if *this does not have a module with key <code>key</code>, or if that module has no input <code>option</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">???</td><td>Throws if <a class="el" href="classpluginplay_1_1Module.html#a53bcbc20d23c91095b111198f30e3086" title="Binds an input value to the specified input.">Module::change_input</a> throws. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -440,6 +565,52 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="afe884ff12d2ce808216e2adfbb2e47aa" name="afe884ff12d2ce808216e2adfbb2e47aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe884ff12d2ce808216e2adfbb2e47aa">&#9670;&#160;</a></span>copy_module()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleMap::copy_module </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>old_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a>&#160;</td>
+          <td class="paramname"><em>new_key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stores an unlocked copy of the module <code>old_key</code> under <code>new_key</code>. </p>
+<p>The copy has its own inputs and submodules, so changing them does not change the module stored under <code>old_key</code>. The copy shares the implementation of <code>old_key</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">old_key</td><td>The key of the module to copy. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_key</td><td>The key to store the copy under.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if *this does not have a module with key <code>old_key</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>new_key</code> is already in use. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the copy. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a2046e2ab84ac16e77b3b1dae8783988c" name="a2046e2ab84ac16e77b3b1dae8783988c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2046e2ab84ac16e77b3b1dae8783988c">&#9670;&#160;</a></span>count()</h2>
 
@@ -519,6 +690,47 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">???</td><td>Throws if the corresponding change_submod throws. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac9c3f1b27aeccadfd8365ec364be7780" name="ac9c3f1b27aeccadfd8365ec364be7780"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9c3f1b27aeccadfd8365ec364be7780">&#9670;&#160;</a></span>erase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleMap::erase </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleMap.html#a08b6528d56c8b2f7f899f59619ae3cde">key_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the module stored under <code>key</code>. </p>
+<p>Modules that use the removed module as a submodule keep using it. This function is a no-op if *this does not have a module with key <code>key</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key of the module to remove.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

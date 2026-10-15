@@ -19,7 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Loading a Module Collection" href="load_modules.html" />
+    <link rel="next" title="Writing a Plugin" href="writing_a_plugin.html" />
     <link rel="prev" title="Module Collections" href="index.html" /> 
 </head>
 
@@ -59,7 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#python-set-up">Python Set-Up</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="load_modules.html">Loading a Module Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writing_a_plugin.html">Writing a Plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="document_modules.html">Documenting Modules in a Collection</a></li>
 </ul>
 </li>
@@ -126,12 +126,12 @@ code will look something like:</p>
 <p>where:</p>
 <ul class="simple">
 <li><p>the <code class="docutils literal notranslate"><span class="pre">include/</span></code> directory contains the public API,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">our_module.hpp</span></code> includes the <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function (TODO: add link) and
-any other headers needed to use the collection,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">our_module.hpp</span></code> declares the plugin (see <a class="reference internal" href="writing_a_plugin.html"><span class="doc">Writing a Plugin</span></a>) and
+includes any other headers needed to use the collection,</p></li>
 <li><p>the <code class="docutils literal notranslate"><span class="pre">src/</span></code> directory contains the implementation of the collection,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">module1.cpp</span></code> and <code class="docutils literal notranslate"><span class="pre">module2.cpp</span></code> are the implementation of the modules,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">modules.hpp</span></code> contains the declaration of the modules, and</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">our_module.cpp</span></code> contains the definition of the <code class="docutils literal notranslate"><span class="pre">load_modules</span></code> function.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">our_module.cpp</span></code> contains the definition of the plugin’s constructor.</p></li>
 </ul>
 <p>In practice you will also have build system files, readmes, licenses, unit tests
 (hopefully), etc, but from the perspective of the pluginplay those are the key parts.</p>
@@ -147,7 +147,7 @@ any other headers needed to use the collection,</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Module Collections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="load_modules.html" class="btn btn-neutral float-right" title="Loading a Module Collection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="writing_a_plugin.html" class="btn btn-neutral float-right" title="Writing a Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

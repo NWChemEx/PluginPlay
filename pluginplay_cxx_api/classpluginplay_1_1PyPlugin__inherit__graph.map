@@ -1,5 +1,7 @@
 <map id="pluginplay::PyPlugin" name="pluginplay::PyPlugin">
-<area shape="rect" id="Node000001" title="The class Python plugins derive from." alt="" coords="5,79,159,104"/>
-<area shape="rect" id="Node000002" href="$classpluginplay_1_1Plugin.html" title="Base class for all plugins." alt="" coords="13,5,151,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,44,85,79,79,79,79,44"/>
+<area shape="rect" id="Node000001" title="The class Python plugins derive from." alt="" coords="84,93,237,119"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1Plugin.html" title="Base class for all plugins." alt="" coords="5,13,143,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,45,150,91,146,95,95,49"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="167,5,328,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="218,57,175,95,172,91,214,53"/>
 </map>
