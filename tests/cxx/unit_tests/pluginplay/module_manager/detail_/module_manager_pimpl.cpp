@@ -17,6 +17,7 @@
 #include "../../catch.hpp"
 #include "../../examples/writing_a_module.hpp"
 #include "pluginplay/module_manager/detail_/module_manager_pimpl.hpp"
+#include <pluginplay/plugin/plugin.hpp>
 
 using namespace pluginplay;
 using namespace pluginplay::detail_;
@@ -24,12 +25,24 @@ using namespace pluginplay::detail_;
 using base_map   = typename ModuleManagerPIMPL::base_map;
 using module_map = typename ModuleManagerPIMPL::module_map;
 
+namespace {
+
+DECLARE_PLUGIN(PimplTestPlugin);
+
+PLUGIN_CTOR(PimplTestPlugin) {
+    set_name("test_plugin");
+    add_module<Rectangle>("Rectangle");
+}
+
+} // namespace
+
 TEST_CASE("ModuleManagerPIMPL : Default ctor") {
     ModuleManagerPIMPL pimpl;
     SECTION("State") {
         REQUIRE(pimpl.size() == 0);
         REQUIRE(pimpl.m_bases == base_map{});
         REQUIRE(pimpl.m_modules == module_map{});
+        REQUIRE(pimpl.m_plugins.empty());
     }
 }
 
@@ -85,17 +98,15 @@ TEST_CASE("ModuleManagerPIMPL : comparison") {
     }
     SECTION("Different modules") {
         SECTION("Different instances") {
-            auto ptr1 = std::make_shared<Module>();
-            auto ptr2 = std::make_shared<Module>();
             SECTION("Same key") {
-                pimpl1.m_modules["key"] = ptr1;
-                pimpl2.m_modules["key"] = ptr2;
+                pimpl1.m_modules.add_module("key", Module{});
+                pimpl2.m_modules.add_module("key", Module{});
                 REQUIRE(pimpl1 == pimpl2);
                 REQUIRE(!(pimpl1 != pimpl2));
             }
             SECTION("Different key") {
-                pimpl1.m_modules["key1"] = ptr1;
-                pimpl2.m_modules["key2"] = ptr2;
+                pimpl1.m_modules.add_module("key1", Module{});
+                pimpl2.m_modules.add_module("key2", Module{});
                 REQUIRE(pimpl1 != pimpl2);
                 REQUIRE(!(pimpl1 == pimpl2));
             }
@@ -107,11 +118,18 @@ TEST_CASE("ModuleManagerPIMPL : add_module") {
     auto ptr1 = std::make_shared<Rectangle>();
     ModuleManagerPIMPL pimpl1, pimpl2;
     pimpl2.m_bases[ptr1->type()] = ptr1;
-    auto pimpl                   = std::make_unique<ModulePIMPL>(ptr1);
-    pimpl2.m_modules["key1"]     = std::make_shared<Module>(std::move(pimpl));
-    pimpl2.m_modules["key1"]->set_name("key1");
+    pimpl2.m_modules.add_module("key1", ptr1);
     pimpl1.add_module("key1", ptr1);
     REQUIRE(pimpl1 == pimpl2);
+    SECTION("Module is given the runtime and caches") {
+        REQUIRE(&ptr1->get_runtime() == &pimpl1.get_runtime());
+        REQUIRE(ptr1->has_uuid());
+        REQUIRE(pimpl1.m_modules.at("key1")->is_memoizable());
+    }
+    SECTION("Can't add a null module") {
+        REQUIRE_THROWS_AS(pimpl1.add_module("key2", nullptr),
+                          std::invalid_argument);
+    }
     SECTION("Can't use the key") {
         REQUIRE_THROWS_AS(pimpl1.add_module("key1", ptr1),
                           std::invalid_argument);
@@ -126,10 +144,7 @@ TEST_CASE("ModuleManagerPIMPL : copy_module") {
 
     SECTION("Copies non-locked module") {
         pimpl1.copy_module("key", "new_key");
-        auto pimpl = std::make_unique<ModulePIMPL>(ptr1);
-        pimpl2.m_modules["new_key"] =
-          std::make_shared<Module>(std::move(pimpl));
-        pimpl2.m_modules["new_key"]->set_name("new_key");
+        pimpl2.m_modules.add_module("new_key", ptr1);
         REQUIRE(pimpl1 == pimpl2);
     }
     SECTION("Copy locked module") {
@@ -194,12 +209,49 @@ TEST_CASE("ModuleManagerPIMPL : keys") {
         auto ptr1 = std::make_shared<Rectangle>();
         pimpl1.add_module("rectangle", ptr1);
         REQUIRE(pimpl1.keys().size() == 1);
-        REQUIRE(pimpl1.keys().at(0) == "rectangle");
+        REQUIRE(pimpl1.keys().at(0) == QualifiedKey("", "rectangle"));
         auto ptr2 = std::make_shared<Prism>();
         pimpl1.add_module("prism", ptr2);
         REQUIRE(pimpl1.keys().size() == 2);
-        REQUIRE(pimpl1.keys().at(0) == "prism");
-        REQUIRE(pimpl1.keys().at(1) == "rectangle");
+        REQUIRE(pimpl1.keys().at(0) == QualifiedKey("", "prism"));
+        REQUIRE(pimpl1.keys().at(1) == QualifiedKey("", "rectangle"));
+    }
+}
+
+TEST_CASE("ModuleManagerPIMPL : plugins") {
+    ModuleManagerPIMPL pimpl1, pimpl2;
+    auto plugin         = std::make_unique<PimplTestPlugin>();
+    const auto* pplugin = plugin.get();
+    pimpl1.load_plugin(std::move(plugin));
+
+    SECTION("State") {
+        REQUIRE(pimpl1.m_plugins.size() == 1);
+        REQUIRE(pimpl1.m_plugins[0].get() == pplugin);
+        REQUIRE(pimpl1.m_modules.empty());
+    }
+
+    SECTION("Plugin modules are given the runtime and caches") {
+        auto mod = pplugin->get_modules().at("Rectangle");
+        REQUIRE(mod->is_memoizable());
+        REQUIRE(mod->run_as<Area>(2.0, 3.0) == 6.0);
+    }
+
+    SECTION("Comparison") {
+        REQUIRE(pimpl1 != pimpl2);
+        pimpl2.load_plugin(std::make_unique<PimplTestPlugin>());
+        REQUIRE(pimpl1 == pimpl2);
+        pimpl2.get_modules("test_plugin")
+          .change_input("Rectangle", "Dimension 1", 1.0);
+        REQUIRE(pimpl1 != pimpl2);
+    }
+
+    SECTION("count, size, and keys span all maps") {
+        pimpl1.add_module("Rectangle", std::make_shared<Rectangle>());
+        REQUIRE(pimpl1.count("Rectangle") == 2);
+        REQUIRE(pimpl1.size() == 2);
+        REQUIRE(pimpl1.keys() == ModuleManagerPIMPL::key_container_type{
+                                   QualifiedKey("", "Rectangle"),
+                                   QualifiedKey("test_plugin", "Rectangle")});
     }
 }
 

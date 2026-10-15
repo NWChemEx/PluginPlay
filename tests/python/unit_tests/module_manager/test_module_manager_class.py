@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gc
 import unittest
 
 import parallelzone
@@ -29,6 +30,37 @@ class APythonModule(pp.ModuleBase):
         (i0,) = pt.unwrap_inputs(inputs)
         rv = self.results()
         return pt.wrap_results(rv, i0)  #
+
+
+class AConsumer(pp.ModuleBase):
+    def __init__(self):
+        pp.ModuleBase.__init__(self)
+        self.satisfies_property_type(test_pp.OneInOneOut())
+        self.add_submodule(test_pp.OneInOneOut(), "sub")
+
+    def run_(self, inputs, submods):
+        pt = test_pp.OneInOneOut()
+        (i0,) = pt.unwrap_inputs(inputs)
+        rv = submods["sub"].run_as(pt, i0)
+        return pt.wrap_results(self.results(), rv)
+
+
+class ProviderPlugin(pp.Plugin):
+    def __init__(self):
+        pp.Plugin.__init__(self)
+        self.set_name("provider")
+        self.add_module("Provider", APythonModule())
+        self.add_module("Shared", APythonModule())
+
+
+class ConsumerPlugin(pp.Plugin):
+    def __init__(self):
+        pp.Plugin.__init__(self)
+        self.set_name("consumer")
+        self.set_preferred_providers("provider")
+        self.add_module("Consumer", AConsumer())
+        self.add_module("Shared", APythonModule())
+        self.default_submod_from("provider", "Consumer", "sub", "Provider")
 
 
 class TestModuleManager(unittest.TestCase):
@@ -215,6 +247,31 @@ class TestModuleManager(unittest.TestCase):
         self.assertTrue(module_with_description.has_description())
         self.assertNotEqual(self.has_mods["C++ no PT"], None)
 
+    def test_module_handles_share_ownership(self):
+        key = "C++ no PT"
+
+        # Repeated lookups give the same object, which is the live module
+        self.assertIs(self.has_mods.at(key), self.has_mods.at(key))
+        self.has_mods[key].turn_off_memoization()
+        self.assertFalse(self.has_mods.at(key).is_memoizable())
+
+        # A handle stays valid after the module is erased
+        mod = self.has_mods.at(key)
+        self.has_mods.erase(key)
+        gc.collect()
+        self.assertFalse(mod.is_memoizable())
+        self.assertTrue(mod.has_module())
+
+    def test_submodule_value_is_the_submodule(self):
+        mod_key = "C++ module needing a submodule"
+        self.has_mods.change_submod(mod_key, "Submodule 1", "C++ Null PT")
+        submod = self.has_mods.at(mod_key).submods()["Submodule 1"].value()
+
+        # Changes made through value() reach the actual submodule
+        self.assertIs(submod, self.has_mods.at("C++ Null PT"))
+        submod.turn_off_memoization()
+        self.assertFalse(self.has_mods.at("C++ Null PT").is_memoizable())
+
     def test_set_runtime(self):
         new_rv = parallelzone.runtime.RuntimeView()
         self.defaulted.set_runtime(new_rv)
@@ -226,7 +283,105 @@ class TestModuleManager(unittest.TestCase):
     def test_keys(self):
         self.assertEqual(len(self.defaulted.keys()), self.defaulted.size())
         self.assertEqual(len(self.has_mods.keys()), self.has_mods.size())
-        self.assertTrue("C++ Null PT" in self.has_mods.keys())
+        key = pp.QualifiedKey("", "C++ Null PT")
+        self.assertTrue(key in self.has_mods.keys())
+        self.assertFalse(
+            pp.QualifiedKey("C++ Null PT") in self.has_mods.keys()
+        )
+
+    def test_load_plugin(self):
+        mm = pp.ModuleManager()
+        self.assertFalse(mm.has_plugin("provider"))
+
+        mm.load_plugin(ProviderPlugin())
+        self.assertTrue(mm.has_plugin("provider"))
+        self.assertEqual(mm.plugin_names(), ["", "provider"])
+        self.assertEqual(mm.get_plugin("provider").name(), "provider")
+        self.assertEqual(mm.get_modules("provider").count("Provider"), 1)
+        self.assertEqual(mm.size(), 2)
+
+        # Can't load a plugin with the same name twice
+        self.assertRaises(ValueError, mm.load_plugin, ProviderPlugin())
+
+        # load_plugin takes ownership, so the plugin can't be loaded again.
+        # The Python part of a Python plugin stays alive (and readable) for as
+        # long as the ModuleManager owns the plugin.
+        plugin = ConsumerPlugin()
+        mm.load_plugin(plugin)
+        self.assertTrue(mm.has_plugin("consumer"))
+        self.assertEqual(plugin.name(), "consumer")
+        self.assertRaises(RuntimeError, pp.ModuleManager().load_plugin, plugin)
+
+    def test_read_only_views(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+
+        # get_modules returns a read-only view of the live map
+        modules = mm.get_modules("provider")
+        self.assertIsInstance(modules, pp.ModuleMapView)
+        self.assertEqual(modules.size(), 2)
+        self.assertTrue("Provider" in modules)
+        self.assertEqual(sorted(modules.keys()), ["Provider", "Shared"])
+        for name in ("add_module", "copy_module", "erase", "change_submod"):
+            self.assertFalse(hasattr(modules, name))
+
+        # The view's modules are the live modules
+        modules.at("Provider").turn_off_memoization()
+        self.assertFalse(mm.at("Provider").is_memoizable())
+
+        # get_plugin returns a read-only view of the loaded plugin
+        plugin = mm.get_plugin("provider")
+        self.assertIsInstance(plugin, pp.PluginView)
+        self.assertEqual(plugin.name(), "provider")
+        self.assertEqual(plugin.get_modules().size(), 2)
+        for name in ("set_name", "add_module", "modules", "change_submod"):
+            self.assertFalse(hasattr(plugin, name))
+
+    def test_views_keep_owner_alive(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+        modules = mm.get_plugin("provider").get_modules()
+        del mm
+        gc.collect()
+        self.assertEqual(modules.size(), 2)
+
+    def test_load_plugin_keeps_python_alive(self):
+        # Like test_pluginplay_309, but the Python modules are owned by a
+        # plugin that only the ModuleManager references
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+        gc.collect()
+        rv = mm.run_as(test_pp.OneInOneOut(), "Provider", 1)
+        self.assertEqual(rv, 1)
+
+    def test_qualified_keys(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+        mm.load_plugin(ConsumerPlugin())
+        pt = test_pp.OneInOneOut()
+
+        # Strings, tuples, and QualifiedKeys are accepted
+        self.assertEqual(mm.count("Shared"), 2)
+        self.assertEqual(mm.count(("provider", "Shared")), 1)
+        self.assertEqual(mm.count(pp.QualifiedKey("consumer", "Shared")), 1)
+        self.assertEqual(mm.run_as(pt, ("provider", "Shared"), 1), 1)
+        mm.change_submod("Consumer", "sub", ("consumer", "Shared"))
+
+        # A key used by more than one plugin is ambiguous
+        self.assertRaises(ValueError, mm.at, "Shared")
+        self.assertRaises(IndexError, mm.at, ("provider", "Consumer"))
+
+    def test_wire_defaults(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ConsumerPlugin())
+        mm.load_plugin(ProviderPlugin())
+        submods = mm.at("Consumer").submods()
+        self.assertFalse(submods["sub"].has_module())
+
+        mm.wire_defaults()
+        sub = mm.at("Consumer").submods()["sub"].value()
+        self.assertEqual(sub, mm.at("Provider"))
+        self.assertEqual(mm.run_as(test_pp.OneInOneOut(), "Consumer", 2), 2)
 
     def setUp(self):
         self.defaulted = pp.defaulted_mm()

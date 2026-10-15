@@ -29,10 +29,7 @@ void load_modules(ModuleMap& modules) {
 }
 
 // A plugin written the way the design documentation describes
-class MyPlugin : public Plugin {
-public:
-    MyPlugin();
-};
+DECLARE_PLUGIN(MyPlugin);
 
 PLUGIN_CTOR(MyPlugin) {
     set_name("my_plugin");
@@ -91,10 +88,20 @@ TEST_CASE("Plugin") {
     }
 
     SECTION("set_name") {
-        defaulted.set_name("a name");
-        REQUIRE(defaulted.name() == "a name");
+        defaulted.set_name("a_name");
+        REQUIRE(defaulted.name() == "a_name");
         REQUIRE_THROWS_AS(defaulted.set_name(""), std::invalid_argument);
-        REQUIRE(defaulted.name() == "a name");
+        // Names must be identifiers
+        for(const auto* bad : {"a name", "..", "a::b", "1abc", "a/b", "a-b"})
+            REQUIRE_THROWS_AS(defaulted.set_name(bad), std::invalid_argument);
+        REQUIRE(defaulted.name() == "a_name");
+    }
+
+    SECTION("is_valid_name") {
+        for(const auto* good : {"a", "_a", "my_plugin", "Plugin2", "SCF"})
+            REQUIRE(Plugin::is_valid_name(good));
+        for(const auto* bad : {"", ".", "..", "a name", "a::b", "1abc", "a-b"})
+            REQUIRE_FALSE(Plugin::is_valid_name(bad));
     }
 
     SECTION("add_module") {
@@ -132,7 +139,12 @@ TEST_CASE("Plugin") {
         defaulted.set_preferred_providers("a");
         REQUIRE_THROWS_AS(defaulted.set_preferred_providers(""),
                           std::invalid_argument);
+        REQUIRE_THROWS_AS(defaulted.set_preferred_providers("not valid"),
+                          std::invalid_argument);
         REQUIRE_THROWS_AS(defaulted.set_preferred_providers("b", "b"),
+                          std::invalid_argument);
+        // Names are case-insensitive, so this is a duplicate too
+        REQUIRE_THROWS_AS(defaulted.set_preferred_providers("b", "B"),
                           std::invalid_argument);
         REQUIRE(defaulted.preferred_providers() == provider_list{"a"});
 
@@ -143,9 +155,9 @@ TEST_CASE("Plugin") {
                           std::invalid_argument);
         REQUIRE(defaulted.preferred_providers() == provider_list{"a"});
 
-        // Keeping it, and adding others, is fine
-        defaulted.set_preferred_providers("b", "a");
-        REQUIRE(defaulted.preferred_providers() == provider_list{"b", "a"});
+        // Keeping it (in any case), and adding others, is fine
+        defaulted.set_preferred_providers("b", "A");
+        REQUIRE(defaulted.preferred_providers() == provider_list{"b", "A"});
     }
 
     SECTION("default_submod_from") {
@@ -157,6 +169,13 @@ TEST_CASE("Plugin") {
 
         // Recording a default doesn't change the module
         REQUIRE_FALSE(defaulted.get_modules().has_submod("Prism", "area"));
+
+        // Provider names are case-insensitive
+        defaulted.default_submod_from("A", "Prism", "area", "key 2");
+        default_list corr{default_submod{"Prism", "area", "key"},
+                          default_submod{"Prism", "area", "key 2"}};
+        REQUIRE(defaulted.default_submods_from("a") == corr);
+        REQUIRE(defaulted.default_submods_from("A") == corr);
     }
 
     SECTION("default_submod_from throws") {

@@ -18,6 +18,7 @@
 #include <chrono>
 #include <iomanip> // for put_time
 #include <pluginplay/cache/module_cache.hpp>
+#include <pluginplay/cache/module_manager_cache.hpp>
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/types.hpp>
 #include <utilities/timer.hpp>
@@ -65,7 +66,7 @@ inline auto time_stamp() {
 class ModulePIMPL {
 public:
     /// Type used to store the developer-provided implementation
-    using base_ptr = std::shared_ptr<const ModuleBase>;
+    using base_ptr = std::shared_ptr<ModuleBase>;
 
     /// Type of the object used to store the results computed by the module
     using cache_type = cache::ModuleCache;
@@ -84,6 +85,12 @@ public:
 
     /// Type of the submodule key to UUID map
     using submod_uuid_map = std::map<std::string, uuid_type>;
+
+    /// Type of a pointer to the runtime the implementation uses
+    using runtime_ptr = typename ModuleBase::runtime_ptr;
+
+    /// Type of a pointer to the ModuleManager's caches
+    using mm_cache_ptr = std::shared_ptr<cache::ModuleManagerCache>;
 
     /** @brief Makes a module with no implementation.
      *
@@ -484,6 +491,29 @@ public:
      *  @return True if the cache has the value and false otherwise.
      */
     bool is_cached(const type::input_map& in_inputs);
+
+    /** @brief Associates *this with a ModuleManager's runtime and caches.
+     *
+     *  Modules are created without a runtime, UUID, or caches. When a
+     *  ModuleManager takes ownership of a module, it calls this function to
+     *  give the module the ModuleManager's runtime and caches. The
+     *  implementation is given a UUID if it does not already have one, and its
+     *  user cache is the one associated with that UUID. Implementations shared
+     *  by more than one module (*e.g.*, copies of a module) thus share a UUID
+     *  and a user cache.
+     *
+     *  @param[in] runtime The runtime the implementation should use.
+     *  @param[in] caches The ModuleManager's caches. If null, *this is not
+     *                    given caches.
+     *  @param[in] cache_key The key of the module cache *this should use.
+     *
+     *  @throw std::runtime_error if *this does not have an implementation.
+     *                            Strong throw guarantee.
+     *  @throw std::bad_alloc if there is a problem allocating a cache. Weak
+     *                        throw guarantee.
+     */
+    void attach(runtime_ptr runtime, const mm_cache_ptr& caches,
+                const type::key& cache_key);
 
     /** @brief Resets cache.
      *

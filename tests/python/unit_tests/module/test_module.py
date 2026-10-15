@@ -285,6 +285,11 @@ class TestModule(unittest.TestCase):
         has_submod.change_submod(key, submod)
         self.assertEqual(has_submod.submods()[key].value(), submod)
 
+        # The submodule is linked, not copied
+        self.assertIs(has_submod.submods()[key].value(), submod)
+        submod.turn_off_memoization()
+        self.assertFalse(has_submod.submods()[key].value().is_memoizable())
+
     def test_run_as(self):
         # Can't run a module with no implementation
         self.assertRaises(Exception, self.defaulted.run_as, test_pp.NullPT())

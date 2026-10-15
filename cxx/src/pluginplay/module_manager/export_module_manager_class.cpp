@@ -15,6 +15,7 @@
  */
 
 #include "../module/py_module_base.hpp"
+#include "../plugin/plugin_view.hpp"
 #include "export_module_manager.hpp"
 #include <parallelzone/parallelzone.hpp>
 #include <pluginplay/any/any.hpp>
@@ -24,7 +25,9 @@
 namespace pluginplay {
 
 void export_module_manager_class(py_module_reference m) {
-    using at_fxn        = Module& (ModuleManager::*)(const type::key&);
+    using qualified_key = typename ModuleManager::qualified_key;
+    using plugin_ptr    = typename ModuleManager::plugin_pointer;
+    using load_fxn      = void (ModuleManager::*)(plugin_ptr);
     using runtime_type  = typename ModuleManager::runtime_type;
     using cache_type    = typename ModuleManager::cache_type;
     using cache_pointer = typename ModuleManager::cache_pointer;
@@ -43,19 +46,50 @@ void export_module_manager_class(py_module_reference m) {
            py::arg("rv"), py::arg("cache") = std::make_shared<cache_type>())
       .def("count", &ModuleManager::count)
       .def("size", &ModuleManager::size)
+      .def("load_plugin",
+           [](py_obj self, py_obj plugin) {
+               // C++ plugins from other extension modules release ownership
+               // in their own module (see EXPORT_PLUGIN)
+               if(py::hasattr(plugin, "_pp_load_into")) {
+                   plugin.attr("_pp_load_into")(self);
+                   return;
+               }
+               auto& mm = self.cast<ModuleManager&>();
+               mm.load_plugin(plugin.cast<plugin_ptr>());
+           })
+      .def("wire_defaults", &ModuleManager::wire_defaults)
+      .def("has_plugin", &ModuleManager::has_plugin)
+      .def("plugin_names", &ModuleManager::plugin_names)
+      // Python has no const, so read-only views are returned instead of the
+      // plugin and map themselves
+      .def(
+        "get_plugin",
+        [](const ModuleManager& self, const std::string& name) {
+            return PluginView(self.get_plugin(name));
+        },
+        py::keep_alive<0, 1>())
+      .def(
+        "get_modules",
+        [](const ModuleManager& self, const std::string& name) {
+            return ModuleMapView(self.get_modules(name));
+        },
+        py::keep_alive<0, 1>())
       .def(
         "add_module",
         [](ModuleManager& mm, std::string key,
            std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); },
         py::keep_alive<1, 3>())
-      .def("at", static_cast<at_fxn>(&ModuleManager::at),
-           py::return_value_policy::reference_internal)
+      // Modules are returned with shared ownership (see the Module bindings)
+      .def("at",
+           [](ModuleManager& self, const qualified_key& key) {
+               return self.at(key).shared_from_this();
+           })
       .def("copy_module", &ModuleManager::copy_module)
       .def("erase", &ModuleManager::erase)
       .def("rename_module", &ModuleManager::rename_module)
       .def("change_input",
-           [](ModuleManager& self, std::string mod_key, std::string opt_key,
-              py_obj in) {
+           [](ModuleManager& self, const qualified_key& mod_key,
+              std::string opt_key, py_obj in) {
                self.change_input(mod_key, opt_key,
                                  any::make_any_field<PythonWrapper>(in));
            })
@@ -72,8 +106,8 @@ void export_module_manager_class(py_module_reference m) {
            py::return_value_policy::reference_internal)
       .def("keys", &ModuleManager::keys)
       .def("has_cache", &ModuleManager::has_cache)
-      .def("__getitem__", [](ModuleManager& self, const type::key& key) {
-          return self.at(key);
+      .def("__getitem__", [](ModuleManager& self, const qualified_key& key) {
+          return self.at(key).shared_from_this();
       });
     m.def("defaulted_mm", []() { return ModuleManager(nullptr); });
 }

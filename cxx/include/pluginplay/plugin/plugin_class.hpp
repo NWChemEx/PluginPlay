@@ -19,10 +19,14 @@
 #include <pluginplay/module_manager/module_map.hpp>
 #include <string>
 #include <tuple>
+#include <utilities/containers/case_insensitive_map.hpp>
 #include <utility>
 #include <vector>
 
 namespace pluginplay {
+namespace detail_ {
+struct ModuleManagerPIMPL;
+}
 
 /** @brief Base class for all plugins.
  *
@@ -122,15 +126,36 @@ public:
     /// Negates operator==
     bool operator!=(const Plugin& rhs) const { return !(*this == rhs); }
 
+    /** @brief Determines if @p name can be used as a plugin name.
+     *
+     *  Plugin names must be identifiers: a letter or an underscore, followed
+     *  by letters, digits, and underscores, *e.g.*, "my_plugin". Plugin names
+     *  are used as directory names (see printing::document_modules) and in
+     *  module cache names, so they can not contain spaces, path separators,
+     *  or "::".
+     *
+     *  @param[in] name The name to check.
+     *
+     *  @return True if @p name is a valid plugin name and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    static bool is_valid_name(const name_type& name) noexcept;
+
 protected:
     /// Plugins are only created through derived classes
     Plugin() = default;
 
     /** @brief Sets the name of the plugin.
      *
-     *  @param[in] name The name of the plugin.
+     *  Like module keys, plugin names are case-insensitive. The name is stored
+     *  as given.
      *
-     *  @throw std::invalid_argument if @p name is empty. The empty name is
+     *  @param[in] name The name of the plugin. Must be an identifier (see
+     *                  is_valid_name).
+     *
+     *  @throw std::invalid_argument if @p name is not a valid plugin name.
+     *                               This includes the empty name, which is
      *                               reserved for the ModuleManager's own
      *                               modules. Strong throw guarantee.
      */
@@ -182,7 +207,8 @@ protected:
      *
      *  @param[in] names The names of the providers, highest priority first.
      *
-     *  @throw std::invalid_argument if a name is empty, if a name appears more
+     *  @throw std::invalid_argument if a name is not a valid plugin name (see
+     *                               is_valid_name), if a name appears more
      *                               than once, or if a provider that already
      *                               has recorded defaults is not in @p names.
      *                               Strong throw guarantee.
@@ -214,6 +240,9 @@ protected:
     ModuleMap& modules() noexcept { return m_modules_; }
 
 private:
+    /// The ModuleManager owns loaded plugins and changes their modules
+    friend struct detail_::ModuleManagerPIMPL;
+
     /// The name of the plugin
     name_type m_name_;
 
@@ -221,7 +250,7 @@ private:
     provider_list_type m_providers_;
 
     /// The recorded default submodules, keyed by provider
-    std::map<name_type, default_list_type> m_defaults_;
+    utilities::CaseInsensitiveMap<default_list_type> m_defaults_;
 
     /// The plugin's modules
     ModuleMap m_modules_;

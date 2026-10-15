@@ -21,7 +21,7 @@
 #include <iterator>
 #include <pluginplay/printing/document_modules.hpp>
 
-#include "load_modules.hpp"
+#include "pluginplay_examples.hpp"
 
 TEST_CASE("tutorial_modules_docs") {
     // Need a docs path
@@ -45,15 +45,23 @@ TEST_CASE("tutorial_modules_docs") {
     pluginplay::ModuleManager mm;
 
     SECTION("Modules Loaded") {
-        // Load your modules
-        pluginplay_examples::load_modules(mm);
+        // Load your plugin
+        mm.load_plugin<pluginplay_examples::PluginplayExamples>();
 
         // Generate module documentation at the given path
         pluginplay::printing::document_modules(mm, docs_path);
 
+        // docs_path holds index.rst and the plugin's directory
+        auto plugin_path = docs_path / "pluginplay_examples";
+        REQUIRE(std::filesystem::exists(docs_path / "index.rst"));
+        REQUIRE(std::filesystem::is_directory(plugin_path));
+        REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
+                              std::filesystem::directory_iterator{}) == 2);
+
+        // The plugin's directory holds one file per module
         decltype(mm.size()) distance(
-          std::distance(std::filesystem::directory_iterator(docs_path),
+          std::distance(std::filesystem::directory_iterator(plugin_path),
                         std::filesystem::directory_iterator{}));
-        REQUIRE(distance == mm.size() + 1); // +1 for index.rst
+        REQUIRE(distance == mm.size());
     }
 }

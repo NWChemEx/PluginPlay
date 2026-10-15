@@ -32,27 +32,41 @@ void document_modules(pluginplay::ModuleManager& mm,
     // List of files for index file
     std::vector<std::string> toc;
 
-    // Loop over key-value pairs of module names and module objects for docs
-    for(const auto& [name, module] : mm) {
-        std::string clean_name =
-          replace_invalid_chars(name, INVALID_CHARS, REPLACEMENT_CHAR);
+    // Loop over the maps, then the key-value pairs of module names and module
+    // objects for docs. The ModuleManager's own modules go in docs_path; each
+    // plugin's modules go in a subdirectory named after the plugin. Plugin
+    // names are identifiers (see Plugin::is_valid_name), so they are already
+    // safe, distinct directory names.
+    for(const auto& plugin : mm.plugin_names()) {
+        std::filesystem::path dir = docs_path;
+        std::string toc_prefix;
+        if(!plugin.empty()) {
+            dir /= plugin;
+            std::filesystem::create_directories(dir);
+            toc_prefix = plugin + "/";
+        }
 
-        // Gather file name in the toc for the index file
-        toc.push_back(clean_name);
+        for(const auto& [name, module] : mm.get_modules(plugin)) {
+            std::string clean_name =
+              replace_invalid_chars(name, INVALID_CHARS, REPLACEMENT_CHAR);
 
-        // Generate documentation
-        std::string docs = document_module(name, *module);
+            // Gather file name in the toc for the index file
+            toc.push_back(toc_prefix + clean_name);
 
-        // Create the file path
-        std::filesystem::path file_path = docs_path;
-        file_path /= clean_name + ".rst";
+            // Generate documentation
+            std::string docs = document_module(name, *module);
 
-        fout.open(file_path);
+            // Create the file path
+            std::filesystem::path file_path = dir;
+            file_path /= clean_name + ".rst";
 
-        // Write to documentation file
-        fout << docs;
+            fout.open(file_path);
 
-        fout.close();
+            // Write to documentation file
+            fout << docs;
+
+            fout.close();
+        }
     }
 
     // Create index file

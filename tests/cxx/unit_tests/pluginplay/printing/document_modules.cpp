@@ -15,9 +15,31 @@
  */
 
 #include "../catch.hpp"
+#include "../examples/writing_a_module.hpp"
 #include <filesystem>
+#include <fstream>
 #include <iterator>
+#include <pluginplay/plugin/plugin.hpp>
 #include <pluginplay/printing/document_modules.hpp>
+#include <sstream>
+
+namespace {
+
+DECLARE_PLUGIN(DocumentedPlugin);
+
+PLUGIN_CTOR(DocumentedPlugin) {
+    set_name("documented_plugin");
+    add_module<Rectangle>("Rectangle");
+    add_module<Prism>("Prism");
+}
+
+// Number of entries in the directory dir
+auto n_entries(const std::filesystem::path& dir) {
+    return std::distance(std::filesystem::directory_iterator(dir),
+                         std::filesystem::directory_iterator{});
+}
+
+} // namespace
 
 TEST_CASE("document_modules") {
     // Need a docs path
@@ -49,5 +71,28 @@ TEST_CASE("document_modules") {
         REQUIRE(std::distance(std::filesystem::directory_iterator(docs_path),
                               std::filesystem::directory_iterator{}) ==
                 correct);
+    }
+
+    SECTION("Own modules and a plugin") {
+        mm.add_module<Rectangle>("Own Rectangle");
+        mm.load_plugin<DocumentedPlugin>();
+
+        pluginplay::printing::document_modules(mm, docs_path);
+
+        // index.rst, Own_Rectangle.rst, and the plugin's directory
+        const auto plugin_path = docs_path / "documented_plugin";
+        REQUIRE(n_entries(docs_path) == 3);
+        REQUIRE(std::filesystem::exists(docs_path / "Own_Rectangle.rst"));
+        REQUIRE(std::filesystem::is_directory(plugin_path));
+        REQUIRE(n_entries(plugin_path) == 2);
+        REQUIRE(std::filesystem::exists(plugin_path / "Rectangle.rst"));
+        REQUIRE(std::filesystem::exists(plugin_path / "Prism.rst"));
+
+        // The index points into the plugin's directory
+        std::ifstream index(docs_path / "index.rst");
+        std::stringstream contents;
+        contents << index.rdbuf();
+        REQUIRE(contents.str().find("documented_plugin/Prism") !=
+                std::string::npos);
     }
 }

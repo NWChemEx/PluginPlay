@@ -22,8 +22,13 @@ import pluginplay_examples as ppe
 class TestTutorialModules(unittest.TestCase):
     def test_modules(self):
         mm = pp.ModuleManager()
-        ppe.load_modules(mm)
+        plugin = ppe.PluginplayExamples()
+        mm.load_plugin(plugin)
         self.assertEqual(mm.size(), 4)
+
+        # The ModuleManager took ownership of the C++ plugin
+        self.assertRaises(ValueError, plugin.name)
+        self.assertRaises(ValueError, pp.ModuleManager().load_plugin, plugin)
 
         module_names = [
             "Coulomb's Law",

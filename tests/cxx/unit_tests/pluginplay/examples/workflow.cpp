@@ -18,9 +18,9 @@
 #include "workflow.hpp"
 #include <vector>
 
-TEST_CASE("load_modules") {
+TEST_CASE("load_plugin") {
     pluginplay::ModuleManager mm;
-    load_modules(mm);
+    mm.load_plugin<ExamplePlugin>();
     REQUIRE(mm.count("Rectangle") == 1);
     REQUIRE(mm.count("Prism") == 1);
 }

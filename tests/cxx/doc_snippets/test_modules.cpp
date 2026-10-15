@@ -16,8 +16,8 @@
 
 #include "electric_field.hpp"
 #include "force.hpp"
-#include "load_modules.hpp"
 #include "modules.hpp"
+#include "pluginplay_examples.hpp"
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -26,8 +26,8 @@ using namespace pluginplay_examples;
 TEST_CASE("Tutorial modules") {
     // Set up module manager
     pluginplay::ModuleManager mm;
-    // Load your modules
-    load_modules(mm);
+    // Load your plugin
+    mm.load_plugin<PluginplayExamples>();
     REQUIRE(mm.count("Classical Force") == 1);
     REQUIRE(mm.count("Coulomb's Law") == 1);
     REQUIRE(mm.count("Coulomb's Law with screening") == 1);

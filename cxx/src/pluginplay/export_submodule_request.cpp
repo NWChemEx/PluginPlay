@@ -39,8 +39,6 @@ auto py_sr_run_as(py::object sr, py::object pt, py::args args) {
 }
 
 void export_submodule_request(py_module_reference m) {
-    using value_fxn = Module& (SubmoduleRequest::*)();
-
     py_class_type<SubmoduleRequest>(m, "SubmoduleRequest")
       .def(py::init<>())
       .def("has_type", &SubmoduleRequest::has_type)
@@ -53,7 +51,10 @@ void export_submodule_request(py_module_reference m) {
       .def("set_description", &SubmoduleRequest::set_description)
       .def("submod_uuids", &SubmoduleRequest::submod_uuids)
       .def("uuid", &SubmoduleRequest::uuid)
-      .def("value", static_cast<value_fxn>(&SubmoduleRequest::value))
+      // Returns the submodule itself, with shared ownership, not a copy
+      .def(
+        "value",
+        [](SubmoduleRequest& self) { return self.value().shared_from_this(); })
       .def("description", &SubmoduleRequest::description)
       .def("get_name",
            [](SubmoduleRequest& self) {

@@ -17,8 +17,8 @@
 #include <filesystem>
 #include <pluginplay/printing/document_modules.hpp>
 
-// TODO: Replace with the header containing your ``load_modules`` definition
-#include "load_modules.hpp"
+// TODO: Replace with the header declaring your plugin
+#include "pluginplay_examples.hpp"
 
 namespace fs = std::filesystem;
 
@@ -33,8 +33,8 @@ int main(int argc, char** argv) {
     // Set up module manager
     pluginplay::ModuleManager mm;
 
-    // TODO: Load your modules
-    pluginplay_examples::load_modules(mm);
+    // TODO: Load your plugin
+    mm.load_plugin<pluginplay_examples::PluginplayExamples>();
 
     // Generate module documentation at the given path
     pluginplay::printing::document_modules(mm, docs_path);

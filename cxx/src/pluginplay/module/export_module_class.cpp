@@ -47,10 +47,14 @@ pybind11::object py_module_run_as_python_only(
 }
 
 void export_module_class(py_module_reference m) {
-    using ready_fxn         = bool (Module::*)(const type::input_map&) const;
-    using change_submod_fxn = void (Module::*)(type::key, Module);
+    using ready_fxn = bool (Module::*)(const type::input_map&) const;
+    // Links the submodule (shares it) rather than copying it, as in C++
+    using change_submod_fxn =
+      void (Module::*)(type::key, std::shared_ptr<Module>);
 
-    py_class_type<Module>(m, "Module")
+    // Python handles share ownership of modules, so a handle stays valid if
+    // the module is erased from its map or replaced as a submodule
+    py_class_type<Module, std::shared_ptr<Module>>(m, "Module")
       .def(pybind11::init<>())
       .def("unlocked_copy", &Module::unlocked_copy)
       .def("has_module", &Module::has_module)

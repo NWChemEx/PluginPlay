@@ -77,6 +77,33 @@ class TestModuleMap(unittest.TestCase):
             sorted(self.has_mods.keys()), ["Consumer", "Provider"]
         )
 
+    def test_copy_module(self):
+        self.has_mods.copy_module("Provider", "Copy")
+        self.assertEqual(self.has_mods.at("Copy").get_name(), "Copy")
+        self.assertRaises(
+            IndexError, self.has_mods.copy_module, "not a key", "Copy 2"
+        )
+        self.assertRaises(
+            ValueError, self.has_mods.copy_module, "Provider", "Consumer"
+        )
+
+    def test_erase(self):
+        # Handles share ownership, so they stay valid after the erase
+        mod = self.has_mods.at("Provider")
+        self.has_mods.erase("Provider")
+        self.assertEqual(mod.get_name(), "Provider")
+        self.assertEqual(self.has_mods.count("Provider"), 0)
+        self.has_mods.erase("not a key")
+        self.assertEqual(self.has_mods.size(), 1)
+
+    def test_change_input(self):
+        self.has_mods.change_input("Provider", "Option 1", 1)
+        inputs = self.has_mods.at("Provider").inputs()
+        self.assertEqual(inputs["Option 1"].value(), 1)
+        self.assertRaises(
+            IndexError, self.has_mods.change_input, "not a key", "Option 1", 1
+        )
+
     def test_change_submod_by_key(self):
         self.assertFalse(self.has_mods.has_submod("Consumer", "sub"))
         self.has_mods.change_submod("Consumer", "sub", "Provider")

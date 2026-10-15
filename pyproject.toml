@@ -22,7 +22,7 @@ requires = [
     # [project].dependencies; leave the floors unbounded so the newest
     # release is always resolved.
     "nwchemex-nwxcmake>=0.1.0",
-    "nwchemex-utilities>=0.1.45",
+    "nwchemex-utilities>=0.1.49",
     "nwchemex-parallelzone>=0.1.43",
 ]
 build-backend = "scikit_build_core.build"
@@ -39,7 +39,7 @@ dependencies = [
     # registries and breaks cross-module type exchange.
     "pybind11==3.1.0",
     "nwchemex-nwxcmake>=0.1.0",
-    "nwchemex-utilities>=0.1.45",
+    "nwchemex-utilities>=0.1.49",
     "nwchemex-parallelzone>=0.1.43",
 ]
 

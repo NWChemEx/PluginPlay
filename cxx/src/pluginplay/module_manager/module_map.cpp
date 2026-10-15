@@ -29,9 +29,21 @@ void ModuleMap::add_module(key_type key, module_base_ptr base) {
                                     "' is null");
 
     auto pimpl = std::make_unique<detail_::ModulePIMPL>(base);
-    auto ptr   = std::make_shared<Module>(std::move(pimpl));
+    add_module(std::move(key), Module(std::move(pimpl)));
+}
+
+void ModuleMap::add_module(key_type key, Module module) {
+    if(count(key))
+        throw std::invalid_argument(
+          "ModuleMap already has a module with key: '" + key + "'");
+
+    auto ptr = std::make_shared<Module>(std::move(module));
     ptr->set_name(key);
     m_modules_.emplace(std::move(key), std::move(ptr));
+}
+
+void ModuleMap::copy_module(const key_type& old_key, key_type new_key) {
+    add_module(std::move(new_key), at(old_key)->unlocked_copy());
 }
 
 ModuleMap::module_pointer ModuleMap::at(const key_type& key) const {

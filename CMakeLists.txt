@@ -158,7 +158,7 @@ if(BUILD_PYBIND11_BINDINGS AND BUILD_TESTING)
         SOURCES
             "${_pluginplay_examples_dir}/classical_force.cpp"
             "${_pluginplay_examples_dir}/coulombs_law.cpp"
-            "${_pluginplay_examples_dir}/load_modules.cpp"
+            "${_pluginplay_examples_dir}/pluginplay_examples.cpp"
             "${_pluginplay_examples_dir}/screened_coulombs_law.cpp"
             "${_pluginplay_examples_dir}/templated_coulombs_law.cpp"
         TYPE STATIC

@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-#include "load_modules.hpp"
 #include "modules.hpp"
+#include "pluginplay_examples.hpp"
 
 namespace pluginplay_examples {
 
-void load_modules(pluginplay::ModuleManager& mm) {
-    using coulombs_law_float = TemplatedCoulombsLaw<float>;
-    mm.add_module<ClassicalForce>("Classical Force");
-    mm.add_module<CoulombsLaw>("Coulomb's Law");
-    mm.add_module<ScreenedCoulombsLaw>("Coulomb's Law with screening");
-    mm.add_module<coulombs_law_float>("Single-precision Coulomb's law");
+PLUGIN_CTOR(PluginplayExamples) {
+    set_name("pluginplay_examples");
 
-    mm.change_submod("Classical Force", "electric field", "Coulomb's Law");
+    using coulombs_law_float = TemplatedCoulombsLaw<float>;
+    add_module<ClassicalForce>("Classical Force");
+    add_module<CoulombsLaw>("Coulomb's Law");
+    add_module<ScreenedCoulombsLaw>("Coulomb's Law with screening");
+    add_module<coulombs_law_float>("Single-precision Coulomb's law");
+
+    change_submod("Classical Force", "electric field", "Coulomb's Law");
 }
 
 } // namespace pluginplay_examples

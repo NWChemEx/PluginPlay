@@ -32,5 +32,5 @@ collection.
    :caption: Contents:
 
    overview
-   load_modules
+   writing_a_plugin
    document_modules
