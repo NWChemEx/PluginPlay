@@ -74,6 +74,10 @@ Plugin Considerations
 #. Identity
 
    - Each plugin has a name, *e.g.*, ``"my_plugin"``.
+   - Plugin names must be identifiers (letters, digits, and underscores, not
+     starting with a digit). Plugin names are used as directory names when
+     documenting modules and in the names of module caches, so they can not
+     contain spaces, path separators, ``"."``, or ``"::"``.
    - Plugin names must be unique within a ``ModuleManager``.
    - Like module keys, plugin names are case-insensitive, *e.g.*,
      ``"my_plugin"`` and ``"My_Plugin"`` are the same name.
@@ -391,6 +395,13 @@ Python support follows the pattern used for modules:
      }
 - ``ModuleMap`` is exported so Python plugins can use ``default_submod`` and
   related functions.
+- Python has no ``const``. Functions that return a read-only plugin or map in
+  C++ (``ModuleManager::get_plugin``, ``ModuleManager::get_modules``, and
+  ``Plugin::get_modules``) return a ``PluginView`` or ``ModuleMapView`` in
+  Python instead. The views only expose the read-only members, so a loaded
+  plugin can not be changed through them, *e.g.*, by adding a module that
+  never receives the ``ModuleManager``'s runtime and caches. The modules
+  themselves can still be changed, as with ``ModuleManager.at``.
 
 **********************
 Further Considerations

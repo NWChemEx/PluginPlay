@@ -16,6 +16,7 @@
 
 #include "../module/py_module_base.hpp"
 #include "export_plugin.hpp"
+#include "plugin_view.hpp"
 #include "py_plugin.hpp"
 
 namespace pluginplay {
@@ -37,6 +38,14 @@ void export_plugin_class(py_module_reference m) {
       static_cast<providers_fxn>(&PluginPublicist::set_preferred_providers);
     auto modules = static_cast<modules_fxn>(&PluginPublicist::modules);
 
+    py_class_type<PluginView>(m, "PluginView")
+      .def("name", &PluginView::name)
+      .def("preferred_providers", &PluginView::preferred_providers)
+      .def("default_submods_from", &PluginView::default_submods_from)
+      .def("get_modules", &PluginView::get_modules, py::keep_alive<0, 1>())
+      .def(py::self == py::self)
+      .def(py::self != py::self);
+
     auto py_plugin =
       py_class_type<Plugin, PyPlugin, py::smart_holder>(m, "Plugin");
 
@@ -51,8 +60,10 @@ void export_plugin_class(py_module_reference m) {
       .def("name", &Plugin::name)
       .def("preferred_providers", &Plugin::preferred_providers)
       .def("default_submods_from", &Plugin::default_submods_from)
-      .def("get_modules", &Plugin::get_modules,
-           py::return_value_policy::reference_internal)
+      .def(
+        "get_modules",
+        [](const Plugin& self) { return ModuleMapView(self.get_modules()); },
+        py::keep_alive<0, 1>())
       .def("set_name", &PluginPublicist::set_name)
       .def(
         "add_module",

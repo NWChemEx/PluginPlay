@@ -88,7 +88,10 @@ class TestModuleMap(unittest.TestCase):
         )
 
     def test_erase(self):
+        # Handles share ownership, so they stay valid after the erase
+        mod = self.has_mods.at("Provider")
         self.has_mods.erase("Provider")
+        self.assertEqual(mod.get_name(), "Provider")
         self.assertEqual(self.has_mods.count("Provider"), 0)
         self.has_mods.erase("not a key")
         self.assertEqual(self.has_mods.size(), 1)

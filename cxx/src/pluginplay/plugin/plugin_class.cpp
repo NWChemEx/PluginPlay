@@ -15,6 +15,7 @@
  */
 
 #include <algorithm>
+#include <cctype>
 #include <pluginplay/plugin/plugin_class.hpp>
 #include <set>
 #include <stdexcept>
@@ -36,11 +37,25 @@ bool Plugin::operator==(const Plugin& rhs) const {
                     rhs.m_modules_);
 }
 
+bool Plugin::is_valid_name(const name_type& name) noexcept {
+    if(name.empty()) return false;
+    const auto first = static_cast<unsigned char>(name.front());
+    if(!std::isalpha(first) && first != '_') return false;
+    return std::all_of(name.begin(), name.end(), [](unsigned char c) {
+        return std::isalnum(c) || c == '_';
+    });
+}
+
 void Plugin::set_name(name_type name) {
     if(name.empty())
         throw std::invalid_argument(
           "Plugin names can not be empty. The empty name is reserved for the "
           "ModuleManager's own modules.");
+    if(!is_valid_name(name))
+        throw std::invalid_argument(
+          "'" + name +
+          "' is not a valid plugin name. Plugin names must be identifiers: "
+          "letters, digits, and underscores, not starting with a digit.");
     m_name_ = std::move(name);
 }
 
@@ -49,8 +64,11 @@ void Plugin::set_preferred_providers(provider_list_type names) {
     using name_less = utilities::CaseInsensitiveMap<name_type>::key_compare;
     std::set<name_type, name_less> seen;
     for(const auto& name : names) {
-        if(name.empty())
-            throw std::invalid_argument("Provider names can not be empty");
+        if(!is_valid_name(name))
+            throw std::invalid_argument(
+              "'" + name +
+              "' is not a valid plugin name, so it can not be a provider. "
+              "Plugin names must be identifiers.");
         if(!seen.insert(name).second)
             throw std::invalid_argument("Provider '" + name +
                                         "' is listed more than once");

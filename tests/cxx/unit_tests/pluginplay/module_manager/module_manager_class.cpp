@@ -77,6 +77,16 @@ PLUGIN_CTOR(Consumer) {
 
 PLUGIN_CTOR(Unnamed) {}
 
+// Uses a module as a submodule, then erases that module's key
+DECLARE_PLUGIN(ErasesSubmod);
+PLUGIN_CTOR(ErasesSubmod) {
+    set_name("erases_submod");
+    add_module<Rectangle>("Rectangle");
+    add_module<Prism>("Prism");
+    change_submod("Prism", "area", "Rectangle");
+    modules().erase("Rectangle");
+}
+
 // Same name as ProviderA, in a different case
 DECLARE_PLUGIN(ShoutingProviderA);
 PLUGIN_CTOR(ShoutingProviderA) { set_name("PROVIDER_A"); }
@@ -207,6 +217,16 @@ TEST_CASE("ModuleManager : plugins") {
         // Same name in a different case is still a duplicate
         REQUIRE_THROWS_AS(mm.load_plugin<ShoutingProviderA>(),
                           std::invalid_argument);
+    }
+
+    SECTION("Erased submodules are given the runtime and caches") {
+        mm.load_plugin<ErasesSubmod>();
+        REQUIRE(mm.count("Rectangle") == 0);
+
+        // Prism is only memoizable if its submodule has a UUID, which it only
+        // gets by being attached
+        REQUIRE(mm.at("Prism").is_memoizable());
+        REQUIRE(mm.at("Prism").submods().at("area").value().is_memoizable());
     }
 
     SECTION("Can't load unnamed or null plugins") {

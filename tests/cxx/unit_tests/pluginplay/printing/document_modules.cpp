@@ -28,7 +28,7 @@ namespace {
 DECLARE_PLUGIN(DocumentedPlugin);
 
 PLUGIN_CTOR(DocumentedPlugin) {
-    set_name("documented plugin");
+    set_name("documented_plugin");
     add_module<Rectangle>("Rectangle");
     add_module<Prism>("Prism");
 }
@@ -79,8 +79,7 @@ TEST_CASE("document_modules") {
 
         pluginplay::printing::document_modules(mm, docs_path);
 
-        // index.rst, Own_Rectangle.rst, and the plugin's directory (the space
-        // in the plugin name is replaced)
+        // index.rst, Own_Rectangle.rst, and the plugin's directory
         const auto plugin_path = docs_path / "documented_plugin";
         REQUIRE(n_entries(docs_path) == 3);
         REQUIRE(std::filesystem::exists(docs_path / "Own_Rectangle.rst"));

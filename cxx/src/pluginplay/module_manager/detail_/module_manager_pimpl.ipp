@@ -98,8 +98,33 @@ inline void ModuleManagerPIMPL::load_plugin(plugin_pointer plugin) {
         throw std::invalid_argument("A plugin named '" + name +
                                     "' is already loaded");
 
-    for(auto& [key, mod] : plugin->m_modules_)
+    // Attach the plugin's modules, then every module reachable from them
+    // through submodules. A plugin may set a submodule and then erase that
+    // module's key; the module is still used, so it needs the runtime and
+    // caches too.
+    std::set<const Module*> visited;
+    std::vector<Module*> to_visit;
+    for(auto& [key, mod] : plugin->m_modules_) {
         attach_(qualified_key(name, key).to_string(), *mod);
+        visited.insert(mod.get());
+        to_visit.push_back(mod.get());
+    }
+    while(!to_visit.empty()) {
+        auto* mod = to_visit.back();
+        to_visit.pop_back();
+        for(auto& [callback, request] : mod->m_pimpl_->submods()) {
+            if(!request.has_module()) continue;
+            auto& submod = request.value();
+            if(!visited.insert(&submod).second) continue;
+
+            // The module is no longer in the plugin's map, so its cache is
+            // named after the key it was last stored under
+            const auto& last_key =
+              submod.has_name() ? submod.get_name() : callback;
+            attach_(qualified_key(name, last_key).to_string(), submod);
+            to_visit.push_back(&submod);
+        }
+    }
 
     m_plugins.push_back(std::move(plugin));
 }

@@ -22,6 +22,7 @@
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>
 #include <pluginplay/plugin/plugin_class.hpp>
+#include <set>
 #include <typeindex>
 #include <utilities/strings/string_tools.hpp>
 #include <utility>

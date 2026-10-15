@@ -247,6 +247,31 @@ class TestModuleManager(unittest.TestCase):
         self.assertTrue(module_with_description.has_description())
         self.assertNotEqual(self.has_mods["C++ no PT"], None)
 
+    def test_module_handles_share_ownership(self):
+        key = "C++ no PT"
+
+        # Repeated lookups give the same object, which is the live module
+        self.assertIs(self.has_mods.at(key), self.has_mods.at(key))
+        self.has_mods[key].turn_off_memoization()
+        self.assertFalse(self.has_mods.at(key).is_memoizable())
+
+        # A handle stays valid after the module is erased
+        mod = self.has_mods.at(key)
+        self.has_mods.erase(key)
+        gc.collect()
+        self.assertFalse(mod.is_memoizable())
+        self.assertTrue(mod.has_module())
+
+    def test_submodule_value_is_the_submodule(self):
+        mod_key = "C++ module needing a submodule"
+        self.has_mods.change_submod(mod_key, "Submodule 1", "C++ Null PT")
+        submod = self.has_mods.at(mod_key).submods()["Submodule 1"].value()
+
+        # Changes made through value() reach the actual submodule
+        self.assertIs(submod, self.has_mods.at("C++ Null PT"))
+        submod.turn_off_memoization()
+        self.assertFalse(self.has_mods.at("C++ Null PT").is_memoizable())
+
     def test_set_runtime(self):
         new_rv = parallelzone.runtime.RuntimeView()
         self.defaulted.set_runtime(new_rv)
@@ -286,6 +311,39 @@ class TestModuleManager(unittest.TestCase):
         self.assertTrue(mm.has_plugin("consumer"))
         self.assertEqual(plugin.name(), "consumer")
         self.assertRaises(RuntimeError, pp.ModuleManager().load_plugin, plugin)
+
+    def test_read_only_views(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+
+        # get_modules returns a read-only view of the live map
+        modules = mm.get_modules("provider")
+        self.assertIsInstance(modules, pp.ModuleMapView)
+        self.assertEqual(modules.size(), 2)
+        self.assertTrue("Provider" in modules)
+        self.assertEqual(sorted(modules.keys()), ["Provider", "Shared"])
+        for name in ("add_module", "copy_module", "erase", "change_submod"):
+            self.assertFalse(hasattr(modules, name))
+
+        # The view's modules are the live modules
+        modules.at("Provider").turn_off_memoization()
+        self.assertFalse(mm.at("Provider").is_memoizable())
+
+        # get_plugin returns a read-only view of the loaded plugin
+        plugin = mm.get_plugin("provider")
+        self.assertIsInstance(plugin, pp.PluginView)
+        self.assertEqual(plugin.name(), "provider")
+        self.assertEqual(plugin.get_modules().size(), 2)
+        for name in ("set_name", "add_module", "modules", "change_submod"):
+            self.assertFalse(hasattr(plugin, name))
+
+    def test_views_keep_owner_alive(self):
+        mm = pp.ModuleManager()
+        mm.load_plugin(ProviderPlugin())
+        modules = mm.get_plugin("provider").get_modules()
+        del mm
+        gc.collect()
+        self.assertEqual(modules.size(), 2)
 
     def test_load_plugin_keeps_python_alive(self):
         # Like test_pluginplay_309, but the Python modules are owned by a

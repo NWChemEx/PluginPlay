@@ -88,10 +88,20 @@ TEST_CASE("Plugin") {
     }
 
     SECTION("set_name") {
-        defaulted.set_name("a name");
-        REQUIRE(defaulted.name() == "a name");
+        defaulted.set_name("a_name");
+        REQUIRE(defaulted.name() == "a_name");
         REQUIRE_THROWS_AS(defaulted.set_name(""), std::invalid_argument);
-        REQUIRE(defaulted.name() == "a name");
+        // Names must be identifiers
+        for(const auto* bad : {"a name", "..", "a::b", "1abc", "a/b", "a-b"})
+            REQUIRE_THROWS_AS(defaulted.set_name(bad), std::invalid_argument);
+        REQUIRE(defaulted.name() == "a_name");
+    }
+
+    SECTION("is_valid_name") {
+        for(const auto* good : {"a", "_a", "my_plugin", "Plugin2", "SCF"})
+            REQUIRE(Plugin::is_valid_name(good));
+        for(const auto* bad : {"", ".", "..", "a name", "a::b", "1abc", "a-b"})
+            REQUIRE_FALSE(Plugin::is_valid_name(bad));
     }
 
     SECTION("add_module") {
@@ -128,6 +138,8 @@ TEST_CASE("Plugin") {
     SECTION("set_preferred_providers throws") {
         defaulted.set_preferred_providers("a");
         REQUIRE_THROWS_AS(defaulted.set_preferred_providers(""),
+                          std::invalid_argument);
+        REQUIRE_THROWS_AS(defaulted.set_preferred_providers("not valid"),
                           std::invalid_argument);
         REQUIRE_THROWS_AS(defaulted.set_preferred_providers("b", "b"),
                           std::invalid_argument);

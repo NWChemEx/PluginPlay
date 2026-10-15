@@ -134,7 +134,11 @@ public:
      *  *this takes ownership of @p plugin and its modules. Nothing is copied:
      *  the plugin's ModuleMap is the map *this uses for the plugin's modules.
      *  Each module is given *this's runtime and caches. A plugin's modules use
-     *  the module cache named `"<plugin name>::<module key>"`.
+     *  the module cache named `"<plugin name>::<module key>"`. Modules that
+     *  are reachable through submodules, but no longer in the plugin's map
+     *  (*e.g.*, the plugin erased them after using them as submodules), are
+     *  given the runtime and caches too, using the key they were last stored
+     *  under.
      *
      *  Loading does not set default submodules between plugins; call
      *  wire_defaults after all plugins are loaded.

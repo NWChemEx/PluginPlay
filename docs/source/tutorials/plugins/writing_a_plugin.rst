@@ -63,8 +63,9 @@ typically does three things: names the plugin, adds the plugin's modules, and
 sets the default submodules.
 
 Every plugin has a name, set by calling ``set_name``. Plugin names must be
-unique within a ``ModuleManager``. Like module keys, plugin names are
-case-insensitive.
+identifiers: letters, digits, and underscores, not starting with a digit,
+*e.g.*, ``"pluginplay_examples"``. Plugin names must be unique within a
+``ModuleManager``. Like module keys, plugin names are case-insensitive.
 
 Modules are added to the plugin by calling ``add_module``. For your
 convenience ``add_module`` has an overload which takes a template type
@@ -74,6 +75,16 @@ refer to your module, *e.g.*, when they want to run your module they will call
 ``ModuleManager::run_as`` providing your module's key. Module keys must be
 unique within your plugin. If your module requires more detailed set-up other
 overloads exist that will bind to existing instances.
+
+.. note::
+
+   Avoid using ``"::"`` in module keys. PluginPlay names the caches of a
+   plugin's modules ``"<plugin name>::<module key>"``, and caches of modules
+   added directly to the ``ModuleManager`` after the module key alone. A
+   module key containing ``"::"`` can therefore end up sharing a cache with a
+   different module, *e.g.*, a module added to the ``ModuleManager`` under
+   ``"my_plugin::Area"`` and the module ``"Area"`` of the plugin
+   ``"my_plugin"``.
 
 Continuing with our electric field examples, naming our plugin and adding our
 modules looks like:

@@ -16,6 +16,7 @@
 
 #pragma once
 #include "pluginplay/types.hpp"
+#include <memory>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/utility/uuid.hpp>
@@ -49,8 +50,13 @@ struct ModuleManagerPIMPL;
  *  and is needed by the pluginplay framework to correctly use the module. This
  * state is not accessible (nor relevant) once the module is running. For the
  * most part users will only be interested in algorithm state.
+ *
+ *  Modules stored in a ModuleManager, ModuleMap, or SubmoduleRequest are owned
+ *  by shared_ptrs. Module derives from enable_shared_from_this so the Python
+ *  bindings can hand out shared ownership of those modules; a copy of a
+ *  Module is still an independent module.
  */
-class Module {
+class Module : public std::enable_shared_from_this<Module> {
 public:
     /// Type of a pointer to a PIMPL
     using pimpl_ptr = std::unique_ptr<detail_::ModulePIMPL>;

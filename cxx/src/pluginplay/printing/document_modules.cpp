@@ -34,16 +34,16 @@ void document_modules(pluginplay::ModuleManager& mm,
 
     // Loop over the maps, then the key-value pairs of module names and module
     // objects for docs. The ModuleManager's own modules go in docs_path; each
-    // plugin's modules go in a subdirectory named after the plugin.
+    // plugin's modules go in a subdirectory named after the plugin. Plugin
+    // names are identifiers (see Plugin::is_valid_name), so they are already
+    // safe, distinct directory names.
     for(const auto& plugin : mm.plugin_names()) {
         std::filesystem::path dir = docs_path;
         std::string toc_prefix;
         if(!plugin.empty()) {
-            const auto clean_plugin =
-              replace_invalid_chars(plugin, INVALID_CHARS, REPLACEMENT_CHAR);
-            dir /= clean_plugin;
+            dir /= plugin;
             std::filesystem::create_directories(dir);
-            toc_prefix = clean_plugin + "/";
+            toc_prefix = plugin + "/";
         }
 
         for(const auto& [name, module] : mm.get_modules(plugin)) {

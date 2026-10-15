@@ -187,6 +187,19 @@ Two plugins may use the same module key, so a plugin's module uses the cache
 named ``"<plugin name>::<module key>"``. Modules in the ``ModuleManager``'s
 own map use the module key, as before.
 
+This naming is not collision-free: a module in the ``ModuleManager``'s own
+map with the key ``"my_plugin::Area"`` shares a cache with the module
+``"Area"`` of the plugin ``"my_plugin"``. Since plugin names must be
+identifiers, plugin names can not collide this way, only module keys
+containing ``"::"`` can. Rather than change the cache names of the
+``ModuleManager``'s own modules, the user documentation asks developers to
+avoid ``"::"`` in module keys.
+
+A plugin may set a submodule and then erase that module's key. The module is
+still used, so ``load_plugin`` also gives every module reachable through
+submodules the runtime and caches, naming its cache after the key it was last
+stored under.
+
 Loading Plugins
 ===============
 
