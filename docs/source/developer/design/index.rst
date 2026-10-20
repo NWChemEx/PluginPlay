@@ -27,6 +27,7 @@ the design) of PluginPlay.
 
    module_manager
    plugins
+   driver
    module
    property_type
    field
