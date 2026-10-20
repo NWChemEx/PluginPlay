@@ -130,6 +130,10 @@ Driver Considerations
      graph. For example, a driver may assume that two steps are always done
      as two separate modules, whereas some modules may combine the steps into
      one module.
+   - A driver can live in a plugin that does not load the other plugins it
+     targets. The modules it needs from them are defaults from preferred
+     providers, so the driver works with whichever providers are loaded (see
+     `Drivers and Plugins`_).
 
 #. Drivers are modules
 
@@ -608,7 +612,8 @@ the two cases apart:
 
 #. **The key is unknown.** The ``ModuleManager`` has no module with the
    target's key. This is an error. The message names the driver, the wiring
-   record, and the key.
+   record, and the key. The exception is a qualified key whose plugin is not
+   loaded, which is treated as the next case (see `Drivers and Plugins`_).
 #. **The module exists but is not in the call graph.** The setting is
    inactive and is skipped. Locking logs one message per inactive setting
    through the runtime's logger, *e.g.*,
@@ -674,6 +679,54 @@ A driver's call graph may contain other drivers. Two rules keep this simple:
   goes from the outermost driver inward, the enclosing driver's wiring is
   applied first, and the nested driver's forwarding then uses the values the
   enclosing driver set.
+
+Drivers and Plugins
+===================
+
+A driver is added to a plugin like any other module. It usually needs modules
+from other plugins, *e.g.*, a driver in ``MyPlugin`` that needs
+``ProviderA``'s ``"A helper"``. The plugin's preferred providers handle this,
+so a driver can live in a plugin that does not load the other plugins it
+targets.
+
+- **Choices from other plugins are submodules of the driver.** A module from
+  another plugin is chosen by a submodule of the driver, forwarded to where it
+  is used, rather than by fixed wiring. The plugin sets its default with
+  ``default_submod_from``, as for any of its modules:
+
+  .. code-block:: c++
+
+     // In the driver's constructor
+     add_submodule<HelperPT>("Helper");
+     forward_submod("Helper", "My step", "Helper");
+
+     // In MyPlugin's constructor
+     add_module<MyConfigurableDriver>("My configurable driver");
+     change_submod("My configurable driver", "Wrapped module", "My driver");
+     default_submod_from("provider_a", "My configurable driver", "Helper",
+                         "A helper");
+
+- **Missing providers leave the driver not ready.** If no preferred provider
+  for a submodule is loaded, the submodule stays unset, and the driver is not
+  ready, like any other module with an unset submodule. Running it fails with
+  the list of unset submodules, so the user knows which modules to load or
+  supply.
+- **Fixed wiring only names the plugin's own modules.** ``wire_submod`` names
+  its module directly and has no fallback when a provider is not loaded, so
+  its value should be a module from the driver's own plugin.
+- **Targets may be in other plugins.** Targets are the driver's assumptions
+  about the call graph (see `Driver Considerations`_), so they often name
+  modules from other plugins. Such targets should use qualified keys, *e.g.*,
+  ``{"provider_a", "A helper"}``, so that another plugin with a module of the
+  same key can not make them ambiguous. If the target's plugin is not loaded,
+  the setting is inactive, as if the user had swapped the module out (see
+  `Missing Targets`_). The user may have supplied a replacement from another
+  plugin on purpose.
+- **Defaults are applied before the copy.** The ``ModuleManager`` applies
+  defaults in ``wire_defaults``, and a driver copies its call graph when it is
+  locked, which is after ``wire_defaults``. The copies therefore have every
+  default that the loaded plugins set, both for the driver's own submodules
+  and for the modules below it.
 
 Python
 ======
