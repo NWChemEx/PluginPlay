@@ -697,12 +697,13 @@ targets.
   .. code-block:: c++
 
      // In the driver's constructor
+     add_submodule<MyPT>("Driver");  // the module this driver configures
      add_submodule<HelperPT>("Helper");
      forward_submod("Helper", "My step", "Helper");
 
      // In MyPlugin's constructor
      add_module<MyConfigurableDriver>("My configurable driver");
-     change_submod("My configurable driver", "Wrapped module", "My driver");
+     change_submod("My configurable driver", "Driver", "My driver");
      default_submod_from("provider_a", "My configurable driver", "Helper",
                          "A helper");
 
@@ -735,9 +736,7 @@ Python modules derive from ``pluginplay.ModuleBase``. Python drivers derive
 from ``pluginplay.DriverBase``, which is exported with a trampoline class like
 ``ModuleBase``'s, and call ``forward_input``, ``forward_submod``,
 ``wire_input``, ``wire_submod``, and ``wire_memoization`` in ``__init__``.
-``pluginplay.ForwardingDriver`` is exported for each property type that needs
-it, the same way property types are exported. No new ownership rules are
-needed, since drivers are modules.
+No new ownership rules are needed, since drivers are modules.
 
 **********************
 Further Considerations
