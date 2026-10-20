@@ -25,5 +25,6 @@ header:
     - LICENSE
     - version.txt
     - build/
+    - "**/.venv/**"
 
   comment: never
