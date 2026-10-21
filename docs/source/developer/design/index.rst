@@ -28,6 +28,7 @@ the design) of PluginPlay.
    module_manager
    plugins
    driver
+   call_graph_class
    module
    property_type
    field

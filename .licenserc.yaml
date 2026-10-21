@@ -26,5 +26,6 @@ header:
     - version.txt
     - build/
     - "**/.venv/**"
+    - "**/.pytest_cache/**"
 
   comment: never

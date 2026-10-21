@@ -366,4 +366,5 @@ Additional Notes
 #. For simplicity we assumed that each module object stores a list of the
    modules it will call, and PluginPlay manipulates this list. We could
    create a full fledged graph object at a later point. This would
-   facilitate searching the graph.
+   facilitate searching the graph. That object is designed in
+   :ref:`call_graph_class_design`.
