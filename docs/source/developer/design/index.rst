@@ -28,7 +28,7 @@ the design) of PluginPlay.
    module_manager
    plugins
    driver
-   call_graph_class
+   call_graph/index
    module
    property_type
    field
@@ -40,6 +40,5 @@ the design) of PluginPlay.
    :caption: Processes
 
    pluginplay_initialization
-   call_graph
    memoization
    checkpoint_restart

@@ -111,13 +111,13 @@ its call graph, while a module can only manage its own inputs and submodules.
    copies. By using a driver, you don't have to manage this machinery
    yourself, and nothing has to be copied.
 
-To facilitate setting non-local inputs/submodules, drivers have additional
-methods which allow the driver to declare which inputs/submodules to
-forward and where they should be forwarded to. Every module runs as a node of
-a ``CallGraph`` (see :ref:`call_graph_class_design`). When the
-``ModuleManager`` builds the graph of a driver, it applies the driver's
-settings to the nodes below the driver as *overrides*. The modules the nodes
-refer to are not changed.
+To facilitate setting non-local inputs/submodules, a driver has a
+``CallGraphRequest``: a list of *wiring requests*, each naming an input or
+submodule of a module below the driver and the value it should have. When the
+driver is locked, the ``ModuleManager`` resolves the requests into *overlay
+modules*, which point to the modules below the driver and store only what the
+driver changed (see :ref:`call_graph_state_design`). The modules the overlays
+point to are not changed.
 
 *********************
 Driver Considerations
@@ -141,27 +141,27 @@ Driver Considerations
 
    - There is one concept, not two. A driver is written, configured, run,
      memoized, and used as a submodule like any other module.
-   - The one exception: the ``ModuleManager`` applies a driver's settings, so
-     a driver must be run through the ``ModuleManager``, *i.e.*, with
-     ``ModuleManager::run_as`` or as a submodule of a module that was.
-     Running a driver with ``Module::run`` directly throws.
+   - The one exception: the ``ModuleManager`` resolves a driver's wiring
+     requests, so a driver must be run through the ``ModuleManager``, *i.e.*,
+     with ``ModuleManager::run_as`` or as a submodule of a module that was.
+     Running a driver with ``Module::run`` directly throws, unless it has
+     already run through the ``ModuleManager``, which resolved its requests.
    - Users do not learn a new API. Settings are module inputs and submodules.
    - Existing modules are unaffected unless they opt in by deriving from
      ``DriverBase``.
    - Whether a module is a driver follows from its type, not from what its
-     constructor happens to call.
+     constructor happens to call. Module and driver developers choose
+     consciously, since PluginPlay treats the two differently, *e.g.*, when it
+     locks them.
 
-#. Fixed vs forwarding settings
+#. Every setting is exposed
 
-   - If the driver directly set a submodule's input/submodule to a value, that
-     is termed a "fixed" setting. Every run of the driver will always set that
-     setting to the same value. Since these run in the driver's constructor,
-     they are set before the inputs to the driver are known and cannot depend
-     on user input.
-   - Forwarded settings set the inputs/submods of the driver's submodules to the
-     values of the driver's inputs/submodules. These are set when the driver is
-     run so they can depend on user input. The settings to forward, but not the
-     values, are declared in the driver's constructor.
+   - Every setting a driver makes is an input or submodule of the driver,
+     forwarded to the inputs/submodules of the modules below it. The driver's
+     author picks the default, and the user can change it.
+   - A driver never sets a value the user can not see or change. Fixed values
+     appear only in conditional wiring, where an input of the driver chooses
+     between them.
 
 #. One place for the user
 
@@ -196,34 +196,41 @@ Driver Considerations
 
 #. Drivers do not change the ModuleManager's modules
 
-   - A driver's settings are overrides on the nodes of its call graph. The
-     inputs and submodules of the modules the nodes refer to are not changed,
-     and those modules can still be used directly.
+   - A driver's settings live in overlay modules, which the driver owns. The
+     inputs and submodules of the modules the overlays point to are not
+     changed, and those modules can still be used directly.
    - Two drivers that differ only in their settings can be used side by side.
    - Running a driver locks the modules in its call graph, including modules
      it wired in, as running any module locks the modules below it.
 
 #. The call graph preserves sharing
 
-   - A module that is used in more than one place in the call graph has one
-     node.
+   - A module that is used in more than one place below a driver gets one
+     overlay from that driver.
+   - Any number of drivers can share a module, as long as they configure it,
+     and everything below it, the same way. Drivers that configure it
+     differently each get their own overlay of it.
 
 #. Wiring happens once
 
-   - A driver is wired when it is locked, *i.e.*, when its call graph is
-     built. Calls after the first reuse the graph.
+   - A driver is wired when it is locked, *i.e.*, when its wiring requests are
+     resolved. Calls after the first reuse the overlays.
    - To use other settings after a driver is locked, the user copies the
      driver, as for any other locked module.
 
 #. Wiring may be conditional
 
-   - A setting may only apply if another input has a certain value.
+   - One input of the driver may choose between several sets of values, *e.g.*,
+     turning a feature on may change several modules at once.
 
 #. Drivers compose
 
    - A driver can be used inside another driver. The enclosing driver
      configures the nested driver through the nested driver's inputs and
      submodules.
+   - A driver lets a whole subgraph be treated as one node. To the enclosing
+     driver, a nested driver is opaque: it does not change, or depend on, any
+     module below the nested driver.
 
 #. Python
 
@@ -369,9 +376,9 @@ one input of a module to inputs of other modules:
 - This changes the ``ModuleManager``'s modules in place, so it has the third
   problem from `A Motivating Example`_.
 
-Forwarded inputs are promoted inputs whose targets are nodes of the driver's
-call graph rather than the ``ModuleManager``'s modules. Applying them as
-overrides on nodes removes the reason promoted inputs were rejected.
+Wired inputs are promoted inputs whose targets are overlays of the
+``ModuleManager``'s modules rather than the modules themselves. Applying them
+to overlays removes the reason promoted inputs were rejected.
 
 A wiring function
 =================
@@ -387,24 +394,96 @@ Each application, or one shared package, provides a function such as
 Driver Strategy
 ***************
 
-The design adds a ``DriverBase`` class, derived from ``ModuleBase``, with
-functions to declare forwarding and fixed wiring, and a ``Driver`` class,
-derived from ``Module``, with the driver-specific API for users. The settings
-are applied by the ``ModuleManager`` when it builds the driver's
-``CallGraph`` (see :ref:`call_graph_class_design`).
+The design adds two classes:
+
+- ``CallGraphRequest``, an ordered list of wiring requests: what to set on the
+  modules below a driver.
+- ``DriverBase``, derived from ``ModuleBase``, which holds the driver
+  developer's ``CallGraphRequest`` and the functions that fill it.
+
+There is no ``Driver`` class derived from ``Module``, and no ``DriverPIMPL``.
+A user overrides a driver's choices through ``Module``, and the user's
+requests are stored in ``ModulePIMPL``, as the user's inputs are. When a driver
+is locked, the ``ModuleManager`` resolves its requests into overlay modules,
+which the driver owns (see :ref:`call_graph_state_design`).
+
+The CallGraphRequest Class
+==========================
+
+``CallGraphRequest`` would be declared in
+``pluginplay/call_graph/call_graph_request.hpp``. It is data: it names its
+targets by key and resolves nothing itself. A sketch:
+
+.. code-block:: c++
+
+   class CallGraphRequest {
+   public:
+       // Set a target to a fixed value
+       template<typename T>
+       WiringRequest& set_input(type::key module_key, type::key input_key,
+                                T value);
+       WiringRequest& set_submod(type::key module_key,
+                                 type::key callback_key,
+                                 type::key submod_key);
+
+       // Read-only views, in the order the requests were made
+       const request_list_type& requests() const noexcept;
+       const chain_list_type& conditional_wiring() const noexcept;
+       bool empty() const noexcept;
+
+   private:
+       // Only DriverBase, DriverInput, and DriverSubmodule may call these
+       friend class DriverBase;
+       friend class DriverInput;
+       friend class DriverSubmodule;
+
+       // Pass the value of the driver's input/submodule on to a target
+       WiringRequest& forward_input(type::key module_key,
+                                    type::key target_input_key,
+                                    type::key input_key);
+       WiringRequest& forward_submod(type::key module_key,
+                                     type::key target_callback_key,
+                                     type::key callback_key);
+
+       // Conditional wiring and memoization
+       template<typename T>
+       ConditionalWiring& when(type::key input_key, T value);
+       void wire_memoization(bool on, std::vector<type::key> except = {});
+   };
+
+The public functions are the ones a user may call on the user's request. The
+private ones are reached only through ``DriverBase``, *i.e.*, from a driver's
+constructor: forwarding through ``set_target`` (see `Declaring a Driver`_),
+chains through ``when`` (see `Conditional Wiring`_), and the memoization
+policy through ``wire_memoization``.
+
+A ``WiringRequest`` names one target, *i.e.*, an input or submodule of a module
+below the driver, and what it should be set to. Every target is strictly below
+the driver. A driver's own inputs and submodules are set the usual way, by its
+developer's declarations and the user's ``change_input`` and
+``change_submod``.
+
+A driver has two requests, which parallel a module's inputs:
+
+- the developer's request, held by ``DriverBase`` and filled in the driver's
+  constructor; and
+- the user's request, held by the driver's ``ModulePIMPL`` and filled before
+  the driver is locked (see `Overriding a Driver's Choices`_).
 
 The DriverBase Class
 ====================
 
 ``DriverBase`` would be declared in ``pluginplay/driver/driver_base.hpp``.
-Putting the new functions in a class of their own, rather than in
+``ModuleBase`` gets a virtual ``call_graph_request()``, which returns an empty
+``CallGraphRequest``. ``DriverBase`` overrides it to return the request its
+constructor filled. Putting the request in a class of its own, rather than in
 ``ModuleBase``:
 
 - makes being a driver a property of the type, so module authors and
   PluginPlay can tell drivers from other modules;
 - guarantees that modules which do not derive from ``DriverBase`` keep
   today's behavior; and
-- keeps ``ModuleBase``, which every module derives from, unchanged.
+- keeps ``ModuleBase``, which every module derives from, almost unchanged.
 
 A sketch of the class:
 
@@ -412,41 +491,34 @@ A sketch of the class:
 
    class DriverBase : public ModuleBase {
    public:
-       // Read-only views of what the constructor declared
-       const forward_list_type& forwarded_inputs() const noexcept;
-       const forward_list_type& forwarded_submods() const noexcept;
-       const wiring_list_type& wiring() const noexcept;
+       // The developer's request, which the constructor filled
+       const CallGraphRequest& call_graph_request() const override;
 
    protected:
        template<typename DerivedType>
        explicit DriverBase(DerivedType* self) : ModuleBase(self) {}
 
-       // Called from the derived class's constructor
-       WiringRecord& forward_input(type::key input_key, type::key module_key,
-                                   type::key target_input_key);
-       WiringRecord& forward_submod(type::key callback_key,
-                                    type::key module_key,
-                                    type::key target_callback_key);
-
+       // Called from the derived class's constructor. These hide the
+       // ModuleBase functions of the same name, and return wrappers that can
+       // also wire the new input/submodule to targets.
        template<typename T>
-       WiringRecord& wire_input(type::key module_key, type::key input_key,
-                                T value);
-       WiringRecord& wire_submod(type::key module_key, type::key callback_key,
-                                 type::key submod_key);
-       void wire_memoization(bool on, std::vector<type::key> except = {});
+       DriverInput add_input(const type::key& key);
+       template<typename PropertyType>
+       DriverSubmodule add_submodule(const type::key& key);
 
+       // Conditional wiring and memoization
        template<typename T>
        ConditionalWiring& when(type::key input_key, T value);
+       void wire_memoization(bool on, std::vector<type::key> except = {});
 
    private:
-       // The forwarding and wiring records, in the order they were declared
+       // The developer's request
+       CallGraphRequest m_request_;
    };
 
 The constructor takes the derived object, as ``ModuleBase``'s does, so that
-``ModuleBase`` can still record the derived type.
-
-``Module`` holds its implementation through a ``ModuleBase`` pointer, so code
-that has a ``Module`` can not see the type directly.
+``ModuleBase`` can still record the derived type. ``Module::is_driver()`` is
+true exactly when the implementation derives from ``DriverBase``.
 
 The module macros have driver versions, so a driver is declared the same way a
 module is:
@@ -457,128 +529,184 @@ module is:
 - ``MODULE_RUN(driver_name)`` defines its ``run_``, unchanged, since ``run_``
   has the same signature for drivers and modules.
 
+The DriverInput and DriverSubmodule Classes
+-------------------------------------------
+
+``ModuleBase::add_input`` returns the new ``ModuleInput``, so that its
+setters can be chained, *e.g.*, ``add_input<double>("Tol").set_default(1.0)``.
+``DriverBase::add_input`` returns a ``DriverInput`` instead: a thin wrapper
+that holds a reference to the new ``ModuleInput`` and to the driver's request.
+It has the chainable setters of ``ModuleInput``, *e.g.*, ``set_default``,
+``set_description``, ``add_check``, and ``make_optional``, each of which calls
+the ``ModuleInput``'s setter and returns the wrapper. It adds:
+
+- ``set_target(module_key, target_input_key)``, which requests that the value
+  of this input of the driver is also set as the input ``target_input_key`` of
+  the module ``module_key`` below the driver; and
+- ``set_required_target(module_key, target_input_key)``, which does the same
+  and marks the request as required (see `Missing Targets`_).
+
+``DriverSubmodule`` does the same for ``SubmoduleRequest``, which
+``DriverBase::add_submodule`` returns, with ``set_description``,
+``set_target``, and ``set_required_target``. It also adds
+``set_default(submod_key)``, which names the module bound to the submodule if
+the user binds none (see `Declaring a Driver`_).
+
+The wrappers only forward and record, so they hold no state of their own and
+can be discarded once the chain ends.
+
 Declaring a Driver
 ==================
 
-A driver's constructor calls these protected ``DriverBase`` functions, in
-addition to the usual ``satisfies_property_type``, ``add_input``, and
-``add_submodule``:
-
-- ``forward_input(input_key, module_key, target_input_key)`` records that the
-  value of the driver's input ``input_key`` is also set as the input
-  ``target_input_key`` of the module ``module_key`` below the driver.
-- ``forward_submod(callback_key, module_key, target_callback_key)`` records
-  that the module bound to the driver's submodule ``callback_key`` is also
-  bound as the submodule ``target_callback_key`` of the module ``module_key``.
-- ``wire_input(module_key, input_key, value)`` and
-  ``wire_submod(module_key, callback_key, submod_key)`` record fixed wiring.
-- ``wire_memoization(on, except)`` records whether the modules below the
-  driver memoize, except for the modules whose keys are in ``except``.
-
-The forwarding and wiring functions return the ``WiringRecord`` they
-created, so that the record can be marked as required (see
-`Missing Targets`_):
+A driver's constructor declares its own inputs and submodules with
+``add_input`` and ``add_submodule``, as a module's does, and wires each of them
+to the modules below the driver with ``set_target``:
 
 .. code-block:: c++
 
-   forward_input("Tolerance", "My step", "Tolerance").required();
+   DRIVER_CTOR(MyDriver) {
+       satisfies_property_type<MyPT>();
 
-An input or submodule may be forwarded to several targets by calling the
-function once per target. Module keys may be qualified keys, as for
-``ModuleManager::at``, *e.g.*, ``{"integrals", "ERI4"}``.
+       add_input<double>("Tolerance")
+         .set_description("Convergence threshold of the step")
+         .set_default(1.0e-8)
+         .set_target("My step", "Tolerance")
+         .set_target("A helper", "Tolerance");
 
-A forwarded input must not be an input of a property type the driver
-satisfies. Property-type inputs are passed on every call, but the call graph,
-and so the forwarded value, is built once, before the first call. Adding such
-a forward throws. Forwarded inputs are set with ``change_input`` before the
-driver is locked.
+       add_submodule<HelperPT>("Helper")
+         .set_default("A helper")
+         .set_required_target("My step", "Helper");
+   }
 
-A forwarded input or submodule is still an ordinary input or submodule of the
-driver. Its default, description, and property type are declared as usual, and
-the driver's ``run_`` may use it too.
+- **Every setting is a driver input or submodule.** There is no way to wire a
+  fixed value at the top level of the constructor, so every value the driver
+  passes down is one the user can see and change. Fixed values appear only in
+  conditional chains (see `Conditional Wiring`_).
+- **Several targets.** ``set_target`` may be called several times on one input
+  or submodule, once per target.
+- **Other declarations.** ``when(input_key, value)`` starts a conditional
+  chain, and ``wire_memoization(on, except)`` requests whether the modules
+  below the driver memoize, except for the modules whose keys are in
+  ``except``.
 
-The functions record their arguments in ``DriverBase``. Users see them through
-the ``Driver`` class, declared in ``pluginplay/driver/driver_class.hpp``.
-``Driver`` derives from ``Module`` and adds the driver-specific API:
-``forwarded_inputs()``, ``forwarded_submods()``, ``wiring()``,
-``conditional_wiring()``, ``wire_input``, and ``wire_submod``. Keeping these
-functions off ``Module`` means modules that are not drivers do not carry
-functions that would do nothing for them. ``Module`` keeps only
-``is_driver()``. What a driver did to its call graph, including its inactive
-settings, is inspected through the graph (see `Missing Targets`_), not through
-``Driver``.
+A driver's submodule can not be bound in its constructor, since modules are
+found by key. The default named with ``DriverSubmodule::set_default`` is
+therefore recorded in the request, and the ``ModuleManager`` uses it when it
+resolves the driver's requests, if the submodule is still unbound. The user
+changes it with ``change_submod``, as for any submodule. The default should be
+a module of the driver's own plugin (see `Drivers and Plugins`_).
 
-Users get a driver with ``ModuleManager::get_driver(key)``. It throws if the
-module stored under ``key`` is not a driver. Otherwise it downcasts the
-``Module`` to ``Driver``. The downcast is valid because PluginPlay stores every
-module whose implementation derives from ``DriverBase`` as a ``Driver``,
-including copies made by ``copy_module``.
-``Driver`` adds no state to ``Module``, so storing a module as a ``Driver``
-costs nothing. In Python, ``ModuleManager.at`` also returns drivers as
-``Driver`` objects.
+Module keys may be qualified keys, as for ``ModuleManager::at``, *e.g.*,
+``{"integrals", "ERI4"}``.
 
-Users can add fixed wiring of their own, *e.g.*, to override a choice the
-driver makes, with ``Driver::wire_input`` and ``Driver::wire_submod`` before
-the driver is locked. These are stored in the driver's PIMPL, like changed
-inputs.
+A wired input must not be an input of a property type the driver satisfies.
+Property-type inputs are passed on every call, but the requests, and so the
+wired value, are resolved once, before the first call. Property-type inputs
+are added by ``satisfies_property_type``, not by ``add_input``, so they have no
+``set_target``. Wired inputs are set with ``change_input`` before the driver is
+locked.
 
-A driver's PIMPL is a ``DriverPIMPL``, which derives from ``ModulePIMPL`` and
-holds the driver-specific state, *i.e.*, the user's wiring. ``ModulePIMPL``
-knows only whether it is a driver (the virtual ``is_driver``). ``make_pimpl``
-makes a ``DriverPIMPL`` whenever the implementation derives from
-``DriverBase``. ``Driver`` reaches its PIMPL through a private ``pimpl_()``,
-which downcasts the PIMPL to ``DriverPIMPL``. The logic that applies the
-settings belongs to building the call graph, not to the driver.
+A wired input or submodule is still an ordinary input or submodule of the
+driver, and the driver's ``run_`` may use it too.
 
-This is the way to override a driver's choice. Changing the
-``ModuleManager``'s module instead, *e.g.*, with
-``mm.change_submod("A", ...)``, changes the state the node of "A" starts
-from. The driver's fixed wiring is applied to the node afterwards, so a driver
-that wires the same slot overrules the user's change. The user's wiring on the
-driver is applied after the driver's own, so it wins.
+Overriding a Driver's Choices
+=============================
+
+Most of a driver's choices are its inputs and submodules, which the user
+changes with ``change_input`` and ``change_submod``. For the rest, *e.g.*, a
+choice the driver does not expose, the user adds fixed values to the call graph
+request, through ``Module``:
+
+.. code-block:: c++
+
+   auto& request = mm.at("My driver").call_graph_request();
+   request.set_submod("Module A", "Submodule", "My module");
+
+``Module::call_graph_request()`` returns the current call graph request, which
+is stored in the driver's ``ModulePIMPL``. It throws if the
+module is not a driver, since only drivers resolve requests, or if the module
+is locked. The request exposes only ``set_input`` and ``set_submod``
+requests.
+
+The user's requests are applied after the developer's, so they win (see
+`Locking a Driver`_). Changing the ``ModuleManager``'s module instead, *e.g.*,
+with ``mm.change_submod("Module A", ...)``, changes the module the driver's
+overlay points to. A driver that targets the same input or submodule
+overrules that change in its overlay.
 
 Conditional Wiring
 ==================
 
-Some settings change several things at once. ``forward_input`` and
-``forward_submod`` can not express this, since they pass a value through
-unchanged.
+Some settings change several things at once. ``set_target`` can not express
+this, since it passes a value through unchanged. Other settings only matter
+for one choice, *e.g.*, a threshold that only a screened method reads.
 
-``when(input_key, value)`` starts a block of wiring that applies only if the
-driver's input ``input_key`` equals ``value`` when the driver is locked:
+``when(input_key, value)`` starts a *chain* of branches. ``otherwise(input_key,
+value)`` starts a further branch with its own condition, and ``otherwise()``
+starts a final branch that applies if no condition holds. A branch holds:
+
+- fixed values, set with ``set_input(module_key, input_key, value)`` and
+  ``set_submod(module_key, callback_key, submod_key)``; and
+- forwarded inputs and submodules of the driver, with
+  ``forward_input(module_key, target_input_key, input_key)`` and
+  ``forward_submod(module_key, target_callback_key, callback_key)``. These
+  work like ``set_target``, but only when the branch is taken.
+
+The two kinds take the same arguments, except that a forward ends with the key
+of the driver's input or submodule where a fixed value ends with the value.
+For example:
 
 .. code-block:: c++
 
    add_input<bool>("Enable feature").set_default(false);
+   add_input<double>("Feature tolerance").set_default(1.0e-6);
 
    when("Enable feature", true)
-       .wire_submod("Module A", "Submodule",
-                    "Module to use when feature is enabled");
+       .set_submod("Module A", "Submodule", "Feature module")
+       .forward_input("Feature module", "Tolerance", "Feature tolerance")
+       .otherwise()
+       .set_submod("Module A", "Submodule", "Plain module");
 
-- **One condition per block.** Everything a value changes is written in one
-  place, so a reader, and PluginPlay, can answer "what does the input
-  change?" ``Driver::conditional_wiring()`` lists each block with its
-  condition.
-- **Several values.** An input with more than two values, *e.g.*, a string
-  input gets one block per value.
-- **No match.** If no block's condition holds, no conditional wiring is
-  applied. The driver's fixed wiring is the default, so the block for the
-  default value can usually be omitted.
-- **Several matches.** Every block whose condition holds is applied, in the
-  order the blocks were declared.
-- **Same rules as other wiring.** A block contains ``wire_input`` and
-  ``wire_submod`` records. They are applied after the driver's fixed wiring
-  and before the user's wiring, so users can still override them (see
-  `Locking a Driver`_). Inactive records are reported like any other (see
-  `Missing Targets`_), and ``required()`` on a block marks every record in it
-  as required.
-- **Same restriction on inputs.** The condition's input must not be an input
-  of a property type the driver satisfies, for the same reason as forwarded
-  inputs.
+"Feature tolerance" only matters when "Enable feature" is true, so it is
+forwarded in that branch rather than with ``set_target``.
 
-Because a block is data rather than code, it is exported to Python as is,
-*e.g.*, ``self.when("Density fitting", True).wire_submod(...)``, and it can
-be recorded with the driver's results.
+- **First match.** The conditions are tested, when the driver is locked, in
+  the order the branches were declared. Only the first branch whose condition
+  holds is applied. If none holds and there is no ``otherwise()``, nothing in
+  the chain is applied.
+- **One owner per target.** Within the developer's request, a target is set by
+  at most one thing: one ``set_target``, or one chain. The branches of a chain
+  may all set or forward to the same target, which is the point of a chain.
+  Breaking this rule throws, so a driver's own settings never compete and need
+  no precedence rule. The rule is checked on the keys in the driver's
+  constructor, and again on the modules when the requests are
+  resolved, which catches two keys for the same module, *e.g.*, ``"X"`` and
+  ``{"plugin", "X"}``. The user's requests are exempt, since overriding the
+  developer's is their purpose.
+- **Readable.** Everything one input changes is written in one place, so a
+  reader, and PluginPlay, can answer "what does the input change?"
+  ``CallGraphRequest::conditional_wiring()`` lists each chain with its
+  branches and their conditions.
+- **Settings of branches not taken.** An input or submodule of the driver that
+  is only forwarded in branches that are not taken has no effect. If the user
+  changed it, *i.e.*, its value differs from the default its developer gave
+  it, this is reported as an inactive setting, *e.g.*, ``"My driver":
+  "Feature tolerance" has no effect because no branch that forwards it was
+  taken``. If it has its default value, nothing is reported, since the user
+  did not ask for anything that was ignored. An input or submodule that is
+  also used by ``set_target`` is never reported this way.
+- **Same rules as other settings.** Inactive wiring requests in the branch that
+  is taken are reported like any other (see `Missing Targets`_), and
+  ``required()`` on a branch marks every wiring request in it as required.
+  Requests in branches that are not taken are not checked. The user's
+  requests are applied after the chains, so users can still override them.
+- **Same restriction on inputs.** A condition's input must not be an input of
+  a property type the driver satisfies, for the same reason as wired inputs.
+
+Because a chain is data rather than code, it is exported to Python as is,
+*e.g.*, ``self.when("Density fitting", True).set_submod(...)``, and it can be
+recorded with the driver's results. It also tells a reader, and PluginPlay,
+which of the driver's inputs and submodules matter for which choice.
 
 Complicated Choices
 -------------------
@@ -587,10 +715,10 @@ A condition tests one input against one value. A choice that depends on
 several inputs, or that needs other logic, belongs in a driver of its own:
 
 - If the affected modules share a parent that can be swapped, write a driver
-  for each configuration of that parent. The outer driver forwards a submodule
-  for the parent, and the user, or a
-  ``when`` block, picks which driver fills it. Each configuration is then
-  type-checked by its property type, and the rules for nested drivers apply.
+  for each configuration of that parent. The outer driver wires a submodule
+  for the parent, and the user picks which driver fills it. Each configuration
+  is then type-checked by its property type, and the rules for nested drivers
+  apply.
 - Otherwise, write a driver whose ``run_`` dispatches between submodules, one
   per configuration, based on its inputs.
 
@@ -602,37 +730,49 @@ Locking a Driver
 ================
 
 A driver is locked when it is first run through the ``ModuleManager``. As for
-any module, locking builds the driver's call graph and stores it on the
-driver (see :ref:`call_graph_class_design`). For a driver, the
-``ModuleManager`` builds the graph:
+any module, locking a driver locks the modules below it. Before that, the
+``ModuleManager`` resolves the driver's requests (see
+:ref:`call_graph_state_design` for where the results live):
 
-#. **Compose the call graph** from the driver and the modules bound to its
-   submodules, as for any module. A module that is bound in several places
-   has one node.
-#. **Apply the wiring** as overrides on the nodes, in this order:
+#. **Find the region.** The driver's *region* is the set of modules reachable
+   from it without passing through another driver. Nested drivers are in the
+   region, so that the driver can set their inputs, but the modules below them
+   are not.
+#. **Bind defaults.** Each submodule of the driver that has a default from
+   ``DriverSubmodule::set_default``, and that is still unbound, is bound to its
+   default module in the submodule map the driver runs with. The driver's own
+   submodule requests are not changed.
+#. **Apply the requests** to overlays of the modules in the region, in this
+   order:
 
-   #. the driver's fixed wiring, in the order it was declared;
-   #. the driver's conditional wiring whose condition holds, in the order it
-      was declared (see `Conditional Wiring`_);
-   #. the user's fixed wiring, in the order it was added;
-   #. forwarded inputs and submodules, in the order they were declared; and
+   #. the developer's ``set_target`` requests, and the
+      branch of each chain whose condition holds (see `Conditional Wiring`_),
+      in the order they were declared. These never set the same target, so
+      their order does not matter;
+   #. the user's requests, in the order they were added; and
    #. the memoization policy.
 
-   The last write to a target wins. A driver does not check for two writes to
-   the same target, since the wiring is written by hand and "last write wins"
-   is easy to explain. Targets that are missing from the call graph are
-   handled as described in `Missing Targets`_.
-#. **Lock** every module that has a node in the graph, then the driver.
+   A module whose input or submodule changes gets an overlay, and so does
+   every module between it and the driver, since their submodules must be
+   bound to the overlays. A module bound in several places gets one overlay.
+   Targets that are missing are handled as described in `Missing Targets`_.
+#. **Resolve nested drivers.** Each nested driver in the region resolves its
+   own requests in the same way, with the inputs the enclosing driver gave it
+   (see `Nested Drivers`_).
+#. **Lock** every module the driver reaches, overlays and originals, then the
+   driver. Locking computes each module's fingerprint for memoization (see
+   :ref:`call_graph_state_design`).
 
-A ``wire_submod`` record or a forwarded submodule may name a module that is not
-yet in the call graph. That module and everything below it are composed into
-the graph first. Finding a module by key is done by the ``ModuleManager``,
-which builds the graph, so a driver does not need a way to find modules
-itself.
+A ``set_submod`` request, a submodule default, or the module bound to a
+wired submodule may be a module that was not reachable from the driver
+before. That module and everything below it become part of the region.
+Finding a module by key is done by the ``ModuleManager``, so a driver does not
+need a way to find modules itself.
 
-When the driver runs, each submodule call inside ``run_`` runs the submodule as
-its node of the graph, so the overrides are seen at every level below the
-driver.
+When the driver runs, its ``run_`` gets the submodule map that binds its
+submodules to the overlays, so the changes are seen at every level below the
+driver. The overlays are ordinary ``Module`` objects, so they run through the
+usual ``Module::run``.
 
 Missing Targets
 ---------------
@@ -640,40 +780,44 @@ Missing Targets
 Consider a driver written with the left graph of
 :numref:`fig_switching_modules` in mind, which sets inputs of module "D".
 Before running the driver, the user swaps module "C" for a module "F" that
-does not call "D". When the driver is locked, "D" is not in its call graph, and
+does not call "D". When the driver is locked, "D" is not in its region, and
 the settings that target "D" have nothing to change.
 
 Making this an error would forbid the very changes drivers are meant to
-support. The same situation arises within a single driver whenever a setting
-only matters for one choice of submodule. Ignoring it silently would hide typos
-and modules that a newer version of a plugin renamed. Locking therefore tells
-the two cases apart:
+support. Ignoring it silently would hide typos and modules that a newer version
+of a plugin renamed. Locking therefore tells the cases apart:
 
 #. **The key is unknown.** The ``ModuleManager`` has no module with the
    target's key. This is an error. The message names the driver, the wiring
-   record, and the key. The exception is a qualified key whose plugin is not
+   request, and the key. The exception is a qualified key whose plugin is not
    loaded, which is treated as the next case (see `Drivers and Plugins`_).
-#. **The module exists but is not in the call graph.** The setting is
-   inactive and is skipped. Locking logs one message per inactive setting
-   through the runtime's logger, *e.g.*,
+#. **The module exists but is not in the region.** This includes a module that
+   an earlier setting cut off from the driver, *e.g.*, by rebinding the
+   submodule that called it. The setting is inactive and is skipped. Locking
+   logs one message per inactive setting through the runtime's logger, *e.g.*,
    ``"My configurable driver": "Tolerance" has no effect because "A helper"
    is not in the call graph``. A target field that does not exist on a module
-   that is in the call graph, *e.g.*, a misspelled input key, is an error.
+   that is in the region, *e.g.*, a misspelled input key, is an error.
+#. **The setting belongs to a branch that is not taken.** The requests of the
+   branch are not checked at all. The driver's inputs and submodules that only
+   that branch forwards are reported as inactive only if the user changed them
+   (see `Conditional Wiring`_).
 
-A record marked ``required()`` must take effect. If it would be inactive,
-locking throws, with the same message that would have been logged. Driver
-authors use this for settings where doing nothing would give wrong results,
-rather than results the setting does not apply to.
+A setting that only matters for one choice of submodule, *e.g.*, a threshold
+of a screened method, would be inactive in every other configuration of the
+driver. Forwarding it in the branch that makes that choice, rather than with
+``set_target``, keeps the default configuration free of such reports.
 
-Users find inactive settings through ``ModuleManager::call_graph(key)``:
+A wiring request marked ``required()`` must take effect. If it would be
+inactive, locking throws, with the same message that would have been logged.
+Driver authors use this for settings where doing nothing would give wrong
+results, rather than results the setting does not apply to.
 
-- Once the driver is locked, it returns the driver's stored graph, and the
-  graph's ``inactive_settings()`` lists them.
-- Before the driver is locked, it builds the graph as locking would, without
-  storing it or locking anything. Its ``inactive_settings()`` then lists the
-  settings that would be inactive, and building it throws the errors locking
-  would throw. This lets a user see the effect of a change before paying for a
-  calculation.
+The inactive settings are stored on the driver's ``ModulePIMPL`` when its
+requests are resolved, and ``Module::inactive_settings()`` returns them. It
+returns an empty list for modules that are not drivers. Seeing which settings
+would be inactive before locking, without paying for a calculation, is left to
+the read-only ``CallGraph`` (see :ref:`call_graph_class_design`).
 
 A setting that targets "D" still applies if "D" is reachable some other way,
 *e.g.*, if "F" also calls "D". Targets name modules, not places in the call
@@ -683,42 +827,54 @@ Identifying Modules in the Call Graph
 -------------------------------------
 
 A target is identified by the key of the module in the ``ModuleManager``, and
-refers to the node of that module in the driver's call graph. The
-``ModuleManager`` finds the module by key, and the graph maps each module to
-its one node.
+refers to that module's overlay in the driver's region. The ``ModuleManager``
+finds the module by key, and keeps a map from each module to its overlay while
+it resolves the driver's requests.
 
 Copying a Locked Driver
 -----------------------
 
-A driver's settings are applied to its call graph, never to the driver, so a
-locked driver still has the bindings and inputs the user gave it.
+A driver's settings are applied to overlays, never to the driver, so a locked
+driver still has the bindings, inputs, and user's requests the user gave it.
 ``unlocked_copy``, and therefore ``ModuleManager::copy_module``, gives a
-driver with those bindings, the current input values, and no call graph. The
-copy builds its own call graph when it is locked. To use other settings after
-a driver is locked, the user copies it:
+driver with those, and no overlays. The copy resolves its requests again when
+it is locked. To use other settings after a driver is locked, the user copies
+it:
 
 .. code-block:: c++
 
    mm.copy_module("QCUP SCF", "QCUP SCF taylor");
    mm.change_input("QCUP SCF taylor", "UQ Type", "taylor model");
 
-Because the call graph is built when the driver is locked, rather than when
+Because the requests are resolved when the driver is locked, rather than when
 the driver is added, changes the user makes to the ``ModuleManager``'s modules
 beforehand, *e.g.*, a basis-set threshold, are picked up by the driver.
 
 Nested Drivers
 ==============
 
-A driver's call graph may contain other drivers. Two rules keep this simple:
+A driver lets a whole subgraph be treated as one node. A driver's region may
+contain other drivers, and three rules keep this simple:
 
-- **One graph.** The call graph is built once, for the module being run. The
-  settings of every driver in it are applied to that one graph.
-- **Encapsulation.** A driver's targets must not be below a nested driver. An
-  enclosing driver configures a nested driver through the nested driver's
-  inputs and submodules, which the nested driver then forwards. Settings are
-  applied from the outermost driver inward, so the enclosing driver's wiring is
-  applied first, and the nested driver's forwarding then uses the values the
-  enclosing driver set on the nested driver's node.
+- **Encapsulation.** A driver's targets must not be only reachable below a
+  nested driver. Targeting such a module is an error. An enclosing driver
+  configures a nested driver through the nested driver's inputs and
+  submodules, which the nested driver then wires. Requests are resolved from
+  the outermost driver inward, so the nested driver's wiring uses the values
+  the enclosing driver gave it.
+- **Opaque nested drivers.** A module may be reachable both directly from the
+  enclosing driver and below a nested driver, *e.g.*, because both use a
+  ubiquitous module. If the enclosing driver targets it, the change applies to
+  the enclosing driver's overlay only. Below the nested driver the module runs
+  as the nested driver configures it. This is intended: to the enclosing
+  driver, the nested driver is opaque, and that it reuses the module is an
+  implementation detail. The same module may therefore run with two
+  configurations in one calculation. Making this an error would make nesting
+  drivers that use common modules almost impossible.
+- **Overlays of nested drivers.** A nested driver whose inputs or submodules
+  the enclosing driver sets gets an overlay, like any other module. The
+  overlay resolves the nested driver's requests with those values, and owns
+  the overlays it makes.
 
 Drivers and Plugins
 ===================
@@ -730,16 +886,15 @@ so a driver can live in a plugin that does not load the other plugins it
 targets.
 
 - **Choices from other plugins are submodules of the driver.** A module from
-  another plugin is chosen by a submodule of the driver, forwarded to where it
-  is used, rather than by fixed wiring. The plugin sets its default with
-  ``default_submod_from``, as for any of its modules:
+  another plugin is chosen by a submodule of the driver, wired to where it is
+  used, rather than by a default in the driver's constructor. The plugin sets
+  its default with ``default_submod_from``, as for any of its modules:
 
   .. code-block:: c++
 
      // In the driver's constructor
      add_submodule<MyPT>("Driver");  // the module this driver configures
-     add_submodule<HelperPT>("Helper");
-     forward_submod("Helper", "My step", "Helper");
+     add_submodule<HelperPT>("Helper").set_target("My step", "Helper");
 
      // In MyPlugin's constructor
      add_module<MyConfigurableDriver>("My configurable driver");
@@ -752,9 +907,10 @@ targets.
   ready, like any other module with an unset submodule. Running it fails with
   the list of unset submodules, so the user knows which modules to load or
   supply.
-- **Fixed wiring only names the plugin's own modules.** ``wire_submod`` names
-  its module directly and has no fallback when a provider is not loaded, so
-  its value should be a module from the driver's own plugin.
+- **Defaults in the constructor only name the plugin's own modules.** The
+  default of a driver's submodule and the module of ``set_submod`` are named
+  directly and have no fallback when a provider is not loaded, so they should
+  be modules from the driver's own plugin.
 - **Targets may be in other plugins.** Targets are the driver's assumptions
   about the call graph (see `Driver Considerations`_), so they often name
   modules from other plugins. Such targets should use qualified keys, *e.g.*,
@@ -763,20 +919,26 @@ targets.
   the setting is inactive, as if the user had swapped the module out (see
   `Missing Targets`_). The user may have supplied a replacement from another
   plugin on purpose.
-- **Defaults are applied before the graph is built.** The ``ModuleManager``
-  applies defaults in ``wire_defaults``, and a driver's call graph is built
-  when the driver is locked, which is after ``wire_defaults``. The graph
-  therefore has every default that the loaded plugins set, both for the
-  driver's own submodules and for the modules below it.
+- **Defaults are applied before requests are resolved.** The
+  ``ModuleManager`` applies defaults in ``wire_defaults``, and a driver's
+  requests are resolved when the driver is locked, which is after
+  ``wire_defaults``. The resolution therefore sees every default that the
+  loaded plugins set, both for the driver's own submodules and for the modules
+  below it.
 
 Python
 ======
 
 Python modules derive from ``pluginplay.ModuleBase``. Python drivers derive
 from ``pluginplay.DriverBase``, which is exported with a trampoline class like
-``ModuleBase``'s, and call ``forward_input``, ``forward_submod``,
-``wire_input``, ``wire_submod``, and ``wire_memoization`` in ``__init__``.
-No new ownership rules are needed, since drivers are modules. The Python
+``ModuleBase``'s. In ``__init__`` they call ``add_input`` and
+``add_submodule``, which return the Python bindings of ``DriverInput`` and
+``DriverSubmodule``, *e.g.*,
+``self.add_input("Tolerance").set_default(1e-8).set_target("My step",
+"Tolerance")``, and ``when`` and ``wire_memoization``. ``CallGraphRequest`` and
+``Module.call_graph_request()`` are exported, so Python users override a
+driver's choices as C++ users do. No new ownership rules are needed, since
+drivers are modules and overlays are ``Module`` objects. The Python
 ``ModuleManager.run_as`` goes through the C++ ``ModuleManager::run_as``, so it
 runs drivers with their settings.
 
@@ -784,26 +946,50 @@ runs drivers with their settings.
 Further Considerations
 **********************
 
-- **Shared modules and nested drivers.** A module can be reachable both
-  through a nested driver and directly from the enclosing driver. Both drivers
-  may then target it. Locking goes outward to inward, so the nested driver's
-  write wins. Whether that is the right choice should be revisited once there
-  is a real example.
-- **Memoization.** A node of a driver's call graph reuses results of the
-  module it refers to exactly when the node's state, and the state of
-  everything below it, is the same. This relies on the node fingerprints of
-  :ref:`call_graph_class_design`, which replace submodule UUIDs in memoization
-  keys.
+- **A Driver class.** An earlier version of this design had a ``Driver`` class,
+  derived from ``Module``, for the user's API, and a ``DriverPIMPL`` for the
+  user's requests. Both were dropped. The user's API is one function on
+  ``Module``, ``call_graph_request()``, and the user's requests live in
+  ``ModulePIMPL`` next to the user's inputs.
+- **Inspecting a resolved driver.** A read-only ``CallGraph``, to list what a
+  driver will run and which settings would be inactive before it is locked,
+  is left for later (see :ref:`call_graph_class_design`).
+- **Memoization.** An overlay reuses results of the module it points to
+  exactly when its state, and the state of everything below it, is the same.
+  This relies on the fingerprints of :ref:`call_graph_state_design`, which
+  replace submodule UUIDs in memoization keys.
 - **Running a driver outside the ModuleManager.** ``Module::run`` on a driver
-  throws, since composing a graph without the ``ModuleManager`` can not apply
-  the driver's settings. Most settings name modules that are already in the
-  graph, and each module's name is its key, so they could be resolved without
-  the ``ModuleManager``. Only ``wire_submod`` to a module outside the graph
+  that has not run through the ``ModuleManager`` throws, since the driver's
+  requests name modules by key. Most requests name modules that are already
+  reachable from the driver, and each module's name is its key, so they could
+  be resolved without the ``ModuleManager``. Only a module named by
+  ``set_submod`` or a submodule default, that is not already reachable,
   truly needs it. This is left for later, since names are only unique within
   a plugin.
+- **Fixed wiring.** Earlier versions of this design had fixed wiring at the
+  top level of the constructor, which set a target to a value the user could
+  not see. It was removed because every such value is better as an input or
+  submodule of the driver, with the value as its default. Fixed wiring
+  protected nothing, since users could overrule it anyway, and it competed
+  with conditional wiring for the same targets, which needed a precedence
+  rule. Fixed values remain only in conditional chains and the user's
+  requests.
+- **Wiring functions.** Earlier versions of this design wired a driver's
+  inputs with ``wire_input(module_key, target_input_key, input_key)``, plus an
+  overload taking a default value that also added the input. The two forms
+  were told apart only by their number of arguments, so a string default
+  could be mistaken for a key. ``set_target`` on the input that
+  ``add_input`` returns replaces both, and keeps everything about an input of
+  the driver in one statement.
+- **Inputs that run_ reads.** A driver's ``run_`` may read an input that is
+  also forwarded only in branches. PluginPlay can not see what ``run_`` reads,
+  so it reports such an input as inactive when its branches are not taken and
+  the user changed it. An input that ``run_`` reads should not also be
+  forwarded only in branches, or a way to mark it as read by ``run_`` is
+  needed.
 - **Wiring callbacks.** A virtual ``wire_(inputs, wiring)`` on ``DriverBase``,
   the wiring counterpart of ``run_``, could see all of a driver's inputs and
-  add records with arbitrary logic. It is left out for now in favor of
+  add wiring requests with arbitrary logic. It is left out for now in favor of
   dispatch drivers (see `Complicated Choices`_), since a callback can not be
   inspected without running it. It can be added later if dispatch drivers
   prove cumbersome.
