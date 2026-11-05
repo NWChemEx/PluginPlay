@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drivers &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Writing a Driver" href="writing_a_driver.html" />
+    <link rel="prev" title="Documenting Modules in a Collection" href="../plugins/document_modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PluginPlay Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/index.html">Module Collections</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writing_a_driver.html">Writing a Driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_a_driver.html">Using a Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PluginPlay Tutorials</a></li>
+      <li class="breadcrumb-item active">Drivers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/drivers/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="drivers">
+<span id="driver-tutorials"></span><h1>Drivers<a class="headerlink" href="#drivers" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Drivers are a planned feature. The APIs on this page are planned APIs that
+are not yet implemented, and the code is not yet tested. See
+<a class="reference internal" href="../../developer/design/driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a> for the design.</p>
+</div>
+<p>Running a calculation usually means configuring more than one module. For
+example, to compute the force on a charged particle (see
+<a class="reference internal" href="../modules/index.html#module-development"><span class="std std-ref">Module Development</span></a>) with a screened electric field, a user must:</p>
+<ul class="simple">
+<li><p>bind the “electric field” submodule of the “Classical Force” module to the
+“Coulomb’s Law with screening” module, and</p></li>
+<li><p>set the “threshold” input of the “Coulomb’s Law with screening” module.</p></li>
+</ul>
+<p>The user has to know which modules to change, and which of their inputs and
+submodules. If they forget one, <em>e.g.</em>, they set the threshold but not the
+submodule, the setting silently has no effect.</p>
+<p>A <em>driver</em> collects these choices in one place. A driver is a module whose
+inputs and submodules are the settings of a whole calculation. When the driver
+runs, it applies those settings to the modules below it. The user configures
+the driver with the same <code class="docutils literal notranslate"><span class="pre">change_input</span></code> and <code class="docutils literal notranslate"><span class="pre">change_submod</span></code> calls they use
+for any other module.</p>
+<p>This part of the tutorials writes a driver, <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code>, for the force
+calculation above, and then shows how to use it. The design of drivers is
+covered in <a class="reference internal" href="../../developer/design/driver.html"><span class="doc">Designing Drivers</span></a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="writing_a_driver.html">Writing a Driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing_a_driver.html#declaring-the-driver">Declaring the Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_a_driver.html#the-driver-s-settings">The Driver’s Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_a_driver.html#the-run-member">The Run Member</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_a_driver.html">Using a Driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_a_driver.html#adding-the-driver">Adding the Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_a_driver.html#running-the-driver">Running the Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_a_driver.html#changing-the-settings">Changing the Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_a_driver.html#settings-with-no-effect">Settings With No Effect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_a_driver.html#overriding-the-driver-s-choices">Overriding the Driver’s Choices</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../plugins/document_modules.html" class="btn btn-neutral float-left" title="Documenting Modules in a Collection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="writing_a_driver.html" class="btn btn-neutral float-right" title="Writing a Driver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

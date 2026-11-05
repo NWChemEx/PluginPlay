@@ -211,7 +211,7 @@ pieces it is now possible to describe how nodes will actually call one another.
 
 .. _fig_data_flow:
 
-.. figure:: assets/data_flow.png
+.. figure:: ../assets/data_flow.png
    :align: center
 
    Left how typed information traverses the user's code into the module
@@ -266,7 +266,7 @@ depicted in :numref:`fig_assemble_call_graph`.
 
 .. _fig_assemble_call_graph:
 
-.. figure:: assets/making_callgraph.png
+.. figure:: ../assets/making_callgraph.png
    :align: center
 
    Each module must register with PluginPlay the number of callback points
@@ -366,4 +366,5 @@ Additional Notes
 #. For simplicity we assumed that each module object stores a list of the
    modules it will call, and PluginPlay manipulates this list. We could
    create a full fledged graph object at a later point. This would
-   facilitate searching the graph.
+   facilitate searching the graph. That object is designed in
+   :ref:`call_graph_class_design`.

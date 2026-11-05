@@ -78,41 +78,6 @@ Store callback points.
    The graph only works if nodes can call other nodes. Modules must be able to
    call sub-modules, which requires somehow being able to hold the submodules.
 
-.. _mc_driver_modules:
-
-Driver modules.
-   Motivation for driver modules is given below. In short, we need modules whose
-   sole purpose is to do some setup and then call another/other module(s).
-
-Need for Driver Modules
-=======================
-
-.. _fig_switching_modules:
-
-.. figure:: assets/switching_modules.png
-   :align: center
-
-   Left the original graph. Right the graph resulting from using module "E"
-   instead of "D". The question is how can both graphs be loaded into the
-   ``ModuleManager`` simultaneously?
-
-Consider the two graphs shown in :numref:`fig_switching_modules`. Let's call
-the left graph "L" and the right graph "R". If we choose to have graph "L" be
-the default graph that is loaded into the ``ModuleManager`` the user can go
-from  graph "L" to graph "R" by telling the ``ModuleManager`` to switch the
-submodule node "C" uses from node "D" to node "E". While viable, this is not
-necessarily user-friendly as running "R" vs "L" means the user needs to know to
-switch "D" to "E".
-
-If we wanted to make it easy to run both "R" and "L" one option is to make
-copies of the "A" and "C" modules. Let "RA" and "RC" respectively be those
-copies. Then it becomes possible to have both the "L" and "R" graphs loaded into
-the ``ModuleManager`` by default. More specifically, "L" is loaded in in the
-same manner, "R" is loaded in by having "RC" call "E" and "RA" call "B" and
-"RC". While this solution works, it can be tedious depending on how nested
-the graph is. It also can be wasteful because the two graphs may have a
-substantial amount of overlap.
-
 ***********************
 Module Component Design
 ***********************
@@ -158,60 +123,6 @@ to modifiable state. This is where the "Temporary Cache" comes in. The derived
 class is able to put/get data in/out of the temporary cache using a key-value
 system.
 
-Driver Module Development
-=========================
-
-To address :ref:`mc_driver_modules` we introduce the idea of a driver module.
-
-Design 1.0
-----------
-
-.. note::
-
-   This is here for historic context, it's NOT current.
-
-To ensure that driver modules interoperate with other modules, driver modules
-also inherit from ``ModuleBase``. Keeping with :ref:`mc_run_hook`, we want the
-``run`` member of the driver module to have minimal branching, thus logic for
-swapping modules should happen before ``run`` is called. Our solution is to
-introduce ``ModuleBase::pre_run``. This method allows the derived module to
-manipulate the input values and submodules ``run`` will call before they are
-passed to ``run``. By default ``ModuleBase::pre_run`` will just return the
-inputs and submodules provided to it. To define a driver module, the module
-developer overrides the default implementation. For symmetry we also introduce
-``ModuleBase::post_run`` which allows the derived class to manipulate the
-results before they are given back to the caller of ``Module::run``.
-
-The official C++ API for declaring a module is to use the ``DECLARE_MODULE``
-macro. If the user is going to override ``pre_run`` or ``post_run`` this changes
-the declaration needed (i.e., the signature for ``pre_run`` and/or ``post_run``
-must be part of the declaration). To avoid an API break we introduce a new macro
-``DECLARE_MODULE_DRIVER``, for symmetry we require users to override both
-``pre_run`` and ``post_run`` if they choose to write a driver (even if they
-only need one or the other).
-
-Design 2.0
-----------
-
-In prototyping design 1.0, it was realized that ``Module::run`` looks like:
-
-.. code-block:: c++
-
-   std::tie(inputs, submods) = module.pre_run(inputs, submods);
-   auto rv = module.run(inputs, submods);
-   rv = module.post_run(inputs, submods, rv);
-
-With nothing between ``pre_run`` and ``run`` (or ``run`` and ``post_run``) there
-is no reason (aside from partitioning preference) why the module developer can't
-just put their pre-run and post-run logic inside their module's run overload.
-More specifically the same inputs and submods that would go to ``pre_run`` can
-just be fed to ``run``, then the same logic which would have happened in
-``pre_run`` can just happen in ``run``. Similarly all information which would
-have been fed into ``post_run`` is also available in ``run``.
-
-Ultimately, it was thus realized that pre- and post- conditions can be handled
-as is.
-
 *******
 Summary
 *******
@@ -224,7 +135,6 @@ The above design specifically addresses the stated considerations by:
      ``run_`` member.
    - Metadata for the module can be registered with ``ModuleBase`` (and thus
      PluginPlay) in the derived class's ctor.
-
 
 :ref:`mc_memoization`
 
@@ -244,7 +154,3 @@ The above design specifically addresses the stated considerations by:
    - ``ModuleBase`` records the hooks (property types and associated tag) for
      each call back location.
    - ``ModulePIMPl`` holds the bound callbacks for each hook.
-
-:ref:`mc_driver_modules`
-
-   - Driver modules can be

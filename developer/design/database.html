@@ -7,6 +7,7 @@
   <title>Database Design &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,6 +56,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver.html">Designing Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph/index.html">Call Graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
@@ -70,7 +73,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
@@ -1110,14 +1112,14 @@ more straightforward than mapping the SQL-based API of SQLiteC++.</p>
 <figure class="align-default" id="id3">
 <span id="fig-db-design"></span><img alt="../../_images/database_design.png" src="../../_images/database_design.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 11 </span><span class="caption-text">Class diagram for the <code class="docutils literal notranslate"><span class="pre">Database</span></code> backend implementing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>. N.B.
+<p><span class="caption-number">Fig. 13 </span><span class="caption-text">Class diagram for the <code class="docutils literal notranslate"><span class="pre">Database</span></code> backend implementing the <code class="docutils literal notranslate"><span class="pre">Cache</span></code>. N.B.
 on most browsers you can “open image in a new tab” to easily zoom in.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>Ultimately none of the databases we considered have all of the features we want.
 Our current Database strategy grafts the missing functionality onto RocksDB.
 The class structure for our <code class="docutils literal notranslate"><span class="pre">Database</span></code> class is summarized in
-<a class="reference internal" href="#fig-db-design"><span class="std std-numref">Fig. 11</span></a>. The general design strategy is to rely on nesting
+<a class="reference internal" href="#fig-db-design"><span class="std std-numref">Fig. 13</span></a>. The general design strategy is to rely on nesting
 polymorphic PIMPLs to acheive an implementation with the desired properties. Our
 initial database PIMPL has four levels. For our first pass we only worry about
 storing keys/values locally. That is each process’s <code class="docutils literal notranslate"><span class="pre">Database</span></code> will be
@@ -1142,7 +1144,7 @@ mapping from the input set to the result set (for a specific module).</p>
 <figure class="align-default" id="id4">
 <span id="fig-db-pimpl-design"></span><img alt="../../_images/db_pimpl_design.png" src="../../_images/db_pimpl_design.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Structure of the PIMPL implementing the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class. See text for more
+<p><span class="caption-number">Fig. 14 </span><span class="caption-text">Structure of the PIMPL implementing the <code class="docutils literal notranslate"><span class="pre">Database</span></code> class. See text for more
 details.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
@@ -1155,7 +1157,7 @@ what happens after flushing the <code class="docutils literal notranslate"><span
 <code class="docutils literal notranslate"><span class="pre">PerModuleObjectDatabase</span></code> works) can be modified by creating (and nesting)
 more <code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> objects. The overall initial structure of the
 <code class="docutils literal notranslate"><span class="pre">DatabasePIMPL</span></code> used to implement the <code class="docutils literal notranslate"><span class="pre">Database</span></code> in the Cache is shown in
-<a class="reference internal" href="#fig-db-pimpl-design"><span class="std std-numref">Fig. 12</span></a>.</p>
+<a class="reference internal" href="#fig-db-pimpl-design"><span class="std std-numref">Fig. 14</span></a>.</p>
 <section id="database-considerations-addressed">
 <h3>Database Considerations Addressed<a class="headerlink" href="#database-considerations-addressed" title="Link to this heading"></a></h3>
 <p>This section explains how our current database strategy addresses the

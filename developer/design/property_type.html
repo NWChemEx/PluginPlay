@@ -7,6 +7,7 @@
   <title>Designing the Property Type Component &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,6 +56,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver.html">Designing Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph/index.html">Call Graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Property Type Component</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#what-is-the-property-type-component">What is the Property Type Component?</a></li>
@@ -66,7 +69,6 @@
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
@@ -110,7 +112,7 @@
              
   <section id="designing-the-property-type-component">
 <span id="property-type-design"></span><h1>Designing the Property Type Component<a class="headerlink" href="#designing-the-property-type-component" title="Link to this heading"></a></h1>
-<p><a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> calls for a property type component. This section
+<p><a class="reference internal" href="call_graph/call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> calls for a property type component. This section
 outlines the design decisions that went into that component.</p>
 <section id="what-is-the-property-type-component">
 <h2>What is the Property Type Component?<a class="headerlink" href="#what-is-the-property-type-component" title="Link to this heading"></a></h2>
@@ -122,7 +124,7 @@ typed/type-erased objects while also enforcing a standardized <a class="referenc
 </section>
 <section id="property-type-considerations">
 <h2>Property Type Considerations<a class="headerlink" href="#property-type-considerations" title="Link to this heading"></a></h2>
-<p>From <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> we have:</p>
+<p>From <a class="reference internal" href="call_graph/call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> we have:</p>
 <ol class="arabic simple">
 <li><p>Dynamic determine module <a class="reference internal" href="../../background/terminology.html#api"><span class="std std-ref">API</span></a></p>
 <ul class="simple">
@@ -164,13 +166,13 @@ avoiding duplication</p></li>
 <figure class="align-center" id="id1">
 <span id="fig-property-type-design"></span><img alt="../../_images/property_type_design.png" src="../../_images/property_type_design.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Architecture of the property type component. Users derive from the
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Architecture of the property type component. Users derive from the
 <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class to implement their property types. The template
 meta-programming needed for dealing with types is factored out into the
 <code class="docutils literal notranslate"><span class="pre">FieldTuple</span></code> class.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>Fig <a class="reference internal" href="#fig-property-type-design"><span class="std std-numref">Fig. 8</span></a> shows the architecture of the property
+<p>Fig <a class="reference internal" href="#fig-property-type-design"><span class="std std-numref">Fig. 10</span></a> shows the architecture of the property
 type component. The <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code> class holds the bulk of the implementation.
 Users derive their property types from <code class="docutils literal notranslate"><span class="pre">PropertyType</span></code>, using the curiously-
 recursive template pattern (CRTP). CRTP facilitates PluginPlay implementing

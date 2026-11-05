@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing a Driver &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using a Driver" href="using_a_driver.html" />
+    <link rel="prev" title="Drivers" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PluginPlay Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html">Module Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../property_types/index.html">Property Type Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/index.html">Module Collections</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Drivers</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing a Driver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#declaring-the-driver">Declaring the Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-driver-s-settings">The Driver’s Settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-run-member">The Run Member</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="using_a_driver.html">Using a Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/index.html">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PluginPlay Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Drivers</a></li>
+      <li class="breadcrumb-item active">Writing a Driver</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/drivers/writing_a_driver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="writing-a-driver">
+<span id="id1"></span><h1>Writing a Driver<a class="headerlink" href="#writing-a-driver" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Drivers are a planned feature. The APIs on this page are planned APIs that
+are not yet implemented, and the code is not yet tested. See
+<a class="reference internal" href="../../developer/design/driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a> for the design.</p>
+</div>
+<p>A driver is written like a module (see <a class="reference internal" href="../modules/index.html#module-development"><span class="std std-ref">Module Development</span></a>). Its
+constructor declares, on top of what a module’s constructor declares, how the
+driver configures the modules below it. This page writes <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code>,
+which computes a force with “Classical Force” and lets the user choose
+whether the electric field is screened.</p>
+<section id="declaring-the-driver">
+<h2>Declaring the Driver<a class="headerlink" href="#declaring-the-driver" title="Link to this heading"></a></h2>
+<p>PluginPlay provides the macro <code class="docutils literal notranslate"><span class="pre">DECLARE_DRIVER(T)</span></code>, the driver counterpart of
+<code class="docutils literal notranslate"><span class="pre">DECLARE_MODULE(T)</span></code>. It declares a class <code class="docutils literal notranslate"><span class="pre">T</span></code> that derives from
+<code class="docutils literal notranslate"><span class="pre">DriverBase</span></code>, which in turn derives from <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pluginplay/pluginplay.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">pluginplay_examples</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">DECLARE_DRIVER</span><span class="p">(</span><span class="n">ForceDriver</span><span class="p">);</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace pluginplay_examples</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Declaring a driver is not required if the driver is written in Python. In
+Python, drivers derive from <code class="docutils literal notranslate"><span class="pre">pluginplay.DriverBase</span></code>.</p>
+</div>
+</section>
+<section id="the-driver-s-settings">
+<h2>The Driver’s Settings<a class="headerlink" href="#the-driver-s-settings" title="Link to this heading"></a></h2>
+<p>The constructor is started with <code class="docutils literal notranslate"><span class="pre">DRIVER_CTOR(T)</span></code>. As for a module, it sets
+the property type the driver satisfies, and the driver’s inputs and
+submodules. <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> satisfies <code class="docutils literal notranslate"><span class="pre">Force</span></code>, so that it can be used
+anywhere a force module can. Its “force” submodule is the module that does the
+work, and its two inputs are the settings the user can change:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">DRIVER_CTOR</span><span class="p">(</span><span class="n">ForceDriver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">description</span><span class="p">(</span><span class="n">driver_desc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">satisfies_property_type</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;force&quot;</span><span class="p">).</span><span class="n">set_description</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;The module that computes the force&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;screen&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;Should the electric field be screened?&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ForceDriver</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">DriverBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pp</span><span class="o">.</span><span class="n">DriverBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">(</span><span class="s2">&quot;Classical force with an optionally screened field&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfies_property_type</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">Force</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_submodule</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">Force</span><span class="p">(),</span> <span class="s2">&quot;force&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span>
+            <span class="s2">&quot;The module that computes the force&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;screen&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>The rest of the constructor says how those settings reach the modules below
+the driver. A driver has two ways to do that: wiring and conditional wiring.
+Each names the modules it configures by their keys in the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>.</p>
+<section id="wiring">
+<h3>Wiring<a class="headerlink" href="#wiring" title="Link to this heading"></a></h3>
+<p>In a driver’s constructor, <code class="docutils literal notranslate"><span class="pre">add_input</span></code> and <code class="docutils literal notranslate"><span class="pre">add_submodule</span></code> return
+wrappers that, besides the usual setters, have
+<code class="docutils literal notranslate"><span class="pre">set_target(module,</span> <span class="pre">target)</span></code>. It gives the input or submodule <code class="docutils literal notranslate"><span class="pre">target</span></code> of
+the module <code class="docutils literal notranslate"><span class="pre">module</span></code> the value of the driver’s input or submodule, whatever
+the driver’s other settings are. A driver that let the user pick the electric
+field directly would declare:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">set_target</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">add_submodule</span><span class="p">(</span><span class="n">ppe</span><span class="o">.</span><span class="n">ElectricField</span><span class="p">(),</span> <span class="s2">&quot;electric field&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span>
+    <span class="s2">&quot;Coulomb&#39;s Law&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="s2">&quot;Classical Force&quot;</span><span class="p">,</span> <span class="s2">&quot;electric field&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p><code class="docutils literal notranslate"><span class="pre">set_default</span></code> on a submodule names the module used if the user binds none.
+<code class="docutils literal notranslate"><span class="pre">set_target</span></code> can be called more than once, to wire one input or submodule to
+several modules. <code class="docutils literal notranslate"><span class="pre">set_required_target</span></code> does the same, but makes it an error
+for the setting to have no effect (see <a class="reference internal" href="using_a_driver.html#using-a-driver"><span class="std std-ref">Using a Driver</span></a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> does not use <code class="docutils literal notranslate"><span class="pre">set_target</span></code>: its “threshold” only matters when
+the screened electric field is used, so it is wired in a branch of a chain
+instead.</p>
+</section>
+<section id="conditional-wiring">
+<h3>Conditional Wiring<a class="headerlink" href="#conditional-wiring" title="Link to this heading"></a></h3>
+<p>Sometimes one setting changes several things, picks between fixed values, or
+decides whether another setting matters. <code class="docutils literal notranslate"><span class="pre">when(input,</span> <span class="pre">value)</span></code> starts a
+<em>chain</em> of branches. The first branch applies if the driver’s input <code class="docutils literal notranslate"><span class="pre">input</span></code>
+equals <code class="docutils literal notranslate"><span class="pre">value</span></code>. <code class="docutils literal notranslate"><span class="pre">otherwise(input,</span> <span class="pre">value)</span></code> starts another branch with its
+own condition, and <code class="docutils literal notranslate"><span class="pre">otherwise()</span></code> starts a branch that applies if no other
+does. Only the first branch whose condition holds is applied. A branch can
+hold:</p>
+<ul class="simple">
+<li><p>fixed values, added with <code class="docutils literal notranslate"><span class="pre">set_input(module,</span> <span class="pre">input,</span> <span class="pre">value)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">set_submod(module,</span> <span class="pre">submod,</span> <span class="pre">choice)</span></code>; and</p></li>
+<li><p>inputs and submodules of the driver, wired with
+<code class="docutils literal notranslate"><span class="pre">forward_input(module,</span> <span class="pre">input,</span> <span class="pre">driver_input)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">forward_submod(module,</span> <span class="pre">submod,</span> <span class="pre">driver_submod)</span></code>, which work like
+<code class="docutils literal notranslate"><span class="pre">set_target</span></code>, but only when the branch is taken.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> picks the electric field with its “screen” input, and passes
+its “threshold” on only when the screened field is used:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Use the screened electric field, and its threshold, if &quot;screen&quot;</span>
+<span class="c1">// is true</span>
+<span class="n">when</span><span class="p">(</span><span class="s">&quot;screen&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">set_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">forward_input</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;threshold&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">otherwise</span><span class="p">()</span>
+<span class="w">  </span><span class="p">.</span><span class="n">set_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the screened electric field, and its threshold, if &quot;screen&quot;</span>
+<span class="c1"># is True</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="s2">&quot;screen&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set_submod</span><span class="p">(</span>
+    <span class="s2">&quot;Classical Force&quot;</span><span class="p">,</span> <span class="s2">&quot;electric field&quot;</span><span class="p">,</span> <span class="s2">&quot;Coulomb&#39;s Law with screening&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">forward_input</span><span class="p">(</span>
+    <span class="s2">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">otherwise</span><span class="p">()</span><span class="o">.</span><span class="n">set_submod</span><span class="p">(</span>
+    <span class="s2">&quot;Classical Force&quot;</span><span class="p">,</span> <span class="s2">&quot;electric field&quot;</span><span class="p">,</span> <span class="s2">&quot;Coulomb&#39;s Law&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Because “threshold” is forwarded only in the “screen” branch, it is ignored
+quietly when “screen” is false, unless the user changed it, in which case the
+user is warned that it has no effect (see <a class="reference internal" href="using_a_driver.html#using-a-driver"><span class="std std-ref">Using a Driver</span></a>).</p>
+<p>A chain only sets fixed values and forwards the driver’s settings. A choice
+that needs more logic than that is better written as its own module or
+driver.</p>
+</section>
+<section id="one-setting-per-target">
+<h3>One Setting per Target<a class="headerlink" href="#one-setting-per-target" title="Link to this heading"></a></h3>
+<p>Within a driver, each input or submodule of a module below it is set by one
+<code class="docutils literal notranslate"><span class="pre">set_target</span></code> call, or by one chain, whose branches may all set or forward to
+it. Setting it in two places is an error, so a driver never has to
+decide which of its own settings wins. Values that a user sets on the driver
+(see <a class="reference internal" href="using_a_driver.html#using-a-driver"><span class="std std-ref">Using a Driver</span></a>) are applied after the driver’s settings, so they
+always win.</p>
+</section>
+<section id="other-settings">
+<h3>Other Settings<a class="headerlink" href="#other-settings" title="Link to this heading"></a></h3>
+<p>Two more settings are not used by <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">wire_memoization(on,</span> <span class="pre">except)</span></code> turns memoization on or off for every
+module below the driver, except the modules whose keys are in <code class="docutils literal notranslate"><span class="pre">except</span></code>.</p></li>
+<li><p>A branch of a chain can be marked <code class="docutils literal notranslate"><span class="pre">.required()</span></code>, as <code class="docutils literal notranslate"><span class="pre">set_required_target</span></code>
+marks a wired input or submodule. A required setting that would have no
+effect (see <a class="reference internal" href="using_a_driver.html#using-a-driver"><span class="std std-ref">Using a Driver</span></a>) is an error instead of a warning.</p></li>
+</ul>
+</section>
+</section>
+<section id="the-run-member">
+<h2>The Run Member<a class="headerlink" href="#the-run-member" title="Link to this heading"></a></h2>
+<p>The run member is defined with <code class="docutils literal notranslate"><span class="pre">MODULE_RUN(T)</span></code>, as for a module. By the time
+it is called, the driver’s settings have been applied, so <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> only
+needs to call its “force” submodule:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ForceDriver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">F</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;force&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">wrap_results</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">run_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">submods</span><span class="p">):</span>
+    <span class="n">pt</span> <span class="o">=</span> <span class="n">ppe</span><span class="o">.</span><span class="n">Force</span><span class="p">()</span>
+    <span class="p">[</span><span class="n">q</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">charges</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">submods</span><span class="p">[</span><span class="s2">&quot;force&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">run_as</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">charges</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pt</span><span class="o">.</span><span class="n">wrap_results</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">(),</span> <span class="n">F</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Drivers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="using_a_driver.html" class="btn btn-neutral float-right" title="Using a Driver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

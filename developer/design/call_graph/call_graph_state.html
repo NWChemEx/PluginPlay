@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State of a Call Graph &mdash; PluginPlay 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Designing the CallGraph Class" href="call_graph_class.html" />
+    <link rel="prev" title="Designing the Call Graph Component" href="call_graph.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/full_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../background/index.html">PluginPlay Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">List of PluginPlay Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installing PluginPlay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">PluginPlay Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Design Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../module_manager.html">Designing the Module Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../driver.html">Designing Drivers</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Call Graph</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">State of a Call Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="call_graph_class.html">Designing the CallGraph Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../module.html">Designing the Module Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../property_type.html">Designing the Property Type Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../field.html">Designing the Field Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cache.html">Cache Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../database.html">Database Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pluginplay_initialization.html">Initializing the ModuleManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memoization.html">Memoization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../checkpoint_restart.html">Checkpoint/Restart</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../how_does_run_as_work.html">How Does run_as work?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">PluginPlay Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibliography/bibliography.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://nwchemex.github.io/PluginPlay/pluginplay_cxx_api/index.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PluginPlay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Design Topics</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Call Graph</a></li>
+      <li class="breadcrumb-item active">State of a Call Graph</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/developer/design/call_graph/call_graph_state.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="state-of-a-call-graph">
+<span id="call-graph-state-design"></span><h1>State of a Call Graph<a class="headerlink" href="#state-of-a-call-graph" title="Link to this heading"></a></h1>
+<p>This page lists the state that determines what running a module does, and
+says which class holds each piece at runtime. It covers the state that exists
+today and the state that drivers (see <a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>) add.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Drivers are not implemented yet. <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code>, <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> are the planned classes of this page and
+<a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>.</p>
+</div>
+<section id="what-is-call-graph-state">
+<h2>What is Call Graph State?<a class="headerlink" href="#what-is-call-graph-state" title="Link to this heading"></a></h2>
+<p>Running a module runs the modules bound to its submodules, which run the
+modules bound to theirs, and so on. The state of a call graph is everything
+that decides what that run does:</p>
+<ul class="simple">
+<li><p>the <em>shape</em> of the graph, <em>i.e.</em>, which module is bound to each submodule;</p></li>
+<li><p>the <em>inputs</em> each module runs with; and</p></li>
+<li><p>the <em>bookkeeping</em> PluginPlay keeps for each module: whether it is locked,
+whether it memoizes, its cache, its timer, and its runtime.</p></li>
+</ul>
+<p>As <a class="reference internal" href="call_graph.html#call-graph-design"><span class="std std-ref">Designing the Call Graph Component</span></a> established, the nodes of the call graph are
+<code class="docutils literal notranslate"><span class="pre">Module</span></code> objects. A <code class="docutils literal notranslate"><span class="pre">Module</span></code> holds its inputs and the submodule requests
+that bind its children, so the graph is the set of <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects
+reachable from the one being run.</p>
+</section>
+<section id="why-document-call-graph-state">
+<h2>Why Document Call Graph State?<a class="headerlink" href="#why-document-call-graph-state" title="Link to this heading"></a></h2>
+<p>Drivers set the inputs and submodules of modules below them, without changing
+the modules the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> holds. That needs somewhere to keep the
+values a driver sets. An earlier design added a node class, <code class="docutils literal notranslate"><span class="pre">CallGraphNode</span></code>,
+for this (see <a class="reference internal" href="#comparison-with-callgraphnode">Comparison With CallGraphNode</a>). <code class="docutils literal notranslate"><span class="pre">Module</span></code> is already the node
+of the call graph, and a driver is a module, so this page sets out where each
+piece of state lives, and how the state drivers add lives in <code class="docutils literal notranslate"><span class="pre">Module</span></code> and its
+PIMPL.</p>
+</section>
+<section id="call-graph-state-concerns">
+<h2>Call Graph State Concerns<a class="headerlink" href="#call-graph-state-concerns" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>One owner per layer.</strong></p>
+<ul class="simple">
+<li><p>Each layer of settings is stored by the class of whoever sets it, so
+setting one layer can not change another.</p></li>
+</ul>
+</li>
+<li><p><strong>No copies of state.</strong></p>
+<ul class="simple">
+<li><p>A layer that changes a few values points to the layer below it and
+stores only what it changes. Inputs may be large, <em>e.g.</em>, a molecule or
+a basis set, so they are not copied to change one setting.</p></li>
+</ul>
+</li>
+<li><p><strong>No new classes without need.</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Module</span></code> is the node of the call graph, for drivers too. A new class is
+added only for state it can not hold.</p></li>
+</ul>
+</li>
+<li><p><strong>The ModuleManager’s modules are not changed by drivers.</strong></p>
+<ul class="simple">
+<li><p>A module the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> holds runs the same way on its own after a
+driver has used it.</p></li>
+</ul>
+</li>
+<li><p><strong>Sharing is preserved.</strong></p>
+<ul class="simple">
+<li><p>A module bound in several places in the call graph is one object, so it
+runs, memoizes, and is timed as one module.</p></li>
+</ul>
+</li>
+<li><p><strong>State is immutable once locked.</strong></p>
+<ul class="simple">
+<li><p>Every layer a locked module reads is locked too, so nothing a module
+points to can change under it.</p></li>
+</ul>
+</li>
+<li><p><strong>Memoization is correct.</strong></p>
+<ul class="simple">
+<li><p>Two modules with the same memoization key compute the same results.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="the-layers-of-settings">
+<h2>The Layers of Settings<a class="headerlink" href="#the-layers-of-settings" title="Link to this heading"></a></h2>
+<p>The settings of a module come in four layers. Each layer is set by someone
+different, and each later layer overrides the earlier ones:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 20%" />
+<col style="width: 28%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Layer</p></th>
+<th class="head"><p>Set by</p></th>
+<th class="head"><p>How</p></th>
+<th class="head"><p>Stored in</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><ol class="arabic simple">
+<li><p>Module defaults</p></li>
+</ol>
+</td>
+<td><p>Module developer</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">add_input</span></code>, <code class="docutils literal notranslate"><span class="pre">add_submodule</span></code>, <code class="docutils literal notranslate"><span class="pre">set_default</span></code>, in the module’s
+constructor</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="2">
+<li><p>User choices</p></li>
+</ol>
+</td>
+<td><p>User</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">change_input</span></code>, <code class="docutils literal notranslate"><span class="pre">change_submod</span></code>, <code class="docutils literal notranslate"><span class="pre">turn_off_memoization</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>, through <code class="docutils literal notranslate"><span class="pre">Module</span></code></p></td>
+</tr>
+<tr class="row-even"><td><ol class="arabic simple" start="3">
+<li><p>Driver defaults</p></li>
+</ol>
+</td>
+<td><p>Driver developer</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set_target</span></code> and <code class="docutils literal notranslate"><span class="pre">set_default</span></code> on the driver’s <code class="docutils literal notranslate"><span class="pre">add_input</span></code> and
+<code class="docutils literal notranslate"><span class="pre">add_submodule</span></code>, <code class="docutils literal notranslate"><span class="pre">when</span></code>, and <code class="docutils literal notranslate"><span class="pre">wire_memoization</span></code>, in the driver’s
+constructor</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code> in <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="4">
+<li><p>User overrides of the driver</p></li>
+</ol>
+</td>
+<td><p>User</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">change_input</span></code> and <code class="docutils literal notranslate"><span class="pre">change_submod</span></code> on the driver, and
+<code class="docutils literal notranslate"><span class="pre">set_input</span></code> and <code class="docutils literal notranslate"><span class="pre">set_submod</span></code> on
+<code class="docutils literal notranslate"><span class="pre">Module::call_graph_request()</span></code></p></td>
+<td><p>The driver’s <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>, including its <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code>,
+through <code class="docutils literal notranslate"><span class="pre">Module</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Layers 3 and 4 parallel layers 1 and 2: the developer’s part is in the
+implementation class, and the user’s part is in <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>. There are
+only two places to store settings, <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> (or <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code>) and
+<code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>, for modules and drivers alike.</p>
+<section id="layers-1-and-2">
+<h3>Layers 1 and 2<a class="headerlink" href="#layers-1-and-2" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> holds the module developer’s declarations: the inputs with
+their defaults, the submodule requests with their property types and no
+module bound, the property types and results, the description, and the
+citations. It also holds the UUID and the runtime the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> gives
+it, and the module’s internal cache. The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> keeps one
+<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> per module type, and every <code class="docutils literal notranslate"><span class="pre">Module</span></code> of that type shares it
+through a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code>, so a module’s implementation is never copied.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> holds the user’s choices: the inputs, the submodule requests
+with the modules bound to them, and whether the module memoizes. It also holds
+the module’s bookkeeping: whether it is locked, the pointer to its cache in
+the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s caches, and its timer.</p>
+<p>Today <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> does not store layer 2 as changes to layer 1. Its
+constructor copies all of the inputs and submodule requests of the
+<code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>, and <code class="docutils literal notranslate"><span class="pre">change_input</span></code> changes the copy. The copy is made once,
+when the module is made, before any large input is set, so it is cheap.</p>
+</section>
+<section id="layers-3-and-4">
+<h3>Layers 3 and 4<a class="headerlink" href="#layers-3-and-4" title="Link to this heading"></a></h3>
+<p>A driver is a module, so it has layers 1 and 2 of its own: its inputs and
+submodules, declared by the driver developer and changed by the user. Layers 3
+and 4 are not values of the driver. They are <em>wiring requests</em>: what to set
+on the modules below it:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DriverBase</span></code> holds the driver developer’s <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code>: the
+requests made with <code class="docutils literal notranslate"><span class="pre">set_target</span></code>, the conditional chains, the
+memoization policy, and the default modules for the driver’s submodules (see
+<a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>). <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> returns an empty request, so a module
+that is not a driver has no layer 3.</p></li>
+<li><p>The driver’s <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> holds the values the user gave the driver’s
+inputs and submodules, which the <code class="docutils literal notranslate"><span class="pre">set_target</span></code> requests pass on, and the
+user’s <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code>, which holds the fixed values the user set with
+<code class="docutils literal notranslate"><span class="pre">set_input</span></code> and <code class="docutils literal notranslate"><span class="pre">set_submod</span></code>. The user’s request is empty for a module
+that is not a driver, and <code class="docutils literal notranslate"><span class="pre">Module::call_graph_request()</span></code> throws for one.</p></li>
+</ul>
+<p>The wiring requests name their targets by module key, so they become values
+only when the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> resolves the keys, which is when the driver is
+locked.</p>
+</section>
+</section>
+<section id="where-state-lives">
+<h2>Where State Lives<a class="headerlink" href="#where-state-lives" title="Link to this heading"></a></h2>
+<p>The layers above are what people set. The state a run reads is the result of
+combining them. This section says where that combined state lives.</p>
+<section id="outside-a-driver">
+<h3>Outside a Driver<a class="headerlink" href="#outside-a-driver" title="Link to this heading"></a></h3>
+<p>The state of a module that is not below a driver is fully specified by layers
+1 and 2, which are already combined in its <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>. No additional state
+changes are needed to run the module. The <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects are thus the
+nodes, and the submodule requests in their PIMPLs are the edges in the call
+graph.</p>
+</section>
+<section id="below-a-driver">
+<h3>Below a Driver<a class="headerlink" href="#below-a-driver" title="Link to this heading"></a></h3>
+<p>Until a driver is locked, drivers store wiring requests and not the actual
+changes. When a driver is locked, the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> resolves the requests
+and the changes must live somewhere without changing the state of the original
+modules (which may still be used by other call graphs). The proposal is that
+we introduce a new Module PIMPL that points to the original module and stores
+the changes alongside it. This is called an <em>overlay module</em>.</p>
+<ul class="simple">
+<li><p><strong>What it is.</strong> An overlay module is an ordinary <code class="docutils literal notranslate"><span class="pre">Module</span></code> whose PIMPL is an
+<code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code>, which derives from <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>. It points to the
+original <code class="docutils literal notranslate"><span class="pre">Module</span></code>, <em>i.e.</em>, the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>’s module, and stores only
+the inputs and submodule bindings that differ. Reading an input it does not
+store reads the original’s. It shares the original’s <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code> and
+cache, as every module of that type does. An overlay may point to another
+overlay, so changes can be chained.</p></li>
+<li><p><strong>When one is made.</strong> When a driver is locked, the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>
+resolves the driver’s wiring requests. A module gets an overlay module if a
+request changes one of its inputs or submodules, or if a module below it got
+one, since its submodule must then be bound to the overlay module. Every
+other module is used as is. Only modules in the driver’s region, <em>i.e.</em>,
+reachable without passing through a nested driver, are considered.</p></li>
+<li><p><strong>Sharing.</strong> The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> keeps a map from each original module to
+its overlay module while it resolves a driver, so a module bound in several
+places gets one overlay module. Any number of drivers can share a module
+that none of them changes. Drivers that change it each get their own
+overlay, and overlays with the same settings share results through
+memoization (see <a class="reference internal" href="#memoization">Memoization</a>).</p></li>
+<li><p><strong>Who owns them.</strong> The driver does. Its <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> holds the overlays
+and the submodule map the driver runs with, which binds its submodules to
+overlay modules where needed. Both are empty for a module that is not a
+driver. The driver’s own submodule requests, which hold the user’s
+bindings, are not changed. Copying the driver, <em>e.g.</em>, with
+<code class="docutils literal notranslate"><span class="pre">ModuleManager::copy_module</span></code>, does not copy the overlay modules, so the
+copy resolves its wiring requests again when it is locked.</p></li>
+<li><p><strong>Running.</strong> An overlay module is a <code class="docutils literal notranslate"><span class="pre">Module</span></code>, so the driver calls it through
+its submodule request like any other, and it runs through the usual
+<code class="docutils literal notranslate"><span class="pre">Module::run</span></code>. No submodule request needs to know about a separate node.</p></li>
+<li><p><strong>Nested drivers.</strong> A nested driver whose inputs an enclosing driver sets
+gets an overlay module like any other module. When it is locked, its wiring
+requests are resolved with its overlaid inputs, and its overlay modules are
+owned by it. Since the resolved changes live in modules, any call graph that
+reaches a driver reuses its overlays, which is what lets a driver stand for
+its whole subgraph. A module reachable both from an enclosing driver and
+below a nested driver may run with two configurations (see
+<a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>).</p></li>
+<li><p><strong>Locking.</strong> Locking a driver locks the overlay modules and the originals
+they point to, so neither can change while the driver uses them. This is
+today’s rule, under which running a module locks the modules below it.</p></li>
+</ul>
+<section id="implementing-the-overlay-pimpl">
+<h4>Implementing the Overlay PIMPL<a class="headerlink" href="#implementing-the-overlay-pimpl" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> is not polymorphic today. <code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> needs it to be,
+with a virtual destructor and a virtual <code class="docutils literal notranslate"><span class="pre">clone</span></code>, so that copying a
+<code class="docutils literal notranslate"><span class="pre">Module</span></code> copies the right kind of PIMPL. Three parts of today’s code shape
+<code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>The accessors return whole maps.</strong> <code class="docutils literal notranslate"><span class="pre">ModulePIMPL::inputs()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ModulePIMPL::submods()</span></code> return references to complete maps, as do
+<code class="docutils literal notranslate"><span class="pre">Module::inputs()</span></code> and <code class="docutils literal notranslate"><span class="pre">Module::submods()</span></code>, and running a module merges
+its inputs with that map. Copying a <code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> copies its value, since
+<code class="docutils literal notranslate"><span class="pre">AnyField</span></code> copies what it wraps, so a complete input map built by copying
+would copy every input of the original, including large ones.</p>
+<p>The proposal is to add a virtual <code class="docutils literal notranslate"><span class="pre">cref_clone()</span></code> to <code class="docutils literal notranslate"><span class="pre">AnyFieldBase</span></code>.
+<code class="docutils literal notranslate"><span class="pre">AnyFieldWrapper&lt;T&gt;</span></code> can already hold a <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">T&amp;</span></code>, which is how
+<code class="docutils literal notranslate"><span class="pre">ModuleInput</span></code> stores inputs declared as const references, and each
+wrapper knows its <code class="docutils literal notranslate"><span class="pre">T</span></code>, so it can make a wrapper of a <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">T&amp;</span></code> to its
+own value. <code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> then builds a complete input map in which each
+input it does not change refers to the original’s value, and only the
+inputs it changes hold values of their own. <code class="docutils literal notranslate"><span class="pre">Module::inputs()</span></code> keeps its
+signature, and nothing is copied. This is safe because the original is
+locked, so its values can not change, and the overlay keeps it alive.</p>
+<p>The submodule map has no such problem: a submodule request holds a
+<code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> to its module, so copying it copies no module.</p>
+</li>
+<li><p><strong>Overlays of drivers.</strong> The overlay of a driver must still be a driver.
+Being a driver is a property of the implementation, which the overlay
+shares with the original, so <code class="docutils literal notranslate"><span class="pre">is_driver()</span></code> and the developer’s request
+come for free. The overlay copies the original’s user request, which is
+small, so it can resolve the requests itself.</p></li>
+<li><p><strong>Lifetime and locking.</strong> The overlay holds a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> to the
+original <code class="docutils literal notranslate"><span class="pre">Module</span></code>, so the original lives as long as the overlay. Locking
+an overlay locks the original too.</p></li>
+</ol>
+<p>With these, <code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> adds little to <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>: the pointer to the
+original, and which inputs and submodules it changed. Whether it needs to be a
+class of its own, or is a <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> with an optional pointer to an
+original, can be decided when it is implemented.</p>
+</section>
+</section>
+<section id="bookkeeping">
+<h3>Bookkeeping<a class="headerlink" href="#bookkeeping" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 35%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>State</p></th>
+<th class="head"><p>Lives in</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lock flag</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>Overlay modules are locked when made.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Memoization on/off</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>The driver’s memoization policy is resolved into the overlay modules.</p></td>
+</tr>
+<tr class="row-even"><td><p>Module cache</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> caches, pointed to by <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>An overlay module shares its original’s cache.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Memoization key</p></td>
+<td><p>Computed by <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> when run</p></td>
+<td><p>Must include the state below the module, see <a class="reference internal" href="#memoization">Memoization</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>An overlay module has its own, so a run below a driver is timed
+separately from the original.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Internal cache, runtime, UUID</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code></p></td>
+<td><p>Shared by every module of the type, overlay or not.</p></td>
+</tr>
+<tr class="row-even"><td><p>Inactive settings</p></td>
+<td><p>The driver’s <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>Recorded when the driver’s wiring requests are resolved, and returned
+by <code class="docutils literal notranslate"><span class="pre">Module::inactive_settings()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fingerprint</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code></p></td>
+<td><p>Computed when the module is locked, see <a class="reference internal" href="#memoization">Memoization</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="memoization">
+<h3>Memoization<a class="headerlink" href="#memoization" title="Link to this heading"></a></h3>
+<p>Today a memoization key is a module’s inputs plus the UUIDs of its submodules’
+implementations. Modules of the same type share a <code class="docutils literal notranslate"><span class="pre">ModuleBase</span></code>, and so a
+UUID, so two modules with different state below them can have the same key. An
+overlay module shares its original’s cache, and its children share their
+originals’ UUIDs, so it would find the original’s results. This is not
+specific to drivers: modules of the same type with different submodules have
+the same problem today.</p>
+<p>The key must instead identify the state of everything below the module. Each
+module, overlay or not, gets a <em>fingerprint</em> when it is locked, computed from:</p>
+<ul class="simple">
+<li><p>the UUID of the module’s implementation,</p></li>
+<li><p>the module’s bound inputs,</p></li>
+<li><p>whether the module memoizes, and</p></li>
+<li><p>the fingerprints of the modules bound to its submodules, labeled by
+submodule key.</p></li>
+</ul>
+<p>Two modules have the same fingerprint exactly when they and everything below
+them would run with the same state. The memoization key of a call is the
+merged inputs plus the fingerprints of the submodules, replacing today’s
+submodule UUIDs. This removes the false matches, and lets an overlay share
+results with the original, or with another driver’s overlay, when they really
+are the same, so drivers need no caches of their own.</p>
+<p>The fingerprint must be cheap to compare and to store in many keys, so it is
+an interned ID: a <code class="docutils literal notranslate"><span class="pre">FingerprintTable</span></code> maps the full description of a module,
+<em>i.e.</em>, the four items above, to an ID. A fingerprint is a string, so the map
+from submodule keys to fingerprints has the type the submodule UUIDs had, and
+the cache and its databases are unchanged. Each <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> owns a table
+and gives it to its modules when it attaches them. A module that is not in a
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> uses a table of its own. The table must not outlive the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>, since it holds Python objects among the inputs it has seen.
+A table shared by the whole process was tried and crashed when it was
+destroyed after the Python interpreter.</p>
+</section>
+</section>
+<section id="comparison-with-callgraphnode">
+<h2>Comparison With CallGraphNode<a class="headerlink" href="#comparison-with-callgraphnode" title="Link to this heading"></a></h2>
+<p>An earlier design, <a class="reference internal" href="call_graph_class.html#call-graph-class-design"><span class="std std-ref">Designing the CallGraph Class</span></a> before it was cut back,
+made the call graph explicit with a <code class="docutils literal notranslate"><span class="pre">CallGraphNode</span></code> for every module, and
+ran modules as nodes. <code class="docutils literal notranslate"><span class="pre">CallGraphNode</span></code> and an overlay module hold the same
+thing: a pointer to a module plus the values a driver changed. The differences
+are:</p>
+<ul class="simple">
+<li><p>An overlay module is a <code class="docutils literal notranslate"><span class="pre">Module</span></code>, so no new public class is needed, and the
+usual <code class="docutils literal notranslate"><span class="pre">Module</span></code> functions, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">inputs()</span></code>, <code class="docutils literal notranslate"><span class="pre">submods()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">profile_info()</span></code>, inspect it.</p></li>
+<li><p>Submodule requests bind to overlay modules as they bind to any module, so
+they need no node pointer, and <code class="docutils literal notranslate"><span class="pre">Module::run</span></code> needs no node overload.</p></li>
+<li><p>The earlier <code class="docutils literal notranslate"><span class="pre">CallGraph</span></code> built a node for every module in the graph, driver
+or not. An overlay module is made only for a module below a driver whose
+state, or the state below it, changes. The cost is that a module above a
+changed module is overlaid too, although only its submodule binding
+differs.</p></li>
+</ul>
+</section>
+<section id="further-considerations">
+<h2>Further Considerations<a class="headerlink" href="#further-considerations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Layer 2 as changes.</strong> <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> could store layer 2 as changes to
+layer 1, as an overlay module stores changes to its original. Nothing needs
+this yet.</p></li>
+<li><p><strong>The CallGraph class.</strong> A read-only <code class="docutils literal notranslate"><span class="pre">CallGraph</span></code>, to inspect what a module
+will run, including the overlays a driver made and the settings that would
+be inactive, is left for later (see <a class="reference internal" href="call_graph_class.html#call-graph-class-design"><span class="std std-ref">Designing the CallGraph Class</span></a>).</p></li>
+<li><p><strong>Inspection API.</strong> How a user tells an overlay module from an original, and
+sees which values a driver changed, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">Module::is_overlay()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Module::overrides()</span></code>, is left open.</p></li>
+<li><p><strong>Copies in the fingerprint table.</strong> The <code class="docutils literal notranslate"><span class="pre">FingerprintTable</span></code> copies the
+inputs of each description it stores. It could hold <code class="docutils literal notranslate"><span class="pre">cref_clone</span></code> copies
+instead, but only if the modules they refer to outlive the table, which an
+overlay of a copied or destroyed driver does not. This is left for later.</p></li>
+<li><p><strong>Python.</strong> Overlay modules are <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects, so the Python bindings of
+<code class="docutils literal notranslate"><span class="pre">Module</span></code> cover them.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="call_graph.html" class="btn btn-neutral float-left" title="Designing the Call Graph Component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="call_graph_class.html" class="btn btn-neutral float-right" title="Designing the CallGraph Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

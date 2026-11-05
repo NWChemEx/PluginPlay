@@ -7,6 +7,7 @@
   <title>Cache Design &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,6 +56,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Topics</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver.html">Designing Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph/index.html">Call Graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
@@ -66,7 +69,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
@@ -322,10 +324,10 @@ wrapping the <code class="docutils literal notranslate"><span class="pre">Databa
 <figure class="align-default" id="id2">
 <span id="fig-cache-design"></span><img alt="../../_images/cache_design.png" src="../../_images/cache_design.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Main design points of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> and <code class="docutils literal notranslate"><span class="pre">ModuleCache</span></code> classes.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 10</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
+<p><a class="reference internal" href="#fig-cache-design"><span class="std std-numref">Fig. 12</span></a> summarizes the design of the <code class="docutils literal notranslate"><span class="pre">Cache</span></code> class. Each
 <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> instance can have at most one <code class="docutils literal notranslate"><span class="pre">Cache</span></code> instance. This
 ensures there’s a single source of truth for the program. The <code class="docutils literal notranslate"><span class="pre">Cache</span></code> will be
 hierarchical since memoization only makes sense for modules of the same C++

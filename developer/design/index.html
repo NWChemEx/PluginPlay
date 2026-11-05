@@ -7,6 +7,7 @@
   <title>Design Topics &mdash; PluginPlay 1.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,13 +56,14 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Design Topics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="module_manager.html">Designing the Module Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plugins.html">Designing the Plugin Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver.html">Designing Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="call_graph/index.html">Call Graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="module.html">Designing the Module Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="property_type.html">Designing the Property Type Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="field.html">Designing the Field Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">Database Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pluginplay_initialization.html">Initializing the ModuleManager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="memoization.html">Memoization Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="checkpoint_restart.html">Checkpoint/Restart</a></li>
 </ul>
@@ -123,6 +125,22 @@ the design) of PluginPlay.</p>
 <li class="toctree-l2"><a class="reference internal" href="plugins.html#further-considerations">Further Considerations</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="driver.html">Designing Drivers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#what-is-a-driver">What is a Driver?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#why-do-we-need-drivers">Why Do We Need Drivers?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#how-does-a-driver-differ-from-a-module">How Does a Driver Differ From a Module?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#driver-considerations">Driver Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#alternatives-considered">Alternatives Considered</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#driver-strategy">Driver Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html#further-considerations">Further Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="call_graph/index.html">Call Graph</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="call_graph/call_graph.html">Designing the Call Graph Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_graph/call_graph_state.html">State of a Call Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_graph/call_graph_class.html">Designing the CallGraph Class</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="module.html">Designing the Module Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="module.html#what-is-the-module-component">What is the Module Component?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module.html#module-component-considerations">Module Component Considerations</a></li>
@@ -168,13 +186,6 @@ the design) of PluginPlay.</p>
 <li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#previous-approaches-to-initialization">Previous Approaches to Initialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#initialization-considerations">Initialization Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pluginplay_initialization.html#initialization-strategy">Initialization Strategy</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="call_graph.html">Designing the Call Graph Component</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="call_graph.html#what-is-a-call-graph">What is a call graph?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="call_graph.html#call-graph-considerations">Call Graph Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="call_graph.html#id2">Call Graph Design</a></li>
-<li class="toctree-l2"><a class="reference internal" href="call_graph.html#additional-notes">Additional Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="memoization.html">Memoization Design</a><ul>
