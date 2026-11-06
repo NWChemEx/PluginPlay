@@ -19,12 +19,6 @@
 Using a Driver
 **************
 
-.. note::
-
-   Drivers are a planned feature. The APIs on this page are planned APIs that
-   are not yet implemented, and the code is not yet tested. See
-   :ref:`driver_design` for the design.
-
 This page uses the ``ForceDriver`` written in :ref:`writing_a_driver`. It
 computes the force on a particle with charge 1 at the origin, from a charge of
 1 at :math:`x=1` and a charge of 2 at :math:`x=2`.
@@ -41,26 +35,17 @@ Python versions of the same modules):
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         pluginplay::ModuleManager mm;
-         mm.load_plugin<PluginplayExamples>();
-         mm.add_module<ForceDriver>("Force driver");
-         mm.change_submod("Force driver", "force", "Classical Force");
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/test_drivers.cpp
+         :language: c++
+         :lines: 33-36
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         mm = pp.ModuleManager()
-         mm.add_module("Coulomb's Law", clf.CoulombsLaw())
-         mm.add_module(
-             "Coulomb's Law with screening", clf.ScreenedCoulombsLaw()
-         )
-         mm.add_module("Classical Force", clf.ClassicalForce())
-         mm.change_submod("Classical Force", "electric field", "Coulomb's Law")
-         mm.add_module("Force driver", fd.ForceDriver())
-         mm.change_submod("Force driver", "force", "Classical Force")
+      .. literalinclude:: ../../../../tests/python/doc_snippets/test_drivers.py
+         :language: python
+         :lines: 48-56
+         :dedent: 8
 
 Running the Driver
 ==================
@@ -73,17 +58,17 @@ A driver is run like any other module. With its default settings,
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         // Run with the default settings
-         auto F = mm.run_as<Force>("Force driver", q, m, a, charges);
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/test_drivers.cpp
+         :language: c++
+         :lines: 38-39
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         # Run with the default settings
-         F = mm.run_as(pt, "Force driver", q, m, a, charges)
+      .. literalinclude:: ../../../../tests/python/doc_snippets/test_drivers.py
+         :language: python
+         :lines: 58-59
+         :dedent: 8
 
 The first time a driver runs, it is locked, like any module. When a driver is
 locked, the ``ModuleManager`` applies the driver's settings to *overlays* of
@@ -97,7 +82,8 @@ locked too.
 
    A driver's settings are applied by the ``ModuleManager``, so a driver must
    be run with ``ModuleManager::run_as`` (or as a submodule of a module that
-   was). Running a driver that has never run with ``Module::run_as`` throws.
+   was). Running a driver with ``Module::run_as`` before it has run through the
+   ``ModuleManager`` throws.
 
 Changing the Settings
 =====================
@@ -114,24 +100,17 @@ charge at :math:`x=1` contributes to the electric field, and the force is
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         // Use other settings by copying the driver
-         mm.copy_module("Force driver", "Screened force driver");
-         mm.change_input("Screened force driver", "screen", true);
-         mm.change_input("Screened force driver", "threshold", 1.5);
-         auto F_screened =
-           mm.run_as<Force>("Screened force driver", q, m, a, charges);
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/test_drivers.cpp
+         :language: c++
+         :lines: 44-49
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         # Use other settings by copying the driver
-         mm.copy_module("Force driver", "Screened force driver")
-         mm.change_input("Screened force driver", "screen", True)
-         mm.change_input("Screened force driver", "threshold", 1.5)
-         F_screened = mm.run_as(pt, "Screened force driver", q, m, a, charges)
+      .. literalinclude:: ../../../../tests/python/doc_snippets/test_drivers.py
+         :language: python
+         :lines: 64-68
+         :dedent: 8
 
 Settings With No Effect
 =======================
@@ -147,27 +126,17 @@ locked, and a locked driver's ``inactive_settings()`` lists them:
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         // Change "threshold" without turning on "screen"
-         mm.copy_module("Force driver", "Unscreened force driver");
-         mm.change_input("Unscreened force driver", "threshold", 1.5);
-         mm.run_as<Force>("Unscreened force driver", q, m, a, charges);
-
-         auto inactive = mm.at("Unscreened force driver").inactive_settings();
-         // "threshold" is inactive: the branch that forwards it was not taken
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/test_drivers.cpp
+         :language: c++
+         :lines: 63-69
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         # Change "threshold" without turning on "screen"
-         mm.copy_module("Force driver", "Unscreened force driver")
-         mm.change_input("Unscreened force driver", "threshold", 1.5)
-         mm.run_as(pt, "Unscreened force driver", q, m, a, charges)
-
-         inactive = mm.at("Unscreened force driver").inactive_settings()
-         # "threshold" is inactive: the branch that forwards it was not taken
+      .. literalinclude:: ../../../../tests/python/doc_snippets/test_drivers.py
+         :language: python
+         :lines: 79-85
+         :dedent: 8
 
 With its default settings, ``ForceDriver`` reports nothing: "threshold" was
 not changed, so nothing the user asked for was ignored.
@@ -192,28 +161,17 @@ directly:
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         // Override one of the driver's choices
-         mm.copy_module("Force driver", "My force driver");
-         auto& request = mm.at("My force driver").call_graph_request();
-         request.set_submod("Classical Force", "electric field",
-                            "Coulomb's Law with screening");
-         request.set_input("Coulomb's Law with screening", "threshold", 1.5);
-         auto F_mine = mm.run_as<Force>("My force driver", q, m, a, charges);
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/test_drivers.cpp
+         :language: c++
+         :lines: 76-82
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         # Override one of the driver's choices
-         mm.copy_module("Force driver", "My force driver")
-         request = mm.at("My force driver").call_graph_request()
-         request.set_submod(
-             "Classical Force", "electric field", "Coulomb's Law with screening"
-         )
-         request.set_input("Coulomb's Law with screening", "threshold", 1.5)
-         F_mine = mm.run_as(pt, "My force driver", q, m, a, charges)
+      .. literalinclude:: ../../../../tests/python/doc_snippets/test_drivers.py
+         :language: python
+         :lines: 95-102
+         :dedent: 8
 
 Like the driver's inputs, these values must be set before the driver is
 locked.

@@ -288,7 +288,7 @@ inline ModuleManagerPIMPL::name_type ModuleManagerPIMPL::resolve_(
 
 inline void ModuleManagerPIMPL::attach_(const type::key& cache_key,
                                         Module& mod) const {
-    mod.m_pimpl_->attach(m_runtime_, m_pcaches, cache_key);
+    mod.m_pimpl_->attach(m_runtime_, m_pcaches, cache_key, m_fingerprints);
 }
 
 } // namespace pluginplay::detail_

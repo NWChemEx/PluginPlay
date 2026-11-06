@@ -16,6 +16,8 @@
 
 #include "any/export_any.hpp"
 #include "cache/export_cache.hpp"
+#include "call_graph/export_call_graph.hpp"
+#include "driver/export_driver.hpp"
 #include "fields/export_fields.hpp"
 #include "module/export_module.hpp"
 #include "module_manager/export_module_manager.hpp"
@@ -32,6 +34,8 @@ PYBIND11_MODULE(pluginplay, m) {
     export_fields(m);
     python::export_python(m);
     export_module(m);
+    export_call_graph(m);
+    export_driver(m);
     export_module_manager(m);
     export_plugin(m);
     export_submodule_request(m);

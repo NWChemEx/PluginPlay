@@ -76,8 +76,9 @@ void export_module_manager_class(py_module_reference m) {
         py::keep_alive<0, 1>())
       .def(
         "add_module",
-        [](ModuleManager& mm, std::string key,
-           std::shared_ptr<PyModuleBase> p) { mm.add_module(key, p); },
+        [](ModuleManager& mm, std::string key, std::shared_ptr<ModuleBase> p) {
+            mm.add_module(key, p);
+        },
         py::keep_alive<1, 3>())
       // Modules are returned with shared ownership (see the Module bindings)
       .def("at",
@@ -96,8 +97,11 @@ void export_module_manager_class(py_module_reference m) {
       .def("change_submod", &ModuleManager::change_submod)
       .def("run_as",
            [](py_obj self, py_obj pt, py_obj key, py::args args) {
+               // Goes through the C++ ModuleManager, which resolves drivers
+               self.attr("resolve_drivers")(key);
                return self.attr("at")(key).attr("run_as")(pt, *args);
            })
+      .def("resolve_drivers", &ModuleManager::resolve_drivers)
       .def("set_runtime",
            [](ModuleManager& mm, runtime_type rv) {
                mm.set_runtime(std::make_shared<runtime_type>(std::move(rv)));

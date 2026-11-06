@@ -88,6 +88,27 @@ TEMPLATE_LIST_TEST_CASE("AnyField", "", testing::types2test) {
             REQUIRE(&any_cast<const type&>(cref_copy) != &value);
         }
 
+        SECTION("cref_clone") {
+            AnyField default_clone = defaulted.cref_clone();
+            REQUIRE_FALSE(default_clone.has_value());
+
+            // The clone refers to the original's value instead of copying it
+            for(const auto* original : {&by_value, &by_cval, &by_cref}) {
+                auto clone = original->cref_clone();
+                REQUIRE(clone == *original);
+                REQUIRE(clone.type() == rtti);
+                REQUIRE(&any_cast<const type&>(clone) ==
+                        &any_cast<const type&>(*original));
+            }
+
+            // Copying the clone copies the value
+            auto clone = by_value.cref_clone();
+            AnyField copy(clone);
+            REQUIRE(copy == by_value);
+            REQUIRE(&any_cast<const type&>(copy) !=
+                    &any_cast<const type&>(by_value));
+        }
+
         SECTION("Move Ctor") {
             AnyField default_copy(defaulted);
             AnyField default_move(std::move(defaulted));

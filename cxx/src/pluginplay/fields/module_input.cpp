@@ -35,6 +35,14 @@ ModuleInput& ModuleInput::operator=(ModuleInput&& rhs) noexcept = default;
 
 ModuleInput::~ModuleInput() noexcept = default;
 
+ModuleInput ModuleInput::cref_clone() const {
+    ModuleInput rv;
+    rv.m_is_cref_          = m_is_cref_;
+    rv.m_is_actually_cref_ = m_is_actually_cref_;
+    rv.m_pimpl_            = m_pimpl_->cref_clone();
+    return rv;
+}
+
 bool ModuleInput::has_type() const noexcept { return m_pimpl_->has_type(); }
 
 bool ModuleInput::has_value() const noexcept { return m_pimpl_->has_value(); }

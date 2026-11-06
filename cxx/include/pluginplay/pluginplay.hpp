@@ -24,7 +24,9 @@
 
 #include <pluginplay/any/any.hpp>
 #include <pluginplay/cache/cache.hpp>
+#include <pluginplay/call_graph/call_graph.hpp>
 #include <pluginplay/config/config.hpp>
+#include <pluginplay/driver/driver.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/module/module.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>

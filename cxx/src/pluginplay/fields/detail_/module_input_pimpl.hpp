@@ -66,6 +66,28 @@ public:
      */
     auto clone() const { return std::make_unique<ModuleInputPIMPL>(*this); }
 
+    /** @brief Makes a copy of the PIMPL whose value refers to this PIMPL's.
+     *
+     *  This function is the same as clone(), except that the value of the
+     *  new instance is a read-only reference to the value of this instance
+     *  (see AnyField::cref_clone), rather than a copy of it.
+     *
+     *  @return A unique_ptr to the new instance.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy the
+     *                        instance. Strong throw guarantee.
+     */
+    auto cref_clone() const {
+        auto rv            = std::make_unique<ModuleInputPIMPL>();
+        rv->m_value_       = m_value_.cref_clone();
+        rv->m_desc_        = m_desc_;
+        rv->m_optional_    = m_optional_;
+        rv->m_transparent_ = m_transparent_;
+        rv->m_checks_      = m_checks_;
+        rv->m_type_        = m_type_;
+        return rv;
+    }
+
     /** @brief Checks whether the type of the input has been set.
      *
      *  Ultimately the input is stored in a type-erased manner. For various

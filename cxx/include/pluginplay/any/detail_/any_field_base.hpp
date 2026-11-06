@@ -61,6 +61,25 @@ public:
      */
     field_base_pointer clone() const { return clone_(); }
 
+    /** @brief Polymorphic copy which refers to this instance's value
+     *
+     *  This method returns a pointer to a newly allocated AnyFieldBase
+     *  instance which holds a read-only reference to the value wrapped by
+     *  this instance, rather than a copy of it. Python objects are reference
+     *  counted, so for them this is the same as clone().
+     *
+     *  @warning The returned instance refers to the value inside this
+     *           instance. The caller must ensure that this instance, and its
+     *           value, outlive the returned instance.
+     *
+     *  @return A pointer to a newly allocated, polymorphic instance which
+     *          refers to this instance's value.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the new state.
+     *                        Strong throw guarantee.
+     */
+    field_base_pointer cref_clone() const { return cref_clone_(); }
+
     /// Standard polymorphic dtor
     virtual ~AnyFieldBase() noexcept = default;
 
@@ -324,6 +343,9 @@ private:
 
     /// To be overriddent to implement clone
     virtual field_base_pointer clone_() const = 0;
+
+    /// To be overridden to implement cref_clone
+    virtual field_base_pointer cref_clone_() const = 0;
 
     /// To be overridden by derived class to implement polymorphic equality
     virtual bool are_equal_(const AnyFieldBase& rhs) const noexcept = 0;

@@ -39,6 +39,10 @@ AnyField& AnyField::operator=(AnyField&& rhs) noexcept = default;
 
 AnyField::~AnyField() noexcept = default;
 
+AnyField AnyField::cref_clone() const {
+    return AnyField(has_value() ? m_pimpl_->cref_clone() : nullptr);
+}
+
 void AnyField::swap(AnyField& other) noexcept { m_pimpl_.swap(other.m_pimpl_); }
 
 void AnyField::reset() noexcept { m_pimpl_.reset(); }

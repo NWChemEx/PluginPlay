@@ -99,6 +99,26 @@ public:
      */
     ~ModuleInput() noexcept;
 
+    /** @brief Makes a copy of *this which refers to the value of *this.
+     *
+     *  The copy constructor copies the value bound to *this. The result of
+     *  this function has the same type, description, and bounds checks as
+     *  *this, but its value is a read-only reference to the value bound to
+     *  *this. This is used to make an input map which differs from another
+     *  in a few values, without copying the other values, which may be
+     *  large.
+     *
+     *  @warning The result refers to the value bound to *this. The caller
+     *           must ensure that *this outlives the result and that the value
+     *           of *this is not changed while the result is in use.
+     *
+     *  @return A copy of *this whose value refers to the value of *this.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to make the
+     *                        copy. Strong throw guarantee.
+     */
+    ModuleInput cref_clone() const;
+
     /** @brief Has the type of this field been set yet?
      *
      *  In order for an input field to be used with a module it needs to know

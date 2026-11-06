@@ -128,6 +128,24 @@ public:
     /// Default non-throw dtor
     ~AnyField() noexcept;
 
+    /** @brief Makes an AnyField which refers to this instance's value.
+     *
+     *  Unlike the copy ctor, which deep copies the wrapped value, the result
+     *  of this method holds a read-only reference to the value wrapped by
+     *  *this. Python objects are reference counted, so for them the result is
+     *  the same as a copy.
+     *
+     *  @warning The result refers to the value inside *this. The caller must
+     *           ensure that *this, and its value, outlive the result.
+     *
+     *  @return An AnyField which refers to the value of *this. If *this does
+     *          not hold a value, neither does the result.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the result.
+     *                        Strong throw guarantee.
+     */
+    AnyField cref_clone() const;
+
     /// Standard swap function, just exchanges PIMPL instances
     void swap(AnyField& other) noexcept;
 

@@ -15,13 +15,17 @@
  */
 
 #pragma once
+#include "fingerprint_table.hpp"
 #include <chrono>
 #include <iomanip> // for put_time
+#include <optional>
 #include <pluginplay/cache/module_cache.hpp>
 #include <pluginplay/cache/module_manager_cache.hpp>
+#include <pluginplay/driver/driver_base.hpp>
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/types.hpp>
 #include <utilities/timer.hpp>
+#include <vector>
 
 namespace pluginplay::detail_ {
 
@@ -92,6 +96,18 @@ public:
     /// Type of a pointer to the ModuleManager's caches
     using mm_cache_ptr = std::shared_ptr<cache::ModuleManagerCache>;
 
+    /// Type of a pointer to the table assigning fingerprints
+    using fingerprint_table_ptr = std::shared_ptr<FingerprintTable>;
+
+    /// Type of a fingerprint
+    using fingerprint_type = FingerprintTable::fingerprint_type;
+
+    /// Type of a pointer to a module, e.g., an overlay module
+    using module_ptr = std::shared_ptr<Module>;
+
+    /// Type of the list of a driver's inactive settings
+    using inactive_list = std::vector<std::string>;
+
     /** @brief Makes a module with no implementation.
      *
      *  The ModulePIMPL instance resulting from this ctor wraps no algorithm,
@@ -115,7 +131,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
      *                        Strong throw guarantee.
      */
-    ModulePIMPL(const ModulePIMPL& rhs) = default;
+    ModulePIMPL(const ModulePIMPL& rhs);
 
     /** @brief Sets this ModulePIMPL's state to a deep copy of @p rhs
      *
@@ -133,7 +149,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to copy @p rhs.
      *                        Strong throw guarantee.
      */
-    ModulePIMPL& operator=(const ModulePIMPL& rhs) = default;
+    ModulePIMPL& operator=(const ModulePIMPL& rhs);
 
     /** @brief Initializes this ModulePIMPL with @p rhs's state
      *
@@ -305,9 +321,15 @@ public:
      *  This function is only used internally within the Module class. Users are
      *  not allowed to unlock modules.
      *
-     *  @throw none No throw guarantee.
+     *  Unlocking a driver discards the overlays its requests were resolved
+     *  into, so that the requests are resolved again when it is next locked.
+     *  Unlocking an overlay module makes it an ordinary module, with copies of
+     *  the inputs it referred to.
+     *
+     *  @throw std::bad_alloc if there is a problem copying an overlay's
+     *                        inputs. Weak throw guarantee.
      */
-    void unlock() noexcept { m_locked_ = false; }
+    void unlock();
 
     /** @brief Returns the set of results computed by this module.
      *
@@ -506,6 +528,8 @@ public:
      *  @param[in] caches The ModuleManager's caches. If null, *this is not
      *                    given caches.
      *  @param[in] cache_key The key of the module cache *this should use.
+     *  @param[in] fingerprints The table *this assigns fingerprints with. If
+     *                          null, *this keeps its current table.
      *
      *  @throw std::runtime_error if *this does not have an implementation.
      *                            Strong throw guarantee.
@@ -513,7 +537,8 @@ public:
      *                        throw guarantee.
      */
     void attach(runtime_ptr runtime, const mm_cache_ptr& caches,
-                const type::key& cache_key);
+                const type::key& cache_key,
+                fingerprint_table_ptr fingerprints = {});
 
     /** @brief Resets cache.
      *
@@ -650,7 +675,204 @@ public:
 
     submod_uuid_map submod_uuids() const;
 
+    // -------------------------------------------------------------------------
+    // -- Drivers
+    // -------------------------------------------------------------------------
+
+    /** @brief Is *this a driver?
+     *
+     *  @return True if the implementation derives from DriverBase and false
+     *          otherwise.
+     *
+     *  @throw std::runtime_error if *this does not have an implementation.
+     *                            Strong throw guarantee.
+     */
+    bool is_driver() const;
+
+    /// The developer's request, empty for modules which are not drivers
+    const CallGraphRequest& developer_request() const;
+
+    /// The user's request, empty for modules which are not drivers
+    CallGraphRequest& user_request() noexcept { return m_user_request_; }
+
+    /// The user's request, empty for modules which are not drivers
+    const CallGraphRequest& user_request() const noexcept {
+        return m_user_request_;
+    }
+
+    /// The inputs as the developer declared them, before the user's changes
+    const type::input_map& default_inputs() const {
+        assert_mod_();
+        return m_base_->inputs();
+    }
+
+    /// Does *this memoize, regardless of the modules below it?
+    bool memoizes() const noexcept { return m_memoizable_; }
+
+    /// Have the requests of the driver *this been resolved?
+    bool is_resolved() const noexcept { return m_resolved_.has_value(); }
+
+    /** @brief Stores what the requests of the driver *this resolved into.
+     *
+     *  Called by the ModuleManager when it resolves the requests of *this.
+     *
+     *  @param[in] run_submods The submodule map *this runs with, which binds
+     *                         its submodules to overlay modules where needed.
+     *  @param[in] overlays The overlay modules reachable from @p run_submods,
+     *                      which *this owns.
+     *  @param[in] inactive The settings of *this which had no effect.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void set_resolution(type::submodule_map run_submods,
+                        std::vector<module_ptr> overlays,
+                        inactive_list inactive) noexcept;
+
+    /** @brief The submodules *this runs with.
+     *
+     *  For a driver whose requests are resolved, these are the submodules
+     *  bound to the overlay modules. Otherwise they are submods().
+     *
+     *  If *this is a resolved driver which is not locked, the maps of its
+     *  overlays are rebuilt from their originals first (see sync_overlay_).
+     *
+     *  @return The submodules *this runs with.
+     *
+     *  @throw std::bad_alloc if there is a problem rebuilding the maps of the
+     *                        overlays. Weak throw guarantee.
+     */
+    const type::submodule_map& run_submods() const;
+
+    /// The settings of a resolved driver which had no effect
+    const inactive_list& inactive_settings() const noexcept;
+
+    // -------------------------------------------------------------------------
+    // -- Overlay modules
+    // -------------------------------------------------------------------------
+
+    /** @brief Makes an overlay module of @p original.
+     *
+     *  An overlay module points to @p original and stores only the inputs,
+     *  submodules, and memoization setting that differ from it. Reading an
+     *  input it does not change reads the original's value, without copying
+     *  it. It shares the original's implementation and caches.
+     *
+     *  @param[in] original The module to overlay. Must have an implementation.
+     *
+     *  @return The new overlay module, which is unlocked and changes nothing.
+     *
+     *  @throw std::runtime_error if @p original has no implementation. Strong
+     *                            throw guarantee.
+     *  @throw std::bad_alloc if there is a problem allocating the overlay.
+     *                        Strong throw guarantee.
+     */
+    static module_ptr make_overlay(const module_ptr& original);
+
+    /// Is *this an overlay module?
+    bool is_overlay() const noexcept { return m_overlay_.has_value(); }
+
+    /// The module *this overlays. Throws if *this is not an overlay module
+    const Module& original() const;
+
+    /** @brief Sets the input @p key of the overlay module *this.
+     *
+     *  @param[in] key The input to set.
+     *  @param[in] value The new value of the input.
+     *
+     *  @throw std::runtime_error if *this is not an unlocked overlay module.
+     *                            Strong throw guarantee.
+     *  @throw std::out_of_range if *this has no input @p key. Strong throw
+     *                           guarantee.
+     *  @throw std::invalid_argument if @p value fails the input's checks.
+     *                               Strong throw guarantee.
+     */
+    void override_input(const type::key& key, type::any value);
+
+    /** @brief Binds the submodule @p key of the overlay module *this.
+     *
+     *  @param[in] key The submodule to set.
+     *  @param[in] mod The module to bind.
+     *
+     *  @throw std::runtime_error if *this is not an unlocked overlay module,
+     *                            or if @p mod does not satisfy the
+     *                            submodule's property type. Strong throw
+     *                            guarantee.
+     *  @throw std::out_of_range if *this has no submodule @p key. Strong
+     *                           throw guarantee.
+     */
+    void override_submod(const type::key& key, module_ptr mod);
+
+    /** @brief Sets whether the overlay module *this memoizes.
+     *
+     *  @param[in] on Whether *this should memoize.
+     *
+     *  @throw std::runtime_error if *this is not an unlocked overlay module.
+     *                            Strong throw guarantee.
+     */
+    void override_memoization(bool on);
+
+    /** @brief Identifies the state of *this and of everything below it.
+     *
+     *  Two modules have the same fingerprint exactly when they, and the
+     *  modules below them, would run with the same state, i.e., the same
+     *  implementation, bound inputs, memoization setting, and modules below
+     *  them. Fingerprints replace the UUIDs of the submodules in memoization
+     *  keys. The fingerprint is stored once *this, and everything below it,
+     *  is locked.
+     *
+     *  @return The fingerprint of *this.
+     *
+     *  @throw std::runtime_error if *this does not have an implementation.
+     *                            Strong throw guarantee.
+     */
+    fingerprint_type fingerprint() const;
+
 private:
+    /// What an overlay module stores, on top of a ModulePIMPL
+    struct OverlayState {
+        /// The module the overlay points to
+        module_ptr original;
+
+        /// The inputs the overlay changes
+        type::input_map input_overrides;
+
+        /// The submodules the overlay changes
+        type::submodule_map submod_overrides;
+
+        /// The memoization setting, if the overlay changes it
+        std::optional<bool> memoizes;
+    };
+
+    /// What the requests of a driver resolved into
+    struct DriverState {
+        /// The submodule map the driver runs with
+        type::submodule_map run_submods;
+
+        /// The overlay modules the driver owns
+        std::vector<module_ptr> overlays;
+
+        /// The settings of the driver which had no effect
+        inactive_list inactive;
+    };
+
+    /// The submodules *this runs with (see run_submods)
+    type::submodule_map& active_submods_();
+
+    /// Rebuilds the maps of the overlay *this from its original and changes
+    void sync_overlay_();
+
+    /// Syncs the overlays of an unlocked, resolved driver, see sync_overlay_
+    void sync_overlays_() const;
+
+    /// Throws unless *this is an unlocked overlay module
+    void assert_unlocked_overlay_() const;
+
+    /// Computes the fingerprint, and whether it can be stored
+    fingerprint_type fingerprint_(bool& is_final) const;
+
+    /// Locks the module an overlay points to, as far as it can be locked
+    static void lock_original_(Module& original);
+
     /** @brief Code factorization for merging two sets of inputs.
      *
      *  There are a couple scenarios where this class needs to merge inputs,
@@ -701,6 +923,21 @@ private:
 
     /// Timer used to time runs of this module
     utilities::Timer m_timer_;
+
+    /// The user's call graph request, for drivers
+    CallGraphRequest m_user_request_;
+
+    /// What the requests of a driver resolved into, once they are resolved
+    std::optional<DriverState> m_resolved_;
+
+    /// The state of an overlay module, if *this is one
+    std::optional<OverlayState> m_overlay_;
+
+    /// The table fingerprints are assigned with
+    mutable fingerprint_table_ptr m_fingerprints_;
+
+    /// The fingerprint, once it can no longer change
+    mutable std::optional<fingerprint_type> m_fingerprint_;
 }; // class ModulePIMPL
 
 } // namespace pluginplay::detail_

@@ -40,6 +40,19 @@ typename ANY_FIELD_WRAPPER::field_base_pointer ANY_FIELD_WRAPPER::clone_()
 }
 
 TEMPLATE_PARAMS
+typename ANY_FIELD_WRAPPER::field_base_pointer ANY_FIELD_WRAPPER::cref_clone_()
+  const {
+    // Python objects are reference counted, so copying one is already cheap
+    if constexpr(std::is_same_v<clean_type, python_value>) {
+        return clone_();
+    } else {
+        using cref_wrapper_type = AnyFieldWrapper<const_ref_type>;
+        const auto& val         = base_type::template cast<const_ref_type>();
+        return std::make_unique<cref_wrapper_type>(val);
+    }
+}
+
+TEMPLATE_PARAMS
 bool ANY_FIELD_WRAPPER::are_equal_(const AnyFieldBase& rhs) const noexcept {
     auto prhs = dynamic_cast<const my_type*>(&rhs);
     if(prhs == nullptr) return false; // Not the same type

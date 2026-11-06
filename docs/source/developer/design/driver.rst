@@ -526,8 +526,9 @@ module is:
 - ``DECLARE_DRIVER(driver_name)`` declares a class ``driver_name`` that derives
   from ``DriverBase``.
 - ``DRIVER_CTOR(driver_name)`` starts the definition of its constructor.
-- ``MODULE_RUN(driver_name)`` defines its ``run_``, unchanged, since ``run_``
-  has the same signature for drivers and modules.
+- ``DRIVER_RUN(driver_name)`` starts the definition of its ``run_``. Since
+  ``run_`` has the same signature for drivers and modules, it is an alias of
+  ``MODULE_RUN``, provided for symmetry.
 
 The DriverInput and DriverSubmodule Classes
 -------------------------------------------
@@ -752,10 +753,18 @@ any module, locking a driver locks the modules below it. Before that, the
    #. the user's requests, in the order they were added; and
    #. the memoization policy.
 
+   Within the first two, the requests that set submodules are applied before
+   the requests that set inputs, since they decide which modules are in the
+   region. Requests of either kind are applied in the order above. A request
+   whose target a later request removes from the region is reported as
+   inactive.
+
    A module whose input or submodule changes gets an overlay, and so does
    every module between it and the driver, since their submodules must be
    bound to the overlays. A module bound in several places gets one overlay.
-   Targets that are missing are handled as described in `Missing Targets`_.
+   A request which sets a target to the value it already has changes nothing,
+   so it makes no overlay. Targets that are missing are handled as described
+   in `Missing Targets`_.
 #. **Resolve nested drivers.** Each nested driver in the region resolves its
    own requests in the same way, with the inputs the enclosing driver gave it
    (see `Nested Drivers`_).
@@ -938,9 +947,11 @@ from ``pluginplay.DriverBase``, which is exported with a trampoline class like
 "Tolerance")``, and ``when`` and ``wire_memoization``. ``CallGraphRequest`` and
 ``Module.call_graph_request()`` are exported, so Python users override a
 driver's choices as C++ users do. No new ownership rules are needed, since
-drivers are modules and overlays are ``Module`` objects. The Python
-``ModuleManager.run_as`` goes through the C++ ``ModuleManager::run_as``, so it
-runs drivers with their settings.
+drivers are modules and overlays are ``Module`` objects. Both the C++
+``ModuleManager::run_as`` and the Python ``ModuleManager.run_as`` call
+``ModuleManager::resolve_drivers``, which resolves the requests of every driver
+reachable from the module about to run, so both run drivers with their
+settings.
 
 **********************
 Further Considerations

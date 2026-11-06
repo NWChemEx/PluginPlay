@@ -227,6 +227,36 @@ struct ModuleManagerPIMPL {
 
     bool has_cache() const noexcept { return static_cast<bool>(m_pcaches); }
 
+    /** @brief Resolves the requests of the drivers reachable from @p root.
+     *
+     *  Walks the call graph below @p root, including @p root, and resolves
+     *  the requests of each driver which is not already locked with its
+     *  requests resolved (see the driver design documentation). The requests
+     *  are resolved into overlay modules, which the driver owns. The modules
+     *  the overlays point to are not changed. Drivers are resolved from the
+     *  outermost inward, so a nested driver's requests are resolved with the
+     *  inputs an enclosing driver gave it.
+     *
+     *  @param[in] root The module about to be run.
+     *
+     *  @throw std::out_of_range if a request names a module the
+     *                           ModuleManager does not have, or a target
+     *                           field the module does not have. Strong throw
+     *                           guarantee for the ModuleManager's modules.
+     *  @throw std::invalid_argument if a request names an ambiguous key, or
+     *                               two of a driver's requests set the same
+     *                               target. Same guarantee.
+     *  @throw std::runtime_error if a required request has no effect, or a
+     *                            request targets a module below a nested
+     *                            driver. Same guarantee.
+     */
+    void resolve_drivers(Module& root) const;
+
+    /// The PIMPL of @p mod, for the code resolving drivers
+    static ModulePIMPL& pimpl_of(const Module& mod) noexcept {
+        return *mod.m_pimpl_;
+    }
+
     ///@{
     /** @name ModuleManager state
      *
@@ -253,6 +283,10 @@ struct ModuleManagerPIMPL {
 
     // Pointer to this modules current runtime
     runtime_ptr m_runtime_;
+
+    /// The table the modules' fingerprints are assigned with
+    std::shared_ptr<FingerprintTable> m_fingerprints =
+      std::make_shared<FingerprintTable>();
     ///@}
 private:
     /// Returns the loaded plugin named @p name, or null if there isn't one

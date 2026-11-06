@@ -15,6 +15,7 @@
  */
 
 #include "../export_pluginplay.hpp"
+#include <pluginplay/call_graph/call_graph_request.hpp>
 #include <pluginplay/module/module_class.hpp>
 #include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/python/py_type_info.hpp>
@@ -76,6 +77,14 @@ void export_module_class(py_module_reference m) {
       .def("turn_off_memoization", &Module::turn_off_memoization)
       .def("turn_on_memoization", &Module::turn_on_memoization)
       .def("lock", &Module::lock)
+      .def("is_driver", &Module::is_driver)
+      .def(
+        "call_graph_request",
+        [](Module& self) -> CallGraphRequest& {
+            return self.call_graph_request();
+        },
+        pybind11::return_value_policy::reference_internal)
+      .def("inactive_settings", &Module::inactive_settings)
       .def("results", &Module::results)
       .def("inputs", &Module::inputs)
       .def("submods", &Module::submods)

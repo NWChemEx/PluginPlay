@@ -18,6 +18,7 @@
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/cache.hpp>
+#include <pluginplay/call_graph/call_graph_request.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
@@ -321,6 +322,22 @@ public:
 
     // Is this a Python module?
     bool is_python() const { return m_is_python_; }
+
+    /** @brief The developer's call graph request.
+     *
+     *  Drivers configure the modules below them with a CallGraphRequest,
+     *  which the driver's constructor fills (see DriverBase). Modules which
+     *  are not drivers configure nothing, so this returns an empty request.
+     *
+     *  @return The developer's request, which is empty for modules that are
+     *          not drivers.
+     *
+     *  @throw None No throw guarantee.
+     */
+    virtual const CallGraphRequest& call_graph_request() const noexcept {
+        static const CallGraphRequest empty_request;
+        return empty_request;
+    }
 
     /** @brief Compares two ModuleBase instances for equality.
      *
