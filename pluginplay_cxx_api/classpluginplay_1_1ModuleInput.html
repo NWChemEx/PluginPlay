@@ -122,6 +122,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a54abdba0a1028f654fac27d9c0e856f0" id="r_a54abdba0a1028f654fac27d9c0e856f0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#a54abdba0a1028f654fac27d9c0e856f0">~ModuleInput</a> () noexcept</td></tr>
 <tr class="memdesc:a54abdba0a1028f654fac27d9c0e856f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard destructor.  <br /></td></tr>
 <tr class="separator:a54abdba0a1028f654fac27d9c0e856f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3f8163d0621b79a92829fca4389848b" id="r_ae3f8163d0621b79a92829fca4389848b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1ModuleInput.html">ModuleInput</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#ae3f8163d0621b79a92829fca4389848b">cref_clone</a> () const</td></tr>
+<tr class="memdesc:ae3f8163d0621b79a92829fca4389848b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of *this which refers to the value of *this.  <br /></td></tr>
+<tr class="separator:ae3f8163d0621b79a92829fca4389848b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8c17339db951c8bb6cff940d606d966" id="r_ad8c17339db951c8bb6cff940d606d966"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleInput.html#ad8c17339db951c8bb6cff940d606d966">has_type</a> () const noexcept</td></tr>
 <tr class="memdesc:ad8c17339db951c8bb6cff940d606d966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Has the type of this field been set yet?  <br /></td></tr>
 <tr class="separator:ad8c17339db951c8bb6cff940d606d966"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -451,6 +454,34 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::bad_alloc</td><td>if there is insufficent memory to make the return. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae3f8163d0621b79a92829fca4389848b" name="ae3f8163d0621b79a92829fca4389848b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3f8163d0621b79a92829fca4389848b">&#9670;&#160;</a></span>cref_clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1ModuleInput.html">ModuleInput</a> pluginplay::ModuleInput::cref_clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Makes a copy of *this which refers to the value of *this. </p>
+<p>The copy constructor copies the value bound to *this. The result of this function has the same type, description, and bounds checks as *this, but its value is a read-only reference to the value bound to *this. This is used to make an input map which differs from another in a few values, without copying the other values, which may be large.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The result refers to the value bound to *this. The caller must ensure that *this outlives the result and that the value of *this is not changed while the result is in use.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A copy of *this whose value refers to the value of *this.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is insufficient memory to make the copy. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

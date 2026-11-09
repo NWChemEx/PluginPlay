@@ -1,11 +1,17 @@
 <map id="pluginplay::ModuleBase" name="pluginplay::ModuleBase">
-<area shape="rect" id="Node000001" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="5,84,183,109"/>
-<area shape="rect" id="Node000002" href="$classpluginplay_1_1Publicist.html" title=" " alt="" coords="281,5,433,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="134,76,230,39,280,27,281,33,231,45,135,81"/>
-<area shape="rect" id="Node000003" href="$classpluginplay_1_1PyModuleBase.html" title="Defines the interface used to write modules in Python." alt="" coords="260,55,453,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="196,83,259,75,260,81,197,88"/>
-<area shape="rect" id="Node000004" href="$classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="" coords="234,105,479,145"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="197,105,234,109,234,114,196,110"/>
-<area shape="rect" id="Node000005" href="$classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="" coords="231,169,483,209"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="134,113,232,154,270,166,268,171,230,159,132,118"/>
+<area shape="rect" id="Node000001" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="5,128,183,153"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1DriverBase.html" title="The base class of all drivers." alt="" coords="272,29,441,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,118,173,90,230,65,274,52,275,57,232,70,176,95,128,123"/>
+<area shape="rect" id="Node000005" href="$classpluginplay_1_1Publicist.html" title=" " alt="" coords="281,79,433,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="175,123,288,101,289,107,176,128"/>
+<area shape="rect" id="Node000006" href="$classpluginplay_1_1PyModuleBase.html" title="Defines the interface used to write modules in Python." alt="" coords="260,128,453,153"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="196,138,260,138,260,143,196,143"/>
+<area shape="rect" id="Node000007" href="$classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="" coords="234,178,479,218"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="167,154,265,175,264,181,166,159"/>
+<area shape="rect" id="Node000008" href="$classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="" coords="231,242,483,282"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="123,160,172,194,232,228,264,239,262,244,230,232,169,199,120,164"/>
+<area shape="rect" id="Node000003" href="$classpluginplay_1_1DriverPublicist.html" title="Exposes the protected members of DriverBase to the Python bindings." alt="" coords="531,5,723,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="455,31,530,24,531,29,455,36"/>
+<area shape="rect" id="Node000004" href="$classpluginplay_1_1PyDriverBase.html" title="Defines the interface used to write drivers in Python." alt="" coords="534,55,719,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="455,49,534,56,533,61,455,54"/>
 </map>

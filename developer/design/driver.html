@@ -548,7 +548,9 @@ developer’s declarations and the user’s <code class="docutils literal notran
 <li><p>the developer’s request, held by <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code> and filled in the driver’s
 constructor; and</p></li>
 <li><p>the user’s request, held by the driver’s <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> and filled before
-the driver is locked (see <a class="reference internal" href="#overriding-a-driver-s-choices">Overriding a Driver’s Choices</a>).</p></li>
+the driver is locked (see <a class="reference internal" href="#overriding-a-driver-s-choices">Overriding a Driver’s Choices</a>). The user’s
+request is locked with the driver, so changing it through a reference held
+from before the driver was locked throws, rather than being ignored.</p></li>
 </ul>
 </section>
 <section id="the-driverbase-class">
@@ -603,8 +605,9 @@ module is:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">DECLARE_DRIVER(driver_name)</span></code> declares a class <code class="docutils literal notranslate"><span class="pre">driver_name</span></code> that derives
 from <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DRIVER_CTOR(driver_name)</span></code> starts the definition of its constructor.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MODULE_RUN(driver_name)</span></code> defines its <code class="docutils literal notranslate"><span class="pre">run_</span></code>, unchanged, since <code class="docutils literal notranslate"><span class="pre">run_</span></code>
-has the same signature for drivers and modules.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DRIVER_RUN(driver_name)</span></code> starts the definition of its <code class="docutils literal notranslate"><span class="pre">run_</span></code>. Since
+<code class="docutils literal notranslate"><span class="pre">run_</span></code> has the same signature for drivers and modules, it is an alias of
+<code class="docutils literal notranslate"><span class="pre">MODULE_RUN</span></code>, provided for symmetry.</p></li>
 </ul>
 <section id="the-driverinput-and-driversubmodule-classes">
 <h4>The DriverInput and DriverSubmodule Classes<a class="headerlink" href="#the-driverinput-and-driversubmodule-classes" title="Link to this heading"></a></h4>
@@ -813,10 +816,17 @@ their order does not matter;</p></li>
 <li><p>the user’s requests, in the order they were added; and</p></li>
 <li><p>the memoization policy.</p></li>
 </ol>
+<p>Within the first two, the requests that set submodules are applied before
+the requests that set inputs, since they decide which modules are in the
+region. Requests of either kind are applied in the order above. A request
+whose target a later request removes from the region is reported as
+inactive.</p>
 <p>A module whose input or submodule changes gets an overlay, and so does
 every module between it and the driver, since their submodules must be
 bound to the overlays. A module bound in several places gets one overlay.
-Targets that are missing are handled as described in <a class="reference internal" href="#missing-targets">Missing Targets</a>.</p>
+A request which sets a target to the value it already has changes nothing,
+so it makes no overlay. Targets that are missing are handled as described
+in <a class="reference internal" href="#missing-targets">Missing Targets</a>.</p>
 </li>
 <li><p><strong>Resolve nested drivers.</strong> Each nested driver in the region resolves its
 own requests in the same way, with the inputs the enclosing driver gave it
@@ -988,9 +998,11 @@ from <code class="docutils literal notranslate"><span class="pre">pluginplay.Dri
 <span class="pre">&quot;Tolerance&quot;)</span></code>, and <code class="docutils literal notranslate"><span class="pre">when</span></code> and <code class="docutils literal notranslate"><span class="pre">wire_memoization</span></code>. <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code> and
 <code class="docutils literal notranslate"><span class="pre">Module.call_graph_request()</span></code> are exported, so Python users override a
 driver’s choices as C++ users do. No new ownership rules are needed, since
-drivers are modules and overlays are <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects. The Python
-<code class="docutils literal notranslate"><span class="pre">ModuleManager.run_as</span></code> goes through the C++ <code class="docutils literal notranslate"><span class="pre">ModuleManager::run_as</span></code>, so it
-runs drivers with their settings.</p>
+drivers are modules and overlays are <code class="docutils literal notranslate"><span class="pre">Module</span></code> objects. Both the C++
+<code class="docutils literal notranslate"><span class="pre">ModuleManager::run_as</span></code> and the Python <code class="docutils literal notranslate"><span class="pre">ModuleManager.run_as</span></code> call
+<code class="docutils literal notranslate"><span class="pre">ModuleManager::resolve_drivers</span></code>, which resolves the requests of every driver
+reachable from the module about to run, so both run drivers with their
+settings.</p>
 </section>
 </section>
 <section id="further-considerations">

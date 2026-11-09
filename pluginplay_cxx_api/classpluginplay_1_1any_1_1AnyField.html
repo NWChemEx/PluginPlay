@@ -124,6 +124,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~AnyField</b> () noexcept</td></tr>
 <tr class="memdesc:aad47cec1b53de6071ef865e553856ef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default non-throw dtor. <br /></td></tr>
 <tr class="separator:aad47cec1b53de6071ef865e553856ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2d2319177f79c449ae4d88680ec23c6" id="r_ac2d2319177f79c449ae4d88680ec23c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html#ac2d2319177f79c449ae4d88680ec23c6">cref_clone</a> () const</td></tr>
+<tr class="memdesc:ac2d2319177f79c449ae4d88680ec23c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes an <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> which refers to this instance's value.  <br /></td></tr>
+<tr class="separator:ac2d2319177f79c449ae4d88680ec23c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37c6211c5dce42649b09aa9964aaf580" id="r_a37c6211c5dce42649b09aa9964aaf580"><td class="memItemLeft" align="right" valign="top"><a id="a37c6211c5dce42649b09aa9964aaf580" name="a37c6211c5dce42649b09aa9964aaf580"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>swap</b> (<a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> &amp;other) noexcept</td></tr>
 <tr class="memdesc:a37c6211c5dce42649b09aa9964aaf580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard swap function, just exchanges PIMPL instances. <br /></td></tr>
@@ -345,6 +348,34 @@ Related Symbols</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac2d2319177f79c449ae4d88680ec23c6" name="ac2d2319177f79c449ae4d88680ec23c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2d2319177f79c449ae4d88680ec23c6">&#9670;&#160;</a></span>cref_clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1AnyField.html">AnyField</a> pluginplay::any::AnyField::cref_clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Makes an <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> which refers to this instance's value. </p>
+<p>Unlike the copy ctor, which deep copies the wrapped value, the result of this method holds a read-only reference to the value wrapped by *this. Python objects are reference counted, so for them the result is the same as a copy.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The result refers to the value inside *this. The caller must ensure that *this, and its value, outlive the result.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>An <a class="el" href="classpluginplay_1_1any_1_1AnyField.html" title="Wraps either an input or a result to a module.">AnyField</a> which refers to the value of *this. If *this does not hold a value, neither does the result.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the result. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

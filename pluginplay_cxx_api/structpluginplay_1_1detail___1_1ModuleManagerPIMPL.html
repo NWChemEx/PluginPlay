@@ -76,6 +76,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">pluginplay::detail_::ModuleManagerPIMPL Struct Reference</div></div>
 </div><!--header-->
@@ -217,6 +218,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_runtime</b> (<a c
 <tr class="memitem:ac5a3244abc584a1f24c2af14262b5250" id="r_ac5a3244abc584a1f24c2af14262b5250"><td class="memItemLeft" align="right" valign="top"><a id="ac5a3244abc584a1f24c2af14262b5250" name="ac5a3244abc584a1f24c2af14262b5250"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_cache</b> () const noexcept</td></tr>
 <tr class="separator:ac5a3244abc584a1f24c2af14262b5250"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a628f29f84a1af91d6c2f26b93f3c39d1" id="r_a628f29f84a1af91d6c2f26b93f3c39d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a628f29f84a1af91d6c2f26b93f3c39d1">resolve_drivers</a> (<a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;root) const</td></tr>
+<tr class="memdesc:a628f29f84a1af91d6c2f26b93f3c39d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves the requests of the drivers reachable from <code>root</code>.  <br /></td></tr>
+<tr class="separator:a628f29f84a1af91d6c2f26b93f3c39d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:a582785f3206d95267a88d8fa8c745bed" id="r_a582785f3206d95267a88d8fa8c745bed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#ad161add642179e03c2c80bca8bf436fb">module_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a582785f3206d95267a88d8fa8c745bed">get_modules</a> (const <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a6aa848dba4c774f051a3e9f806ad09a8">name_type</a> &amp;name)</td></tr>
 <tr class="memdesc:a582785f3206d95267a88d8fa8c745bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the map named <code>name</code>.  <br /></td></tr>
@@ -239,6 +243,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const
 <tr class="memitem:ac6e037e95c9d1980ab93d54fb8b739f9" id="r_ac6e037e95c9d1980ab93d54fb8b739f9"><td class="memItemLeft" align="right" valign="top"><a id="ac6e037e95c9d1980ab93d54fb8b739f9" name="ac6e037e95c9d1980ab93d54fb8b739f9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html">ModuleManagerPIMPL</a> &amp;rhs) const</td></tr>
 <tr class="separator:ac6e037e95c9d1980ab93d54fb8b739f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a5ce5369c0a7793c0c03eaef17e645f02" id="r_a5ce5369c0a7793c0c03eaef17e645f02"><td class="memItemLeft" align="right" valign="top"><a id="a5ce5369c0a7793c0c03eaef17e645f02" name="a5ce5369c0a7793c0c03eaef17e645f02"></a>
+static <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>pimpl_of</b> (const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;mod) noexcept</td></tr>
+<tr class="memdesc:a5ce5369c0a7793c0c03eaef17e645f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PIMPL of <code>mod</code>, for the code resolving drivers. <br /></td></tr>
+<tr class="separator:a5ce5369c0a7793c0c03eaef17e645f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -263,6 +274,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a83987f76911022db85087245f26671e8" id="r_a83987f76911022db85087245f26671e8"><td class="memItemLeft" align="right" valign="top"><a id="a83987f76911022db85087245f26671e8" name="a83987f76911022db85087245f26671e8"></a>
 <a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#acc22e9ed0b23d1a72b150b0f0d560a84">runtime_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_runtime_</b></td></tr>
 <tr class="separator:a83987f76911022db85087245f26671e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fd3443b96e57bc2f9a97bf957c9269c" id="r_a5fd3443b96e57bc2f9a97bf957c9269c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1detail___1_1FingerprintTable.html">FingerprintTable</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpluginplay_1_1detail___1_1ModuleManagerPIMPL.html#a5fd3443b96e57bc2f9a97bf957c9269c">m_fingerprints</a></td></tr>
+<tr class="memdesc:a5fd3443b96e57bc2f9a97bf957c9269c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The table the modules' fingerprints are assigned with.  <br /></td></tr>
+<tr class="separator:a5fd3443b96e57bc2f9a97bf957c9269c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The class that implements the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>. </p>
@@ -644,9 +658,64 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a628f29f84a1af91d6c2f26b93f3c39d1" name="a628f29f84a1af91d6c2f26b93f3c39d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a628f29f84a1af91d6c2f26b93f3c39d1">&#9670;&#160;</a></span>resolve_drivers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModuleManagerPIMPL::resolve_drivers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resolves the requests of the drivers reachable from <code>root</code>. </p>
+<p>Walks the call graph below <code>root</code>, including <code>root</code>, and resolves the requests of each driver which is not already locked with its requests resolved (see the driver design documentation). The requests are resolved into overlay modules, which the driver owns. The modules the overlays point to are not changed. Drivers are resolved from the outermost inward, so a nested driver's requests are resolved with the inputs an enclosing driver gave it.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">root</td><td>The module about to be run.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if a request names a module the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> does not have, or a target field the module does not have. Strong throw guarantee for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s modules. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if a request names an ambiguous key, or two of a driver's requests set the same target. Same guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if a required request has no effect, or a request targets a module below a nested driver. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5fd3443b96e57bc2f9a97bf957c9269c" name="a5fd3443b96e57bc2f9a97bf957c9269c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fd3443b96e57bc2f9a97bf957c9269c">&#9670;&#160;</a></span>m_fingerprints</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classpluginplay_1_1detail___1_1FingerprintTable.html">FingerprintTable</a>&gt; pluginplay::detail_::ModuleManagerPIMPL::m_fingerprints</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">      std::make_shared&lt;FingerprintTable&gt;()</div>
+</div><!-- fragment -->
+<p>The table the modules' fingerprints are assigned with. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
 <li>cxx/src/pluginplay/module_manager/detail_/<a class="el" href="module__manager__pimpl_8hpp_source.html">module_manager_pimpl.hpp</a></li>
 <li>cxx/src/pluginplay/module_manager/detail_/<a class="el" href="module__manager__pimpl_8ipp_source.html">module_manager_pimpl.ipp</a></li>
+<li>cxx/src/pluginplay/module_manager/detail_/<b>resolve_drivers.cpp</b></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

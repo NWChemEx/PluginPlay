@@ -1,0 +1,9 @@
+<map id="pluginplay::DriverBase" name="pluginplay::DriverBase">
+<area shape="rect" id="Node000001" title="The base class of all drivers." alt="" coords="123,79,293,104"/>
+<area shape="rect" id="Node000003" href="$classpluginplay_1_1DriverPublicist.html" title="Exposes the protected members of DriverBase to the Python bindings." alt="" coords="5,152,197,177"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,114,120,154,117,150,178,109"/>
+<area shape="rect" id="Node000004" href="$classpluginplay_1_1PyDriverBase.html" title="Defines the interface used to write drivers in Python." alt="" coords="222,152,407,177"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="238,109,299,150,296,154,235,114"/>
+<area shape="rect" id="Node000002" href="$classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="119,5,297,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,44,211,79,205,79,205,44"/>
+</map>

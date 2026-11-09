@@ -116,12 +116,6 @@
 <p>This page lists the state that determines what running a module does, and
 says which class holds each piece at runtime. It covers the state that exists
 today and the state that drivers (see <a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>) add.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Drivers are not implemented yet. <code class="docutils literal notranslate"><span class="pre">DriverBase</span></code>, <code class="docutils literal notranslate"><span class="pre">CallGraphRequest</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> are the planned classes of this page and
-<a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>.</p>
-</div>
 <section id="what-is-call-graph-state">
 <h2>What is Call Graph State?<a class="headerlink" href="#what-is-call-graph-state" title="Link to this heading"></a></h2>
 <p>Running a module runs the modules bound to its submodules, which run the
@@ -396,9 +390,25 @@ original <code class="docutils literal notranslate"><span class="pre">Module</sp
 an overlay locks the original too.</p></li>
 </ol>
 <p>With these, <code class="docutils literal notranslate"><span class="pre">OverlayPIMPL</span></code> adds little to <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code>: the pointer to the
-original, and which inputs and submodules it changed. Whether it needs to be a
-class of its own, or is a <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> with an optional pointer to an
-original, can be decided when it is implemented.</p>
+original, and which inputs and submodules it changed. It is therefore not a
+class of its own. A <code class="docutils literal notranslate"><span class="pre">ModulePIMPL</span></code> holds an optional <code class="docutils literal notranslate"><span class="pre">OverlayState</span></code>, with the
+pointer to the original and the inputs, submodules, and memoization setting
+the overlay changes, and <code class="docutils literal notranslate"><span class="pre">ModulePIMPL::make_overlay</span></code> makes overlay modules.
+Two details were settled when it was implemented:</p>
+<ul class="simple">
+<li><p><strong>Rebuilding the maps.</strong> An overlay builds its complete input and submodule
+maps from the original settings plus the changes. The build happens when the
+overlay is made, when it is changed, and when it is locked. A driver whose
+requests are resolved but which is not yet locked, <em>e.g.</em>, after a run that
+failed because the driver was not
+ready, rebuilds the maps of its overlays before it uses them. The original
+is not locked until the driver is, so the user may have changed it, and an
+input that refers to a value the original replaced would dangle.</p></li>
+<li><p><strong>Locking the original.</strong> The original may not be ready on its own, <em>e.g.</em>,
+if the overlay binds a submodule the original leaves unset, so it can not
+always be locked like a module about to run. Locking an overlay locks the
+original, and the original’s submodules that are ready.</p></li>
+</ul>
 </section>
 </section>
 <section id="bookkeeping">

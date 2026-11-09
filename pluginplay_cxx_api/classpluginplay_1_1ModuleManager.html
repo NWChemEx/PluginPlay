@@ -186,6 +186,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a74a8dc308ad70e378231e94e787028c5" id="r_a74a8dc308ad70e378231e94e787028c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a74a8dc308ad70e378231e94e787028c5">change_submod</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;module_key, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;callback_key, const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;submod_key)</td></tr>
 <tr class="memdesc:a74a8dc308ad70e378231e94e787028c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the submodule a module calls.  <br /></td></tr>
 <tr class="separator:a74a8dc308ad70e378231e94e787028c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32fa1d93527f632d678bc6029988683c" id="r_a32fa1d93527f632d678bc6029988683c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a32fa1d93527f632d678bc6029988683c">resolve_drivers</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key)</td></tr>
+<tr class="memdesc:a32fa1d93527f632d678bc6029988683c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves the call graph requests of the drivers reachable from a module.  <br /></td></tr>
+<tr class="separator:a32fa1d93527f632d678bc6029988683c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5680e4d8e41581a23de5f276fe12cfd5" id="r_a5680e4d8e41581a23de5f276fe12cfd5"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Args&gt; </td></tr>
 <tr class="memitem:a5680e4d8e41581a23de5f276fe12cfd5"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleManager.html#a5680e4d8e41581a23de5f276fe12cfd5">run_as</a> (const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;key, Args &amp;&amp;... args)</td></tr>
 <tr class="memdesc:a5680e4d8e41581a23de5f276fe12cfd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs a given module.  <br /></td></tr>
@@ -887,6 +890,41 @@ template&lt;typename PluginType &gt; </div>
 
 </div>
 </div>
+<a id="a32fa1d93527f632d678bc6029988683c" name="a32fa1d93527f632d678bc6029988683c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32fa1d93527f632d678bc6029988683c">&#9670;&#160;</a></span>resolve_drivers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::ModuleManager::resolve_drivers </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1ModuleManager.html#a2f71efe8c2caa5b5dc78379cffd183ea">qualified_key</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resolves the call graph requests of the drivers reachable from a module. </p>
+<p>A driver's requests name the modules they configure by key, so the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> resolves them, into overlay modules the driver owns, before the driver runs. This function resolves the requests of every driver reachable from the module <code>key</code>, including that module, that is not already locked. The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s modules are not changed. run_as calls this function, so users normally do not need to.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key of the module about to be run.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>key</code>, or a module or target named by a request, does not exist. Strong throw guarantee for the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s modules. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if a key is ambiguous, or two of a driver's settings set the same target. Same guarantee. </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>if a required setting has no effect, or a setting targets a module below a nested driver. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a5680e4d8e41581a23de5f276fe12cfd5" name="a5680e4d8e41581a23de5f276fe12cfd5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5680e4d8e41581a23de5f276fe12cfd5">&#9670;&#160;</a></span>run_as()</h2>
 
@@ -924,21 +962,22 @@ template&lt;typename T , typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Runs a given module. </p>
+<p>Resolves the requests of the drivers reachable from the module (see resolve_drivers), and then runs the module as the property type <code>T</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td></td></tr>
-    <tr><td class="paramname">Args</td><td></td></tr>
+    <tr><td class="paramname">T</td><td>The property type to run the module as. </td></tr>
+    <tr><td class="paramname">Args</td><td>The types of the inputs of <code>T</code>.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td></td></tr>
-    <tr><td class="paramname">args</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The key of the module to run. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">args</td><td>The inputs of <code>T</code>.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The results of <code>T</code>. </dd></dl>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['detail_5f_3a_3amodulemanagerpimpl_0',['detail_::modulemanagerpimpl',['../classpluginplay_1_1Module.html#a701c9e81adfd7a74a52bb47a5b05ea32',1,'pluginplay::Module::ModuleManagerPIMPL'],['../classpluginplay_1_1Plugin.html#a701c9e81adfd7a74a52bb47a5b05ea32',1,'pluginplay::Plugin::ModuleManagerPIMPL']]]
+  ['callgraphrequest_0',['CallGraphRequest',['../classpluginplay_1_1ConditionalWiring.html#afd63bb2c977471e2026d45da1501dc29',1,'pluginplay::ConditionalWiring']]]
 ];

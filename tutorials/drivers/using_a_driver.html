@@ -109,12 +109,6 @@
              
   <section id="using-a-driver">
 <span id="id1"></span><h1>Using a Driver<a class="headerlink" href="#using-a-driver" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Drivers are a planned feature. The APIs on this page are planned APIs that
-are not yet implemented, and the code is not yet tested. See
-<a class="reference internal" href="../../developer/design/driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a> for the design.</p>
-</div>
 <p>This page uses the <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> written in <a class="reference internal" href="writing_a_driver.html#writing-a-driver"><span class="std std-ref">Writing a Driver</span></a>. It
 computes the force on a particle with charge 1 at the origin, from a charge of
 1 at <span class="math notranslate nohighlight">\(x=1\)</span> and a charge of 2 at <span class="math notranslate nohighlight">\(x=2\)</span>.</p>
@@ -170,7 +164,8 @@ locked too.</p>
 <p class="admonition-title">Note</p>
 <p>A driver’s settings are applied by the <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code>, so a driver must
 be run with <code class="docutils literal notranslate"><span class="pre">ModuleManager::run_as</span></code> (or as a submodule of a module that
-was). Running a driver that has never run with <code class="docutils literal notranslate"><span class="pre">Module::run_as</span></code> throws.</p>
+was). Running a driver with <code class="docutils literal notranslate"><span class="pre">Module::run_as</span></code> before it has run through the
+<code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> throws.</p>
 </div>
 </section>
 <section id="changing-the-settings">

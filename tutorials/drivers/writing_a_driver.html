@@ -106,12 +106,6 @@
              
   <section id="writing-a-driver">
 <span id="id1"></span><h1>Writing a Driver<a class="headerlink" href="#writing-a-driver" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Drivers are a planned feature. The APIs on this page are planned APIs that
-are not yet implemented, and the code is not yet tested. See
-<a class="reference internal" href="../../developer/design/driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a> for the design.</p>
-</div>
 <p>A driver is written like a module (see <a class="reference internal" href="../modules/index.html#module-development"><span class="std std-ref">Module Development</span></a>). Its
 constructor declares, on top of what a module’s constructor declares, how the
 driver configures the modules below it. This page writes <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code>,
@@ -158,7 +152,6 @@ work, and its two inputs are the settings the user can change:</p>
 <span class="w">    </span><span class="n">add_input</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
 <span class="w">      </span><span class="p">.</span><span class="n">set_description</span><span class="p">(</span><span class="s">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span><span class="p">)</span>
 <span class="w">      </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">());</span>
-<span class="p">}</span>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ForceDriver</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">DriverBase</span><span class="p">):</span>
@@ -170,8 +163,12 @@ work, and its two inputs are the settings the user can change:</p>
             <span class="s2">&quot;The module that computes the force&quot;</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;screen&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;screen&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span>
+            <span class="s2">&quot;Should the electric field be screened?&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span>
+            <span class="s2">&quot;maximum ||r-r_i|| for contributing to electric field&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -184,8 +181,8 @@ Each names the modules it configures by their keys in the <code class="docutils 
 wrappers that, besides the usual setters, have
 <code class="docutils literal notranslate"><span class="pre">set_target(module,</span> <span class="pre">target)</span></code>. It gives the input or submodule <code class="docutils literal notranslate"><span class="pre">target</span></code> of
 the module <code class="docutils literal notranslate"><span class="pre">module</span></code> the value of the driver’s input or submodule, whatever
-the driver’s other settings are. A driver that let the user pick the electric
-field directly would declare:</p>
+the driver’s other settings are. <code class="docutils literal notranslate"><span class="pre">FieldChoiceDriver</span></code>, a driver that lets
+the user pick the electric field directly, declares:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">add_submodule</span><span class="o">&lt;</span><span class="n">ElectricField</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;electric field&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">set_default</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">)</span>
@@ -226,13 +223,11 @@ hold:</p>
 <p><code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> picks the electric field with its “screen” input, and passes
 its “threshold” on only when the screened field is used:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Use the screened electric field, and its threshold, if &quot;screen&quot;</span>
-<span class="c1">// is true</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Use the screened electric field, and its threshold, if &quot;screen&quot; is true</span>
 <span class="n">when</span><span class="p">(</span><span class="s">&quot;screen&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">set_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span>
 <span class="w">              </span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">forward_input</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;threshold&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">forward_input</span><span class="p">(</span><span class="s">&quot;Coulomb&#39;s Law with screening&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;threshold&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;threshold&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">otherwise</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">set_submod</span><span class="p">(</span><span class="s">&quot;Classical Force&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;electric field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Coulomb&#39;s Law&quot;</span><span class="p">);</span>
 </pre></div>
@@ -279,11 +274,11 @@ effect (see <a class="reference internal" href="using_a_driver.html#using-a-driv
 </section>
 <section id="the-run-member">
 <h2>The Run Member<a class="headerlink" href="#the-run-member" title="Link to this heading"></a></h2>
-<p>The run member is defined with <code class="docutils literal notranslate"><span class="pre">MODULE_RUN(T)</span></code>, as for a module. By the time
-it is called, the driver’s settings have been applied, so <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> only
-needs to call its “force” submodule:</p>
+<p>The run member is defined with <code class="docutils literal notranslate"><span class="pre">DRIVER_RUN(T)</span></code>, the driver counterpart of
+<code class="docutils literal notranslate"><span class="pre">MODULE_RUN(T)</span></code>. By the time it is called, the driver’s settings have been
+applied, so <code class="docutils literal notranslate"><span class="pre">ForceDriver</span></code> only needs to call its “force” submodule:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MODULE_RUN</span><span class="p">(</span><span class="n">ForceDriver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">DRIVER_RUN</span><span class="p">(</span><span class="n">ForceDriver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force_type</span><span class="o">::</span><span class="n">unwrap_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">);</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">F</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">submods</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;force&quot;</span><span class="p">).</span><span class="n">run_as</span><span class="o">&lt;</span><span class="n">force_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">charges</span><span class="p">);</span>
 

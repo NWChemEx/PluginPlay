@@ -91,15 +91,21 @@ Inheritance diagram for pluginplay::ModuleBase:</div>
 <div class="dyncontent">
 <div class="center"><img src="classpluginplay_1_1ModuleBase__inherit__graph.png" border="0" usemap="#apluginplay_1_1ModuleBase_inherit__map" alt="Inheritance graph"/></div>
 <map name="apluginplay_1_1ModuleBase_inherit__map" id="apluginplay_1_1ModuleBase_inherit__map">
-<area shape="rect" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="5,84,183,109"/>
-<area shape="rect" href="classpluginplay_1_1Publicist.html" title=" " alt="" coords="281,5,433,31"/>
-<area shape="poly" title=" " alt="" coords="134,76,230,39,280,27,281,33,231,45,135,81"/>
-<area shape="rect" href="classpluginplay_1_1PyModuleBase.html" title="Defines the interface used to write modules in Python." alt="" coords="260,55,453,80"/>
-<area shape="poly" title=" " alt="" coords="196,83,259,75,260,81,197,88"/>
-<area shape="rect" href="classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="" coords="234,105,479,145"/>
-<area shape="poly" title=" " alt="" coords="197,105,234,109,234,114,196,110"/>
-<area shape="rect" href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="" coords="231,169,483,209"/>
-<area shape="poly" title=" " alt="" coords="134,113,232,154,270,166,268,171,230,159,132,118"/>
+<area shape="rect" title="API determining how the pluginplay interacts with a module&#39;s implementation." alt="" coords="5,128,183,153"/>
+<area shape="rect" href="classpluginplay_1_1DriverBase.html" title="The base class of all drivers." alt="" coords="272,29,441,55"/>
+<area shape="poly" title=" " alt="" coords="125,118,173,90,230,65,274,52,275,57,232,70,176,95,128,123"/>
+<area shape="rect" href="classpluginplay_1_1Publicist.html" title=" " alt="" coords="281,79,433,104"/>
+<area shape="poly" title=" " alt="" coords="175,123,288,101,289,107,176,128"/>
+<area shape="rect" href="classpluginplay_1_1PyModuleBase.html" title="Defines the interface used to write modules in Python." alt="" coords="260,128,453,153"/>
+<area shape="poly" title=" " alt="" coords="196,138,260,138,260,143,196,143"/>
+<area shape="rect" href="classpluginplay_1_1detail___1_1FacadeModule.html" title="Implements a facade module." alt="" coords="234,178,479,218"/>
+<area shape="poly" title=" " alt="" coords="167,154,265,175,264,181,166,159"/>
+<area shape="rect" href="classpluginplay_1_1detail___1_1LambdaModule.html" title="Implements a lambda module." alt="" coords="231,242,483,282"/>
+<area shape="poly" title=" " alt="" coords="123,160,172,194,232,228,264,239,262,244,230,232,169,199,120,164"/>
+<area shape="rect" href="classpluginplay_1_1DriverPublicist.html" title="Exposes the protected members of DriverBase to the Python bindings." alt="" coords="531,5,723,31"/>
+<area shape="poly" title=" " alt="" coords="455,31,530,24,531,29,455,36"/>
+<area shape="rect" href="classpluginplay_1_1PyDriverBase.html" title="Defines the interface used to write drivers in Python." alt="" coords="534,55,719,80"/>
+<area shape="poly" title=" " alt="" coords="455,49,534,56,533,61,455,54"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -193,6 +199,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab829f149db50c169ff0ceb8cff704a12" id="r_ab829f149db50c169ff0ceb8cff704a12"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ab829f149db50c169ff0ceb8cff704a12">python_property_types</a> () const noexcept</td></tr>
 <tr class="memdesc:ab829f149db50c169ff0ceb8cff704a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of Python-only property types this module satisfies.  <br /></td></tr>
 <tr class="separator:ab829f149db50c169ff0ceb8cff704a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac65de10de5d9f437f9846ea3223fd01e" id="r_ac65de10de5d9f437f9846ea3223fd01e"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ac65de10de5d9f437f9846ea3223fd01e">property_type_inputs</a> () const noexcept</td></tr>
+<tr class="memdesc:ac65de10de5d9f437f9846ea3223fd01e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the keys of the inputs of the property types this module satisfies.  <br /></td></tr>
+<tr class="separator:ac65de10de5d9f437f9846ea3223fd01e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a57e5f833a35bc22c3681e7d9bdf5d0" id="r_a7a57e5f833a35bc22c3681e7d9bdf5d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepluginplay_1_1type.html#a8dd6f4c8509d26017a93644edc3574e0">type::rtti</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#a7a57e5f833a35bc22c3681e7d9bdf5d0">type</a> () const noexcept</td></tr>
 <tr class="memdesc:a7a57e5f833a35bc22c3681e7d9bdf5d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the RTTI of the derived class.  <br /></td></tr>
 <tr class="separator:a7a57e5f833a35bc22c3681e7d9bdf5d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -230,6 +239,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reset_internal_cache<
 <tr class="memitem:ae835c00a769f7b5641d19597fe33f209" id="r_ae835c00a769f7b5641d19597fe33f209"><td class="memItemLeft" align="right" valign="top"><a id="ae835c00a769f7b5641d19597fe33f209" name="ae835c00a769f7b5641d19597fe33f209"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_python</b> () const</td></tr>
 <tr class="separator:ae835c00a769f7b5641d19597fe33f209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3614c2791f9773b8027978a12743b3f" id="r_ab3614c2791f9773b8027978a12743b3f"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#ab3614c2791f9773b8027978a12743b3f">call_graph_request</a> () const noexcept</td></tr>
+<tr class="memdesc:ab3614c2791f9773b8027978a12743b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The developer's call graph request.  <br /></td></tr>
+<tr class="separator:ab3614c2791f9773b8027978a12743b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb82e512415a8605ab5a7865b97723cc" id="r_afb82e512415a8605ab5a7865b97723cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1ModuleBase.html#afb82e512415a8605ab5a7865b97723cc">operator==</a> (const <a class="el" href="classpluginplay_1_1ModuleBase.html">ModuleBase</a> &amp;rhs) const noexcept</td></tr>
 <tr class="memdesc:afb82e512415a8605ab5a7865b97723cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two <a class="el" href="classpluginplay_1_1ModuleBase.html" title="API determining how the pluginplay interacts with a module&#39;s implementation.">ModuleBase</a> instances for equality.  <br /></td></tr>
 <tr class="separator:afb82e512415a8605ab5a7865b97723cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -545,6 +557,43 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ab3614c2791f9773b8027978a12743b3f" name="ab3614c2791f9773b8027978a12743b3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3614c2791f9773b8027978a12743b3f">&#9670;&#160;</a></span>call_graph_request()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp; pluginplay::ModuleBase::call_graph_request </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The developer's call graph request. </p>
+<p>Drivers configure the modules below them with a <a class="el" href="classpluginplay_1_1CallGraphRequest.html" title="What a driver sets on the modules below it.">CallGraphRequest</a>, which the driver's constructor fills (see <a class="el" href="classpluginplay_1_1DriverBase.html" title="The base class of all drivers.">DriverBase</a>). Modules which are not drivers configure nothing, so this returns an empty request.</p>
+<dl class="section return"><dt>Returns</dt><dd>The developer's request, which is empty for modules that are not drivers.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented in <a class="el" href="classpluginplay_1_1DriverBase.html#a352b693b89976480f5c95d873934c58b">pluginplay::DriverBase</a>.</p>
 
 </div>
 </div>
@@ -1051,6 +1100,41 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ac65de10de5d9f437f9846ea3223fd01e" name="ac65de10de5d9f437f9846ea3223fd01e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac65de10de5d9f437f9846ea3223fd01e">&#9670;&#160;</a></span>property_type_inputs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const auto &amp; pluginplay::ModuleBase::property_type_inputs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the keys of the inputs of the property types this module satisfies. </p>
+<p>Inputs of property types are passed on every call, so, unlike the other inputs, their bound values are not the values the module runs with.</p>
+<dl class="section return"><dt>Returns</dt><dd>The keys of the inputs added by satisfies_property_type.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a5a66d34ef3aff119dd2b2700cc1731a1" name="a5a66d34ef3aff119dd2b2700cc1731a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5a66d34ef3aff119dd2b2700cc1731a1">&#9670;&#160;</a></span>property_types()</h2>
 
@@ -1262,7 +1346,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classpluginplay_1_1detail___1_1LambdaModule.html#ad1fc5e3c84f9c4801f8964bf902a8b77">pluginplay::detail_::LambdaModule&lt; PropertyType &gt;</a>, <a class="el" href="classpluginplay_1_1detail___1_1FacadeModule.html#a41a6f66950edb30cdf620967f4eef0a8">pluginplay::detail_::FacadeModule&lt; PropertyType &gt;</a>, <a class="el" href="classpluginplay_1_1PyModuleBase.html#af5136ad70a9b5083520c9531931fb68f">pluginplay::PyModuleBase</a>, and <a class="el" href="classpluginplay_1_1Publicist.html#a18809ad6beb8c780fd553a40fee256c6">pluginplay::Publicist</a>.</p>
+<p>Implemented in <a class="el" href="classpluginplay_1_1detail___1_1LambdaModule.html#ad1fc5e3c84f9c4801f8964bf902a8b77">pluginplay::detail_::LambdaModule&lt; PropertyType &gt;</a>, <a class="el" href="classpluginplay_1_1detail___1_1FacadeModule.html#a41a6f66950edb30cdf620967f4eef0a8">pluginplay::detail_::FacadeModule&lt; PropertyType &gt;</a>, <a class="el" href="classpluginplay_1_1PyDriverBase.html#a30fb46a90c6101d4872ca9d24d245a20">pluginplay::PyDriverBase</a>, <a class="el" href="classpluginplay_1_1PyModuleBase.html#af5136ad70a9b5083520c9531931fb68f">pluginplay::PyModuleBase</a>, and <a class="el" href="classpluginplay_1_1Publicist.html#a18809ad6beb8c780fd553a40fee256c6">pluginplay::Publicist</a>.</p>
 
 </div>
 </div>

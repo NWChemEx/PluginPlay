@@ -125,6 +125,10 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>uuid_type</b> = util
 using&#160;</td><td class="memItemRight" valign="bottom"><b>submod_uuid_map</b> = std::map&lt; <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a>, <a class="el" href="classpluginplay_1_1Module.html#a3fdd4c01406da7ebddbf31259b108478">uuid_type</a> &gt;</td></tr>
 <tr class="memdesc:a92bee556e6935e51eec08b7d0dbaacdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a submodule to UUID map. <br /></td></tr>
 <tr class="separator:a92bee556e6935e51eec08b7d0dbaacdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb708caac4a1084a1f52af4536ad3bd7" id="r_abb708caac4a1084a1f52af4536ad3bd7"><td class="memItemLeft" align="right" valign="top"><a id="abb708caac4a1084a1f52af4536ad3bd7" name="abb708caac4a1084a1f52af4536ad3bd7"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>inactive_list</b> = std::vector&lt; std::string &gt;</td></tr>
+<tr class="memdesc:abb708caac4a1084a1f52af4536ad3bd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the list of a driver's inactive settings. <br /></td></tr>
+<tr class="separator:abb708caac4a1084a1f52af4536ad3bd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -195,6 +199,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afb8de85ebb987e83bdfe13ce068b1d2c" id="r_afb8de85ebb987e83bdfe13ce068b1d2c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#afb8de85ebb987e83bdfe13ce068b1d2c">lock</a> ()</td></tr>
 <tr class="memdesc:afb8de85ebb987e83bdfe13ce068b1d2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Locks the module and all submodules.  <br /></td></tr>
 <tr class="separator:afb8de85ebb987e83bdfe13ce068b1d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dc2bf478e5fefad5d5fcf3d2f8c4726" id="r_a8dc2bf478e5fefad5d5fcf3d2f8c4726"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a8dc2bf478e5fefad5d5fcf3d2f8c4726">is_driver</a> () const</td></tr>
+<tr class="memdesc:a8dc2bf478e5fefad5d5fcf3d2f8c4726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is this module a driver?  <br /></td></tr>
+<tr class="separator:a8dc2bf478e5fefad5d5fcf3d2f8c4726"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9199506341ef59b11e4c06d8cc70d3a1" id="r_a9199506341ef59b11e4c06d8cc70d3a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a9199506341ef59b11e4c06d8cc70d3a1">call_graph_request</a> ()</td></tr>
+<tr class="memdesc:a9199506341ef59b11e4c06d8cc70d3a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The user's call graph request of this driver.  <br /></td></tr>
+<tr class="separator:a9199506341ef59b11e4c06d8cc70d3a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff1cc0b465ffff2237094622561322b0" id="r_aff1cc0b465ffff2237094622561322b0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#aff1cc0b465ffff2237094622561322b0">call_graph_request</a> () const</td></tr>
+<tr class="memdesc:aff1cc0b465ffff2237094622561322b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The user's call graph request of this driver, read-only.  <br /></td></tr>
+<tr class="separator:aff1cc0b465ffff2237094622561322b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1efb5b3f8ba17acef2dcaaef508611d1" id="r_a1efb5b3f8ba17acef2dcaaef508611d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1Module.html#abb708caac4a1084a1f52af4536ad3bd7">inactive_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#a1efb5b3f8ba17acef2dcaaef508611d1">inactive_settings</a> () const</td></tr>
+<tr class="memdesc:a1efb5b3f8ba17acef2dcaaef508611d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The settings of this driver which had no effect.  <br /></td></tr>
+<tr class="separator:a1efb5b3f8ba17acef2dcaaef508611d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd7b2a50ca408b93b39744dbb799efc7" id="r_abd7b2a50ca408b93b39744dbb799efc7"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a78b45f77daf70dc8f967f69dfa9c7394">type::result_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1Module.html#abd7b2a50ca408b93b39744dbb799efc7">results</a> () const</td></tr>
 <tr class="memdesc:abd7b2a50ca408b93b39744dbb799efc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of results that can be computed by this module.  <br /></td></tr>
 <tr class="separator:abd7b2a50ca408b93b39744dbb799efc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -269,6 +285,10 @@ Friends</h2></td></tr>
 struct&#160;</td><td class="memItemRight" valign="bottom"><b>detail_::ModuleManagerPIMPL</b></td></tr>
 <tr class="memdesc:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lets the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> attach its runtime and caches to the module. <br /></td></tr>
 <tr class="separator:a701c9e81adfd7a74a52bb47a5b05ea32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e73c3f0e020c5f43bd36666e0fe9541" id="r_a9e73c3f0e020c5f43bd36666e0fe9541"><td class="memItemLeft" align="right" valign="top"><a id="a9e73c3f0e020c5f43bd36666e0fe9541" name="a9e73c3f0e020c5f43bd36666e0fe9541"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>detail_::ModulePIMPL</b></td></tr>
+<tr class="memdesc:a9e73c3f0e020c5f43bd36666e0fe9541"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lets PIMPLs read the state of the modules below them, e.g., overlays. <br /></td></tr>
+<tr class="separator:a9e73c3f0e020c5f43bd36666e0fe9541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The public API of all modules. </p>
@@ -521,6 +541,59 @@ template&lt;typename <a class="el" href="classpluginplay_1_1PropertyType.html">P
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if this module does not have a backend or if the module is locked. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9199506341ef59b11e4c06d8cc70d3a1" name="a9199506341ef59b11e4c06d8cc70d3a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9199506341ef59b11e4c06d8cc70d3a1">&#9670;&#160;</a></span>call_graph_request() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp; pluginplay::Module::call_graph_request </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The user's call graph request of this driver. </p>
+<p>Most of a driver's choices are its inputs and submodules, which are changed with change_input and change_submod. For the rest, the user adds fixed values to the call graph request returned by this function, with <a class="el" href="classpluginplay_1_1CallGraphRequest.html#a6ecf133b25b8aa757aef542322038641" title="Requests that an input of a module below the driver is set to value.">CallGraphRequest::set_input</a> and <a class="el" href="classpluginplay_1_1CallGraphRequest.html#a0d48471d24d7b61bdc16865782e3aa98" title="Requests that a submodule of a module below the driver is bound to the module with the key submod_key...">CallGraphRequest::set_submod</a>. The user's requests are applied after the driver's, so they win.</p>
+<dl class="section return"><dt>Returns</dt><dd>The user's call graph request, in a read/write state.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if this module does not have an implementation, is not a driver, or is locked. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aff1cc0b465ffff2237094622561322b0" name="aff1cc0b465ffff2237094622561322b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff1cc0b465ffff2237094622561322b0">&#9670;&#160;</a></span>call_graph_request() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp; pluginplay::Module::call_graph_request </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The user's call graph request of this driver, read-only. </p>
+<dl class="section return"><dt>Returns</dt><dd>The user's call graph request.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if this module does not have an implementation or is not a driver. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -868,6 +941,33 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a1efb5b3f8ba17acef2dcaaef508611d1" name="a1efb5b3f8ba17acef2dcaaef508611d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1efb5b3f8ba17acef2dcaaef508611d1">&#9670;&#160;</a></span>inactive_settings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1Module.html#abb708caac4a1084a1f52af4536ad3bd7">Module::inactive_list</a> pluginplay::Module::inactive_settings </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The settings of this driver which had no effect. </p>
+<p>When a driver's setting requests are resolved, any submodule whose target is not in the call graph, or any input a user-changed for a in branch that was not taken, has no effect. Such settings are logged and recorded here.</p>
+<dl class="section return"><dt>Returns</dt><dd>One message per inactive setting. Empty for modules which are not drivers, and for drivers whose requests have not been resolved.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem copying the messages. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9c08084c405c78d283dde5707268bd9d" name="a9c08084c405c78d283dde5707268bd9d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9c08084c405c78d283dde5707268bd9d">&#9670;&#160;</a></span>inputs()</h2>
 
@@ -890,6 +990,33 @@ template&lt;typename T &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if the implementation of this module has not been set. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8dc2bf478e5fefad5d5fcf3d2f8c4726" name="a8dc2bf478e5fefad5d5fcf3d2f8c4726"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dc2bf478e5fefad5d5fcf3d2f8c4726">&#9670;&#160;</a></span>is_driver()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::Module::is_driver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Is this module a driver? </p>
+<p>A driver is a module whose implementation derives from <a class="el" href="classpluginplay_1_1DriverBase.html" title="The base class of all drivers.">DriverBase</a>. It configures the modules below it, see the PluginPlay documentation on drivers.</p>
+<dl class="section return"><dt>Returns</dt><dd>True if this module is a driver and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if this module does not have an implementation. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

@@ -74,8 +74,10 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classpluginplay_1_1detail___1_1ModulePIMPL-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">pluginplay::detail_::ModulePIMPL Class Reference</div></div>
 </div><!--header-->
@@ -124,18 +126,34 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>runtime_ptr</b> = ty
 using&#160;</td><td class="memItemRight" valign="bottom"><b>mm_cache_ptr</b> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1cache_1_1ModuleManagerCache.html">cache::ModuleManagerCache</a> &gt;</td></tr>
 <tr class="memdesc:a79f0eb7ce9da9718282b9bb3c8ed3766"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s caches. <br /></td></tr>
 <tr class="separator:a79f0eb7ce9da9718282b9bb3c8ed3766"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bbe88ed490b3a97af9f00ea32e3a47f" id="r_a2bbe88ed490b3a97af9f00ea32e3a47f"><td class="memItemLeft" align="right" valign="top"><a id="a2bbe88ed490b3a97af9f00ea32e3a47f" name="a2bbe88ed490b3a97af9f00ea32e3a47f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>fingerprint_table_ptr</b> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1detail___1_1FingerprintTable.html">FingerprintTable</a> &gt;</td></tr>
+<tr class="memdesc:a2bbe88ed490b3a97af9f00ea32e3a47f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to the table assigning fingerprints. <br /></td></tr>
+<tr class="separator:a2bbe88ed490b3a97af9f00ea32e3a47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ccee83dcf362268ae5187224aa64cd2" id="r_a5ccee83dcf362268ae5187224aa64cd2"><td class="memItemLeft" align="right" valign="top"><a id="a5ccee83dcf362268ae5187224aa64cd2" name="a5ccee83dcf362268ae5187224aa64cd2"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>fingerprint_type</b> = <a class="el" href="classpluginplay_1_1detail___1_1FingerprintTable.html#aa0e2d0c7f528f6f52d5775d7b41bd7ae">FingerprintTable::fingerprint_type</a></td></tr>
+<tr class="memdesc:a5ccee83dcf362268ae5187224aa64cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a fingerprint. <br /></td></tr>
+<tr class="separator:a5ccee83dcf362268ae5187224aa64cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa32eeea7004514ee4a646bd0f305316" id="r_afa32eeea7004514ee4a646bd0f305316"><td class="memItemLeft" align="right" valign="top"><a id="afa32eeea7004514ee4a646bd0f305316" name="afa32eeea7004514ee4a646bd0f305316"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>module_ptr</b> = std::shared_ptr&lt; <a class="el" href="classpluginplay_1_1Module.html">Module</a> &gt;</td></tr>
+<tr class="memdesc:afa32eeea7004514ee4a646bd0f305316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a pointer to a module, e.g., an overlay module. <br /></td></tr>
+<tr class="separator:afa32eeea7004514ee4a646bd0f305316"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92840177c0fc770b488d57c71a7efb02" id="r_a92840177c0fc770b488d57c71a7efb02"><td class="memItemLeft" align="right" valign="top"><a id="a92840177c0fc770b488d57c71a7efb02" name="a92840177c0fc770b488d57c71a7efb02"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>inactive_list</b> = std::vector&lt; std::string &gt;</td></tr>
+<tr class="memdesc:a92840177c0fc770b488d57c71a7efb02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the list of a driver's inactive settings. <br /></td></tr>
+<tr class="separator:a92840177c0fc770b488d57c71a7efb02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ade9708c530506577d5e38def3ddd086a" id="r_ade9708c530506577d5e38def3ddd086a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#ade9708c530506577d5e38def3ddd086a">ModulePIMPL</a> ()=default</td></tr>
 <tr class="memdesc:ade9708c530506577d5e38def3ddd086a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a module with no implementation.  <br /></td></tr>
 <tr class="separator:ade9708c530506577d5e38def3ddd086a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedd9e379e2937d45f1b7ab2d24a0e4e8" id="r_aedd9e379e2937d45f1b7ab2d24a0e4e8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#aedd9e379e2937d45f1b7ab2d24a0e4e8">ModulePIMPL</a> (const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;rhs)=default</td></tr>
-<tr class="memdesc:aedd9e379e2937d45f1b7ab2d24a0e4e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializing this <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html" title="The class that actually contains a module&#39;s state.">ModulePIMPL</a> with a deep copy of <code>rhs</code>.  <br /></td></tr>
-<tr class="separator:aedd9e379e2937d45f1b7ab2d24a0e4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56fffeddf7e8d2ab05e386908c7405db" id="r_a56fffeddf7e8d2ab05e386908c7405db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a56fffeddf7e8d2ab05e386908c7405db">operator=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;rhs)=default</td></tr>
-<tr class="memdesc:a56fffeddf7e8d2ab05e386908c7405db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html" title="The class that actually contains a module&#39;s state.">ModulePIMPL</a>'s state to a deep copy of <code>rhs</code>.  <br /></td></tr>
-<tr class="separator:a56fffeddf7e8d2ab05e386908c7405db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ecf8b91ad5dcf48708378aa7a9f2087" id="r_a9ecf8b91ad5dcf48708378aa7a9f2087"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a9ecf8b91ad5dcf48708378aa7a9f2087">ModulePIMPL</a> (const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;rhs)</td></tr>
+<tr class="memdesc:a9ecf8b91ad5dcf48708378aa7a9f2087"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializing this <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html" title="The class that actually contains a module&#39;s state.">ModulePIMPL</a> with a deep copy of <code>rhs</code>.  <br /></td></tr>
+<tr class="separator:a9ecf8b91ad5dcf48708378aa7a9f2087"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a745b46f1837b23569bde7895d1229f64" id="r_a745b46f1837b23569bde7895d1229f64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a745b46f1837b23569bde7895d1229f64">operator=</a> (const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;rhs)</td></tr>
+<tr class="memdesc:a745b46f1837b23569bde7895d1229f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html" title="The class that actually contains a module&#39;s state.">ModulePIMPL</a>'s state to a deep copy of <code>rhs</code>.  <br /></td></tr>
+<tr class="separator:a745b46f1837b23569bde7895d1229f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b669d5e4940c4148bda6dc7b549cebf" id="r_a1b669d5e4940c4148bda6dc7b549cebf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a1b669d5e4940c4148bda6dc7b549cebf">ModulePIMPL</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html">ModulePIMPL</a> &amp;&amp;rhs)=default</td></tr>
 <tr class="memdesc:a1b669d5e4940c4148bda6dc7b549cebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes this <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html" title="The class that actually contains a module&#39;s state.">ModulePIMPL</a> with <code>rhs's</code> state.  <br /></td></tr>
 <tr class="separator:a1b669d5e4940c4148bda6dc7b549cebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,9 +184,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acc2f059c1aee1d9ed44f288185a5a910" id="r_acc2f059c1aee1d9ed44f288185a5a910"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#acc2f059c1aee1d9ed44f288185a5a910">lock</a> ()</td></tr>
 <tr class="memdesc:acc2f059c1aee1d9ed44f288185a5a910"><td class="mdescLeft">&#160;</td><td class="mdescRight">Locks the module and all submodules.  <br /></td></tr>
 <tr class="separator:acc2f059c1aee1d9ed44f288185a5a910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfa4f3e6af6707e616afd56224ccd4c2" id="r_abfa4f3e6af6707e616afd56224ccd4c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#abfa4f3e6af6707e616afd56224ccd4c2">unlock</a> () noexcept</td></tr>
-<tr class="memdesc:abfa4f3e6af6707e616afd56224ccd4c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlocks the module.  <br /></td></tr>
-<tr class="separator:abfa4f3e6af6707e616afd56224ccd4c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aced2258a99a142dac437e108d7f79152" id="r_aced2258a99a142dac437e108d7f79152"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#aced2258a99a142dac437e108d7f79152">unlock</a> ()</td></tr>
+<tr class="memdesc:aced2258a99a142dac437e108d7f79152"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlocks the module.  <br /></td></tr>
+<tr class="separator:aced2258a99a142dac437e108d7f79152"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9129932fd6f94f8ed7734df76c6b8fe6" id="r_a9129932fd6f94f8ed7734df76c6b8fe6"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a9129932fd6f94f8ed7734df76c6b8fe6">results</a> () const</td></tr>
 <tr class="memdesc:a9129932fd6f94f8ed7734df76c6b8fe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the set of results computed by this module.  <br /></td></tr>
 <tr class="separator:a9129932fd6f94f8ed7734df76c6b8fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,9 +226,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa63bf5ec6bbf4e86d82d2b49e05647b7" id="r_aa63bf5ec6bbf4e86d82d2b49e05647b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#aa63bf5ec6bbf4e86d82d2b49e05647b7">is_cached</a> (const <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &amp;in_inputs)</td></tr>
 <tr class="memdesc:aa63bf5ec6bbf4e86d82d2b49e05647b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the result of a call is cached.  <br /></td></tr>
 <tr class="separator:aa63bf5ec6bbf4e86d82d2b49e05647b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06c691f266f31bfaa17106181a2b90cf" id="r_a06c691f266f31bfaa17106181a2b90cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a06c691f266f31bfaa17106181a2b90cf">attach</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#acbc8887e68d208a32174a719241f77e9">runtime_ptr</a> runtime, const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a79f0eb7ce9da9718282b9bb3c8ed3766">mm_cache_ptr</a> &amp;caches, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;cache_key)</td></tr>
-<tr class="memdesc:a06c691f266f31bfaa17106181a2b90cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates *this with a <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s runtime and caches.  <br /></td></tr>
-<tr class="separator:a06c691f266f31bfaa17106181a2b90cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68f37c677f22744b6ba7c16b5f5d967b" id="r_a68f37c677f22744b6ba7c16b5f5d967b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a68f37c677f22744b6ba7c16b5f5d967b">attach</a> (<a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#acbc8887e68d208a32174a719241f77e9">runtime_ptr</a> runtime, const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a79f0eb7ce9da9718282b9bb3c8ed3766">mm_cache_ptr</a> &amp;caches, const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;cache_key, <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a2bbe88ed490b3a97af9f00ea32e3a47f">fingerprint_table_ptr</a> fingerprints={})</td></tr>
+<tr class="memdesc:a68f37c677f22744b6ba7c16b5f5d967b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates *this with a <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s runtime and caches.  <br /></td></tr>
+<tr class="separator:a68f37c677f22744b6ba7c16b5f5d967b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b8e5c891264b041d91fb7d250f16a88" id="r_a4b8e5c891264b041d91fb7d250f16a88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a4b8e5c891264b041d91fb7d250f16a88">reset_cache</a> ()</td></tr>
 <tr class="memdesc:a4b8e5c891264b041d91fb7d250f16a88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets cache.  <br /></td></tr>
 <tr class="separator:a4b8e5c891264b041d91fb7d250f16a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -244,6 +262,73 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9762a60d57080830921a71bf88edfb6d" id="r_a9762a60d57080830921a71bf88edfb6d"><td class="memItemLeft" align="right" valign="top"><a id="a9762a60d57080830921a71bf88edfb6d" name="a9762a60d57080830921a71bf88edfb6d"></a>
 <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a67df9c7ee082e879ffe40e6921d8a02e">submod_uuid_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>submod_uuids</b> () const</td></tr>
 <tr class="separator:a9762a60d57080830921a71bf88edfb6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a425edaed104d27376e981f581064ef04" id="r_a425edaed104d27376e981f581064ef04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a425edaed104d27376e981f581064ef04">is_driver</a> () const</td></tr>
+<tr class="memdesc:a425edaed104d27376e981f581064ef04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is *this a driver?  <br /></td></tr>
+<tr class="separator:a425edaed104d27376e981f581064ef04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5665d89463509ac0ba255a3536992bc7" id="r_a5665d89463509ac0ba255a3536992bc7"><td class="memItemLeft" align="right" valign="top"><a id="a5665d89463509ac0ba255a3536992bc7" name="a5665d89463509ac0ba255a3536992bc7"></a>
+const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>developer_request</b> () const</td></tr>
+<tr class="memdesc:a5665d89463509ac0ba255a3536992bc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The developer's request, empty for modules which are not drivers. <br /></td></tr>
+<tr class="separator:a5665d89463509ac0ba255a3536992bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa29c60da9db52a84970f5413d1ddbe60" id="r_aa29c60da9db52a84970f5413d1ddbe60"><td class="memItemLeft" align="right" valign="top"><a id="aa29c60da9db52a84970f5413d1ddbe60" name="aa29c60da9db52a84970f5413d1ddbe60"></a>
+const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>property_type_inputs</b> () const</td></tr>
+<tr class="memdesc:aa29c60da9db52a84970f5413d1ddbe60"><td class="mdescLeft">&#160;</td><td class="mdescRight">The keys of the inputs of the property types the module satisfies. <br /></td></tr>
+<tr class="separator:aa29c60da9db52a84970f5413d1ddbe60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab078bba0255bd3185d78b63b4b977ac2" id="r_ab078bba0255bd3185d78b63b4b977ac2"><td class="memItemLeft" align="right" valign="top"><a id="ab078bba0255bd3185d78b63b4b977ac2" name="ab078bba0255bd3185d78b63b4b977ac2"></a>
+<a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>user_request</b> () noexcept</td></tr>
+<tr class="memdesc:ab078bba0255bd3185d78b63b4b977ac2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The user's request, empty for modules which are not drivers. <br /></td></tr>
+<tr class="separator:ab078bba0255bd3185d78b63b4b977ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9b9a8ee32f784cfeb9739b1f5ec107c" id="r_ab9b9a8ee32f784cfeb9739b1f5ec107c"><td class="memItemLeft" align="right" valign="top"><a id="ab9b9a8ee32f784cfeb9739b1f5ec107c" name="ab9b9a8ee32f784cfeb9739b1f5ec107c"></a>
+const <a class="el" href="classpluginplay_1_1CallGraphRequest.html">CallGraphRequest</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>user_request</b> () const noexcept</td></tr>
+<tr class="memdesc:ab9b9a8ee32f784cfeb9739b1f5ec107c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The user's request, empty for modules which are not drivers. <br /></td></tr>
+<tr class="separator:ab9b9a8ee32f784cfeb9739b1f5ec107c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09bc13bcf3b44948533e308eb7522977" id="r_a09bc13bcf3b44948533e308eb7522977"><td class="memItemLeft" align="right" valign="top"><a id="a09bc13bcf3b44948533e308eb7522977" name="a09bc13bcf3b44948533e308eb7522977"></a>
+const <a class="el" href="namespacepluginplay_1_1type.html#a5b3cceb4e9a4b73288a4e173b92ab50d">type::input_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>default_inputs</b> () const</td></tr>
+<tr class="memdesc:a09bc13bcf3b44948533e308eb7522977"><td class="mdescLeft">&#160;</td><td class="mdescRight">The inputs as the developer declared them, before the user's changes. <br /></td></tr>
+<tr class="separator:a09bc13bcf3b44948533e308eb7522977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a68f9e7942b37fbe2815c0f1e5ca30d" id="r_a2a68f9e7942b37fbe2815c0f1e5ca30d"><td class="memItemLeft" align="right" valign="top"><a id="a2a68f9e7942b37fbe2815c0f1e5ca30d" name="a2a68f9e7942b37fbe2815c0f1e5ca30d"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>memoizes</b> () const noexcept</td></tr>
+<tr class="memdesc:a2a68f9e7942b37fbe2815c0f1e5ca30d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does *this memoize, regardless of the modules below it? <br /></td></tr>
+<tr class="separator:a2a68f9e7942b37fbe2815c0f1e5ca30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2df27222daace66fc639c730eb0f5e76" id="r_a2df27222daace66fc639c730eb0f5e76"><td class="memItemLeft" align="right" valign="top"><a id="a2df27222daace66fc639c730eb0f5e76" name="a2df27222daace66fc639c730eb0f5e76"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_resolved</b> () const noexcept</td></tr>
+<tr class="memdesc:a2df27222daace66fc639c730eb0f5e76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Have the requests of the driver *this been resolved? <br /></td></tr>
+<tr class="separator:a2df27222daace66fc639c730eb0f5e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a0e1bb87b50a26b9ce084e4f26aa7c8" id="r_a8a0e1bb87b50a26b9ce084e4f26aa7c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a8a0e1bb87b50a26b9ce084e4f26aa7c8">set_resolution</a> (<a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#ae90eaae20e5b337668db84711df9daac">run_submods</a>, std::vector&lt; <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a> &gt; overlays, <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a92840177c0fc770b488d57c71a7efb02">inactive_list</a> inactive) noexcept</td></tr>
+<tr class="memdesc:a8a0e1bb87b50a26b9ce084e4f26aa7c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores what the requests of the driver *this resolved into.  <br /></td></tr>
+<tr class="separator:a8a0e1bb87b50a26b9ce084e4f26aa7c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90eaae20e5b337668db84711df9daac" id="r_ae90eaae20e5b337668db84711df9daac"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#ae90eaae20e5b337668db84711df9daac">run_submods</a> () const</td></tr>
+<tr class="memdesc:ae90eaae20e5b337668db84711df9daac"><td class="mdescLeft">&#160;</td><td class="mdescRight">The submodules *this runs with.  <br /></td></tr>
+<tr class="separator:ae90eaae20e5b337668db84711df9daac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa81f2cc588a287751a99b875408d5071" id="r_aa81f2cc588a287751a99b875408d5071"><td class="memItemLeft" align="right" valign="top"><a id="aa81f2cc588a287751a99b875408d5071" name="aa81f2cc588a287751a99b875408d5071"></a>
+const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a92840177c0fc770b488d57c71a7efb02">inactive_list</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>inactive_settings</b> () const noexcept</td></tr>
+<tr class="memdesc:aa81f2cc588a287751a99b875408d5071"><td class="mdescLeft">&#160;</td><td class="mdescRight">The settings of a resolved driver which had no effect. <br /></td></tr>
+<tr class="separator:aa81f2cc588a287751a99b875408d5071"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa2ed8126c95224e0c991ad05fba7df4" id="r_afa2ed8126c95224e0c991ad05fba7df4"><td class="memItemLeft" align="right" valign="top"><a id="afa2ed8126c95224e0c991ad05fba7df4" name="afa2ed8126c95224e0c991ad05fba7df4"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_overlay</b> () const noexcept</td></tr>
+<tr class="memdesc:afa2ed8126c95224e0c991ad05fba7df4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is *this an overlay module? <br /></td></tr>
+<tr class="separator:afa2ed8126c95224e0c991ad05fba7df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bf27f132018634d012728b4e501b884" id="r_a0bf27f132018634d012728b4e501b884"><td class="memItemLeft" align="right" valign="top"><a id="a0bf27f132018634d012728b4e501b884" name="a0bf27f132018634d012728b4e501b884"></a>
+const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>original</b> () const</td></tr>
+<tr class="memdesc:a0bf27f132018634d012728b4e501b884"><td class="mdescLeft">&#160;</td><td class="mdescRight">The module *this overlays. Throws if *this is not an overlay module. <br /></td></tr>
+<tr class="separator:a0bf27f132018634d012728b4e501b884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dd63ef9053a6e4f05880ebecbe19fd8" id="r_a9dd63ef9053a6e4f05880ebecbe19fd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a9dd63ef9053a6e4f05880ebecbe19fd8">override_input</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key, <a class="el" href="namespacepluginplay_1_1type.html#a563823c3c7c40a96a8b543528d417579">type::any</a> value)</td></tr>
+<tr class="memdesc:a9dd63ef9053a6e4f05880ebecbe19fd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the input <code>key</code> of the overlay module *this.  <br /></td></tr>
+<tr class="separator:a9dd63ef9053a6e4f05880ebecbe19fd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7107f881d557669e797e18a72d0f833d" id="r_a7107f881d557669e797e18a72d0f833d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a7107f881d557669e797e18a72d0f833d">override_submod</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key, <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a> mod)</td></tr>
+<tr class="memdesc:a7107f881d557669e797e18a72d0f833d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the submodule <code>key</code> of the overlay module *this.  <br /></td></tr>
+<tr class="separator:a7107f881d557669e797e18a72d0f833d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46acc76de9d1316629e6c0be9e1998e3" id="r_a46acc76de9d1316629e6c0be9e1998e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a46acc76de9d1316629e6c0be9e1998e3">override_memoization</a> (bool on)</td></tr>
+<tr class="memdesc:a46acc76de9d1316629e6c0be9e1998e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether the overlay module *this memoizes.  <br /></td></tr>
+<tr class="separator:a46acc76de9d1316629e6c0be9e1998e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45fc0158864b7c31dc9eea0b06d4f4ae" id="r_a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a5ccee83dcf362268ae5187224aa64cd2">fingerprint_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a45fc0158864b7c31dc9eea0b06d4f4ae">fingerprint</a> () const</td></tr>
+<tr class="memdesc:a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifies the state of *this and of everything below it.  <br /></td></tr>
+<tr class="separator:a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:afc0e8f31475330a6ab94abb88bc81f77" id="r_afc0e8f31475330a6ab94abb88bc81f77"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afc0e8f31475330a6ab94abb88bc81f77">make_overlay</a> (const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a> &amp;<a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a0bf27f132018634d012728b4e501b884">original</a>)</td></tr>
+<tr class="memdesc:afc0e8f31475330a6ab94abb88bc81f77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes an overlay module of <code>original</code>.  <br /></td></tr>
+<tr class="separator:afc0e8f31475330a6ab94abb88bc81f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The class that actually contains a module's state. </p>
@@ -284,8 +369,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aedd9e379e2937d45f1b7ab2d24a0e4e8" name="aedd9e379e2937d45f1b7ab2d24a0e4e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedd9e379e2937d45f1b7ab2d24a0e4e8">&#9670;&#160;</a></span>ModulePIMPL() <span class="overload">[2/4]</span></h2>
+<a id="a9ecf8b91ad5dcf48708378aa7a9f2087" name="a9ecf8b91ad5dcf48708378aa7a9f2087"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ecf8b91ad5dcf48708378aa7a9f2087">&#9670;&#160;</a></span>ModulePIMPL() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,7 +388,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -453,8 +538,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a06c691f266f31bfaa17106181a2b90cf" name="a06c691f266f31bfaa17106181a2b90cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06c691f266f31bfaa17106181a2b90cf">&#9670;&#160;</a></span>attach()</h2>
+<a id="a68f37c677f22744b6ba7c16b5f5d967b" name="a68f37c677f22744b6ba7c16b5f5d967b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68f37c677f22744b6ba7c16b5f5d967b">&#9670;&#160;</a></span>attach()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -478,7 +563,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
-          <td class="paramname"><em>cache_key</em>&#160;</td>
+          <td class="paramname"><em>cache_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a2bbe88ed490b3a97af9f00ea32e3a47f">fingerprint_table_ptr</a>&#160;</td>
+          <td class="paramname"><em>fingerprints</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -499,7 +590,8 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">runtime</td><td>The runtime the implementation should use. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">caches</td><td>The <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a>'s caches. If null, *this is not given caches. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cache_key</td><td>The key of the module cache *this should use.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">cache_key</td><td>The key of the module cache *this should use. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fingerprints</td><td>The table *this assigns fingerprints with. If null, *this keeps its current table.</td></tr>
   </table>
   </dd>
 </dl>
@@ -578,6 +670,41 @@ Public Member Functions</h2></td></tr>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>if this module does not have an implementation. Strong throw guarantee. </td></tr>
     <tr><td class="paramname">std::bad_optional_access</td><td>if the description was not set. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a45fc0158864b7c31dc9eea0b06d4f4ae" name="a45fc0158864b7c31dc9eea0b06d4f4ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45fc0158864b7c31dc9eea0b06d4f4ae">&#9670;&#160;</a></span>fingerprint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a5ccee83dcf362268ae5187224aa64cd2">ModulePIMPL::fingerprint_type</a> pluginplay::detail_::ModulePIMPL::fingerprint </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Identifies the state of *this and of everything below it. </p>
+<p>Two modules have the same fingerprint exactly when they, and the modules below them, would run with the same state, i.e., the same implementation, bound inputs, memoization setting, and modules below them. Fingerprints replace the UUIDs of the submodules in memoization keys. The fingerprint is stored once *this, and everything below it, is locked.</p>
+<dl class="section return"><dt>Returns</dt><dd>The fingerprint of *this.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if *this does not have an implementation. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -760,6 +887,40 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a425edaed104d27376e981f581064ef04" name="a425edaed104d27376e981f581064ef04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a425edaed104d27376e981f581064ef04">&#9670;&#160;</a></span>is_driver()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::detail_::ModulePIMPL::is_driver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Is *this a driver? </p>
+<dl class="section return"><dt>Returns</dt><dd>True if the implementation derives from <a class="el" href="classpluginplay_1_1DriverBase.html" title="The base class of all drivers.">DriverBase</a> and false otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if *this does not have an implementation. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abde63a1f114c80ba30e9ea541c7d1233" name="abde63a1f114c80ba30e9ea541c7d1233"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abde63a1f114c80ba30e9ea541c7d1233">&#9670;&#160;</a></span>is_memoizable()</h2>
 
@@ -865,6 +1026,49 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="afc0e8f31475330a6ab94abb88bc81f77" name="afc0e8f31475330a6ab94abb88bc81f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc0e8f31475330a6ab94abb88bc81f77">&#9670;&#160;</a></span>make_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">ModulePIMPL::module_ptr</a> pluginplay::detail_::ModulePIMPL::make_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a> &amp;&#160;</td>
+          <td class="paramname"><em>original</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Makes an overlay module of <code>original</code>. </p>
+<p>An overlay module points to <code>original</code> and stores only the inputs, submodules, and memoization setting that differ from it. Reading an input it does not change reads the original's value, without copying it. It shares the original's implementation and caches.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">original</td><td>The module to overlay. Must have an implementation.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The new overlay module, which is unlocked and changes nothing.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if <code>original</code> has no implementation. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the overlay. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ab34ab4cdcc93818e55b482cfe2ba8c8a" name="ab34ab4cdcc93818e55b482cfe2ba8c8a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab34ab4cdcc93818e55b482cfe2ba8c8a">&#9670;&#160;</a></span>not_set()</h2>
 
@@ -956,8 +1160,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a56fffeddf7e8d2ab05e386908c7405db" name="a56fffeddf7e8d2ab05e386908c7405db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56fffeddf7e8d2ab05e386908c7405db">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+<a id="a745b46f1837b23569bde7895d1229f64" name="a745b46f1837b23569bde7895d1229f64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a745b46f1837b23569bde7895d1229f64">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -975,7 +1179,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1076,6 +1280,151 @@ Public Member Functions</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">???</td><td>If the base comparison throws or if any of the input comparisons throw. Same guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9dd63ef9053a6e4f05880ebecbe19fd8" name="a9dd63ef9053a6e4f05880ebecbe19fd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9dd63ef9053a6e4f05880ebecbe19fd8">&#9670;&#160;</a></span>override_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModulePIMPL::override_input </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a563823c3c7c40a96a8b543528d417579">type::any</a>&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the input <code>key</code> of the overlay module *this. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The input to set. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>The new value of the input.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if *this is not an unlocked overlay module. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::out_of_range</td><td>if *this has no input <code>key</code>. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if <code>value</code> fails the input's checks. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a46acc76de9d1316629e6c0be9e1998e3" name="a46acc76de9d1316629e6c0be9e1998e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46acc76de9d1316629e6c0be9e1998e3">&#9670;&#160;</a></span>override_memoization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModulePIMPL::override_memoization </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>on</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets whether the overlay module *this memoizes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">on</td><td>Whether *this should memoize.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if *this is not an unlocked overlay module. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7107f881d557669e797e18a72d0f833d" name="a7107f881d557669e797e18a72d0f833d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7107f881d557669e797e18a72d0f833d">&#9670;&#160;</a></span>override_submod()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModulePIMPL::override_submod </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a>&#160;</td>
+          <td class="paramname"><em>mod</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Binds the submodule <code>key</code> of the overlay module *this. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The submodule to set. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mod</td><td>The module to bind.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if *this is not an unlocked overlay module, or if <code>mod</code> does not satisfy the submodule's property type. Strong throw guarantee. </td></tr>
+    <tr><td class="paramname">std::out_of_range</td><td>if *this has no submodule <code>key</code>. Strong throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1438,6 +1787,101 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ae90eaae20e5b337668db84711df9daac" name="ae90eaae20e5b337668db84711df9daac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae90eaae20e5b337668db84711df9daac">&#9670;&#160;</a></span>run_submods()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a> &amp; pluginplay::detail_::ModulePIMPL::run_submods </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The submodules *this runs with. </p>
+<p>For a driver whose requests are resolved, these are the submodules bound to the overlay modules. Otherwise they are <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a5c09d45268b236a5e1469c88f41bff1d" title="Returns the submodules bound to this module in a read/write state.">submods()</a>.</p>
+<p>If *this is a resolved driver which is not locked, the maps of its overlays are rebuilt from their originals first (see sync_overlay_).</p>
+<dl class="section return"><dt>Returns</dt><dd>The submodules *this runs with.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem rebuilding the maps of the overlays. Weak throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8a0e1bb87b50a26b9ce084e4f26aa7c8" name="a8a0e1bb87b50a26b9ce084e4f26aa7c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a0e1bb87b50a26b9ce084e4f26aa7c8">&#9670;&#160;</a></span>set_resolution()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pluginplay::detail_::ModulePIMPL::set_resolution </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacepluginplay_1_1type.html#a5370b555a7f7fcf701f74d769905efd7">type::submodule_map</a>&#160;</td>
+          <td class="paramname"><em>run_submods</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#afa32eeea7004514ee4a646bd0f305316">module_ptr</a> &gt;&#160;</td>
+          <td class="paramname"><em>overlays</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a92840177c0fc770b488d57c71a7efb02">inactive_list</a>&#160;</td>
+          <td class="paramname"><em>inactive</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stores what the requests of the driver *this resolved into. </p>
+<p>Called by the <a class="el" href="classpluginplay_1_1ModuleManager.html" title="Class responsible for holding and managing modules.">ModuleManager</a> when it resolves the requests of *this.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">run_submods</td><td>The submodule map *this runs with, which binds its submodules to overlay modules where needed. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">overlays</td><td>The overlay modules reachable from <code>run_submods</code>, which *this owns. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inactive</td><td>The settings of *this which had no effect.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a5c09d45268b236a5e1469c88f41bff1d" name="a5c09d45268b236a5e1469c88f41bff1d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c09d45268b236a5e1469c88f41bff1d">&#9670;&#160;</a></span>submods() <span class="overload">[1/2]</span></h2>
 
@@ -1611,8 +2055,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abfa4f3e6af6707e616afd56224ccd4c2" name="abfa4f3e6af6707e616afd56224ccd4c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abfa4f3e6af6707e616afd56224ccd4c2">&#9670;&#160;</a></span>unlock()</h2>
+<a id="aced2258a99a142dac437e108d7f79152" name="aced2258a99a142dac437e108d7f79152"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aced2258a99a142dac437e108d7f79152">&#9670;&#160;</a></span>unlock()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1629,16 +2073,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Unlocks the module. </p>
 <p>This will not unlock the submodules because we can not do that safely. This function is only used internally within the <a class="el" href="classpluginplay_1_1Module.html" title="The public API of all modules.">Module</a> class. Users are not allowed to unlock modules.</p>
+<p>Unlocking a driver discards the overlays its requests were resolved into, so that the requests are resolved again when it is next locked. Unlocking an overlay module makes it an ordinary module, with copies of the inputs it referred to.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">none</td><td>No throw guarantee. </td></tr>
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem copying an overlay's inputs. Weak throw guarantee. </td></tr>
   </table>
   </dd>
 </dl>

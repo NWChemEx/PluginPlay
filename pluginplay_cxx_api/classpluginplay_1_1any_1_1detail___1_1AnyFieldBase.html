@@ -123,6 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a090ff0fc141b2b791bc83086041301d8" id="r_a090ff0fc141b2b791bc83086041301d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a090ff0fc141b2b791bc83086041301d8">clone</a> () <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html">const</a></td></tr>
 <tr class="memdesc:a090ff0fc141b2b791bc83086041301d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymorphic copy.  <br /></td></tr>
 <tr class="separator:a090ff0fc141b2b791bc83086041301d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0dcd4040cf623e94a8d8859def8b72a" id="r_aa0dcd4040cf623e94a8d8859def8b72a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#aa0dcd4040cf623e94a8d8859def8b72a">cref_clone</a> () <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html">const</a></td></tr>
+<tr class="memdesc:aa0dcd4040cf623e94a8d8859def8b72a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polymorphic copy which refers to this instance's value.  <br /></td></tr>
+<tr class="separator:aa0dcd4040cf623e94a8d8859def8b72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a411bd0df14f9c9cdb960dde3445dd44f" id="r_a411bd0df14f9c9cdb960dde3445dd44f"><td class="memItemLeft" align="right" valign="top"><a id="a411bd0df14f9c9cdb960dde3445dd44f" name="a411bd0df14f9c9cdb960dde3445dd44f"></a>
 <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html">virtual</a>&#160;</td><td class="memItemRight" valign="bottom"><b>~AnyFieldBase</b> () <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html">noexcept</a>=<a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWrapper.html">default</a></td></tr>
 <tr class="memdesc:a411bd0df14f9c9cdb960dde3445dd44f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standard polymorphic dtor. <br /></td></tr>
@@ -385,6 +388,42 @@ template&lt;<a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldWr
 <p>Polymorphic copy. </p>
 <p>This method returns a pointer to a newly allocated <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> instance which contains a deep copy of this instance's state. The copied state is not only the state in the <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> class, but also the state in the derived class as well.</p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to a newly allocated, polymorphic deep copy of this instance.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the new state. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa0dcd4040cf623e94a8d8859def8b72a" name="aa0dcd4040cf623e94a8d8859def8b72a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0dcd4040cf623e94a8d8859def8b72a">&#9670;&#160;</a></span>cref_clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a56f22739d8829d8fd736e452fb237d2c">field_base_pointer</a> pluginplay::any::detail_::AnyFieldBase::cref_clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Polymorphic copy which refers to this instance's value. </p>
+<p>This method returns a pointer to a newly allocated <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html">AnyFieldBase</a> instance which holds a read-only reference to the value wrapped by this instance, rather than a copy of it. Python objects are reference counted, so for them this is the same as <a class="el" href="classpluginplay_1_1any_1_1detail___1_1AnyFieldBase.html#a090ff0fc141b2b791bc83086041301d8" title="Polymorphic copy.">clone()</a>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The returned instance refers to the value inside this instance. The caller must ensure that this instance, and its value, outlive the returned instance.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to a newly allocated, polymorphic instance which refers to this instance's value.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::bad_alloc</td><td>if there is a problem allocating the new state. Strong throw guarantee. </td></tr>

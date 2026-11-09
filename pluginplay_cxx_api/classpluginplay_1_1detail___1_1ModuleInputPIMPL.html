@@ -110,6 +110,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a77de2d9f2293f4bb9aaaf6f0e2c1d7e0" id="r_a77de2d9f2293f4bb9aaaf6f0e2c1d7e0"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleInputPIMPL.html#a77de2d9f2293f4bb9aaaf6f0e2c1d7e0">clone</a> () const</td></tr>
 <tr class="memdesc:a77de2d9f2293f4bb9aaaf6f0e2c1d7e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the PIMPL on the heap.  <br /></td></tr>
 <tr class="separator:a77de2d9f2293f4bb9aaaf6f0e2c1d7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67172cccfff47e97ba53081673d8ab08" id="r_a67172cccfff47e97ba53081673d8ab08"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleInputPIMPL.html#a67172cccfff47e97ba53081673d8ab08">cref_clone</a> () const</td></tr>
+<tr class="memdesc:a67172cccfff47e97ba53081673d8ab08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the PIMPL whose value refers to this PIMPL's.  <br /></td></tr>
+<tr class="separator:a67172cccfff47e97ba53081673d8ab08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8101a8d03ae43613c5969c2ce9ce4859" id="r_a8101a8d03ae43613c5969c2ce9ce4859"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModuleInputPIMPL.html#a8101a8d03ae43613c5969c2ce9ce4859">has_type</a> () const noexcept</td></tr>
 <tr class="memdesc:a8101a8d03ae43613c5969c2ce9ce4859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the type of the input has been set.  <br /></td></tr>
 <tr class="separator:a8101a8d03ae43613c5969c2ce9ce4859"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -332,6 +335,41 @@ Related Symbols</h2></td></tr>
 
 <p>Makes a copy of the PIMPL on the heap. </p>
 <p>This function is used to make a deep copy of the PIMPL, which is allocated on the heap.</p>
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the new instance.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::bad_alloc</td><td>if there is insufficient memory to copy the instance. Strong throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a67172cccfff47e97ba53081673d8ab08" name="a67172cccfff47e97ba53081673d8ab08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67172cccfff47e97ba53081673d8ab08">&#9670;&#160;</a></span>cref_clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto pluginplay::detail_::ModuleInputPIMPL::cref_clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Makes a copy of the PIMPL whose value refers to this PIMPL's. </p>
+<p>This function is the same as <a class="el" href="classpluginplay_1_1detail___1_1ModuleInputPIMPL.html#a77de2d9f2293f4bb9aaaf6f0e2c1d7e0" title="Makes a copy of the PIMPL on the heap.">clone()</a>, except that the value of the new instance is a read-only reference to the value of this instance (see AnyField::cref_clone), rather than a copy of it.</p>
 <dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the new instance.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
