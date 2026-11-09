@@ -26,8 +26,16 @@ class DriverPublicist : public DriverBase {
 public:
     using DriverBase::driver_input;
     using DriverBase::driver_submodule;
-    using DriverBase::when;
     using DriverBase::wire_memoization;
+
+    /// Calls the protected DriverBase::when on @p self
+    static ConditionalWiring& call_when(DriverBase& self, type::key key,
+                                        type::any value) {
+        // N.B. GCC does not grant access to a member template through a
+        // using-declaration, so the pointer is formed in the scope of *this
+        auto when = &DriverPublicist::template when<type::any>;
+        return (self.*when)(std::move(key), std::move(value));
+    }
 };
 
 void export_driver_base(py_module_reference m) {
@@ -88,9 +96,8 @@ void export_driver_base(py_module_reference m) {
         "when",
         [](DriverBase& self, std::string key,
            py::object value) -> ConditionalWiring& {
-            auto when = &DriverPublicist::template when<type::any>;
-            return (self.*when)(std::move(key),
-                                any::make_any_field<PythonWrapper>(value));
+            return DriverPublicist::call_when(
+              self, std::move(key), any::make_any_field<PythonWrapper>(value));
         },
         reference::reference_internal)
       .def(
