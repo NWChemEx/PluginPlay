@@ -19,12 +19,6 @@
 Writing a Driver
 ****************
 
-.. note::
-
-   Drivers are a planned feature. The APIs on this page are planned APIs that
-   are not yet implemented, and the code is not yet tested. See
-   :ref:`driver_design` for the design.
-
 A driver is written like a module (see :ref:`module_development`). Its
 constructor declares, on top of what a module's constructor declares, how the
 driver configures the modules below it. This page writes ``ForceDriver``,
@@ -38,16 +32,9 @@ PluginPlay provides the macro ``DECLARE_DRIVER(T)``, the driver counterpart of
 ``DECLARE_MODULE(T)``. It declares a class ``T`` that derives from
 ``DriverBase``, which in turn derives from ``ModuleBase``:
 
-.. code-block:: c++
-
-   #pragma once
-   #include <pluginplay/pluginplay.hpp>
-
-   namespace pluginplay_examples {
-
-   DECLARE_DRIVER(ForceDriver);
-
-   } // namespace pluginplay_examples
+.. literalinclude:: ../../../../tests/cxx/doc_snippets/drivers.hpp
+   :language: c++
+   :lines: 17-22, 24-25
 
 .. note::
 
@@ -67,37 +54,15 @@ work, and its two inputs are the settings the user can change:
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         DRIVER_CTOR(ForceDriver) {
-             description(driver_desc);
-             satisfies_property_type<force_type>();
-             add_submodule<force_type>("force").set_description(
-               "The module that computes the force");
-
-             add_input<bool>("screen")
-               .set_description("Should the electric field be screened?")
-               .set_default(false);
-             add_input<double>("threshold")
-               .set_description("maximum ||r-r_i|| for contributing to electric field")
-               .set_default(std::numeric_limits<double>::max());
-         }
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/force_driver.cpp
+         :language: c++
+         :lines: 33-44
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         class ForceDriver(pp.DriverBase):
-             def __init__(self):
-                 pp.DriverBase.__init__(self)
-                 self.description("Classical force with an optionally screened field")
-                 self.satisfies_property_type(ppe.Force())
-                 self.add_submodule(ppe.Force(), "force").set_description(
-                     "The module that computes the force"
-                 )
-
-                 self.add_input("screen").set_default(False)
-                 self.add_input("threshold").set_default(inf)
+      .. literalinclude:: ../../../../tests/python/doc_snippets/force_driver.py
+         :language: python
+         :lines: 21-35
 
 The rest of the constructor says how those settings reach the modules below
 the driver. A driver has two ways to do that: wiring and conditional wiring.
@@ -110,26 +75,24 @@ In a driver's constructor, ``add_input`` and ``add_submodule`` return
 wrappers that, besides the usual setters, have
 ``set_target(module, target)``. It gives the input or submodule ``target`` of
 the module ``module`` the value of the driver's input or submodule, whatever
-the driver's other settings are. A driver that let the user pick the electric
-field directly would declare:
+the driver's other settings are. ``FieldChoiceDriver``, a driver that lets
+the user pick the electric field directly, declares:
 
 .. tabs::
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         add_submodule<ElectricField>("electric field")
-           .set_default("Coulomb's Law")
-           .set_target("Classical Force", "electric field");
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/field_choice_driver.cpp
+         :language: c++
+         :lines: 30-32
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         self.add_submodule(ppe.ElectricField(), "electric field").set_default(
-             "Coulomb's Law"
-         ).set_target("Classical Force", "electric field")
+      .. literalinclude:: ../../../../tests/python/doc_snippets/force_driver.py
+         :language: python
+         :lines: 61-63
+         :dedent: 8
 
 ``set_default`` on a submodule names the module used if the user binds none.
 ``set_target`` can be called more than once, to wire one input or submodule to
@@ -165,31 +128,17 @@ its "threshold" on only when the screened field is used:
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         // Use the screened electric field, and its threshold, if "screen"
-         // is true
-         when("screen", true)
-           .set_submod("Classical Force", "electric field",
-                       "Coulomb's Law with screening")
-           .forward_input("Coulomb's Law with screening", "threshold",
-                          "threshold")
-           .otherwise()
-           .set_submod("Classical Force", "electric field", "Coulomb's Law");
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/force_driver.cpp
+         :language: c++
+         :lines: 46-52
+         :dedent: 4
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         # Use the screened electric field, and its threshold, if "screen"
-         # is True
-         self.when("screen", True).set_submod(
-             "Classical Force", "electric field", "Coulomb's Law with screening"
-         ).forward_input(
-             "Coulomb's Law with screening", "threshold", "threshold"
-         ).otherwise().set_submod(
-             "Classical Force", "electric field", "Coulomb's Law"
-         )
+      .. literalinclude:: ../../../../tests/python/doc_snippets/force_driver.py
+         :language: python
+         :lines: 37-45
+         :dedent: 8
 
 Because "threshold" is forwarded only in the "screen" branch, it is ignored
 quietly when "screen" is false, unless the user changed it, in which case the
@@ -223,30 +172,21 @@ Two more settings are not used by ``ForceDriver``:
 The Run Member
 ==============
 
-The run member is defined with ``MODULE_RUN(T)``, as for a module. By the time
-it is called, the driver's settings have been applied, so ``ForceDriver`` only
-needs to call its "force" submodule:
+The run member is defined with ``DRIVER_RUN(T)``, the driver counterpart of
+``MODULE_RUN(T)``. By the time it is called, the driver's settings have been
+applied, so ``ForceDriver`` only needs to call its "force" submodule:
 
 .. tabs::
 
    .. tab:: C++
 
-      .. code-block:: c++
-
-         MODULE_RUN(ForceDriver) {
-             const auto& [q, m, a, charges] = force_type::unwrap_inputs(inputs);
-             auto F = submods.at("force").run_as<force_type>(q, m, a, charges);
-
-             auto rv = results();
-             return force_type::wrap_results(rv, F);
-         }
+      .. literalinclude:: ../../../../tests/cxx/doc_snippets/force_driver.cpp
+         :language: c++
+         :lines: 55-61
 
    .. tab:: Python
 
-      .. code-block:: python
-
-         def run_(self, inputs, submods):
-             pt = ppe.Force()
-             [q, m, a, charges] = pt.unwrap_inputs(inputs)
-             F = submods["force"].run_as(pt, q, m, a, charges)
-             return pt.wrap_results(self.results(), F)
+      .. literalinclude:: ../../../../tests/python/doc_snippets/force_driver.py
+         :language: python
+         :lines: 47-51
+         :dedent: 4

@@ -87,6 +87,10 @@ const Module& ModuleManager::at(const qualified_key& module_key) const {
     return *pimpl_->at(module_key);
 }
 
+void ModuleManager::resolve_drivers(const qualified_key& key) {
+    pimpl_->resolve_drivers(*pimpl_->at(key));
+}
+
 void ModuleManager::set_runtime(runtime_ptr runtime) noexcept {
     pimpl_->set_runtime(runtime);
 };

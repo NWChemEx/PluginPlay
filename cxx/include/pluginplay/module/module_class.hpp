@@ -27,6 +27,7 @@ namespace pluginplay {
 // Needed b/c Module and SubmoduleRequest use each other in their declarations
 class SubmoduleRequest;
 class ModuleBase;
+class CallGraphRequest;
 
 namespace detail_ {
 class ModulePIMPL;
@@ -69,6 +70,9 @@ public:
 
     /// Type of a submodule to UUID map
     using submod_uuid_map = std::map<type::key, uuid_type>;
+
+    /// Type of the list of a driver's inactive settings
+    using inactive_list = std::vector<std::string>;
 
     /** @brief Makes a module with no implementation.
      *
@@ -392,6 +396,61 @@ public:
      *                             guarantee.
      */
     void lock();
+
+    /** @brief Is this module a driver?
+     *
+     *  A driver is a module whose implementation derives from DriverBase. It
+     *  configures the modules below it, see the PluginPlay documentation on
+     *  drivers.
+     *
+     *  @return True if this module is a driver and false otherwise.
+     *
+     *  @throw std::runtime_error if this module does not have an
+     *                            implementation. Strong throw guarantee.
+     */
+    bool is_driver() const;
+
+    /** @brief The user's call graph request of this driver.
+     *
+     *  Most of a driver's choices are its inputs and submodules, which are
+     *  changed with change_input and change_submod. For the rest, the user
+     *  adds fixed values to the call graph request returned by this function,
+     *  with CallGraphRequest::set_input and CallGraphRequest::set_submod. The
+     *  user's requests are applied after the driver's, so they win.
+     *
+     *  @return The user's call graph request, in a read/write state.
+     *
+     *  @throw std::runtime_error if this module does not have an
+     *                            implementation, is not a driver, or is
+     *                            locked. Strong throw guarantee.
+     */
+    CallGraphRequest& call_graph_request();
+
+    /** @brief The user's call graph request of this driver, read-only.
+     *
+     *  @return The user's call graph request.
+     *
+     *  @throw std::runtime_error if this module does not have an
+     *                            implementation or is not a driver. Strong
+     *                            throw guarantee.
+     */
+    const CallGraphRequest& call_graph_request() const;
+
+    /** @brief The settings of this driver which had no effect.
+     *
+     *  When a driver's setting requests are resolved, any submodule whose
+     *  target is not in the call graph, or any input a user-changed for a
+     *  in branch that was not taken, has no effect. Such settings are
+     *  logged and recorded here.
+     *
+     *  @return One message per inactive setting. Empty for modules which are
+     *          not drivers, and for drivers whose requests have not been
+     *          resolved.
+     *
+     *  @throw std::bad_alloc if there is a problem copying the messages.
+     *                        Strong throw guarantee.
+     */
+    inactive_list inactive_settings() const;
 
     /** @brief Returns the set of results that can be computed by this module.
      *
@@ -754,14 +813,18 @@ private:
     /// Lets the ModuleManager attach its runtime and caches to the module
     friend struct detail_::ModuleManagerPIMPL;
 
+    /// Lets PIMPLs read the state of the modules below them, e.g., overlays
+    friend class detail_::ModulePIMPL;
+
     /** @brief Unlocks a locked module
      *
      *  There are very select circumstances when we need to unlock a locked
      *  module. This function will do it.
      *
-     * @throw none No throw guarantee.
+     * @throw std::bad_alloc if there is a problem copying the inputs of an
+     *                       overlay module. Weak throw guarantee.
      */
-    void unlock_() noexcept;
+    void unlock_();
 
     /// Returns the inputs in a read/write state
     ModuleInput& get_input_(const type::key& key);

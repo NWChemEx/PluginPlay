@@ -19,12 +19,6 @@
 Drivers
 #######
 
-.. note::
-
-   Drivers are a planned feature. The APIs on this page are planned APIs that
-   are not yet implemented, and the code is not yet tested. See
-   :ref:`driver_design` for the design.
-
 Running a calculation usually means configuring more than one module. For
 example, to compute the force on a charged particle (see
 :ref:`module_development`) with a screened electric field, a user must:

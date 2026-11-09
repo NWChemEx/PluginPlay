@@ -348,16 +348,46 @@ public:
                        const type::key& callback_key,
                        const qualified_key& submod_key);
 
+    /** @brief Resolves the call graph requests of the drivers reachable from
+     *         a module.
+     *
+     *  A driver's requests name the modules they configure by key, so the
+     *  ModuleManager resolves them, into overlay modules the driver owns,
+     *  before the driver runs. This function resolves the requests of every
+     *  driver reachable from the module @p key, including that module, that
+     *  is not already locked. The ModuleManager's modules are not changed.
+     *  run_as calls this function, so users normally do not need to.
+     *
+     *  @param[in] key The key of the module about to be run.
+     *
+     *  @throw std::out_of_range if @p key, or a module or target named by a
+     *                           request, does not exist. Strong throw
+     *                           guarantee for the ModuleManager's modules.
+     *  @throw std::invalid_argument if a key is ambiguous, or two of a
+     *                               driver's settings set the same target.
+     *                               Same guarantee.
+     *  @throw std::runtime_error if a required setting has no effect, or a
+     *                            setting targets a module below a nested
+     *                            driver. Same guarantee.
+     */
+    void resolve_drivers(const qualified_key& key);
+
     /** @brief Runs a given module
      *
-     * @tparam T
-     * @tparam Args
-     * @param key
-     * @param args
-     * @return
+     *  Resolves the requests of the drivers reachable from the module (see
+     *  resolve_drivers), and then runs the module as the property type @p T.
+     *
+     *  @tparam T The property type to run the module as.
+     *  @tparam Args The types of the inputs of @p T.
+     *
+     *  @param[in] key The key of the module to run.
+     *  @param[in] args The inputs of @p T.
+     *
+     *  @return The results of @p T.
      */
     template<typename T, typename... Args>
     auto run_as(const qualified_key& key, Args&&... args) {
+        resolve_drivers(key);
         return at(key).run_as<T>(std::forward<Args>(args)...);
     }
 

@@ -22,12 +22,6 @@ This page lists the state that determines what running a module does, and
 says which class holds each piece at runtime. It covers the state that exists
 today and the state that drivers (see :ref:`driver_design`) add.
 
-.. note::
-
-   Drivers are not implemented yet. ``DriverBase``, ``CallGraphRequest``, and
-   ``OverlayPIMPL`` are the planned classes of this page and
-   :ref:`driver_design`.
-
 ***************************
 What is Call Graph State?
 ***************************
@@ -288,9 +282,24 @@ with a virtual destructor and a virtual ``clone``, so that copying a
    an overlay locks the original too.
 
 With these, ``OverlayPIMPL`` adds little to ``ModulePIMPL``: the pointer to the
-original, and which inputs and submodules it changed. Whether it needs to be a
-class of its own, or is a ``ModulePIMPL`` with an optional pointer to an
-original, can be decided when it is implemented.
+original, and which inputs and submodules it changed. It is therefore not a
+class of its own. A ``ModulePIMPL`` holds an optional ``OverlayState``, with the
+pointer to the original and the inputs, submodules, and memoization setting
+the overlay changes, and ``ModulePIMPL::make_overlay`` makes overlay modules.
+Two details were settled when it was implemented:
+
+- **Rebuilding the maps.** An overlay builds its complete input and submodule
+  maps from the original settings plus the changes. The build happens when the
+  overlay is made, when it is changed, and when it is locked. A driver whose
+  requests are resolved but which is not yet locked, *e.g.*, after a run that
+  failed because the driver was not
+  ready, rebuilds the maps of its overlays before it uses them. The original
+  is not locked until the driver is, so the user may have changed it, and an
+  input that refers to a value the original replaced would dangle.
+- **Locking the original.** The original may not be ready on its own, *e.g.*,
+  if the overlay binds a submodule the original leaves unset, so it can not
+  always be locked like a module about to run. Locking an overlay locks the
+  original, and the original's submodules that are ready.
 
 Bookkeeping
 ===========

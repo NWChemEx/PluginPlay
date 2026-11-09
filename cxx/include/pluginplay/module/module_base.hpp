@@ -18,6 +18,7 @@
 #include <memory>
 #include <parallelzone/runtime/runtime_view.hpp>
 #include <pluginplay/cache/cache.hpp>
+#include <pluginplay/call_graph/call_graph_request.hpp>
 #include <pluginplay/fields/fields.hpp>
 #include <pluginplay/property_type/python_only_property_type.hpp>
 #include <pluginplay/python/python_wrapper.hpp>
@@ -226,6 +227,21 @@ public:
         return m_python_property_types_;
     }
 
+    /** @brief Returns the keys of the inputs of the property types this module
+     *         satisfies.
+     *
+     *  Inputs of property types are passed on every call, so, unlike the
+     *  other inputs, their bound values are not the values the module runs
+     *  with.
+     *
+     *  @return The keys of the inputs added by satisfies_property_type.
+     *
+     *  @throw none No throw guarantee.
+     */
+    const auto& property_type_inputs() const noexcept {
+        return m_property_type_inputs_;
+    }
+
     /** @brief Returns the RTTI of the derived class.
      *
      *  The type of the derived class is used to index caches. More
@@ -322,6 +338,22 @@ public:
     // Is this a Python module?
     bool is_python() const { return m_is_python_; }
 
+    /** @brief The developer's call graph request.
+     *
+     *  Drivers configure the modules below them with a CallGraphRequest,
+     *  which the driver's constructor fills (see DriverBase). Modules which
+     *  are not drivers configure nothing, so this returns an empty request.
+     *
+     *  @return The developer's request, which is empty for modules that are
+     *          not drivers.
+     *
+     *  @throw None No throw guarantee.
+     */
+    virtual const CallGraphRequest& call_graph_request() const noexcept {
+        static const CallGraphRequest empty_request;
+        return empty_request;
+    }
+
     /** @brief Compares two ModuleBase instances for equality.
      *
      *  Two ModuleBase instances are equivalent if their algorithm is
@@ -356,6 +388,8 @@ public:
     void satisfies_property_type(type::rtti rtti, InputContainer&& inputs,
                                  ResultContainer&& results) {
         m_property_types_.insert(std::move(rtti));
+        for(const auto& [key, input] : inputs)
+            m_property_type_inputs_.insert(key);
         m_inputs_.insert(inputs.begin(), inputs.end());
         m_results_.insert(results.begin(), results.end());
     }
@@ -595,6 +629,10 @@ private:
 
     /// The names of the Python-only property types this module satisfies
     std::set<std::string> m_python_property_types_;
+
+    /// The keys of the inputs of the property types this module satisfies
+    std::set<type::key, utilities::detail_::CaseInsensitiveLess_>
+      m_property_type_inputs_;
 
     /// The RTTI of the derived class
     type::rtti m_type_;

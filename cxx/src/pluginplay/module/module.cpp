@@ -16,8 +16,10 @@
 
 #include "detail_/module_pimpl.hpp"
 #include <algorithm>
+#include <pluginplay/call_graph/call_graph_request.hpp>
 #include <pluginplay/module/module_class.hpp>
 #include <utilities/printing/demangler.hpp>
+#include <utility>
 
 namespace pluginplay {
 using pimpl = detail_::ModulePIMPL;
@@ -76,6 +78,28 @@ void Module::turn_on_memoization() { m_pimpl_->turn_on_memoization(); }
 void Module::turn_off_memoization() { m_pimpl_->turn_off_memoization(); }
 
 void Module::lock() { m_pimpl_->lock(); }
+
+bool Module::is_driver() const { return m_pimpl_->is_driver(); }
+
+CallGraphRequest& Module::call_graph_request() {
+    const auto& rv = std::as_const(*this).call_graph_request();
+    assert_not_locked_();
+    return const_cast<CallGraphRequest&>(rv);
+}
+
+const CallGraphRequest& Module::call_graph_request() const {
+    if(!is_driver()) {
+        std::string msg = " is not a driver, so it has no call graph request";
+        throw std::runtime_error(
+          (has_name() ? "Module \"" + get_name() + "\"" : "Unnamed module") +
+          msg);
+    }
+    return m_pimpl_->user_request();
+}
+
+typename Module::inactive_list Module::inactive_settings() const {
+    return m_pimpl_->inactive_settings();
+}
 
 void Module::change_submod(type::key key, std::shared_ptr<Module> new_module) {
     assert_not_locked_();
@@ -136,7 +160,7 @@ typename Module::submod_uuid_map Module::submod_uuids() const {
 
 //--------------------------- Private Members --------------------------------/
 
-void Module::unlock_() noexcept { m_pimpl_->unlock(); }
+void Module::unlock_() { m_pimpl_->unlock(); }
 
 ModuleInput& Module::get_input_(const type::key& key) {
     return m_pimpl_->inputs().at(key);

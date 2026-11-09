@@ -34,6 +34,27 @@ TEST_CASE("ModuleInput") {
         REQUIRE_FALSE(i.ready());
     }
 
+    SECTION("cref_clone") {
+        ModuleInput i;
+        i.set_type<int>();
+        i.set_description("Hello World");
+        i.make_optional();
+        i.change(int{3});
+
+        auto clone = i.cref_clone();
+        REQUIRE(clone == i);
+        // The clone refers to the value of i
+        REQUIRE(&clone.value<const int&>() == &i.value<const int&>());
+        // and has its checks
+        REQUIRE_THROWS_AS(clone.change(std::string("3")),
+                          std::invalid_argument);
+
+        // Changing the clone's value does not change i's
+        clone.change(int{4});
+        REQUIRE(clone.value<int>() == 4);
+        REQUIRE(i.value<int>() == 3);
+    }
+
     SECTION("has_type") {
         ModuleInput i;
         SECTION("No type") { REQUIRE_FALSE(i.has_type()); }

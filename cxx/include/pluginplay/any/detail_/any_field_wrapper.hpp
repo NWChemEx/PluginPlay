@@ -111,6 +111,9 @@ protected:
     /// Implements polymorphic clone
     field_base_pointer clone_() const override;
 
+    /// Implements polymorphic cref_clone
+    field_base_pointer cref_clone_() const override;
+
     /// Implements AnyFieldBase::are_equal
     bool are_equal_(const AnyFieldBase& rhs) const noexcept override;
 

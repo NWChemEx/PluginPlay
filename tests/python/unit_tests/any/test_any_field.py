@@ -57,10 +57,16 @@ class TestAnyField(unittest.TestCase):
         self.assertNotEqual(self.has_list, diff_list)
         self.assertFalse(self.has_list == diff_list)
 
-        # Different types (note that the vector was specifically chosen so that
-        # it is convertible to the list)
-        self.assertNotEqual(self.has_list, self.has_vector)
-        self.assertFalse(self.has_list == self.has_vector)
+        # A C++ vector and a Python list with the same values are equal, no
+        # matter which side of the comparison each is on
+        self.assertEqual(self.has_list, self.has_vector)
+        self.assertEqual(self.has_vector, self.has_list)
+        self.assertFalse(self.has_list != self.has_vector)
+        self.assertFalse(self.has_vector != self.has_list)
+
+        # Different values are not equal, no matter which side each is on
+        self.assertNotEqual(diff_list, self.has_vector)
+        self.assertNotEqual(self.has_vector, diff_list)
 
     def test_has_value(self):
         self.assertFalse(self.defaulted.has_value())
