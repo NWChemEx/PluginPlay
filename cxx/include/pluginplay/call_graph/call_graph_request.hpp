@@ -30,6 +30,10 @@ class DriverBase;
 class DriverInput;
 class DriverSubmodule;
 
+namespace detail_ {
+class ModulePIMPL;
+} // namespace detail_
+
 /** @brief What a driver sets on the modules below it.
  *
  *  A CallGraphRequest is an ordered list of wiring requests (see
@@ -46,6 +50,10 @@ class DriverSubmodule;
  *    may only add fixed values, with set_input and set_submod.
  *
  *  The user's requests are applied after the developer's, so they win.
+ *
+ *  A request is locked while the driver holding it is, i.e., once the driver
+ *  has run. Changing a locked request throws, since the driver's requests are
+ *  only resolved before it locks.
  */
 class CallGraphRequest {
 public:
@@ -110,12 +118,14 @@ public:
      *
      *  @return The new request, so that it can be marked as required.
      *
+     *  @throw std::runtime_error if *this is locked. Strong throw guarantee.
      *  @throw std::bad_alloc if there is a problem allocating the request.
      *                        Strong throw guarantee.
      */
     template<typename T>
     WiringRequest& set_input(qualified_key module_key, key_type input_key,
                              T&& value) {
+        assert_unlocked_();
         return add_(WiringRequest::make_set_input(
           std::move(module_key), std::move(input_key),
           detail_::make_wiring_value(std::forward<T>(value))));
@@ -130,11 +140,15 @@ public:
      *
      *  @return The new request, so that it can be marked as required.
      *
+     *  @throw std::runtime_error if *this is locked. Strong throw guarantee.
      *  @throw std::bad_alloc if there is a problem allocating the request.
      *                        Strong throw guarantee.
      */
     WiringRequest& set_submod(qualified_key module_key, key_type callback_key,
                               qualified_key submod_key);
+
+    /// Is *this locked, i.e., can it no longer be changed? No throw guarantee.
+    bool is_locked() const noexcept { return m_locked_; }
 
     /// The requests outside of chains, in the order they were made
     const request_list_type& requests() const noexcept { return m_requests_; }
@@ -184,6 +198,12 @@ private:
     friend class DriverSubmodule;
     friend class ConditionalWiring;
 
+    // Requests check whether they can be changed with assert_unlocked_
+    friend class WiringRequest;
+
+    // The module holding *this locks and unlocks it
+    friend class detail_::ModulePIMPL;
+
     /// Makes the developer's request of @p driver, whose keys are checked
     explicit CallGraphRequest(const ModuleBase& driver) noexcept :
       m_driver_(&driver) {}
@@ -209,6 +229,15 @@ private:
     /// Adds a request outside of any chain
     WiringRequest& add_(WiringRequest request);
 
+    /// Keeps *this from being changed, e.g., because its driver is locked
+    void lock() noexcept { m_locked_ = true; }
+
+    /// Allows *this to be changed again
+    void unlock() noexcept { m_locked_ = false; }
+
+    /// Throws if *this is locked
+    void assert_unlocked_() const;
+
     /// Throws if the driver has no input @p key
     void assert_driver_input_(const key_type& key) const;
 
@@ -218,8 +247,8 @@ private:
     /// Records that @p owner sets the target of @p request, or throws
     void claim_(const WiringRequest& request, std::size_t owner);
 
-    /// Points the chains at *this, after a copy or move
-    void adopt_chains_() noexcept;
+    /// Points the requests and chains at *this, after a copy or move
+    void adopt_children_() noexcept;
 
     /// One target claimed by a set_target or a chain
     struct Claim {
@@ -249,6 +278,9 @@ private:
 
     /// The ID the next set_target or chain claims its targets with
     std::size_t m_next_owner_ = 0;
+
+    /// Can *this no longer be changed?
+    bool m_locked_ = false;
 };
 
 } // namespace pluginplay

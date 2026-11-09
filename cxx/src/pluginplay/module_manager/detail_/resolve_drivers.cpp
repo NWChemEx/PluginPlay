@@ -71,6 +71,7 @@ public:
       m_user_(m_pimpl_.user_request()) {}
 
     void run() {
+        check_property_type_inputs_();
         bind_defaults_();
         select_branches_();
 
@@ -98,6 +99,35 @@ private:
     // -------------------------------------------------------------------------
     // -- Steps
     // -------------------------------------------------------------------------
+
+    /// Throws if the developer forwards, or tests, an input of a property type
+    void check_property_type_inputs_() const {
+        // N.B. DriverBase checks this as the requests are made, but a driver
+        // may satisfy the property type after making the requests
+        const auto& pt_inputs = m_pimpl_.property_type_inputs();
+        const auto check      = [&](const type::key& key, const auto& what) {
+            if(!pt_inputs.count(key)) return;
+            throw std::invalid_argument(
+              fail_(what, quote(key) +
+                                 " is an input of a property type, so it is passed "
+                                      "on each call, after the requests are resolved"));
+        };
+        const auto check_request = [&](const WiringRequest& request) {
+            if(request.kind() != WiringRequest::kind_type::forward_input)
+                return;
+            check(request.source_key(), describe_(request));
+        };
+        for(const auto& request : m_dev_.requests()) check_request(request);
+        for(const auto& chain : m_dev_.conditional_wiring()) {
+            for(const auto& branch : chain.branches()) {
+                if(branch.has_condition())
+                    check(branch.input_key(),
+                          "testing whether " + branch.condition_string());
+                for(const auto& request : branch.requests())
+                    check_request(request);
+            }
+        }
+    }
 
     /// Binds the unset submodules of the driver to their defaults
     void bind_defaults_() {
@@ -303,9 +333,16 @@ private:
             if(m_pimpl_.inputs().at(key) == defaults.at(key)) continue;
             m_inactive_.push_back(not_taken_(key));
         }
+        const auto& submod_defaults = m_dev_.submod_defaults();
         for(const auto& key : branch_submods) {
             if(always_submods.count(key) || taken_submods.count(key)) continue;
-            if(!m_pimpl_.submods().at(key).has_module()) continue;
+            const auto& submod = m_pimpl_.submods().at(key);
+            if(!submod.has_module()) continue;
+            // Binding the default is not a change
+            auto itr = submod_defaults.find(key);
+            if(itr != submod_defaults.end() && m_mm_.count(itr->second) == 1 &&
+               m_mm_.at(itr->second).get() == &submod.value())
+                continue;
             m_inactive_.push_back(not_taken_(key));
         }
     }

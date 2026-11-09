@@ -33,6 +33,16 @@ py::object unwrap(const type::any& value) {
       .template unwrap<py::object>();
 }
 
+/// The elements of @p container, held by @p owner, as views keeping it alive
+template<typename ContainerType>
+py::list views(const py::object& owner, const ContainerType& container) {
+    py::list rv;
+    for(const auto& element : container)
+        rv.append(py::cast(&element,
+                           py::return_value_policy::reference_internal, owner));
+    return rv;
+}
+
 } // namespace
 
 void export_call_graph_request(py_module_reference m) {
@@ -119,17 +129,16 @@ void export_call_graph_request(py_module_reference m) {
         reference::reference_internal)
       .def("set_submod", &CallGraphRequest::set_submod,
            reference::reference_internal)
+      // N.B. The elements are views of *this, which they keep alive, so
+      // changing them changes *this
       .def("requests",
-           [](const CallGraphRequest& self) {
-               const auto& requests = self.requests();
-               return std::vector<WiringRequest>(requests.begin(),
-                                                 requests.end());
+           [](py::object self) {
+               return views(self, self.cast<CallGraphRequest&>().requests());
            })
       .def("conditional_wiring",
-           [](const CallGraphRequest& self) {
-               const auto& chains = self.conditional_wiring();
-               return std::vector<ConditionalWiring>(chains.begin(),
-                                                     chains.end());
+           [](py::object self) {
+               return views(
+                 self, self.cast<CallGraphRequest&>().conditional_wiring());
            })
       .def("submod_defaults", &CallGraphRequest::submod_defaults)
       .def("empty", &CallGraphRequest::empty)

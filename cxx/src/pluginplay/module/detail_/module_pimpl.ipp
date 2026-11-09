@@ -147,7 +147,7 @@ inline bool ModulePIMPL::is_memoizable() const {
 
 inline bool ModulePIMPL::is_cached(const type::input_map& in_inputs) {
     if(!m_cache_) return false;
-    auto ps = merge_inputs_(in_inputs);
+    auto ps = cache_key_(merge_inputs_(in_inputs));
     return m_cache_->count(ps);
 }
 
@@ -221,20 +221,22 @@ inline auto ModulePIMPL::run(type::input_map ps) {
 
     lock();
 
-    ps = merge_inputs_(ps);
+    ps = merge_inputs_(std::move(ps));
 
-    if(is_memoizable() && m_cache_ && m_cache_->count(ps)) {
+    if(!m_cache_ || !is_memoizable()) {
+        auto rv = m_base_->run(ps, active_submods_());
+        m_timer_.record(time_now);
+        return rv;
+    }
+
+    ps = cache_key_(std::move(ps));
+    if(m_cache_->count(ps)) {
         m_timer_.record(time_now);
         return m_cache_->uncache(ps);
     }
 
     // not there so run
     auto rv = m_base_->run(ps, active_submods_());
-
-    if(!m_cache_ || !is_memoizable()) {
-        m_timer_.record(time_now);
-        return rv;
-    }
 
     // cache result
     m_cache_->cache(ps, std::move(rv));
@@ -283,7 +285,10 @@ inline type::input_map ModulePIMPL::merge_inputs_(
   type::input_map in_inputs) const {
     for(const auto& [k, v] : m_inputs_)
         if(!in_inputs.count(k)) in_inputs[k] = v;
+    return in_inputs;
+}
 
+inline type::input_map ModulePIMPL::cache_key_(type::input_map inputs) const {
     // TODO: It probably makes sense to create an Input class which tracks this
     //       and allows using submods as inputs
     // The fingerprints identify the state of everything below each submodule
@@ -296,8 +301,8 @@ inline type::input_map ModulePIMPL::merge_inputs_(
     ModuleInput temp;
     temp.set_type<submod_uuid_map>();
     temp.change(std::move(fingerprints));
-    in_inputs.emplace(submod_key, temp);
-    return in_inputs;
+    inputs.emplace(submod_key, temp);
+    return inputs;
 }
 
 inline void ModulePIMPL::lock() {
@@ -308,6 +313,7 @@ inline void ModulePIMPL::lock() {
     }
     for(auto& [k, v] : active_submods_()) v.lock();
     m_locked_ = true;
+    m_user_request_.lock();
 }
 
 inline void ModulePIMPL::unlock() {
@@ -320,6 +326,7 @@ inline void ModulePIMPL::unlock() {
     m_resolved_.reset();
     m_fingerprint_.reset();
     m_locked_ = false;
+    m_user_request_.unlock();
 }
 
 // -----------------------------------------------------------------------------
@@ -378,6 +385,7 @@ inline ModulePIMPL::module_ptr ModulePIMPL::make_overlay(
     pimpl->m_python_property_types_ = rhs.m_python_property_types_;
     // An overlay of a driver is a driver, which resolves the same requests
     pimpl->m_user_request_ = rhs.m_user_request_;
+    pimpl->m_user_request_.unlock();
     pimpl->m_fingerprints_ = rhs.m_fingerprints_;
     pimpl->m_overlay_.emplace(OverlayState{original, {}, {}, std::nullopt});
     pimpl->sync_overlay_();
@@ -510,6 +518,7 @@ inline void ModulePIMPL::lock_original_(Module& original) {
     for(auto& [k, v] : pimpl.active_submods_())
         if(v.ready()) v.lock();
     pimpl.m_locked_ = true;
+    pimpl.m_user_request_.lock();
 }
 
 template<typename T>

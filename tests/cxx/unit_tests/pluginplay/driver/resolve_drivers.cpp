@@ -165,6 +165,14 @@ TEST_CASE("Drivers: errors") {
         REQUIRE_THROWS_AS(run(mm, "Encapsulation driver"), std::runtime_error);
     }
 
+    SECTION("Forwarding an input of a property type") {
+        // N.B. The driver learns "x" is an input of a property type after it
+        // forwards it, so only resolving the requests can catch it
+        mm.add_module<LatePTInputDriver>("Late PT input driver");
+        REQUIRE_THROWS_AS(run(mm, "Late PT input driver"),
+                          std::invalid_argument);
+    }
+
     SECTION("A failed run leaves the driver usable") {
         // "b" has no default, so the driver is not ready
         REQUIRE_THROWS_AS(run(mm, "Submod driver"), std::runtime_error);
@@ -248,6 +256,26 @@ TEST_CASE("Drivers: conditional wiring") {
         REQUIRE(inactive[0] == "\"Chain driver\": \"offset\" has no effect "
                                "because no branch that forwards it was taken");
     }
+
+    SECTION("Submodules only forwarded by branches not taken") {
+        auto& driver = mm.at("Branch submod driver");
+        REQUIRE(run(mm, "Branch submod driver") == 2);
+        REQUIRE(driver.inactive_settings().empty());
+
+        // Binding the default is not a change, so it is not reported
+        mm.copy_module("Branch submod driver", "Default");
+        mm.change_submod("Default", "b", "Other leaf");
+        REQUIRE(run(mm, "Default") == 2);
+        REQUIRE(mm.at("Default").inactive_settings().empty());
+
+        mm.copy_module("Branch submod driver", "Changed");
+        mm.change_submod("Changed", "b", "Leaf");
+        REQUIRE(run(mm, "Changed") == 2);
+        auto inactive = mm.at("Changed").inactive_settings();
+        REQUIRE(inactive.size() == 1);
+        REQUIRE(inactive[0] == "\"Changed\": \"b\" has no effect because no "
+                               "branch that forwards it was taken");
+    }
 }
 
 TEST_CASE("Drivers: forwarding a submodule") {
@@ -279,6 +307,26 @@ TEST_CASE("Drivers: user requests") {
           .set_input("Adder", "offset", std::string("3"));
         REQUIRE_THROWS_AS(run(mm, "X driver"), std::invalid_argument);
     }
+
+    SECTION("A request held past the run can not change the locked driver") {
+        auto& request = mm.at("X driver").call_graph_request();
+        auto& leaf_x  = request.set_input("Leaf", "x", 20);
+        REQUIRE(run(mm, "X driver") == 21);
+
+        REQUIRE_THROWS_AS(request.set_input("Adder", "offset", 3),
+                          std::runtime_error);
+        REQUIRE_THROWS_AS(request.set_submod("Adder", "b", "Leaf"),
+                          std::runtime_error);
+        REQUIRE_THROWS_AS(leaf_x.required(), std::runtime_error);
+        REQUIRE(request.requests().size() == 1);
+        REQUIRE_FALSE(request.requests()[0].is_required());
+
+        // A copy of the driver is unlocked, and so is its request
+        mm.copy_module("X driver", "Copy");
+        auto& copy = mm.at("Copy").call_graph_request();
+        copy.set_input("Adder", "offset", 3).required();
+        REQUIRE(run(mm, "Copy") == 24);
+    }
 }
 
 TEST_CASE("Drivers: memoization policy") {
@@ -292,6 +340,23 @@ TEST_CASE("Drivers: memoization policy") {
 
     // The ModuleManager's modules are unchanged
     REQUIRE(mm.at("Other leaf").is_memoizable());
+}
+
+TEST_CASE("Drivers: no memoization holds on to no inputs") {
+    auto mm = make_mm();
+    mm.add_module<PtrLeaf>("Ptr leaf");
+    mm.add_module<PtrDriver>("Ptr driver");
+    mm.at("Ptr driver").turn_off_memoization();
+
+    std::weak_ptr<int> weak;
+    {
+        auto x = std::make_shared<int>(3);
+        weak   = x;
+        mm.change_input("Ptr driver", "x", SharedInt{x});
+        REQUIRE(run(mm, "Ptr driver") == 3);
+    }
+    mm.erase("Ptr driver");
+    REQUIRE(weak.expired());
 }
 
 TEST_CASE("Drivers: nested drivers") {

@@ -64,6 +64,11 @@ PYBIND11_MODULE(py_test_pluginplay, m) {
         return mm;
     });
 
+    m.def("add_flag_driver",
+          [](pluginplay::ModuleManager& mm, const std::string& key) {
+              mm.add_module<FlagDriver>(key);
+          });
+
     test_any(m);
     test_fields(m);
     test_module(m);

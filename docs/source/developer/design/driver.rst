@@ -468,7 +468,9 @@ A driver has two requests, which parallel a module's inputs:
 - the developer's request, held by ``DriverBase`` and filled in the driver's
   constructor; and
 - the user's request, held by the driver's ``ModulePIMPL`` and filled before
-  the driver is locked (see `Overriding a Driver's Choices`_).
+  the driver is locked (see `Overriding a Driver's Choices`_). The user's
+  request is locked with the driver, so changing it through a reference held
+  from before the driver was locked throws, rather than being ignored.
 
 The DriverBase Class
 ====================

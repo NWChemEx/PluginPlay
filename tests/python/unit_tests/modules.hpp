@@ -16,6 +16,7 @@
 
 #pragma once
 #include "property_types.hpp"
+#include <pluginplay/driver/driver.hpp>
 #include <pluginplay/module/macros.hpp>
 #include <pluginplay/module_manager/module_manager.hpp>
 
@@ -111,6 +112,23 @@ inline MODULE_RUN(RealDeal) {
     auto rv    = results();
     auto [inp] = OneInOneOut::unwrap_inputs(inputs);
     return OneInOneOut::wrap_results(rv, inp);
+}
+
+// A C++ driver for the call graph of the Python driver tests. If "flag" is
+// true, it sets "Adder"'s "offset" to 10 and forwards its "x" to "Leaf"
+DECLARE_DRIVER(FlagDriver);
+inline DRIVER_CTOR(FlagDriver) {
+    satisfies_property_type<OneOut>();
+    add_submodule<OneOut>("root").set_default("Wrapper");
+    add_input<bool>("flag").set_default(false);
+    add_input<int>("x").set_default(1);
+    when("flag", true)
+      .set_input("Adder", "offset", 10)
+      .forward_input("Leaf", "x", "x");
+}
+inline DRIVER_RUN(FlagDriver) {
+    auto rv = results();
+    return OneOut::wrap_results(rv, submods.at("root").run_as<OneOut>());
 }
 
 template<typename T>

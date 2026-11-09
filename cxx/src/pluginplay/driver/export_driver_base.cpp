@@ -52,7 +52,7 @@ void export_driver_base(py_module_reference m) {
       .def("set_target", &DriverInput::set_target, reference::reference)
       .def("set_required_target", &DriverInput::set_required_target,
            reference::reference)
-      .def("input", &DriverInput::input, reference::reference);
+      .def("input", &DriverInput::input, reference::reference_internal);
 
     py_class_type<DriverSubmodule>(m, "DriverSubmodule")
       .def("set_description", &DriverSubmodule::set_description,
@@ -61,7 +61,8 @@ void export_driver_base(py_module_reference m) {
       .def("set_target", &DriverSubmodule::set_target, reference::reference)
       .def("set_required_target", &DriverSubmodule::set_required_target,
            reference::reference)
-      .def("submodule", &DriverSubmodule::submodule, reference::reference);
+      .def("submodule", &DriverSubmodule::submodule,
+           reference::reference_internal);
 
     using pointer_type = std::shared_ptr<DriverBase>;
     py_class_type<DriverBase, PyDriverBase, ModuleBase, pointer_type>(

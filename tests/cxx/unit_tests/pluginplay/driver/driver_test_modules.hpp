@@ -27,6 +27,7 @@
  */
 
 #pragma once
+#include <memory>
 #include <pluginplay/pluginplay.hpp>
 #include <string>
 #include <vector>
@@ -36,6 +37,15 @@ namespace testing::drivers {
 DECLARE_PROPERTY_TYPE(Value);
 PROPERTY_TYPE_INPUTS(Value) { return pluginplay::declare_input(); }
 PROPERTY_TYPE_RESULTS(Value) {
+    return pluginplay::declare_result().add_field<int>("value");
+}
+
+/// Value, but with an input "x", passed on each call
+DECLARE_PROPERTY_TYPE(ValueOfX);
+PROPERTY_TYPE_INPUTS(ValueOfX) {
+    return pluginplay::declare_input().add_field<int>("x");
+}
+PROPERTY_TYPE_RESULTS(ValueOfX) {
     return pluginplay::declare_result().add_field<int>("value");
 }
 
@@ -204,6 +214,59 @@ inline DRIVER_CTOR(SameModuleDriver) {
 }
 DRIVER_RUNS_ROOT(SameModuleDriver)
 
+/// Forwards its submodule "b" to "Adder"'s "b", only if "swap" is true
+DECLARE_DRIVER(BranchSubmodDriver);
+inline DRIVER_CTOR(BranchSubmodDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Wrapper");
+    add_input<bool>("swap").set_default(false);
+    add_submodule<Value>("b").set_default("Other leaf");
+    when("swap", true).forward_submod("Adder", "b", "b");
+}
+DRIVER_RUNS_ROOT(BranchSubmodDriver)
+
+/// Forwards "x" before it learns "x" is an input of a property type
+DECLARE_DRIVER(LatePTInputDriver);
+inline DRIVER_CTOR(LatePTInputDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Wrapper");
+    add_input<int>("x").set_default(1).set_target("Leaf", "x");
+    satisfies_property_type<ValueOfX>();
+}
+DRIVER_RUNS_ROOT(LatePTInputDriver)
+
+/// An input which shares its value, so tests can see who holds copies of it
+struct SharedInt {
+    std::shared_ptr<int> value;
+    bool operator==(const SharedInt& rhs) const noexcept {
+        return value == rhs.value;
+    }
+    bool operator!=(const SharedInt& rhs) const noexcept {
+        return !(*this == rhs);
+    }
+};
+
+/// Returns the value of its input "x"
+DECLARE_MODULE(PtrLeaf);
+inline MODULE_CTOR(PtrLeaf) {
+    satisfies_property_type<Value>();
+    add_input<SharedInt>("x");
+}
+inline MODULE_RUN(PtrLeaf) {
+    auto rv = results();
+    return Value::wrap_results(rv, *inputs.at("x").value<SharedInt>().value);
+}
+
+/// Forwards its "x" to "Ptr leaf", which does not memoize
+DECLARE_DRIVER(PtrDriver);
+inline DRIVER_CTOR(PtrDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Ptr leaf");
+    add_input<SharedInt>("x").set_target("Ptr leaf", "x");
+    wire_memoization(false);
+}
+DRIVER_RUNS_ROOT(PtrDriver)
+
 #undef DRIVER_RUNS_ROOT
 
 /// Makes the call graph above, plus the drivers
@@ -230,6 +293,7 @@ inline pluginplay::ModuleManager make_mm() {
     mm.add_module<OuterDriver>("Outer driver");
     mm.add_module<EncapsulationDriver>("Encapsulation driver");
     mm.add_module<SameModuleDriver>("Same module driver");
+    mm.add_module<BranchSubmodDriver>("Branch submod driver");
     return mm;
 }
 

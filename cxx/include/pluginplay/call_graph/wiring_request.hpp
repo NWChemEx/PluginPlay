@@ -23,6 +23,8 @@
 #include <utility>
 
 namespace pluginplay {
+class CallGraphRequest;
+
 namespace detail_ {
 
 /** @brief Wraps a value a driver sets in a type-erased AnyField.
@@ -156,12 +158,10 @@ public:
      *
      *  @return *this, to support chaining.
      *
-     *  @throw None No throw guarantee.
+     *  @throw std::runtime_error if *this belongs to a CallGraphRequest which
+     *                            is locked. Strong throw guarantee.
      */
-    WiringRequest& required(bool value = true) noexcept {
-        m_required_ = value;
-        return *this;
-    }
+    WiringRequest& required(bool value = true);
 
     /// Must *this take effect? No throw guarantee.
     bool is_required() const noexcept { return m_required_; }
@@ -243,6 +243,24 @@ public:
     }
 
 private:
+    // Points the requests it holds at itself
+    friend class CallGraphRequest;
+
+    /** @brief A pointer to the CallGraphRequest holding a request.
+     *
+     *  A copy of a request is not held by the CallGraphRequest of the
+     *  original, so copying (or moving) an OwnerPointer gives a null pointer,
+     *  and assigning one leaves it as is. The CallGraphRequest sets it.
+     */
+    struct OwnerPointer {
+        OwnerPointer() noexcept = default;
+        OwnerPointer(const OwnerPointer&) noexcept {}
+        OwnerPointer& operator=(const OwnerPointer&) noexcept { return *this; }
+
+        /// The CallGraphRequest, or nullptr if no CallGraphRequest holds it
+        const CallGraphRequest* value = nullptr;
+    };
+
     /// Used by the make_* functions
     WiringRequest(kind_type kind, qualified_key module_key,
                   key_type target_key) :
@@ -273,6 +291,9 @@ private:
 
     /// Must the request take effect?
     bool m_required_ = false;
+
+    /// The CallGraphRequest which holds *this, if any
+    OwnerPointer m_owner_;
 };
 
 } // namespace pluginplay

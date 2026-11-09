@@ -93,8 +93,10 @@ public:
      *  @return *this, to support chaining.
      *
      *  @throw std::invalid_argument if the target is already set by another
-     *                               set_target or chain of the driver. Strong
-     *                               throw guarantee.
+     *                               set_target or chain of the driver, or if
+     *                               the input is an input of a property type
+     *                               the driver satisfies. Strong throw
+     *                               guarantee.
      */
     DriverInput& set_target(qualified_key module_key,
                             type::key target_input_key) {
@@ -114,8 +116,10 @@ public:
      *  @return *this, to support chaining.
      *
      *  @throw std::invalid_argument if the target is already set by another
-     *                               set_target or chain of the driver. Strong
-     *                               throw guarantee.
+     *                               set_target or chain of the driver, or if
+     *                               the input is an input of a property type
+     *                               the driver satisfies. Strong throw
+     *                               guarantee.
      */
     DriverInput& set_required_target(qualified_key module_key,
                                      type::key target_input_key) {

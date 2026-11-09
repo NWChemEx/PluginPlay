@@ -228,8 +228,45 @@ TEST_CASE("DriverBase") {
                 return results();
             }
         };
+        // Inputs of a property type are passed on each call, after the
+        // requests are resolved, so they can not be conditions or forwarded
+        using testing::drivers::ValueOfX;
+        struct PTCondition : DriverBase {
+            PTCondition() : DriverBase(this) {
+                satisfies_property_type<ValueOfX>();
+                when("x", 1);
+            }
+            result_map_type run_(input_map_type,
+                                 submodule_map_type) const override {
+                return results();
+            }
+        };
+        struct PTForward : DriverBase {
+            PTForward() : DriverBase(this) {
+                satisfies_property_type<ValueOfX>();
+                add_input<int>("y");
+                when("y", 1).forward_input("A", "x", "x");
+            }
+            result_map_type run_(input_map_type,
+                                 submodule_map_type) const override {
+                return results();
+            }
+        };
+        struct PTTarget : DriverBase {
+            PTTarget() : DriverBase(this) {
+                satisfies_property_type<ValueOfX>();
+                driver_input("x").set_target("A", "x");
+            }
+            result_map_type run_(input_map_type,
+                                 submodule_map_type) const override {
+                return results();
+            }
+        };
         REQUIRE_THROWS_AS(UnknownInput{}, std::out_of_range);
         REQUIRE_THROWS_AS(UnknownForward{}, std::out_of_range);
         REQUIRE_THROWS_AS(BranchAfterFinal{}, std::logic_error);
+        REQUIRE_THROWS_AS(PTCondition{}, std::invalid_argument);
+        REQUIRE_THROWS_AS(PTForward{}, std::invalid_argument);
+        REQUIRE_THROWS_AS(PTTarget{}, std::invalid_argument);
     }
 }

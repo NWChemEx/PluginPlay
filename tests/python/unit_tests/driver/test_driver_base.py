@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gc
 import unittest
+import weakref
 
 import pluginplay as pp
 import py_test_pluginplay as test_pp
@@ -219,3 +221,58 @@ class TestDriverBase(unittest.TestCase):
                 "forwards it was taken"
             ],
         )
+
+    def test_chains_are_views(self):
+        driver = ChainDriver()
+        alive = weakref.ref(driver)
+        chains = driver.call_graph_request().conditional_wiring()
+        requests = driver.call_graph_request().requests()
+        self.assertEqual(len(requests), 0)
+
+        # The chains keep the driver they belong to alive
+        del driver
+        gc.collect()
+        self.assertIsNotNone(alive())
+
+        # Changing a chain changes the driver's request
+        chains[0].set_input("Leaf", "x", 3)
+        chain = alive().call_graph_request().conditional_wiring()[0]
+        self.assertEqual(len(chain.branches()[2].requests()), 2)
+
+    def test_accessors_keep_the_driver_alive(self):
+        driver = XDriver()
+        alive = weakref.ref(driver)
+        x = driver.add_input("extra").set_default(1).input()
+        submod = driver.add_submodule(test_pp.OneOut(), "helper").submodule()
+        del driver
+        gc.collect()
+        self.assertIsNotNone(alive())
+        self.assertEqual(x.value(), 1)
+        self.assertFalse(submod.has_module())
+
+    def test_held_request_is_locked_with_the_driver(self):
+        request = self.mm.at("X driver").call_graph_request()
+        held = request.set_input("Leaf", "x", 20)
+        self.assertEqual(self.run_as("X driver"), 21)
+        self.assertRaises(
+            RuntimeError, request.set_input, "Adder", "offset", 3
+        )
+        self.assertRaises(RuntimeError, held.required)
+        self.assertEqual(len(request.requests()), 1)
+
+    def test_cxx_driver_with_python_inputs(self):
+        test_pp.add_flag_driver(self.mm, "Flag driver")
+        self.assertEqual(self.run_as("Flag driver"), 2)
+
+        # A condition set from Python matches the C++ value of the branch
+        self.mm.copy_module("Flag driver", "Flagged")
+        self.mm.change_input("Flagged", "flag", True)
+        self.mm.change_input("Flagged", "x", 5)
+        self.assertEqual(self.run_as("Flagged"), 16)
+        self.assertEqual(self.mm.at("Flagged").inactive_settings(), [])
+
+        # An input set from Python to its C++ default is not a change
+        self.mm.copy_module("Flag driver", "Default x")
+        self.mm.change_input("Default x", "x", 1)
+        self.assertEqual(self.run_as("Default x"), 2)
+        self.assertEqual(self.mm.at("Default x").inactive_settings(), [])

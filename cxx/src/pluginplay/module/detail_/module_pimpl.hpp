@@ -692,6 +692,12 @@ public:
     /// The developer's request, empty for modules which are not drivers
     const CallGraphRequest& developer_request() const;
 
+    /// The keys of the inputs of the property types the module satisfies
+    const auto& property_type_inputs() const {
+        assert_mod_();
+        return m_base_->property_type_inputs();
+    }
+
     /// The user's request, empty for modules which are not drivers
     CallGraphRequest& user_request() noexcept { return m_user_request_; }
 
@@ -889,6 +895,22 @@ private:
      *                        sets of inputs. Strong throw guarantee.
      */
     type::input_map merge_inputs_(type::input_map in_inputs) const;
+
+    /** @brief Makes the key the results of a run are memoized with.
+     *
+     *  The key is @p inputs plus the fingerprints of the modules bound to the
+     *  submodules. N.B. fingerprinting copies the inputs bound below *this
+     *  into the ModuleManager's FingerprintTable, which keeps them, so it is
+     *  only done for modules which memoize.
+     *
+     *  @param[in] inputs The inputs of the run, merged with the bound inputs.
+     *
+     *  @return The key the results of the run are memoized with.
+     *
+     *  @throw std::bad_alloc if there is a problem making the key. Strong
+     *                        throw guarantee.
+     */
+    type::input_map cache_key_(type::input_map inputs) const;
 
     /// Code factorization for checking if things in a map are ready
     template<typename T>

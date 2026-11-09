@@ -227,6 +227,21 @@ public:
         return m_python_property_types_;
     }
 
+    /** @brief Returns the keys of the inputs of the property types this module
+     *         satisfies.
+     *
+     *  Inputs of property types are passed on every call, so, unlike the
+     *  other inputs, their bound values are not the values the module runs
+     *  with.
+     *
+     *  @return The keys of the inputs added by satisfies_property_type.
+     *
+     *  @throw none No throw guarantee.
+     */
+    const auto& property_type_inputs() const noexcept {
+        return m_property_type_inputs_;
+    }
+
     /** @brief Returns the RTTI of the derived class.
      *
      *  The type of the derived class is used to index caches. More
@@ -373,6 +388,8 @@ public:
     void satisfies_property_type(type::rtti rtti, InputContainer&& inputs,
                                  ResultContainer&& results) {
         m_property_types_.insert(std::move(rtti));
+        for(const auto& [key, input] : inputs)
+            m_property_type_inputs_.insert(key);
         m_inputs_.insert(inputs.begin(), inputs.end());
         m_results_.insert(results.begin(), results.end());
     }
@@ -612,6 +629,10 @@ private:
 
     /// The names of the Python-only property types this module satisfies
     std::set<std::string> m_python_property_types_;
+
+    /// The keys of the inputs of the property types this module satisfies
+    std::set<type::key, utilities::detail_::CaseInsensitiveLess_>
+      m_property_type_inputs_;
 
     /// The RTTI of the derived class
     type::rtti m_type_;

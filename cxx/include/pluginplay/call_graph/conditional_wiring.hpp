@@ -151,8 +151,10 @@ public:
      *  @throw std::out_of_range if the driver has no input @p input_key.
      *                           Strong throw guarantee.
      *  @throw std::invalid_argument if the target is already set by another
-     *                               chain or by DriverInput::set_target.
-     *                               Strong throw guarantee.
+     *                               chain or by DriverInput::set_target, or if
+     *                               @p input_key is an input of a property
+     *                               type the driver satisfies. Strong throw
+     *                               guarantee.
      */
     ConditionalWiring& forward_input(qualified_key module_key,
                                      key_type target_input_key,
@@ -191,6 +193,9 @@ public:
      *
      *  @throw std::out_of_range if the driver has no input @p input_key.
      *                           Strong throw guarantee.
+     *  @throw std::invalid_argument if @p input_key is an input of a property
+     *                               type the driver satisfies. Strong throw
+     *                               guarantee.
      *  @throw std::logic_error if otherwise() was already called. Strong
      *                          throw guarantee.
      */

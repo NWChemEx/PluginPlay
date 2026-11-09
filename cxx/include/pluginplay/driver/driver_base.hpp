@@ -143,6 +143,9 @@ protected:
      *
      *  @throw std::out_of_range if the driver has no input @p input_key.
      *                           Strong throw guarantee.
+     *  @throw std::invalid_argument if @p input_key is an input of a property
+     *                               type the driver satisfies. Strong throw
+     *                               guarantee.
      */
     template<typename T>
     ConditionalWiring& when(type::key input_key, T&& value) {

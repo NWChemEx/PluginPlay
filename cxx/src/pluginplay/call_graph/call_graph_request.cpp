@@ -75,6 +75,12 @@ WiringRequest WiringRequest::make_forward_submod(qualified_key module_key,
     return rv;
 }
 
+WiringRequest& WiringRequest::required(bool value) {
+    if(m_owner_.value != nullptr) m_owner_.value->assert_unlocked_();
+    m_required_ = value;
+    return *this;
+}
+
 const WiringRequest::value_type& WiringRequest::value() const {
     assert_kind_(m_kind_ == kind_type::set_input, "set_input");
     return m_value_;
@@ -227,8 +233,9 @@ CallGraphRequest::CallGraphRequest(const CallGraphRequest& rhs) :
   m_submod_defaults_(rhs.m_submod_defaults_),
   m_memoization_(rhs.m_memoization_),
   m_claims_(rhs.m_claims_),
-  m_next_owner_(rhs.m_next_owner_) {
-    adopt_chains_();
+  m_next_owner_(rhs.m_next_owner_),
+  m_locked_(rhs.m_locked_) {
+    adopt_children_();
 }
 
 CallGraphRequest::CallGraphRequest(CallGraphRequest&& rhs) noexcept :
@@ -238,8 +245,9 @@ CallGraphRequest::CallGraphRequest(CallGraphRequest&& rhs) noexcept :
   m_submod_defaults_(std::move(rhs.m_submod_defaults_)),
   m_memoization_(std::move(rhs.m_memoization_)),
   m_claims_(std::move(rhs.m_claims_)),
-  m_next_owner_(rhs.m_next_owner_) {
-    adopt_chains_();
+  m_next_owner_(rhs.m_next_owner_),
+  m_locked_(rhs.m_locked_) {
+    adopt_children_();
 }
 
 CallGraphRequest& CallGraphRequest::operator=(const CallGraphRequest& rhs) {
@@ -256,13 +264,15 @@ CallGraphRequest& CallGraphRequest::operator=(CallGraphRequest&& rhs) noexcept {
     m_memoization_     = std::move(rhs.m_memoization_);
     m_claims_          = std::move(rhs.m_claims_);
     m_next_owner_      = rhs.m_next_owner_;
-    adopt_chains_();
+    m_locked_          = rhs.m_locked_;
+    adopt_children_();
     return *this;
 }
 
 WiringRequest& CallGraphRequest::set_submod(qualified_key module_key,
                                             key_type callback_key,
                                             qualified_key submod_key) {
+    assert_unlocked_();
     return add_(WiringRequest::make_set_submod(
       std::move(module_key), std::move(callback_key), std::move(submod_key)));
 }
@@ -314,13 +324,28 @@ void CallGraphRequest::set_submod_default(key_type callback_key,
 
 WiringRequest& CallGraphRequest::add_(WiringRequest request) {
     m_requests_.push_back(std::move(request));
+    m_requests_.back().m_owner_.value = this;
     return m_requests_.back();
 }
 
+void CallGraphRequest::assert_unlocked_() const {
+    if(!m_locked_) return;
+    throw std::runtime_error(
+      "The call graph request can not be changed because its driver is "
+      "locked. Change a copy of the driver instead.");
+}
+
 void CallGraphRequest::assert_driver_input_(const key_type& key) const {
-    if(m_driver_ == nullptr || m_driver_->inputs().count(key)) return;
-    throw std::out_of_range("The driver has no input " + quote(key) +
-                            ". Add it with add_input first.");
+    if(m_driver_ == nullptr) return;
+    if(!m_driver_->inputs().count(key))
+        throw std::out_of_range("The driver has no input " + quote(key) +
+                                ". Add it with add_input first.");
+    if(m_driver_->property_type_inputs().count(key))
+        throw std::invalid_argument(
+          "The driver's input " + quote(key) +
+          " is an input of a property type, so it is passed on each call, "
+          "after the driver's requests are resolved. It can not be forwarded "
+          "or tested by a condition.");
 }
 
 void CallGraphRequest::assert_driver_submod_(const key_type& key) const {
@@ -347,7 +372,8 @@ void CallGraphRequest::claim_(const WiringRequest& request, std::size_t owner) {
                               request.target_key(), owner});
 }
 
-void CallGraphRequest::adopt_chains_() noexcept {
+void CallGraphRequest::adopt_children_() noexcept {
+    for(auto& request : m_requests_) request.m_owner_.value = this;
     for(auto& chain : m_chains_) chain.m_owner_ = this;
 }
 

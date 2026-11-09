@@ -59,8 +59,11 @@ bool AnyField::operator==(const AnyField& rhs) const noexcept {
     // Either we both do or both don't have PIMPLs, check for latter
     if(!has_value()) return true;
 
-    // Both have PIMPLs compare them
-    return m_pimpl_->value_equal(*rhs.m_pimpl_);
+    // Both have PIMPLs compare them. N.B. value_equal converts the value of
+    // its argument to the type of *this, so it may only succeed one way, e.g.,
+    // a Python object converts to a C++ value but not vice versa
+    return m_pimpl_->value_equal(*rhs.m_pimpl_) ||
+           rhs.m_pimpl_->value_equal(*m_pimpl_);
 }
 
 bool AnyField::are_equal(const AnyField& rhs) const noexcept {
