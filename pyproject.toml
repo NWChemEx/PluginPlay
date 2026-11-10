@@ -21,7 +21,7 @@ requires = [
     # binaries users get at runtime and ships only its own files. Mirror
     # [project].dependencies; leave the floors unbounded so the newest
     # release is always resolved.
-    "nwchemex-nwxcmake>=0.1.0",
+    "nwchemex-nwxcmake>=0.2.12",
     "nwchemex-utilities>=0.1.49",
     "nwchemex-parallelzone>=0.1.43",
 ]
@@ -38,7 +38,7 @@ dependencies = [
     # different PYBIND11_INTERNALS_VERSION gives extensions separate type
     # registries and breaks cross-module type exchange.
     "pybind11==3.1.0",
-    "nwchemex-nwxcmake>=0.1.0",
+    "nwchemex-nwxcmake>=0.2.12",
     "nwchemex-utilities>=0.1.49",
     "nwchemex-parallelzone>=0.1.43",
 ]
