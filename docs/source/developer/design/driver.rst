@@ -228,9 +228,10 @@ Driver Considerations
    - A driver can be used inside another driver. The enclosing driver
      configures the nested driver through the nested driver's inputs and
      submodules.
-   - A driver lets a whole subgraph be treated as one node. To the enclosing
-     driver, a nested driver is opaque: it does not change, or depend on, any
-     module below the nested driver.
+   - An enclosing driver may also configure modules below a nested driver
+     directly. For example, an uncertainty-quantified SCF driver wraps an
+     ordinary SCF driver, which chooses the Fock operator, and sets the
+     integrals the SCF driver's modules use.
 
 #. Python
 
@@ -738,9 +739,10 @@ any module, locking a driver locks the modules below it. Before that, the
 :ref:`call_graph_state_design` for where the results live):
 
 #. **Find the region.** The driver's *region* is the set of modules reachable
-   from it without passing through another driver. Nested drivers are in the
-   region, so that the driver can set their inputs, but the modules below them
-   are not.
+   from it. Nested drivers, and the modules below them, are in the region.
+   Below a nested driver, the region follows the nested driver's submodules
+   and their defaults, but not the requests the nested driver has yet to
+   resolve.
 #. **Bind defaults.** Each submodule of the driver that has a default from
    ``DriverSubmodule::set_default``, and that is still unbound, is bound to its
    default module in the submodule map the driver runs with. The driver's own
@@ -768,8 +770,9 @@ any module, locking a driver locks the modules below it. Before that, the
    so it makes no overlay. Targets that are missing are handled as described
    in `Missing Targets`_.
 #. **Resolve nested drivers.** Each nested driver in the region resolves its
-   own requests in the same way, with the inputs the enclosing driver gave it
-   (see `Nested Drivers`_).
+   own requests in the same way, with the inputs the enclosing driver gave it,
+   and on top of the overlays the enclosing driver made below it (see
+   `Nested Drivers`_).
 #. **Lock** every module the driver reaches, overlays and originals, then the
    driver. Locking computes each module's fingerprint for memoization (see
    :ref:`call_graph_state_design`).
@@ -864,28 +867,44 @@ beforehand, *e.g.*, a basis-set threshold, are picked up by the driver.
 Nested Drivers
 ==============
 
-A driver lets a whole subgraph be treated as one node. A driver's region may
-contain other drivers, and three rules keep this simple:
+A driver's region may contain other drivers. The rules are:
 
-- **Encapsulation.** A driver's targets must not be only reachable below a
-  nested driver. Targeting such a module is an error. An enclosing driver
-  configures a nested driver through the nested driver's inputs and
-  submodules, which the nested driver then wires. Requests are resolved from
-  the outermost driver inward, so the nested driver's wiring uses the values
-  the enclosing driver gave it.
-- **Opaque nested drivers.** A module may be reachable both directly from the
-  enclosing driver and below a nested driver, *e.g.*, because both use a
-  ubiquitous module. If the enclosing driver targets it, the change applies to
-  the enclosing driver's overlay only. Below the nested driver the module runs
-  as the nested driver configures it. This is intended: to the enclosing
-  driver, the nested driver is opaque, and that it reuses the module is an
-  implementation detail. The same module may therefore run with two
-  configurations in one calculation. Making this an error would make nesting
-  drivers that use common modules almost impossible.
+- **Reaching through.** An enclosing driver may target any module in its
+  region, including modules below a nested driver. It configures a nested
+  driver through the nested driver's inputs and submodules, or sets the
+  modules below the nested driver directly. Its overlays are bound everywhere
+  in its region, below nested drivers too, so a module the enclosing driver
+  changes runs with that change wherever it is called.
+- **Outermost first.** Requests are resolved from the outermost driver
+  inward. A nested driver's wiring uses the values the enclosing driver gave
+  it, and is applied on top of the overlays the enclosing driver made, *i.e.*,
+  a nested driver's overlay of a module may point to the enclosing driver's
+  overlay of it.
+- **The enclosing driver wins.** If a nested driver's request sets a target
+  that an enclosing driver already set, the nested driver's request has no
+  effect and is reported as inactive. If the request is required, resolving
+  the nested driver throws. The same holds for the memoization setting of a
+  module. Binding a submodule to an overlay of the module already bound to it,
+  which the enclosing driver does above every module it changes, does not set
+  the submodule. This mirrors how the user's requests override the developer's: the
+  enclosing driver is the user of the nested driver. The user's own requests
+  on a nested driver still override its developer's requests.
 - **Overlays of nested drivers.** A nested driver whose inputs or submodules
-  the enclosing driver sets gets an overlay, like any other module. The
-  overlay resolves the nested driver's requests with those values, and owns
-  the overlays it makes.
+  the enclosing driver sets, or below which the enclosing driver made an
+  overlay, gets an overlay, like any other module. The overlay resolves the
+  nested driver's requests with those values, and owns the overlays it makes.
+
+The enclosing driver sees the call graph below a nested driver as the nested
+driver's submodules and their defaults bind it. A module that only a request
+of the nested driver brings into the call graph is not in the enclosing
+driver's region, so the enclosing driver can not target it.
+
+An earlier version of this design forbade targeting modules below a nested
+driver, so that nested drivers were opaque. That ruled out a driver which
+adds uncertainty quantification to the SCF driver: the SCF driver chooses,
+*e.g.*, the Fock operator, while the enclosing driver must set the integrals
+and the diagonalizer below it. Exposing every such setting as an input of the
+SCF driver would have merged the two drivers.
 
 Drivers and Plugins
 ===================

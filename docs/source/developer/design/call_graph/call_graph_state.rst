@@ -216,7 +216,7 @@ the changes alongside it. This is called an *overlay module*.
   request changes one of its inputs or submodules, or if a module below it got
   one, since its submodule must then be bound to the overlay module. Every
   other module is used as is. Only modules in the driver's region, *i.e.*,
-  reachable without passing through a nested driver, are considered.
+  reachable from the driver, including below nested drivers, are considered.
 - **Sharing.** The ``ModuleManager`` keeps a map from each original module to
   its overlay module while it resolves a driver, so a module bound in several
   places gets one overlay module. Any number of drivers can share a module
@@ -233,13 +233,13 @@ the changes alongside it. This is called an *overlay module*.
 - **Running.** An overlay module is a ``Module``, so the driver calls it through
   its submodule request like any other, and it runs through the usual
   ``Module::run``. No submodule request needs to know about a separate node.
-- **Nested drivers.** A nested driver whose inputs an enclosing driver sets
-  gets an overlay module like any other module. When it is locked, its wiring
-  requests are resolved with its overlaid inputs, and its overlay modules are
-  owned by it. Since the resolved changes live in modules, any call graph that
-  reaches a driver reuses its overlays, which is what lets a driver stand for
-  its whole subgraph. A module reachable both from an enclosing driver and
-  below a nested driver may run with two configurations (see
+- **Nested drivers.** A nested driver whose inputs an enclosing driver sets,
+  or below which the enclosing driver made an overlay module, gets an overlay
+  module like any other module. When it is locked, its wiring requests are
+  resolved with its overlaid inputs, on top of the enclosing driver's overlay
+  modules, and its overlay modules are owned by it. Since the resolved changes
+  live in modules, any call graph that reaches a driver reuses its overlays,
+  which is what lets a driver stand for its whole subgraph (see
   :ref:`driver_design`).
 - **Locking.** Locking a driver locks the overlay modules and the originals
   they point to, so neither can change while the driver uses them. This is
