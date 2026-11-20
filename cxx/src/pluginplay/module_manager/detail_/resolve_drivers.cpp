@@ -52,14 +52,29 @@ struct Item {
     std::optional<std::size_t> owner;
 };
 
+/// The module @p mod overlays, following overlays of overlays, else @p mod
+const Module& root_of(const Module& mod) {
+    const Module* rv = &mod;
+    while(ModuleManagerPIMPL::pimpl_of(*rv).is_overlay())
+        rv = &ModuleManagerPIMPL::pimpl_of(*rv).original();
+    return *rv;
+}
+
 /** @brief Resolves the requests of one driver.
  *
  *  The resolver keeps the overlays it makes in a map from the module each
  *  overlay points to. While requests are applied, the submodules of overlays
- *  are bound to the ModuleManager's modules, i.e., the originals, so that the
- *  call graph is always described in terms of originals. Once every request
- *  is applied, finish_ binds each module to the overlays of the modules
- *  below it, making more overlays where a module's submodule must change.
+ *  are bound to the modules in the call graph, so that the call graph is
+ *  always described in terms of those. Once every request is applied, finish_
+ *  binds each module to the overlays of the modules below it, making more
+ *  overlays where a module's submodule must change.
+ *
+ *  The modules in the call graph are the ModuleManager's modules, i.e., the
+ *  originals, except below a nested driver: there, the enclosing drivers have
+ *  already bound their overlays. A module named by key is therefore looked up
+ *  as its representative, the module in the call graph which is, or
+ *  overlays, the original (see find_representatives_). If an enclosing
+ *  driver set a target, the setting of the enclosing driver wins.
  */
 class Resolver {
 public:
@@ -71,6 +86,8 @@ public:
       m_user_(m_pimpl_.user_request()) {}
 
     void run() {
+        m_run_ = m_pimpl_.submods();
+        find_representatives_();
         check_property_type_inputs_();
         bind_defaults_();
         select_branches_();
@@ -129,9 +146,25 @@ private:
         }
     }
 
+    /// Records the overlays the enclosing drivers bound below this driver
+    void find_representatives_() {
+        std::set<const Module*> visited;
+        std::vector<const Module*> stack;
+        for(const auto& [key, request] : m_run_)
+            if(request.has_module()) stack.push_back(&request.value());
+        while(!stack.empty()) {
+            const auto* mod = stack.back();
+            stack.pop_back();
+            if(!visited.insert(mod).second) continue;
+            if(ModuleManagerPIMPL::pimpl_of(*mod).is_overlay())
+                m_reps_.emplace(&root_of(*mod), share(*mod));
+            for(const auto& [key, request] : mod->submods())
+                if(request.has_module()) stack.push_back(&request.value());
+        }
+    }
+
     /// Binds the unset submodules of the driver to their defaults
     void bind_defaults_() {
-        m_run_ = m_pimpl_.submods();
         for(const auto& [callback, key] : m_dev_.submod_defaults()) {
             auto& request = m_run_.at(callback);
             if(request.has_module()) continue;
@@ -143,7 +176,7 @@ private:
             auto mod = find_module_(key, what, why);
             if(!mod) continue;
             try {
-                request.change(mod);
+                request.change(representative_(mod));
             } catch(const std::exception& e) {
                 throw std::runtime_error(fail_(what, e.what()));
             }
@@ -199,8 +232,11 @@ private:
         } else {
             mod = find_module_(request.submod_key(), what, why);
             if(!mod) return inactive_(what, why, request.is_required());
+            mod = representative_(mod);
         }
 
+        if(set_by_enclosing_(item, *target, false, key))
+            return inactive_(what, enclosing_why_(), request.is_required());
         claim_(item, *target, false, key, what);
         m_applied_.emplace_back(target.get(), what, request.is_required());
         const auto& current = submods.at(key);
@@ -236,6 +272,8 @@ private:
             value = request.value();
         }
 
+        if(set_by_enclosing_(item, *target, true, key))
+            return inactive_(what, enclosing_why_(), request.is_required());
         claim_(item, *target, true, key, what);
         m_applied_.emplace_back(target.get(), what, request.is_required());
         const auto& current = inputs.at(key);
@@ -266,7 +304,10 @@ private:
             except.insert(target.get());
         }
 
-        for(const auto* mod : region_(true)) {
+        for(const auto* mod : region_()) {
+            // An enclosing driver's memoization policy wins
+            if(ModuleManagerPIMPL::pimpl_of(*mod).overrides_memoization())
+                continue;
             const bool on     = except.count(mod) ? !policy->on : policy->on;
             const auto& pimpl = ModuleManagerPIMPL::pimpl_of(current_(*mod));
             if(pimpl.memoizes() == on) continue;
@@ -276,7 +317,7 @@ private:
 
     /// Reports requests whose targets a later request removed from the graph
     void check_cut_off_() {
-        const auto region = region_(true);
+        const auto region = region_();
         for(const auto& [mod, what, required] : m_applied_) {
             if(region.count(mod)) continue;
             const auto name = mod->has_name() ? quote(mod->get_name()) :
@@ -379,10 +420,11 @@ private:
 
     /** @brief The modules reachable from the driver.
      *
-     *  @param[in] stop_at_drivers If true, the modules below nested drivers
-     *                             are left out. Nested drivers are not.
+     *  This includes nested drivers and the modules below them. Below a
+     *  nested driver, only its submodules and their defaults are followed,
+     *  not the requests it has yet to resolve.
      */
-    std::set<const Module*> region_(bool stop_at_drivers) const {
+    std::set<const Module*> region_() const {
         std::set<const Module*> rv;
         std::vector<const Module*> stack;
         for(const auto& [key, request] : m_run_)
@@ -391,28 +433,56 @@ private:
             const auto* mod = stack.back();
             stack.pop_back();
             if(!rv.insert(mod).second) continue;
-            const bool is_driver = mod->is_driver();
-            if(stop_at_drivers && is_driver) continue;
-
-            const auto& current = current_(*mod);
-            for(const auto& [key, request] : current.submods()) {
+            for(const auto& [key, request] : current_(*mod).submods()) {
                 if(request.has_module()) {
                     stack.push_back(&request.value());
                     continue;
                 }
-                // A nested driver binds its unset submodules to their defaults
-                // when its requests are resolved
-                if(!is_driver) continue;
-                const auto& defaults = ModuleManagerPIMPL::pimpl_of(current)
-                                         .developer_request()
-                                         .submod_defaults();
-                auto itr = defaults.find(key);
-                if(itr == defaults.end() || m_mm_.count(itr->second) != 1)
-                    continue;
-                stack.push_back(m_mm_.at(itr->second).get());
+                if(auto submod = default_of_(*mod, key))
+                    stack.push_back(submod.get());
             }
         }
         return rv;
+    }
+
+    /** @brief The default of the unset submodule @p key of @p mod.
+     *
+     *  A nested driver binds its unset submodules to their defaults when its
+     *  requests are resolved.
+     *
+     *  @return The default, or null if @p mod is not a driver or the
+     *          submodule has no default in the ModuleManager.
+     */
+    module_ptr default_of_(const Module& mod, const type::key& key) const {
+        if(!mod.is_driver()) return nullptr;
+        const auto& defaults = ModuleManagerPIMPL::pimpl_of(current_(mod))
+                                 .developer_request()
+                                 .submod_defaults();
+        auto itr = defaults.find(key);
+        if(itr == defaults.end() || m_mm_.count(itr->second) != 1)
+            return nullptr;
+        return m_mm_.at(itr->second);
+    }
+
+    /// The module in the call graph which is, or overlays, @p mod
+    module_ptr representative_(const module_ptr& mod) const {
+        auto itr = m_reps_.find(&root_of(*mod));
+        return itr == m_reps_.end() ? mod : itr->second;
+    }
+
+    /// Did an enclosing driver set the target of the developer's @p item?
+    static bool set_by_enclosing_(const Item& item, const Module& target,
+                                  bool is_input, const type::key& key) {
+        // N.B. The user's requests override the developer's on purpose
+        if(!item.owner) return false;
+        const auto& pimpl = ModuleManagerPIMPL::pimpl_of(target);
+        return is_input ? pimpl.overrides_input(key) :
+                          pimpl.overrides_submod(key);
+    }
+
+    /// Why a setting an enclosing driver made has no effect
+    static std::string enclosing_why_() {
+        return "an enclosing driver sets the same target";
     }
 
     /** @brief Finds the module with key @p key.
@@ -441,27 +511,19 @@ private:
 
     /** @brief Finds the target module with key @p key.
      *
-     *  @return The module, or null if the setting is inactive, in which case
-     *          @p why says why.
-     *
-     *  @throw std::runtime_error if the module is only reachable below a
-     *                            nested driver.
+     *  @return The representative of the module (see representative_), or
+     *          null if the setting is inactive, in which case @p why says why.
      */
     module_ptr find_target_(const QualifiedKey& key, const std::string& what,
                             std::string& why) const {
         auto mod = find_module_(key, what, why);
         if(!mod) return nullptr;
-        if(mod.get() == &m_driver_ ||
-           (m_pimpl_.is_overlay() && mod.get() == &m_pimpl_.original()))
+        if(&root_of(*mod) == &root_of(m_driver_))
             throw std::invalid_argument(
               fail_(what, "a driver's own inputs and submodules are set with "
                           "change_input and change_submod"));
-        if(region_(true).count(mod.get())) return mod;
-        if(region_(false).count(mod.get()))
-            throw std::runtime_error(fail_(
-              what, quote(key.to_string()) +
-                      " is below a nested driver. Configure it through that "
-                      "driver's inputs and submodules instead."));
+        mod = representative_(mod);
+        if(region_().count(mod.get())) return mod;
         why = quote(key.to_string()) + " is not in the call graph";
         return nullptr;
     }
@@ -488,21 +550,22 @@ private:
 
         auto itr      = m_overlays_.find(&mod);
         module_ptr rv = itr == m_overlays_.end() ? share(mod) : itr->second;
-        // Nested drivers configure the modules below them themselves
-        if(!mod.is_driver()) {
-            std::vector<type::key> keys;
-            for(const auto& [key, request] : current_(mod).submods())
-                keys.push_back(key);
-            for(const auto& key : keys) {
-                const auto& request = current_(mod).submods().at(key);
-                if(!request.has_module()) continue;
-                const auto& child = request.value();
-                auto new_child    = bind_(child, bound);
-                if(new_child.get() == &child) continue;
-                ModulePIMPL& pimpl = overlay_(share(mod));
-                rv                 = m_overlays_.at(&mod);
-                pimpl.override_submod(key, new_child);
-            }
+        // N.B. The modules below nested drivers are bound too, including the
+        // defaults of their unset submodules, so that a nested driver resolves
+        // its requests on top of this driver's overlays
+        std::vector<type::key> keys;
+        for(const auto& [key, request] : current_(mod).submods())
+            keys.push_back(key);
+        for(const auto& key : keys) {
+            const auto& request = current_(mod).submods().at(key);
+            auto child = request.has_module() ? share(request.value()) :
+                                                default_of_(mod, key);
+            if(!child) continue;
+            auto new_child = bind_(*child, bound);
+            if(new_child == child) continue;
+            ModulePIMPL& pimpl = overlay_(share(mod));
+            rv                 = m_overlays_.at(&mod);
+            pimpl.override_submod(key, new_child);
         }
         bound.emplace(&mod, rv);
         return rv;
@@ -564,6 +627,9 @@ private:
 
     /// The overlays, keyed by the module they point to
     std::map<const Module*, module_ptr> m_overlays_;
+
+    /// The modules the enclosing drivers bound, keyed by their root original
+    std::map<const Module*, module_ptr> m_reps_;
 
     /// The targets set by the developer's requests, with what set them
     std::map<std::tuple<const Module*, bool, std::string>,

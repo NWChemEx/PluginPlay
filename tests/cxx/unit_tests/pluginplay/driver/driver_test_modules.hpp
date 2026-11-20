@@ -195,14 +195,69 @@ inline DRIVER_CTOR(OuterDriver) {
 }
 DRIVER_RUNS_ROOT(OuterDriver)
 
-/// Targets "Leaf", which is only below the nested "X driver"
-DECLARE_DRIVER(EncapsulationDriver);
-inline DRIVER_CTOR(EncapsulationDriver) {
+/// Sets "Leaf"'s "x", which the nested "X driver" also sets
+DECLARE_DRIVER(ReachThroughDriver);
+inline DRIVER_CTOR(ReachThroughDriver) {
     satisfies_property_type<Value>();
     add_submodule<Value>("root").set_default("X driver");
     add_input<int>("x").set_default(7).set_target("Leaf", "x");
 }
-DRIVER_RUNS_ROOT(EncapsulationDriver)
+DRIVER_RUNS_ROOT(ReachThroughDriver)
+
+/// ReachThroughDriver, but the nested driver requires its setting
+DECLARE_DRIVER(RequiredReachThroughDriver);
+inline DRIVER_CTOR(RequiredReachThroughDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Required X driver");
+    add_input<int>("x").set_default(7).set_target("Leaf", "x");
+}
+DRIVER_RUNS_ROOT(RequiredReachThroughDriver)
+
+/** Sets the "mode" of the nested "Chain driver" to "double", which binds
+ *  "Adder"'s "b" to "Leaf" and sets "Adder"'s "offset". Also sets "Adder"'s
+ *  "offset" itself.
+ */
+DECLARE_DRIVER(OuterChainDriver);
+inline DRIVER_CTOR(OuterChainDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Chain driver");
+    add_input<std::string>("mode")
+      .set_default(std::string("double"))
+      .set_target("Chain driver", "mode");
+    add_input<int>("offset").set_default(10).set_target("Adder", "offset");
+}
+DRIVER_RUNS_ROOT(OuterChainDriver)
+
+/// Binds "Adder"'s "a" to its submodule "a", which defaults to "Other leaf"
+DECLARE_DRIVER(RebindDriver);
+inline DRIVER_CTOR(RebindDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Wrapper");
+    add_submodule<Value>("a")
+      .set_default("Other leaf")
+      .set_required_target("Adder", "a");
+}
+DRIVER_RUNS_ROOT(RebindDriver)
+
+/** Sets "Leaf"'s "x" below the nested "Rebind driver". "Adder"'s "a" is then
+ *  bound to the overlay of "Leaf", which does not set "a".
+ */
+DECLARE_DRIVER(OuterRebindDriver);
+inline DRIVER_CTOR(OuterRebindDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("Rebind driver");
+    add_input<int>("x").set_default(7).set_target("Leaf", "x");
+}
+DRIVER_RUNS_ROOT(OuterRebindDriver)
+
+/// Turns memoization off below the nested "X driver", except for "Leaf"
+DECLARE_DRIVER(OuterMemoDriver);
+inline DRIVER_CTOR(OuterMemoDriver) {
+    satisfies_property_type<Value>();
+    add_submodule<Value>("root").set_default("X driver");
+    wire_memoization(false, {"Leaf"});
+}
+DRIVER_RUNS_ROOT(OuterMemoDriver)
 
 /// Sets "Leaf"'s "x" twice, under two keys which name the same module
 DECLARE_DRIVER(SameModuleDriver);
@@ -291,7 +346,12 @@ inline pluginplay::ModuleManager make_mm() {
     mm.add_module<SubmodDriver>("Submod driver");
     mm.add_module<MemoDriver>("Memo driver");
     mm.add_module<OuterDriver>("Outer driver");
-    mm.add_module<EncapsulationDriver>("Encapsulation driver");
+    mm.add_module<ReachThroughDriver>("Reach-through driver");
+    mm.add_module<RequiredReachThroughDriver>("Required reach-through driver");
+    mm.add_module<OuterChainDriver>("Outer chain driver");
+    mm.add_module<RebindDriver>("Rebind driver");
+    mm.add_module<OuterRebindDriver>("Outer rebind driver");
+    mm.add_module<OuterMemoDriver>("Outer memo driver");
     mm.add_module<SameModuleDriver>("Same module driver");
     mm.add_module<BranchSubmodDriver>("Branch submod driver");
     return mm;

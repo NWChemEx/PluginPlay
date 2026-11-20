@@ -433,6 +433,46 @@ inline void ModulePIMPL::override_memoization(bool on) {
     sync_overlay_();
 }
 
+inline bool ModulePIMPL::overrides_input(const type::key& key) const noexcept {
+    for(const auto* p = this; p->m_overlay_;
+        p             = p->m_overlay_->original->m_pimpl_.get())
+        if(p->m_overlay_->input_overrides.count(key)) return true;
+    return false;
+}
+
+inline bool ModulePIMPL::overrides_submod(const type::key& key) const noexcept {
+    // The module @p mod overlays, following overlays of overlays
+    const auto root = [](const Module* mod) {
+        while(mod->m_pimpl_->m_overlay_)
+            mod = mod->m_pimpl_->m_overlay_->original.get();
+        return mod;
+    };
+
+    for(const auto* p = this; p->m_overlay_;
+        p             = p->m_overlay_->original->m_pimpl_.get()) {
+        auto itr = p->m_overlay_->submod_overrides.find(key);
+        if(itr == p->m_overlay_->submod_overrides.end()) continue;
+        // N.B. Binding an overlay of the module the original binds does not
+        // change the submodule. A driver does that for every module above one
+        // it changes.
+        const auto& submods = p->m_overlay_->original->m_pimpl_->m_submods_;
+        auto original_itr   = submods.find(key);
+        if(original_itr == submods.end() ||
+           !original_itr->second.has_module() || !itr->second.has_module())
+            return true;
+        if(root(&itr->second.value()) != root(&original_itr->second.value()))
+            return true;
+    }
+    return false;
+}
+
+inline bool ModulePIMPL::overrides_memoization() const noexcept {
+    for(const auto* p = this; p->m_overlay_;
+        p             = p->m_overlay_->original->m_pimpl_.get())
+        if(p->m_overlay_->memoizes.has_value()) return true;
+    return false;
+}
+
 inline ModulePIMPL::fingerprint_type ModulePIMPL::fingerprint() const {
     bool is_final = false;
     return fingerprint_(is_final);
@@ -461,12 +501,16 @@ inline void ModulePIMPL::sync_overlays_() const {
     // N.B. The originals of an unlocked driver's overlays may have changed
     // since the driver's requests were resolved, e.g., after a failed run.
     // Syncing keeps the overlays from referring to values that are gone.
+    // The overlays of a nested driver may point to this driver's overlays, so
+    // this driver's overlays are synced before the nested drivers' are.
     if(!m_resolved_) return;
     for(const auto& overlay : m_resolved_->overlays) {
         auto& pimpl = *overlay->m_pimpl_;
-        if(pimpl.m_locked_) continue;
-        pimpl.sync_overlay_();
-        pimpl.sync_overlays_();
+        if(!pimpl.m_locked_) pimpl.sync_overlay_();
+    }
+    for(const auto& overlay : m_resolved_->overlays) {
+        auto& pimpl = *overlay->m_pimpl_;
+        if(!pimpl.m_locked_) pimpl.sync_overlays_();
     }
 }
 

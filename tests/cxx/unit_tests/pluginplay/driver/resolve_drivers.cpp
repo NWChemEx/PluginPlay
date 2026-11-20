@@ -161,10 +161,6 @@ TEST_CASE("Drivers: errors") {
         REQUIRE_THROWS_AS(run(mm, "Same module driver"), std::invalid_argument);
     }
 
-    SECTION("A module below a nested driver") {
-        REQUIRE_THROWS_AS(run(mm, "Encapsulation driver"), std::runtime_error);
-    }
-
     SECTION("Forwarding an input of a property type") {
         // N.B. The driver learns "x" is an input of a property type after it
         // forwards it, so only resolving the requests can catch it
@@ -366,4 +362,53 @@ TEST_CASE("Drivers: nested drivers") {
     // The nested driver in the ModuleManager is unchanged
     REQUIRE(mm.at("X driver").inputs().at("x").value<int>() == 1);
     REQUIRE(run(mm, "X driver") == 2);
+}
+
+TEST_CASE("Drivers: reaching through nested drivers") {
+    auto mm = make_mm();
+
+    SECTION("The enclosing driver's setting wins") {
+        // "X driver" would set "Leaf"'s "x" to 1
+        REQUIRE(run(mm, "Reach-through driver") == 8);
+    }
+
+    SECTION("A required setting the enclosing driver overrides throws") {
+        REQUIRE_THROWS_AS(run(mm, "Required reach-through driver"),
+                          std::runtime_error);
+    }
+
+    SECTION("Both drivers' settings of one module apply") {
+        // If "Chain driver" did not bind "b" to "Leaf", the sum would be 16;
+        // if its "offset" of 0 won, it would be 2
+        mm.change_input("Other leaf", "x", 5);
+        REQUIRE(run(mm, "Outer chain driver") == 12);
+        REQUIRE(mm.at("Outer chain driver").inactive_settings().empty());
+    }
+
+    SECTION("Binding an overlay is not setting the submodule") {
+        // The enclosing driver binds "Adder"'s "a" to its overlay of "Leaf",
+        // which the nested driver's required binding of "a" replaces
+        mm.change_input("Other leaf", "x", 5);
+        REQUIRE(run(mm, "Outer rebind driver") == 10);
+    }
+
+    SECTION("The memoization policy applies below the nested driver") {
+        REQUIRE(run(mm, "Outer memo driver") == 2);
+        REQUIRE(run(mm, "Outer memo driver") == 2);
+        REQUIRE(Leaf::calls == 1);
+        REQUIRE(OtherLeaf::calls == 2);
+    }
+
+    SECTION("The ModuleManager's modules are not changed") {
+        mm.change_input("Other leaf", "x", 5);
+        REQUIRE(run(mm, "Outer chain driver") == 12);
+        REQUIRE(run(mm, "Reach-through driver") == 12);
+        REQUIRE(mm.at("Leaf").inputs().at("x").value<int>() == 1);
+        REQUIRE(mm.at("Adder").inputs().at("offset").value<int>() == 0);
+        REQUIRE(&mm.at("Adder").submods().at("b").value() ==
+                &mm.at("Other leaf"));
+        REQUIRE(run(mm, "Wrapper") == 6);
+        REQUIRE(run(mm, "Chain driver") == 6);
+        REQUIRE(run(mm, "X driver") == 6);
+    }
 }
