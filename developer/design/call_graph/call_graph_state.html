@@ -326,7 +326,7 @@ resolves the driver’s wiring requests. A module gets an overlay module if a
 request changes one of its inputs or submodules, or if a module below it got
 one, since its submodule must then be bound to the overlay module. Every
 other module is used as is. Only modules in the driver’s region, <em>i.e.</em>,
-reachable without passing through a nested driver, are considered.</p></li>
+reachable from the driver, including below nested drivers, are considered.</p></li>
 <li><p><strong>Sharing.</strong> The <code class="docutils literal notranslate"><span class="pre">ModuleManager</span></code> keeps a map from each original module to
 its overlay module while it resolves a driver, so a module bound in several
 places gets one overlay module. Any number of drivers can share a module
@@ -343,13 +343,13 @@ copy resolves its wiring requests again when it is locked.</p></li>
 <li><p><strong>Running.</strong> An overlay module is a <code class="docutils literal notranslate"><span class="pre">Module</span></code>, so the driver calls it through
 its submodule request like any other, and it runs through the usual
 <code class="docutils literal notranslate"><span class="pre">Module::run</span></code>. No submodule request needs to know about a separate node.</p></li>
-<li><p><strong>Nested drivers.</strong> A nested driver whose inputs an enclosing driver sets
-gets an overlay module like any other module. When it is locked, its wiring
-requests are resolved with its overlaid inputs, and its overlay modules are
-owned by it. Since the resolved changes live in modules, any call graph that
-reaches a driver reuses its overlays, which is what lets a driver stand for
-its whole subgraph. A module reachable both from an enclosing driver and
-below a nested driver may run with two configurations (see
+<li><p><strong>Nested drivers.</strong> A nested driver whose inputs an enclosing driver sets,
+or below which the enclosing driver made an overlay module, gets an overlay
+module like any other module. When it is locked, its wiring requests are
+resolved with its overlaid inputs, on top of the enclosing driver’s overlay
+modules, and its overlay modules are owned by it. Since the resolved changes
+live in modules, any call graph that reaches a driver reuses its overlays,
+which is what lets a driver stand for its whole subgraph (see
 <a class="reference internal" href="../driver.html#driver-design"><span class="std std-ref">Designing Drivers</span></a>).</p></li>
 <li><p><strong>Locking.</strong> Locking a driver locks the overlay modules and the originals
 they point to, so neither can change while the driver uses them. This is

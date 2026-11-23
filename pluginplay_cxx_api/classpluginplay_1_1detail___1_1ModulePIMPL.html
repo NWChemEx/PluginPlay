@@ -320,6 +320,16 @@ const <a class="el" href="classpluginplay_1_1Module.html">Module</a> &amp;&#160;
 <tr class="memitem:a46acc76de9d1316629e6c0be9e1998e3" id="r_a46acc76de9d1316629e6c0be9e1998e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a46acc76de9d1316629e6c0be9e1998e3">override_memoization</a> (bool on)</td></tr>
 <tr class="memdesc:a46acc76de9d1316629e6c0be9e1998e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether the overlay module *this memoizes.  <br /></td></tr>
 <tr class="separator:a46acc76de9d1316629e6c0be9e1998e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac31e82e8dd2d0bce045d4693201eb254" id="r_ac31e82e8dd2d0bce045d4693201eb254"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#ac31e82e8dd2d0bce045d4693201eb254">overrides_input</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key) const noexcept</td></tr>
+<tr class="memdesc:ac31e82e8dd2d0bce045d4693201eb254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does *this, or an overlay it points to, change input <code>key</code>?  <br /></td></tr>
+<tr class="separator:ac31e82e8dd2d0bce045d4693201eb254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af86fa91ee0dd992700203deccc9b3bdc" id="r_af86fa91ee0dd992700203deccc9b3bdc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#af86fa91ee0dd992700203deccc9b3bdc">overrides_submod</a> (const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;key) const noexcept</td></tr>
+<tr class="memdesc:af86fa91ee0dd992700203deccc9b3bdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as overrides_input, but for the submodule <code>key</code>.  <br /></td></tr>
+<tr class="separator:af86fa91ee0dd992700203deccc9b3bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9011bb51a01401da328bd175c45b5750" id="r_a9011bb51a01401da328bd175c45b5750"><td class="memItemLeft" align="right" valign="top"><a id="a9011bb51a01401da328bd175c45b5750" name="a9011bb51a01401da328bd175c45b5750"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>overrides_memoization</b> () const noexcept</td></tr>
+<tr class="memdesc:a9011bb51a01401da328bd175c45b5750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as overrides_input, but for the memoization setting. <br /></td></tr>
+<tr class="separator:a9011bb51a01401da328bd175c45b5750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45fc0158864b7c31dc9eea0b06d4f4ae" id="r_a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a5ccee83dcf362268ae5187224aa64cd2">fingerprint_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpluginplay_1_1detail___1_1ModulePIMPL.html#a45fc0158864b7c31dc9eea0b06d4f4ae">fingerprint</a> () const</td></tr>
 <tr class="memdesc:a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifies the state of *this and of everything below it.  <br /></td></tr>
 <tr class="separator:a45fc0158864b7c31dc9eea0b06d4f4ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1428,6 +1438,71 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ac31e82e8dd2d0bce045d4693201eb254" name="ac31e82e8dd2d0bce045d4693201eb254"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac31e82e8dd2d0bce045d4693201eb254">&#9670;&#160;</a></span>overrides_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::detail_::ModulePIMPL::overrides_input </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Does *this, or an overlay it points to, change input <code>key</code>? </p>
+<p>The overlays a module points to are those of the drivers enclosing it, so this tells whether an enclosing driver set the input.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">key</td><td>The input to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if *this is not an overlay module. No throw guarantee. </dd></dl>
+
+</div>
+</div>
+<a id="af86fa91ee0dd992700203deccc9b3bdc" name="af86fa91ee0dd992700203deccc9b3bdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af86fa91ee0dd992700203deccc9b3bdc">&#9670;&#160;</a></span>overrides_submod()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool pluginplay::detail_::ModulePIMPL::overrides_submod </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacepluginplay_1_1type.html#ab8a1dcc0b6da631bd76087ca325a9359">type::key</a> &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Same as overrides_input, but for the submodule <code>key</code>. </p>
+<p>Binding the submodule to an overlay of the module it was bound to is not a change: a driver does that for every module above a module it changes. </p>
 
 </div>
 </div>
