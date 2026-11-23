@@ -817,6 +817,28 @@ public:
      */
     void override_memoization(bool on);
 
+    /** @brief Does *this, or an overlay it points to, change input @p key?
+     *
+     *  The overlays a module points to are those of the drivers enclosing it,
+     *  so this tells whether an enclosing driver set the input.
+     *
+     *  @param[in] key The input to check.
+     *
+     *  @return False if *this is not an overlay module. No throw guarantee.
+     */
+    bool overrides_input(const type::key& key) const noexcept;
+
+    /** @brief Same as overrides_input, but for the submodule @p key.
+     *
+     *  Binding the submodule to an overlay of the module it was bound to is
+     *  not a change: a driver does that for every module above a module it
+     *  changes.
+     */
+    bool overrides_submod(const type::key& key) const noexcept;
+
+    /// Same as overrides_input, but for the memoization setting
+    bool overrides_memoization() const noexcept;
+
     /** @brief Identifies the state of *this and of everything below it.
      *
      *  Two modules have the same fingerprint exactly when they, and the
