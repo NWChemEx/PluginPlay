@@ -114,6 +114,19 @@ TEST_CASE("ModuleBase : type") {
     REQUIRE(mod.type() == type::rtti(typeid(testing::NotReadyModule)));
 }
 
+TEST_CASE("ModuleBase : is_shareable") {
+    SECTION("Modules are shareable by default") {
+        testing::NullModule mod;
+        REQUIRE(mod.is_shareable());
+    }
+    SECTION("Unless they call not_shareable") {
+        testing::ConfiguredModule mod(1);
+        REQUIRE_FALSE(mod.is_shareable());
+        testing::ConfiguredModule shareable(1, true);
+        REQUIRE(shareable.is_shareable());
+    }
+}
+
 TEST_CASE("ModuleBase : get_desc") {
     SECTION("Throws if no description") {
         testing::NullModule mod;
@@ -187,5 +200,11 @@ TEST_CASE("ModuleBase : Comparisons") {
         testing::NotReadyModule mod2;
         REQUIRE_FALSE(mod == mod2);
         REQUIRE(mod != mod2);
+    }
+    SECTION("Different shareability") {
+        testing::ConfiguredModule shareable(1, true);
+        testing::ConfiguredModule not_shareable(1);
+        REQUIRE_FALSE(shareable == not_shareable);
+        REQUIRE(shareable != not_shareable);
     }
 }

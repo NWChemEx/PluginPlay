@@ -16,6 +16,7 @@
 
 #include "../../catch.hpp"
 #include "../../examples/writing_a_module.hpp"
+#include "../../test_common.hpp"
 #include "pluginplay/module_manager/detail_/module_manager_pimpl.hpp"
 #include <pluginplay/plugin/plugin.hpp>
 
@@ -96,6 +97,16 @@ TEST_CASE("ModuleManagerPIMPL : comparison") {
             REQUIRE(!(pimpl1 == pimpl2));
         }
     }
+    SECTION("Unshareable bases") {
+        using mod_t                    = testing::ConfiguredModule;
+        pimpl1.m_unshared_bases["key"] = std::make_shared<mod_t>(1);
+        REQUIRE(pimpl1 != pimpl2);
+        pimpl2.m_unshared_bases["key"] = std::make_shared<mod_t>(1);
+        REQUIRE(pimpl1 == pimpl2);
+        pimpl2.m_unshared_bases.clear();
+        pimpl2.m_unshared_bases["other key"] = std::make_shared<mod_t>(1);
+        REQUIRE(pimpl1 != pimpl2);
+    }
     SECTION("Different modules") {
         SECTION("Different instances") {
             SECTION("Same key") {
@@ -133,6 +144,15 @@ TEST_CASE("ModuleManagerPIMPL : add_module") {
     SECTION("Can't use the key") {
         REQUIRE_THROWS_AS(pimpl1.add_module("key1", ptr1),
                           std::invalid_argument);
+    }
+    SECTION("Unshareable modules are kept per key") {
+        auto ptr2 = std::make_shared<testing::ConfiguredModule>(1);
+        auto ptr3 = std::make_shared<testing::ConfiguredModule>(2);
+        pimpl1.add_module("key2", ptr2);
+        pimpl1.add_module("key3", ptr3);
+        REQUIRE(pimpl1.m_unshared_bases.at("key2") == ptr2);
+        REQUIRE(pimpl1.m_unshared_bases.at("key3") == ptr3);
+        REQUIRE_FALSE(pimpl1.m_bases.count(ptr2->type()));
     }
 }
 

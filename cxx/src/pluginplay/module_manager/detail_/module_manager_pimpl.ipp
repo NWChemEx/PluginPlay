@@ -45,12 +45,11 @@ inline void ModuleManagerPIMPL::add_module(type::key key,
         throw std::invalid_argument("Module implementation for key: '" + key +
                                     "' is null");
 
+    // Instances of a shareable class are interchangeable, so one instance is
+    // used for every key the class is added under. Others are kept as given.
     module_base_ptr stored = base;
-    if(base->is_python()) {
-        // This is a hacky patch to allow multiple python modules to be
-        // added while avoiding the type_index collisions.
-        // TODO: remove when a more elegant solution is determined
-        m_py_bases[key] = base;
+    if(!base->is_shareable()) {
+        m_unshared_bases[key] = base;
     } else {
         std::type_index type(base->type());
         if(!m_bases.count(type)) m_bases[type] = base;
@@ -202,11 +201,11 @@ inline bool ModuleManagerPIMPL::operator==(
     if(m_modules.size() != rhs.m_modules.size()) return false;
     if(m_plugins.size() != rhs.m_plugins.size()) return false;
 
-    // TODO: Remove with the rest of the python hack
-    if(m_py_bases.size() != rhs.m_py_bases.size()) return false;
-    for(const auto& [k, v] : rhs.m_py_bases) {
-        if(!m_py_bases.count(k)) return false;
-        if(*m_py_bases.at(k) != *v) return false;
+    // Instances which are not shareable may differ, so compare them
+    if(m_unshared_bases.size() != rhs.m_unshared_bases.size()) return false;
+    for(const auto& [k, v] : rhs.m_unshared_bases) {
+        if(!m_unshared_bases.count(k)) return false;
+        if(*m_unshared_bases.at(k) != *v) return false;
     }
 
     // Skip checking the values b/c implementations are compared by type

@@ -91,9 +91,8 @@ struct ModuleManagerPIMPL {
     /// Type of a pointer to the cache
     using cache_pointer = module_manager_type::cache_pointer;
 
-    /// Type of a map from key to Python implementation
-    // TODO: remove when a more elegant solution is determined
-    using py_base_map = std::map<type::key, module_base_ptr>;
+    /// Type of a map from key to an implementation which is not shareable
+    using unshared_base_map = std::map<type::key, module_base_ptr>;
 
     ///@}
 
@@ -269,10 +268,10 @@ struct ModuleManagerPIMPL {
     // by the user
     module_map m_modules;
 
-    // Part of the hacky patch to make multiple python modules work
-    // TODO: remove when a more elegant solution is determined
-    // These are the Python Modules in their developer state
-    py_base_map m_py_bases;
+    // These are the Modules which are not shareable (see
+    // ModuleBase::is_shareable), e.g., Python modules, in their developer
+    // state. One per key, since their instances are not interchangeable.
+    unshared_base_map m_unshared_bases;
 
     // These are the loaded plugins, in load order. Each plugin's ModuleMap
     // holds the plugin's modules in the state set by the user.

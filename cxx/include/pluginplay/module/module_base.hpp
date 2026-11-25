@@ -338,6 +338,23 @@ public:
     // Is this a Python module?
     bool is_python() const { return m_is_python_; }
 
+    /** @brief May one instance of this module's class stand in for all of
+     *         them?
+     *
+     *  A ModuleManager keeps one instance of each (C++) module class, and
+     *  uses it for every key the class is added under, which assumes that
+     *  instances of the class are interchangeable. That is not so for modules
+     *  which are configured when they are made (e.g., Recorder, whose property
+     *  type is chosen then) or which are implemented in Python. Such modules
+     *  are not shareable, and a ModuleManager keeps each instance it is given.
+     *
+     *  @return False if this module called not_shareable in its ctor, or is
+     *          implemented in Python, and true otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
+    bool is_shareable() const noexcept { return m_shareable_; }
+
     /** @brief The developer's call graph request.
      *
      *  Drivers configure the modules below them with a CallGraphRequest,
@@ -461,6 +478,18 @@ protected:
      *                       to store the new citation.
      */
     void citation(type::description value);
+
+    /** @brief Declares that instances of the derived class are not
+     *         interchangeable.
+     *
+     *  Derived classes whose instances are configured when they are made
+     *  (e.g., with a property type chosen at runtime) must call this in their
+     *  ctor, so that a ModuleManager keeps each instance it is given (see
+     *  is_shareable).
+     *
+     *  @throw none No throw guarantee.
+     */
+    void not_shareable() noexcept { m_shareable_ = false; }
 
     /** @brief Adds an additional input field to this module.
      *
@@ -651,6 +680,9 @@ private:
 
     /// Is this module implemented in Python?
     bool m_is_python_ = false;
+
+    /// May one instance of this module's class stand in for all of them?
+    bool m_shareable_ = true;
 }; // class ModuleBase
 
 //--------------------------------Implementations-------------------------------
@@ -666,6 +698,7 @@ inline bool ModuleBase::operator==(const ModuleBase& rhs) const noexcept {
     if(has_description() && get_desc() != rhs.get_desc()) return false;
     if(m_citations_ != rhs.m_citations_) return false;
     if(m_is_python_ != rhs.m_is_python_) return false;
+    if(m_shareable_ != rhs.m_shareable_) return false;
     return std::tie(inputs(), results(), submods(), property_types(),
                     python_property_types()) ==
            std::tie(rhs.inputs(), rhs.results(), rhs.submods(),
@@ -686,7 +719,9 @@ ModuleBase::ModuleBase(DerivedType*) noexcept :
 }
 
 inline ModuleBase::ModuleBase(const python::PythonWrapper& self, bool) :
-  m_type_(type::rtti(typeid(python::PythonWrapper))), m_is_python_(true) {}
+  m_type_(type::rtti(typeid(python::PythonWrapper))),
+  m_is_python_(true),
+  m_shareable_(false) {}
 
 inline void ModuleBase::description(type::description value) noexcept {
     m_desc_.emplace(std::move(value));
