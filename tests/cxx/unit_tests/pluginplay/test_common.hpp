@@ -93,6 +93,23 @@ struct ReadyModule : pluginplay::ModuleBase {
     }
 };
 
+// Returns the int it is made with, i.e., it is configured when it is made. If
+// shareable is false, it says so with not_shareable.
+struct ConfiguredModule : pluginplay::ModuleBase {
+    explicit ConfiguredModule(int value, bool shareable = false) :
+      pluginplay::ModuleBase(this), m_value(value) {
+        satisfies_property_type<OneOut>();
+        if(!shareable) not_shareable();
+    }
+    pluginplay::type::result_map run_(
+      pluginplay::type::input_map,
+      pluginplay::type::submodule_map) const override {
+        auto rv = results();
+        return OneOut::wrap_results(rv, m_value);
+    }
+    int m_value;
+};
+
 // Has property type int input "Option 1" and another int input "Option 2"
 DECLARE_MODULE(NotReadyModule2);
 inline MODULE_CTOR(NotReadyModule2) {

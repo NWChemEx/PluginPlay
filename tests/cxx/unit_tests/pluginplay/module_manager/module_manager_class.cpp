@@ -128,6 +128,23 @@ TEST_CASE("ModuleManager") {
         REQUIRE(mm.at("a mod") == *corr);
     }
 
+    SECTION("add_module(string, shared_ptr) shares shareable instances") {
+        // One instance of a shareable class is used for every key
+        using mod_t = testing::ConfiguredModule;
+        mm.add_module("one", std::make_shared<mod_t>(1, true));
+        mm.add_module("two", std::make_shared<mod_t>(2, true));
+        REQUIRE(mm.at("one").run_as<testing::OneOut>() == 1);
+        REQUIRE(mm.at("two").run_as<testing::OneOut>() == 1);
+    }
+
+    SECTION("add_module(string, shared_ptr) keeps unshareable instances") {
+        using mod_t = testing::ConfiguredModule;
+        mm.add_module("one", std::make_shared<mod_t>(1));
+        mm.add_module("two", std::make_shared<mod_t>(2));
+        REQUIRE(mm.at("one").run_as<testing::OneOut>() == 1);
+        REQUIRE(mm.at("two").run_as<testing::OneOut>() == 2);
+    }
+
     SECTION("set_runtime") {
         auto prv = std::make_shared<parallelzone::runtime::RuntimeView>();
         mm.set_runtime(prv);

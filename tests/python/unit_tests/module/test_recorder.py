@@ -34,6 +34,18 @@ class Wrapped(pp.ModuleBase):
         return pt.wrap_results(rv, 2 * i)
 
 
+class Seven(pp.ModuleBase):
+    """Returns 7."""
+
+    def __init__(self):
+        pp.ModuleBase.__init__(self)
+        self.satisfies_property_type(test_pp.OneOut())
+
+    def run_(self, inputs, submods):
+        rv = self.results()
+        return test_pp.OneOut().wrap_results(rv, 7)
+
+
 class TestRecorder(unittest.TestCase):
     def test_is_a_module(self):
         self.assertIsInstance(self.recorder, pp.ModuleBase)
@@ -53,6 +65,28 @@ class TestRecorder(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.pt.unwrap_results(records[0]), (6,))
         self.assertEqual(self.pt.unwrap_results(records[1]), (8,))
+
+    def test_is_not_shareable(self):
+        self.assertFalse(self.recorder.is_shareable())
+
+    def test_several_recorders(self):
+        # A second Recorder, of another property type
+        other_pt = test_pp.OneOut()
+        other = pp.Recorder(other_pt)
+        self.mm.add_module("Seven", Seven())
+        self.mm.add_module("Other Recorder", other)
+        self.mm.change_submod("Other Recorder", "Wrapped", "Seven")
+
+        self.assertEqual(self.mm.run_as(self.pt, "Recorder", 3), 6)
+        self.assertEqual(self.mm.run_as(other_pt, "Other Recorder"), 7)
+
+        # Each keeps its own records
+        self.assertEqual(len(self.recorder.records()), 1)
+        self.assertEqual(
+            self.pt.unwrap_results(self.recorder.records()[0]), (6,)
+        )
+        self.assertEqual(len(other.records()), 1)
+        self.assertEqual(other_pt.unwrap_results(other.records()[0]), (7,))
 
     def test_clear(self):
         self.mm.run_as(self.pt, "Recorder", 3)

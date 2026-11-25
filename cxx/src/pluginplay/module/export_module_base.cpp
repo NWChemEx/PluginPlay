@@ -40,6 +40,7 @@ void export_module_base(py_module_reference m) {
       .def("submods", static_cast<submod_fxn>(&ModuleBase::submods))
       .def("property_types", &ModuleBase::property_types)
       .def("python_property_types", &ModuleBase::python_property_types)
+      .def("is_shareable", &ModuleBase::is_shareable)
       .def("get_desc", &ModuleBase::get_desc)
       .def("citations", &ModuleBase::citations)
       .def("get_runtime", &ModuleBase::get_runtime)

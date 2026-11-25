@@ -44,6 +44,10 @@ class APythonModule(pp.ModuleBase):
 
 
 class TestModuleBase(unittest.TestCase):
+    def test_is_shareable(self):
+        # Python modules are configured when they are made
+        self.assertFalse(self.py_mod.is_shareable())
+
     def test_results(self):
         self.assertEqual(self.defaulted.results(), {})
         self.assertNotEqual(self.py_mod.results(), {})

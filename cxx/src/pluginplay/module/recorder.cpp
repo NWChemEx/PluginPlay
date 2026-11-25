@@ -32,6 +32,9 @@ them. The inputs are forwarded to "Wrapped" as they are.
 
 Recorder::Recorder(rtti_type rtti, input_map inputs, result_map results) :
   ModuleBase(this) {
+    // The property type is chosen at runtime, so Recorders are not
+    // interchangeable
+    not_shareable();
     description(desc);
     satisfies_property_type(rtti, inputs, std::move(results));
     submods()["Wrapped"]

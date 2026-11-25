@@ -43,6 +43,11 @@ namespace pluginplay {
  *  and from Python, `recorder = pluginplay.Recorder(PT())`. After the
  *  calculation, `recorder->records()` holds the results of each run.
  *
+ *  Recorders are not shareable (see ModuleBase::is_shareable), so a
+ *  ModuleManager can hold several, e.g., one per property type, and each one
+ *  keeps its own records. Copies of a Recorder's module (e.g., by
+ *  ModuleManager::copy_module) share its records, though.
+ *
  *  N.B. A run whose results are memoized does not call the Recorder, so it is
  *  not recorded. To record every run, turn off the memoization of the
  *  Recorder (or of "Wrapped").

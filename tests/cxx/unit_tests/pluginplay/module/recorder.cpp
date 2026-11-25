@@ -74,6 +74,28 @@ TEST_CASE("Recorder") {
         REQUIRE(recorder->records().empty());
     }
 
+    SECTION("Is not shareable") { REQUIRE_FALSE(recorder->is_shareable()); }
+
+    SECTION("Several Recorders in one ModuleManager") {
+        // A second Recorder, of another property type
+        using other_pt = testing::OneOut;
+        auto other     = std::make_shared<pluginplay::Recorder>(other_pt{});
+        mm.add_module("Other Recorder", other);
+        mm.at("Other Recorder")
+          .change_submod("Wrapped",
+                         pluginplay::make_lambda<other_pt>([]() { return 7; }));
+
+        REQUIRE(mm.at("Recorder").run_as<pt>(3) == 6);
+        REQUIRE(mm.at("Other Recorder").run_as<other_pt>() == 7);
+
+        // Each keeps its own records
+        REQUIRE(recorder->records().size() == 1);
+        REQUIRE(std::get<0>(pt::unwrap_results(recorder->records()[0])) == 6);
+        REQUIRE(other->records().size() == 1);
+        REQUIRE(std::get<0>(other_pt::unwrap_results(other->records()[0])) ==
+                7);
+    }
+
     SECTION("Memoized runs are not recorded") {
         mm.at("Recorder").run_as<pt>(3);
         mm.at("Recorder").run_as<pt>(3);
