@@ -22,10 +22,12 @@ namespace pluginplay {
 
 void export_module_base(py_module_reference m);
 void export_module_class(py_module_reference m);
+void export_recorder(py_module_reference m);
 
 inline void export_module(py_module_reference m) {
     export_module_base(m);
     export_module_class(m);
+    export_recorder(m);
 }
 
 } // namespace pluginplay

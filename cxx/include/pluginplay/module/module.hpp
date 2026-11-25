@@ -21,3 +21,4 @@
 #include <pluginplay/module/macros.hpp>
 #include <pluginplay/module/module_base.hpp>
 #include <pluginplay/module/module_class.hpp>
+#include <pluginplay/module/recorder.hpp>

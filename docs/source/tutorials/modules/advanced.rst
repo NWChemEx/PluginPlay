@@ -103,3 +103,17 @@ Facade modules are modules which ignore the arguments they are given and return
 a specified value. They are a simplified version of a lambda module which can
 be created by providing a single value (instead of a function like a lambda
 module, or a class like a normal module).
+
+Recorders
+=========
+
+A recorder (``pluginplay::Recorder``, ``pluginplay.Recorder`` from Python)
+satisfies the property type it is made with, and has one submodule, "Wrapped",
+of the same property type. When run, it runs "Wrapped" with its inputs, keeps
+the results, and returns them. A recorder is how results which are only used
+inside a calculation are gotten out of it: put the recorder between the module
+which computes them and the module which uses them. After the calculation,
+``records()`` returns the results of each run, in order.
+
+A run whose results are memoized does not call the recorder, so it is not
+recorded. Turn off the recorder's memoization to record every run.
